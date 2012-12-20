@@ -1,0 +1,19 @@
+[PRONTUS]
+PRONTUS_ID=cesarcillo
+SERVER_BD=localhost
+NOM_BD=cesarcillo_prontus
+USER_BD=cesar000
+PWD_BD=c3s4rc1ll0
+PRONTUS_ID=cesarcillo
+NEW_TITLE_SITE_NAME=Pruebas de Cesarcillo
+SERVER_SMTP=localhost
+SUPERUSER_BD=root
+SUPERPWD_BD=altavoz
+[/PRONTUS]
+
+[MODEL]
+MODEL_NOM=modelo_minimo
+MODEL_EXT=html
+TITLE_SITE_NAME=modelo_minimo
+[/MODEL]
+

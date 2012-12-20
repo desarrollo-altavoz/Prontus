@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Prontus Update</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link type="text/css" rel="stylesheet" href="css/estilos.css" />
+    <script type="text/javascript" src="js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="js-local/Opciones.class.js"></script>
+    <script type="text/javascript" src="js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="js-local/Utiles.class.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        Opciones.checkStatusAdvanced('../procs/loading/result_prontus_update.js', function() {
+          $.ajax({
+            url: '/' + parent.Admin.dir_cgi_cpn + '/' + parent.Admin.urlLogout,
+            data: {
+                '_path_conf': parent.Admin.path_conf,
+                '_modo': 'ajax'
+            },
+            dataType: 'json',
+            cache: false,
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+              SubmitForm.handleError(LoadDiv.urlPub, XMLHttpRequest, textStatus, errorThrown);
+            },
+            success: function(resp, textStatus) {
+              // Do nothing... :)
+            }
+          });
+        });
+      });
+    </script>
+  </head>
+  <body class="bodysite" id="status-progress">
+
+    <div class="col470">
+      <div class="rotulo">
+        <div class="titulo">&nbsp; &nbsp;Prontus Update</div>
+      </div>
+      <div class="box-gris">
+        <div class="box-auxi">
+
+          <div class="msg-loading">
+              
+            <div class="status-loading status-hidden-block">
+              <br/>
+              <img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /><br/><br/>
+              Por favor espere hasta que el proceso termine<br/>
+              Porcentaje de avance: <span class="status-percentage"></span>
+            </div>
+            
+            <div class="status-error status-hidden-block">
+              <br/><br/>
+              <img src="imag/boto/msg-error.png" width="24" height="24" alt="error" title="error" class="icono" />
+              <span class="status-msg"></span>
+              <div class="ayuda">Se recomienda revisar el log de errores. De ser posible, utilice el formulario de contacto
+              para contactar al equipo de desarrollo.<br/><br/>
+              <a href="../procs/prontus_update_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_prontus_update">&raquo; Revise el Log con los detalles de la operación</a>
+              </div><br/>
+            </div>
+            
+            <div class="status-result status-hidden-block">
+              <br/><br/>
+              El proceso de actualización ha finalizado.
+              <div class="ayuda"><b>Importante:</b> Cierre su navegador y limpie su caché antes de abrir Prontus nuevamente.
+              Se han actualizado componentes críticos que deben ser renovados en su navegador.</div><br/>
+            </div>
+            
+            <div id="msg-log" class="msg-result status-hidden-block">
+              <a href="../procs/prontus_update_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_prontus_update">&raquo; Revise el Log con los detalles de la operación</a>
+            </div>
+            <br/><br/>
+            <div class="boton-generico boton-loading">
+              <a class="button" href="#" onclick="parent.Admin.cerrarSesion(); parent.Opciones.cerrarColorbox();return false;"><span>Cerrar</span></a>
+            </div>
+            <br/>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

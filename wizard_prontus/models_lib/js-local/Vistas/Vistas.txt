@@ -1,0 +1,69 @@
+
+Vistas.class.js
+------------------------------
+
+Descripcion:
+    Contiene funciones utiles para el manejo de vistas.
+    OJO: con la funcion para el taxportlista para funciones mayores
+    a la 10.12, ya que podria cambiar dicha cgi
+
+Dependencias:
+    Ninguna
+
+Versión:
+    2.0.0 - 11/11/2009 - CVI - Primera Versión orientada a objetos
+    2.0.1 - 13/04/2011 - CPN - Se agrega funcion para ir a la vista de accesibilidad
+    2.0.2 - 13/04/2011 - CPN - Se agrega opcion para redireccionar a una pagina luego del seteo de la cookie
+
+Instalacion:
+    Para instalar y usar, sólo basta con agregar el script a la página, y comenzar a usar las
+    funiones. De todas formas se recomienda revisar las configuraciones por si hay algo que
+    corregir.
+    Las funciones que se pueden usar son:
+    - Vistas.change(lang, gotoURL)
+        Cambia hacia la vista dada por "lang".
+        Se usa cuando hay idioma ingles y español o de acesibilidad.
+        lang puede ser es o en o acc.
+        También podrá redirigirlo a una URL especifica luego de cambiar de vista
+        Esta funcionalidad es soporta si pasamos al parámetro gotoURL la url a la cual queremos que nos redireccione.
+        El caso de la redirección es muy usado si es que tenemos una pre-home, en la cual al pulsar en el icono de la vista
+        No nos muestre la prehome, sino que cambie la vista y nos envie al index u otra pagina o portada.
+    - Vistas.setMultivista(value)
+        Setea la cookie llamada vista, con el valor dado por "value"
+        El valor de "value" no está limitado solo a idiomas.
+    - Vistas.readMultivista()
+        Obtiene el valor de la cookie "vista" y lo devuleve.
+        No está limitado sólo a idioma.
+    - Vistas.goSpanish()
+        Cambia el valor de la cookie a 'es' y hace un refresh.
+        Se usa cuando hay idioma inglés y español.
+        Si se está en una portada taxonomica, se vuelve a llamar a la cgi.
+        Si se está en una cgi, se redirige al home, ya que no se puede volver
+        a gatillar la cgi.
+    - Vistas.goEnglish()
+        Cambia el valor de la cookie a 'en' y hace un refresh.
+        Se usa cuando hay idioma inglés y español.
+        Si se está en una portada taxonomica, se vuelve a llamar a la cgi.
+        Si se está en una cgi, se redirige al home, ya que no se puede volver
+        a gatillar la cgi.
+    - Vistas.goAccesibilidad()
+        Cambia el valor de la cookie a 'acc' y hace un refresh.
+        Se usa cuando existe la multivista de accesibilidad
+        Si se está en una portada taxonomica, se vuelve a llamar a la cgi.
+        Si se está en una cgi, se redirige al home, ya que no se puede volver
+        a gatillar la cgi.
+    - Vistas.getUrlTaxport(url, vista)
+        Obtiene la URL de la cgi taxport_lista para volver a llamarla con la nueva vista.
+    - Vistas.convertFecha(lang, fecha)
+        Recibe un fecha en formato dd/mm/yyyy. Si el idioma es "en", se cambia el
+        formato a mm/dd/yyyy, sino se devuelve tal cual.
+
+Configuracion:
+    Al comienzo del objeto, se puede cambiar:
+        dirCgiBin: '/cgi-bin', // Ubicación de la cgi taxport_lista
+        coockiename: 'vista',  // Nombre de la cookie, cambiar sólo si hay algún problema grave
+                               // y no se pudiera usar el valor por omision
+    O bien, se puede hacer post carga, modificando los atributos. Ejemplo:
+    $(document).ready(function() {
+        Vistas.dirCgiBin = '/cgi-bx';
+    });

@@ -1,0 +1,242 @@
+----------------------------------------------------------------------------------------------------
+Versión 1.0.0
+----------------------------------------------------------------------------------------------------
+Versión inicial
+
+---------------
+Estructura de directorios
+---------------
+/fid          -> Formulario de ingreso de datos  (FID)
+/js-local     -> Objetos javascript (POO)
+/plantillas/artic/fecha/pags/       -> Plantillas  de artículos
+/plantillas/artic/fecha/macros/     -> Macros de plantillas de artículo
+/plantillas/edic/nroedic/port/      -> Plantilla  de portada
+/plantillas/edic/nroedic/macros/    -> Macros de portada
+/plantillas/extra/                  -> Plantillas extra
+
+
+----------------------------------------------------------------------------------------------------
+Versión 2.0.0
+----------------------------------------------------------------------------------------------------
+- Se agrega  directorio para alojar macros de FID
+/fid/macros
+
+
+----------------------------------------------------------------------------------------------------
+Versión 2.0.1
+----------------------------------------------------------------------------------------------------
+- Se agrega plantilla para RSS de portada
+- Se corrigen las rutas al enviar / imprimir
+- Se agrega compatibilidad con Friendly URLs en enviar e imprimir
+
+
+----------------------------------------------------------------------------------------------------
+Versión 2.0.2
+----------------------------------------------------------------------------------------------------
+- Se hacen cambios en Utiles.class.js
+
+
+----------------------------------------------------------------------------------------------------
+Versión 2.0.3 - 03/06/2010 - CVI
+----------------------------------------------------------------------------------------------------
+- Nueva release de Utiles.class.js
+
+----------------------------------------------------------------------------------------------------
+Versión 2.0.4 - 23/06/2010 - CVI/CPN
+----------------------------------------------------------------------------------------------------
+- Se agrega validator a la macro de FID _head.html
+- Se agrega CUERPO al listado de estilos por defecto del FontSize.class.js
+
+----------------------------------------------------------------------------------------------------
+Versión 2.0.5 - 23/06/2010 - CPN
+----------------------------------------------------------------------------------------------------
+- Se cambian los FIDs para ajustarse a la serie 10.15
+
+----------------------------------------------------------------------------------------------------
+Versión 2.0.6 - 21/07/2010 - CVI
+----------------------------------------------------------------------------------------------------
+- Se modifica el artículo tipo formulario de acuerdo a la release 10.15.3 de Prontus
+    <lib_dir>/fid/macros/formulario_cabecera.html
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.0 - 24/01/2011 - CPN
+----------------------------------------------------------------------------------------------------
+- Se modifican los FID para que sean compatibles con Prontus 11
+- Plantillas de artículo incluyen post-procesos del DAM y post-proceso para la generación de portadas taxonómicas
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.1 - 07/03/2011 - CPN
+----------------------------------------------------------------------------------------------------
+- Se eliminan de las plantillas de artículos los post-procesos del DAM y post-proceso para la generación de portadas taxonómicas, esto forma parte del Prontus.
+- Se remplazan en las plantillas de FID la marca %%_tags%% por el uso de la macro %%MACRO(_tags.html)%%
+
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.2 - 15/04/2011 - CPN
+----------------------------------------------------------------------------------------------------
++ Se actualiza Vistas.class.js, Se agrega función para ir a la vista de accesibilidad.
++ Se agrega la macro de herramientas sociales.
++ Se agrega el FID y macro del artículo de video usado para transcodificación de video.
+
+ARCHIVOS MODIFICADOS
+--------------------
+/models_lib.3.0.2/js-local/Vistas/Vistas.txt
+/models_lib.3.0.2/js-local/Vistas/Vistas.class.min.js
+/models_lib.3.0.2/js-local/Vistas/Vistas.class.js
+
+ARCHIVOS NUEVOS
+--------------------
+/models_lib.3.0.2/plantillas/artic/fecha/macros/macro_sociales.html
+/models_lib.3.0.2/plantillas/artic/fecha/macros/macro_video.html
+/models_lib.3.0.2/plantillas/artic/fecha/pags/video.html
+/models_lib.3.0.2/fid/fid_video.html
+/models_lib.3.0.2/fid/macros/video_tabs.html
+/models_lib.3.0.2/fid/macros/video_multimedia.html
+/models_lib.3.0.2/fid/macros/video_fotos.html
+/models_lib.3.0.2/fid/macros/video_cabecera.html
+
+
+ARCHIVOS ELIMINADOS
+--------------------
+- Ninguno
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.3 - 25/04/2011 - CPN
+----------------------------------------------------------------------------------------------------
++ Se agrega la macro macro_tags_relac.html para relacionar artículos por tags.
++ Se modifica la macro comun_relacionados.html, se incorpora la relación por tags.
+  Los artículos relacionados que serán visualizados dependerá de lo siguiente:
+  1º Si existe taxonomía manual se muestran los artículos relacionados por taxonomía manual.
+  2º Si no existe taxonomía manual y existen tags para el artículo, se muestran los artículos relacionados por tags.
+  3º Si no existe taxonomía manual y no existen tags para el artículo, y el artículo tiene una categoría (seccion, tema), se muestran los
+     artículos relacionados por categoría.
+
+ARCHIVOS MODIFICADOS
+--------------------
+/models_lib/plantillas/artic/fecha/macros/comun_relacionados.html
+
+ARCHIVOS NUEVOS
+--------------------
+/models_lib/plantillas/artic/fecha/macros/macro_tags_relac.html
+
+ARCHIVOS ELIMINADOS
+--------------------
+- Ninguno
+
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.4 - 05/05/2011 - CPN
+----------------------------------------------------------------------------------------------------
++ Vistas.class.js, Se agrega la opción para redireccionar a una URL luego del seteo de la cookie. Ahora cuando se llame a la función js para el cambio de vista,
+  puedo enviar de manera opcional la URL a la cual va a redireccionar, esto es un ejemplo practico cuando sitios web usan pre-home y queremos que luego de setear la cookie
+  nos envié a la portada de inicio, pero en la vista antes escogida.
+
+  <a href="#" onclick="Vistas.change('es', '/<prontus_xxx>/site/edic/base/port/inicio.html');">ESPAÑOL</a>
+  <a href="#" onclick="Vistas.change('en', '/<prontus_xxx>/site/edic/base/port/inicio.html');">ENGLISH</a>
+
+ARCHIVOS MODIFICADOS
+--------------------
+/models_lib/js-local/Vistas/Vistas.class.min.js
+/models_lib/js-local/Vistas/Vistas.class.js
+/models_lib/js-local/Vistas/Vistas.txt
+
+ARCHIVOS NUEVOS
+--------------------
+- Ninguno
+
+ARCHIVOS ELIMINADOS
+--------------------
+- Ninguno
+
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.5 - 20/05/2011 - CPN
+----------------------------------------------------------------------------------------------------
+Se reemplaza la marca %%_titular%% por %%_titular.xml%% y %%_bajada%% por %%_bajada.xml%% en las plantillas Prontus.
+Esta marca se parsea de manera especifica, las antiguas marcas %%_titular%% y %%_bajada%% no ejecutaban un escapeo
+para las comillas dobles.
+
+ARCHIVOS MODIFICADOS
+--------------------
+/models_lib/plantillas/artic/fecha/macros/macro_sociales.html
+/models_lib/plantillas/artic/fecha/pags/banner.html
+/models_lib/plantillas/artic/fecha/pags/evento.html
+/models_lib/plantillas/artic/fecha/pags/galeria10.html
+/models_lib/plantillas/artic/fecha/pags/galeria20.html
+/models_lib/plantillas/artic/fecha/pags/galeria30.html
+/models_lib/plantillas/artic/fecha/pags/general.html
+/models_lib/plantillas/artic/fecha/pags/noticia.html
+/models_lib/plantillas/artic/fecha/pags/producto.html
+/models_lib/plantillas/artic/fecha/pags/video.html
+/models_lib/plantillas/cache/taxonomia/pags/art_relac.html
+/models_lib/plantillas/edic/nroedic/rss/inicio.xml
+
+ARCHIVOS NUEVOS
+--------------------
+- Ninguno
+
+ARCHIVOS ELIMINADOS
+--------------------
+- Ninguno
+
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.6 - 13/06/2011 - CVI
+----------------------------------------------------------------------------------------------------
+Se adjunta la carpeta coment/, con el antiguo coment-sample/, que ahora irá asociado a la
+models_lib, en vez de ir asociado a la release.
+La nueva carpeta coment/ fue limpiada y homologada desde varios sitios.
+
+ARCHIVOS MODIFICADOS
+--------------------
+- Ninguno
+
+ARCHIVOS NUEVOS
+--------------------
+/models_lib/coment/*
+
+ARCHIVOS ELIMINADOS
+--------------------
+- Ninguno
+
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.7 - 04/07/2011 - CVI
+----------------------------------------------------------------------------------------------------
+Se actualiza la librería JS: Utiles.clss.js con la última release: 3.1.0
+
+ARCHIVOS MODIFICADOS
+--------------------
+\models_lib\js-local\Utiles\Utiles.txt
+\models_lib\js-local\Utiles\Utiles.class.js
+
+ARCHIVOS NUEVOS
+--------------------
+- Ninguno
+
+ARCHIVOS ELIMINADOS
+--------------------
+- Ninguno
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.8 - 16/02/2012 - EAG
+----------------------------------------------------------------------------------------------------
+Se actualiza la librería JS: Flash.class.js con la última release: 2.0.0
+Se incopora solucion prontus Fecha y Hora release: 2.0.1
+
+ARCHIVOS MODIFICADOS
+--------------------
+\models_lib\js-local\Flash\Flash.txt
+\models_lib\js-local\Flash\Flash.class.js
+
+ARCHIVOS NUEVOS
+--------------------
+\models_lib\js-local\FechaHora\FechaHora.class.js
+\models_lib\js-local\FechaHora\oNow.class.js
+\models_lib\js-local\FechaHora\readme.txt
+\models_lib\js-local\FechaHora\example.html
+\models_lib\plantillas\edic\nroedic\macros\macro_fechahora.html
+
+ARCHIVOS ELIMINADOS
+--------------------
+- Ninguno

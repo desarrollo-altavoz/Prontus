@@ -1,0 +1,40 @@
+
+              <div class="check-install">
+                <div class="titulo">Verificar Módulos Perl:</div>
+                <div class="desc">Puede revisar si los módulos Perl instalados en el servidor, corresponden a los requeridos por Prontus.</div>
+                <div class="boton-generico"><a href="#" onclick="Opciones.accionCheckPlatform(); return false;" class="button"><span>Verificar Módulos</span></a></div>
+
+              </div>
+              <div class="separa2"></div>
+              <div class="check-install">
+                <div class="titulo">Verificar Escrituras:</div>
+                <div class="desc">Puede revisar si la instalación de Prontus está realizada correctamente, realizando los siguientes test:</div>
+                <div class="item">
+                  <input type="radio" name="accion" id="accion1" value="1" /> <label for="accion1">Chequear escritura en carpetas de /%%_prontus_id%%</label>
+                  <div class="help">Se escribirán algunas carpetas y archivos en el servidor, para asegurar que Prontus pueda escribir correctamente los artículos creados.</div>
+                </div>
+                <div class="item">
+                  <input type="radio" name="accion" id="accion2" value="2" /> <label for="accion2">Crear tabla de pruebas en la BD (de acuerdo al cfg de este prontus)</label>
+                  <div class="help">Se creará la Tabla: PRUEBA, con las Columnas: PRUEBA_ID y PRUEBA_TITULAR. Si no existe, se crea. Si ya existe, se borra la que estaba antes.
+                    Con este test se garantiza que la BD está correctamente configurada para que Prontus pueda escribir en ella.</div>
+                </div>
+                <div class="item">
+                  <input type="radio" name="accion" id="accion3" value="3" /> <label for="accion3">Escribir un registro en la tabla PRUEBA, usando ID correlativo</label>
+                  <div class="help">Se garantiza que los registros pueden ser insertados correctamente, en la tabla creada en el punto anterior.</div>
+                </div>
+                <div class="item">
+                  <input type="radio" name="accion" id="accion4" value="4" /> <label for="accion4">Escribir un registro en la tabla PRUEBA usando lock/unlock</label>
+                  <div class="help">Para garantizar que el sistema de bloqueos de la tabla, utilizado para asegurar operaciones consistentes, se ejecuta correctamente.</div>
+                </div>
+                <div class="item">
+                  <input type="radio" name="accion" id="accion5" value="5" /> <label for="accion5">Escribir 10 registros (ID correlativo) en la tabla PRUEBA</label>
+                  <div class="help">Se escriben 10 registros consecutivos para asegurar que la inserción repetitiva de campos, funciona correctamente.</div>
+                </div>
+                <div class="item">
+                  <input type="radio" name="accion" id="accion6" value="6" /> <label for="accion6">Leer y listar el contenido de la tabla PRUEBA</label>
+                  <div class="help">Se pueden comprobar los pasos realizados anteriormente y también se asegura la correcta lectura de las tablas creadas por Prontus.</div>
+                </div>
+
+                <div class="boton-generico aleft"><a href="#" onclick="Opciones.accionCheckInstall(); return false;" class="button"><span>Verificar Escrituras</span></a></div>
+
+              </div>

@@ -1,0 +1,40 @@
+                <input type="hidden" name="_fotoeditada" id="_fotoeditada" value=""/>
+                <div id="banco-img">
+                  <div class="rotulo">
+                    <div class="titulo">Banco de im&aacute;genes</div>
+                    <!-- div class="flecha"><span class="opened">&nbsp;</span></div -->
+                    <!-- div class="flecha"><a href="#"><img src="/%%_prontus_id%%/cpan/core/imag/boto/flecha_abajo.png" width="13" height="13" alt="Minimizar Ventana" title="Minimizar Ventana" /></a></div-->
+                  </div>
+
+                  <div class="box-gris">
+                    <div class="box-auxi">
+
+                      <div class="boton-gris3 aleft"><a class="button" href="#bodyupload" onclick="Fid.showBody('#bodyupload');"><span>+ Subir imagen</span></a></div>
+                      <div class="boton-gris3 aright"><a class="button" href="dam/prontus_dam_search.cgi?path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_type=foto" onclick="Fid.abrirMultimedia(); return false;"><span>+ Bibl. multimedia</span></a></div>
+                      <div class="separa"></div>
+                      <div class="box-scroll" id="scroll-banco">
+                        <div class="banco-total">%%TOTAL_BANCO_IMAGENES%%</div>
+                        %%LOOP_FOTOS%%
+
+                          %%FOTO_N%%
+
+                        %%/LOOP_FOTOS%%
+                        <!--vermas imagenes-->
+                        <div class="banco-vermas">
+                          <img src="/%%_prontus_id%%/cpan/core/imag/loader/ajax-loader-bar.gif" width="16" height="11" alt="Cargando" title="Cargando" />
+                          <a href="#" onclick="Fid.verMasImagenes(); return false;">&raquo; %%TEXTO_RESTANTES%%</a>
+                        </div>
+                        <div id="banco-content">
+							%%_HIDDEN_FOTOS%%
+                        </div>
+                        <!--/vermas imagenes-->
+
+                      </div>
+                      <!--<div class="acenter"><a href="#" onclick="Fid.showBody('#bodyupload'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/ag1_of.png" width="122" height="21" alt="Agregar imagen" title="Agregar imagen" class="cambia-boton" /></a></div>-->
+
+                      <div class="boton-gris3 aleft"><a class="button" href="#bodyupload" onclick="Fid.showBody('#bodyupload');"><span>+ Subir imagen</span></a></div>
+                      <div class="boton-gris3 aright"><a class="button" href="dam/prontus_dam_search.cgi?path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_type=foto" onclick="Fid.abrirMultimedia(); return false;"><span>+ Bibl. multimedia</span></a></div>
+
+                    </div>
+                  </div>
+                </div>

@@ -1,0 +1,81 @@
+<table width="100%" border="0" cellpadding="3" cellspacing="0" class="tableform">  
+  <tr><br/><td class="nombre" colspan="2">Animaci&oacute;n Flash</td></tr>
+  <!-- flash fija -->
+  <tr>
+    <td class="nombre">Flash tama&ntilde;o fija</td>
+    <td class="campo2 upload">
+      <span class="ayuda">SWF (320 x 240px)</span><br/>
+      <input name="SWF_1" type="file" id="SWF_1"/>
+      <div class="file-link">&nbsp;%%SWF_1%%</div>
+      <input name="WSWF_1" type="hidden" id="WSWF_1" value="320"/>
+      <input name="HSWF_1" type="hidden" id="HSWF_1" value="240"/>
+    </td>   
+  </tr>
+  <!-- flash fija -->  
+  <!-- flash variable -->
+  <tr>
+    <td class="nombre">Flash tama&ntilde;o variable</td>
+    <td class="campo2 upload">
+      <input name="SWF_2" type="file" id="SWF_2" />
+      <div class="file-link">&nbsp;%%SWF_2%%</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="nombre"></td>
+    <td class="campo">
+      <table>
+        <tr>
+          <td><span class="ayuda">Ancho</span></td>
+          <td width="50px"><input name="WSWF_2" type="text" id="WSWF_2" value="%%WSWF_2%%" size="5" class="fieldform"/></td>
+          <td><span class="ayuda">Alto</span></td>
+          <td width="50px"><input name="HSWF_2" type="text" id="HSWF_2" value="%%HSWF_2%%" size="5" class="fieldform"/></td>
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="CHK_transparente">Fondo Transparente</label>&nbsp;&nbsp;<input id="CHK_transparente" type="checkbox" name="CHK_transparente" value="si"/>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <!-- flash variable -->  
+ 
+  <!-- pelicula -->
+  <tr class="list-odd"><br/><td class="nombre" colspan="2">Pel&iacute;cula FLV</td></tr>
+  <tr class="list-odd">
+    <td class="nombre">Archivo video (flv)</td>
+    <td class="campo2 upload">
+        <input name="MULTIMEDIA_video_1" type="file" id="MULTIMEDIA_video_1" />
+        <div class="file-link">&nbsp; %%MULTIMEDIA_video_1%%</div>
+    </td>
+  </tr>
+  <tr class="list-odd">
+    <td class="nombre">Video Dam</td>
+    <td class="campo">
+        <input value="%%dam_multimedia_1%%" type="text" id="dam_multimedia_1" name="dam_multimedia_1" class="fieldform" />
+    </td>
+  </tr>
+  <tr class="list-odd">
+    <td class="nombre">Pie de video</td>
+    <td class="campo">
+      <input name="pievideo_1" type="text" id="pievideo_1" value="%%pievideo_1%%" size="80" class="fieldform"/>
+    </td>
+  </tr>
+  <tr class="list-odd">
+    <td class="nombre"></td>
+    <td class="campo">
+      <table>
+        <tr>
+          <td><span class="ayuda">Ancho</span></td>
+          <td width="50px"><input name="wvideo_1" type="text" id="wvideo_1" value="%%wvideo_1%%" size="5" class="fieldform"/></td>
+          <td><span class="ayuda">Alto</span></td>
+          <td width="50px"><input name="hvideo_1" type="text" id="hvideo_1" value="%%hvideo_1%%" size="5" class="fieldform"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr class="list-odd">
+    <td class="nombre">Imagen de Inicio</td>
+    <td class="campo">
+      <span  class="ayuda">Foto video</span>%%FOTOFIJA_ART1000(1000,1000)%%
+    </td>
+  </tr>
+</table>

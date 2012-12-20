@@ -1,0 +1,1 @@
+DIR_CGI_CPAN = 'cgi-cpn'

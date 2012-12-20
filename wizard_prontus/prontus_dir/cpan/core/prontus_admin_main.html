@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Administraci&oacute;n &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/cfgedit.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+
+    <!-- jquery base -->
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/lang/jquery.ui.datepicker-es.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.idTabs.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+
+    <!-- js prontus -->
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Opciones.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Cfgedit.class.js"></script>
+
+    <script type="text/javascript">
+      // Variables globales usadas para el publicador.
+      $(document).ready(function () {
+        Admin.init('%%_prontus_id%%');
+        Opciones.init();
+        Opciones.validarMaxartics('%%TAXPORT_MAXARTICS%%');
+
+        $.datepicker.setDefaults($.datepicker.regional.es);
+        $('#fecharegen').datepicker({
+            //dateFormat: 'dd/mm/yy',
+            dateFormat: 'yymmdd',
+            buttonImage: '/%%_prontus_id%%/cpan/core/imag/boto/calendar.gif',
+            buttonImageOnly: true,
+            showOn: 'both'
+        });
+
+      });
+    </script>
+  </head>
+  <body class="bodysite">
+    <div id="main">
+      %%macro(menu_head7.html)%%
+
+      <!--INICIO CONTENIDO-->
+      <div class="main-left">
+        <div class="content">
+
+          <!--TITULO PRINCIPAL-->
+          <div class="top-titulo960">
+            <h1 class="titular">Administración</h1>
+          </div>
+          <!-- / TITULO PRINCIPAL-->
+
+          <div id="msg-global" class="msg-global"></div>
+
+          <div class="separa"></div>
+
+          <!--COLUMNA -->
+          <div class="col960 aleft">
+
+            <div class="boton-gris1" id="tabs-admin">
+              <a class="button" href="#tab7"><span>Configuración</span></a>
+              <a class="button" href="#tab1"><span>Base de Datos</span></a>
+              <a class="button" href="#tab2"><span>Regeneración de artículos</span></a>
+              <a class="button" href="#tab3"><span>Buscador</span></a>
+              <a class="button" href="#tab4"><span>Logs de operación</span></a>
+              <a class="button" href="#tab5"><span>Crons</span></a>
+              <a class="button" href="#tab6"><span>Verificar Plataforma</span></a>
+            </div>
+
+            <div class="auxi" id="tab1">
+                %%MACRO(admin_bd.html)%%
+            </div>
+
+            <div class="auxi" id="tab2">
+                %%MACRO(admin_regen.html)%%
+            </div>
+
+            <div class="auxi" id="tab3">
+                %%MACRO(admin_search.html)%%
+            </div>
+
+            <div class="auxi" id="tab4">
+                %%MACRO(admin_logs.html)%%
+            </div>
+
+            <div class="auxi" id="tab5">
+                %%MACRO(admin_crons.html)%%
+            </div>
+
+            <div class="auxi" id="tab6">
+                %%MACRO(admin_platform.html)%%
+            </div>
+            <!--configuracion-->
+            <div class="auxi" id="tab7">
+              <div class="logs">
+                <div class="titulo">Archivos de configuración:</div>
+                <div class="desc">Acá puede modificar la configuración de Prontus</div>
+                <div style="border-bottom: 1px solid #DDDDDD; margin-bottom: 5px;"></div>
+                <div class="boton-gris1" id="tabs-config" style="float: left; background: none;">
+                    <a class="button2" href="#cfg-tab1"><span>Artículos</span></a>
+                    <a class="button2" href="#cfg-tab2"><span>Base de datos</span></a>
+                    <a class="button2" href="#cfg-tab5"><span>Buscador</span></a>
+                    <a class="button2" href="#cfg-tab3"><span>Categorías</span></a>
+                    <a class="button2" href="#cfg-tab10"><span>Tags</span></a>
+                    <a class="button2" href="#cfg-tab11"><span>Listados</span></a>
+                    <!--comentarios--><a class="button2" href="#cfg-tab9"><span>Comentarios</span></a><!--/comentarios-->
+                    <a class="button2" href="#cfg-tab6"><span>Portadas</span></a>
+                    <a class="button2" href="#cfg-tab7"><span>Usuarios</span></a>
+                    <a class="button2" href="#cfg-tab8"><span>Variables generales</span></a>
+                </div>
+
+                <div class="contenido-config">
+                    <div id="cfg-tab1">
+                        %%MACRO(admin_cfg_art.html)%%
+                    </div>
+                    <div id="cfg-tab2">
+                        %%MACRO(admin_cfg_bd.html)%%
+                    </div>
+                    <div id="cfg-tab3">
+                        %%MACRO(admin_cfg_categ.html)%%
+                    </div>
+                    <div id="cfg-tab10">
+                        %%MACRO(admin_cfg_tags.html)%%
+                    </div>
+                    <div id="cfg-tab11">
+                        %%MACRO(admin_cfg_list.html)%%
+                    </div>
+                    <div id="cfg-tab5">
+                        %%MACRO(admin_cfg_search.html)%%
+                    </div>
+                    <div id="cfg-tab6">
+                        %%MACRO(admin_cfg_port.html)%%
+                    </div>
+                    <div id="cfg-tab7">
+                        %%MACRO(admin_cfg_usr.html)%%
+                    </div>
+                    <div id="cfg-tab8">
+                        %%MACRO(admin_cfg_var.html)%%
+                    </div>
+                    <!--comentarios-->
+                    <div id="cfg-tab9">
+                        %%MACRO(admin_cfg_coment.html)%%
+                    </div>
+                    <!--/comentarios-->
+                </div>
+
+              </div>
+            </div>
+            <!--/configuracion-->
+
+          </div>
+          <!-- / COLUMNA -->
+
+        </div>
+      </div>
+      <!--/FIN CONTENIDO-->
+    </div>
+    <input type="hidden" id="default_tab" value="%%default_tab%%"/>
+  </body>
+</html>

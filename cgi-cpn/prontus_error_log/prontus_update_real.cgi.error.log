@@ -1,0 +1,6 @@
+DIR_SERVER: [/var/www]
+PATH_CONF: [/var/www/cesarcillo/cpan/cesarcillo.cfg]
+revisando[/var/www/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+Error al enviar mail via Mail::Sender [Input/output error] [connect() failed: Connection refused]Convirtiendo a utf8 el mensaje

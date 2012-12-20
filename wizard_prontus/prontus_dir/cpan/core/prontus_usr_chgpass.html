@@ -1,0 +1,51 @@
+<link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/usrchgpass.css?1" />
+<script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/UsrAdmin.class.js"></script>
+<script type="text/javascript">
+    UsrAdmin.dir_cgi_cpan = '%%_dir_cgi_cpn%%';
+    UsrAdmin.prontus_id = '%%_PRONTUS_ID%%';
+    UsrAdmin.path_conf = '%%_path_conf%%';
+</script>
+<div class="usr_chgpass">
+  <div class="rotulo">
+      <div class="titulo">Cambio de contraseña</div>
+  </div>
+  <div style="clear: both;"></div>
+  <div class="box-gris">
+    <form id="frmChgPass" method="POST">
+      <input type="hidden" name="_path_conf" value="%%_path_conf%%">
+      <table width="100%">
+        <tr>
+            <td colspan="2">Si necesita cambiar su contraseña, complete el siguiente formulario:</td>
+        </tr>
+        <tr>
+            <td class="bg-campo">* Contraseña acual</td>
+            <td width="250"><input class="fieldform" type="password" name="pwd_actual" size="35" value=""></td>
+        </tr>
+        <tr>
+            <td>* Nueva contraseña</td>
+            <td width="250"><input class="fieldform" type="password" name="pwd_nuevo" size="35" value=""></td>
+        </tr>
+        <tr>
+            <td>* Confirmar contraseña</td>
+            <td width="250"><input class="fieldform" type="password" name="pwd_confirm" size="35" value=""/></td>
+        </tr>
+      </table>
+
+      <table width="100%">
+        <tr>
+          <td>
+            <div class="botones">
+            <a onclick="UsrAdmin.guardarChgPass(); return false;" href="#" class="button"><span>Guardar</span></a>
+            <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+            </div>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>
+

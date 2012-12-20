@@ -1,0 +1,21 @@
+/* TAB grises verticales en Conf. */
+#tabs-config {width: 216px; margin-top: 5px; position: absolute;}
+.boton-gris1 a.button2 { display:block; height:30px; color:#FFFFFF; font-size:14px; font-weight:bold; margin-bottom: 3px;}
+.boton-gris1 a.button2 span {background: url("../imag/boto/boto_gris2_cfg_left.jpg") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
+.boton-gris1 a.button2:hover {display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold;}
+.boton-gris1 a.button2:hover span {background: url("../imag/boto/boto_gris1_cfg_left.gif") no-repeat;}
+.boton-gris1 a.button2.selected { display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold; margin-bottom: 3px;}
+.boton-gris1 a.button2.selected span {background: url("../imag/boto/boto_gris1_cfg_left.gif") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
+.contenido-config {width: 75%; float: left; font-size: 15px; color: #888888; margin-top: 5px; border: 1px solid #f1f1f0; margin-left: 215px;}
+.contenido-config .listado .tableform td {border:1px solid #f0f0f0;}
+.contenido-config .listado .head td {background-color:#e0e0e0;}
+.tableform td .help {font-size:12px; color:#aaaaaa;}
+.tableform td .ayuda {font-size:12px; color:#aaaaaa;}
+
+.contenido-config > div {display:none;}
+#cfg-tab1 {display:block;}
+.col960 > .auxi {display:none;}
+#tab7 {display:block;}
+
+.msg-maxartics {width:240px; font-size:11px; color:#c00; font-weight:normal; display:none; float:right;}
+.msg-maxartics span {font-weight:bold;}

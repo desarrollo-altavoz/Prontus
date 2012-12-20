@@ -1,0 +1,14 @@
+
+#col-arbol {overflow:hidden; min-height:480px;}
+.inner-editor {position:absolute;}
+
+.editor .upload  {z-index:1;}
+
+.editor .arbol {float:left; width:220px;}
+.editor .arbol .col210 {width:190px;}
+.editor .arbol .arbol-normal {float:left; width:220px;}
+.editor .arbol .arbol-scroll {float:left; width:220px; height:480px; overflow:auto;}
+.editor .arbol .link-scroll {float:left; margin-left:10px; margin-top:10px; font-size:12px; font-weight:bold;}
+
+.editor .col730 {margin:0 5px 0 0; padding:0; width:720px;}
+

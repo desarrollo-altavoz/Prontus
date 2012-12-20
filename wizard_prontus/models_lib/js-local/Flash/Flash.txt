@@ -1,0 +1,141 @@
+
+Flash.class.js
+------------------------------
+
+Descripcion:
+    Sirve para insertar flash en una página HTML.
+    Dependiendo de si la página tien jquery o el plugin de media,
+    decide la mejor forma para insertar.
+    Para los players de audio y video, si se esta utilizando un
+    iPad/iPhone/iPod se insertan tags html 5 de video o audio,
+    para reproducir los archivos multimedia.
+    En este caso los archivos de video deben ser mp4 con video h264 y
+    audio aac o mp3, y los audios deben ser mp3.
+
+Dependencias:
+    Ninguna.
+    Ni siquiera jQuery es necesario para que funcione
+
+Versión:
+    1.0.0 - 01/07/2010 - CVI - Primera versión orientada a objetos.
+    2.0.0 - 21/12/2011 - CVI/EAG - Se incorpora la deteccion de iPhon/iPad/iPod
+                                para insertar tags html5 de video y audio
+
+Funcionamiento:
+    Este script, sirve para insertar Flash en una pagina prontus.
+    Tiene 3 métodos:
+     - para insertar flash genérico
+     - para insertar el player de video.
+     - para insertar el player de audio.
+    Se necesita un div o contenedor con un ID específico para que dentro de él
+    se inserte el flash.
+    Alternativamente cuenta con el antiguo inserta_img_fade, renovado, pero en
+    vista que este portlet está relativamente obsoleto, se prefiere mantener en
+    silencio.
+
+Instalación
+    - Se inserta este script en la página Web, de preferencia después de la inserción
+      de jquery y sus plugins, si es que el sitio lleva alguno de estos.
+      Luego se eso se pone lo siguiente:
+
+
+    Para un flash normal
+    --------------------
+    <div id="miflash"></div>
+    <script type="text/javascript">
+        Flash.insertaFlash(file, id, ancho, alto);
+    </script>
+
+    En donde:
+    file -> Ruta del Archivo SWF
+    id -> ID del div o contenedor
+    ancho -> Ancho del Flash
+    alto -> Alto del flash
+
+    Alternativamente se puede enviar un 5to parámetro con opciones para el flash.
+    Por ejemplo:
+    obj = {
+        loop: 'true',
+        autoplay: 'false',
+        bgcolor: '#ffffff',
+        flashvars: {
+            data: '21312973981.xml',
+            flag: 'true'
+        }
+    }
+
+
+    Para el player de video
+    -----------------------
+    <div id="miflash"></div>
+    <script type="text/javascript">
+        Flash.insertaPlayerVideo(file, id, ancho, alto, img);
+    </script>
+
+    En donde:
+    file -> Ruta del Video FLV o MP4
+    id -> ID del div o contenedor
+    ancho -> Ancho del Flash
+    alto -> Alto del flash
+    img -> Imagen "poster" del Video
+
+    Parámetros adicionales para el player que son usados para SST7 o SST8
+    ts -> ts del articulo, %%_TS%%
+    secc -> sección, ej: %%_nom_seccion1%%
+    tema -> tema, ej: %%_nom_tema1%%
+    stem -> subtema, ej:%%_nom_subtema1%%
+    titu -> titular, %%_titular%%
+    aid -> id articulo, %%_art_autoinc%%
+
+
+    Para el player de audio
+    -----------------------
+    <div id="miflash"></div>
+    <script type="text/javascript">
+        Flash.insertaPlayerAudio(file, id, ancho, alto);
+    </script>
+
+    En donde:
+    file -> Ruta del Video FLV o MP4
+    id -> ID del div o contenedor
+    ancho -> Ancho del Flash
+    alto -> Alto del flash
+
+    Parámetros adicionales para el player que son usados para SST7 o SST8
+    ts -> ts del articulo, %%_TS%%
+    secc -> sección, ej: %%_nom_seccion1%%
+    tema -> tema, ej: %%_nom_tema1%%
+    stem -> subtema, ej:%%_nom_subtema1%%
+    titu -> titular, %%_titular%%
+    aid -> id articulo, %%_art_autoinc%%
+
+    Para el Image Fade
+    ------------------
+    <div id="miflash"></div>
+    <script type="text/javascript">
+        Flash.insertaImageFade(file, objid, ancho, alto, target, img1, img2, img3, img4);
+    </script>
+
+    En donde:
+    file -> Ruta al Artículo Prontus
+    objid -> ID del div o contenedor
+    ancho -> Ancho del Flash
+    alto -> Alto del flash
+    target -> Target del link que va en el img fade
+    img1-img4 -> Imágenes del Image Fade
+
+
+    Configuraciones
+    ---------------------
+    // Nombre del prontus donde se encuentran los flash por omision
+    prontus_id: 'modelo_productos',
+    // Flash
+    swfVideo: '/' + Flash.prontus_id + '/flash/players/playerVideo.swf',
+    swfAudio: '/' + Flash.prontus_id + '/flash/players/playerAudio.swf',
+    swfImgFade: '/' + Flash.prontus_id + '/flash/prontus_imgfade_8.2.swf',
+    objDefault: {
+        quality: 'high',
+        wmode: 'transparent',
+        AllowFullScreen: 'true',
+        allowScriptAccess: 'sameDomain'
+    },

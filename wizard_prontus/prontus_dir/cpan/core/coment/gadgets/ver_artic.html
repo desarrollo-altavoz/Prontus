@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <title>Redireccionando...</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=uft-8">
+  <script type="text/javaScript">
+    <!--
+      // Trampolin para ver articulo desde cpan Comentarios
+
+      function get_prontus() {
+        var url = document.URL;
+        var start = url.indexOf("prontus_id=");
+        var end = url.length;
+        var prontus_id;
+        if ((start > 0) && ((start + 11) < end)) {
+          prontus_id = url.substring(start + 11, end);
+        }else{
+          ts = '';
+        };
+        return ts;
+      };
+
+      var ts = get_ts();
+      var prontus_id = get_prontus();
+      alert(ts);
+      alert(prontus_id);
+      var dirfecha = ts.substring(0, 8);
+      window.location.href = '/' + prontus_id + '/site/artic/' + dirfecha + '/pags/' + ts + coment_ext_artic;
+    //-->
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,100 @@
+  <title>&laquo; %%_txt_titular%% &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <!-- CSS de Prontus -->
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/fids.css" />
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/uploadify/uploadify.css"/>
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/FidConfig.class.js"></script>
+
+  <!-- JQuery y plugins -->
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/lang/jquery.ui.datepicker-es.js"></script>
+
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.idTabs.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/filestyle/jquery.filestyle.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/media/jquery.media.js"></script>
+
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/uploadify/jquery.uploadify.v2.1.0.min.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/uploadify/swfobject.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/zeroclipboard/ZeroClipboard.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.jqplugin.js"></script>
+
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/fileupload/jquery.iframe-transport.js"></script>
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/fileupload/jquery.fileupload.js"></script>
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/fileupload/fileupload.css" />
+
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/tags_input/jquery.tagsinput.css" />
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/tags_input/jquery.tagsinput.js"></script>
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/autocomplete/jquery.autocomplete.css" />
+  <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/autocomplete/jquery.autocomplete.js"></script>
+
+  %%_code4popup%%<style style="text/css">
+    .main-head, .userdata {display:none;}
+    #main {width:990px; padding-top:4px;}
+  </style>
+  <script type="text/javascript">
+    $(function() {
+      $('#button-back').click(function() {
+        if(window.opener) {
+          window.opener.focus();
+        }
+        window.close();
+        return false;
+      });
+      $('#button-new').attr('href', $('#button-new').attr('href') + '&_popup=1');
+    });
+  </script>
+  %%/_code4popup%%
+
+  <!-- * plugin para lazy load de banco imagenes [NO CORRE EN IE8]-->
+  <!--script src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.lazyload.mini.js" type="text/javascript"></script-->
+
+  <!-- JS de Prontus -->
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Admin.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Fid.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Tags.class.js"></script>
+
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Botones.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Utiles.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Fechas.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/CombosTax.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/validator.js"></script>
+  %%_tax4fids%%
+  <script type="text/javascript">
+    var mainFidJs = {
+        ID_TEMA_SELECTED: new Array(%%_TEMA1%%, %%_TEMA2%%, %%_TEMA3%%),
+        ID_SUBTEMA_SELECTED: new Array(%%_SUBTEMA1%%, %%_SUBTEMA2%%, %%_SUBTEMA3%%),
+        PRONTUS_ID: '%%_PRONTUS_ID%%',
+        CURR_BODY: '%%_CURR_BODY%%',
+        SDATA: '%%_SDATA%%',
+        DIR_CGI_PUBLIC: '%%_DIR_CGI_PUBLIC%%',
+        TS: '%%_TS%%'
+    };
+    $(document).ready(function () {
+      Admin.init('%%_prontus_id%%');
+      Fid.init();
+
+      // Se revisa si el articulo es nuevo o no
+      if(mainFidJs.TS !== '') {
+        Fid.pingRecurso();
+        document.title = 'Editar ' + document.title;
+      } else {
+        document.title = 'Nuevo ' + document.title;
+        // Si el articulo es nuevo, se intentar recargar el titular
+        var titular = "%%_saved_titular%%";
+        if(titular !== '') {
+            $('#_txt_titular').val(titular);
+        }
+      }
+      FidConfig.cargando = false;
+    });
+  </script>

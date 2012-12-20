@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  %%NIF(_ALTA)%%
+  <meta name="ROBOTS" content="NOINDEX" />
+  %%/NIF%%
+  <title>Prontus CMS</title>
+  <script type="text/javascript" src="/prontus_mv/js-local/Utiles.class.js"></script>
+</head>
+<body>
+    <!-- Utilizacion de los javascript -->
+    <div>    
+      Para utilizar los nuevos  javascrit con estructura POO:<br />
+       - si utiliza un método de la clase, debe instanciar de la manera &lt;nombre_de_la_clase&gt;.&lt;nombre_del_metodo&gt;(&lt;parametros&gt;)<br/>
+       - si utiliza un atributo de la clase, debe instan ciar de la manera  &lt;nombre_de_la_clase&gt;.&lt;nombre_del_atributo&gt;<br/>
+       Ejemplo:<br/>
+       <a href="#" onclick="Utiles.imprimirArticulo();">Imprimir|</a>
+       <a href="#" onclick="Utiles.subWin('http://www.altavoz.net','Pop Altavoz',400,300,30,30);">Pop Altavoz|</a>
+       <br />
+    </div>
+    <hr />
+    <!-- Listado de marcas disponibles Prontus FID_general -->
+<div>
+    Cabecera <br/>
+    <!-- Marcas Generales -->
+        <b>_FECHAC:</b> %%_FECHAC%%             <br />
+        <b>_FECHAPLONG:</b> %%_FECHAPLONG%%         <br />
+        <b>_FECHACSHRT:</b> %%_FECHACSHRT%%         <br />
+        <b>_FECHAP:</b> %%_FECHAP%%             <br />
+        <b>_HORAP:</b> %%_HORAP%%              <br />
+        <b>_FECHAE:</b> %%_FECHAE%%             <br />
+        <b>_FECHAELONG:</b> %%_FECHAELONG%%         <br />
+        <b>_FECHAESHRT:</b> %%_FECHAESHRT%%         <br />
+        <b>_HORAE:</b> %%_HORAE%%              <br />
+
+    <!-- taxonómia _NOM_SECCION<num_combo_ID>   -->
+        <b>_NOM_SECCION1:</b> %%_NOM_SECCION1%%       <br />
+        <b>_NOM_TEMA1:</b> %%_NOM_TEMA1%%          <br />
+        <b>_NOM_SUBTEMA1:</b> %%_NOM_SUBTEMA1%%       <br />
+        <b>_SECCION1:</b> %%_SECCION1%%           <br />
+        <b>_TEMA1:</b> %%_TEMA1%%              <br />
+        <b>_SUBTEMA1:</b> %%_SUBTEMA1%%           <br />
+        <b>_TAX:</b> %%_TAX%%                <br />
+
+    <!--elementos cabecera -->
+        <b>_TXT_TITULAR:</b> %%_TXT_TITULAR%%        <br />    <!-- la marca  incluye  tags <p></p> -->
+        <b>_TXT_bajada:</b> %%_TXT_bajada%%         <br />    <!-- la marca  incluye  tags <p></p> -->
+        <b>TXT_bajadaportada:</b> %%TXT_bajadaportada%%   <br />
+    <!--elementos cabecera -->
+    <hr/><br /><br />
+    Cuerpo <br />
+    <!-- VTXT -->
+        <b>VTXT_CUERPO:</b> %%VTXT_CUERPO%%<br/>
+    <!-- VTXT -->
+
+
+    <hr/><br /><br />
+    Fotos <br />
+    <!-- Fotos -->
+        <!-- fotos portada -->
+        %%IF(FOTOFIJA_PORT70)%%
+            <img src="%%FOTOFIJA_PORT70%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+        %%/IF%%
+        <br />
+        %%IF(FOTOFIJA_PORT120)%%
+            <img src="%%FOTOFIJA_PORT120%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+        %%/IF%%
+        <br />
+        %%(FOTOFIJA_PORT180)%%
+            <img src="%%FOTOFIJA_PORT180%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+        %%/IF%%
+        <br />
+        %%(FOTOFIJA_PORT210)%%
+            <img src="%%FOTOFIJA_PORT210%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+        %%/IF%%
+        <br />
+        %%(FOTOFIJA_PORT270)%%
+            <img src="%%FOTOFIJA_PORT270%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+        %%/IF%%
+        <br />
+        %%(FOTOFIJA_PORT350)%%
+            <img src="%%FOTOFIJA_PORT350%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+        %%/IF%%
+        <br />
+        <!--Pie de Foto de portada -->
+        <b>TXT_piefotoportada:</b> %%TXT_piefotoportada%%      <br />
+        <!-- fotos portada -->
+
+        <!--foto fija -->
+        %%IF(FOTOFIJA_ART210)%%
+            <img src="%%FOTOFIJA_ART210%%" alt="imagen 210" width="%%_WFOTOFIJA_ART210%%" height="%%_HFOTOFIJA_ART210%%" />
+        %%/IF%%
+        <br />
+        %%IF(FOTOFIJA_ART270)%%
+            <img src="%%FOTOFIJA_ART270%%" alt="imagen 270" width="%%_WFOTOFIJA_ART270%%" height="%%_HFOTOFIJA_ART270%%" />
+        %%/IF%%
+        <br />
+        %%IF(FOTOFIJA_ART350)%%
+            <img src="%%FOTOFIJA_ART350%%" alt="imagen 350" width="%%_WFOTOFIJA_ART350%%" height="%%_HFOTOFIJA_ART350%%" />
+        %%/IF%%
+        <br />
+        %%IF(FOTOFIJA_ART550)%%
+            <img src="%%FOTOFIJA_ART550%%" alt="imagen 550" width="%%_WFOTOFIJA_ART550%%" height="%%_HFOTOFIJA_ART550%%" />
+        %%/IF%%
+        <br />
+        <b>TXT_piefotoarticulo:</b> %%TXT_piefotoarticulo%%
+        <!-- Foto de artículo -->
+
+
+        <!-- fotos  para imagen Fade para  efectos  sobre  imagenes -->
+        <!--
+        <object type="application/x-shockwave-flash" data="/prontus_xxx/prontus/prontus_imgfade_8.1.swf" width="%%_WFOTOFIJA_01%%"
+          height="%%_HFOTOFIJA_01%%">
+         <param name="MOVIE" value="/prontus_xxx/prontus/prontus_imgfade_8.1.swf">
+         <param name="PLAY" value="true">
+         <param name="LOOP" value="true">
+         <param name="QUALITY" value="high">
+         <param name="WMODE" value="TRANSPARENT">
+         <param name="FlashVars" value="nolink=1&amp;target=_self&amp;showsecs=5&amp;foto1=% %FOTOFIJA_01% %&amp;foto2=% %FOTOFIJA_02% %&amp;foto3=% %FOTOFIJA_03% %&amp;foto4=% %FOTOFIJA_04% %">
+        </object>
+        -->
+        Fotos Image Fade <br/>
+        <b>FOTOFIJA_01:</b> %%FOTOFIJA_01%%<br />
+        <b>FOTOFIJA_02:</b> %%FOTOFIJA_02%%<br />
+        <b>FOTOFIJA_03:</b> %%FOTOFIJA_03%%<br />
+        <b>FOTOFIJA_04:</b> %%FOTOFIJA_04%%<br />
+        <!-- fotos  para imagen Fade -->
+    <!-- Fotos -->
+
+
+    <!-- Archivos asociados -->
+    <hr/><br /><br />
+    Archivo Asociados <br />
+      	%%IF(ASOCFILE_1)%%
+      	   <a href="%%ASOCFILE_1%%">%%ASOCFILE_1%%</a><br />
+					%%IF(TXT_asociado1)%% <b>asociado1:</b> %%asociado1%% %%/IF%% <br /><br />
+				%%/IF%%
+				%%IF(ASOCFILE_2)%%
+      	   <a href="%%ASOCFILE_2%%">%%ASOCFILE_2%%</a><br />
+					%%IF(TXT_asociado2)%% <b>asociado2:</b> %%asociado2%% %%/IF%% <br /><br />
+				%%/IF%%
+				%%IF(ASOCFILE_3)%%
+      	   <a href="%%ASOCFILE_3%%">%%ASOCFILE_3%%</a><br />
+					%%IF(TXT_asociado3)%% <b>asociado3:</b> %%asociado3%% %%/IF%% <br /><br />
+				%%/IF%%
+				%%IF(ASOCFILE_4)%%
+      	   <a href="%%ASOCFILE_4%%">%%ASOCFILE_4%%</a><br />
+					%%IF(TXT_asociado4)%% <b>asociado4:</b> %%asociado4%% %%/IF%% <br /><br />
+				%%/IF%%
+				%%IF(ASOCFILE_5)%%
+      	   <a href="%%ASOCFILE_5%%">%%ASOCFILE_5%%</a><br />
+					%%IF(TXT_asociado5)%% <b>asociado5:</b> %%asociado5%% %%/IF%% <br /><br />
+				%%/IF%%
+    <!-- Archivos asociados -->
+
+
+    <!--multimedia -->
+    <hr/><br /><br />
+    Multimedia <br />
+        <!--necesita  como reuisito Javascript plugin de video -->
+        <b>%%ASOCFILE_21%%:</b> %%%%ASOCFILE_21%%%%<br />
+        <b>FOTOFIJA_ART1000:</b> %%FOTOFIJA_ART1000%%<br />
+        <b>asociado21:</b> %%asociado21%%<br />
+        
+        <script type="text/javascript">
+          //playShow('%%MULTIMEDIA_FLV1%%','','%%FOTOFIJA_PREVIEW%%');
+        </script><br/>
+        
+          %%IF(TXT_pieflv)%% <b>TXT_pieflv:</b> %%TXT_pieflv%% %%/IF%%
+        %%/IF%%
+        <br />
+        %%IF(SWF_3)%%
+          <!-- Flash Tamano Fijo 320 px -->
+          <script type="text/javascript">
+            insert_flash('%%SWF_3%%','320','240');
+          </script>
+          %%IF(TXT_piemm)%% <b>TXT_piemm:</b> %%TXT_piemm%% %%/IF%%
+        %%/IF%%
+
+        %%NIF(SWF_3)%%
+          %%IF(SWF_4)%%
+            <!-- Flash Tamano variable -->
+            <script type="text/javascript">
+              insert_flash('%%SWF_4%%','%%WSWF_4%%','%%HSWF_4%%');
+            </script>
+            %%IF(TXT_pieff)%% <b>TXT_piemm:</b> %%TXT_piemm%% %%/IF%%
+          %%/IF%%
+        %%/NIF%%
+    <!--multimedia -->
+
+
+    <!-- usando elementos del fid  para  la logica  en la plantilla -->
+        %%IF(_ALTA)%%
+            <!--uso de la marca % %_ALTA% % -->
+        %%/IF%%
+        <br />
+        %%IF(CHK_publicarfecha)%%
+            <!--uso de la marca % %CHK_publicarfecha% %   %%_FECHAELONG%% -->
+        %%/IF%%
+        <br />
+        %%IF(CHK_hora)%%
+            <!--uso de la marca % %CHK_hora% %   %%_HORAP%% -->
+        %%/IF%%
+        <br />
+    <!-- usando elementos del fid  para  la logica  en la plantilla -->
+</div>
+</body>
+</html>

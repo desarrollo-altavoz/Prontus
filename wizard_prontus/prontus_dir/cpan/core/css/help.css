@@ -1,0 +1,31 @@
+.slider {width:960px; height:675px; overflow:hidden;}
+.slider ul, .slider li {margin:0; padding:0; list-style:none;}
+.slider li {width:960px; height:675px; overflow:hidden;}
+
+.ayuda_botones_nav {margin:0 auto 10px; width: 300px; float: right;}
+.ayuda_botones_nav #controls {list-style:none; margin:0; padding:0;}
+.ayuda_botones_nav #controls li {list-style:none; float:left; margin:2px 3px; display:block;}
+.ayuda_botones_nav #controls li a {text-decoration:none; display:block; padding:3px 8px; background-color:#048; color:#fff;}
+.ayuda_botones_nav .current a {background-color:#CCCCCC !important;color:#004488 !important;}
+
+#ayuda_titulo_flecha {float: left;font-size:15px;margin-left:8px;margin-top:7px;}
+#ayuda_titulo {color:#0097FB;float:left;font-size:14px;font-weight:bold;margin-left:8px;margin-top:9px;}
+
+.col960.helpContent .auxi {padding:15px 0px;}
+.col960.helpContent .top-titulo960 {margin:0px 0px 10px;}
+.col960.helpContent ul li {clear:none;}
+
+.col960.helpContent .auxi .manuales {margin:20px 80px 150px;}
+.col960.helpContent .auxi .manuales .boton-generico {margin-top:30px; width:200px;}
+.col960.helpContent .auxi .manuales .ayuda {font-size:11px; color:#aaa; margin:4px 0px 0px 10px}
+.col960.helpContent .auxi .manuales .mensajes {margin-left:50px; text-align:left;}
+.col960.helpContent .auxi .manuales td {vertical-align:top;}
+
+.col960.helpContent .auxi .contacto .mensajes {text-align:left; margin:15px;}
+.col960.helpContent .auxi .contacto .tableform {width:880px; margin-left:20px; float: left;}
+.col960.helpContent .auxi .contacto .tableform td {padding:4px;}
+.col960.helpContent .auxi .contacto .fieldform {background-color: #FFFFFF; border: 1px solid #CCCCCC; color: #666666; font-size: 12px; font-weight: normal; padding:8px;}
+.col960.helpContent .auxi .contacto .field1 {width:640px;}
+.col960.helpContent .auxi .contacto .field2 {width:180px;}
+.col960.helpContent .auxi .contacto .right {text-align:right;}
+.col960.helpContent .auxi .contacto .botones {margin-left:20px;}

@@ -1,0 +1,46 @@
+/* CSS Document */
+body { margin:0px; background: #F5F5F5; font-family:Tahoma, Arial, Helvetica, sans-serif; }
+a {text-decoration:underline; font-size:11px; color:#b4d6ee;}
+a:hover {color:#cc0000;}
+h1,h2,p { text-align:left; color: white;}
+h3 { width:100%; font-size:13px; font-weight:bold; color:#ffffff; margin:0; padding:5px 0 0 5px; text-align:left;}
+#contentPop h3 { width:100%; background:url(../imag/rot385_azul.jpg) no-repeat top left; font-size:13px; font-weight:bold; color:#ffffff; margin:0; padding:5px 0 0 5px; text-align:left;}
+h3 p {padding:0 5px 5px 5px; margin:0; color:#ffffff;}
+p { font-size:11px; color:#b4d6ee;}
+form { margin:0px;}
+#main { border: 0px solid #DEDEDE; margin: 15px auto 15px auto; width:700px; background-color:#0576c6;}
+#mainPop { border: 0px solid #0099CC; margin: 10px auto 10px auto; width:400px; background-color:#0576C6;}
+#content { margin: 15px auto 0 auto; width:650px;padding-bottom:25px;}
+#contentPop { margin: 15px 0 0 0; width:380px;}
+#contentPop p { font-size:11px; color:#ffffff; text-align:justify;}
+#contentPop h3 p {font-size:12px; padding:0 5px 5px 5px; margin:0; color:#ffffff;}
+#tab { font-size:12px; margin:20px auto 15px auto; color:#ffffff;}
+#tab .nota { font-size:11px; color:#ffffff;}
+#table01 { width:620px; padding:0; margin: 0 auto 15px auto; background-color:#0576c6;}
+#table01 #tab{width:93%; border:0; padding:7px;}
+
+.separa {display:table; width:620px; margin:5px auto 0 auto; clear:both; text-align:left;}
+.separa p { font-size:12px; color:#ffffff; margin:0 0 10px 0;}
+.separa h1{ margin:0 0 5px 0;}
+.cel14 { font-size:40px; color:#ffffff;}
+.boto { background:url(../imag/back_boto.jpg) repeat-x; border:1px solid #4d9cd4; color:#FFFFFF; font-size:20px; font-weight:normal; padding:3px; cursor:pointer;}
+.campo {font-family:Tahoma, Arial, Helvetica, sans-serif; font-size:11px; color:#000000; border: 1px solid #cccccc;  background-color:#FFFFFF; padding:3px;}
+.modelo {width:45%; float:left; margin:0 0 10px 10px; font-size:12px; color:#003366;}
+.modelo a { font-size:12px; color:#ffffff; text-decoration:none;}
+.modelo a:hover { color:#CC0000; text-decoration:none;}
+.check {font-family:Tahoma, Arial, Helvetica, sans-serif; font-size:11px;}
+#table02 { display:table; width:580px; padding:0 15px 0 15px;  border: 0px solid #259CCF; margin:0 auto 15px auto; background-color:#0576c6;}
+.TEXTsubtitulo {font-weight: bold;}
+
+
+/* Wizard  CPN */
+.help{float:right;}
+.help img{border:0; width:61px; height:19px;}
+.subtitle{height:20px; color:ffffff;}
+.btn_opc{margin:15px auto 15px auto; width:80%; border:0; padding:0;}
+/* MIGAS DE PAN */
+#datos{width:640px; height:50px; border-bottom: 1px solid #3399cc;}
+#datos img{float:left;margin:2px 10px 0 0;}
+.pasos{width:190px; height:30px;float:left;}
+.pasos h1{width:100px;float: left;font-size:14px; color:#ffffff; font-weight:bold;}
+.pasos h2{width:100px;float: left;font-size:14px; color:#99ccff; font-weight:bold;margin:0;}	

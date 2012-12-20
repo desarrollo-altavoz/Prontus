@@ -1,0 +1,59 @@
+                  <!--TITULO PRINCIPAL-->
+                  <div class="aleft">
+                    <div class="numero-id">#%%_ART_AUTOINC%%</div>
+                    <div class="aleft"><input type="text" name="_txt_titular"  id="_txt_titular" class="fieldform-top" value="%%_txt_titular%%" onclick="if($(this).val()=='Sin t&iacute;tulo') {$(this).val('');}" /></div>
+                    <div class="numero-id hide-new-artic">
+                      <a href="#" id="link_info_artic" title="Información del Artículo">
+                        <img src="/%%_prontus_id%%/cpan/core/imag/boto/inf_of.png" width="21" height="21" alt="Ver más información" title="Ver más información" class="cambia-boton" />
+                      </a>
+                    </div>
+                    <div class="numero-id hide-new-artic">
+                      <div class="copiar" id="copy-artic-ext" style="margin-left:4px;">
+                        <div id="copy-artic-int" class="copiar-url"></div>
+                      </div>
+                      <a href="%%_fileurl%%" id="copy-artic-url"></a>
+                    </div>
+                  </div>
+                  <!-- / TITULO PRINCIPAL-->
+
+<div class="info_artic">
+  <div id="info_artic">
+    <div class="col685">
+      <div class="rotulo">
+        <div class="titulo">Información del Artículo</div>
+      </div>
+      <div class="box-gris">
+        <div class="box-auxi">
+          <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform">
+
+            <tr>
+              <td class="nombre">Timestamp:</td><td class="campo">%%_TS%%</td>
+            </tr>
+            <tr>
+              <td class="nombre">Creación del Art&iacute;culo:</td><td class="campo">%%_FECHACLONG%% - %%_horac%%</td>
+            </tr>
+            <tr>
+              <td class="nombre">Última Modificación:</td><td class="campo">%%_fechamlong%% - %%_horam%%</td>
+            </tr>
+            <tr>
+              <td class="nombre">Peso del HTML del Art&iacute;culo:</td><td class="campo">%%_size_html%%</td>
+            </tr>
+            <tr>
+              <td class="nombre">Peso Total del Art&iacute;culo:</td><td class="campo">%%_size_total%%</td>
+            </tr>
+            <tr>
+              <td class="nombre">Path del Art&iacute;culo:</td><td class="campo">%%_file%%</td>
+            </tr>
+            <tr>
+              <td class="nombre">Friendly URL:</td><td class="campo">%%_fileurlinfo%%</td>
+            </tr>
+            <!--tr>
+              <td class="nombre">Este artículo está publicado en:</td><td class="campo">%%_filef%%</td>
+            </tr-->
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="tooltip-copiar">&nbsp;</div>

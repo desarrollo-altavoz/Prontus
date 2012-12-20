@@ -1,0 +1,128 @@
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6580624  11908040  36% /
+/dev/sda5                          ext4     287442460 110054856 162998920  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  33006384  19422416  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9539492  21917788  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11382008   9589512  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532806 227912530  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201985262  78306046  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532806 227912530  46% /home/canopus/Servers/lab6
+]
+revisando[/var/www/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[11.2.52] at Update.pm line 261.
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6618584  11870080  36% /
+/dev/sda5                          ext4     287442460 110054880 162998896  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  33006392  19422408  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9539492  21917788  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11382008   9589512  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532806 227912530  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201985262  78306046  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532806 227912530  46% /home/canopus/Servers/lab6
+]
+revisando[/var/www/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[no_updates] at Update.pm line 261.
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6609820  11878844  36% /
+/dev/sda5                          ext4     287442460 110055808 162997968  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  33016176  19412624  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9539548  21917732  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11382068   9589452  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532816 227912520  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201985266  78306042  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532816 227912520  46% /home/canopus/Servers/lab6
+]
+revisando[/var/www/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[no_updates] at Update.pm line 261.
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6609036  11879628  36% /
+/dev/sda5                          ext4     287442460 110043636 163010140  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  32977204  19451596  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9531940  21925340  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11386264   9585256  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201987014  78304294  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab6
+]
+revisando[/var/www/prontus_development/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[no_updates] at Update.pm line 261.
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6609076  11879588  36% /
+/dev/sda5                          ext4     287442460 110043796 163009980  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  32977208  19451592  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9531940  21925340  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11386264   9585256  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201987014  78304294  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab6
+]
+revisando[/var/www/prontus_development/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[no_updates] at Update.pm line 261.
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6609024  11879640  36% /
+/dev/sda5                          ext4     287442460 110043816 163009960  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  32977208  19451592  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9531940  21925340  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11386264   9585256  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201987014  78304294  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab6
+]
+revisando[/var/www/prontus_development/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[no_updates] at Update.pm line 261.
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6609156  11879508  36% /
+/dev/sda5                          ext4     287442460 110043808 163009968  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  32977208  19451592  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9531940  21925340  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11386264   9585256  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201987014  78304294  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab6
+]
+revisando[/var/www/prontus_development/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[no_updates] at Update.pm line 261.
+procesa_quota_vps[Bad df: Filesystem     Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1      ext4      19465224   6610760  11877904  36% /
+/dev/sda5      ext4     287442460 110033760 163020016  41% /home
+]
+revisando[/var/www/prontus_development/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[no_updates] at Update.pm line 261.
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6579296  11909368  36% /
+/dev/sda5                          ext4     287442460 110106460 162947316  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 222444348 430310380  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  33554324  18874476  64% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9536924  21920356  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11408924   9562596  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532300 227913036  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 202016950  78274358  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532300 227913036  46% /home/canopus/Servers/lab6
+]
+revisando[/var/www/prontus_development/cesarcillo/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = 'cgi-cpn'
+found [cesarcillo]
+core_dirs[cesarcillo]
+status_upd[no_updates] at Update.pm line 261.

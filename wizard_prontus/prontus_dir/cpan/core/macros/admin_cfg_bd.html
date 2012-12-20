@@ -1,0 +1,87 @@
+
+                        <div class="listado">
+
+                            <div style="height:37px;">
+                                <p style="float: left;"><b>Configuración de Base de Datos</b>: %%_prontus_id%%-bd.cfg</p>
+                                <div class="botones">
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                            <span>Cancelar</span>
+                                        </a>
+                                    </div>
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="Cfgedit.guardaCfg('bd'); return false;" href="#" class="button" title="Guardar">
+                                            <span>Guardar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                    <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+                                </div>
+                            </div>
+
+                            <form name="frmCFG-BD" id="frmCFG-BD" method="post">
+                                <table class="tableform" width="100%">
+                                    <input type="hidden" name="_cfg" value="bd"/>
+                                    <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+                                    <input type="hidden" name="_tab" value="cfg-tab2" />
+                                    <tr class="head">
+                                        <td>Variable</td>
+                                        <td>Valor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            NOM_BD<br>
+                                            <span class="ayuda">Nombre de la base de datos.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="NOM_BD" value="%%NOM_BD%%" class="fieldform"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            USER_BD<br>
+                                            <span class="ayuda">Nombre del usuario de la base de datos.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="USER_BD" value="%%USER_BD%%" class="fieldform"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            PWD_BD<br>
+                                            <span class="ayuda">Contraseña de la base de datos.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="PWD_BD" value="%%PWD_BD%%" class="fieldform"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            SERVER_BD<br>
+                                            <span class="ayuda">Nombre o IP del servidor donde se encuentra instalada la base de datos.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="SERVER_BD" value="%%SERVER_BD%%" class="fieldform"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <div class="botones">
+                                <div class="boton-gris3 aright">
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                        <span>Cancelar</span>
+                                    </a>
+                                </div>
+                                <div class="boton-gris3 aright">
+                                    <a onclick="Cfgedit.guardaCfg('bd'); return false;" href="#" class="button" title="Guardar">
+                                        <span>Guardar</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+                            </div>
+                        </div> <!--/listado-->
+                    

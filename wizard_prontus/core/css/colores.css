@@ -1,0 +1,34 @@
+.B { 
+            font-weight: bold;
+          }
+
+.negritas { 
+            font-weight: bold;
+          }
+
+
+.rojo /* texto rojo */
+            { 
+              color: #990000;
+            }
+.azul /* texto azul */
+            {               
+              color: #003366;
+            }
+.negro /* texto negro */ 
+            { 
+              color: #000000;
+            }
+
+.cafe /* texto cafe */ 
+            { 
+              color: #663333;
+            }
+.gris /* texto gris */ 
+            { 
+              color: #666666;
+            }
+.verdana {
+          font-family: Verdana, Arial, Helvetica;
+          };
+            

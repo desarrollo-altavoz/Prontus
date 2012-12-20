@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  %%NIF(_ALTA)%%
+  <meta name="ROBOTS" content="NOINDEX" />
+  %%/NIF%%
+  <title>Prontus CMS</title>
+  <script type="text/javascript" src="/prontus_test_cpn/js-local/Utiles.class.js"></script>
+</head>
+<body>
+  <!-- Utilizacion de los javascript -->
+  <div>    
+    Para utilizar los nuevos  javascrit con estructura POO:<br />
+     - si utiliza un método de la clase, debe instanciar de la manera &lt;nombre_de_la_clase&gt;.&lt;nombre_del_metodo&gt;(&lt;parametros&gt;)<br/>
+     - si utiliza un atributo de la clase, debe instan ciar de la manera  &lt;nombre_de_la_clase&gt;.&lt;nombre_del_atributo&gt;<br/>
+     Ejemplo:<br/>
+    <a href="#" onclick="Utiles.imprimirArticulo();">Imprimir|</a>
+    <a href="#" onclick="Utiles.subWin('http://www.altavoz.net','Pop Altavoz',400,300,30,30);">Pop Altavoz|</a><br /><hr />
+  </div>
+    <!-- Cabecera -->
+    <div>
+      <h2>Cabecera</h2>  
+      <b>_FECHAC:</b> %%_FECHAC%%             <br />
+      <b>_FECHAPLONG:</b> %%_FECHAPLONG%%         <br />
+      <b>_FECHACSHRT:</b> %%_FECHACSHRT%%         <br />
+      <b>_FECHAP:</b> %%_FECHAP%%             <br />
+      <b>_HORAP:</b> %%_HORAP%%              <br />
+      <b>_FECHAE:</b> %%_FECHAE%%             <br />
+      <b>_FECHAELONG:</b> %%_FECHAELONG%%         <br />
+      <b>_FECHAESHRT:</b> %%_FECHAESHRT%%         <br />
+      <b>_HORAE:</b> %%_HORAE%%              <br />
+      <b>_NOM_SECCION1:</b> %%_NOM_SECCION1%%       <br />
+      <b>_NOM_TEMA1:</b> %%_NOM_TEMA1%%          <br />
+      <b>_NOM_SUBTEMA1:</b> %%_NOM_SUBTEMA1%%       <br />
+      <b>_SECCION1:</b> %%_SECCION1%%           <br />
+      <b>_TEMA1:</b> %%_TEMA1%%              <br />
+      <b>_SUBTEMA1:</b> %%_SUBTEMA1%%           <br />
+      <b>_TXT_TITULAR:</b> %%_TXT_TITULAR%%        <br /> 
+      <b>_TXT_bajada:</b> %%_TXT_bajada%%        <br /> 
+      <b>link:</b> %%link%%        <br /> 
+      <b>CMB_target:</b> %%CMB_target%%        <br /> 
+      <b>FOTOFIJA_PORT450:</b> %%FOTOFIJA_PORT450%%        <br /> 
+      %%IF(FOTOFIJA_PORT450)%%
+        <img src="%%FOTOFIJA_PORT450%%  " alt="" border="0" />
+      %%/IF%%
+      <!-- Flash Tamano variable -->
+        <b>SWF_4:</b> %%SWF_4%%<br />
+        <b>WSWF_4:</b> %%WSWF_4%%<br />
+        <b>HSWF_4:</b> %%SWF_4%%<br />
+        <script type="text/javascript">
+          //insert_flash('%%SWF_4%%','%%WSWF_4%%','%%HSWF_4%%');
+        </script>
+        <!--multimedia -->
+      <hr/>
+    </div>
+    <!-- /Cabecera -->
+</body>
+</html>

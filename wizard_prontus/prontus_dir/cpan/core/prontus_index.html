@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Prontus CMS - Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" src="../dir_cgi.js"></script>
+    <script type="text/javascript" src="js-local/Login.class.js"></script>
+    <script type="text/javascript" src="js-local/ProntusDetect.class.js"></script>
+    <script type="text/javascript" src="js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="js-local/update.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="css/login.css" />
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#_path_conf').val(ProntusDetect.getPathConf());
+        Login.init(DIR_CGI_CPAN);
+        Login.checkSession();
+      });
+    </script>
+    <script type="text/javascript">
+    <!--
+    var textmsg = "Su navegador (%s) no es 100% compatible con <b>Prontus<\/b>. Revise <a target=\"_blank\" href=\"http://develop.prontus.cl/prontus_operacion_v11_2/site/artic/20101130/pags/20101130125152.html\">acá<\/a> los navegadores soportados para su versión de Prontus.";
+    var $buoop = {vs:{i:7,f:7,s:5,n:9}, reminder: 0, text: textmsg};
+    $buoop.ol = window.onload;
+    window.onload = function() {
+        try {if ($buoop.ol) $buoop.ol();}catch (e) {}
+        var e = document.createElement("script");
+        e.setAttribute("type", "text/javascript");
+        e.setAttribute("src", "js-local/update.js");
+        document.body.appendChild(e);
+    }
+    // -->
+    </script>
+  </head>
+  <body class="bodysite">
+    <div id="main">
+      <form method="post" name="FrmLogin" action="#" id="FrmLogin" autocomplete="on">
+        <input type="hidden" name="_path_conf" id="_path_conf" value="" />
+        <div class="box-login">
+          <div class="logo">
+            <img src="imag/auxi/logo_login.jpg" width="225" height="60" border="0" alt="Prontus" title="Prontus" />
+          </div>
+          <div class="auxi" id="loginbox" style="display: none;">
+            <p>Usuario:<br/>
+              <input type="text" name="_usr" class="fieldform" maxlength="30" value=""/>
+            </p>
+            <p>Contraseña:<br/>
+              <input type="password" name="_psw" class="fieldform" maxlength="30" value=""/>
+            </p>
+            <div class="loading-action"><img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
+            <a onclick="Login.doLogin(); return false;" href="#" class="button boton-ingresar">
+              <img src="imag/boto/ing_of.png" onmouseover="Login.chgImgSrc(this, 'imag/boto/ing_on.png');" onmouseout="Login.chgImgSrc(this, 'imag/boto/ing_of.png');" alt="" />
+            </a>
+            <div style="overflow:hidden; height:1px; width:1px;">
+              <input type="submit" name="_sbmit" id="_sbmit" class="fieldform" value="Enviar" /></div>
+
+          </div>
+          <div class="auxi" id="checkSession">
+            <div class="checkSession">
+                Verificando si existe una sesión activa.<br/>
+                Espere un momento...
+                <br/>
+                <img src="imag/loading_bar.gif" width="128" height="15" alt="loading" />
+            </div>
+          </div>
+          <div class="celeste">
+            <a href="#" id="olvide_clave">Olvidé mi contraseña</a>
+          </div>
+        </div> <!-- box-login -->
+      </form>
+    </div>
+  </body>
+</html>

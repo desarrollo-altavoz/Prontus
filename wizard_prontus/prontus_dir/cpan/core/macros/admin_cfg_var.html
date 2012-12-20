@@ -1,0 +1,321 @@
+
+                        <div class="listado">
+
+                            <div style="height:37px;">
+                                <p style="float: left;"><b>Configuración global</b>: %%_prontus_id%%-var.cfg</p>
+                                <div class="botones">
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                            <span>Cancelar</span>
+                                        </a>
+                                    </div>
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="Cfgedit.guardaCfg('var'); return false;" href="#" class="button" title="Guardar">
+                                            <span>Guardar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                    <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+                                </div>
+                            </div>
+                            <form name="frmCFG-VAR" id="frmCFG-VAR" method="post">
+                                <table class="tableform" width="100%">
+                                    <input type="hidden" name="_cfg" value="var"/>
+                                    <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+                                    <input type="hidden" name="_tab" value="cfg-tab8" />
+                                    <input type="hidden" name="MULTIVISTA" value="" />
+                                    <input type="hidden" name="VARNISH_SERVER_NAME" value="" />
+                                    <tr class="head">
+                                        <td>Variable</td>
+                                        <td>Valor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            ARTIC_ACTUALIZA_PORTS<br>
+                                            <span class="ayuda">Habilita o deshabilita la actualización de todas las portadas donde está publicado un artículo, al guardarlo.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="ARTIC_ACTUALIZA_PORTS" id="ARTIC_ACTUALIZA_PORTS_SI" value="SI"%%ARTIC_ACTUALIZA_PORTS_SI%%/> <label for="ARTIC_ACTUALIZA_PORTS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="ARTIC_ACTUALIZA_PORTS" id="ARTIC_ACTUALIZA_PORTS_NO" value="NO"%%ARTIC_ACTUALIZA_PORTS_NO%%/> <label for="ARTIC_ACTUALIZA_PORTS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            ACTUALIZACIONES<br>
+                                            <span class="ayuda">Permite habilitar o deshabilitar las actualizaciones automáticas.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="ACTUALIZACIONES" id="ACTUALIZACIONES_SI" value="SI"%%ACTUALIZACIONES_SI%%/> <label for="ACTUALIZACIONES_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="ACTUALIZACIONES" id="ACTUALIZACIONES_NO" value="NO"%%ACTUALIZACIONES_NO%%/> <label for="ACTUALIZACIONES_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            MAX_XCODING<br>
+                                            <span class="ayuda">Tamaño máximo (en MB) para la transcodificación de videos.</span>
+                                        </td>
+                                        <td><input type="text" name="MAX_XCODING" class="fieldform" value="%%MAX_XCODING%%"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            DIR_FFMPEG<br>
+                                            <span class="ayuda">Indica la ruta a la carpeta donde se encuentra el ejecutable de ffmpeg.</span>
+                                        </td>
+                                        <td><input type="text" name="DIR_FFMPEG" class="fieldform" value="%%DIR_FFMPEG%%"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            PUBLIC_SERVER_NAME<br>
+                                            <span class="ayuda">Se debe indicar el nombre del servidor, necesario para la ejecución de los crons.</span>
+                                        </td>
+                                        <td><input type="text" name="PUBLIC_SERVER_NAME" class="fieldform" value="%%PUBLIC_SERVER_NAME%%"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            SERVER_SMTP<br>
+                                            <span class="ayuda">Indica el servidor SMTP a utilizar en el sitio Prontus.</span>
+                                        </td>
+                                        <td><input type="text" name="SERVER_SMTP" class="fieldform" value="%%SERVER_SMTP%%"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            CONTROL_FECHA<br>
+                                            <span class="ayuda">Activa o desactiva la opción para controlar la fecha y hora de publicación y de expiración de artículos, lo cual permite que las portadas se actualicen según estos valores al ser guardadas manualmente o mediante un proceso cron.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="CONTROL_FECHA" id="CONTROL_FECHA_SI" value="SI"%%CONTROL_FECHA_SI%%/> <label for="CONTROL_FECHA_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="CONTROL_FECHA" id="CONTROL_FECHA_NO" value="NO"%%CONTROL_FECHA_NO%%/> <label for="CONTROL_FECHA_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            CONTROLAR_ALTA_ARTICULOS<br>
+                                            <span class="ayuda">Activa o desactiva el control de la disponibilidad de un artículo para ser incluido en portadas, artículos relacionados, portadas taxonómicas y buscador.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="CONTROLAR_ALTA_ARTICULOS" id="CONTROLAR_ALTA_ARTICULOS_SI" value="SI"%%CONTROLAR_ALTA_ARTICULOS_SI%%/> <label for="CONTROLAR_ALTA_ARTICULOS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="CONTROLAR_ALTA_ARTICULOS" id="CONTROLAR_ALTA_ARTICULOS_NO" value="NO"%%CONTROLAR_ALTA_ARTICULOS_NO%%/> <label for="CONTROLAR_ALTA_ARTICULOS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            ABRIR_FIDS_EN_POP<br>
+                                            <span class="ayuda">Define si los artículos se abrirán en una popup como en el sistema antiguo.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="ABRIR_FIDS_EN_POP" id="ABRIR_FIDS_EN_POP_SI" value="SI"%%ABRIR_FIDS_EN_POP_SI%%/> <label for="ABRIR_FIDS_EN_POP_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="ABRIR_FIDS_EN_POP" id="ABRIR_FIDS_EN_POP_NO" value="NO"%%ABRIR_FIDS_EN_POP_NO%%/> <label for="ABRIR_FIDS_EN_POP_NO">NO</label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            COMENTARIOS<br>
+                                            <span class="ayuda">Habilita o deshabilita el sistema de comentarios.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="COMENTARIOS" id="COMENTARIOS_SI" value="SI"%%COMENTARIOS_SI%%/> <label for="COMENTARIOS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="COMENTARIOS" id="COMENTARIOS_NO" value="NO"%%COMENTARIOS_NO%%/> <label for="COMENTARIOS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            VTXT_PASTE_NEWLINES_AS_P<br>
+                                            <span class="ayuda">Habilita o deshabilita la transformación de saltos de linea a &lt;p&gt;.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="VTXT_PASTE_NEWLINES_AS_P" id="VTXT_PASTE_NEWLINES_AS_P_SI" value="SI"%%VTXT_PASTE_NEWLINES_AS_P_SI%%/> <label for="VTXT_PASTE_NEWLINES_AS_P_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="VTXT_PASTE_NEWLINES_AS_P" id="VTXT_PASTE_NEWLINES_AS_P_NO" value="NO"%%VTXT_PASTE_NEWLINES_AS_P_NO%%/> <label for="VTXT_PASTE_NEWLINES_AS_P_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FRIENDLY_URLS<br>
+                                            <span class="ayuda">Habilita o deshabilita las url amigables.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_SI" value="SI"%%FRIENDLY_URLS_SI%%/> <label for="FRIENDLY_URLS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_NO" value="NO"%%FRIENDLY_URLS_NO%%/> <label for="FRIENDLY_URLS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FRIENDLY_URLS_VERSION<br>
+                                            <span class="ayuda">Especifica la versión de las url amigables que se utilizará.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V1" value="1"%%FRIENDLY_URLS_V1%%/> <label for="FRIENDLY_URLS_V1">Versión 1</label>
+                                            <br/>
+                                            <span class="help">De la forma: /titular/prontus_id/aaaa-mm-dd/hhnnss.ext</span>
+                                            <br/>
+                                            <br/>
+                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V2" value="2"%%FRIENDLY_URLS_V2%%/> <label for="FRIENDLY_URLS_V2">Versión 2</label>
+                                            <br/>
+                                            <span class="help">De la forma: /prontus_id/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.ext. En caso de que el artículo no tenga sección, tema o subtema, se omiten y no se colocan en la url.</span>
+                                            <br/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            MULTIVISTAS<br>
+                                            <span class="ayuda">Define las vistas que tendrá Prontus, además de la vista por defecto (vista principal).</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%" id="multivista_listado">
+                                                <tr class="head">
+                                                    <td>Nombre</td>
+                                                    <td align="center">Quitar</td>
+                                                </tr>
+                                                <!--loop_multivista-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_MULTIVISTA[]" value="%%mv_valor%%" style="margin-bottom: 1px; width: 125px;" class="fieldform" id="mv_%%num%%"/></td>
+                                                    <td align="center"><input type="checkbox" name="QUITAR_MV[]" value="%%mv_valor%%" onclick="Cfgedit.quitarMV(this, '%%num%%');"/></td>
+                                                </tr>
+                                                <!--/loop_multivista-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_MULTIVISTA[]" value="" style="margin-bottom: 1px; width: 125px;" class="fieldform"/></td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                            <div class="boton-gris3 aleft">
+                                                <a onclick="Cfgedit.agregarMv(); return false;" href="#" class="button">
+                                                    <span>+ Agregar</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            UPLOADS_PERMITIDOS<br>
+                                            <span class="ayuda">Especifica que tipo de documentos (extensiones) estarán permitidas al momento de subir archivos en los fids.</span>
+                                        </td>
+                                        <td>
+                                            %%UPLOADS_PERMITIDOS%%
+                                            <div style="clear: both; height: 2px;"></div>
+                                            <div class="boton-gris3 aleft">
+                                                <a onclick="Cfgedit.mostrarPermitidos(); return false;" href="#" class="button">
+                                                    <span>Cambiar</span>
+                                                </a>
+                                            </div>
+                                            <div style="clear: both; height: 2px;"></div>
+                                            <input type="text" name="UPLOADS_PERMITIDOS" class="fieldform" value="%%UPLOADS_PERMITIDOS%%" style="display: none;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            VARNISH_SERVER_NAME<br>
+                                            <span class="ayuda">Define los servidores de <a target="_blank" href="http://en.wikipedia.org/wiki/Varnish_%28software%29">Varnish Cache</a>.</span>
+                                        </td>
+                                        <td>
+                                            <div id="varnish_list">
+                                                <!--loop_varnish-->
+                                                <input type="text" name="INPUT_VARNISH_SERVER_NAME[]" value="%%varnish_valor%%" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+                                                <!--/loop_varnish-->
+                                                <input type="text" name="INPUT_VARNISH_SERVER_NAME[]" value="" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+                                            </div>
+                                            <div class="boton-gris3 aleft">
+                                                <a onclick="Cfgedit.agregarVarnish(); return false;" href="#" class="button">
+                                                    <span>+ Agregar</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            VTXT_DTD<br>
+                                            <span class="ayuda">Permite definir el uso de xhtml 1.0 strict o transitional para el código generado en el VTXT.</span>
+                                        </td>
+                                        <td>
+                                            <select name="VTXT_DTD">
+                                                <option value="">- Seleccione -</option>
+                                                <option value="STRICT"%%VTXT_DTD_S%%>STRICT</option>
+                                                <option value="TRANSITIONAL"%%VTXT_DTD_T%%>TRANSITIONAL</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            POST_PROCESO de borrado de artículos<br>
+                                            <span class="ayuda">
+                                                El proceso o script que indique, se ejecutará cada vez que se borre un artículo.<br/>
+                                                Para que sea un script válido, debe ubicarse en el mismo dir. de CGIs de Prontus, o a lo más, un nivel hacia arriba.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="POST_PROCESO" value="%%POST_PROCESO%%" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            SCRIPT_QUOTA<br>
+                                            <span class="ayuda">
+                                                Script para el cálculo de quota. Puede ser PHP o Perl y será invocado desde la raíz de sitio. <br/>
+                                                Ejemplo: /cgi-cpn/mi_script_quota.pl</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="SCRIPT_QUOTA" value="%%SCRIPT_QUOTA%%" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FOTO_MAX_PIXEL<br>
+                                            <span class="ayuda">
+                                                Se indica el tamaño máximo en pixels que tendrán las fotos al ser subidas al banco de imágenes. De tal forma que si una foto supera el máximo,
+                                                esta será redimencionada para estar por debajo del limite establecido, por ejemplo: 1920x1080<br/><br/>
+                                                Si se deja en blanco, no habrá límite.
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="FOTO_MAX_PIXEL" value="%%FOTO_MAX_PIXEL%%" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            BLOQUEO_EDICION<br>
+                                            <span class="ayuda">Especifica la modalidad de bloqueo de edición de artículos y portadas.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V0" value="0"%%BLOQUEO_EDICION_V0%%/> <label for="BLOQUEO_EDICION_V0">Modalidad 1</label>
+                                            <br/>
+                                            <span class="help">Solo advertencia.</span>
+                                            <br/>
+                                            <br/>
+                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V1" value="1"%%BLOQUEO_EDICION_V1%%/> <label for="BLOQUEO_EDICION_V1">Modalidad 2</label>
+                                            <br/>
+                                            <span class="help">Advertencia con prompt e ingreso de número aleatorio de 4 dígitos.</span>
+                                            <br/>
+                                            <br/>
+                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V2" value="2"%%BLOQUEO_EDICION_V2%%/> <label for="BLOQUEO_EDICION_V2">Modalidad 3</label>
+                                            <br/>
+                                            <span class="help">Bloqueo total. El artículo solo será editable por la primera persona que lo abrió.</span>
+                                            <br/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <div class="botones">
+                                <div class="boton-gris3 aright">
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                        <span>Cancelar</span>
+                                    </a>
+                                </div>
+                                <div class="boton-gris3 aright">
+                                    <a onclick="Cfgedit.guardaCfg('var'); return false;" href="#" class="button" title="Guardar">
+                                        <span>Guardar</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+                            </div>
+                        </div> <!--/listado-->
+                    

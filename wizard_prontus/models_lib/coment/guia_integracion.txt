@@ -1,0 +1,21 @@
+
+1.- Copiar esta carpeta coment/ dentro del prontus de instalacion.
+    Elimine el archivo guia_integracion.txt
+
+2.- Copie las macros (sólo si no existen en el sitio de destino):
+    plantillas/artic/fecha/macros/macro_coment.html
+    plantillas/artic/fecha/macros/macro_coment_total.html
+    plantillas/edic/nroedic/macros/macro_coment_total.html
+
+3.- Asegurarse que en el Administrador de Configuración, en la sección de
+    comentarios, se encuentra un nombre de la instancia de comentarios.
+
+4.- En el o los FID que se desean habilitar para comentarios, colocar la
+    siguiente macro debajo de la macro _banco_imagenes.
+    %%MACRO(_general_comentarios.html)%%
+
+5.- Finalmente, en el artículo, incluir la macro: macro_coment.html donde se
+    desee colocar los comentarios.
+    Si se desea usar el contador de comentarios totales de una noticias, usar
+    la macro_coment_total.html, disponible tanto para artículos como portadas.
+

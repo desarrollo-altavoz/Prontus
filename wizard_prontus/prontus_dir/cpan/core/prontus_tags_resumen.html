@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Regenerar Tabla de Artículos</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/tax.css" />
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Opciones.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Botones.class.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        Admin.init('%%_prontus_id%%');
+      });
+    </script>
+  </head>
+  <body class="bodysite">
+    <div class="col685">
+      <!--error-->
+      <div class="rotulo">
+        <div class="titulo">&nbsp; &nbsp;Error</div>
+      </div>
+      <div class="box-gris">
+        <div class="box-auxi">
+          <div class="msg-result">
+            %%_msg%%
+          </div>
+          <br/><br/>
+          <div class="boton-generico boton-loading">
+            <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>Cerrar</span></a>
+          </div>
+        </div>
+      </div>
+      <!--/error-->
+      <!--content-->
+      <div class="rotulo">
+        <div class="titulo aright"># %%_tags_id%% &nbsp;</div>
+        <div class="titulo">&nbsp; &nbsp;Últimos %%_max_artics%% Artículos</div>
+
+      </div>
+      <div class="box-gris">
+        <div class="box-auxi box-resumen">
+          <div class="titulo">Nombre del Tag: <b>%%_tags_tag%%</b></div>
+          <div class="msg-loading">
+            <div class="description">Total de Artículos: <b>%%_tags_total%%</b></div>
+            <!--msg-->
+            <table class="main-table">
+              <tr>
+                <th style="width:90px;">Fecha Pub.</th>
+                <th style="width:80px;">Hora Pub.</th>
+                <th>Artículo</th>
+                <th style="width:55px;">Editar</th>
+                <th style="width:95px;">¿Disponible?</th>
+              </tr>
+              <!--loop-->
+              <tr>
+                <td>%%_tag_fechap%%</td>
+                <td>%%_tag_horap%%</td>
+                <td><a href="%%_tag_link%%" target="_blank">%%_tag_titu%%</a></td>
+                <td><a href="%%_tag_edit_link%%" target="_blank" class="%%_class_open_fid%%">
+                  <img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar" title="Editar" class="cambia-boton" /></a></td>
+                <td><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" class="mostrar" alt="%%_mostrar%%" title="Artículo no Publicable" /></td>
+              </tr>
+              <!--/loop-->
+            </table>
+            <span><b>Nota:</b> Los artículos sin ticket verde, no estarán disponibles en el Web. Puede que no tengan Alta, o su fecha de publicación/expiración, no lo permitan.</span>
+            <!--/msg-->
+            <br/><br/>
+            <div class="boton-generico boton-loading">
+              <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>Cerrar</span></a>
+            </div>
+            <br/>
+          </div>
+
+        </div>
+      </div>
+      <!--/content-->
+    </div>
+  </body>
+</html>

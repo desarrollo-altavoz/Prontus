@@ -1,0 +1,2 @@
+DIR_SERVER: [/var/www]
+PATH_CONF: [/var/www/cesarcillo/cpan/cesarcillo.cfg]

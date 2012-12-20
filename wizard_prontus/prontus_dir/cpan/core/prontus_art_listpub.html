@@ -1,0 +1,52 @@
+<!--area_loop-->
+  <div class="rotulo">
+    <div class="flecha">
+      <span class="opened" title="Contraer">&nbsp;</span>
+    </div>
+    <div class="link">
+      <a href="prontus_art_ficha.cgi?_path_conf=%%_path_conf%%&_edic=%%_edic%%&_port=%%_port%%&_area=%%_area%%" class="%%_class_open_fid%%">+ agregar art&iacute;culo</a>
+    </div>
+    <!--area_title-->
+    <div class="rotulo-interno" title="Publicar Aquí">
+      <div class="titulo">Area %%_areanom%%</div>
+    </div>
+    <!--/area_title-->
+  </div>
+  <!--area_artics-->
+  <ul id="area-%%_area%%" class="area-list">
+    <!--articulo_loop-->
+    <li class="%%_artic_sin_file%% editable_list%%_editable%%" title="artic%%_ts%%"><!--articulo-->
+      <div class="fila1" title="Artículo Prontus #%%_autoinc%%">
+        <div class="mover">
+          %%macro(listado_handler.html)%%
+        </div>
+        <div class="contenido">
+          <div class="titulo">
+
+            %%macro(listado_titulos.html)%%
+
+          </div>
+          <div class="iconos editable%%_editable%%">
+
+            %%macro(listado_iconos.html)%%
+
+          </div>
+          <div class="datos">
+
+            %%macro(listado_datos.html)%%
+
+          </div>
+          <span class="ocultar">%%_ocultar%%</span>
+          <div class="controles">
+            <input type="hidden" name="_area_%%_ts%%" value="" class="area" />
+            <input type="hidden" name="_orden_%%_ts%%" value="" class="orden" />
+            <input type="hidden" name="_vb_%%_ts%%" value="%%_vobo%%" class="vobo" />
+          </div>
+        </div>
+      </div>
+    </li><!--/articulo-->
+    <!--/articulo_loop-->
+  </ul>
+  <!--/area_artics-->
+  <div class="separa3"></div>
+<!--/area_loop-->

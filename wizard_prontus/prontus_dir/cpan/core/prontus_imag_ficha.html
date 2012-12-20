@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Editor de Im&aacute;genes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="%%REL_PATH_PRONTUS%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="%%REL_PATH_PRONTUS%%/cpan/core/css/imagficha.css?v2.0" />
+    <link rel="stylesheet" type="text/css" href="%%REL_PATH_PRONTUS%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+    <script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/ImgEdit.class.js?v2.0"></script>
+  </head>
+  <body class="bodysite-gal">
+    <div id="fotoedit-main">
+        <div class="colpict">
+            <div class="colpict-right">
+                <div class="colpict-left">
+                    <div class="logo aleft"><a href="#"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/head/logo_prontus.jpg" width="139" height="52" border="0" alt="Prontus" title="Prontus" /></a></div>
+                    <div class="titulo aleft">Editor de Im&aacute;genes</div>
+                    <div id="msgbox"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/boto/msg-alert.png"/><span>La imagen ha sido modificada, debes guardarla sino perderás los cambios.</span><a href="#" onclick="ImgEdit._hidemsgbox(); return false;"><img width="16" height="16" class="cambia-boton" title="Cerrar Mensaje" alt="Cerrar Mensaje" src="%%REL_PATH_PRONTUS%%/cpan/core/imag/boto/close-msg_of.png"></a></div>
+                </div>
+            </div>
+        </div>
+        <div class="colpicc" style="width: 800px; margin-left: 7px;">
+
+        <!--HERRAMIENTAS-->
+        <div class="tools" style="background: none; border-top: 1px solid #dedede;">
+            <div class="br-right">
+                <div class="br-left">
+                <form name="f" id="f" enctype="multipart/form-data">
+                      <input type="hidden" name="path_conf" value="%%path_conf%%" />
+                      <input type="hidden" name="image_path" id="image_path" value="%%image_path%%" />
+                      <input type="hidden" name="image_path_orig" id="image_path_orig" value="%%image_path%%" />
+
+                      <input type="hidden" name="crop" id="crop" value="0" />
+                      <input type="hidden" name="crop_x" id="srcX" value="" />
+                      <input type="hidden" name="crop_y" id="srcY" value="" />
+                      <input type="hidden" name="crop_w" id="width" value="" />
+                      <input type="hidden" name="crop_h" id="height" value="" />
+
+                      <input type="hidden" name="resize" id="resize" value="0" />
+                      <input type="hidden" name="resize_w" id="new_width" value="" />
+                      <input type="hidden" name="resize_h" id="new_height" value="" />
+                      
+                      <input type="hidden" name="flipv" id="flipv" value="0" />
+                      <input type="hidden" name="fliph" id="fliph" value="0" />
+                      
+                      <input type="hidden" name="rotar" id="rotar" value="0" />
+                      
+                </form>
+                  <div>
+                    <div style="float: left; width: 300px;">
+                        <table>
+                            <tr>
+                              <th align="left" valign="middle">Tamaño original</th>
+                              <td align="left" valign="middle">Ancho: <span class="texto-normal">%%wimage_orig%% px</span></td>
+                              <td align="left" valign="middle">Alto: <span class="texto-normal">%%himage_orig%% px</span></td>
+                              <td width="3%" align="left" valign="middle">&nbsp;</td>
+                              <td width="3%" align="left" valign="middle" class="separa"></td>
+                              <td width="3%" align="left" valign="middle">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="float: left; width: 585px;">
+                        <table>
+                            <tr>
+                              <th align="left" valign="middle">Area Seleccionada</th>
+                              <td align="left" valign="middle">Ancho: <input type="text" name="w" id="w" class="fieldform-short" value="%%wimage_orig%%"/> <span class="texto-normal">px</span></td>
+                              <td align="left" valign="middle">Alto: <input type="text" name="h" id="h" class="fieldform-short" value="%%himage_orig%%"/> <span class="texto-normal">px</span></td>
+                              <td width="50">
+                              <a href="#" onclick="ImgEdit.resize_aspect(); return false;" id="btn_resize_aspect" style="display: none;" title="Liberar proporciones"><img class="cadena" src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/chain_of.gif"/></a>
+                                <a href="#" onclick="ImgEdit.crop_aspect_free(); return false;" id="btn_crop_aspect" style="display: none;"><img class="cadena" id="btn_crop_aspec" src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/chain_of.gif"/></a>
+                              </td>
+                              <td width="3%" align="left" valign="middle" class="separa"></td>
+                              <td width="3%" align="left" valign="middle">&nbsp;</td>
+                              <td>
+                                <div style="width: 100px;">
+                                    <input id="btn_crop_aplicar" type="button" class="fieldform-short" value="Aplicar" style="font-size: 11px; height: 21px; margin-top: -4px; cursor: pointer; display: none;" onclick="ImgEdit.crop_aplicar(); return false;"/>
+                                    <input id="btn_resize_aplicar" type="button" class="fieldform-short" value="Aplicar" style="font-size: 11px; height: 21px; margin-top: -4px; cursor: pointer; display: none;" onclick="ImgEdit.resize_aplicar(); return false;"/>
+                                </div>
+                              </td>
+                            </tr>
+                        </table>
+                    </div>
+                  </div>
+            </div>
+          </div>
+        </div>
+        <!-- / HERRAMIENTAS-->
+        </div>
+
+        <div class="col-left">
+            <div id="cargando_tools"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/loading.gif"/></div>
+            <ul>
+                <li>&nbsp;</li>
+                <li><a href="#" onclick="window.close(); return false;" id="btn_volver"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/boto/cer_of.png" width="32" height="32" alt="Cerrar" title="Cerrar"/></a></li>
+                <li>&nbsp;</li>
+                <li><a href="#" onclick="ImgEdit.guardar(); return false;" id="btn_guardar"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/gua_of.png" width="32" height="32" alt="Guardar" title="Guardar"/></a></li>
+                <li><a href="#" onclick="ImgEdit.undo(); return false;" id="btn_undo"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/rev_of.png" width="32" height="32" alt="Revertir" title="Revertir"/></a></li>
+                <li><a href="#" onclick="ImgEdit.crop_init(); return false;" id="btn_crop"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/rec_of.png" width="32" height="32" alt="Recortar" title="Recortar"/></a></li>
+                <li><a href="#" onclick="ImgEdit.resize_init(); return false;" id="btn_resize"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/red_of.png" width="32" height="32" alt="Redimensionar" title="Redimensionar"/></a></li>
+                <li><a href="#" onclick="ImgEdit.flip_h(); return false;" id="btn_fliph"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/esv_of.png" width="32" height="32" alt="Invertir Horizontal" title="Invertir Horizontal"/></a></li>
+                <li><a href="#" onclick="ImgEdit.flip_v(); return false;" id="btn_flipv"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/esh_of.png" width="32" height="32" alt="Invertir Vertical" title="Invertir Vertical"/></a></li>
+                <li><a href="#" onclick="ImgEdit.rotard(); return false;" id="btn_rotard"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/rod_of.png" width="32" height="32" alt="Rotar Derecha" title="Rotar Derecha"/></a></li>
+                <li><a href="#" onclick="ImgEdit.rotari(); return false;" id="btn_rotari"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/edi/roi_of.png" width="32" height="32" alt="Rotar Izquierda" title="Rotar Izquierda"/></a></li>
+            </ul>
+        </div>
+        <div class="col-right">
+            <div id="cargando_imagen"><img src="%%REL_PATH_PRONTUS%%/cpan/core/imag/loading.gif"/></div>
+            <div id="Contenedor" class="cont-foto">
+                <img id="imagenContenedor" src="%%image_path%%"/>
+                <div id="imagenSelector">
+                </div>
+            </div>
+        </div>
+
+      </div>
+      <div style="clear:both"></div>
+  <script type="text/javascript">
+    $(document).ready(function() {
+        ImgEdit.init('%%wimage_orig%%', '%%himage_orig%%');
+    });
+  </script>
+  </body>
+</html>

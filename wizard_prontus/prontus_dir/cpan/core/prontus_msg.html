@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>%%title%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css" />
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
+  </head>
+  <body class="bodysite">
+
+    <div id="main">
+    
+      <div class="main-head">
+
+        <div class="logo aleft"><a href="#"><img src="/%%_prontus_id%%/cpan/core/imag/head/logo_prontus.jpg" width="139" height="52" border="0" alt="Prontus" title="Prontus" /></a></div>
+      </div>
+        
+        <!--INICIO CONTENIDO-->
+          <div class="main-left">
+             <div class="content">
+
+                <!--TITULO PRINCIPAL-->
+                <div class="top-titulo">
+                  <h1 class="titular">%%title%%</h1>
+                </div>
+                <!-- / TITULO PRINCIPAL-->
+
+                <div class="separa"></div>
+                <p>%%msg%%</p>
+                <div class="separa2"></div>
+                <p>
+                <!--cerrar-->
+                <div class="boton-gris3 aleft">
+                    <a class="button" href="#" onclick="cerrar(); return false;">
+                        <span>Cerrar</span>
+                    </a>
+                </div>
+                <!--/cerrar-->
+                <!--volver-->
+                <div class="boton-gris3 aleft">
+                    <a class="button" href="#" onclick="history.back(); return false;">
+                        <span>Volver</span>
+                    </a>
+                </div>
+                <!--/volver-->
+                </p>
+              </div>
+           </div>
+        </div>
+        <!--/Fin Contenido-->
+    <script type="text/javascript">
+        function cerrar() {
+            var pa = window.parent;
+            if (pa.$('#colorbox').length > 0) {
+                // Es colorbox, cerrarlo.
+                pa.$.fn.colorbox.close();
+            } else {
+                window.close();
+                if (opener != null) {
+                    opener.focus();
+                }
+            }
+        }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Administrar Tags &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/tax.css" />
+    <link rel="stylesheet" type="text/css" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Tags.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Utiles.class.js"></script>
+  </head>
+  <body>
+    <div class="maintags">
+      <div class="col685">
+        <div class="rotulo"><div class="titulo">Todos los Tags</div></div>
+        <div class="auxi">
+          <div class="separa"></div>
+
+          <div id="buscador-tags">
+            <div class="boton-gris3 aright">
+              <!--admin_tags-->
+              <a href="./prontus_tags_admin.cgi?_path_conf=%%_path_conf%%" onclick="return Tags.abrirAdminTags();" target="_top" class="button"><span>Administrar Tags</span></a>
+              <!--/admin_tags-->
+              <a onclick="parent.Admin.cerrarColorbox(); return false;" href="#" class="button"><span>Cerrar</span></a>
+            </div>
+
+            <form name="frmBuscadorTags" id="frmBuscadorTags" method="get" action="#">
+              <input type="hidden" name="_path_conf" value="%%_path_conf%%"/>
+              <table class="buscador" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td width="185" align="left" valign="middle" class="bg-campo"><input type="text" name="search" id="search_texto" class="campo"/></td>
+                  <td width="33" align="left" valign="middle" class="bg-boto">
+                    <a href="#" onclick="Tags.realizarBusquedaRapida(); return false;">
+                      <img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="Buscar Tags" title="Buscar Tags" /></a>
+                  </td>
+                  <td class="multi">
+                    <input type="checkbox" name="ocultarusados" id="ocultarusados" value="1" /> <label for="ocultarusados">Ocultar tags usados</label>
+                  </td>
+                </tr>
+              </table>
+            </form>
+          </div>
+
+          <div class="separa"></div>
+          <div class="ayuda"><b>Ayuda:</b> Haga click sobre los tags para agregarlos al Fid.</div>
+          <div id="alltags">
+          %%LOOP_TAGS%%
+            <div class="item unused"><a href="#tag%%_tags_id%%" rel="item%%_tags_id%%" title="Agregar Tag: %%_tags_tag%%" rev="%%_tags_tag%%">%%_tags_shrttag%%</a></div>
+          %%/LOOP_TAGS%%
+            <div class="separa"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+    $(document).ready(function() {
+      Tags.initQuickSearch();
+    });
+    </script>
+  </body>
+</html>
+

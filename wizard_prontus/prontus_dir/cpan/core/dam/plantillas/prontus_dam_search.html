@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Biblioteca Multimedia &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/dam/css/dam.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Botones.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/dam/js-local/Dam.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/media/jquery.media.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/media/swfobject.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.jqplugin.js"></script>
+
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/zeroclipboard/ZeroClipboard.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        Admin.init('%%_prontus_id%%');
+        Dam.init();
+      });
+    </script>
+  </head>
+  <body class="bodysite">
+    <div id="main">
+        %%POPUP%% %%macro(menu_head4.html)%% %%/POPUP%%
+
+        <!--INICIO CONTENIDO-->
+        <div class="main-left">
+             <div class="content">
+
+                <!--TITULO PRINCIPAL-->
+                <div class="top-titulo960">
+                  <h1 class="titular">Biblioteca Multimedia</h1>
+                  <!-- div class="boton aleft"><a href="#"><img src="/%%_prontus_id%%/cpan/core/imag/boto/ag2_of.png" width="120" height="21" alt="Agregar nuevo" title="Agregar nuevo" /></a></div-->
+
+                  <div class="buscador">
+                    <form name="formDAM" id="formDAM" action="" method="get">
+                      <input type="hidden" name="path_conf" id="path_conf" value="/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg" />
+                      <input type="hidden" name="asset_search_type" id="asset_search_type" value="%%ASSET_TYPE_FORM%%" />
+                      <input type="hidden" name="asset_search_popup" id="asset_search_popup" value="%%asset_search_popup%%" />
+                      <input type="hidden" name="asset_search_orden" id="asset_search_orden" value="%%asset_search_orden%%" />
+
+                      <table width="218" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td width="185" align="left" valign="middle" class="bg-campo">
+                            <input type="text" name="asset_search_wordkey" id="asset_search_wordkey" value="%%asset_search_wordkey%%" class="campo" size="30" /></td>
+                          <td width="33" align="left" valign="middle" class="bg-boto">
+                            <a href="#" onclick="Dam.buscarAsset();"><img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="Buscar por Titular" title="Buscar por Titular" /></a></td>
+                        </tr>
+                      </table>
+                    </form>
+                    <!--search_mode-->
+                    <div class="filtros">
+                      <a href="#" onclick="Dam.limpiaFiltros(); return false;" class="elim-filtros">
+                        [<img src="/%%_prontus_id%%/cpan/core/imag/boto/delete10x10px.png" alt="Eliminar Filtros" height="10" width="10"> Eliminar filtros]
+                      </a>
+                    </div>
+                    <!--/search_mode-->
+                    <!-- div class="avanzado"><a href="#">B&uacute;squeda avanzada</a></div -->
+                  </div>
+
+                  <div class="orderby">
+                    Ordenar por: <a href="#creac" class="cambia-orden">Creación</a> |
+                    <a href="#text" class="cambia-orden">Texto</a>
+                  </div>
+                </div>
+                <!-- / TITULO PRINCIPAL-->
+
+                <div id="msg-global" class="msg-global"></div>
+                <div class="separa"></div>
+
+                <!--COLUMNA -->
+                <div class="col960 aleft">
+
+                  <div class="boton-gris1">
+                    <a class="button %%sel_foto%%" href="./prontus_dam_search.cgi?asset_search_type=foto&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>Im&aacute;genes</span></a>
+                    <a class="button %%sel_audio%%" href="./prontus_dam_search.cgi?asset_search_type=audio&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>Audios</span></a>
+                    <a class="button %%sel_video%%" href="./prontus_dam_search.cgi?asset_search_type=video&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>Videos</span></a>
+                  </div>
+
+                  <div class="auxi dam">
+
+                    %%LOOP%%
+                    <!--foto-->
+                    <div class="item-multimedia aleft">
+                      <div class="foto-preview"><a href="%%PATH_IMG%%" target="_blank" class="colorbox">
+                        <img src="%%PATH_IMG%%" %%IMG_SIZE%% border="0" alt="%%ASSET_TITULAR%%" title="%%ASSET_TITULAR%%" /></a></div>
+                      <div class="aleft dimen"><!--tam_foto-->[%%ASSET_ART_WFOTO%% X %%ASSET_ART_HFOTO%% - %%EXT_FOTO%%]<!--/tam_foto--></div>
+                      <div class="aleft titu"><a href="%%LINK_ARTIC%%" target="_blank" alt="%%ASSET_TITULAR%%" title="%%ASSET_TITULAR%%">%%ASSET_TITULAR_SHORT%%</a></div>
+                      <div class="aright icons">
+                        <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar Artículo" title="Editar Artículo" class="cambia-boton" /></a>
+                        <div class="copiar" id="asset_ext%%LOOP_COUNTER%%">
+                          <div id="asset_int%%LOOP_COUNTER%%" class="copiar-url"></div>
+                        </div>
+                        <a href="%%PATH_IMG%%" style="display:none; position:absolute;"></a>
+                      </div>
+                    </div>
+                    <!--/foto-->
+                    <!--audio-->
+                    <div class="item-multimedia aleft item-audio">
+                      <div class="player-preview"><a href="%%PATH_ASSET%%" target="_blank" class="media-audio"></a></div>
+                      <div class="aleft titu"><a href="%%LINK_ARTIC%%" target="_blank" alt="%%ASSET_TITULAR%%" title="%%ASSET_TITULAR%%">%%ASSET_TITULAR_SHORT%%</a></div>
+                      <div class="aright icons">
+                        <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar Artículo" title="Editar Artículo" class="cambia-boton" /></a>
+                        <div class="copiar" id="asset_ext%%LOOP_COUNTER%%">
+                          <div id="asset_int%%LOOP_COUNTER%%" class="copiar-url"></div>
+                        </div>
+                        <a href="%%PATH_ASSET%%" style="display:none; position:absolute;"></a>
+                      </div>
+                    </div>
+                    <!--/audio-->
+                    <!--video-->
+                    <div class="item-multimedia aleft">
+                      <div class="foto-preview"><a href="prontus_dam_view.cgi?view_prontus=%%_PRONTUS_ID%%&amp;view_tmpl=prontus_dam_view_video.html&amp;view_file=%%PATH_ASSET%%&amp;width=650&amp;height=390"
+                          class="colorbox"><!--if_image--><img src="%%PATH_IMG%%" %%IMG_SIZE%% alt="Foto 220" title="Foto 220" /><!--/if_image--><span class="play-video"></span></a></div>
+                      <div class="aleft titu"><a href="%%LINK_ARTIC%%" target="_blank" alt="%%ASSET_TITULAR%%" title="%%ASSET_TITULAR%%">%%ASSET_TITULAR_SHORT%%</a></div>
+                      <div class="aright icons">
+                        <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar Artículo" title="Editar Artículo" class="cambia-boton" /></a>
+                        <div class="copiar" id="asset_ext%%LOOP_COUNTER%%">
+                          <div id="asset_int%%LOOP_COUNTER%%" class="copiar-url"></div>
+                        </div>
+                        <a href="%%PATH_ASSET%%" style="display:none; position:absolute;"></a>
+                      </div>
+                    </div>
+                    <!--/video-->
+                    %%/LOOP%%
+
+                    <div class="separa"></div>
+                    <div class="paginas">%%_paginacion%%</div>
+
+                  </div>
+
+
+
+                </div>
+                <!-- / COLUMNA -->
+                <div id="tooltip-copiar">&nbsp;</div>
+
+              </div>
+           </div>
+        </div>
+        <!--/Fin Contenido-->
+  </body>
+</html>

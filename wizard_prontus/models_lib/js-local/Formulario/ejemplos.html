@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <title>Prueba Formulario</title>
+  <script type="text/javascript" src="Formulario.class.js"></script>
+</head>
+<body>
+
+<form action="#">
+  <div>
+  Human: <input id="human" type="radio" name="creature" value="Human" /><br />
+  Animal: <input id="animal" type="radio" name="creature" value="Animal" /><br />
+  Gnome: <input id="gnome" type="radio" name="creature" value="Gnome" /><br />
+  <br />
+  <input type="button" onclick="alert(Formulario.getRadioValue(this.form, 'creature'));" value="Get Checked" />
+  </div>
+</form>
+
+
+<form action="#">
+  <div>
+  <br />
+  Human: <input id="human2" type="checkbox" name="USR_creature3" value="Human" /><br />
+  Animal: <input id="animal2" type="checkbox" name="USR_creature4" value="Animal" /><br />
+  Gnome: <input id="gnome2" type="checkbox" name="USR_creature5" value="Gnome" /><br />
+  Sin User: <input id="gnome2b" type="checkbox" name="creature3b" value="Gnome" /><br />
+  Sin User 2: <input id="gnome2c" type="checkbox" name="creature3c" value="Gnome" /><br />
+
+  <input type="button" onclick="Formulario.checkAll(this.form, 'USR_');" value="Check" />
+  <input type="button" onclick="Formulario.checkAll(this.form, '');" value="Check ALL " />
+  <input type="button" onclick="Formulario.uncheckAll(this.form, 'USR_');" value="unCheck" />
+  <input type="button" onclick="Formulario.uncheckAll(this.form, '');" value="unCheck ALL" />
+  </div>
+</form>
+
+
+<form action="#">
+  <div>
+  <br />
+  Human: <input type="checkbox" name="USR_creature3" value="Human" /><br />
+  Animal: <input type="checkbox" name="USR_creature4" value="Animal" /><br />
+  Gnome: <input type="checkbox" name="USR_creature5" value="Gnome" /><br />
+  Sin User: <input type="checkbox" name="creature3b" value="Gnome" /><br />
+  Sin User 2: <input type="checkbox" name="creature3c" value="Gnome" /><br />
+
+  <input type="button" onclick="Formulario.toggle(this.form, 'USR_');" value="Toggle " />
+  <input type="button" onclick="Formulario.toggle(this.form, '');" value="Toggle ALL " />
+  </div>
+</form>
+
+
+</body>
+</html>

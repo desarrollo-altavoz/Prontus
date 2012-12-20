@@ -1,0 +1,118 @@
+<script type="text/javascript">
+  function insertSnippet(selectObject) {
+    // encode single quotes as "\x27" and double quotes as "\x22",
+    %%snippets_vars%%
+
+    var nomSnippet = selectObject.options[selectObject.selectedIndex].value;
+    if (nomSnippet == '') {
+      Editor.selItemCero(selectObject);
+      return;
+    };
+    eval("editAreaLoader.setSelectedText('" + Editor.idEditor + "', " + nomSnippet + ")");
+    Editor.selItemCero(selectObject);
+  };
+</script>
+
+      <div class="top-editor">
+        <input type="hidden" name="_path_file" id="_path_file" value="%%path_file%%" />
+        <input type="hidden" name="text_file" id="text_file" value="" />
+        <input type="hidden" name="formato_retcarro" id="formato_retcarro" value="%%formato_retcarro%%" />
+
+        <div class="ruta aleft">Archivo: <span class="red">%%path_file_label%%</span><!--editor--> <span class="gris">(%%formato_retcarro%%)</span><!--/editor--></div>
+
+        <div class="botones aright botones-accion" id="acciones">
+          <div class="acciones boton-gris3">
+            <!--guardar-->
+            <a class="button" href="#" onclick="Editor.accionGuardar(); return false;" title="Guardar archivo actual"><span>Guardar</span></a>
+            <!-- input type="submit" name="guardar" value=""  class="input"/-->
+            <select name="charset_encoding">
+              <option value="ansi" %%selected_ansi%%>Codificación: ansi &nbsp;</option>
+              <option value="utf8" %%selected_utf8%%>Codificación: utf8 &nbsp;</option>
+            </select>
+            <!--/guardar-->
+
+            <!--borrar-->
+            <a class="button" href="#" onclick="Editor.accionBorrar(); return false;" title="Borrar archivo actual"><span>Borrar</span></a>
+            <!--/borrar-->
+
+            <!--copiar-->
+            <a class="button" href="#" onclick="Editor.accionCopiar(); return false;" title="Copiar archivo actual con otro nombre"><span>Copiar</span></a>
+            <!--/copiar-->
+
+            <!--cerrar-->
+            <a class="button" href="#" onclick="Editor.accionCerrar('text'); return false;" title="Cierra el archivo actual"><span>Cerrar</span></a>
+            <!--/cerrar-->
+
+          </div>
+          <!-- div class="loading-action" style="width:350px; padding-bottom:12px;"><img src="/%%_prontus_id%%/cpan/core/imag/loading_bar.gif" width="128" height="15" alt="loading" /></div -->
+        </div>
+        <div class="separa"></div>
+
+        <div class="opciones">
+          <!--combos_marcas-->
+          <div class="aleft">
+            Marcas en FIDs:<br>
+            <select name="sel_marca_usr" class="neg" onchange="Editor.insertMarca(this)">
+              <option value="" selected="selected">- seleccione -</option>
+              %%marcas_usr_options%%
+            </select>
+          </div>
+          <div class="aleft">
+            Marcas Reservadas:<br>
+            <select name="sel_marca_gral" class="neg" onchange="Editor.insertMarca(this)">
+              <option value="" selected="selected">- seleccione -</option>
+              <option value="_SERVER_NAME">_SERVER_NAME</option>
+              <option value="_PRONTUS_ID">_PRONTUS_ID</option>
+              <option value="_FILE">_FILE</option>
+              <option value="_TSDIR">_TSDIR</option>
+              <option value="_TS">_TS</option>
+              <option value="_TXT_TITULAR">_TXT_TITULAR</option>
+              <option value="_TITULAR">_TITULAR</option>
+              <option value="_TXT_BAJADA">_TXT_BAJADA</option>
+              <option value="_BAJADA">_BAJADA</option>
+              <option value="_NOM_SECCION1">_NOM_SECCION1</option>
+              <option value="_SECCION1">_SECCION1</option>
+              <option value="_HORAP">_HORAP</option>
+              <option value="_FECHAP">_FECHAP</option>
+              <option value="_FECHAPSHRT">_FECHAPSHRT</option>
+              <option value="_FECHAPLONG">_FECHAPLONG</option>
+              <option value="_HORAC">_HORAC</option>
+              <option value="_FECHAC">_FECHAC</option>
+              <option value="_FECHACSHRT">_FECHACSHRT</option>
+              <option value="_FECHACLONG">_FECHACLONG</option>
+              <option value="_NOMEDIC">_NOMEDIC</option>
+              <option value="_ALTA">_ALTA</option>
+            </select>
+          </div>
+          <div class="aleft">
+            Marcas de Control:<br>
+            <select name="sel_marca_ctrl" class="neg" onchange="Editor.insertMarca(this)">
+              <option value="" selected="selected">- seleccione -</option>
+              <option value="IF,istag">IF(param)</option>
+              <option value="NIF,istag">NIF(param)</option>
+              <option value="MACRO">MACRO(file)</option>
+              <!--marcas_port-->
+              <option value="LOOP,istag">LOOP(n)</option>
+              <option value="IFV,istag">IFV(div,res)</option>
+              <option value="IFVC,istag">IFVC(div,res)</option>
+              <option value="NIFV,istag">NIFV(div,res)</option>
+              <!--/marcas_port-->
+            </select>
+          </div>
+          <!--/combos_marcas-->
+          <div class="aleft">
+            Insertar Snippet:<br>
+            <select name="sel_snippet" class="neg" onchange="insertSnippet(this)">
+              <option value="" selected="selected">- seleccione -</option>
+              %%snippets_options%%
+            </select>
+            <a href="#" onclick="Editor.showHelp('snippet', '/%%_PRONTUS_ID%%'); return false;" title="Click para ver que son los Snippets">[¿Qué es esto?]</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="editor" id="content-editor">
+        <div class="inner-editor">
+          <textarea id="myeditor" name="myeditor" style="width:724px; margin-left:-8000px">%%TEXT_FILE%%</textarea>
+        </div>
+      </div>

@@ -1,0 +1,29 @@
+      <div class="top-editor">
+
+        <input type="hidden" name="_path_file" id="_path_file" value="%%path_file%%" />
+        <input type="hidden" name="text_file" id="text_file" value="" />
+        <input type="hidden" name="formato_retcarro" id="formato_retcarro" value="%%formato_retcarro%%" />
+
+        <!-- div class="ruta aleft">Archivo: <span class="red">%%path_file_label%%</span></div -->
+
+        <div class="botones aright botones-accion" id="acciones">
+          <div class="acciones boton-gris3">
+            <!--borrar-->
+            <a class="button" href="#" onclick="Editor.accionBorrar(); return false;" title="Borrar archivo actual"><span>Borrar</span></a>
+            <!--/borrar-->
+
+            <!--cerrar-->
+            <a class="button" href="#" onclick="Editor.accionCerrar('bin'); return false;" title="Cierra el archivo actual"><span>Cerrar</span></a>
+            <!--/cerrar-->
+          </div>
+        </div>
+        <div class="separa"></div>
+      </div>
+
+      <div class="editor opciones">
+        <div class="atributos">
+          <div class="aleft name">Descargar Archivo:</div><div class="aleft"><a target="_blank" href="%%path_file%%">%%_file_nom%%</a></div><div class="separa"></div>
+          <div class="aleft name">Fecha Modificación:</div><div class="aleft">%%_file_mod%%</div><div class="separa"></div>
+          <div class="aleft name">Peso del archivo:</div><div class="aleft">%%_file_siz%%</div><div class="separa"></div>
+        </div>
+      </div>

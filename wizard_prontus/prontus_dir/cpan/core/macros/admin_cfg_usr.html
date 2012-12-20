@@ -1,0 +1,93 @@
+
+                        <div class="listado">
+                            <div style="height:37px;">
+                                <p style="float: left;"><b>Configuración de Usuarios</b>: %%_prontus_id%%-usr.cfg</p>
+                                <div class="botones">
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                            <span>Cancelar</span>
+                                        </a>
+                                    </div>
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="Cfgedit.guardaCfg('usr'); return false;" href="#" class="button" title="Guardar">
+                                            <span>Guardar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                    <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+                                </div>
+                            </div>
+                            <form name="frmCFG-USR" id="frmCFG-USR" method="post">
+                                <table class="tableform" width="100%">
+                                    <input type="hidden" name="_cfg" value="usr"/>
+                                    <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+                                    <input type="hidden" name="_tab" value="cfg-tab7" />
+                                    <tr class="head">
+                                        <td>Variable</td>
+                                        <td>Valor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            REDACTOR_VER_ARTICULOS_AJENOS<br>
+                                            <span class="ayuda">Permite listar o no los artículos creados por otros operadores.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="REDACTOR_VER_ARTICULOS_AJENOS" id="REDACTOR_VER_ARTICULOS_AJENOS_SI" value="SI"%%REDACTOR_VER_ARTICULOS_AJENOS_SI%%/> <label for="REDACTOR_VER_ARTICULOS_AJENOS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="REDACTOR_VER_ARTICULOS_AJENOS" id="REDACTOR_VER_ARTICULOS_AJENOS_NO" value="NO"%%REDACTOR_VER_ARTICULOS_AJENOS_NO%%/> <label for="REDACTOR_VER_ARTICULOS_AJENOS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            REDACTOR_EDITAR_ARTICULOS_AJENOS<br>
+                                            <span class="ayuda">Permite que los operadores con el perfil Redactor, puedan o no tener acceso a modificar o eliminar artículos creados por otros operadores.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="REDACTOR_EDITAR_ARTICULOS_AJENOS" id="REDACTOR_EDITAR_ARTICULOS_AJENOS_SI" value="SI"%%REDACTOR_EDITAR_ARTICULOS_AJENOS_SI%%/> <label for="REDACTOR_EDITAR_ARTICULOS_AJENOS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="REDACTOR_EDITAR_ARTICULOS_AJENOS" id="REDACTOR_EDITAR_ARTICULOS_AJENOS_NO" value="NO"%%REDACTOR_EDITAR_ARTICULOS_AJENOS_NO%%/> <label for="REDACTOR_EDITAR_ARTICULOS_AJENOS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            EDITOR_VER_ARTICULOS_AJENOS<br>
+                                            <span class="ayuda">Permite listar o no los artículos creados por otros operadores.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="EDITOR_VER_ARTICULOS_AJENOS" id="EDITOR_VER_ARTICULOS_AJENOS_SI" value="SI"%%EDITOR_VER_ARTICULOS_AJENOS_SI%%/> <label for="EDITOR_VER_ARTICULOS_AJENOS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="EDITOR_VER_ARTICULOS_AJENOS" id="EDITOR_VER_ARTICULOS_AJENOS_NO" value="NO"%%EDITOR_VER_ARTICULOS_AJENOS_NO%%/> <label for="EDITOR_VER_ARTICULOS_AJENOS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            EDITOR_EDITAR_ARTICULOS_AJENOS<br>
+                                            <span class="ayuda">Permite que los operadores con el perfil Editor, puedan o no tener acceso a modificar o eliminar artículos creados por otros operadores.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="EDITOR_EDITAR_ARTICULOS_AJENOS" id="EDITOR_EDITAR_ARTICULOS_AJENOS_SI" value="SI"%%EDITOR_EDITAR_ARTICULOS_AJENOS_SI%%/> <label for="EDITOR_EDITAR_ARTICULOS_AJENOS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="EDITOR_EDITAR_ARTICULOS_AJENOS" id="EDITOR_EDITAR_ARTICULOS_AJENOS_NO" value="NO"%%EDITOR_EDITAR_ARTICULOS_AJENOS_NO%%/> <label for="EDITOR_EDITAR_ARTICULOS_AJENOS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <div class="botones">
+                                <div class="boton-gris3 aright">
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                        <span>Cancelar</span>
+                                    </a>
+                                </div>
+                                <div class="boton-gris3 aright">
+                                    <a onclick="Cfgedit.guardaCfg('usr'); return false;" href="#" class="button" title="Guardar">
+                                        <span>Guardar</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+                            </div>
+                        </div> <!--/listado-->
+                    

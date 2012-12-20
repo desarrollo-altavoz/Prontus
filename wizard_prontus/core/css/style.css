@@ -1,0 +1,17 @@
+body{font-family:Tahoma,Arial,Helvetica,sans-serif; margin: 0px 50px ;font-size:9pt}
+h1 {color:#0A4966}
+
+div.tabs{ border:0;}
+div.tabs .menu {height:20px;clear:left; padding:10px 8px 4px ; display:block; }
+div.tabs .menu ul {padding:0px; margin:0px; }
+div.tabs .menu li {float:left; height:40px; list-style:none; margin:0px; }
+div.tabs .menu li a {background:#0c5b80 none repeat scroll 0 0; color:#FFFFFF;  margin:1px 1px 1px 1px;padding:6px 10px; text-decoration:none;}
+div.tabs .menu li a.selected {background:#f2f2eb none repeat scroll 0 0; color:#0A4966; }
+div.tabs .info {background-color:snow; ; color:#0A4966}
+div.tabs .info div { padding:4px 10px;}
+div.tabs img.image {display: block; padding: 5px 30px} 
+
+/* tabla de contenido */
+td.cont_desc_modelos{width:420px; margin-right:10px;}
+.cont_desc_modelos span{text-align:justify;}
+.cont_desc_modelos .listado_desc{margin-left:-15px;}

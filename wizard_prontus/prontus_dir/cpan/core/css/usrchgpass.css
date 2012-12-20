@@ -1,0 +1,21 @@
+.usr_chgpass {width:470px; margin:0px auto;}
+.usr_chgpass .box-gris {width:458px; padding:0px 5px;}
+.usr_chgpass table tr td {text-align:left; font-size:14px; color:#333333; margin:0; padding:8px 10px 3px 0; font-weight: bold;}
+.usr_chgpass table tr td select {width: 130px; font-size: 14px;}
+.usr_chgpass table tr td input {font-size: 14px;}
+.usr_chgpass .list {width:180px;}
+.usr_chgpass .list select {width:170px; height:100px;}
+.usr_chgpass .rotulo {width:685px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot470_azul.jpg") no-repeat left top;}
+.usr_chgpass .rotulo .titulo {width:200px; float:left; font-size:15px; color:#FFFFFF; font-weight:bold; float:left; margin:0 0 0 10px; padding:5px 0 0 0;}
+.usr_chgpass .rotulo .flecha {width:25px; float:right; text-align:center; padding:5px 0 0 0;}
+.usr_chgpass .botones a.button {background: url("../imag/boto/boto_gris3_right.gif") no-repeat scroll top right;  display:block; float:left; height:26px; margin:0 3px 0 0; padding:0 10px 3px 0; color:#666666; font-size:12px; font-weight:bold;}
+.usr_chgpass .botones a.button span {background: url("../imag/boto/boto_gris3_left.gif") no-repeat; display:block; line-height:17px; padding:3px 0 3px 10px;}
+.usr_chgpass .botones a.button:hover {background: url("../imag/boto/boto_azul2_right.jpg") no-repeat scroll top right; display:block; float:left; height:26px; margin:0 3px 0 0; padding:0 10px 3px 0; color:#FFFFFF; font-size:12px; font-weight:bold;}
+.usr_chgpass .botones a.button:hover span {background: url("../imag/boto/boto_azul2_left.jpg") no-repeat;}
+.top-titulo960 .boton-gris3 {margin:5px 0 0 10px;}
+.boton-gris3 a.button {background: url("../imag/boto/boto_gris3_right.gif") no-repeat scroll top right;  display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#333333; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button span {background: url("../imag/boto/boto_gris3_left.gif") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
+.boton-gris3 a.button:hover {background: url("../imag/boto/boto_azul2_right.jpg") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button:hover span {background: url("../imag/boto/boto_azul2_left.jpg") no-repeat;}
+.boton-gris3 a.button.selected {background: url("../imag/boto/boto_azul2_right.jpg") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button.selected span {background: url("../imag/boto/boto_azul2_left.jpg") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}

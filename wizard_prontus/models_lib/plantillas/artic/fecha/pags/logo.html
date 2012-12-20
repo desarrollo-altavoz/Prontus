@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  %%NIF(_ALTA)%%
+  <meta name="ROBOTS" content="NOINDEX" />
+  %%/NIF%%
+  <title>Prontus CMS</title>
+  <script type="text/javascript" src="/prontus_test_cpn/js-local/Utiles.class.js"></script>
+</head>
+<body>
+  <!-- Utilizacion de los javascript -->
+  <div>    
+    Para utilizar los nuevos  javascrit con estructura POO:<br />
+     - si utiliza un método de la clase, debe instanciar de la manera &lt;nombre_de_la_clase&gt;.&lt;nombre_del_metodo&gt;(&lt;parametros&gt;)<br/>
+     - si utiliza un atributo de la clase, debe instan ciar de la manera  &lt;nombre_de_la_clase&gt;.&lt;nombre_del_atributo&gt;<br/>
+     Ejemplo:<br/>
+    <a href="#" onclick="Utiles.imprimirArticulo();">Imprimir|</a>
+    <a href="#" onclick="Utiles.subWin('http://www.altavoz.net','Pop Altavoz',400,300,30,30);">Pop Altavoz|</a><br /><hr />
+  </div>
+    <!-- Cabecera -->
+    <div>
+      <h2>Cabecera</h2>  
+      <b>_FECHAC:</b> %%_FECHAC%%             <br />
+      <b>_FECHAPLONG:</b> %%_FECHAPLONG%%         <br />
+      <b>_FECHACSHRT:</b> %%_FECHACSHRT%%         <br />
+      <b>_FECHAP:</b> %%_FECHAP%%             <br />
+      <b>_HORAP:</b> %%_HORAP%%              <br />
+      <b>_TXT_TITULAR:</b> %%_TXT_TITULAR%%        <br /> 
+      <b>link:</b> %%link%%        <br /> 
+      <b>CMB_target:</b> %%CMB_target%%        <br /> 
+      <b>FOTOFIJA_LOGO:</b> %%FOTOFIJA_LOGO%%        <br /> 
+      %%IF(FOTOFIJA_LOGO)%%
+        <img src="%%FOTOFIJA_LOGO%%  " alt="" border="0" />
+      %%/IF%%
+      
+      <hr/>
+    </div>
+    <!-- /Cabecera -->
+</body>
+</html>

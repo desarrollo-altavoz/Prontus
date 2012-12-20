@@ -1,0 +1,138 @@
+
+                        <div class="listado">
+
+                            <div style="height:37px;">
+                                <p style="float: left;"><b>Configuración de Categorías</b>: %%_prontus_id%%-tax.cfg</p>
+                                <div class="botones">
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                            <span>Cancelar</span>
+                                        </a>
+                                    </div>
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="Cfgedit.guardaCfg('tax'); return false;" href="#" class="button" title="Guardar">
+                                            <span>Guardar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                    <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+                                </div>
+                            </div>
+
+                            <form name="frmCFG-TAX" id="frmCFG-TAX" method="post">
+                                <table class="tableform" width="100%">
+                                    <input type="hidden" name="_cfg" value="tax"/>
+                                    <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+                                    <input type="hidden" name="_tab" value="cfg-tab3" />
+                                    <input type="hidden" name="TAXPORT_ORDEN" value="" />
+                                    <tr class="head">
+                                        <td>Variable</td>
+                                        <td>Valor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TAXONOMIA_NIVELES<br>
+                                            <span class="ayuda">Indica el número de niveles de sección, tema y subtema a utilizar en el FID.</span>
+                                        </td>
+                                        <td>
+                                            <select name="TAXONOMIA_NIVELES" class="fieldform" style="width: 60px;">
+                                                <option value="0"%%TAXONOMIA_NIVELES_0%%>0</option>
+                                                <option value="1"%%TAXONOMIA_NIVELES_1%%>1</option>
+                                                <option value="2"%%TAXONOMIA_NIVELES_2%%>2</option>
+                                                <option value="3"%%TAXONOMIA_NIVELES_3%%>3</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            NUM_RELAC_DEFAULT<br>
+                                            <span class="ayuda">Número de links hacia artículos relacionados que aparecerán junto a cada articulo.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="NUM_RELAC_DEFAULT" value="%%NUM_RELAC_DEFAULT%%" class="fieldform" maxlength="3" style="width: 24px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TAXPORT_REFRESH<br>
+                                            <span class="ayuda">Control de regeneración de cache de portadas taxonómicas. Si se indica "NO", entonces no se generarán dinámicamente, sino a través de un proceso batch, invocable vía cron.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="TAXPORT_REFRESH" id="TAXPORT_REFRESH_SI" value="SI"%%TAXPORT_REFRESH_SI%%/> <label for="TAXPORT_REFRESH_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="TAXPORT_REFRESH" id="TAXPORT_REFRESH_NO" value="NO"%%TAXPORT_REFRESH_NO%%/> <label for="TAXPORT_REFRESH_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TAXPORT_ARTXPAG<br>
+                                            <span class="ayuda">Número de artículos por página que aparecerán en las Portadas taxonómicas.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="TAXPORT_ARTXPAG" value="%%TAXPORT_ARTXPAG%%" class="fieldform" maxlength="4" style="width: 30px"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TAXPORT_REFRESH_SEGS<br>
+                                            <span class="ayuda">Es la cantidad de segundos máximo de antiguedad que tendrán los taxports.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="TAXPORT_REFRESH_SEGS" value="%%TAXPORT_REFRESH_SEGS%%" class="fieldform" maxlength="4" style="width: 30px"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TAXPORT_MAXARTICS<br>
+                                            <span class="ayuda">Número máximo de artículos a considerar para construir las portadas taxonómicas. De esta manera se puede limitar su número por razones estéticas o de rendimiento del servidor.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="TAXPORT_MAXARTICS" value="%%TAXPORT_MAXARTICS%%" class="fieldform" maxlength="4" style="width: 30px;"/>
+                                            <div class="msg-maxartics">
+                                                <b>Atención:</b> La variable TAXPORT_MAXARTICS, ha superado el límite de seguridad. Este número se recomienda que sea
+                                                menor a <span>1000</span>, para no afectar el rendimiento de Prontus.
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TAXPORT_ORDEN<br>
+                                            <span class="ayuda">Permitir definir el orden del listado de artículos en las portadas taxonómicas.</span>
+                                        </td>
+                                        <td>
+                                            <select name="TAXPORT_ORDEN_TIPO" style="width: 110px;">
+                                                <option value="">- Seleccione -</option>
+                                                <option value="PUBLICACION"%%TAXPORT_ORDEN_PUB%%>Publicación</option>
+                                                <option value="TITULAR"%%TAXPORT_ORDEN_TIT%%>Titular</option>
+                                                <option value="CREACION"%%TAXPORT_ORDEN_CRE%%>Creación</option>
+                                            </select>
+                                            <select name="TAXPORT_ORDEN_ORD" style="width: 110px;">
+                                                <option value="">- Seleccione -</option>
+                                                <option value="DESC"%%TAXPORT_ORDEN_DESC%%>Descendente</option>
+                                                <option value="ASC"%%TAXPORT_ORDEN_ASC%%>Ascendente</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <div class="botones">
+                                <div class="boton-gris3 aright">
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                        <span>Cancelar</span>
+                                    </a>
+                                </div>
+                                <div class="boton-gris3 aright">
+                                    <a onclick="Cfgedit.guardaCfg('tax'); return false;" href="#" class="button" title="Guardar">
+                                        <span>Guardar</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+                            </div>
+                        </div> <!--/listado-->
+

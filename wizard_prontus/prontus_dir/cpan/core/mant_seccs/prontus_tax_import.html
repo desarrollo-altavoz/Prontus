@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link type="text/css" rel="stylesheet" href="../css/estilos.css" />
+
+    <script type="text/javascript" src="../js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="../js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="../js-local/jquery/plugins/filestyle/jquery.filestyle.js"></script>
+    <script type="text/javascript" src="../../dir_cgi.js"></script>
+    <script type="text/javascript" src="../js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="../js-local/ProntusDetect.class.js"></script>
+    <script type="text/javascript" src="../js-local/Opciones.class.js"></script>
+    <script type="text/javascript" src="../js-local/Utiles.class.js"></script>
+    
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var prontus = ProntusDetect.getIdProntus();
+        $('#form1').attr('action', '/'+DIR_CGI_CPAN+'/prontus_tax_import.cgi');
+        $('#path_conf').val(ProntusDetect.getPathConf());
+
+        // Para los input:file
+        $(".upload input:file").filestyle({
+            image: "../imag/boto/examinar.gif",
+            imageheight : 22,
+            imagewidth : 82,
+            width : 240
+        });
+        
+      });
+      function enviarFormulario() {
+        if($('#FILE1').val() === '') {
+          alert('Debe ingresar un archivo para Importar.');
+          return;
+        }
+        $('#form1').submit();
+      }
+    </script>
+
+  </head>
+  <body class="bodysite loading-page">
+      <div class="col470">
+        <div class="rotulo">
+          <div class="titulo">&nbsp; &nbsp;Importar Taxonomía</div>
+        </div>
+        <div class="box-gris">
+          <div class="box-auxi">
+            <form name="form1" id="form1" method="post"  enctype="multipart/form-data">
+            <div class="msg-loading">
+              Seleccione el archivo que contiene los datos a importar:<br>
+              <div class="upload">
+                <input type="file" name="FILE1" id="FILE1" size="30" maxlength="120">
+              </div>
+              <br>
+
+
+              <div style="text-align:left; padding-left:20px;">
+              <b>El formato del archivo es el sgte:</b>
+              <ul style="margin-left: 14px;">
+                <li>Archivo xml con información de secciones, temas y subtemas.</li>
+                <li>Si se especifica id, el sistema lo utilizará. Si no, el sistema lo asignará automáticamente.</li>
+                <li>El formato de importación es el mismo de exportación.</li>
+              </ul>
+              </div>
+
+              <br/>
+              <span class="importante"><b>IMPORTANTE:</b>
+                Al importar, las secciones, temas y subtemas que existan serán eliminados y reemplazados por lo que venga en el archivo a importar.
+              </span>
+
+                <input type="hidden" name="path_conf" id="path_conf" value="" />
+                <input type="hidden" name="Sbm_ACCION" id="Sbm_ACCION" value="Importar" />
+                <br/><br/>
+                <div class="boton-generico">
+                  <a class="button" href="#" onclick="enviarFormulario(); return false;"><span>Importar</span></a>
+                  <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>Cerrar</span></a>
+                </div>
+                <br/>
+                <br/>
+                <a href="../../procs/prontus_tax_import_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_import_tax">[Ver Log &uacute;ltima importaci&oacute;n]</a>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  </body>
+</html>

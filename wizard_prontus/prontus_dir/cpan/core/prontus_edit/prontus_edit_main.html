@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Editor Prontus &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/editor.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/filestyle/jquery.filestyle.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+
+
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/prontus_edit/Editor.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/prontus_edit/Extras.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Botones.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Cookies.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utf8.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
+
+
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editarea/edit_area/edit_area_full.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        Admin.init('%%_prontus_id%%');
+        Editor.init();
+      });
+    </script>
+  </head>
+  <body class="bodysite editor-prontus">
+    <!-- a href="javascript:Editor.muestraAcciones(false)">Ocultar acciones</a> | <a href="javascript:Editor.muestraAcciones(true)">Mostrar acciones</a -->
+    <div id="main">
+      %%macro(menu_head5.html)%%
+
+      <!--INICIO CONTENIDO-->
+        <div class="main-left">
+           <div class="content">
+
+              <!--TITULO PRINCIPAL-->
+              <div class="top-titulo">
+                <h1 class="titular">Editor Prontus</h1>
+              </div>
+              <!-- / TITULO PRINCIPAL-->
+
+              <div id="msg-global" class="msg-global"></div>
+
+              <div class="separa"></div>
+
+              <div class="col960">
+
+                <div class="boton-gris1" id="tabs2">
+                  <a class="button selected" onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=/%%_PRONTUS_ID%%/"><span>Archivos</span></a>
+                  <a class="button" onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=/%%_PRONTUS_ID%%/plantillas/artic/fecha/pags"><span>Plantillas artículo</span></a>
+                  <a class="button" onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=/%%_PRONTUS_ID%%/plantillas/artic/fecha/macros"><span>Macros artículo</span></a>
+                  <a class="button" onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=/%%_PRONTUS_ID%%/plantillas/edic/nroedic/port"><span>Plantillas Portada</span></a>
+                  <a class="button" onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=/%%_PRONTUS_ID%%/plantillas/edic/nroedic/macros"><span>Macros Portada</span></a>
+                  <a class="button" onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=/%%_PRONTUS_ID%%/cpan/fid"><span>FIDs</span></a>
+                  <a class="button" onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=/%%_PRONTUS_ID%%/cpan/fid/macros"><span>Macros FIDs</span></a>
+                  <!--snippets--><a class="button" onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=/%%_PRONTUS_ID%%/plantillas/snippets"><span>Snippets</span></a><!--/snippets-->
+                </div>
+
+                <div class="auxi editor">
+                  <form method="post" action="prontus_edit_guardar.cgi" enctype="multipart/form-data" name="f" id="form-editor">
+                    <input type="hidden" name="_path_conf" id="_path_conf" value="%%path_conf%%" />
+                    <input type="hidden" name="_curr_dir" id="_curr_dir" value="%%curr_dir%%" />
+                    <input type="hidden" name="sbm_accion" id="sbm_accion" value="" />
+                    <input type="hidden" name="nom_new_file" id="nom_new_file" value="" />
+                    <input type="hidden" name="type_item" id="type_item" value="" />
+
+                    <!--FRANJA SUPERIOR-->
+                    <div class="directorio aleft">
+                      Directorio actual: <span id="dir_actual"></span>
+                    </div>
+
+                    <div class="boton-gris3 botones-accion botones-global">
+                      <!--subir-->
+                      <div class="upload-content">
+                        <div class="upload" id="upload">
+                          <a href="#" onclick="Editor.accionUploadLayer(false); return false;" class="aright"><img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" width="18" height="18"/></a>
+                          <div class="item aleft">Archivo:</div> <div class="item aleft"><input type="file" name="file_upload" id="file_upload" /></div>
+                          <div class="separa"></div>
+                          <div class="item aleft">Nombre (opcional):</div> <div class="item aleft"><input type="text" name="name_upload" id="name_upload" class="fieldform" /></div>
+                          <div class="separa"></div>
+                          <div class="ayuda">
+                            El archivo será subido al directorio actual. Si no se especifica nombre, se usará el nombre
+                            actual del archivo, pero se podrían eliminar algunos caracteres.<br/>
+                            <b>Atención:</b> Si el archivo existe, podría ser reemplazado.
+                            <div class="ver-mas">
+                              <a href="#" class="show-extension">Ver Extensiones Permitidas</a>
+                            </div>
+                            <div id="ext-upload"><div class="msg-extension">Extensiones Permitidas:<br/><br/><span>%%uploads_permitidos_orig%%</span></div></div>
+                          </div>
+                          <div class="item"><a class="button" href="#" onclick="Editor.accionUpload(); return false;" title="Comienza a subir un nuevo archivo al directorio actual"><span>Subir</span></a></div>
+                        </div>
+                      </div>
+
+                      <a class="button acciones" href="#" onclick="Editor.accionUploadLayer(true); return false;" title="Subir un nuevo archivo al directorio actual"><span>Subir Archivo</span></a>
+                      <!--/subir-->
+
+                      <!--mkdir-->
+                      <a class="button acciones" href="#" onclick="Editor.accionMkdir(); return false;" title="Crea una nuevo Directorio en la ruta actual"><span>Crear Directorio</span></a>
+                      <!--/mkdir-->
+
+                      <!--nuevo-->
+                      <a class="button acciones" href="#" onclick="Editor.accionNuevo(); return false;" title="Crear un nuevo archivo"><span>Nuevo</span></a>
+                      <!--/nuevo-->
+
+                      <div class="loading-action" style="padding-bottom:12px;"><img src="/%%_prontus_id%%/cpan/core/imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
+                    </div>
+
+                    <div class="separa"></div>
+
+                    <!--COLUMNA IZQUIERDA-->
+                    <div class="arbol">
+                        <div class="arbol-scroll">
+                            <div class="col210 aleft" id="col-arbol">
+
+
+                            </div>
+                        </div>
+                        <a href="#arbol-normal" class="link-scroll tipo-normal" style="display:none;">&darr; Expandir &Aacute;rbol</a>
+                        <a href="#arbol-scroll" class="link-scroll tipo-scroll" style="display:none;">&uarr; Contraer &Aacute;rbol</a>
+                    </div>
+                    
+                    <!-- / COLUMNA IZQUIERDA-->
+
+                    <!--COLUMNA DERECHA-->
+                    <div class="col730 aright" id="col-edit">
+
+
+                    </div>
+                    <!-- / COLUMNA DERECHA-->
+                  </form>
+                </div>
+              </div>
+
+
+            </div>
+         </div>
+      </div>
+      <!--/Fin Contenido-->
+  </body>
+</html>

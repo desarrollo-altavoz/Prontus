@@ -1,0 +1,109 @@
+
+  <script type="text/javascript">
+  <!--
+    %%ARR_TST%%
+  //-->
+  </script>
+
+  <form name="f1" id="formMegalupa" method="post" action="">
+    <div class="main-megalupa">
+      <div id="cont-pub" class="col470 aleft">
+        <div class="rotulo">
+          <div class="flecha"><span class="opened">&nbsp;</span></div>
+          <div class="titulo">Definir Filtros de b&uacute;squeda</div>
+        </div>
+        <div class="box-gris">
+          <div class="box-auxi">
+            <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform">
+              <tr>
+                <td width="30%" align="left" valign="middle">Tipo de art&iacute;culo</td>
+                <td width="70%" valign="middle">
+                  %%TIPART%%
+                </td>
+              </tr>
+
+              <!--TAXONOMIA-->
+              <tr class="tax">
+                <td width="30%" align="left" valign="middle">Secci&oacute;n</td>
+                <td width="70%" valign="middle">
+                  %%SECCION1%%
+                </td>
+              </tr>
+              <tr class="tax">
+                <td width="30%" align="left" valign="middle">Tema</td>
+                <td width="70%" valign="middle">
+                  <select name="_TEMA1">
+                    <option value=""></option>
+                  </select>
+                </td>
+              </tr>
+              <tr class="tax">
+                <td width="30%" align="left" valign="middle">Subtema</td>
+                <td width="70%" valign="middle">
+                  <select name="_SUBTEMA1">
+                    <option value=""></option>
+                  </select>
+                </td>
+              </tr>
+              <!--/TAXONOMIA-->
+
+              <tr>
+                <td width="30%" align="left" valign="middle">Autor</td>
+                <td width="70%" valign="middle"><input type="text" name="AUTOR" class="fieldform" maxlength="80" /></td>
+              </tr>
+              <tr>
+                <td width="30%" align="left" valign="middle">Titular</td>
+                <td width="70%" valign="middle"><input type="text" name="TITU" class="fieldform" maxlength="80" /></td>
+              </tr>
+              <tr>
+                <td width="30%" align="left" valign="middle">Bajada</td>
+                <td width="70%" valign="middle"><input type="text" name="BAJA" class="fieldform" maxlength="80" /></td>
+              </tr>
+
+
+              <tr>
+                <td width="30%" align="left" valign="middle">Fecha creaci&oacute;n</td>
+                <td width="70%" valign="middle"><input type="text" name="DIA" class="fieldform fecha" maxlength="10" /> <span class="LS">(dd/mm/aaaa)</span></td>
+              </tr>
+              <tr>
+                <td width="30%" align="left" valign="middle">Fecha publicaci&oacute;n</td>
+                <td width="70%" valign="middle"><input type="text" name="DIAPUB" class="fieldform fecha" maxlength="10" /> <span class="LS">(dd/mm/aaaa)</span></td>
+              </tr>
+              <!--CONTROL_FECHA-->
+              <tr>
+                <td width="30%" align="left" valign="middle">Fecha expiraci&oacute;n</td>
+                <td width="70%" valign="middle"><input type="text" name="DIAEXP" class="fieldform fecha" maxlength="10" /> <span class="LS">(dd/mm/aaaa)</span></td>
+              </tr>
+              <!--/CONTROL_FECHA-->
+
+              <tr>
+                <td width="30%" align="left" valign="middle">Código único</td>
+                <td width="70%" valign="middle"><input type="text" name="AUTOINC" class="fieldform autoinc" maxlength="15" /></td>
+              </tr>
+              <!--ALTA-->
+              <tr>
+                <td width="30%" align="left" valign="middle">Alta</td>
+                <td width="70%" valign="middle">
+                  <select name="_ALTA">
+                    <option value=""></option>
+                    <option value="1">Sí</option>
+                    <option value="0">No</option>
+                  </select>
+                </td>
+              </tr>
+              <!--/ALTA-->
+              <tr align="center" valign="middle">
+                <td colspan="2" align="center">
+                  <div class="boton-gris2">
+                    <a class="button" href="#" onclick="Megalupa.devuelveFiltros(); return false;"><span>Aplicar filtros</span></a>
+                    <a class="button" href="#" onclick="Megalupa.resetForm(); return false;"><span>Limpiar</span></a>
+                    <a class="button" href="#" onclick="$.fn.colorbox.close(); return false;"><span>Cancelar</span></a>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>

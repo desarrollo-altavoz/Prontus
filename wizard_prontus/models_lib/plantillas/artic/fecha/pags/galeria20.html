@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  %%NIF(_ALTA)%%
+  <meta name="ROBOTS" content="NOINDEX" />
+  %%/NIF%%
+  <title>Prontus CMS</title>
+  <script type="text/javascript" src="/prontus_test_cpn/js-local/Utiles.class.js"></script>
+</head>
+<body>
+  <!-- Utilizacion de los javascript -->
+  <div>    
+    Para utilizar los nuevos  javascrit con estructura POO:<br />
+     - si utiliza un método de la clase, debe instanciar de la manera &lt;nombre_de_la_clase&gt;.&lt;nombre_del_metodo&gt;(&lt;parametros&gt;)<br/>
+     - si utiliza un atributo de la clase, debe instan ciar de la manera  &lt;nombre_de_la_clase&gt;.&lt;nombre_del_atributo&gt;<br/>
+     Ejemplo:<br/>
+    <a href="#" onclick="Utiles.imprimirArticulo();">Imprimir|</a>
+    <a href="#" onclick="Utiles.subWin('http://www.altavoz.net','Pop Altavoz',400,300,30,30);">Pop Altavoz|</a><br /><hr />
+  </div>
+    <!-- Cabecera -->
+    <div>
+      <h2>Cabecera</h2>  
+      <b>_FECHAC:</b> %%_FECHAC%%             <br />
+      <b>_FECHAPLONG:</b> %%_FECHAPLONG%%         <br />
+      <b>_FECHACSHRT:</b> %%_FECHACSHRT%%         <br />
+      <b>_FECHAP:</b> %%_FECHAP%%             <br />
+      <b>_HORAP:</b> %%_HORAP%%              <br />
+      <b>_FECHAE:</b> %%_FECHAE%%             <br />
+      <b>_FECHAELONG:</b> %%_FECHAELONG%%         <br />
+      <b>_FECHAESHRT:</b> %%_FECHAESHRT%%         <br />
+      <b>_HORAE:</b> %%_HORAE%%              <br />
+      <b>_NOM_SECCION1:</b> %%_NOM_SECCION1%%       <br />
+      <b>_NOM_TEMA1:</b> %%_NOM_TEMA1%%          <br />
+      <b>_NOM_SUBTEMA1:</b> %%_NOM_SUBTEMA1%%       <br />
+      <b>_SECCION1:</b> %%_SECCION1%%           <br />
+      <b>_TEMA1:</b> %%_TEMA1%%              <br />
+      <b>_SUBTEMA1:</b> %%_SUBTEMA1%%           <br />
+      <b>_TXT_TITULAR:</b> %%_TXT_TITULAR%%        <br />   
+      <b>_TXT_bajada:</b> %%_TXT_bajada%%         <br />    
+      <b>TXT_bajadaportada:</b> %%TXT_bajadaportada%%   <br />
+      <b>txtrawHTML:</b><br /> %%txtrawHTML%% <br />
+      <b>_tags</b>%%_tags%% <br />
+      <hr/>
+    </div>
+    <!-- /Cabecera -->
+    
+    <!-- /Cuerpo -->
+    <div>
+      <h2>Cuerpo</h2>
+      <b>VTXT_CUERPO:</b> %%VTXT_CUERPO%%<br/>
+      <hr/>
+    </div>
+    <!-- /Cuerpo -->
+
+    <!-- Fotos -->
+    <div>
+      <h2>MEDIA</h2>    
+      <!-- fotos portada -->
+      %%IF(FOTOFIJA_PORT70)%%
+        FOTOFIJA_PORT70:<br />
+        <img src="%%FOTOFIJA_PORT70%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%IF(FOTOFIJA_PORT120)%%
+        FOTOFIJA_PORT120:<br />   
+        <img src="%%FOTOFIJA_PORT120%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%(FOTOFIJA_PORT180)%%
+        FOTOFIJA_PORT180:<br />   
+        <img src="%%FOTOFIJA_PORT180%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%(FOTOFIJA_PORT210)%%
+        FOTOFIJA_PORT210:<br />   
+        <img src="%%FOTOFIJA_PORT210%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%(FOTOFIJA_PORT270)%%
+        FOTOFIJA_PORT270:<br />   
+        <img src="%%FOTOFIJA_PORT270%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%(FOTOFIJA_PORT350)%%
+        FOTOFIJA_PORT350:<br />   
+        <img src="%%FOTOFIJA_PORT350%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%        
+      <br />
+      %%(FOTOFIJA_PORT450)%%
+        FOTOFIJA_PORT450:<br />   
+        <img src="%%FOTOFIJA_PORT450%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+
+      <!--foto fija -->
+      %%IF(FOTOFIJA_ART210)%%
+        FOTOFIJA_PORT210:<br />   
+        <img src="%%FOTOFIJA_ART210%%" alt="imagen 210" width="%%_WFOTOFIJA_ART210%%" height="%%_HFOTOFIJA_ART210%%" />
+      %%/IF%%
+      <br />
+      %%IF(FOTOFIJA_ART270)%%
+        FOTOFIJA_PORT270:<br />   
+        <img src="%%FOTOFIJA_ART270%%" alt="imagen 270" width="%%_WFOTOFIJA_ART270%%" height="%%_HFOTOFIJA_ART270%%" />
+      %%/IF%%
+      <br />
+      %%IF(FOTOFIJA_ART350)%%
+        FOTOFIJA_PORT350:<br />   
+        <img src="%%FOTOFIJA_ART350%%" alt="imagen 350" width="%%_WFOTOFIJA_ART350%%" height="%%_HFOTOFIJA_ART350%%" />
+      %%/IF%%
+      <br />
+      %%IF(FOTOFIJA_ART450)%%
+        FOTOFIJA_PORT450:<br />   
+        <img src="%%FOTOFIJA_ART450%%" alt="imagen 450" width="%%_WFOTOFIJA_ART450%%" height="%%_HFOTOFIJA_ART450%%" />
+      %%/IF%%
+      <br />
+      <hr/>
+    </div>
+    <!-- Fotos -->
+
+  
+
+    <!--multimedia -->
+    <div>
+      <h2>Fotos </h2>
+      <!-- 1  a 10 -->
+      <b>TXT_PFOTO1</b>: %%TXT_PFOTO1%%<br/>
+      <b>FOTOFIJA_ART120_1</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_1)%%
+        <img src="%%FOTOFIJA_ART120_1%%" alt="%%TXT_PFOTO1%%" title="%%TXT_PFOTO1%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_1</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_1)%%
+        <img src="%%FOTOFIJA_ART_ART450_1%%" alt="%%TXT_PFOTO1%%" title="%%TXT_PFOTO1%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO2</b>: %%TXT_PFOTO2%%<br/>
+      <b>FOTOFIJA_ART120_2</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_2)%%
+        <img src="%%FOTOFIJA_ART120_2%%" alt="%%TXT_PFOTO2%%" title="%%TXT_PFOTO2%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_2</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_2)%%
+        <img src="%%FOTOFIJA_ART_ART450_2%%" alt="%%TXT_PFOTO2%%" title="%%TXT_PFOTO2%%" /><br/>
+      %%/IF%%
+       
+      <b>TXT_PFOTO3</b>: %%TXT_PFOTO3%%<br/>
+      <b>FOTOFIJA_ART120_3</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_3)%%
+        <img src="%%FOTOFIJA_ART120_3%%" alt="%%TXT_PFOTO3%%" title="%%TXT_PFOTO3%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_3</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_3)%%
+        <img src="%%FOTOFIJA_ART_ART450_3%%" alt="%%TXT_PFOTO3%%" title="%%TXT_PFOTO3%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO4</b>: %%TXT_PFOTO4%%<br/>
+      <b>FOTOFIJA_ART120_4</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_4)%%
+        <img src="%%FOTOFIJA_ART120_4%%" alt="%%TXT_PFOTO4%%" title="%%TXT_PFOTO4%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_4</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_4)%%
+        <img src="%%FOTOFIJA_ART_ART450_4%%" alt="%%TXT_PFOTO4%%" title="%%TXT_PFOTO4%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO5</b>: %%TXT_PFOTO5%%<br/>
+      <b>FOTOFIJA_ART120_5</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_5)%%
+        <img src="%%FOTOFIJA_ART120_5%%" alt="%%TXT_PFOTO5%%" title="%%TXT_PFOTO5%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_5</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_5)%%
+        <img src="%%FOTOFIJA_ART_ART450_5%%" alt="%%TXT_PFOTO5%%" title="%%TXT_PFOTO5%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO6</b>: %%TXT_PFOTO6%%<br/>
+      <b>FOTOFIJA_ART120_6</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_6)%%
+        <img src="%%FOTOFIJA_ART120_6%%" alt="%%TXT_PFOTO6%%" title="%%TXT_PFOTO6%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_6</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_6)%%
+        <img src="%%FOTOFIJA_ART_ART450_6%%" alt="%%TXT_PFOTO6%%" title="%%TXT_PFOTO6%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO7</b>: %%TXT_PFOTO7%%<br/>
+      <b>FOTOFIJA_ART120_7</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_7)%%
+        <img src="%%FOTOFIJA_ART120_7%%" alt="%%TXT_PFOTO7%%" title="%%TXT_PFOTO7%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_7</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_7)%%
+        <img src="%%FOTOFIJA_ART_ART450_7%%" alt="%%TXT_PFOTO7%%" title="%%TXT_PFOTO7%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO8</b>: %%TXT_PFOTO8%%<br/>
+      <b>FOTOFIJA_ART120_8</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_8)%%
+        <img src="%%FOTOFIJA_ART120_8%%" alt="%%TXT_PFOTO8%%" title="%%TXT_PFOTO8%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_8</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_8)%%
+        <img src="%%FOTOFIJA_ART_ART450_8%%" alt="%%TXT_PFOTO8%%" title="%%TXT_PFOTO8%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO9</b>: %%TXT_PFOTO9%%<br/>
+      <b>FOTOFIJA_ART120_9</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_9)%%
+        <img src="%%FOTOFIJA_ART120_9%%" alt="%%TXT_PFOTO9%%" title="%%TXT_PFOTO9%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_9</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_9)%%
+        <img src="%%FOTOFIJA_ART_ART450_9%%" alt="%%TXT_PFOTO9%%" title="%%TXT_PFOTO9%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO10</b>: %%TXT_PFOTO10%%<br/>
+      <b>FOTOFIJA_ART120_10</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_10)%%
+        <img src="%%FOTOFIJA_ART120_10%%" alt="%%TXT_PFOTO10%%" title="%%TXT_PFOTO10%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_10</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_10)%%
+        <img src="%%FOTOFIJA_ART_ART450_10%%" alt="%%TXT_PFOTO10%%" title="%%TXT_PFOTO10%%" /><br/>
+      %%/IF%% 
+      
+      <!-- 11 a 20 -->
+      <b>TXT_PFOTO11</b>: %%TXT_PFOTO11%%<br/>
+      <b>FOTOFIJA_ART120_11</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_11)%%
+        <img src="%%FOTOFIJA_ART120_11%%" alt="%%TXT_PFOTO11%%" title="%%TXT_PFOTO11%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_11</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_11)%%
+        <img src="%%FOTOFIJA_ART_ART450_11%%" alt="%%TXT_PFOTO11%%" title="%%TXT_PFOTO11%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO12</b>: %%TXT_PFOTO12%%<br/>
+      <b>FOTOFIJA_ART120_12</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_12)%%
+        <img src="%%FOTOFIJA_ART120_12%%" alt="%%TXT_PFOTO12%%" title="%%TXT_PFOTO12%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_12</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_12)%%
+        <img src="%%FOTOFIJA_ART_ART450_12%%" alt="%%TXT_PFOTO12%%" title="%%TXT_PFOTO12%%" /><br/>
+      %%/IF%%
+       
+      <b>TXT_PFOTO13</b>: %%TXT_PFOTO13%%<br/>
+      <b>FOTOFIJA_ART120_13</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_13)%%
+        <img src="%%FOTOFIJA_ART120_13%%" alt="%%TXT_PFOTO13%%" title="%%TXT_PFOTO13%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_13</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_13)%%
+        <img src="%%FOTOFIJA_ART_ART450_13%%" alt="%%TXT_PFOTO13%%" title="%%TXT_PFOTO13%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO14</b>: %%TXT_PFOTO14%%<br/>
+      <b>FOTOFIJA_ART120_14</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_14)%%
+        <img src="%%FOTOFIJA_ART120_14%%" alt="%%TXT_PFOTO14%%" title="%%TXT_PFOTO14%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_14</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_14)%%
+        <img src="%%FOTOFIJA_ART_ART450_14%%" alt="%%TXT_PFOTO14%%" title="%%TXT_PFOTO14%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO15</b>: %%TXT_PFOTO15%%<br/>
+      <b>FOTOFIJA_ART120_15</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_15)%%
+        <img src="%%FOTOFIJA_ART120_15%%" alt="%%TXT_PFOTO15%%" title="%%TXT_PFOTO15%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_15</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_15)%%
+        <img src="%%FOTOFIJA_ART_ART450_15%%" alt="%%TXT_PFOTO15%%" title="%%TXT_PFOTO15%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO6</b>: %%TXT_PFOTO16%%<br/>
+      <b>FOTOFIJA_ART120_16</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_16)%%
+        <img src="%%FOTOFIJA_ART120_16%%" alt="%%TXT_PFOTO16%%" title="%%TXT_PFOTO16%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_16</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_16)%%
+        <img src="%%FOTOFIJA_ART_ART450_16%%" alt="%%TXT_PFOTO16%%" title="%%TXT_PFOTO16%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO17</b>: %%TXT_PFOTO17%%<br/>
+      <b>FOTOFIJA_ART120_17</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_17)%%
+        <img src="%%FOTOFIJA_ART120_17%%" alt="%%TXT_PFOTO17%%" title="%%TXT_PFOTO17%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_17</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_17)%%
+        <img src="%%FOTOFIJA_ART_ART450_17%%" alt="%%TXT_PFOTO17%%" title="%%TXT_PFOTO17%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO8</b>: %%TXT_PFOTO18%%<br/>
+      <b>FOTOFIJA_ART120_18</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_18)%%
+        <img src="%%FOTOFIJA_ART120_18%%" alt="%%TXT_PFOTO18%%" title="%%TXT_PFOTO18%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_18</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_18)%%
+        <img src="%%FOTOFIJA_ART_ART450_18%%" alt="%%TXT_PFOTO18%%" title="%%TXT_PFOTO18%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO9</b>: %%TXT_PFOTO19%%<br/>
+      <b>FOTOFIJA_ART120_19</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_9)%%
+        <img src="%%FOTOFIJA_ART120_19%%" alt="%%TXT_PFOTO19%%" title="%%TXT_PFOTO19%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_19</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_19)%%
+        <img src="%%FOTOFIJA_ART_ART450_19%%" alt="%%TXT_PFOTO19%%" title="%%TXT_PFOTO19%%" /><br/>
+      %%/IF%% 
+      
+      <b>TXT_PFOTO10</b>: %%TXT_PFOTO20%%<br/>
+      <b>FOTOFIJA_ART120_20</b>:<br/>      
+      %%IF(FOTOFIJA_ART120_20)%%
+        <img src="%%FOTOFIJA_ART120_20%%" alt="%%TXT_PFOTO20%%" title="%%TXT_PFOTO20%%" /><br/>
+      %%/IF%% 
+      <b>FOTOFIJA_ART_ART450_20</b>:<br/>  
+      %%IF(FOTOFIJA_ART_ART450_20)%%
+        <img src="%%FOTOFIJA_ART_ART450_20%%" alt="%%TXT_PFOTO20%%" title="%%TXT_PFOTO20%%" /><br/>
+      %%/IF%% 
+      
+    </div>   
+
+
+        <!-- usando elementos del fid  para  la logica  en la plantilla -->
+        %%IF(_ALTA)%%
+            <!--uso de la marca % %_ALTA% % -->
+        %%/IF%%
+        <br />
+        %%IF(CHK_publicarfecha)%%
+            <!--uso de la marca % %CHK_publicarfecha% %   %%_FECHAELONG%% -->
+        %%/IF%%
+        <br />
+        %%IF(CHK_hora)%%
+            <!--uso de la marca % %CHK_hora% %   %%_HORAP%% -->
+        %%/IF%%
+        <br />
+       <!-- usando elementos del fid  para  la logica  en la plantilla -->
+    
+</body>
+</html>

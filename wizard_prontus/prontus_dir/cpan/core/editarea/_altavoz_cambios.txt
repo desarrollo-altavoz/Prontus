@@ -1,0 +1,33 @@
+Se han hecho cambios en los siguientes archivos:
+
+--------------------------------------------------
+editarea/edit_area/reg_syntax/html.js
+Se hicieron muchos cambios para agregar las marcas prontus al resaltado se sintaxis
+
+--------------------------------------------------
+editarea/edit_area/edit_area_full.js
+Línea 16, Char 128.
+Se cambia:
+if((f=fs["frame_"+id])&&eAs[id]["displayed"]==true){
+Por:
+if(typeof(fs["frame_"+id])!='undefined'&&eAs[id]["displayed"]==true){var f=fs["frame_"+id];
+
+--------------------------------------------------
+para contrarrestar issue con Safari 5, se hace rollback de cambios anteriores y finalmente queda:
+"+(((navigator.userAgent.indexOf('AppleWebKit')!=-1)&&(navigator.userAgent.indexOf('Chrome')==-1))?"#textarea {left:3px;}":"")+"
+
+--------------------------------------------------
+Se aplica parche para IE9, descrito acá:
+https://bugzilla.redhat.com/attachment.cgi?id=576438&action=diff
+
+Se modifican además los siguientes archivos:
+editarea/edit_area/edit_area.css
+editarea/edit_area/manage_area.js
+editarea/edit_area/edit_area_loader.js
+editarea/edit_area/edit_area_compressor.php
+
+De ahora en adelante no se debe modificar el archivo: edit_area_full.js
+Se debe usar el compresor PHP (ejecutar vía web)
+
+
+

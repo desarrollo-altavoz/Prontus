@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Prontus CMS - Recordar contraseña</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css">
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/olvidopass.css">
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Recordarpass.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Captcha.class.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        var prop = {type:'cpan'};
+        Captcha.generate(prop);
+        $('#FrmRecordar').bind('submit', function() {
+			Captcha.setRefreshCaptcha();
+        });
+    });
+    
+    </script>
+  </head>
+  <body class="bodysite">
+
+    <script type="text/javascript">
+    </script>
+
+    <div id="main">
+        <div class="box-olvidopass">
+            <div class="logo">
+                <img src="/%%_PRONTUS_ID%%/cpan/core/imag/auxi/logo_login.jpg" width="225" height="60" border="0" alt="Prontus" title="Prontus" />
+            </div>
+            <div class="info">
+                <p>Por favor, introduce tu información aquí.<br/>La nueva contraseña será enviada a tu email registrado en Prontus.</p>
+            </div>
+            <div class="auxi">
+                <form method="POST" action="" enctype="multipart/form-data" name="FrmRecordar" id="FrmRecordar">
+                <input type="hidden" name="_path_conf" value="%%_PATH_CONF%%">
+                <p>
+                    Usuario:<br/>
+                    <input name="_usr" type="text" size="15" maxlength="30" class="fieldform">
+                </p>
+                <p>
+                    Ingresa los caracteres que ves en la imagen:<br/>
+                    <input name="_code" type="text" size="15" maxlength="30" class="fieldform2">
+                    <span id="prontus_captcha_content"></span>
+                </p>
+                    <div class="loading-action"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
+                    <div class="botonIngresar">
+                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="Recordarpass.recordar('%%_PRONTUS_ID%%', DIR_CGI_CPAN); return false;"><span>Enviar contraseña a mi email</span></a></div>
+                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="history.back();"><span>Cancelar</span></a></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+  </body>
+</html>

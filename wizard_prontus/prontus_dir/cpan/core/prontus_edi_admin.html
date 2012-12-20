@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Administrar Ediciones &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css"/>
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/edi.css"/>
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/lang/jquery.ui.datepicker-es.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/EdiAdmin.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Opciones.class.js"></script>
+
+  </head>
+  <body class="bodysite">
+
+    <div id="main">
+        %%MACRO(menu_head1b.html)%%
+
+        <!--INICIO CONTENIDO-->
+          <div class="main-left">
+             <div class="content">
+
+                <!--TITULO PRINCIPAL-->
+                <div class="top-titulo960">
+                  <h1 class="titular">Administrar Ediciones</h1>
+                  <div class="boton-gris3 aleft"><a class="button" href="#" onclick="EdiAdmin.cargarFicha(); return false;"><span>+ Nueva edici&oacute;n</span></a></div>
+                  <div class="boton-gris3 aleft"><a class="button" href="prontus_edi_otras.cgi?path_conf=%%_path_conf%%"><span>Ediciones anteriores</span></a></div>
+                </div>
+                <!-- / TITULO PRINCIPAL-->
+
+                <div class="separa"></div>
+
+                <!--COLUMNA IZQUIERDA-->
+                <div class="col960">
+
+                  <div class="rotulo-gris">
+                    <div class="col2 aleft">Fecha de publicaci&oacute;n</div>
+                    <div class="col3 aleft">Nombre</div>
+                    <div class="col6 aleft">&nbsp;</div>
+                  </div>
+
+                  <ul>
+
+                    <!--item_loop-->
+                   <li id="item-edic-%%_edic%%">
+                    <div class="fila1-user">
+                      <div class="col1 aleft">&nbsp;</div>
+                      <div class="col2 aleft"><a href="%%_ver_edic%%" target="_blank">%%_fecha_edic%%</a></div>
+                      <div class="col3 aleft">%%_edic%%</div>
+                      <div class="col4 aleft">&nbsp;</div>
+                      <div class="col5 aleft">&nbsp;</div>
+                      <div class="col5 aleft"><img class="img-vigencia" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_vigente%%.png" alt="%%_vigente%%" title="%%_vigente%%"/> <a href="#" onclick="EdiAdmin.cargarFicha('%%_edic%%');"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar.png" onmouseover="EdiAdmin.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_on.png');" onmouseout="EdiAdmin.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar.png');" alt="Editar edición" title="Editar edición" /></a> <a href="#" onclick="EdiAdmin.borrar('%%_edic%%'); return false;"><img onmouseover="EdiAdmin.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_on.png');" onmouseout="EdiAdmin.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar.png');" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar.png" width="18" height="18" alt="Borrar edición" title="Borrar edición" /></a></div>
+                    </div>
+                   </li>
+                    <!--/item_loop-->
+
+                  </ul><!-- ul -->
+
+                </div>
+                <!-- / COLUMNA IZQUIERDA-->
+
+              </div>
+           </div>
+        </div>
+        <!--/Fin Contenido-->
+        <script type="text/javascript">
+        $(document).ready(function() {
+            EdiAdmin.dir_cgi_cpan = DIR_CGI_CPAN;
+            EdiAdmin.path_conf = '%%_path_conf%%';
+            EdiAdmin.prontus_id = '%%_PRONTUS_ID%%';
+            Admin.init('%%_prontus_id%%');
+
+            $('.img-vigencia').each(function () {
+                if ($(this).attr('alt') == 'vigente') {
+                    $(this).attr('alt', 'Edición vigente');
+                    $(this).attr('title', 'Edición vigente');
+                } else if ($(this).attr('alt') == 'novigente') {
+                    $(this).attr('alt', 'Edición no vigente');
+                    $(this).attr('title', 'Edición no vigente');
+                };
+            });
+        });
+        </script>
+  </body>
+</html>

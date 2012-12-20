@@ -1,0 +1,109 @@
+                        <div class="listado">
+                            <div style="height:37px;">
+                                <p style="float: left;"><b>Configuración de Artículos</b>: %%_prontus_id%%-art.cfg</p>
+                                <div class="botones">
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                            <span>Cancelar</span>
+                                        </a>
+                                    </div>
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="Cfgedit.guardaCfg('art'); return false;" href="#" class="button" title="Guardar">
+                                            <span>Guardar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                    <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+                                </div>
+                            </div>
+
+                            <form name="frmCFG-ART" id="frmCFG-ART" method="post">
+                                <table class="tableform" width="100%">
+                                    <input type="hidden" name="_cfg" value="art"/>
+                                    <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+                                    <input type="hidden" name="FORM_PLTS" value="" />
+                                    <input type="hidden" name="_tab" value="cfg-tab1" />
+                                    <tr class="head">
+                                        <td>Variable</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 250px;" valign="top">
+                                            FORM_PLTS<br>
+                                            <span class="ayuda">Define la relación entre FIDs y plantillas de artículo.</span>
+                                            <div style="clear: both; height: 5px;"></div>
+                                            <table class="tableform" width="100%">
+                                                <tr class="head">
+                                                    <td>Ini.</td>
+                                                    <td>Nombre</td>
+                                                    <td>FID</td>
+                                                    <td width="205">Plantillas</td>
+                                                    <td>Quitar</td>
+                                                </tr>
+                                                <!--loop_fid_item-->
+                                                <tr>
+                                                    <td>%%fid_default%%</td>
+                                                    <td valign="top"><input name="nombrefid_%%num%%" class="fieldform" style="width: 120px;" value="%%nombrefid%%"/></td>
+                                                    <td valign="top">
+                                                        <input type="hidden" name="archivofid_%%num%%" value="%%archivofid%%" />
+                                                        %%archivofid%%
+                                                    </td>
+                                                    <td valign="top">
+                                                        <select name="plantillasfid_%%num%%" style="width: 150px;"%%multiple%%>
+                                                            %%plantillasfid%%
+                                                        </select>
+                                                        <div style="float: right; margin-top: 5px;">
+                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/%%multiple_img%%.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_%%num%%');"/>
+                                                        </div>
+                                                    </td>
+                                                    <td align="center" valign="top">
+                                                        <input type="checkbox" name="quitar[]" value="%%archivofid%%" onclick="Cfgedit.quitarFid(this, '%%num%%');"/>
+                                                    </td>
+                                                </tr>
+                                                <!--/loop_fid_item-->
+                                                <tr>
+                                                    <td></td>
+                                                    <td><input name="nombrefid_%%num_ultimo_fid%%" class="fieldform" style="width: 120px;" value=""/></td>
+                                                    <td>
+                                                        <select name="archivofid_%%num_ultimo_fid%%" style="width: 150px;">
+                                                            <option value="">- Seleccione -</option>
+                                                            <!--loop_fids-->
+                                                            <option value="%%valor%%">%%nombre%%</option>
+                                                            <!--/loop_fids-->
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select name="plantillasfid_%%num_ultimo_fid%%" style="width: 150px;">
+                                                            <!--loop_plts-->
+                                                            <option value="%%valor%%">%%nombre%%</option>
+                                                            <!--/loop_plts-->
+                                                        </select>
+                                                        <div style="float: right;">
+                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_%%num_ultimo_fid%%');"/>
+                                                        </div>
+                                                    </td>
+                                                    <td align="center"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <div class="botones">
+                                <div class="boton-gris3 aright">
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                        <span>Cancelar</span>
+                                    </a>
+                                </div>
+                                <div class="boton-gris3 aright">
+                                    <a onclick="Cfgedit.guardaCfg('art'); return false;" href="#" class="button" title="Guardar">
+                                        <span>Guardar</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+                            </div>
+                        </div> <!--/listado-->
+                    

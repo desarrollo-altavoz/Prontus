@@ -1,0 +1,53 @@
+
+Formulario.class.js
+------------------------------
+
+Descripcion:
+    Contiene funciones para trabajo con formularios.
+    Permite, por ejemplo, obtener el valor de un radio button chequeado,
+    chequear mútliples checkboxes, etc.
+    No usa jQuery.
+
+Dependencias:
+    Ninguna
+
+Versión:
+    1.0.0 - 16/03/2010 - CVI - Primera Versión orientada a objetos
+
+Instalacion y Uso:
+    Formulario.getRadioValue(formu, nomb);
+    - formu: Referencia al objeto formulario
+    - nomb:  Nombre del grupo de radio buttons
+    Sirve para obtener el valor del radio button que está chequeado.
+    Devuelve vacio si no hay ninguno chequeado.
+
+    Formulario.checkAll(formu, prefijo);
+    - formu:   Referencia al objeto formulario
+    - prefijo: Prefijo de los checks. Si es nulo o vacio, chequea todos.
+    Chequea todos los checks que empiecen con prefijo.
+    Si prefijo es nulo o undefined, los chequea todos.
+
+    Formulario.uncheckAll(formu, prefijo);
+    - formu:   Referencia al objeto formulario
+    - prefijo: Prefijo de los checks. Si es nulo o vacio, deschequea todos.
+    Deschequea todos los checks que empiecen con prefijo.
+    Si prefijo es nulo o undefined, los Deschequea todos.
+
+    Formulario.toggle: function(formu, prefijo) ;
+    - formu:   Referencia al objeto formulario
+    - prefijo: Prefijo de los checks. Si es nulo o vacio, chequea/deschequea todos.
+    Invierte el estado de un grupo de checkbox, que comiencen con prefijo.
+    Si prefijo es nulo o undefined, los invierte todos.
+
+    Formulario.handleMultiCheck(masterCheckObject, checkPrefix);
+    - masterCheckObject: el objeto checkbox usado como master
+    - checkPrefix: prefijo de los name de los checkboxes a manipular
+    Permite selecc o desselecc una col completa de checkboxes usando la de la cabecera.
+    Vale decir, usando un checkbox como master, hace que el resto tome el mismo estado.
+    Modo de uso:
+    <input type="checkbox" name="selAll" value="1" onclick="Formulario.handleMultiCheck(this, 'sel_')">
+    Esto controla todos los checkbox que comiencen con "sel_"
+    <input type="checkbox" name="sel_0018950f587c" value="1" />
+
+Configuración:
+    No Aplica

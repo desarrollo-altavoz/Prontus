@@ -1,0 +1,92 @@
+
+                        <div class="listado">
+
+                            <div style="height:37px;">
+                                <p style="float: left;"><b>Configuración de Listas</b>: %%_prontus_id%%-list.cfg</p>
+                                <div class="botones">
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                            <span>Cancelar</span>
+                                        </a>
+                                    </div>
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="Cfgedit.guardaCfg('list'); return false;" href="#" class="button" title="Guardar">
+                                            <span>Guardar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                    <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+                                </div>
+                            </div>
+
+                            <form name="frmCFG-LIST" id="frmCFG-LIST" method="POST">
+                                <table class="tableform" width="100%">
+                                    <input type="hidden" name="_cfg" value="list"/>
+                                    <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+                                    <input type="hidden" name="_tab" value="cfg-tab11" />
+                                    <input type="hidden" name="LIST_ORDEN" value="" />
+                                    <tr class="head">
+                                        <td>Variable</td>
+                                        <td>Valor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            LIST_PROCESO_INTERNO<br>
+                                            <span class="ayuda">Para activar o desactivar la generación automática de salidas de artículos. 
+                                            En caso de desactivar esta opción, los listados se pueden generar vía cron.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="LIST_PROCESO_INTERNO" id="LIST_PROCESO_INTERNO_SI" value="SI"%%LIST_PROCESO_INTERNO_SI%%/> <label for="LIST_PROCESO_INTERNO_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="LIST_PROCESO_INTERNO" id="LIST_PROCESO_INTERNO_NO" value="NO"%%LIST_PROCESO_INTERNO_NO%%/> <label for="LIST_PROCESO_INTERNO_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            LIST_MAXARTICS<br>
+                                            <span class="ayuda">Número máximo de artículos a considerar para construir las salidas de artículos. 
+                                            De esta manera se puede limitar su número por razones estéticas o de rendimiento del servidor.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="LIST_MAXARTICS" value="%%LIST_MAXARTICS%%" class="fieldform" maxlength="4" style="width: 30px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            LIST_ORDEN<br>
+                                            <span class="ayuda">Permitir definir el orden del listado de artículos en las salidas de artículos.</span>
+                                        </td>
+                                        <td>
+                                            <select name="LIST_ORDEN_TIPO" style="width: 110px;">
+                                                <option value="">- Seleccione -</option>
+                                                <option value="PUBLICACION"%%LIST_ORDEN_PUB%%>Publicación</option>
+                                                <option value="TITULAR"%%LIST_ORDEN_TIT%%>Titular</option>
+                                                <option value="CREACION"%%LIST_ORDEN_CRE%%>Creación</option>
+                                            </select>
+                                            <select name="LIST_ORDEN_ORD" style="width: 110px;">
+                                                <option value="">- Seleccione -</option>
+                                                <option value="DESC"%%LIST_ORDEN_DESC%%>Descendente</option>
+                                                <option value="ASC"%%LIST_ORDEN_ASC%%>Ascendente</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <div class="botones">
+                                <div class="boton-gris3 aright">
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                        <span>Cancelar</span>
+                                    </a>
+                                </div>
+                                <div class="boton-gris3 aright">
+                                    <a onclick="Cfgedit.guardaCfg('list'); return false;" href="#" class="button" title="Guardar">
+                                        <span>Guardar</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+                            </div>
+                        </div> <!--/listado-->

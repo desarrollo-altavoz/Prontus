@@ -1,0 +1,4 @@
+#dropZone {background-color: #3A3935; height: 200px; margin: 0 auto; width: 315px; border-radius: 10px 10px 10px 10px; border: 1px solid #000000;}
+#dropZone .draghere {color: #FFFFFF; margin-top: 87px; text-shadow: 1px 1px 2px #E6E6E6; text-transform: uppercase;}
+#uploadProgress {margin: 4px auto 0; width: 185px; display: none; height: 18px; width: 186px;}
+#uploadProgressPercent {margin-left: 145px; position: absolute; width: 35px;}

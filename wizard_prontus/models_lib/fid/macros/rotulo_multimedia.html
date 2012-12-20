@@ -1,0 +1,40 @@
+<table width="100%" border="0" cellpadding="3" cellspacing="0" class="tableform">  
+  <tr><br/><td class="nombre" colspan="2">Animaci&oacute;n Flash</td></tr>
+  <!-- flash fija -->
+  <tr>
+    <td class="nombre">Flash tama&ntilde;o fija</td>
+    <td class="campo2 upload">
+      <span class="ayuda">SWF (320 x 240px)</span><br/>
+      <input name="SWF_1" type="file" id="SWF_1"/>
+      <div class="file-link">&nbsp;%%SWF_1%%</div>
+      <input name="WSWF_1" type="hidden" id="WSWF_1" value="320"/>
+      <input name="HSWF_1" type="hidden" id="HSWF_1" value="240"/>
+    </td>   
+  </tr>
+  <!-- flash fija -->  
+  <!-- flash variable -->
+  <tr>
+    <td class="nombre">Flash tama&ntilde;o variable</td>
+    <td class="campo2 upload">
+      <input name="SWF_2" type="file" id="SWF_2" />
+      <div class="file-link">&nbsp;%%SWF_2%%</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="nombre"></td>
+    <td class="campo">
+      <table>
+        <tr>
+          <td><span class="ayuda">Ancho</span></td>
+          <td width="50px"><input name="WSWF_2" type="text" id="WSWF_2" value="%%WSWF_2%%" size="5" class="fieldform"/></td>
+          <td><span class="ayuda">Alto</span></td>
+          <td width="50px"><input name="HSWF_2" type="text" id="HSWF_2" value="%%HSWF_2%%" size="5" class="fieldform"/></td>
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="CHK_transparente">Fondo Transparente</label>&nbsp;&nbsp;<input id="CHK_transparente" type="checkbox" name="CHK_transparente" value="si"/>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <!-- flash variable -->   
+</table>

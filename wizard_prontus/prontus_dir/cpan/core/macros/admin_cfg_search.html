@@ -1,0 +1,308 @@
+
+                        <div class="listado">
+
+                            <div style="height:37px;">
+                                <p style="float: left;"><b>Configuración del Buscador</b>: buscador_prontus.cfg</p>
+                                <div class="botones">
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                            <span>Cancelar</span>
+                                        </a>
+                                    </div>
+                                    <div class="boton-gris3 aright">
+                                        <a onclick="Cfgedit.guardaCfg('buscador'); return false;" href="#" class="button" title="Guardar">
+                                            <span>Guardar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                    <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+                                </div>
+                            </div>
+
+                            <form name="frmCFG-BUSCADOR" id="frmCFG-BUSCADOR" method="post">
+                                <table class="tableform" width="100%">
+                                    <input type="hidden" name="_cfg" value="buscador"/>
+                                    <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+                                    <input type="hidden" name="_tab" value="cfg-tab5" />
+                                    <input type="hidden" name="RAW_FILETYPES" value="%%RAW_FILETYPES%%" />
+                                    <input type="hidden" name="URL_FILETYPES" value="%%URL_FILETYPES%%" />
+                                    <input type="hidden" name="FIDS" value="%%FIDS%%" />
+                                    <input type="hidden" name="TEXTVARS" value="%%TEXTVARS%%" />
+                                    <tr class="head">
+                                        <td>Variable</td>
+                                        <td>Valor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            RAW_FILETYPES<br>
+                                            <span class="ayuda">Tipos de Archivos Arbitrarios a Indexar.</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%" id="rawftype_listado">
+                                                <tr class="head">
+                                                    <td>Extensión</td>
+                                                    <td align="center">Quitar</td>
+                                                </tr>
+                                                <!--loop_rawfiletypes-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_RAW_FILETYPES[]" value="%%filetype_valor%%" style="margin-bottom: 1px; width: 125px;" class="fieldform" id="rawftype_%%num%%"/></td>
+                                                    <td align="center"><input type="checkbox" name="QUITAR_RAW_FILETYPES[]" value="%%filetype_valor%%" onclick="Cfgedit.quitarRawftype(this, '%%num%%');"/></td>
+                                                </tr>
+                                                <!--/loop_rawfiletypes-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_RAW_FILETYPES[]" value="" style="margin-bottom: 1px; width: 125px;" class="fieldform"/></td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                            <div class="boton-gris3 aleft">
+                                                <a onclick="Cfgedit.agregarRawftype(); return false;" href="#" class="button">
+                                                    <span>+ Agregar</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            URL_FILETYPES<br>
+                                            <span class="ayuda">Tipos de URLs a Indexar en modalidad spider. Ademas de estos, se indexan los directorios (/) y urls que terminan en un string sin puntos.</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%" id="urlftype_listado">
+                                                <tr class="head">
+                                                    <td>Extensión</td>
+                                                    <td align="center">Quitar</td>
+                                                </tr>
+                                                <!--loop_urlfiletypes-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_URL_FILETYPES[]" value="%%filetype_valor%%" style="margin-bottom: 1px; width: 125px;" class="fieldform" id="urlftype_%%num%%"/></td>
+                                                    <td align="center"><input type="checkbox" name="QUITAR_URL_FILETYPES[]" value="%%filetype_valor%%" onclick="Cfgedit.quitarUrlftype(this, '%%num%%');"/></td>
+                                                </tr>
+                                                <!--/loop_urlfiletypes-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_URL_FILETYPES[]" value="" style="margin-bottom: 1px; width: 125px;" class="fieldform"/></td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                            <div class="boton-gris3 aleft">
+                                                <a onclick="Cfgedit.agregarUrlftype(); return false;" href="#" class="button">
+                                                    <span>+ Agregar</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            URL_MAXPAGS<br>
+                                            <span class="ayuda"> Máximo de páginas a indexar en modalidad spider.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="URL_MAXPAGS" value="%%URL_MAXPAGS%%" class="fieldform" maxlength="4" style="width: 30px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FIDS<br>
+                                            <span class="ayuda">Tipos de FID que seran consideradas validos para ser indexados.</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%">
+                                                <tr class="head">
+                                                    <td>FID</td>
+                                                    <td align="center">Válido</td>
+                                                </tr>
+                                                %%buscador_fids%%
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            RESUMEN<br>
+                                            <span class="ayuda">Numero de caracteres a almacenar como resumen.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="RESUMEN" value="%%RESUMEN%%" class="fieldform" maxlength="4" style="width: 30px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            MAXCARS<br>
+                                            <span class="ayuda">Tamaño máximo de la data a indexar.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="MAXCARS" value="%%MAXCARS%%" class="fieldform" maxlength="6" style="width: 43px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            RATIO<br>
+                                            <span class="ayuda">Límite para palabras irrelevantes (%).</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="RATIO" value="%%RATIO%%" class="fieldform" maxlength="2" style="width: 20px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            MINTEXT<br>
+                                            <span class="ayuda">Límite de caracteres para considerar que el texto es significativo.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="MINTEXT" value="%%MINTEXT%%" class="fieldform" maxlength="2" style="width: 20px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TITLEVAR<br>
+                                            <span class="ayuda">Variable Prontus que sera considerada el titular.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="TITLEVAR" value="%%TITLEVAR%%" class="fieldform" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TEXTVARS<br>
+                                            <span class="ayuda">Variables Prontus sobre las que se buscara.</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%" id="textvars_listado">
+                                                <tr class="head">
+                                                    <td>Variable</td>
+                                                    <td align="center">Quitar</td>
+                                                </tr>
+                                                <!--loop_textvars-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_TEXTVARS[]" value="%%textvar_valor%%" style="margin-bottom: 1px; width: 125px;" class="fieldform" id="textvar_%%num%%"/></td>
+                                                    <td align="center"><input type="checkbox" name="QUITAR_TEXTVARS[]" value="%%textvar_valor%%" onclick="Cfgedit.quitarTextvar(this, '%%num%%');"/></td>
+                                                </tr>
+                                                <!--/loop_textvars-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_TEXTVARS[]" value="" style="margin-bottom: 1px; width: 125px;" class="fieldform"/></td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                            <div class="boton-gris3 aleft">
+                                                <a onclick="Cfgedit.agregarTextvar(); return false;" href="#" class="button">
+                                                    <span>+ Agregar</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            RESPERPAG<br>
+                                            <span class="ayuda">Resultados por pagina.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="RESPERPAG" value="%%RESPERPAG%%" class="fieldform" maxlength="2" style="width: 20px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            MAXPAGS<br>
+                                            <span class="ayuda">Maximo de paginas a mostrar.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="MAXPAGS" value="%%MAXPAGS%%" class="fieldform" maxlength="2" style="width: 20px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            SEARCH_MAXEXEC<br>
+                                            <span class="ayuda">Máximo de instancias permitidas (Unix).</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="SEARCH_MAXEXEC" value="%%SEARCH_MAXEXEC%%" class="fieldform" maxlength="2" style="width: 20px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            USEFRIENDLYURLS<br>
+                                            <span class="ayuda">Los resultados adoptarán la estructura de Friendly URLs.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="USEFRIENDLYURLS" id="USEFRIENDLYURLS_SI" value="1" %%USEFRIENDLYURLS_SI%%/> <label for="USEFRIENDLYURLS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="USEFRIENDLYURLS" id="USEFRIENDLYURLS_NO" value="0" %%USEFRIENDLYURLS_NO%%/> <label for="USEFRIENDLYURLS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            META<br>
+                                            <span class="ayuda">Variables "META", usadas para perfilación de contenidos u otra clasificación (pueden ser usadas en los queries).</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%">
+                                                <tr>
+                                                    <td>1. <input type="text" name="META1" value="%%META1%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2. <input type="text" name="META2" value="%%META2%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3. <input type="text" name="META3" value="%%META3%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            METADATA<br>
+                                            <span class="ayuda">Variables "METADATA" usadas para almacenar información a desplegar dentro de los resultados (no pueden ser usadas en los queries).</span>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td>1. <input type="text" name="METADATA1" value="%%METADATA1%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2. <input type="text" name="METADATA2" value="%%METADATA2%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3. <input type="text" name="METADATA3" value="%%METADATA3%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4. <input type="text" name="METADATA4" value="%%METADATA4%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>5. <input type="text" name="METADATA5" value="%%METADATA5%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>6. <input type="text" name="METADATA6" value="%%METADATA6%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>7. <input type="text" name="METADATA7" value="%%METADATA7%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>8. <input type="text" name="METADATA8" value="%%METADATA8%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>9. <input type="text" name="METADATA9" value="%%METADATA9%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>10. <input type="text" name="METADATA10" value="%%METADATA10%%" class="fieldform" maxlength="100" style="width: 150px;"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <div class="botones">
+                                <div class="boton-gris3 aright">
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                                        <span>Cancelar</span>
+                                    </a>
+                                </div>
+                                <div class="boton-gris3 aright">
+                                    <a onclick="Cfgedit.guardaCfg('buscador'); return false;" href="#" class="button" title="Guardar">
+                                        <span>Guardar</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+                                <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+                            </div>
+                        </div> <!--/listado-->
+                    

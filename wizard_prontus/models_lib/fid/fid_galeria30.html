@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    %%MACRO(_head.html)%%
+    <script type="text/javascript">
+      // Espacio para personalizar o agregar JS custom al cargar o subimitir
+      $(document).ready(function () {
+
+        $('#_mainFidForm').submit(function() {
+
+          /* Ejemplo: realizar validaciones de JS al submitir: */
+          /*
+          var notValidData = 1;
+          if (notValidData) {
+          Fid.setGUIProcesando(false); // oculta reloj y habilita botonera
+          return false;                // aborta submit del formulario
+          };
+          */
+
+        });
+      });
+    </script>
+  </head>
+  <body class="bodysite">
+    <div id="main">
+      %%MACRO(_menu.html)%%
+
+      <!--INICIO_CONTENIDO_FID-->
+      <form method="post" action="prontus_art_sbmit.cgi" enctype="multipart/form-data" name="_mainFidForm" id="_mainFidForm">
+        %%MACRO(_form_fields.html)%%
+
+        <div class="main-left">
+          <div class="content">
+
+            %%MACRO(_publicacion_directa.html)%%
+
+            <div class="top-fid">
+              %%MACRO(_titulo_principal.html)%%
+              %%MACRO(_botones.html)%%
+            </div>
+
+            <div class="separa"></div>
+
+            <!--COLUMNA IZQUIERDA | CONTENIDO DEL ARTICULO-->
+            <div class="col685 aleft">
+
+              <!-- TAB DE CONTENIDOS DEL FID -->
+              %%MACRO(galeria30_tabs.html)%%
+              <!-- /TAB DE CONTENIDOS DEL FID -->
+
+
+              <!-- CONTENIDO DE LOS TABS -->
+              <div class="cabecera" id="body1">
+                %%MACRO(galeria30_cabecera.html)%%
+              </div>
+
+              <!-- cuerpo -->
+              <div class="cabecera" id="body2">
+                %%MACRO(_cuerpo_vtxt.html)%%
+              </div>
+              <!-- /cuerpo -->
+
+              <!-- Fotos fijas -->
+              <div class="cabecera" id="body3">
+                %%MACRO(galeria30_foto_subtab.html)%%
+                <div id="subtabs1">
+                  %%MACRO(galeria30_foto_portada.html)%%
+                </div>
+                <div id="subtabs2">
+                  %%MACRO(galeria30_foto_articulo.html)%%
+                </div>
+              </div>
+              <!-- /Fotos fijas -->
+
+              <!-- galería -->
+              <div class="cabecera" id="body4">
+                %%MACRO(galeria30_galeria_subtab.html)%%
+                <div id="subtabs3">
+                  %%MACRO(galeria30_galeria_1.html)%%
+                </div>
+                <div id="subtabs4">
+                  %%MACRO(galeria30_galeria_2.html)%%
+                </div>
+                <div id="subtabs5">
+                  %%MACRO(galeria30_galeria_3.html)%%
+                </div>
+                <div id="subtabs6">
+                  %%MACRO(galeria30_galeria_4.html)%%
+                </div>
+                <div id="subtabs7">
+                  %%MACRO(galeria30_galeria_5.html)%%
+                </div>
+                <div id="subtabs8">
+                  %%MACRO(galeria30_galeria_6.html)%%
+                </div>
+              </div>
+              <!-- galería -->
+              
+              <!-- raw html -->
+              <div class="cabecera" id="body5">
+                %%MACRO(galeria30_raw_html.html)%%
+              </div>
+              <!-- galería -->
+
+              <!-- fotosextras -->
+              <div class="cabecera" id="bodyupload" >
+                %%MACRO(_fotos_extra.html)%%
+              </div>
+              <!-- /fotosextras -->
+              <!-- CONTENIDO DE LOS TABS -->
+              
+            </div>
+            <!--/COLUMNA IZQUIERDA | CONTENIDO DEL ARTICULO-->
+
+            <!--COLUMNA DERECHA-->
+            <div class="col250 aright">
+
+              %%MACRO(_opciones.html)%%
+
+              <div class="separa2"></div>
+
+              %%MACRO(_banco_imagenes.html)%%
+
+            </div>
+            <!-- / COLUMNA DERECHA-->
+          </div>
+        </div>
+
+        <!-- Control VTXT -->
+        %%_INIT_VTXT%%
+        <!-- /Control VTXT -->
+      </form>
+      <!--FIN_CONTENIDO_FID-->
+
+    </div>
+  </body>
+</html>

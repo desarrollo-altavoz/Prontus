@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Ediciones Anteriores &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css"/>
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/edi.css"/>
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/lang/jquery.ui.datepicker-es.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/EdiAdmin.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Admin.class.js"></script>
+
+  </head>
+  <body class="bodysite">
+
+    <div id="main">
+        %%MACRO(menu_head1b.html)%%
+
+        <!--INICIO CONTENIDO-->
+          <div class="main-left">
+             <div class="content">
+
+                <!--TITULO PRINCIPAL-->
+                <div class="top-titulo960">
+                  <h1 class="titular">Ediciones Anteriores</h1>
+                  <div class="boton-gris3 aright"><a href="prontus_edi_admin.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg" class="button"><span>&laquo; Volver</span></a></div>
+                </div>
+                <!-- / TITULO PRINCIPAL-->
+
+                <div class="separa"></div>
+
+                <!--COLUMNA IZQUIERDA-->
+                <div class="col960">
+
+                  <div class="rotulo-gris">
+                    <div class="col2 aleft">Fecha de publicaci&oacute;n</div>
+                    <div class="col3 aleft">Nombre</div>
+                  </div>
+                  <!--ul-->
+                  <ul>
+                    <!--item_loop-->
+                   <li>
+                    <div class="fila1-user">
+                      <div class="col1 aleft">&nbsp;</div>
+                      <div class="col2 aleft"><a href="%%_ver_edic%%" target="_blank">%%_fecha_edic%%</a></div>
+                      <div class="col3 aleft">%%_edic%%</div>
+                    </div>
+                   </li>
+                    <!--/item_loop-->
+                  </ul><!--/ul-->
+                  <!--edic_msg-->
+                  <ul>
+                   <li>
+                    <div class="fila1-user">
+                      <div class="edic_msg">%%_edic_msg%%</div>
+                    </div>
+                   </li>
+                  <!--/edic_msg-->
+                </div>
+                <!-- / COLUMNA IZQUIERDA-->
+
+              </div>
+           </div>
+        </div>
+        <!--/Fin Contenido-->
+        <script type="text/javascript">
+        Admin.init('%%_prontus_id%%');
+        </script>
+  </body>
+</html>

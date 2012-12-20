@@ -1,0 +1,152 @@
+
+<?php
+$mostrarContenido = 0;
+// Si esta logeado en prontus, mostrar siempre todo el contenido.
+if (isset($_COOKIE['SESSION_prontus_df']) && !empty($_COOKIE['SESSION_prontus_df'])) {
+  $mostrarContenido = 1;
+} else if (isset($datosUsuario['PERFIL']) && ($datosUsuario['PERFIL'] == 'REGISTRADO' || $datosUsuario['PERFIL'] == 'SUSCRIPTOR' || $datosUsuario['PERFIL'] == 'PREMIUM')) {
+  $mostrarContenido = 1;
+}
+?>
+    <!-- comentarios -->
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/coment/js-local/ajax_send.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/coment/js-local/ajax_object.js"></script>
+
+    <script type="text/javascript">
+      function sst7_click_coment() {
+          //sst7_click('%%_ART_AUTOINC%%',';%%_NOM_SECCION1%%;articulos;%%_NOM_TEMA1%%;%%_NOM_SUBTEMA1%%;%%_TITULAR%%;comentar','%%_TITULAR%%','art');
+      };
+    </script>
+
+    <!-- el cuadro de comentarios lo mostrará siempre que existan comentarios -->
+    <div class="coment">
+      <div class="titu">Comentarios</div>
+      <a name="inicio_lista"></a>
+
+      <!-- pagina de comentarios -->
+      <div id="opiniones">
+        <?php
+          $COMENT_OBJID = '%%_TS%%';
+          $COMENT_OBJTIPO = 'articulo';
+          $F2INCLUDE = getenv("DOCUMENT_ROOT") . "/%%_PRONTUS_ID%%/coment/site/" . $COMENT_OBJTIPO . "/". '%%_FECHAC%%' . "/" . $COMENT_OBJID . "/" . "1.html";
+          if(isset($total) && ($total > 0) && file_exists($F2INCLUDE)) {
+            include($F2INCLUDE);
+          } else {
+            echo 'No se han recibido comentarios.';
+          };
+        ?>
+      </div>
+      <!-- /pagina de comentarios -->
+
+      <!-- formulario -->
+      <div id="msg" style="display:none; text-align:center; border:1px solid black; font-weight:bold;height:100px;"></div>
+
+      <div id="reloj" style="display:none; height:100px;text-align:center;">
+        <img src="/%%_PRONTUS_ID%%/coment/imag/load_anim.gif" alt=""/>
+      </div>
+
+      <form name="coment" action="" method="post" id="coment">
+        <input type="hidden" name="OBJTIPO" value="articulo"/>
+        <input type="hidden" name="OBJID" value="%%_TS%%"/>
+        <input type="hidden" name="OBJTIT" value="%%_TITULAR%%"/>
+        <input type="hidden" name="_prontus_id" value="%%_PRONTUS_ID%%"/>
+<?php
+  // vars utilizadas en el form y que determinarán si este aparece o no.
+  $forocerrado = '%%CHK_forocerrado%%';
+  $apert_fecha = '%%apert_fecha%%';
+  $apert_hora = '%%apert_hora%%';
+  $cierre_fecha = '%%cierre_fecha%%';
+  $cierre_hora = '%%cierre_hora%%';
+  $ts = '%%_TS%%';
+
+  // incluye form para opinar
+  // include_once getenv("DOCUMENT_ROOT") . "/%%_PRONTUS_ID%%/coment/stat/form_articulo.html";
+  require_once getenv("DOCUMENT_ROOT") . "/%%_PRONTUS_ID%%/coment/php/_acceso.php";
+  $msg = _acceso_check_formforo($forocerrado, $apert_fecha, $apert_hora, $cierre_fecha, $cierre_hora);
+
+  if($mostrarContenido != 1) {
+    echo '<div class="contenido-protegido">';
+    echo '<b>Para comentar este artículo regístrate <a href="/app_reg/stat/form_ficha.html">aquí</a>. ';
+    echo 'Si ya estás registrado, ingresa al sitio <a href="/app_reg/stat/form_login.html">aquí</a>.</b>';
+    echo '</div>';
+
+  } else if ($msg != '') {
+    echo $msg;
+
+  } else {
+?>
+        <script type="text/javascript" src="/js-local/lib_validator.js"></script>
+        <script type="text/javascript" src="/%%_PRONTUS_ID%%/coment/js-local/numchars.js"></script>
+        <script type="text/javascript" src="/%%_PRONTUS_ID%%/coment/js-local/enviar.js"></script>
+        <script type="text/javascript" src="/%%_PRONTUS_ID%%/coment/js-local/Url.class.js"></script>
+        <script type="text/javascript">
+            var LIMIT_CHARS = '900';
+        </script>
+<?php
+  $nombre = '';
+  $procedencia = '';
+  if(!empty($_SESSION['FRONTEND_DF'])) {
+    if(!empty($_SESSION['FRONTEND_DF']['NAME'])) {
+      $nombre = $_SESSION['FRONTEND_DF']['NAME'];
+      if(!empty($_SESSION['FRONTEND_DF']['LNAME'])) {
+        $nombre = $nombre . ' ' . $_SESSION['FRONTEND_DF']['LNAME'];
+      }
+    }
+    if(!empty($_SESSION['FRONTEND_DF']['CIUDAD'])) {
+      $procedencia = $_SESSION['FRONTEND_DF']['CIUDAD'];
+    }
+  }
+?>
+        <div class="form-coment">
+          <div class="intro">
+            <p class="ayuda">
+              <a href="#" onclick="Utiles.subWin('/%%_PRONTUS_ID%%/coment/stat/que_es_esto.html', '', 400, 420, 50, 50); return false;">Guía de uso</a>
+            </p>
+            <p>Ingresa tu comentario a continuación:</p>
+          </div>
+          <input type="hidden" name="NICK" value=""/>
+          <table width="100%" border="0" cellspacing="0" cellpadding="2">
+            <tr>
+              <td align="left" valign="middle" width="60">Nombre:</td>
+              <td align="left" valign="middle" width="30%"><input type="text" maxlength="50" name="NOMBRE" value="<?php echo $nombre; ?>" class="campo" <?php if(!empty($nombre)) echo 'readonly="readonly"'; ?> /></td>
+              <td align="left" valign="middle">&nbsp;</td>
+              <td align="left" valign="middle" width="80">Procedencia:</td>
+              <td align="left" valign="middle" width="30%"><input type="text" maxlength="50" name="PROCEDENCIA" value="<?php echo $procedencia; ?>" class="campo" <?php if(!empty($procedencia)) echo 'readonly="readonly"'; ?> /></td>
+            </tr>
+          </table>
+          <table width="610" border="0" cellspacing="0" cellpadding="2">
+            <tr>
+              <td align="left" valign="top">Comentario:</td>
+            </tr>
+            <tr>
+              <td align="left" valign="top"><textarea name="COMENT_TEXTO" rows="4" cols="50" onkeyup="chars_restantes(document.coment)" class="campo"></textarea></td>
+            </tr>
+          </table>
+          <table width="100%" border="0" cellspacing="0" cellpadding="2">
+            <tr>
+              <td align="left" valign="middle" width="25%">Código de seguridad:</td>
+              <td align="left" valign="middle" width="15%"><input name="CODSEG" type="text" class="campo" value="" size="6" maxlength="4"/></td>
+              <td align="left" valign="middle" width="5%">&nbsp;</td>
+              <td align="left" valign="middle" width="60%"><img src="/%%_PRONTUS_ID%%/coment/php/captcha/crear_captcha.php?_ts=<?php echo($ts);?>" class="captcha" alt="captcha"/></td>
+            </tr>
+          </table>
+          <div class="enviar">
+            <input type="button" value="Comentar" onclick="enviar_coment(document.coment); return false;"/>
+          </div>
+          <!-- restantes -->
+          <div class="restantes">Caracteres restantes: <span id="numchars" class="letras">900</span></div>
+          <!-- /restantes -->
+        </div>
+        <script type="text/javascript">
+          document.coment.COMENT_TEXTO.value = "";
+          document.coment.NICK.value = "";
+        </script>
+<?php
+  };
+?>
+      </form>
+      <!-- /formulario -->
+    </div>
+
+    <div class="fin-coment"></div>
+    <!-- / comentarios -->

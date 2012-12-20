@@ -1,0 +1,23 @@
+
+    <tr>
+      <td class="nombre">Tags</td>
+      <td class="campo">
+        <input type="hidden" name="_tags" id="_tags" value="" />
+        <input type="text" name="_tags4fid" id="_tags4fid" value="%%_tags4fid%%" />
+      </td>
+    </tr>
+    <tr>
+      <td class="nombre">%%_lasttags_text%%:<br/>
+        <span class="ayuda tags">(Click para agregar)</span>
+        <p><a href="./prontus_tags_quick_search.cgi?_path_conf=%%_path_conf%%" id="linkTags4Fids">Ver todos los Tags</a></p>
+      </td>
+      <td class="campo">
+        <div id="lasttags">%%_lasttags%%</div>
+
+    <script type="text/javascript">
+    $(function() {
+      Tags.initFid('%%_path_conf%%');
+    });
+    </script>
+      </td>
+    </tr>

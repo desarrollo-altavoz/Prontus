@@ -1,0 +1,24 @@
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6609048  11879616  36% /
+/dev/sda5                          ext4     287442460 110043656 163010120  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  32977208  19451592  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9531940  21925340  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11386264   9585256  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201987014  78304294  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab6
+]
+Logo Empresa, 20110124110822, cesarcillo, /cesarcillo/site/artic/20110124/pags/20110124110822.html
+procesa_quota_vps[Bad df: Filesystem                         Type     1K-blocks      Used Available Use% Mounted on
+/dev/sda1                          ext4      19465224   6609016  11879648  36% /
+/dev/sda5                          ext4     287442460 110043808 163009968  41% /home
+//192.168.1.254/home/cvasquez      cifs     709516008 226193896 426560832  35% /home/canopus/Servers/freenas
+//192.168.15.124/sites             cifs      52428800  32977208  19451592  63% /home/canopus/Servers/labvps
+//192.168.13.67/LABdf              cifs      31457280   9531940  21925340  31% /home/canopus/Servers/labdf
+//192.168.15.119/sites/lanacion.cl cifs      20971520  11386264   9585256  55% /home/canopus/Servers/lablan
+//192.168.2.4/sites                cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab2
+//192.168.1.7/sites                cifs     304664464 201987014  78304294  73% /home/canopus/Servers/lab5
+//192.168.1.11/sites               cifs     457005800 192532958 227912378  46% /home/canopus/Servers/lab6
+]
+Logo Empresa, 20110124110822, cesarcillo, /cesarcillo/site/artic/20110124/pags/20110124110822.html

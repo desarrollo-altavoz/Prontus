@@ -1,0 +1,176 @@
+/*------------------- FID -----------------------*/
+
+.col685 .cabecera {display:none; margin:0; padding:7px 0; background-color:#fafafa; border-left:1px solid #e6e6e6; border-right:1px solid #e6e6e6; border-bottom:1px solid #e6e6e6;}
+
+/* Titulo */
+.content .top-fid {width:100%; margin:0 0 20px 0; padding:0; float:left;}
+.content .top-fid .botones {float:right; margin:5px;}
+.content .top-fid .botones img {float:left; margin:0 3px 0 0;}
+.content .top-fid .fieldform-top {width:540px; margin:0 10px; padding:7px 5px; font-size:22px; font-weight:normal; color:#000000; background-color:#fafaf9; border:1px solid #CCC;}
+.content .top-fid .numero-id {float:left; font-family:Georgia, Arial,Helvetica,Sans-Serif,Tahoma,Verdana; font-style:italic; font-size:16px; color:#999999; margin:8px 0;}
+.content .top-fid .numero-id .copiar {width:24px; height:24px;}
+.content .top-fid .numero-id .copiar-url {width:24px; height:24px; cursor:pointer; position:absolute; background:url(../imag/boto/copylink_of.png) no-repeat left top;}
+.content .top-fid .numero-id .copiar-url.hover {background:url(../imag/boto/copylink_on.png) no-repeat left top;}
+.content .col685 .tabs ul li {clear:none;}
+.content .col685 .tabs ul {list-style:none;}
+
+/* Estilos Para el articulo */
+.tableform .nombre {text-align:left; vertical-align:middle; width:20%;}
+.tableform .campo {vertical-align:middle; width:80%;}
+.tableform .campo-titu-center {text-align:center; vertical-align:top;}
+.tableform .campo-titu {vertical-align:top;}
+.tableform .foto-recuadro {height:90px; width:90px; border:1px solid #e6e6e6; background:#FFFFFF; margin:4px 0; display:block;}
+.tableform .check_cuadrar label {font-size:12px; font-weight:normal; color:#bbb;}
+.tableform .ayuda {color:#aaaaaa; font-size:12px;}
+.tableform .ayuda a {color:#0099ff; font-size:12px;}
+.tableform .ayuda a:hover {text-decoration:underline;}
+.tableform .fieldform2 {width:50%; padding:6px; font-size:12px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+.tableform .fieldform3 {width:70%; padding:6px; font-size:12px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+.tableform .fieldform4 {width:30%; padding:6px; font-size:12px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+.tableform .fieldform5 {width:15%; padding:6px; font-size:12px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+.tableform .number-list {font-size:36px; color:#ccc; text-align:right; width:80px;}
+.tableform .list-odd td {background-color:#f0f0f0;}
+.tableform .nombre2 {text-align:left; vertical-align:middle;}
+.tableform .campo2 {vertical-align:middle;}
+.tableform .table-interna {width:100%;}
+.tableform .table-interna th {background-color:#aaa; border:1px solid #eee; padding:4px; text-align:center;}
+.tableform .table-interna td {border:1px solid #eee; padding:2px; text-align:center;}
+.tableform .table-interna td.clear {border:0px; text-align:left; padding:2px 2px 10px;}
+.tableform .radio-horiz {float:left; margin-left:15px; text-align:center;}
+
+/* estilos para las combos de taxonomia */
+.tableform .tabtax {margin:0px;}
+.tableform .tabtax .nivel {clear:both; padding-bottom:2px;}
+.tableform .tabtax .item {float:left; margin:2px; width:165px;}
+.tableform .tabtax .item select {width:164px;}
+
+/* informacion del articulo */
+.info_artic {display:none;}
+#info_artic .col685 .titulo {color:#FFFFFF; font-size:14px; font-weight:bold; padding-top:5px;}
+#info_artic .col685 .box-gris {width:685px;}
+#info_artic .tableform .nombre {width:210px;}
+#info_artic .tableform .campo {width:470px; text-align:left; font-weight:normal;}
+
+/* oculta los elementos con class hide-new-artic cuando el articulo es nuevo */
+.hide-new-artic {display:none;}
+
+/* para el upload */
+.upload, .ipad-mult td {vertical-align:middle;}
+.upload input, .ipad-mult input {padding:5px; margin-right:2px; font-size:11px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+.tableform .file-link {display:block; margin:2px 0px; padding:0;}
+.tableform .file-link input {vertical-align:middle;}
+.tableform .file-link a {font-weight:bold; color:#0099ff;}
+
+/* para el respaldo de archivos */
+.tableform .backup-link {display:block; margin:2px 0px; padding:0;}
+.tableform .backup-link input {vertical-align:middle;}
+.tableform .backup-link a {font-weight:bold; color:#0099ff;}
+
+/* link */
+.tableform .fid-link a {font-weight:bold; color:#0099ff;}
+.tableform .fid-item {margin:4px 2px;}
+
+/* Para los tags en el articulo */
+#_tags4fid_tag {width:120px; border:#f0f0f0 1px solid;}
+#_tags4fid_tagsinput span.tag {font-size:12px; padding:3px 4px 3px 8px; margin-right:4px; margin-bottom:5px; background:#b2cce5; border:#73a1d0; color:#FFF;}
+#_tags4fid_tagsinput span.tag:hover {background:#008DEB;}
+#_tags4fid_tagsinput span.tag a {display:block; float:right; margin-left:4px; width:16px; height:16px; color:#FFF; background: url("../imag/boto/close-msg_of.png") no-repeat left top;}
+#_tags4fid_tagsinput span.tag a:hover {background: url("../imag/boto/close-msg_on.png") no-repeat left top;}
+#_tags4fid_tagsinput input {width:100px; font-size:13px; padding:2px; margin-right:4px; margin-bottom:3px; border:solid #aaa 1px;}
+#lasttags {margin-top:10px;}
+#lasttags div {width:168px; margin-right:6px; float:left; overflow:hidden;}
+#lasttags div a {padding-left:18px; white-space:nowrap; vertical-align:middle; }
+#lasttags .unused a {background: url("../imag/boto/add_of.png") no-repeat left top;}
+#lasttags .unused a:hover {background: url("../imag/boto/add_on.png") no-repeat left top;}
+#lasttags .used a {background: url("../imag/boto/add_on.png") no-repeat left top;}
+.nombre .ayuda.tags {font-size:11px;}
+#linkTags4Fids {font-size:11px;}
+
+
+/* para el banco de imágenes */
+#banco-img .butBancoImg {cursor:pointer;}
+#banco-img .banco-total{margin-left:5px; margin-top:4px; font-size:12px; font-weight:bold; color:#aaa;}
+#banco-img .foto-icon {width:80px;padding-top:4px;}
+#banco-img .datos-foto {padding-left:4px;}
+#banco-img .datos-foto span{font-size:11px;}
+#banco-img .datos-foto .sin-usar {color:#ff0000; font-size:10px;}
+#banco-img .botonera {margin:4px 2px 2px 4px;}
+#banco-img .banco-vermas {margin:20px 0 40px 10px;}
+#banco-img .banco-vermas img{display:none; margin:0 auto;}
+#banco-img .banco-vermas a{color:#FF8000;font-weight:normal;}
+#banco-img .banco-vermas a:hover{color:#FF0000;}
+#banco-content {display:none;}
+/* sobre-escribe el scroll del banco de imagenes */
+.box-gris {padding:2px 0px;}
+.box-gris .box-auxi .box-scroll {height:320px; margin:4px 2px;}
+.box-gris .box-auxi .item {margin:8px 5px;}
+/**
+#banco-img .banco-botonera {position:relative; top:-22px; height:22px;}
+#banco-img .banco-botones {padding:2px 4px; height:22px; width:60px; position:absolute;}
+#banco-img .banco-fondo {height:22px; width:68px; position:absolute; background-color:#FAFAFA; -moz-border-radius:2px; border-radius:2px; filter:alpha(opacity=90);-moz-opacity:0.9; opacity:0.9;} */
+
+
+/* para el administrar archivos de respaldo en formularios */
+.formbackup .box-gris {width:958px;}
+.formbackup .tableback {width:100%; margin-bottom:4px;}
+.formbackup .hint {font-size:14px; font-weight:normal; padding:4px 2px;}
+.formbackup .hint .form_icon {width:45%; float:left;}
+.formbackup .hint .form_icon a {font-size:18px; color:#003366; font-weight:bold;}
+.formbackup .hint .form_icon a span {margin:10px 0px; display:block;}
+.formbackup .hint .form_icon a img {float:left; margin-right:10px; border:0px;}
+.formbackup .separador {border-top:1px solid #E6E6E6; border-bottom:1px solid #E6E6E6;}
+.formbackup .head td {padding:2px; text-align:left; font-weight:bold; vertical-align:middle; background-color:#E6E6E6;}
+.formbackup .valor td {padding:2px; text-align:left; border:1px solid #E6E6E6; }
+
+/* Para los archivos multiples */
+.cabecera .tabs-alt {width:100%}
+.cabecera .tabs-alt ul li {float:left; clear:none; margin:2px 10px; list-style: none;}
+.cabecera .tabs-alt ul li a {font-weight:bold; color:#0099ff; font-size:12px;}
+.cabecera .tabs-alt ul li a.selected {color:#333333; text-decoration:underline;}
+
+/* Para la barra lateral derecha del articulo */
+.opciones .box-gris {padding:4px 0px;}
+.opciones .tableform {margin-bottom:4px;}
+.opciones .combo-right {width:49%; padding-bottom:0px; margin-bottom:0px;}
+.opciones .combo-right select {width:99%; padding:2px;}
+.opciones .label-fid {width:90%; border:1px solid #CCCCCC; padding:3px; font-weight:normal; overflow:hidden; background-color:white; color:#666666; font-size:12px;}
+.opciones .check-item {vertical-align:middle;}
+.opciones .fechahora {width:100%; padding:0px; margin:0px;}
+.opciones .fechahora td {font-size:11px; padding:2px 0px;}
+.opciones .fechahora td .fecha {width:60px;}
+.opciones .fechahora td .hora {width:32px;}
+.opciones .fechahora td .actualizar {width:10px; background-color:#FF8000; cursor:pointer; margin-left:2px; background:url(../imag/reload-10px.png) no-repeat left top;}
+.opciones .fieldform {padding:2px; font-size:11px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+.opciones .fecha {width:65px;}
+.opciones .hora {width:35px;}
+
+/* Comentarios. */
+.comentarios .box-gris {padding:4px 0px;}
+.comentarios .tableform {margin-bottom:4px;}
+.comentarios .combo-right {width:49%; padding-bottom:0px; margin-bottom:0px;}
+.comentarios .combo-right select {width:99%; padding:2px;}
+.comentarios .label-fid {width:90%; border:1px solid #CCCCCC; padding:3px; font-weight:normal; overflow:hidden; background-color:white; color:#666666; font-size:12px;}
+.comentarios .check-item {vertical-align:middle;}
+.comentarios .fechahora {width:100%; padding:0px; margin:0px;}
+.comentarios .fechahora td {font-size:11px; padding:2px 0px;}
+.comentarios .fieldform {padding:2px; font-size:11px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+.comentarios .fecha {width:65px;}
+.comentarios .hora {width:35px;}
+
+/* transcodificacion */
+#linkVideo {margin-top:4px;}
+.tablexcode video {margin:0px auto;}
+.tablexcode .nombre {width:25%;}
+.tablexcode .campo {width:75%;}
+.tablexcode .status-xcode {vertical-align:middle;}
+.tablexcode .status-xcode img {float:left; display:block; margin-right:8px;}
+.tablexcode .status-xcode div {padding-top:3px;}
+.tablexcode .panel-xcode {display:none;}
+.tablexcode .panel-player {width:460px; float:left;}
+.tablexcode .panel-buttons {width:160px; float:right; text-align:left;}
+.tablexcode .panel-embed {text-align:left; margin:10px 30px; clear:both;}
+.tablexcode .panel-embed textarea {width:590px; height:100px; margin-top:5px; font-family:monospace;}
+.tablexcode .item {margin-bottom:5px;}
+.tablexcode .item a {font-size:14px; color:#AAAAAA;}
+.tablexcode .item a:hover {color:#000000;}
+.tablexcode .item img {vertical-align:middle;}

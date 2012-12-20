@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  %%NIF(_ALTA)%%
+  <meta name="ROBOTS" content="NOINDEX" />
+  %%/NIF%%
+  <title>Prontus CMS</title>
+  <script type="text/javascript" src="/prontus_test_cpn/js-local/Utiles.class.js"></script>
+</head>
+<body>
+  <!-- Utilizacion de los javascript -->
+  <div>    
+    Para utilizar los nuevos  javascrit con estructura POO:<br />
+     - si utiliza un método de la clase, debe instanciar de la manera &lt;nombre_de_la_clase&gt;.&lt;nombre_del_metodo&gt;(&lt;parametros&gt;)<br/>
+     - si utiliza un atributo de la clase, debe instan ciar de la manera  &lt;nombre_de_la_clase&gt;.&lt;nombre_del_atributo&gt;<br/>
+     Ejemplo:<br/>
+    <a href="#" onclick="Utiles.imprimirArticulo();">Imprimir|</a>
+    <a href="#" onclick="Utiles.subWin('http://www.altavoz.net','Pop Altavoz',400,300,30,30);">Pop Altavoz|</a><br /><hr />
+  </div>
+    <!-- Cabecera -->
+    <div>
+      <h2>Cabecera</h2>  
+      <b>_FECHAC:</b> %%_FECHAC%%             <br />
+      <b>_FECHAPLONG:</b> %%_FECHAPLONG%%         <br />
+      <b>_FECHACSHRT:</b> %%_FECHACSHRT%%         <br />
+      <b>_FECHAP:</b> %%_FECHAP%%             <br />
+      <b>_HORAP:</b> %%_HORAP%%              <br />
+      <b>_FECHAE:</b> %%_FECHAE%%             <br />
+      <b>_FECHAELONG:</b> %%_FECHAELONG%%         <br />
+      <b>_FECHAESHRT:</b> %%_FECHAESHRT%%         <br />
+      <b>_HORAE:</b> %%_HORAE%%              <br />
+      <b>_NOM_SECCION1:</b> %%_NOM_SECCION1%%       <br />
+      <b>_NOM_TEMA1:</b> %%_NOM_TEMA1%%          <br />
+      <b>_NOM_SUBTEMA1:</b> %%_NOM_SUBTEMA1%%       <br />
+      <b>_SECCION1:</b> %%_SECCION1%%           <br />
+      <b>_TEMA1:</b> %%_TEMA1%%              <br />
+      <b>_SUBTEMA1:</b> %%_SUBTEMA1%%           <br />
+      <b>_TAX:</b> %%_TAX%%                <br />
+      <b>_TXT_TITULAR:</b> %%_TXT_TITULAR%%        <br />    <!-- la marca  incluye  tags <p></p> -->
+      <b>_TXT_bajada:</b> %%_TXT_bajada%%         <br />    <!-- la marca  incluye  tags <p></p> -->
+      <b>TXT_bajadaportada:</b> %%TXT_bajadaportada%%   <br />
+      <b>TXT_fabricante:</b>%%TXT_fabricante%% <br />
+      <b>_tags</b>%%_tags%% <br />
+      <hr/>
+    </div>
+    <!-- /Cabecera -->
+    
+    <!-- /Cuerpo -->
+    <div>
+      <h2>Cuerpo</h2>
+      <b>VTXT_CUERPO:</b> %%VTXT_CUERPO%%<br/>
+      <hr/>
+    </div>
+    <!-- /Cuerpo -->
+    
+    <!-- Especificaciones -->
+    <div>
+      <h2>Especificaciones</h2>
+      <b>VTXT_ESPECIFICACIONES:</b> %%VTXT_ESPECIFICACIONES%%<br/>
+      <hr/>
+    </div>
+    <!-- Especificaciones -->
+
+    <!-- Fotos -->
+    <div>
+      <h2>Fotos</h2>    
+      <!-- fotos portada -->
+      %%IF(FOTOFIJA_PORT70)%%
+        FOTOFIJA_PORT70:<br />
+        <img src="%%FOTOFIJA_PORT70%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%IF(FOTOFIJA_PORT120)%%
+        FOTOFIJA_PORT120:<br />   
+        <img src="%%FOTOFIJA_PORT120%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%(FOTOFIJA_PORT180)%%
+        FOTOFIJA_PORT180:<br />   
+        <img src="%%FOTOFIJA_PORT180%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%(FOTOFIJA_PORT210)%%
+        FOTOFIJA_PORT210:<br />   
+        <img src="%%FOTOFIJA_PORT210%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%(FOTOFIJA_PORT270)%%
+        FOTOFIJA_PORT270:<br />   
+        <img src="%%FOTOFIJA_PORT270%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+      %%(FOTOFIJA_PORT350)%%
+        FOTOFIJA_PORT350:<br />   
+        <img src="%%FOTOFIJA_PORT350%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%        
+      <br />
+      %%(FOTOFIJA_PORT450)%%
+        FOTOFIJA_PORT450:<br />   
+        <img src="%%FOTOFIJA_PORT450%%" alt="%%_titular.xml%%" title="%%_titular.xml%%" />
+      %%/IF%%
+      <br />
+
+      <!--foto fija -->
+      %%IF(FOTOFIJA_ART210)%%
+        FOTOFIJA_PORT210:<br />   
+        <img src="%%FOTOFIJA_ART210%%" alt="imagen 210" width="%%_WFOTOFIJA_ART210%%" height="%%_HFOTOFIJA_ART210%%" />
+      %%/IF%%
+      <br />
+      %%IF(FOTOFIJA_ART270)%%
+        FOTOFIJA_PORT270:<br />   
+        <img src="%%FOTOFIJA_ART270%%" alt="imagen 270" width="%%_WFOTOFIJA_ART270%%" height="%%_HFOTOFIJA_ART270%%" />
+      %%/IF%%
+      <br />
+      %%IF(FOTOFIJA_ART350)%%
+        FOTOFIJA_PORT350:<br />   
+        <img src="%%FOTOFIJA_ART350%%" alt="imagen 350" width="%%_WFOTOFIJA_ART350%%" height="%%_HFOTOFIJA_ART350%%" />
+      %%/IF%%
+      <br />
+      %%IF(FOTOFIJA_ART450)%%
+        FOTOFIJA_PORT450:<br />   
+        <img src="%%FOTOFIJA_ART450%%" alt="imagen 450" width="%%_WFOTOFIJA_ART450%%" height="%%_HFOTOFIJA_ART450%%" />
+      %%/IF%%
+      <br />
+      <hr/>
+    </div>
+    <!-- Fotos -->
+
+    <!-- Archivos asociados -->
+    <div>
+      <h2>Archivo Asociados</h2> 
+      %%IF(ASOCFILE_1)%%
+        <img src="%%RDO_icono1%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_1%%">%%ASOCFILE_1%%</a><br />
+			  %%IF(TXT_asociado1)%% <b>asociado1:</b> %%asociado1%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_2)%%
+			  <img src="%%RDO_icono2%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_2%%">%%ASOCFILE_2%%</a><br />
+			  %%IF(TXT_asociado2)%% <b>asociado2:</b> %%asociado2%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_3)%%
+			  <img src="%%RDO_icono3%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_3%%">%%ASOCFILE_3%%</a><br />
+			  %%IF(TXT_asociado3)%% <b>asociado3:</b> %%asociado3%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_4)%%
+			  <img src="%%RDO_icono4%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_4%%">%%ASOCFILE_4%%</a><br />
+			  %%IF(TXT_asociado4)%% <b>asociado4:</b> %%asociado4%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_5)%%
+			  <img src="%%RDO_icono5%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_5%%">%%ASOCFILE_5%%</a><br />
+			  %%IF(TXT_asociado5)%% <b>asociado5:</b> %%asociado5%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_6)%%
+			  <img src="%%RDO_icono6%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_6%%">%%ASOCFILE_6%%</a><br />
+			  %%IF(TXT_asociado6)%% <b>asociado6:</b> %%asociado6%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_7)%%
+			  <img src="%%RDO_icono7%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_7%%">%%ASOCFILE_7%%</a><br />
+			  %%IF(TXT_asociado7)%% <b>asociado7:</b> %%asociado7%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_8)%%
+			  <img src="%%RDO_icono8%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_8%%">%%ASOCFILE_8%%</a><br />
+			  %%IF(TXT_asociado8)%% <b>asociado8:</b> %%asociado8%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_9)%%
+			  <img src="%%RDO_icono9%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_9%%">%%ASOCFILE_9%%</a><br />
+			  %%IF(TXT_asociado9)%% <b>asociado9:</b> %%asociado9%% %%/IF%% <br />
+			%%/IF%%
+			%%IF(ASOCFILE_10)%%
+			  <img src="%%RDO_icono10%%" width="14" height="14" border="0" />
+        <a href="%%ASOCFILE_10%%">%%ASOCFILE_10%%</a><br />
+			  %%IF(TXT_asociado10)%% <b>asociado10:</b> %%asociado10%% %%/IF%% <br />
+			%%/IF%%
+		  <hr/>		
+		</div>
+    <!-- Archivos asociados -->
+
+    <!--multimedia -->
+    <div>
+      <h2>Multimedia </h2>
+        <!--necesita  como reuisito Javascript plugin de video -->
+        <!--necesita  como reuisito Javascript plugin de video -->
+        <b>%%ASOCFILE_21%%:</b> %%%%ASOCFILE_21%%%%<br />
+        <b>FOTOFIJA_ART1000:</b> %%FOTOFIJA_ART1000%%<br />
+        <b>asociado21:</b> %%asociado21%%<br />
+        
+        <script type="text/javascript">
+          //playShow('%%MULTIMEDIA_FLV1%%','','%%FOTOFIJA_PREVIEW%%');
+        </script><br/>
+
+
+        <!-- usando elementos del fid  para  la logica  en la plantilla -->
+        %%IF(_ALTA)%%
+            <!--uso de la marca % %_ALTA% % -->
+        %%/IF%%
+        <br />
+        %%IF(CHK_publicarfecha)%%
+            <!--uso de la marca % %CHK_publicarfecha% %   %%_FECHAELONG%% -->
+        %%/IF%%
+        <br />
+        %%IF(CHK_hora)%%
+            <!--uso de la marca % %CHK_hora% %   %%_HORAP%% -->
+        %%/IF%%
+        <br />
+       <!-- usando elementos del fid  para  la logica  en la plantilla -->
+    </div>
+</body>
+</html>

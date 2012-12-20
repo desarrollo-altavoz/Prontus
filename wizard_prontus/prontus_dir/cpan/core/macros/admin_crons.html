@@ -1,0 +1,48 @@
+
+              <div class="crons">
+                <div class="titulo">Crons de Prontus:</div>
+                <div class="desc">Los crons son scripts que se ejecutan regularmente y que realizan labores de administración y mantención.<br/>
+                  Por ejemplo, actualizar los índices del buscador del sitio, actualizar calendarios, etc.</div>
+                <div class="listado">
+                  <table width="100%" class="tableform">
+                    <tr class="head">
+                      <td>Minutos</td>
+                      <td>Horas</td>
+                      <td>Días</td>
+                      <td>Mes</td>
+                      <td>Día de la semana</td>
+                      <td>Script a ejecutar</td>
+                    </tr>
+                  <!--loop_crons-->
+                    <tr>
+                      <td class="item">%%col1%%</td>
+                      <td class="item">%%col2%%</td>
+                      <td class="item">%%col3%%</td>
+                      <td class="item">%%col4%%</td>
+                      <td class="item">%%col5%%</td>
+                      <td class="item">%%col6%%</td>
+                    </tr><!--/loop_crons-->
+                  <!--no_crons-->
+                    <tr>
+                      <td colspan="6">No hay scripts Prontus ingresados en Crontab</td>
+                    </tr><!--/no_crons-->
+                  </table>
+                </div>
+                <div class="desc">
+                  <b>Ayuda:</b><br/>
+                  <div class="help aleft">
+                  - Minutos: (0-59)<br/>
+                  - Horas: (0-23)<br/>
+                  - Días: (1-31)<br/>
+                  - Mes: (1-12)<br/>
+                  - Día de la semana: (0-6), siendo 1=lunes, 2=martes,... 6=sábado y 0=domingo (a veces también 7=domingo)
+                  </div>
+                  <div class="help aright">
+                  Algunos indicadores:<br/>
+                  - El Asterisco, indica "todos los valores"<br/>
+                  - Los guiones indican rangos<br/>
+                  - Las comas separan distintos valores<br/>
+                  - Los slashs (/) indican división por el dígito. Por ejemplo: */2, en la columna Horas, indica Horas pares o "cada 2 Horas".
+                  </div>
+                </div>
+              </div>

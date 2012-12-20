@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  %%NIF(_ALTA)%%
+  <meta name="ROBOTS" content="NOINDEX" />
+  %%/NIF%%
+  <title>Prontus CMS</title>
+  <script type="text/javascript" src="/prontus_test_cpn/js-local/Utiles.class.js"></script>
+</head>
+<body>
+  <!-- Utilizacion de los javascript -->
+  <div>    
+    Para utilizar los nuevos  javascrit con estructura POO:<br />
+     - si utiliza un método de la clase, debe instanciar de la manera &lt;nombre_de_la_clase&gt;.&lt;nombre_del_metodo&gt;(&lt;parametros&gt;)<br/>
+     - si utiliza un atributo de la clase, debe instan ciar de la manera  &lt;nombre_de_la_clase&gt;.&lt;nombre_del_atributo&gt;<br/>
+     Ejemplo:<br/>
+    <a href="#" onclick="Utiles.imprimirArticulo();">Imprimir|</a>
+    <a href="#" onclick="Utiles.subWin('http://www.altavoz.net','Pop Altavoz',400,300,30,30);">Pop Altavoz|</a><br /><hr />
+  </div>
+    <!-- Cabecera -->
+    <div>
+      <h2>Cabecera</h2>  
+      <b>_FECHAC:</b> %%_FECHAC%%             <br />
+      <b>_FECHAPLONG:</b> %%_FECHAPLONG%%         <br />
+      <b>_FECHACSHRT:</b> %%_FECHACSHRT%%         <br />
+      <b>_FECHAP:</b> %%_FECHAP%%             <br />
+      <b>_HORAP:</b> %%_HORAP%%              <br />
+      <b>_FECHAE:</b> %%_FECHAE%%             <br />
+      <b>_FECHAELONG:</b> %%_FECHAELONG%%         <br />
+      <b>_FECHAESHRT:</b> %%_FECHAESHRT%%         <br />
+      <b>_HORAE:</b> %%_HORAE%%              <br />
+      <b>_TS:</b> %%_TS%%              <br />
+      <b>_FILE:</b> %%_FILE%%              <br />
+      <b>_PRONTUS_ID:</b> %%_PRONTUS_ID%%              <br />
+      <b>_NOM_SECCION1:</b> %%_NOM_SECCION1%%       <br />
+      <b>_NOM_TEMA1:</b> %%_NOM_TEMA1%%          <br />
+      <b>_NOM_SUBTEMA1:</b> %%_NOM_SUBTEMA1%%       <br />
+      <b>_SECCION1:</b> %%_SECCION1%%           <br />
+      <b>_TEMA1:</b> %%_TEMA1%%              <br />
+      <b>_SUBTEMA1:</b> %%_SUBTEMA1%%           <br />
+      <b>_TXT_TITULAR:</b> %%_TXT_TITULAR%%        <br />   
+      <b>_TXT_bajada:</b> %%_TXT_bajada%%         <br />   
+      <hr/>
+    </div>
+    <!-- Nombres  pagina  error  y exito -->
+    <input type="hidden" name="_pag_exito" value="exito">
+    <input type="hidden" name="_pag_error" value="error">
+    <!-- Nombres  pagina  error  y exito -->    
+    <!-- /Cabecera -->
+    
+    <!-- Datos -->
+    <div>
+      <h2>Datos</h2>  
+      <b>CHK_nombres:</b> %%CHK_nombres%%             <br />
+      <b>CHK_form_required_nombres:</b> %%CHK_form_required_nombres%%         <br />
+      <b>CHK_apellidos:</b> %%CHK_apellidos%%         <br />
+      <b>CHK_form_required_nombres:</b> %%CHK_form_required_nombres%%             <br />
+      <b>CHK_email:</b> %%CHK_email%%              <br />
+      <b>CHK_form_required_email:</b> %%CHK_form_required_email%%             <br />
+      <b>CHK_rut:</b> %%CHK_rut%%         <br />
+      <b>CHK_form_required_rut:</b> %%CHK_form_required_rut%%         <br />
+      <b>CHK_telefonos:</b> %%CHK_telefonos%%              <br />
+      <b>CHK_form_required_telefonos:</b> %%CHK_form_required_telefonos%%              <br />
+      <b>CHK_celular:</b> %%CHK_celular%%              <br />
+      <b>CHK_form_required_celular:</b> %%CHK_form_required_celular%%              <br />
+      <b>CHK_direccion:</b> %%CHK_direccion%%       <br />
+      <b>CHK_form_required_direccion:</b> %%CHK_form_required_direccion%%          <br />
+      <b>CHK_fax:</b> %%CHK_fax%%       <br />
+      <b>CHK_form_required_fax:</b> %%CHK_form_required_fax%%           <br />
+      Campos variables <br/>
+      <b>nombre1:</b> %%nombre1%%              <br />
+      <b>CMB_tipo1:</b> %%CMB_tipo1%%           <br />
+      <b>nombre2:</b> %%nombre2%%                <br />
+      <b>CMB_tipo2:</b> %%CMB_tipo2%%        <br />   
+      <b>nombre3:</b> %%nombre3%%         <br />   
+      <b>CMB_tipo3:</b> %%CMB_tipo3%%         <br />   
+      <b>nombre3:</b> %%nombre3%%         <br />   
+      Campos opción:                      <br />
+      <b>opcion1:</b> %%opcion1%%         <br />  
+      <b>opcion2:</b> %%opcion1%%         <br />  
+      <b>opcion3:</b> %%opcion1%%         <br />  
+      <b>opcion4:</b> %%opcion1%%         <br />  
+      <b>opcion5:</b> %%opcion1%%         <br />  
+      Campos detalle:                     <br />
+      <b>CHK_consulta:</b> %%CHK_consulta%%         <br />
+      <hr/>
+    </div> 
+</body>
+</html>

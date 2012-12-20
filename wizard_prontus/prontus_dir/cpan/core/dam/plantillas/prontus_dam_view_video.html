@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Player</title>
+    <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/jquery/plugins/media/jquery.media.js"></script>
+    <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/jquery/plugins/jquery.jqplugin.js"></script>
+    <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/Dam.class.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            Dam.showPlayer('%%view_file%%', '%%view_prontus%%');            
+        });
+    </script>    
+  </head>
+  <body>
+    <div style="width:440px; height:350px; margin:15px auto;">
+      <div class="media" id="video_asset"></div>
+    </div>
+  </body>
+</html>

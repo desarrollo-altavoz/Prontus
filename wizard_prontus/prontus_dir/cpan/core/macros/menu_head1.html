@@ -1,0 +1,66 @@
+      <!--MACRO PARA HEAD DE LISTADO DE ARTICULOS-->
+      <div class="userdata" id="userdata"></div>
+
+      <!--INICIO HEAD-->
+      <div class="main-head">
+
+        <div class="logo aleft"><a href="http://www.prontus.cl/">
+          <img src="/%%_prontus_id%%/cpan/core/imag/head/logo_prontus.jpg" width="139" height="52" border="0" alt="Prontus" title="Prontus" /></a></div>
+
+        <div class="botonera aright">
+          <a class="button selected" href="prontus_art_newadmin.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>ARTÍCULOS</span></a>
+          <!--hide_to_redactor-->
+          <a class="button" href="prontus_tax_admin.cgi?_entidad=seccion&amp;_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>CATEGORÍAS</span></a>
+          <!--/hide_to_redactor-->
+          <!--comentarios-->
+            <a class="button" href="coment/coment_admin.cgi?_prontus_id=%%_prontus_id%%"><span>COMENTARIOS</span></a>
+            <!--/comentarios-->
+          <a class="button" href="dam/prontus_dam_search.cgi?path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_type=foto"><span>MULTIMEDIA</span></a>
+          <!--admin_only-->
+          <a class="button" href="prontus_edit_main.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;_dir=/%%_PRONTUS_ID%%/plantillas/artic/fecha/pags"><span>EDITOR</span></a>
+          <a class="button" href="prontus_usr_admin.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>USUARIOS</span></a>
+          <a class="button" href="prontus_admin_main.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>ADMINISTRACIÓN</span></a>
+          <!--/admin_only-->
+          <a class="button" href="prontus_help_main.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>AYUDA</span></a>
+          <!--hide_to_admin-->
+          <a href="#" onclick="Admin.mostrarCambiarPassword(); return false;">
+              <div style="float: right; margin-right: 7px; margin-top: 5px;">
+                <img src="/%%_prontus_id%%/cpan/core/imag/boto/chg_pass.png" width="23" height="23" title="Cambiar contraseña" alt="Cambiar contraseña"/>
+              </div>
+          </a>
+          <!--/hide_to_admin-->
+          <a href="prontus_help_main.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&tab=tab3">
+              <div style="float: right; margin-right: 5px; margin-top: 2px;">
+                <img src="/%%_prontus_id%%/cpan/core/imag/boto/contacto.png" width="27" height="27" title="Contáctanos" alt="Contáctanos"/>
+              </div>
+          </a>
+        </div>
+
+        <div class="franja-head">
+
+          <div class="seleccion1 aleft" id="div_cmb_edic" style="display:none;">
+            <div class="aleft">Edici&oacute;n %%_edic%%</div>
+            <!--admin_only-->
+            <div class="aleft editar">
+  	            <a href="prontus_edi_admin.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg">
+  	              <img src="/%%_prontus_id%%/cpan/core/imag/boto/ed2_of.png" alt="Editar Ediciones" title="Editar Ediciones" height="20" width="20" class="cambia-boton" />
+  	            </a>
+  	          </div>
+
+            <!--/admin_only-->
+          </div>
+
+
+
+          <div class="seleccion1 aleft">
+            Portada %%_port%%</div>
+
+          <div class="seleccion1 aleft" id="total_ports"></div>
+
+          <div class="seleccion1 aright">
+            <!-- Espacio desocupado, por ahora... -->
+          </div>
+
+        </div>
+      </div>
+      <!--/FIN HEAD-->

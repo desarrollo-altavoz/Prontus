@@ -1,0 +1,15 @@
+body {margin:0; padding:0; border:0; font-family:Verdana,Tahoma,Arial,Helvetica,Sans-Serif;}
+
+.contenedorAsset {margin-left:50px;}
+.itemAsset {width:150px; float:left; margin:0 30px 20px 0;}
+.paginacion {margin:7px 0 10px 50px;}
+
+/* Alturas de divs */
+.hfoto {height:180px;}
+.haudio, .hvideo {height:100px;}
+
+/* Alineacion */
+.acenter {text-align:center;}
+
+.buscador .filtros {margin:3px 0px 4px 5px; clear:both;}
+.buscador .filtros a {color: #333333; font-size:11px;}

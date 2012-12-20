@@ -1,0 +1,49 @@
+
+Botones.class.js
+------------------------------
+
+Descripcion:
+    Sirve para cambiar entre imágenes, prirncipalmente
+    para hacer botones que cambien con el mouseover.
+
+Dependencias:
+    Ninguna
+
+Versión:
+    2.0.0 - 11/11/2009 - CVI - Primera versión orientada a objetos.
+        Basada en la versión 1.1 de botones.js
+
+Funcionamiento:
+    Este script, sirve para cambiar una imagen por otra.
+    Para ello, las imágenes deben terminar en "_on" o "_of" y estar ubicadas en la misma
+    carpeta. Se irán rotando entre ellas al llamar a la funcion Botones.toogle(this);
+    Si se fijan esta forma es mucho más corta e intuitiva que la antigua.
+    Otro hecho importante, es que funciona con IDs y no con name (xhtml)
+
+Instalación
+    Existen 2 formas de instalar los eventos:
+    - La manera tradicional, agregando los eventos a la imagen:
+        <img src="/prontus_toolbox/imag/tool/env_of.gif" alt="mail"
+                onmouseover="Botones.toogle(this);" onmouseout="Botones.toogle(this);" />
+
+    - Agregando los eventos con la funcion Botones.addEvent(idimag); en donde idimag es el ID
+      de la imagen en donde se desean instalar los eventos.
+      Por lo tanto, se puede por ejemplo hacer una funcion llamada:
+      function addEventosImagenes() {
+        Botones.addEvent('id-imagen-1');
+        Botones.addEvent('id-imagen-2');
+        Botones.addEvent('id-imagen-3');
+        ...
+        Botones.addEvent('id-imagen-N');
+      };
+      Y llamarla en el onload de la página:
+      <body onload="addEventosImagenes();">
+
+      Ojo que tambien se podria usar jquery:
+      $(document).ready(function() {
+        Botones.addEvent('id-imagen-1');
+        Botones.addEvent('id-imagen-2');
+        Botones.addEvent('id-imagen-3');
+        ...
+        Botones.addEvent('id-imagen-N');
+      });

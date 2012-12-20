@@ -1,0 +1,98 @@
+
+Utiles.class.js
+------------------------------
+
+Descripcion:
+    Contiene funciones basicas y utiles para el uso comun.
+
+Dependencias:
+    Ninguna
+
+Versión:
+    3.0.0 - 11/11/2009 - CVI - Primera Versión orientada a objetos
+    3.0.1 - 08/02/2010 - CVI - Se agrega addBookmark y setHomepage
+    3.0.2 - 19/02/2010 - CPN - Se agrega validacion a metodos que abren una ventana  a partir de un argumento, valida  que venga  la URL.
+    3.0.3 - 23/03/2010 - CVI - Se corrige nombre de la CGI imprimir.cgi a prontus_imprimir.cgi
+    3.0.4 - 24/03/2010 - CVI - Se agrega compatibilidad con Friendly URLs
+    3.0.5 - 24/03/2010 - CVI - Se saca dimensiones a la conf y se agregan parámetros de Ancho y alto al imprimir y enviar.
+    3.0.6 - 03/06/2010 - CVI - Se corrigen los siguientes issues:
+                - Se corrige bug al trabajar con multivistas e imprimir (cambió marca %%_FILE%%)
+                - Se agrega variable Utiles.serverName para el setHomePage
+    3.1.0 - 04/07/2011 - CVI - Se corrigen los siguientes issues:
+                - Se agrega un campo para el subject del mail del enviarArticulo
+                - Se corrige codificacion del archivo a UTF8
+                - Se corrige error en el getParams cuando el parametro solicitado no viene
+
+Instalacion y Uso:
+    Para instalar y usar, sólo basta con agregar el script a la página, y comenzar a usar las
+    funiones. De todas formas se recomienda revisar las configuraciones por si hay algo que
+    corregir.
+    Las funciones que se pueden usar son:
+    - Utiles.enviarArticulo(file, w, h, subject)
+        Abre la ventana con el formulario para enviar un artículo
+        Se puede configurar la ubicación del formulario
+        file: Ruta al artículo, se puede usar %%_FILE%% (opcional)
+        w: Ancho de la ventana (opcional)
+        h: alto de la ventana (opcional)
+        subject: Subject que llevará el mail (opcional)
+
+    - Utiles.imprimirArticulo(file, mv, w, h)
+        Abre la ventana para imprimir el artículo actual, con soporte para multivistas.
+        file: Ruta al artículo, se puede usar %%_FILE%% (opcional)
+        mv: Vista a la que se desea llamar (opcional)
+        w: Ancho de la ventana (opcional)
+        h: alto de la ventana (opcional)
+
+    - Utiles.subWin(loc, nom, ancho, alto, posx, posy)
+        Abre una ventana pop generica. Recibe varios parámetros:
+        loc: Url de la pagina que se abrira en la pop
+        nom: nombre de la ventana
+        ancho: ancho de la ventana
+        alto: alto de la ventana
+        posx: posicion X de la ventana
+        posy: posicion Y de la ventana
+
+    - Utiles.addBookmark(url, titulo)
+        Agrega una página a favoritos.
+        Si uno desea hacer un bookmark de la página actual, se puede pasar url = null. Si se pasa
+        titulo = null, se utiliza el "title" de la página como nombre del bookmark
+        url: Página que se desea agregar a favoritos (opcional)
+        titulo: Titulo del Bookmark (opcional)
+
+    - Utiles.setHomePage(obj)
+        Deja esta página como la Página de inicio
+        obj: Objeto link (<a>). Se recomienda usar un link y pasar "this".
+
+    - Utiles.addLoadEvent(func, params)
+        Agrega una funcion al evento onload de la página.
+        Útil para no tener que estar modificando los onload de muchas páginas.
+        Recibe la funcion y los parámetros.
+
+    - Utiles.getParam(nom)
+        Obtiene un parámetro desde el querystring (url) de la página.
+        Recibe como parámetro el nombre del parámetro que se desea rescatar.
+
+    - Utiles.popZoom(loc, nom, ancho, alto, posx, posy)
+        Abre la ventana POP para el Zoom de Imágenes
+        loc: Url de la pagina que se abrira en la pop
+        nom: nombre de la ventana
+        ancho: ancho de la ventana
+        alto: alto de la ventana
+        posx: posicion X de la ventana
+        posy: posicion Y de la ventana
+
+    - Utiles.destilda(texto) {
+        Destilda un determinado texto, convirtiendo las vocales con acentos y simbolos,
+        en sus respectivas vocales sin acento. Tambien convierte Ñs en n.
+        Luego pasa todo a minúsculas y finalmente elimina todos los caracteres no naturales.
+
+Configuración:
+    En la zona de configuraciones del script:
+        dirCgiBin: '/cgi-bin',  // Directorio publico de las cgis
+        prontusName: '/prontus_toolbox',  // Prontus en que se trabajará
+        cgiNameImprimir: 'prontus_imprimir.cgi',  // Nombre de la cgi de impresión
+        formEnviar: '/stat/enviar/formulario.html', // Ubicación del formulario de "enviar"
+    Entre otras ociones menos importantes.
+    Por ejemplo, para cambiar el formulario de enviar:
+        Utiles.formEnviar = "/stat/enviar/formulario_alternativo.html";
+        Utiles.prontusEnviar();
