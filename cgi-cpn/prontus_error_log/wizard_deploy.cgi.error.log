@@ -1,7 +1,0 @@
-DBD::mysql::db do failed: The used table type doesn't support FULLTEXT indexes at lib_setbd.pm line 275.
-Error en createdb. DBI Error Code: [1007][Can't create database 'cesarcillo_prontus'; database exists] at /var/www/cgi-cpn/wizard_deploy.cgi line 137.
-DBI connect('cesarcillo_prontus:localhost','cesar000',...) failed: Unknown database 'cesarcillo_prontus' at lib_prontus.pm line 5717
-DBI Error Code: [1049][Unknown database 'cesarcillo_prontus']  at lib_prontus.pm line 5717.
-DBD::mysql::db do failed: The used table type doesn't support FULLTEXT indexes at lib_setbd.pm line 275.
-Error en createdb. DBI Error Code: [1007][Can't create database 'cesarcillo_prontus'; database exists] at /var/www/cgi-cpn/wizard_deploy.cgi line 137.
-DBD::mysql::db do failed: The used table type doesn't support FULLTEXT indexes at lib_setbd.pm line 354.
