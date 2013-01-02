@@ -1,0 +1,1057 @@
+====================================================================================================
+11.2.52 - 07/12/2012
+====================================================================================================
+- changes: Al quitarle o cambiarle la taxonomía a un artículo, se actualizan las taxport y taxport-lista de la taxonomia actual y la anterior, no de todo el árbol.
+- changes: Se agrega nice con prioridad baja (+19) a cada ejecución del script cron taxport y taxport-lista, para que la cpu no sea usada solo por esos procesos.
+- bugfix: Ocurria un problema cuando se ingresaba un email con mayusculas. La expresión regular que valida el email solo estaba considerando TLDs con minúscula.
+- bugfix: Se elimina botón de funcionalidad no disponible.
+- bugfix: Se soluciona problema con cgi de transcodificación, faltó definir ámbito de variables.
+- changes: Se agrega ejecución de script de regeneración de tabla multimedia.
+- improvement: Cuando el md5 no coincide, se indica que hubo problemas en la descarga, para el usuario sin conocimiento técnico.
+- bugfix: Se quita include de libreria jquery.media en modelo_producto ya que causa conflicto con reproductor flash. Además no se estaba utilizando.
+- bugfix: Se soluciona problema de codificación en macro_form.html en modelo_producto, estaba en latin1.
+- bugfix: Se agrega librería jquery faltante a core de wizard.
+- changes: Se agrega Captcha.class.js a todos los modelos del wizard.
+
+====================================================================================================
+11.2.51 - 29/11/2012
+====================================================================================================
+- bugfix: Se soluciona problema con limite de caracteres en campos mini text, no se estaba agregando <p> en algunos casos
+- bugfix: Se corrige problema con ruta de la imagen generada en los Captcha sin PHP
+- improvement: Se corrigen los botones del Listado de Artículos para que no se descuadren con nombres de portada sea muy largos.
+- changes: Cuando se está previzualizando la portada y se cambia el estado de VoBo de un artículo, el preview se vuelve a generar.
+- changes: Al usar la mega lupa para buscar por sección/tema/subtema, ahora se busca en las 3 tripletas
+- changes: Se hacen algunos cambios al momento de loguearse para que algunos nevegadores pidan guardar la contraseña
+- changes: Se sube la validación de seguridad de TAXPORT_MAXARTICS, de 1.000 a 100.000
+- changes: Se agrega una "alerta" en rojo si el valor excede los 1.000, para notificar al administrador.
+- changes: Se ocultan los bloques del Editor de CFG, para que el sitio no se descuadre mientras se carga
+- improvement: En el cron prontus_cron_taxport, por ahora solo se generará la sección específica, sección-tema o sección-tema-subtema específico
+- improvement: Se agregan condicionales IFV y NIFV en las portadas taxonómicas
+- changes: Se deshace cambio en la release anterior por: reemplazar <p></p> o <p><br></p>, por un <p>&nbsp;</p>
+- changes: Se cambia la función purge_cache para que ejecute un script en background
+- changes: Se cambia la forma de enviar los emails en prontus, para corregir error de codificación en algunos sitios.
+- changes: Reestructuracion de la lib_mail, corrigiendo las CGIS que la usaban
+- changes: Se mueve el envío de email en la lib_form, hacia la lib_mail para que quede centralizado
+- changes: Se comenta funcion "mail_html()" en prontus_imprimir.cgi, ya que no se usaba en todo el script.
+- improvement: En el buscador, se detecta si se encuentra bajo NGINX para entregar el header X-Accel-Redirect en lugar de Location.
+- changes: Al transcodificar, si el video es mp4 no se transcodifica, pero igual se hacen las correcciones de los headers
+
+====================================================================================================
+11.2.50 - 15/11/2012
+====================================================================================================
+- bugfixes: Se corrige bug al hacer procesos en background. El status del proceso se quedaba pegado
+- bugfixes: Al usar el editor de imagenes con imagenes tipo PNG. Quedaban con 8 bits de colores
+- improvement: Se da un poco mas de espacio a los botones de la actualización masiva
+- change: Se agrega una pequeña validación al leer las fotos del artículo
+
+====================================================================================================
+11.2.49 - 09/11/2012
+====================================================================================================
+- changes: Se corrige función del Utiles.class.js para abrir ventanas nuevas, en chrome había problemas
+- changes: Se cambia el uso de br dentro de las etiquetas <p>. Ahora, en vez de utilizar un br, se utiliza &nbsp;
+- bugfix: Se mejor rendimiento de cron_taxport, al usar un arreglo de manera ineficiente se reducen tiempos de ejecución
+- changes: Se permite colocar secciones/temas/subtemas separados por coma, en las salidas List
+- bugfix: Se corrige error comando de transcodificación.
+- improvement: Se transcodifica cualquier audio excepto AAC, ya que mp3 dentro de mp4 da problemas en flash player.
+- bugfix: Se soluciona problema con implementación de prontus captcha v2 en prontus_form.
+
+====================================================================================================
+11.2.48 - 08/10/2012
+====================================================================================================
+- changes: Se utiliza la función parse_filef para la generación de las friendly url en los resultados del buscador.
+- changes: Las portadas se ordenan alfabeticamente en el administrador de portadas y editor de cfg.
+- changes: En los combobox de plantillas de portadas o artículos, no se listan los archivos que comienzan con . (punto)
+- changes: Se agrega nice al momento de ejecutar la transcodificación para reducir la carga del servidor durante el proceso.
+- changes: Se cambia la manera en que los scripts quedan en background al ejecutarlos los via system.
+
+====================================================================================================
+11.2.47 - 27/09/2012
+====================================================================================================
+- changes: Se mejora la forma en que se hace el Purge hacia el Varnish, haciendo un PURGE en vez de un GET. Con ésto plataforma puede hacer reglas complejas en el Varnish.
+- improvement: A las portadas se les puede asignar un nombre más amistoso en vez de mostrar siempre el nombre del archivo.
+- improvement: Se hace configurable el límite de tamaño para transcodificación de videos.
+- bugfix: Cuando se ejecutaba el script prontus_cron_taxport fuera del document root, se producía error.
+
+====================================================================================================
+11.2.46 - 13/09/2012
+====================================================================================================
+- improvement: Se agrega soporte a extension .mov a la transcodificación.
+- bugfix: Se soluciona problema en el listado con artículos con ID muy largos, se descuadraba la fila.
+- bugfix: Se soluciona problema con cron que genera las portadas taxonómicas. La creación de los semáforos se estaba realizando de manera incorrecta.
+- improvement: Se agrega inteligencia a la transcodificación. Si el audio es aac o mp3 no se transcodifica o si el video es H264 baseline, y ancho de resolución menor a 640, no se transcodifica.
+- bugfix: Al enviar un formulario, la cgi respondía con error debido que faltó agregar la nueva librería de captcha.
+- bugfix: Cuando se guardaba un artículo y estando habilitada la opción ARTIC_ACTUALIZA_PORTS, no se estaba respetando el VoBo en la portada donde está publicado dicho artículo.
+- improvement: Se agrega límite de tamaño para transcodificar, archivos de mas de 50 MB no se transcodificarán.
+
+====================================================================================================
+11.2.45 - 04/09/2012
+====================================================================================================
+- bugfix: Al guardar una portada, se estaban considerando los artículos sin alta.
+- bugfix: Al guardar la configuración y validar si una archivo era link simbólico, la cgi arrojaba error.
+
+====================================================================================================
+11.2.44 - 28/08/2012
+====================================================================================================
+- improvement: En la megalupa, al buscar por sección, tema o subtema, se hace en las 3 tripletas. Antes se hacía sólo en la primera.
+- bugfix: Al eliminar un artículo, los iconos que aparecen sobre la linea del artículo desaparecían al quitar el mouse. Ahora se mantiene visible mientras el artículo es eliminado.
+- bugfix: Al enviar un artículo a un area mendiante la flecha, se perdía el efecto mouseover de los iconos borrar y editar.
+- improvement: La regeneración de artículos por FID, se hace usando los FIDs del CFG, no los archivos de la carpeta.
+- improvement: Además en el cpan, se dejan los Nombres de los artículos, en vez de los FIDs
+- improvement: Se corrigen las combos de portadas para seleccionar nuevas portadas.
+- improvement: Se agrega variable FOTO_MAX_PIXEL. Ahi se podrá indicar el tamaño máximo en pixels que podrán tener las fotos del banco de imágenes.
+- bugfix: Se soluciona problema en el proceso de regeneración de portadas taxonómicas.
+- improvement: Cuando se instalan las CGI de prontus, solo se le asigna permisos de ejecución a las cgi que comiencen con prontus_ o wizard_ tanto en cgi-bin como cgi-cpn.
+- bugfix: Cuando se cargaba la información sobre la release en la cabecera de prontus, se estaba creando un directorio en disco cada vez.
+- improvement: La moderación de los comentarios ahora es opcional y queda configurable el editor de cfg gui.
+- improvement: Se agrega un tamaño máximo en pixels para las fotos, configurable en el editor de cfg gui (opcional).
+- improvement: Se agregan 2 nuevas modalidades de bloqueo de edición de artículos y portadas. Ingreso de código aleatorio y bloqueo total.
+- improvement: Se agrega funcionalidad de VoBo a los articulos publicados en un area.
+- improvement: Se agrega botón para previsualizar la portada en una ventana nueva.
+- improvement: Se habilita sistema de captcha sin sessiones PHP, lo que permite prescindir de PHP al usar prontus.
+
+====================================================================================================
+11.2.43 - 22/08/2012
+====================================================================================================
+- bugfix: Se corrige bug que no dejaba copiar artículos.
+
+====================================================================================================
+11.2.42 - 17/08/2012
+====================================================================================================
+- notice: Se realiza una gran optimización de rendimiento al invocar el prontus_cron_taxport
+- improvement: Se agrega versión 2.0 de friendly url, en el siguiente formato: /prontus_id/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
+- improvement: Se mejora la forma en que se regeneran las portadas al guardar un artículo, al usar la opción: ARTIC_ACTUALIZA_PORTS
+- improvement: Se hace una mejora en rendimiento al borrar un artículo (chequeo de publicación en portada)
+- changes: Se elimina debug "foto_existente[$foto_existente]" al obtener un nuevo nombre de foto
+- changes: Se homologan las escrituras a STDERR cuando se hacen system de otros script
+- changes: Si el artículo está sin alta y se guarda sin alta otra vez, no se ejecutarán las regenereaciones de: taxport, list y tagport.
+- improvement: Se agrega la variable PORT_HOME para setear el "home" del sitio, ubicado en: /<_prontus_id>/site/edic/base/home/index.html
+- changes: En la configuración, se mejora la visualización de la sub pestaña Portadas
+- changes: En la configuración, se cambia el color de los textos de ayuda.
+- bugfix: Se corrige validacion de 6-8 chars al guardar los datos del usuario.
+- bugfix: Se cierra el STDOUT de los Postprocesos del DAM para no dejar tomada la CGI
+
+====================================================================================================
+11.2.41 - 25/07/2012
+====================================================================================================
+- bugfix: Se corrige bug que dejaba los relacionados con 0 en vez de vacíos, cuando no había sección, en Regenerar Artículos.
+- bugfix: Calculo de Quota: Se corrige bug al calcular la quota en VPS. Estaba entregando mal el total.
+- bugfix: Salidas List: Se corrige error cuando se intentaban usar por primera vez las List
+- changes: Se cambia el Valor por defecto de la variable: LIST_PROCESO_INTERNO, a "SI"
+
+====================================================================================================
+11.2.40 - 11/07/2012
+====================================================================================================
+- bugfix: Se corrige un bug al intentar borrar un directorio, en el Editor de Archivos
+- bugfix: Se corrigen varios issues al leer la configuración de las Salidas List
+- bugfix: Se corrige el LIST_ORDEN, que arrojaba listado vacío, en las Salidas List
+- bugfix: En el listado de archivo de respaldo del prontus form, habia error cuando algunos de los  campos respaldados traía retornos de carro
+- changes: Se corrigen/eliminan algunos print STDERR que se enviaban en los cron, aumentando los correos
+- changes: Se cambia el sistema de encriptación de las contraseñas, de crypt a md5 (se mantiene compatibilidad hacia atrás)
+- improvement: Ahora la contraseña puede tener de 6 a 32 caracteres
+- improvement: Se mejora el chequeo de quota siendo un poco más compatible con las VPS.
+- improvement: Se escriben al log del prontus las distintas acciones del editor de archivos: guardar, crear archivo, upload, borrar, etc.
+- changes: Ahora las extensiones permitidas al hacer upload en el editor de archivos, se toma de los configurados para Prontus.
+- changes: Se elimina el uso de lib_stdlog, para los errores del prontus_cron_list. Ahora van a la salida de prontus_art_sbmit.error.log
+- improvement: Se aumenta el tiempo de expiración al hacer garbage de los archivos del captcha.
+
+====================================================================================================
+11.2.39 - 15/06/2012
+====================================================================================================
+- changes: Se quita el efecto "cebra" de los listados de artículos publicados y no publicados
+- bugfix: Se achican un poco los estilos en el FID, para que no se descuadre los botones con IDs > 999999
+- improvement: Se agrega la posibilidad de usar macros en las Portadas taxonómicas.
+- improvement: Se agrega marca reservada: %%_no_paginar%% en las Portadas Taxonómicas, para evitar paginado, ej, los RSS, mini listados, etc.
+- improvement: Se crean las salidas List, en base plantillas custom, para bajar la carga de las portadas taxonómicas.
+- changes: Se divide la página principal del Editor de CFG en macros más pequeñas, para facilitar las nuevas modificaciones
+- changes: Se agrega un nuevo CFG para los listados: <prontus>-list.cfg
+- changes: Formulario de Contacto: Se organiza mejor el espacio, para que sea más amigable
+- changes: En el Formulario de Contacto se mejora levenmente la gráfica del formulario
+
+====================================================================================================
+11.2.38 - 01/06/2012
+====================================================================================================
+- changes: Se agrega mouseover con botones de editar y borrar, en el Listado de artículos
+- changes: Se ordena mejor el detalle del artículo, en el Listado de artículos
+- changes: Se agranda levemente el botón para expandir el listado
+- bugfix: Se corrige error al inicializar el Transcodificador en el FID.
+- improvement: Se agrega botón en la biblioteca para asignar una imagen a todos los campos de fotofija del tab actual.
+- improvement: Se agrega botón para copiar un artículo en uno nuevo
+- improvement: Se agrega un scroll al arbol de directorios, dejando la opción de cambiar entre "con" y "sin" scroll
+- improvement: En el Prontus Form, se agregan 2 nuevas marcas a las páginas de respuesta: %%_referer%% y %%_answerpage%%
+- bugfixes: Se corrige un bug que indexaba artículos que tuvieran XML pero no HTML.
+- bugfixes: Wizard Prontus: Despues de hacer el deploy, se borra el caché de artículos.
+
+====================================================================================================
+11.2.37 - 07/05/2012
+====================================================================================================
+- notice: Se agrega soporte para IE9, quedando: Chrome >= 10, Firefox >= 3.6, Safari 5, Internet Explorer 8 y 9.
+- changes: Se agrandan los íconos para expandir la fila del Listado de Artículos
+- improvement: En el Editor de Archivos, se corrigen algunos archivos para compatibilidad con IE9
+- improvement: Optimización para cambios en antiguas versiones, del editor de archivos
+- bugfix: Se corrige validacion en el arbol de archivos, para core y data (no estaba funcionando)
+- bugfix: Cuando se tiene abierto el Editor de un Archivo, el upload de archivo quedaba debajo.
+- improvement: Se actualiza la versión del Player de Video a la 1.6.9 para ser compatible con IE9
+- improvement: Se cambia el player de video de la multimedia por el player de Prontus, para ser compatible con IE9
+- bugfix: Cuando de ingresaba un nuevo tag, al hacer click, no se borraba el texto del campo input de la vista principal
+- bugfix: Se elimina Title descuadrado del colorbox en el Exportar / Importar Tags
+- changes: En el admin de Usuarios, se cambian los select múltiples, por checkboxes
+- improvement: En el admin de Usuarios, se ordena el código con indentacion a 4 espacios.
+- changes: Se cambiaron los mensajes de respuesta al duplicar y eliminar una portada, estaban muy largos.
+- bugfix: Se corrige BUG introducido en la release anterior. No regeneraba nada, por una condición mal hecha
+- bugfix: En el editor de edicones, se estaba mostrando el "Cambiar Contraseña" al admin (siendo que es para los otros usuarios)
+- improvement: Se soluciona problema con contraseña de base de datos, no permitia dos puntos (:)
+
+====================================================================================================
+11.2.36 - 27/04/2012
+====================================================================================================
+- improvement: Se agregan un par de funciones a la librería glib_hrfec_02.pm
+- improvement: Se agrega una funcion a la librería glib_fildir_02.pm
+- improvement: Se comenta funcion append_file, de la  glib_cgi_04.pm, ya no se usa
+- bugfix: Se cambia la inclusión del tax4fids.js a una marca, para poder validar si el archivo existe
+- improvement: Se guarda el titular cuando el artículo es nuevo para cargarlo si se cambia el tipo de artículo
+- improvement: Se agrega un type="text/javascript" a dos scripts que no lo tenían
+- bugfix: En la conf. de Portadas, se deja la combo de portadas con Ancho fijo + Title, para no descuadrar la gráfica
+- improvement: Se mejora el diseñó de los sub tabs en la pestaña de configuración.
+- improvement: Ahora en la regeneración de artículos se pueden seleccionar los FIDs a incluir, como también las vistas y la fecha.
+- bugfix: Al Regenerar Base de Datos, cuando el directorio de los XMLs no existía, el script se caía y la GUI quedaba pegada
+- improvement: Se habilita un botón para copiar un archivo abierto (editable) dentro del mismo directorio, en el Editor de Archivos
+- improvement: En el Editor de Archivos, en el arbol de directorios, los nombres de archivo y carpeta que sean muy largos se cortarán
+- improvement: Se habilita el poder agrandar el editor horizontal y verticalmente, en el Editor de Archivos
+- improvement: Si luego del Update Prontus sale todo ok, se mata la sesión antes de que el usuario presione "Cerrar"
+- changes: Se corrige levemente la salida del nuevo sistema de Loading de procesos, para hacerlo más intutivo.
+- improvement: Se crea librería lib_form.pm para centralizar funciones del Prontus Form
+- improvement: Se crea librería lib_validator.pm para centralizar funciones de Validacion
+- improvement: Se hace una revisión del prontus_form.cgi, indentación a 4 espacios y orden del código.
+- improvement: Se sacan funciones de uso común y se usan las librerías genéricas de prontus: glibs_
+- changes: Se cambia esquema de guardado de datos por archivos json (falta CGI para procesar los json y general xls)
+- improvement: En el logout, se centraliza el codigo para cerrar sesión, en una función de la lib_prontus
+- changes: Se cambia la respuesta para cerrar sesión: normal (redirect) o json (con un parámetro).
+- bugfix: Se corrige respuesta del texto al guardar datos de Usuario
+- changes: Luego de guardar los datos del Admin, en vez de enviar al login, se hace un logout
+- changes: Se agrega confirmación antes de guardar los datos del Admin
+- improvement: Se elimina un debug/warn en la lib_tags.pm
+- bugfix: Se soluciona problema en paso 2 y 3 del Wizard Prontus (no se mostraban las imágenes).
+
+====================================================================================================
+11.2.35 - 12/04/2012
+====================================================================================================
+- notice: Se comienza a usar el archivo change_log.txt para usar en el sitio web de prontus
+- bugfix: Se corrige bug al generar la marca: %%_utcp%% usada en los RSS
+- bugfix: Se corrige comportamiento de las ventanas POP de los artículos, que hacía todas se abrieran como nuevas.
+- improvement: Algunos cambios menores de: estilos, retorno de carro y orden en algunas imágenes
+- bugfix: El botón "Imagen a tamaño original" del VTXT, no funcionaba cuando la imagen era vertical
+- bugfix: El botón "Imagen a tamaño original" del VTXT, cuando habia sido dimensionada
+- bugfix: Se corrige un error en la validación del XML al importar un XML en el Administrador de Categorías
+- bugfix: Se corrige un error en la validación del XML al importar un XML en el Administrador de Tags
+- changes: Se cambió el tipo de seleccion de fids en el Editor CFG del Buscador, de un select multiple a un listado de checkboxs.
+- changes: Se valida que en el Editor CFG del Buscador, siempre vaya chequeado por lo menos un FID
+- changes: Se coloca la pestaña del editor de Configuración, en primer lugar, ya que es lo que más se usa
+- bugfix: En el Update Prontus, se corrige bug cuando el directorio de los respaldos no existia
+- bugfix: Al deshabilitar las actualizaciones, el ícono de actualización quedaba en modo "alerta".
+- improvement: Se arroja mensaje de error cuando hay un error en la Actualizacion de Prontus
+- improvement: Se comienza a mejorar sistema de "loading" en espera, para procesos de carga (a futuro se irá migrando)
+- improvement: Se hace validación antes de comenzar con el proceso de Update Prontus (para no tener que hacer rollback)
+- improvement: Se centraliza el proceso de respaldado en el Update Prontus y se hace al comienzo, antes de comenzar con la copia
+- improvement: Se centraliza el servidor de actualización en el objeto Update.
+
+====================================================================================================
+11.2.34 - 23/03/2012
+====================================================================================================
+- bugfix: Bug crítico en el recordar contraseña: cuando lo usaba un usuario que no fuera admin, se escribia la nueva contraseña e email en el usuario admin.
+- improvement: Al escribir el archivo de usuarios, ahora se ordenan por ID.
+- bugfix: En el listado de artículos, se da un poco mas de espacio para ID Autoincrementales muy grandes (con muchos dígitos)
+- bugfix: Se corrige bug al cambiar el nombre de una CGI del xcoding. Además un error que venía de más atrás en el videocut
+- bugfix: Se corrige error en la biblioteca de imagenes del FID. Cuando el artículo era nuevo y aún no se guardaba, quedaba un signo » vacío.
+
+====================================================================================================
+11.2.33 - 21/03/2012
+====================================================================================================
+- bugfix: Se corrige problema al usar los controles de Foto Fija en Firefox 11 y otras versiones más actuales del mismo navegador.
+- bugfix: Al redimensionar imagenes tipo PNG con transparencia, ésta se perdía.
+- improvement: Se agrega macro reservada para el "Archivo de Respaldo" del Prontus Form.
+
+====================================================================================================
+11.2.32 - 19/03/2012
+====================================================================================================
+- bugfix: Se copian imágenes de apoyo que faltaban para el nuevo sistema de mostrar solo algunas fotos en la  biblioteca
+- changes: Se cambia la extensión del archivo qtfaststart.pl a CGI (qtfaststart.cgi), para no complejizar la instalación de prontus
+- bugfix: Se cambió la manera de redireccionar hacia la página de login al no tener sesión, cambiando el Location por una redirección en javascript
+- bugfix: Se escapea la salida del Prontus Form, se evitan ataques de XSS.
+- improvement: Se mejora la forma en que se entregan errores de validación, en el prontus Form
+
+====================================================================================================
+11.2.31 - 09/03/2012
+====================================================================================================
+- improvement: Se separan los estilos del FID en un CSS aparte.
+- improvement: Se corrige función que entrega el nombre de las imagenes nuevas, para que siempre entregue un número autoincremental.
+- improvement: Se agrega el total de imágenes al inicio del Banco de Imágenes en el FID
+- improvement: Se cambia levemente la forma en que se despliegan las fotos en el banco de imágenes, aprovechando mejor el espacio.
+- improvement: Se limita el alto de las imágenes a 80px en el Banco de Imágenes en el FID
+- changes: Por defecto se desplegarán máximo 8 fotos en el banco de imágenes. Se agrega un link al final del banco de imágenes, para desplegar el resto.
+- changes: Se elimina capacidad de limitar el peso de las imagenes por tipo, usando: <!--FOTO1_MAXBYTES=1500-->
+- changes: Se habilita por defecto el Pegado como Texto Plano en el VTXT.
+- improvement: Se minimiza/compacta el plugin de pegado, para que pese menos, aumentando rendimiento
+- changes: Regenerar Artículos: Ahora se procesan las vistas de manera paralela, no secuencial
+- changes: Regenerar Artículos: Se cambia el orden para que comience con los directorios más nuevos.
+- changes: Regenerar Artículos: Cambia el mensaje de status por: "Procesando directorio XXX de XXX"
+- improvement: Se optimiza la CGI para bajar el tiempo de procesamiento total al Regenerar Artículos
+- improvement: Se agregan nuevos parámetros a la CGI: prontus_art_regen_real.cgi, para poder indicar (fechas, fids y vistas)
+- bugfix: Editor de CFG vía GUI, se corrige valor por defecto de la variable: SCRIPT_QUOTA. Se recargaba siempre el valor de un script inexistente
+
+====================================================================================================
+11.2.30 - 16/02/2012
+====================================================================================================
+- improvement: Cuando expira la sesión y se trata de ingresar a una cgi protegida, ahora se redirecciona hacia el login del cpan.
+- improvement: Cuando se ingresa al login del cpan y existe una sesión activa, se redirecciona automáticamente hacia el administrador de artículos.
+- bugfix: Se cambia la generación de thumbnails para GIFs y PNGs. En vez de usar 8bits, se usará TrueColor.
+- improvement: Se agrega una nueva variable (SCRIPT_QUOTA). Puede ir un script en PHP o Perl, para hacer el cálculo de la quota en sistemas complejos
+- bugfix: Se corrige bug al usar Prontus Functions con múltiples parámetros de entrada. Aparecía un parámetro fantasma producto de una regexp mal hecha.
+
+====================================================================================================
+11.2.29 - 13/02/2012
+====================================================================================================
+- bugfix: Se corrige error al cambiar la edición, no se refrescaba el listado de no publicados.
+- improvement: Listado de Artículos, se agrega un ícono a los artículos que poseen imagen.
+- improvement: Listado de Artículos, se agrega un ícono para indicar que los artículos están publicados en alguna portada
+- improvement: Al hacer mouse-over sobre el nuevo ícono de publicados, se muestran las portadas en las que está publicado dicho artículo
+- improvement: Se habilita el registro de logs, para duplicar, intercambiar y borrar portadas.
+- improvement: Se cambian parámetros de invocación de ffmpeg, para mejorar la velocidad de procesamiento de snapshots y el corte de video.
+- improvement: Upload de archivos: Se corrige falta ortográfica en texto.
+- improvement: Se agrega detección de browser en el Login. Identifica los browsers incompatibles con Prontus y muestra una notificación
+- bugfix: En el Admin de Configuración, corrección gráfica menor (radiobutton desalineado)
+
+====================================================================================================
+11.2.28 - 09/01/2012
+====================================================================================================
+- bugfix: Se elimina el log de procesos creado en lib_logproc antes de comenzar a escribir.
+- improvement: Actualización de jquery 1.4.2 => 1.7.1
+- improvement: Actualización de jquery.ui 1.8.2 => 1.8.16
+- improvement: Actualización de colorbox 1.3.9 => 1.3.18
+- improvement: Actualización de jquery.form 2.18 => 2.94
+- improvement: Se agrega formulario de cambio de contraseña para usuarios que no son admin.
+- improvement: Se agrega soporte para upload de imágenes via drag & drop, compatible con Firefox 4+, Chrome 7+ y Safari 5+ (MAC).
+- bugfix: Se corrige bug al cambiar de pestaña y volver a la del transcodificador, mientras el FID está en proceso de transcodificación.
+- changes: Admin de Usuarios: Se cambia la palabra password por contraseña.
+- bugfix: Al tratar de subir un archivo en IE8 aparecía arrojaba un alert indicando un error, pese a que el archivo se había subido correctamente.
+- bugfix: Se corrigen los thumbs o imagen de preview en videos del Admin de Multimedia
+- improvement: Se habilita nuevo sistema de logs especifico para el DAM, para homologar con el resto del prontus
+- improvement: Se crea librería: lib_dam.pm, con funciones útiles para el futuro
+- improvement: Se crea el regenerador de multimedia, y se coloca en el mantenedor de base de datos
+- improvement: Se colocan links para cambiar el orden de los elementos según: Texto o Fecha de Creación
+- changes: Se aumenta el número de medios por página a 16
+- changes: Se elimina la versión del varglb, ya que ahora el DAM es parte del prontus
+- changes: Las imágenes que son más pequeñas se dejar centradas verticalmente
+- bugfix: Se corrige el location para redireccionar a la página de respuesta. Tenía un doble slash que hacía que se cayera en nginx
+- bugfix: En la CGI para imprimir artículo, se aplica fix para el issue ffox 3.6.11, eliminando las rutas relativas.
+- improvement: Se agrega manejo de log estandar de Prontus
+
+====================================================================================================
+11.2.27 - 15/12/2011
+====================================================================================================
+- notice: Se eliminan las dependencias de Python para el uso de Prontus
+- improvement: Se actualiza versión de la Validator de JS a la 5.1.6
+- improvement: Se le agregan las dimensiones al ícono de "Contáctanos" a recomendación de PageSpeed
+- changes: Se vuelve al antiguo esquema de exigir el cambio de contraseña luego de usar el recordar contraseña, para todos los usuarios.
+- improvement: Cuando una plantilla de portada no existe, se imprime al error_log la plantilla conflictiva, para ayudar al hacer soporte.
+- improvement: Se agrega mecanismo para evitar que el FID se guarde antes de que se termine de cargar
+- improvement: Se agrega el nuevo JS: FidConfig.class.js, para centralizar las opciones.
+- bugfix: Se valida existencia del directorio indicado en la variable DIR_FFMPEG. (si se ingresaba un directorio inexistente prontus quedaba inutilizable)
+- bugfix: Se corrige la validación de extensión de archivos de video, cuando la extensión estaba en mayúsculas.
+- changes: Se migra el script qtfaststart.py escrito en Python, por qtfaststart.pl escrito en Perl.
+- changes: Producto de lo anterior se elimina el chequeo de Python en el chequeo de plataforma
+- improvement: Prontus Functions: Se mejora/habilita escapeo de comillas simples y dobles en los parámetros de entrada de las Prontus Functions.
+
+====================================================================================================
+11.2.26 - 14/11/2011
+====================================================================================================
+- improvement: Se agrega nueva salida (striptext) de la marca tipo TXT con el sufijo .strip la que puede ser usada en los atributos name o id de los tags html
+- changes: Se hace un resize en el video cuando las dimensiones del video (ancho y/o alto) de entrada son números impares.
+- bugfix: Se corrige bug al intentar borrar un tag (arrojaba un error 500)
+- bugfix: Se mejora la busqueda de CSS en la plantilla del artículo para el VTXT, en el FID. Se caía cuando el tag <link> traía marcas prontus.
+
+====================================================================================================
+11.2.25 - 05/10/2011
+====================================================================================================
+- improvement: Se mejora detección de cierres = aperturas, en la lib_prontus
+- bugfix: Se corrige un bug introducido en release anterior, al eliminar un artículo que no estuviera publicado en ninguna portada.
+
+====================================================================================================
+11.2.24 - 05/10/2011
+====================================================================================================
+- notice: Se cambia soporte de los navegadores. Firefox 7, Chrome 14, Internet Explorer 8, Safari 5
+- bugfix: Se corrige bug al intentar borrar un tag (arrojaba un error 500)
+- bugfix: Cuando se cambia el estado de un tag, faltaba cambiar un class, que hacía que funcionara el Ocultar/Mostrar deshabilitados.
+- improvement: Se encodifica la salida de error de prontus_edit_file.cgi, para que entregue utf8
+- bugfix: Al usar un directorio no válido la ruta actual quedaba vacía.
+- bugfix: Al usar un directorio como este: ../../../ se mostraba en contenido de la raíz.
+- bugfix: Se mejora la forma de setear el directorio actual, colocando una función en el prontus_edit_arbol.html.
+- bugfix: Se elimina caracter invisible en el alert de respuesta, al eliminar un artículo que estuviera publicado en otras portadas (producía error en Chrome 14)
+- bugfix: Cuando se activaba el Pegar como Texto Plano, aparecía un mensaje en inglés. Dicho mensaje fue traducido al español en el JS de idioma.
+- bugfix: Después de transcodificar, no se actualizaba la BD del DAM, por lo que quedaba guardado el video sin transcodificar
+
+====================================================================================================
+11.2.23 - 29/09/2011
+====================================================================================================
+- bugfix: En el Posting de Contenidos, se repara el sistema de asignacion automatica de fotofija.
+- changes: Producto de esto, las marcas para asignar fotofija cambiaron (ver documentación)
+- bugfix: Editor de CFG vía GUI: No se estaba guardando el valor de la variable TAXPORT_REFRESH, siempre quedaba con el valor por defecto.
+- bugfix: En el Editor de CFG, se cambiaron los checkbox por radio button SI/NO
+- improvement: Se agrega variable de configuración EDICBASE_INI_SELECTED a la pestaña Portada.
+- improvement: Se agregan algunos métodos privados al objeto Artic, para ayudar a las tareas de integración con Prontus. Entre otros cambios menores.
+- improvement: Se agrega botón de contacto al menú superior de Prontus.
+- improvement: Editor de Archivos: Se mejora visibilidad de elemento para "subir nuevos archivos", cuando el directorio estaba vacío
+- improvement: Se agrega formulario para comentarios / contacto en la Ayuda
+- bugfix: En firefox, al arrastrar una imagen del Banco de Imágenes al VTXT, ésta no se podía redimensionar (producto de un div con ancho fijo)
+
+====================================================================================================
+11.2.22 - 05/09/2011
+====================================================================================================
+- bugfix: Listado de Artículos, se corrige bug al cambiar la combo de ediciones mientras de guarda
+- bugfix: Corrige bug en validación de fechas en el sistema de comentarios. Se actualiza la librería validator a la versión 5.1.5
+- bugfix: Se elimina validación en duro de tipos de archivos permitidos, dado que Prontus ya la trae integrada por medio de la var de cfg UPLOADS_PERMITIDOS.
+- bugfix: Se normalizan los nombres de los campos a minúsculas, para homologar con FID.
+
+====================================================================================================
+11.2.21 - 31/08/2011
+====================================================================================================
+- bugfix: Se actualiza librería validator de JS a la ultima release 1.5.4, para corregir un bug
+- improvement: Mejoras menores en la lib_prontus
+- improvement: Se comienzan a guardar los últimos 11 XMLs de la portada a modo de respaldo (antes se guardaba sólo 1)
+- bugfix: En el Listado de Artículos, se corrige bug al cambiar la combo de portada mientras se estaba guardando.
+- bugfix: En el Clustering FTP, se comienza hacer garbage de un archivo temporal, que se creaba para hacer chequeos
+- bugfix: Se producía un error 500 cuando se usaba la búsqueda rápida de Tags, sin estar creada la carpeta que contiene el archivo de caché.
+- bugfix: Se elimina error de JS al validar si era Safari o no, en el Editor de archivo prontus
+- bugfix: Se corrigen/mejoran algunos manejos de errores en algunos scripts del Editor de Archivos
+- bugfix: Al agrandar el editor de archivos (desde la esquina inferior derecha), no se podía volver a redimensionar. Ahora se permite sólo resize vertical.
+- improvement: Se cambian los links hacia archivo y carpeta del arbol, lo que permite hacer copy/paste
+- improvement: Se cambia la ruta del directorio actual en el Editor de Archivos, hacia la cabecera del editor y se linkean los directorios padre
+- improvement: Se habilita un botón para "cerrar" el archivo actual en el Editor de Archivos
+- improvement: En el Editor de Archivos, se agrega la opción de crear directorio en el directorio actual
+- improvement: En el Editor de Archivos, si el directorio actual se encuentra vacío, aparece un botón para eliminarlo.
+- improvement: Se agrega la capacidad de subir imagen/archivo al directorio actual del Editor de Archivos. Sólo se permite un set acotado de extensiones.
+- improvement: Ahora los archivos que no son editables en el Editor de Archivos, pueden ser vistos (si son imagenes) o descargados (si son binarios).
+- improvement: En el Editor de Archivos, se muestra info básica si los archivos no son editables
+- improvement: Se cambian los íconos de archivo y carpeta (y se agregan los de imagen y binario), en el Editor de Archivos
+- improvement: Se hacen varias mejoras a nivel de código fuente en el Editor de Archivos.
+- bugfix: Se corrige error en el Prontus Form, cuando habian campos obligatorios, y no se especifica en el MSG el nombre del campo, el mensaje de error quedaba vacío
+- improvement: Posting de Contenido: Mejoras menores y limpieza, aprovechando nuevas instalaciones.
+- improvement: Wizard Prontus: Se modifica el deploy, para que maneje mejor los CFG de los modelos (borrado y renombrado)
+
+====================================================================================================
+11.2.20 - 19/08/2011
+====================================================================================================
+- bugfix: Se actualiza librería validator de JS a la ultima release (se corrigen varios issues)
+- changes: Vuelve a incluírse el "Vuelve Prontus..." al finalizar sesión
+- bugfix: Se agrega soporte para reconexión a la BD en varias CGIs de Prontus
+- bugfix: Cuando una foto en el VTXT estaba centrada y se le aplicaba el enmarcar foto, el marco no heredaba el centrado
+- changes: Se deshace un cambio introducido en la 11.2.17, en el VTXT al copiar espacios. Se deja como estaba antes.
+- bugfix: Al asignar FIDs a un usuario, antes se asignaba siempre el fid_general. Ya no es necesario
+- bugfix: Se cambia el hack de CSS para corregir el issue en Safari que se hizo en la 11.2.18 por un metodo mas robusto
+- changes: Cuando se ingresa a la pestaña de administración (al listado de logs), se renombra cualquier .htaccess antiguo que pusiera existir
+- changes: Si la actualización Prontus se realiza en un server que cuenta sólo con IP, ahora el subject incluye el document root (para saber que sitio es)
+
+====================================================================================================
+11.2.19 - 05/08/2011
+====================================================================================================
+- improvement: En el head, donde sale la versión del prontus, se agrega la palabra "versión"
+- improvement: Cuando el perfil no es admin, no se muestra informacion sobre update automático.
+- improvement: Se cambian algunos links que estaban con funcion a javascript, por el link + un onclick
+- bugfix: Error en Transcoding al cambiar de tab y volver al tab de video (se mostraba error)
+- bugfix: Error en Transcoding cuando se transcodificaba por primera vez, producto de un === en vez de ==
+- bugfix: Se corrige error grafico con los controles de transcodificacion del player en Chrome.
+- bugfix: Los archivos transcodificados, luego de pasar por el proceso python, quedaban con permisos 600. Ahora quedarán con 644
+- improvement: Se agrega la extensión mkv, entre las extensiones permitidas. Por lo tanto, quedarían: avi, flv, mp4, wmv, mpg, mpeg, 3gp, mkv
+- improvement: Se mejora el prontus_check_platform.cgi, para buscar la libx264 en: /usr/local/lib/  y  /usr/lib/
+- improvement: Ubicacion del flash, al generar el embed: Ahora se busca un input con ID: #_xcode_player_path, si no existe, se usa la ruta por defecto
+- bugfix: Se corrige el control de acceso al campo de búsqueda de tags, en el FID
+- improvement: Se reestructura el buscador de tags, para homologar con el resto de las interfaces.
+- improvement: Se cambia de posición el link "Ocultar deshabilitadas" del Admin de Tags
+- improvement: Se crea la variable MAX_LAST_TAGS_4FID para definir el número de tags que se despliega en el sector: "Últimos N Tags Ingresados"
+- improvement: Se cambia levemente la distribución de los "Últimos N Tags Ingresados", para que queden mejor alineados. Se corta el texto si es muy largo.
+- improvement: Se agrega un link debajo de los "Últimos N Tags Ingresados", para ver TODOS los tags disponibles y poder filtrarlos y agregarlos al Fid
+- improvement: Se aumenta el numero de tags por pagina en el listado de tags de 20 a 50.
+- improvement: En el FID, ahora los "Últimos N Tags Ingresados", que estén siendo usados quedarán con el icono de la izquierda de color rojo.
+- improvement: Se ordenan alfabéticamente los tags asociados al FID
+- improvement: Se entrega la posibilidad de definir el separador de la marca: %%_SECC_TEMA_STEMA_NOM%%, usando: %%_SECC_TEMA_STEMA_NOM(<separador>)%%
+- improvement: Buscador CPAN: Se cambia la instalación de Handlers del Buscador, por una función genérica en el Utiles.
+- improvement: Multimedia:  Se aplica nueva instalación de handlers de campo de busqueda. Se agrega link para eliminar los filtros
+- changes: En crear usuario, se cambia "Password confirmación", por "Confirmar password"
+- improvement: Clustering FTP: Para que este mecanismo sirva también para respaldo, ahora se copian también los XML de los artículos y portadas normales.
+- changes: Se elimina el rayo y en su lugar, la portada se transmite cada vez que se guarda.
+- changes: Se ajustan estilos y atributos del div marco aplicado al enmarcar foto, en el VTXT
+- changes: Se agrega mecanismo de garbage a la carpeta <prontus_dir>/site/cache/form (Se borran todos los archivos mas antiguos que 10 min.
+- improvement: Wizard Prontus, se agrega grafica para indicar numeros de "pasos" que tiene el wizard y resaltar el paso actual del proceso.
+
+====================================================================================================
+11.2.18 - 27/07/2011
+====================================================================================================
+- improvement: En el transcodificador se cambia el player flash por el Tag HTML5, si es que el dispositivo no soporta flash
+- improvement: En el upload masivo de imagenes, cuando no hay flah se reemplaza por 15 campos input file normales para que se puedan subir imagenes
+- improvement: Cuando no hay flah, Se reemplaza el flash de copiar URL por una imagen que tiene el link.
+- bugfix: Se corrige error en el manejo de error de los loading de procesos background
+- bugfix: Cuando el document_root del servidor, trae un slash al final, fallaba el update automatico.
+- improvement: En la lib_prontus se hace un cambio en las funciones que detectan los anchos y altos de las imagenes
+- improvement: Ajustes en documentación para perldoc de la clase Artic.
+- bugfix: Se agrega chequeo de módulo URI::Escape
+- bugfix: Luego de concluir una actualización, se borra el caché de la lista de no publicados.
+- improvement: Se agrega mensaje al terminar el update automático, indicando que se debe cerrar el navegador y borrar el caché.
+- bugfix: Se corrige error en el FID al cambiar la categorias, ya que el JS con los niveles quedaba cacheado.
+- improvement: Se agrega la opcion de Importar y expotar tags
+- improvement: Se homologa el error_log en varias CGIs
+- improvement: En el Editor de Archivos, se modifican los estilos del editarea, para afinar un poco mejor el tema del soporte para Safari
+- improvement: Permite tildes en el subject del email en el Prontus Form. Antes, la CGI estaba dejando pasar sólo caracteres alphanuméricos
+
+====================================================================================================
+11.2.17 - 14/07/2011
+====================================================================================================
+- notice: Se asegura compatibilidad con Safari 5. Navegadores soportados por prontus: Firefox 3 y 4, Internet Explorer 8, Chrome 12 y Safari 5.
+- notice: Issues conocidos de Safari: Al arrastrar una imagen al VTXT o Control de fotofija, esta queda a tamaño grande (hasta que se guarda)
+- notice: Issues conocidos de Safari: En el VTXT las imágenes no se pueden redimensionar con drag & drop.
+- bugfix: Corrige error de javascript al intentar agregar un nuevo tag. Además se hacen cambios menores en el código
+- bugfix: Se corrige error al intentar Crear las Tablas de la BD sin tener conexión.
+- bugfix: En el admin de Categorias, se corrigen los bordes blancos de los botones
+- bugfix: Se hace cambio en scripts y flash player, para evitar el error aleatorio del "setMovie".
+- bugfix: Se asigna dinámicamente permisos de ejecución a la CGI en Python (al momento de transcodificar)
+- bugfix: Si la transcod. fue exitosa, ahora además de modificar el XML del artic., también reparsea el html
+- bugfix: Se modifica la forma en que se llama al prontus_videodoxcode.cgi usando "nice", se revisa en varias rutas para evitar error.
+- changes: Plugin paste del VTXT: se comenta expresion regular del plugin, que eliminaba espacios en el pegar desde word
+- improvement: Se elimina referencia a plugin safari (este plugin no existe)
+- improvement: Se modifican los estilos del editarea del Editor de archivos, para eliminar un efecto molesto, en Safari 5.0.2
+
+====================================================================================================
+11.2.16 - 07/07/2011
+====================================================================================================
+- notice: A partir de esta release, Prontus requiere que esté instaldo Python, para soporte de mp4 progresivo.
+- improvement: Producto del uso de python, se actualiza el check platform
+- bugfix: En los "Últimos 15 Tags Ingresados" en el FID, se mostraban los tags que no tenían el estado en "No Mostrar".
+- improvement: En el FID, se agrega función para autochequear campos checkbox en artículos nuevos.
+- changes: El adm. de categorías y de tags queda disponible sólo para perfil "admin" y "editor", pero no para "redactor"
+- improvement: Se implementa descarga progresiva para mp4 (para esto se usa Python)
+- improvement: En el Proceso de update Prontus, se asigna permisos de ejecución a los .py
+- improvement: Editor de configuración vía GUI: Se agrega variable POST_PROCESO ART-BORRAR a la pestaña Variables Generales
+
+====================================================================================================
+11.2.15 - 05/07/2011
+====================================================================================================
+- bugfix: Parseo de multimedia: Cuando el archivo de media no existe, ahora parsea las marcas por 'FILE_NOT_FOUND'.
+- bugfix: Cuando se guarda un artículo y se genera el html, Prontus realiza purge de la URL friendly o normal.
+- improvement: En el Administración de taxonomía, se implementa optimización en despliegue de URLs taxonómicos
+- improvement: En la pestaña "Portadas" del Editor de CFG, se agrega scroll a la columna "Portada", para cuando el nombre es muy largo
+- bugfix: Se corrige error en el Tagging al usar multivistas y la versión 2.X de la librería JSON.
+- improvement: En la Tags.class.js, se cambian unos "eval", por la forma segura de acceder a valores de un objeto.
+- bugfix: Verifica variable _soloportadas para no considerar la fechae.
+- changes: Si se detecta FORZAR, solo se indexa el ano indicado. No se buscan otros anos.
+- changes: Elimina compatibilidad con Prontus 9 en el buscador
+
+====================================================================================================
+11.2.14 - 04/07/2011
+====================================================================================================
+- improvement: Al momento de cargar la configuración de prontus, se asignará al IP_SERVER el PUBLIC_SERVER_NAME
+- improvement: En la Regeneración masiva, se agrega param para permitir procesar solo desde una fecha determinada (aka "dirfecha") en adelante
+- improvement: En la Regeneración de tabla de artículos, se agrega param para permitir procesar solo desde una fecha determinada (aka "dirfecha") en adelante.
+- changes: Cuando se indica el nuevo parámetro dirfecha de la regeneración de la tabla de artículos, el proceso NO BORRA la tabla de BD primero
+
+====================================================================================================
+11.2.13 - 01/07/2011
+====================================================================================================
+- bugfix: Sistema de Calendarios: Se corrige CGI para evitar que borre portadillas del tipo que no correspondan al mes que se estaba procesando
+- improvement: Se agrega link para generar el código "Embed" para insertar el video transcodificado en otros lugares del sitio.
+- changes: En el Editor de Configuración, ahora los listados de artículos y portadas, quedan ordenados alfabéticamente
+- improvement: En el FID, se agrega un check a los controles de FOTOFIJA para cuadrar las dimensiones de la foto
+- improvement: Se agregan tooltips a algunos botones de la barra de "Opciones" del FID
+- improvement: Se agrega la marca reservada: _tagnames, con los nombres de los tags separados por coma.
+
+====================================================================================================
+11.2.12 - 28/06/2011
+====================================================================================================
+- improvement: Se corrige un poco el texto del check_platform en el Chequeo de las CGIS
+- bugfix: Error en el escapeo de caracteres y generación de Friendly URL en artículos relacionados por tag
+- improvement: Al usar el "Guardar y Nuevo" con multivistas, el cambio de las multivistas no se limpiaba, quedando el valor usado anteriormente.
+- improvement: Se cambia el evento para limpiar el valor por defecto en el Admin de Tags, de click a focus
+- bugfix: Error en el Wizard Prontus al generar el -id.cfg. Se estaba agregando el PUBLIC_SERVER_NAME ahi
+- improvement: Se elimina variable de configuración MAX_NRO_ARTIC del editor de cfg. ya que no se estaba utilizando.
+- improvement: Se agrega la variable METAi y METADATAi al editor de la configuración del buscador.
+- bugfix: Se error de codificacion en el despliegue de error del buscador
+
+====================================================================================================
+11.2.11 - 16/06/2011
+====================================================================================================
+- bugfix: Al agregar un nuevo item en el Administrador de Categorías, se guardaba con problemas de codificación.
+- improvement: Se agrega nueva variable de configuración para elegir si los links para el fid se abren normal o con una pop.
+- bugfix: Al parsear codetext se estaba eliminando el espacio. Se agrega el \x20 a la regexp
+
+====================================================================================================
+11.2.10 - 14/06/2011
+====================================================================================================
+- improvement: Se hace limpieza en la release
+- improvement: Se borrarán portadillas de calendarios de dias que NO hayan tengan artículos en el mes que se está procesando.
+- bugfix: Se arregla bug en función que suma segundos a una fecha
+- changes: Copiar al Portapapeles: Se cambian íconos del zeroclipboard
+- improvement: Se agregan nuevos estilos al archivo: estilos.css para ayudar en el FID
+- bugfix: Cuando están desactivadas las Friendly URLs en el FID, quedaba: "/cgi-cpn/Friendly URLs no se encuentran activadas"
+- improvement: Se coloca un boton al lado de la fecha de publicacion y expiracion, para actualizar sus valores con la fecha/hora actual
+- improvement: Se mejora forma en que se detecta si un artículo es nuevo o no, para cambiar el title
+- improvement: Se hace un poco de limpieza en algunos archivos y corrección de mini errores en el script Fid.class.js, usando JSLint
+
+====================================================================================================
+11.2.9 - 27/05/2011
+====================================================================================================
+- bugfix: En la macro de combos de categoría, se corrige Taxonomía por Categorías.
+- bugfix: Y la macro de taxonomía manual, queda como Relacionados Manuales
+- improvement: Se agrega Friendly URL en el link "Ver Artículo" y en "Copiar URL" del FID
+- changes: El botón "Enmarcar foto", ahora en vez de tabla, utiliza div's
+- bugfix: Corrige pequeño bug al intentar mostrar/ocultar las filas, cuando el área de los publicados estaba oculta
+- improvement: Se corrige pequeño un pequeño margen de más al mostrar/ocultar las filas en el Listado de Artículos
+- bugfix: Evita que el listado de publicados se guarde cuando hay errores en el listpub
+- improvement: Permite que los listados se refresquen con los botones de refrescar, aunque dicho listado esté en modo loading
+- improvement: Editor de configuración, se agrega selección de FID por defecto en la pestaña Artículos.
+- improvement: Se mejora el Editor de configuración para Comentarios y Buscador, cambiando la forma en que se procesaban algunos campos
+- improvement: Se achicó el largo de algunos campos en el Editor de configuración
+- improvement: Se agrega editor de configuración de Tags.
+- bugfix: Se corrige problema al eliminar todas las multivistas en el Editor de configuración, guardaba una en blanco.
+- bugfix: Se corrige problema al guardar fids en configuración de artículos, se autoseleccionaban plantillas al guardar.
+- bugfix: En el Parseo codetext (.code): Se corrige error en reemplazo de doble backslash
+- notice: Si la página no tiene el meta "Generator", se incluye un Generator de Prontus con la rama de versión
+- bugfix: Portadas tax: Se evita que se gatille automáticamente al script de taxports cuando no hay sección asignada en el FID
+- bugfix: Sistema de Tags, se corrige error de seguridad al permitir ingresar nuevos tags sin estar logeado
+- improvement: Se mejora sistema de tags para permitir una cantidad mayor de tags.
+- improvement: Se agrega un input para buscar tags por aproximación
+- improvement: Se crea lib_tags.pm para manejo centralizado de tags
+- changes: En el FID, se muestran los últimos 15 tags ingresados, para fácil acceso.
+- bugfix: En el Administrador de Tags, se corrige escapeo de &.
+- improvement: En el Administrador de Tags, se agrega paginación, buscador de tags y soporte para multivistas.
+- improvement: Se agrega portadas tagonómicas, las cuales operan en base a sistema multiplantilla y multivista.
+- improvement: Soporte para variables de configuración para tags: TAGPORT_MAXARTICS, TAGPORT_ARTXPAG y TAGPORT_ORDEN
+- improvement: Limpieza de varios archivos que no se usan en el CPAN en General
+- bugfix: En el Administrador de Categorías, se corrige escapeo de &.
+- improvement: En el Administrador de Categorías, se agrega botón para refrescar la pantalla.
+- changes: Se aplica mismo filtraje de caracteres para secciones, temas y subtemas que para tags, quedando finalmente unificado
+- changes: Procesamiento de multivistas: Producto de bug editor de cfg, se agregó validación para considerar solamente las definiciones con 1 o más caracteres
+
+====================================================================================================
+11.2.8 - 25/04/2011
+====================================================================================================
+- changes: A partir de esta release, se cambia el formato del release notes técnico
+- bugfixes: Transcoding, se depura y mejora el manejo de errores en el servidor al momento de transcodificar desde el FID
+- improvement: Al ingresar al cpan, Prontus verifica la existencia del binario del ffmpeg, seteado en la Variable DIR_FFMPEG
+- improvement: Valor a utilizar al momento de transcodificar: Si está indicado en el cfg, Prontus usará ese valor, si no, usará el valor detectado automáticamente.
+- improvement: Se mejora detección del path ffmpeg a nivel de prontus_check_platform.cgi
+- improvement: Se agrega soporte para transcodificación de videos .3gp (formato de grabación típico de celulares)
+- improvement: Agrega link de ayuda desde los botones de transcodif. del FID, al artículo correspondiente del manual de operación
+- changes: En las Portadas taxonómicas, se cambia parámetros de entrada: {prontus_id} <fid>/<s>/<t>/<st>
+- improvement: Implementa ajusta de caracteres para la bajada que se guarda en la base de datos
+- bugfixes: Agrega botones guardar y cancelar al tab de comentarios en el Editor de configuración vía GUI
+- bugfixes: Editor de configuración vía GUI, previene caída en caso de valores de cfg en blanco y asigna algunos por omisión.
+- bugfixes: Editor de configuración vía GUI, corrige algunos mensajes de ayuda en el html
+- improvement: En todos los tabs del Editor de configuración, agrega botones guardar/cancelra al ppio y al final de la página
+- improvement: En el Editor de configuración, se agrega check "quitar" en las multivistas, para mejorar la usabilidad
+- improvement: En el Editor de configuración, después de guardar, la aplicación queda en el mismo tab en que se encontraba al guardar
+- improvement: Se cambia label de pestaña "Variables globales" x "Variables generales", en el Editor de configuración.
+- changes: En editor de archivos, se elimina tab para edición directa de los .cfg, dado que ahora esto es posible realizarlo a través de la misma GUI.
+- bugfixes: En la release anterior (11.2.7) el link: eliminar filtros, había quedado malo. Se corrige.
+- improvement: Se optimiza el mecanismo para armar los artículos relacionados por Tags
+- improvement: Al parsear codetext (por ej., %%_titular.code%%) ahora filtra caracteres no imprimibles o de control
+
+====================================================================================================
+11.2.7 - 18/04/2011
+====================================================================================================
+- notice: Se agrega soporte Chrome: Desde esta release en adelante los navegadores soportados son: Firefox 3 y 4, IE 8 y Chrome 10.
+- bugfix: Se corrige un bug en el cron_fechas, al invocar sin el segundo parámetro.
+- bugfix: Se enviaba un "notice" al usar las TagsRelac.class.php, ya que tenía un date sin setear el time zone.
+- bugfix: Se agrega el módulo PHP::Session (v0.27) al chequeo de plataforma
+- improvement: Se corrige el link al manual de desarrollo en el chequeo de plataforma
+- bugfix: Se corrige bug en admin de tags, al intentar ver los "Últimos Artics", el check verde se calculaba mal.
+- bugfix: Editor de imágenes: Se corrige falta ortográfica en editor de imagenes.
+- bugfix: En el admin de categorias, al seleccionar guardar y nuevo, no se actualizaba el onclick de los campos
+- bugfix: En el admin de categorias, al seleccionar guardar y nuevo, no se actualizaba el onclick de los campos
+- bugfix: Error al importar taxonomía, que no había sido "ordenada a mano", se cargaba en otro orden.
+- bugfix: Prontus update: Se estaba respaldando la carpeta site del prontus al hacer el update, debía ser sólo el core.
+- improvement: Se incorpora var de cfg DIR_FFMPEG, para especificar dir. del ffmpeg. Por omisión se setea a '/usr/local/bin'
+- changes: En el VTXT, upgrade de TinyMCE 3.3.x a 3.4.2 del 07/04/2011, básicamente para proveer compatibilidad con chrome e ie9
+- bugfixes: En Prontus update, se incluye en el update la actualización de /wizard_prontus/core/
+- improvement: Deja respaldos de las ultimas 3 actualizaciones solamente (de lo descargado y de lo actualizado).
+- improvement: Cada vez que se gatille un update desde algún sitio y éste resulte ok, se enviará un mail a area_prontus@altavoz.net con los detalles.
+- changes: Megalupa: Se precargan los parámetros de la busqueda actual
+- improvement: Producto de lo anterior, se agrega un botón reset para limpiar los campos en la megalupa
+- improvement: Se mejora el proceso de carga de la megalupa: centralizando los scritps en Buscador.class.js, lo que produce una baja en el peso del HTML.
+- improvement: Mejora la visualización del directorio actual en el Editor de Archivos Prontus
+- improvement: Se corrigen caracteres extraños en los alert y prompt, al terminar el string con un \n.
+- changes: En la importación de categorías, el input file se veía diferente. Se cambió el estilo para que se vea igual en todos los navegadores.
+- bugfixes: Al arrastrar una imagen a control de fotofija en chrome, esta se guarda (en el xml) pero no se carga en el control de fotofija
+- notice: Las opciones de zoom in y zoom out del previsualizar no funcionan en chrome
+- bugfixes: En chrome, se podían crear tags, pero en el FID no aparecía la opciones para asociarlos / desasociarlos
+- improvement: En chrome, Cuando se activa la opción de multiedición, se ve desordenado en el admin de art (se cae el lápiz)
+- improvement: En el Administrador de usuarios, se cambió mensaje confirmación que aparece al tratar de borrar uno.
+- improvement: Adm. de portadas, se eliminó carácter extraño en el mensaje que envía el administrador de portadas, al duplicar un portada.
+- improvement: En el Adm. de artículos, cuando se modifique una portada, aparecerá un confirm si se desea salir sin guardar
+- improvement: Se agrega un ícono al link Eliminar Filtros, para mejorar usabilidad
+- improvement: Además de la busqueda rápida por Titular (ya existente), se habilita búsqueda por TS (nueva) en el admin de artículos.
+- changes: Transcodificación: Se aumenta el número de intentos para capturar el objeto flash en la transcodificación, de 10 a 20 cada 200 milisegundos
+- changes: Transcodificación: También se introduce un pequeño retardo entre que el flash se inicializa y el seteo del Movie.
+- improvement: Editor de imágenes, se agrega title a botón de fijar proporciones en la acción de redimensionar imagen.
+- improvement: Se cambian los íconos del editor de imágenes, por png con fondo transparente.
+- improvement: Se agrega Editor configuración (GUI) en la pestaña de Administración.
+
+====================================================================================================
+11.2.6 - 04/04/2011
+====================================================================================================
+- improvement: Se hace revisión completa de la interface. Se asegura compatibilidad con: IE8, FF3 y FF4
+- bugfix: Se corrige issue entre el plugin selectList, usado para los tags, y Firefox 4.
+- bugfix: Se corrigen problemas de codificación en la CGI prontus_art_newadmin.cgi. (Se dejan los mensajes dentro de la cgi, con entidades).
+- bugfix: Se corrigen botones del editor de plantillas, que tenían fondo blanco en vez del fondo transparente.
+- bugfix: Error al usar publicación directa con multiedición.
+- bugfix: En Admin de ports, al hacer un intercambio de portadas, no se eliminaba el caché del listado de artículos
+- bugfix: En Admin de ports, se duplicaba el indicador (*) cuando una portada estaba repetida en el cfg.
+- bugfix: En Admin de ports, se corrige refresh al duplicar/borrar portada.
+- bugfix: En los FIDs, al agregar listas del tipo idioma o múltiples archivos, se mostraba la decoración del <li>
+- bugfix: Se corrigen problemas de codificación en algunos archivos del wizard y del core
+- bugfix: Se corrige pequeño issue con IE y el player de la Transcodificación.
+- bugfix: Se identifica problema con Firefox 3.6 + Linux y el player de video. Este issue se podría corregir en futuras releases.
+- improvement: En los campos TXT, se agrega marca para uno en xml
+- changes: Se cambia la pestaña "Plantillas" por "Editor", del menú general del Prontus.
+- improvement: Se agrega confirmación, en el Editor de Plantillas, al ingresar un nuevo archivo sin extensión
+- improvement: Para facilitar navegación del fid, se replican botones "Subir imagen" y "Bibl. multimedia", en la parte superior
+- changes: Se homologa el "ocultar todo" y "mostrar todo" de las área del listado de publicados, con el mismo estilo de usado en las filas del listado
+- changes: En la transcodificación, se agrega un símbolo de loading, al mostrar status, para dar la sensación de procesamiento.
+- improvement: Luego de cortar el video, se guarda el FID, para que se refresque el nuevo Peso del Video
+- improvement: Se aprovecha de formatear mejor los mensajes de transcodificación.
+- changes: En la transcodificación, se incorpora toda la configuración de compresión en la cgi
+- improvement: Se agrega soporte para Friendly URLs dentro del cpan, sólo se parsean si éstas están configuradas en el CFG
+- improvement: Se agrega boton volver al Admin de Ediciones desde las ediciones antiguas
+- improvement: Se corrigen detalles menores en la gráfica del Admin de Ediciones.
+- changes: Se sube número de intentos máximos en el login antes de bloquear la cuenta, de 5 a 10.
+- improvement: Administrador de Portadas, se agrega Label al checkbox de "Configurar como base"
+- changes: En el Administrador de Portadas, se agrandan los listados (select multiples) para mostrar 12 ítems (antes eran 8)
+- improvement: Administrador de Portadas, se mejora y pule la gráfica del listado (select multiple).
+- improvement: Se convierten las taxonomías del FID, en macros: _tax_manual.html y _tax_combos.html
+- improvement: Se aplica estilo al result de 'listar tablas', y se aprovecha de dejar el texto mas amigable
+- improvement: Se agrega Net:DNS.pm v0.65 al chequeo de plataforma.
+- improvement: En el chequeo de plataforma, se pintan en rojo si el chequeo del modulo no se cumple.
+- changes: En el chequeo de plataforma, se cambia el título de "Verificar M&oacute;dulos Perl" a "Verificar Plataforma"
+- improvement: Se agrega sección con validación del Transcoding en el "chequeo de plataforma".
+- improvement: Se mejora sistema de alerta de updates. Se cambian los textos, por íconos representativos.
+- improvement: En el sistema de updates, se habilita un ícono para cuando no se puede obtener una versión válida disponible.
+- improvement: Se agrega Colorbox al Check Install y al Check Platform del Wizard
+
+====================================================================================================
+11.2.5 - 16/03/2011
+====================================================================================================
+- bugfix: En el Admin de tax. se corrige bug al importar tax cuando <port> venia vacío en el XML
+- bugfix: Al guardar un artículo, se agrega procesamiento automático de taxports para las 3 tripletas (sólo se estaba procesando la primera).
+- improvement: Se eliminan algunos debugs
+
+====================================================================================================
+11.2.4 - 14/03/2011
+====================================================================================================
+- bugfix: Adm. de portadas: Cuando se intercambie, duplique o elimine, ahora se refrescar el adm. de artículos.
+- bugfix: Adm. de portadas: Se impide, vía JS, que se intercambie la portada con ella misma.
+- changes: Listado de Tags: Se cambia la palabra "Resumen" por "Ver".
+- changes: En el Wizard prontus, la ventana pop de la ayuda se achica un poco
+- bugfix: Se cambia "categorías" en vez de "taxonomía", en el Wizard prontus
+- improvement: En las combos tax del FID, se introduce random a la carga del .js de tax, para evitar que quede en caché
+- improvement: Transcodificación de Video, se indican cuáles son los tipos de archivos permitidos. (se validan con JS).
+
+====================================================================================================
+11.2.3 - 10/03/2011
+====================================================================================================
+- bugfix: Se corrige bug generado del random aplicado al banco de imágenes, introducido en la 11.2.2
+
+====================================================================================================
+11.2.2 - 09/03/2011
+====================================================================================================
+- bugfix: Transcoding de video: En player flash del FID, se eliminan los registros de intarface para evitar problemas con IE.
+- bugfix: A nivel de JS de FID, se implementa lo necesario para que el player se visualice correctamente en IE
+- bugfix: En CGI de status de la transcodificación: Se cambio la validación del nombre de archivo
+- bugfix: Corrección al guardar el DAM, homologando el query a cambios de escapeo genérico de datos para BD, en lib_prontus.pm
+- changes: Genera taxports por FID sólo si existe la plantilla para éste para taxports.
+- bugfix: Corrige operador de comparación en lista de usuarios, que impedía visualizar los registros de los usuarios que se iban creando.
+- bugfix: En las Categorías, se arregla problema de CSS en el estilo fondo de los subniveles.
+- bugfix: En Editor de imágenes, ya no se guarda la imagen si no se han hecho cambios sobre ella
+- bugfix: Se arregla problema que había al realizar crop cuando las dimensiones se modificaban en las cajas de texto.
+- changes: En el banco de imágenes, por problemas de caché, se agrega un parámetro al azar al nombre de la imagen (ejemplo.jpg?123456767).
+- bugfix: Enviar artículo, se corrige error en el envió de artículos con multivista
+- improvement: En el Admin. de Categorías, para mayor claridad, se cambian mensajes title/alt del ticket
+- improvement: Editor de imágenes: Se agrega botón "Aplicar" para cuando se cambian las dimensiones mediante los inputs
+- improvement: Editor de imágenes: Se agrego mensaje de información, recordando al usuario guardar la imagen para no perder los cambios.
+
+====================================================================================================
+11.2.1 - 17/02/2011
+====================================================================================================
+- bugfix: En el Banco de imágenes, se arregla mensaje tooltip, encode del botón borrar imagen
+- bugfix: En el vtxt, se arregla feature que permite restablecer dimensiones originales de la imagen después de arrastrarla
+- changes: Elimina "vuelve prontus" al cerrar sesión, en su lugar se deja msg "Sesión finalizada".
+- changes: Agrega alerts de confirmación al user en regeneración de BD de artículos y en actualización masiva.
+- bugfix: Se corrige bug en procesamiento de gif (cálculo de dimensiones de imagen resultante) en editor de imagenes.
+- bugfix: Se corrige bug en regenerar tabla de artículos
+- bugfix: Se corrige bug en administrador de usuarios, cuando no habían usuarios escribía una etiqueta <ul></ul> sin elementos
+- bugfix: Se corrige bug en editor de imagenes. Cuando la cgi se caia, la imagen de trabajo, se veia deforme.
+- bugfix: Al guardar el DAM, se quitan comillas en campos del insert, ya que la lib_prontus las deja listas entre comillas.
+- improvement: Se agrega ícono para cerrar ventana del editor de imágenes (cer_of.png)
+
+====================================================================================================
+11.2.0 - 15/02/2011
+====================================================================================================
+- bugfix: En VTXT, arregla problema de charset en sugerencias de corrección ortográfica en el VTXT
+- bugfix: Logs de operación, se deja de escribir htaccess para habilitar dir. listing de los logs. Producía un ISE en algunos casos
+- bugfix: Se soluciona bug menor de acentuación y mensaje de alerta en administrador de ediciones.
+- bugfix: Bug en administrador de portadas: Se hacía referencia a la variable INTERCAMBIAR_PORT, que habia cambiado por ADMIN_PORT
+- bugfix: No se estaba restacando el valor de "configurar como base", en el Admin de Portadas
+- bugfix: El checkbox 'Configurar como base', del admin de portadas, ahora solo se muestra cuando el prontus está configurado como multiedición.
+- bugfix: Adm. categorías: Se soluciona bug en mostrar/no mostrar de temas y subtemas.
+- bugfix: Adm. categorías: Se soluciona bug al tratar de borrar seccion/tema/subtema que está siendo ocupado, imagen de cargando no se escondía.
+- bugfix: Adm. categorías: Se soluciona 'bug' en css tax.css y estilos.css
+- changes: En el FID, la CGI para upload de fotos queda ahora en cgi-bin, pero protegido con chequeo de session
+- changes: Campos TXT, cuando se corta el texto, se mantienen las <p> (antes, se sacaban)
+- improvement: Se agrega transcodificación de video al Prontus
+- changes: En la Combo de tags del FID: se pone como primer elemento la leyenda "escoja un tag".
+- improvement: Editor de imágenes: agrega, además de crop, soporte para resize, rotate, flip-h y flip-v
+- improvement: En los Campos TXT, se implementa parseo de codetext, quedando: Marca Normal, Minitext y Codetext
+- improvement: Cambio de gráfica en Wizard Prontus
+- improvement: En el Wizard Prontus, se permite especificar params para BD MySQL
+- improvement: Wizard Prontus incorpora creacion de BD, tablas, regeneracion de tabla articulos e importacion de tax
+- improvement: Wizard Prontus: Remasterizacion general de modelos, model-lib y descripciones de éstos
+- improvement: Wizard Prontus: Incorpora validaciones para prevención de borrado de prontus existente y que se utilice una BD existente.
+- changes: Editor de archivos Prontus: elimina botones "reinicializar resaltado" y "visualizacion inteligente"
+- changes: Integración completa en Prontus de postprocesos de DAM y taxports, tanto al guardar como al eliminar
+- improvement: Incorporación de actualizaciones automáticas para releases 100% compatibles
+
+====================================================================================================
+11.1.6 - 02/02/2011
+====================================================================================================
+- bugfix: Corrige error en el CSS que hacía que no se viera el link a la búsqueda avanzada.
+
+====================================================================================================
+11.1.5 - 01/02/2011
+====================================================================================================
+- bugfix: Corrige error al abrir el editor de imágenes en Internet Explorer, producto de que el nombre de la ventana se enviaba con un punto
+
+====================================================================================================
+11.1.4 - 27/01/2011
+====================================================================================================
+- bugfix: Corrige error visual al eliminar una imagen del Banco de Imágenes
+- improvement: Se optimiza el banco de imagenes ocupando un plantilla en vez de tener el codigo HTML en duro en la CGI
+
+====================================================================================================
+11.1.3 - 20/01/2011
+====================================================================================================
+- bugfix: Bug al hacer cancelar después de entrar a "Olvide mi contraseña" en el Login. No se podía volver al Login.
+- improvement: prontus_search.cgi ahora utiliza lib_maxrunning::myselfRunning() en lugar de lib_search::myself_running()
+- changes: En el fid, cambia nombre de botón "Bibiloteca" --> "Bibl. multimedia"
+- improvement: Prontus funciona ahora tanto con JSON 1.x como con JSON 2.x
+- improvement: Se habilita parseo de Friendly URL en la página de resultados del Enviar
+- improvement: Habilita los links a los manuales según versión en develop.altavoz.net
+- changes: Se elimina "Mouse Over" en el listado de artículos, y se cambian por botones/links para abrir el detalle de cada item
+
+====================================================================================================
+11.1.2 - 19/01/2011
+====================================================================================================
+- bugfix: Cron taxports: el script no tomaba la plantilla all-<vista> al ejecutarse para un fid especifico
+- bugfix: Al parsear VTXT, no se estaban eliminado correctamente las secuencias http(s)://cpan_server_name y http(s)://public_server_name
+- improvement: En prontus_enviar.cgi, en el "from" y "to" del correo enviado, ahora se puede incluir el nombre del remitente y del destinatario
+- improvement: En cron fechas, se agrega tercer parámetro para que sólo regenere ciertas portadas específicas, en vez de todas
+
+====================================================================================================
+11.1.1 - 14/01/2011
+====================================================================================================
+- bugfix: Corrige bug en control fecha al guardar manualmente una portada
+- bugfix: Corrige bug en guardar articulo, no se estaba parseando el _art_autoinc
+- improvement: Regenera taxports del fid/s/t/st correspondiente al borrar un artículo.
+- improvement: Limpieza del código. Se elimina un trozo de código comentado.
+
+====================================================================================================
+11.1.0 - 12/01/2011
+====================================================================================================
+- bugfix: Se evita el guardado cuando se están cargando los listados
+- bugfix: Corrige bug critico en cron fechas
+- bugfix: Cuando se cambia portada o edición, se borran los mensajes
+- bugfix: Editor de Archivos Prontus: Error al insertar Marcas o Snipets desde las combos
+- bugfix: En prontus_enviar.cgi, se corrige parseo de  friendly url.
+- bugfix: Editor de Plantillas: Se corrige Bug en la codificación, al guardar en ambos formatos
+- improvement: Ajustes menores en manejo de macros en lib_prontus
+- improvement: Optimización de prontus_cron_fechas.cgi, enfocado al procesamiento en modo Post Proceso
+- improvement: Optimización importante en procesamiento de IFs y NIFs
+- changes: En prontus_enviar.cgi, se agrega soporte para pasarle por parámetro el subject en utf8
+- improvement: En macros de fids, permite incluir simultaneamente las macros reservadas y las de usuario
+- improvement: Se corrige levemente la alineación vertical del loading de los Listados
+- improvement: En página de login, ahora no vuelve a mostrar el botón "ingresar" hasta que finaliza el location
+- changes: Ajusta cálculo de palabras a desplegar al especificar max caracteres
+- improvement: Login: Se agrega manejo de error, para cuando hay problemas en las CGIs
+- changes: Se agrega soporte de arts relacionados por tagging. Se da de baja la Nube de Tags
+- changes: En el Sistema de tags, ahora la marca %%_tags%% ya no trae los nombres separados por coma, sino que trae los ids
+- improvement: Se agrega mantenedor de Tags dentro del mantenedor de Categorías
+- improvement: Se agrega librería PHP para parsear artics relac en base a tags
+- changes: En las portadas taxonomicas se modifican los parámetros de invocación a prontus_cron_taxport.cgi
+- improvement: En el listado de Tags y de Categorías, se optimizan/cambian los estilos y clases del contenedor principal
+- improvement: Se robustece la compatibilidad del Preview del Listado de Artículos
+- improvement: Se mejora la visualización del Preview, al eliminar el loading en el onload del iframe.
+
+====================================================================================================
+11.0.15 - 07/01/2011
+====================================================================================================
+- bugfix: Editor de Archivos Prontus: Error al insertar Marcas o Snnipets desde las combos
+- improvement: Optimización importante en procesamiento de IFs y NIFs
+- changes: Ajusta cálculo de palabras a desplegar al especificar max caracteres
+
+====================================================================================================
+11.0.14 - 28/12/2010
+====================================================================================================
+- bugfix: Convierte textos con acentos a entidades, en algunos mensajes de la lib_coment
+- bugfix: Cuando se produce un error en lib_coment::get_objtipos(), ahora se devuelve vía ajax al navegador.
+- bugfix: Corrige ordenamiento de áreas en lista de publicados del cpan.
+
+====================================================================================================
+11.0.13 - 20/12/2010
+====================================================================================================
+- bugfix: Mejora manejo de guiones en friendly urls en buscador y artículos.
+- bugfix: Al importar categorías, faltaba regenerar archivo de caché de tax. que se utiliza en los FIDs
+- bugfix: FID: Cuando es nuevo, invisibiliza botones "info artic", "copiar URL" y "Ver artículo"
+- bugfix: Multivistas: parsea correctamente el nombre de la categoría en la vista que corresponda
+- improvement: En categorías, se mejora visualización de vistas utilizando navegación
+
+====================================================================================================
+11.0.12 - 16/12/2010
+====================================================================================================
+- bugfix: Corrige manejo de tildes UTF-8 en buscador.
+
+====================================================================================================
+11.0.11 - 16/12/2010
+====================================================================================================
+- bugfix: Corrige variable sin definir en cgi de prontus calendarios.
+
+====================================================================================================
+11.0.10 - 14/12/2010
+====================================================================================================
+- improvement: Se elimina el .beta ya que se ha comprobado estabilidad del producto
+- bugfix: Se corrige la importación de taxonomias.
+- bugfix: Se corrige la edición de taxonomias que tengan ID's iguales.
+- bugfix: Se corrige problema con edición de taxonomías, no actualizaba la vista en ram.
+- bugfix: Al guardar una categoria con vista en blanco, no actualizaba el nombre-vista por nombre de la categoría.
+- bugfix: Al invocar a ppart, se agrega un tercer parámetro automático: 'N' -> art nuevo; 'E' -> art. editado
+- bugfix: Correcciones ortográficas menores en la interfaz
+- bugfix: Corrige bug al posicionar Items Por Página y Orden, la primera vez que se entraba al prontus
+- bugfix: Se corrige error al calcular la cuota cuando espacio máximo era muy alto (mayor a 8 dígitos).
+- bugfix: Se corrige potencial memory leak en seteo de captcha Prontus.
+- bugfix: Se corrige generación de Friendly URLs (no estaban funcionando bien con tildes, por el tema utf8)
+- bugfix: Error al cargar la Edición y la Portada selecionadas anteriormente
+- bugfix: En parche ffox 3.6.11 considerar solo src=\w+\/  (no cualquier \w+\/)
+- bugfix: Corrige el path de la imagen 'no disponible' desplegada por el captcha cuando hay error
+- bugfix: Se corrige path_conf en ficha de ediciones, ya que enviaba el parametro por get y no por post.
+- changes: Se elimina el borde de la tabla al hacer "Enmarcar Foto"
+- improvement: Se agrega boton "Nuevo Artículo" al FID
+- changes: Ahora la portada actual y el artículo actual, se abren en ventana nueva, no en una pop
+- changes: Se cambia INTERCAMBIAR_PORT por ADMIN_PORT, ya que ahora se utilizará un Administrador de Portadas
+- changes: Se alinea toda la interfaz del prontus hacia la Izquierda
+- improvement: Se corrige levemente el filestyle para los examinar en Firefox. Quedó ok en IE8 y Firefox 3.6.12...
+- changes: Se cambian tamaños de algunos íconos
+- improvement: Se elimina el corrimiento de la pantalla al abrir el Preview.
+- improvement: Cambio en el formateo de la quota. Ahora se usarán MB, GB y TB, con 1 decimal
+- changes: Eliminación de la validación de Referers en el prontus_enviar.cgi.
+- changes: En el enviar se agrega un "back" al mensaje de error en captcha.
+- changes: Eliminación de la validación de Referers en el prontus_imprimir.cgi. Se corrigen caracteres en latin1
+- changes: Ajustes en colores de links (normal y hover)
+- improvement: Integración de soporte para Varnish
+- improvement: Después de importar cetgorias, refresca automáticamente la página con las categorías.
+- improvement: Después de importar cetgorias, agrega links a portadas taxonómicas de cada nivel
+- changes: Se agrega var de cfg: VTXT_PASTE_NEWLINES_AS_P
+- changes: Botón "media" ahora se inserta automaticamente el código para que funcione en el frontend
+- improvement: Comentarios: Junto con la release se incluye /coment-sample/
+- improvement: Comentarios: Aumenta el número de sessiones activas del captcha
+
+====================================================================================================
+11.0.9.beta - 29/11/2010
+====================================================================================================
+- bugfix: Se corrige posible error al cargar el dir_cgi.js. Se cambia por un método asincrónico
+- improvement: Se agrega soporte para "Prontus Function" en el LOOP de las portadas taxonómicas.
+- improvement: Se corrigen algunos textos de los loadings de los procesos de regeneracion y taxonomia
+
+====================================================================================================
+11.0.8.beta - 25/11/2010
+====================================================================================================
+- bugfix: Se eliminan caracteres invisibles o de control de los campos del FID
+
+====================================================================================================
+11.0.7.beta - 17/11/2010
+====================================================================================================
+- bugfix: Se corrige un error de convivencia entre /cgi-cpn/lib_custom.pm y /cgi-bin/coment/lib_custom.pm
+
+====================================================================================================
+11.0.6.beta - 16/11/2010
+====================================================================================================
+- bugfix: En los comentarios: Error al pasar status de Verde a Rojo, y luego a Verde, sin refrescar la página. (se quedaba pegado en Rojo)
+- bugfix: En los comentarios: Las páginas generadas salen con los caracteres malos.
+- improvement: Se deshabilita la tecla ESC cuando se usa colorbox en tareas de administración
+- changes: Se agregan nuevos estilo para tablas internas y se mejora estilo .number-list
+- changes: Agrega mensaje para cuando en el Listado de Artículos, se activa un área
+
+====================================================================================================
+11.0.5.beta - 12/11/2010
+====================================================================================================
+- bugfix: Corrige index del cpan para cumplimiento w3c .
+- improvement: En el sistema de comentarios, se agrega a la cfg la var ARTIC_EXTENSION, para indicar la extensión
+
+====================================================================================================
+11.0.4.beta - 10/11/2010
+====================================================================================================
+- bugfix: Corrección del problema al guardar categorías
+- bugfix: Borra cache de listas de articulos después de borrar un artículo.
+- improvement: En el llamado a prontus_ping_inuse.cgi se suman los reportes de errores y sólo se envían cuando hay 3 seguidos.
+- changes: Cuando se refrescan los listados, se borran los mensajes de alerta
+
+====================================================================================================
+11.0.3.beta - 05/11/2010
+====================================================================================================
+- bugfix: Error al intentar enviar un articulo producto del nuevo captcha (quedaba la pantalla en blanco)
+- improvement: En la multimedia, se cambia title del ícono Editar
+- improvement: En la multimedia, se agrega la posibilidad de abrir el DAM en una pop
+- improvement: En el FID, se agrega un anchor para el upload de imágenes
+- improvement: En el FID, se agrega link en el banco de imagenes para abrir el DAM en una pop
+- changes: Listado de Artículos: Se agrega una alerta al eliminar un artículo
+- changes: Ahora, por defecto los artículos del listado de artículos se ordenan por fecha creación
+- improvement: Se guarda el estado de Artículos por Página y Ordenar Por en el Listado de Artículos
+- changes: Se cambia la gráfica del ícono "Copiar URL" de un ambed a una Cadena
+
+====================================================================================================
+11.0.2.beta - 29/10/2010
+====================================================================================================
+- bugfix: Se arregla problema en generación de arreglos JS tax4fid.js, afectaba la visualización de la tax. en las combos de los FIDs.
+- improvement: Se mejoran/agregan algunos estilos para el fid
+
+====================================================================================================
+11.0.1.beta - 28/10/2010
+====================================================================================================
+- bugfix: prontus_art_public.cgi : elimina warns
+- bugfix: prontus_edit_arbol.cgi : elimina warns
+- bugfix: prontus_regenerabd_real.cgi: Borra cache de lista de articulos al regenarar la tabla de articulos.
+- bugfix: lib_prontus.pm : elimina stamp demo
+
+====================================================================================================
+11.0.0.beta - 28/10/2010
+====================================================================================================
+- changes: Full UTF8, tanto cpan como frontend
+- changes: Cambio de logo
+- changes: Cpan Valid XHTML W3C
+- changes: Publicación Drag&drop
+- improvement: Mejora gráfica + ajax al Cpan
+- improvement: Se utiliza caché, en el Listado de Artículos
+- changes: Permite poner rótulos a las áreas de las portadas
+- improvement: Notificación de uso de portada o artículo en edición
+- improvement: Preview en línea, se actualiza automáticamente a medida que los artículos se van moviendo
+- changes: Integración definitiva de DAM (Multimedia) al cpan de Prontus
+- improvement: Se incopora protección automática que impide publicar (al guardar artic/port) si quota >= 98%.
+- improvement: En el FID, se agrega info adicional (al lado del artic)
+- improvement: En el FID, se agrega control para copiar la URL (al lado del artic).
+- changes: Integración de sistema de comentarios
+- changes: Al previsualizar una portadilla es posible previsualizar un archivo estático que la contenga, por ej, previsualizar footer, menú, etc.
+- changes: Se elimina soporte para server Windows
+- changes: Se elimina soporte SQLite
+- changes: Cambios en los XML de artículo y portadas, a objeto de optimizarlos y hacerlos utf8 compatibles.
+- changes: Los nombres de las Categorías de las Multivistas, ya no se guardan en un XML, sino que en la misma tabla.
+- changes: Se elimina  la opción "Eliminar Tablas" de la administración de la BD
+- improvement: Ahora se puede cambiar el Orden y el Número de Artículos por Página, del Listado de Artículos "no publicados" desde la GUI.
+- improvement: Mejoras en editor de plantillas
+- improvement: Manual de desarrollo versión web
+- improvement: Ayuda de publicación en línea, integrada en cpan prontus
+- improvement: Procesos masivos: mejoras de interfaz, agrega barra avance en algunos casos
+- changes: En la lista de artículos, el borrado de artículos ahora es 1 a 1, no como antes que se seleccionaban varios.
+- changes: Se elimina el botón para ver el mapa de áreas de una portada (como imagen)
+
