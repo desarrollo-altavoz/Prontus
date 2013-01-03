@@ -14,3 +14,9 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# Local Files #
+###############
+/cesarcillo
+/index.html
+/_prontus_update
