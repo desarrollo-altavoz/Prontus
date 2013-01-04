@@ -1,4 +1,14 @@
 ====================================================================================================
+11.2.53 - 27/12/2012
+====================================================================================================
+- notice: Se incluye licencia LGPL para el producto Prontus
+- bugfix: En el fid se corrige error al cargar las fotos "restantes" del banco de imagenes
+- bugfix: Se corrige la forma en que se aplica nice a taxport, tagport y xcode, por una mas robusta.
+- bugfix: Se corrige error al dejar la variable TAXPORT_NIVELES en cero.
+- bugfix: Se agrega explícitamente la creacion de ASSET y ART como MYISAM, ya que esas tablas usan FULLTEXT
+- changes: En la Regeneración Masiva de Artículos, ahora se procesan los artículos mas nuevos primero
+
+====================================================================================================
 11.2.52 - 07/12/2012
 ====================================================================================================
 - changes: Al quitarle o cambiarle la taxonomía a un artículo, se actualizan las taxport y taxport-lista de la taxonomia actual y la anterior, no de todo el árbol.
