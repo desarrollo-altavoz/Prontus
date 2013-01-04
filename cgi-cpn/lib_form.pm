@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# --------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# --------------------------------------------------------------
+
 package lib_form;
 
 $Mail::Sender::NO_X_MAILER = 1; # Elimina copyrights.

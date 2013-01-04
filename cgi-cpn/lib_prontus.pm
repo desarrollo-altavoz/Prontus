@@ -1,5 +1,13 @@
 #!/usr/bin/perl
 
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
 
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
@@ -1757,14 +1765,15 @@ sub load_config {
   $num_relac_default = 5; # valor default
   if ($buffer =~ m/\s*NUM_RELAC_DEFAULT\s*=\s*("|')(\d+?)("|')/) {
    $num_relac_default = $2;
+
    if (($num_relac_default =~ /\d+/) && (! $tax_niv)) {
-    print STDERR "Error en CFG: seteo de variable NUM_RELAC_DEFAULT='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-    print "Content-Type: text/html\n\n";
-    print "<P>Error en CFG: seteo de variable NUM_RELAC_DEFAULT='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-    exit;
+       #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
+        #~ print STDERR "Error en CFG: seteo de variable NUM_RELAC_DEFAULT='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
+        #~ print "Content-Type: text/html\n\n";
+        #~ print "<P>Error en CFG: seteo de variable NUM_RELAC_DEFAULT='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
+        #~ exit;
    };
   };
-
   $prontus_varglb::NUM_RELAC_DEFAULT = $num_relac_default;
 
 
@@ -1772,26 +1781,25 @@ sub load_config {
   if ($buffer =~ m/\s*TAXPORT_ARTXPAG\s*=\s*("|')(\d+?)("|')/) {
     $taxport_artxpag = $2;
     if (($taxport_artxpag =~ /\d+/) && (! $tax_niv)) {
-      print STDERR "Error en CFG: seteo de variable TAXPORT_ARTXPAG='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-      print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable TAXPORT_ARTXPAG='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-      exit;
+      #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
+      #~ print STDERR "Error en CFG: seteo de variable TAXPORT_ARTXPAG='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
+      #~ print "Content-Type: text/html\n\n";
+      #~ print "<P>Error en CFG: seteo de variable TAXPORT_ARTXPAG='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
+      #~ exit;
     };
   };
-
   $prontus_varglb::TAXPORT_ARTXPAG = $taxport_artxpag;
-
-
 
 
   my $taxport_refresh_segs = 1800; # valor default  media hora
   if ($buffer =~ m/\s*TAXPORT_REFRESH_SEGS\s*=\s*("|')(\d+?)("|')/) {
     $taxport_refresh_segs = $2;
     if (($taxport_refresh_segs =~ /\d+/) && (! $tax_niv)) {
-      print STDERR "Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-      print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-      exit;
+      #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
+      #~ print STDERR "Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
+      #~ print "Content-Type: text/html\n\n";
+      #~ print "<P>Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
+      #~ exit;
     };
   };
 
@@ -5817,7 +5825,21 @@ sub get_relpathconf_by_prontus_id {
     };
     return '';
 };
+# ---------------------------------------------------------------
+sub get_path_nice {
 
+    my $pathnice = '/usr/bin/nice';
+    if (! -f $pathnice) {
+      $pathnice = '/usr/local/bin/nice';
+      if (! -f $pathnice) {
+        $pathnice = '/usr/nice';
+        if (! -f $pathnice) {
+          $pathnice = '';
+        }
+      }
+    }
+    return $pathnice;
+};
 # ---------------------------------------------------------------
 sub handle_internal_error {
     # Imprime error al STDERR y retorna un msg amistoso para el usuario, o bien, hace un exit sin mas tramite

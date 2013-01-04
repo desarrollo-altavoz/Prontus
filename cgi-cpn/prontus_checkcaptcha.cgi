@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# --------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# --------------------------------------------------------------
+
 # Chequea captcha
 
 use lib_captcha;

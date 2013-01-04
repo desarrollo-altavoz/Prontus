@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # PROPOSITO.
@@ -120,7 +129,7 @@ main: {
 
   # Se parsean las vars de configuracion.
   $pagina = &parseaVars($pagina);
-  
+
   # Se parsean las marcas para la configuracion avanzada de la regeneracion de articulos
   $pagina = &parseRegen($pagina);
 
@@ -245,7 +254,7 @@ sub parseaVars {
 
         $PORTS_TO_ORDER{$key} = $name;
     };
-    
+
     # -------------------------------------------------------------------------------
     # -art.cfg
 
@@ -481,7 +490,7 @@ sub parseaVars {
             };
         };
     };
-    
+
     foreach my $port (sort keys %prontus_varglb::PORT_PLTS) {
         next if ($port =~ /^\./);
         $temp = $loop;
@@ -495,7 +504,7 @@ sub parseaVars {
             $option_select = $option_select . '<option value="' . $alt . '" selected="selected">' . $alt . '</option>';
         }
         $option_select = $option_select . $strcombo;
-        
+
         if ($num_options_selected gt 1) {
             $temp =~ s/%%multiple%%/ multiple="multiple"/isg;
         } else {
@@ -666,6 +675,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%TAXONOMIA_NIVELES_3%%//ig;
     };
+    $pagina =~ s/%%TAXONOMIA_NIVELES%%/$prontus_varglb::TAXONOMIA_NIVELES/ig;
 
     $pagina =~ s/%%NUM_RELAC_DEFAULT%%/$prontus_varglb::NUM_RELAC_DEFAULT/ig;
     $pagina =~ s/%%TAXPORT_ARTXPAG%%/$prontus_varglb::TAXPORT_ARTXPAG/ig;
@@ -768,9 +778,9 @@ sub parseaVars {
         $pagina =~ s/%%LIST_PROCESO_INTERNO_SI%%//ig;
         $pagina =~ s/%%LIST_PROCESO_INTERNO_NO%%/ checked="checked"/ig;
     };
-    
+
     $pagina =~ s/%%LIST_MAXARTICS%%/$prontus_varglb::LIST_MAXARTICS/ig;
-    #~ $pagina =~ s/%%LIST_ARTXPAG%%/$prontus_varglb::LIST_ARTXPAG/ig;    
+    #~ $pagina =~ s/%%LIST_ARTXPAG%%/$prontus_varglb::LIST_ARTXPAG/ig;
     my $list_orden = $prontus_varglb::LIST_ORDEN;
     my $direccion2 = '';
     if ($list_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
@@ -876,7 +886,7 @@ sub parseaVars {
         $pagina =~ s/%%BLOQUEO_EDICION_V1%%//ig;
         $pagina =~ s/%%BLOQUEO_EDICION_V2%%/ checked="checked"/ig;
     };
-    
+
     if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '1') {
         $pagina =~ s/%%FRIENDLY_URLS_V1%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
@@ -933,9 +943,9 @@ sub parseaVars {
     $post_proceso =~ s/^\((.*?)\)$//ig;
     $post_proceso = $1;
     $pagina =~ s/%%POST_PROCESO%%/$post_proceso/ig;
-    
+
     $pagina =~ s/%%SCRIPT_QUOTA%%/$prontus_varglb::SCRIPT_QUOTA/ig;
-    
+
     $pagina =~ s/%%FOTO_MAX_PIXEL%%/$prontus_varglb::FOTO_MAX_PIXEL/ig;
     $pagina =~ s/%%MAX_XCODING%%/$prontus_varglb::MAX_XCODING/ig;
 
@@ -1028,7 +1038,7 @@ sub parseaVars {
         $pagina =~ s/%%CAPTCHA_SI%%//ig;
         $pagina =~ s/%%CAPTCHA_NO%%/ checked="checked"/ig;
     };
-    
+
     if ($HASH_TIPOS{'articulo'}{'MODERACION'} eq 'SI') {
         $pagina =~ s/%%MODERACION_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%MODERACION_NO%%//ig;
@@ -1079,7 +1089,7 @@ sub parseaVars {
     my $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
     &glib_fildir_02::check_dir($dir_fid);
     my @fids_listado = &glib_fildir_02::lee_dir($dir_fid);
-    
+
     # Generar arreglo de hash para checkboxs.
     my @fidlist;
     foreach my $fid_file (@fids_listado) {
@@ -1092,9 +1102,9 @@ sub parseaVars {
             };
         };
     };
-    
+
     my $filas_tabla_checkbox = &glib_html_02::generar_filas_tabla_checkbox(\@fidlist, 'INPUT_FIDS[]', 'buscador');
-    
+
     # parsea los fids disponibles.
     $pagina =~ s/%%buscador_fids%%/$filas_tabla_checkbox/sig;
 
@@ -1157,7 +1167,7 @@ sub parseaVars {
 # --------------------------------------------------------------------------------------------------
 sub parseRegen {
     my ($pagina) = $_[0];
-    
+
     #~ CVI - 17/08/2012 - Se muestran solo los que estan configurados
     my @fidlist;
     foreach my $strfid (keys %prontus_varglb::FORM_PLTS) {
@@ -1166,21 +1176,21 @@ sub parseRegen {
             push @fidlist, {label    => $2, value   => $1, checked => 1};
         }
     };
-    
+
     my $filas_tabla_checkbox_fids = &glib_html_02::generar_filas_tabla_checkbox(\@fidlist, 'INPUT_FIDS_REGEN[]', 'regen');
     $pagina =~ s/%%filas_tabla_checkbox_fids%%/$filas_tabla_checkbox_fids/sig;
-    
+
     # MVS.
     my @mvlist;
     push @mvlist, {label    => 'Vista Principal', value   => '@normal', checked => 1};
-    
+
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         push @mvlist, {label    => $mv, value   => $mv, checked => 1};
     };
-    
+
     my $filas_tabla_checkbox_mvs = &glib_html_02::generar_filas_tabla_checkbox(\@mvlist, 'INPUT_MVS_REGEN[]', 'regen');
     $pagina =~ s/%%filas_tabla_checkbox_mvs%%/$filas_tabla_checkbox_mvs/sig;
-    
+
     return $pagina;
-    
+
 };

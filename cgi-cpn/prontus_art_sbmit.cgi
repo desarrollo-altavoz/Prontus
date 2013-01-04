@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # PROPOSITO .
@@ -114,7 +123,7 @@ sub main {
     $FORM{'_popup'} = &glib_cgi_04::param('_popup');
     $FORM{'_port_dd'} = &glib_cgi_04::param('_port_dd');
     $FORM{'_alta'} = &glib_cgi_04::param('_ALTA');
-    
+
     # Para public. directa
     $FORM{'_edic'} = &glib_cgi_04::param('_edic');
     $FORM{'_port'} = &glib_cgi_04::param('_port');
@@ -154,20 +163,20 @@ sub main {
     # Salvar el articulo en base a los datos del objeto Artic
     my $is_new = 0;
     $is_new = 1 if ($FORM{'_file'} eq '');
-    
+
     # Se comprueba si el articulo merece ser guardado
     my $buff_xml_data = lib_prontus::get_xml_data($lib_artic::ARTIC_OBJ->{fullpath_xml});
     my $regenerar_procesos = 1;
     if(! $is_new && $FORM{'_alta'} eq '') {
         my %campo_alta = lib_prontus::getCamposXml($buff_xml_data, '_alta');
-        my $alta = $campo_alta{'_alta'};        
+        my $alta = $campo_alta{'_alta'};
         if($alta eq '') {
             $regenerar_procesos = 0;
         }
     }
 
     my %campos_stst_old = lib_prontus::getCamposXml($buff_xml_data, '_seccion1,_tema1,_subtema1,_seccion2,_tema2,_subtema2,_seccion3,_tema3,_subtema3');
-        
+
     my $msg_err_save = &lib_artic::save_artic_with_object($is_new);
     &glib_html_02::print_pag_result("Error", $msg_err_save, 0, 'exit=1,ctype=1') if ($msg_err_save);
 
@@ -192,7 +201,7 @@ sub main {
 
     # Clustering
     &call_clustering($fullpath_artic, $rutaScript);
-    
+
     # Verifica que exista filtro para FID
     my $dir_filtro_fid = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP
                        . $prontus_varglb::DIR_PTEMA . '/' . $lib_artic::ARTIC_OBJ->{campos}->{'_fid'};
@@ -226,14 +235,14 @@ sub main {
         #~ print STDERR "xml_id_seccion1[$xml_id_seccion1] = id_seccion1[$id_seccion1]\n";
 
         # La sección que viene por POST es distinta a la que está guardada en el XML.
-        if ($xml_id_seccion1 ne $id_seccion1 && $id_seccion1 ne '') { 
+        if ($xml_id_seccion1 ne $id_seccion1 && $id_seccion1 ne '') {
             # Se actualiza tax/list para la seccion que viene por POST
             my $param_especif_taxport = $filtro_fid
                                       . '/' . $id_seccion1
                                       . '/' . $id_tema1
                                       . '/' . $id_subtema1;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $id_seccion1
                                       . '/' . $id_tema1
@@ -247,7 +256,7 @@ sub main {
                                           . '/' . $xml_id_tema1
                                           . '/' . $xml_id_subtema1;
                 &call_taxports_regen($rutaScript, $param_especif_taxport);
-                
+
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                           . '/' . $xml_id_seccion1
                                           . '/' . $xml_id_tema1
@@ -260,7 +269,7 @@ sub main {
                                           . '/' . $id_tema1
                                           . '/' . $id_subtema1;
                 &call_taxports_regen($rutaScript, $param_especif_taxport);
-                
+
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                           . '/' . $id_seccion1
                                           . '/' . $id_tema1
@@ -275,21 +284,21 @@ sub main {
                                       . '/' . $xml_id_tema1
                                       . '/' . $xml_id_subtema1;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion1
                                       . '/' . $xml_id_tema1
                                       . '/' . $xml_id_subtema1;
             &call_list_regen($rutaScript, $param_especif_taxport);
         };
-        
+
         if ($xml_id_subtema1 ne $id_subtema1 && $xml_id_subtema1 ne '' && $id_subtema1 ne '') { # si cambia la seccion, generar la nueva y la anterior.
             my $param_especif_taxport = $filtro_fid
                                       . '/' . $xml_id_seccion1
                                       . '/' . $xml_id_tema1
                                       . '/' . $xml_id_subtema1;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion1
                                       . '/' . $xml_id_tema1
@@ -309,7 +318,7 @@ sub main {
                                       . '/' . $xml_id_tema1
                                       . '/' . $xml_id_subtema1;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion1
                                       . '/' . $xml_id_tema1
@@ -317,7 +326,7 @@ sub main {
             &call_list_regen($rutaScript, $param_especif_taxport);
         };
     };
-    
+
     # Tripleta 2
     if ($regenerar_procesos && $lib_artic::ARTIC_OBJ->{campos}->{'_seccion2'}) {
         my $xml_id_seccion2 = $campos_stst_old{'_seccion2'};
@@ -331,14 +340,14 @@ sub main {
         #~ print STDERR "xml_id_seccion1[$xml_id_seccion1] = id_seccion1[$id_seccion1]\n";
 
         # La sección que viene por POST es distinta a la que está guardada en el XML.
-        if ($xml_id_seccion2 ne $id_seccion2 && $id_seccion2 ne '') { 
+        if ($xml_id_seccion2 ne $id_seccion2 && $id_seccion2 ne '') {
             # Se actualiza tax/list para la seccion que viene por POST
             my $param_especif_taxport = $filtro_fid
                                       . '/' . $id_seccion2
                                       . '/' . $id_tema2
                                       . '/' . $id_subtema2;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $id_seccion2
                                       . '/' . $id_tema2
@@ -352,7 +361,7 @@ sub main {
                                           . '/' . $xml_id_tema2
                                           . '/' . $xml_id_subtema2;
                 &call_taxports_regen($rutaScript, $param_especif_taxport);
-                
+
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                           . '/' . $xml_id_seccion2
                                           . '/' . $xml_id_tema2
@@ -365,7 +374,7 @@ sub main {
                                           . '/' . $id_tema2
                                           . '/' . $id_subtema2;
                 &call_taxports_regen($rutaScript, $param_especif_taxport);
-                
+
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                           . '/' . $id_seccion2
                                           . '/' . $id_tema2
@@ -380,21 +389,21 @@ sub main {
                                       . '/' . $xml_id_tema2
                                       . '/' . $xml_id_subtema2;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion2
                                       . '/' . $xml_id_tema2
                                       . '/' . $xml_id_subtema2;
             &call_list_regen($rutaScript, $param_especif_taxport);
         };
-        
+
         if ($xml_id_subtema2 ne $id_subtema2 && $xml_id_subtema2 ne '' && $id_subtema2 ne '') { # si cambia la seccion, generar la nueva y la anterior.
             my $param_especif_taxport = $filtro_fid
                                       . '/' . $xml_id_seccion2
                                       . '/' . $xml_id_tema2
                                       . '/' . $xml_id_subtema2;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion2
                                       . '/' . $xml_id_tema2
@@ -414,7 +423,7 @@ sub main {
                                       . '/' . $xml_id_tema2
                                       . '/' . $xml_id_subtema2;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion2
                                       . '/' . $xml_id_tema2
@@ -422,7 +431,7 @@ sub main {
             &call_list_regen($rutaScript, $param_especif_taxport);
         };
     };
-    
+
     # Tripleta 3
     if ($regenerar_procesos && $lib_artic::ARTIC_OBJ->{campos}->{'_seccion3'}) {
         my $xml_id_seccion3 = $campos_stst_old{'_seccion3'};
@@ -436,14 +445,14 @@ sub main {
         #~ print STDERR "xml_id_seccion1[$xml_id_seccion1] = id_seccion1[$id_seccion1]\n";
 
         # La sección que viene por POST es distinta a la que está guardada en el XML.
-        if ($xml_id_seccion3 ne $id_seccion3 && $id_seccion3 ne '') { 
+        if ($xml_id_seccion3 ne $id_seccion3 && $id_seccion3 ne '') {
             # Se actualiza tax/list para la seccion que viene por POST
             my $param_especif_taxport = $filtro_fid
                                       . '/' . $id_seccion3
                                       . '/' . $id_tema3
                                       . '/' . $id_subtema3;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $id_seccion3
                                       . '/' . $id_tema3
@@ -457,7 +466,7 @@ sub main {
                                           . '/' . $xml_id_tema3
                                           . '/' . $xml_id_subtema3;
                 &call_taxports_regen($rutaScript, $param_especif_taxport);
-                
+
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                           . '/' . $xml_id_seccion3
                                           . '/' . $xml_id_tema3
@@ -470,7 +479,7 @@ sub main {
                                           . '/' . $id_tema3
                                           . '/' . $id_subtema3;
                 &call_taxports_regen($rutaScript, $param_especif_taxport);
-                
+
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                           . '/' . $id_seccion3
                                           . '/' . $id_tema3
@@ -485,21 +494,21 @@ sub main {
                                       . '/' . $xml_id_tema3
                                       . '/' . $xml_id_subtema3;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion3
                                       . '/' . $xml_id_tema3
                                       . '/' . $xml_id_subtema3;
             &call_list_regen($rutaScript, $param_especif_taxport);
         };
-        
+
         if ($xml_id_subtema3 ne $id_subtema3 && $xml_id_subtema3 ne '' && $id_subtema3 ne '') { # si cambia la seccion, generar la nueva y la anterior.
             my $param_especif_taxport = $filtro_fid
                                       . '/' . $xml_id_seccion3
                                       . '/' . $xml_id_tema3
                                       . '/' . $xml_id_subtema3;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion3
                                       . '/' . $xml_id_tema3
@@ -519,7 +528,7 @@ sub main {
                                       . '/' . $xml_id_tema3
                                       . '/' . $xml_id_subtema3;
             &call_taxports_regen($rutaScript, $param_especif_taxport);
-            
+
             $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                       . '/' . $xml_id_seccion3
                                       . '/' . $xml_id_tema3
@@ -569,12 +578,12 @@ sub main {
 
     my $port_preview = '';
     $port_preview = '&_port_dd=1' if ($FORM{'_port_dd'});
-    
+
     # CVI - 16/06/0211
     my $popup = '';
     $popup = '&_popup=1' if($FORM{'_popup'});
     print "Location: prontus_art_ficha.$prontus_varglb::EXTENSION_CGI?_curr_body=$FORM{'_curr_body'}" . '&_dir_fecha=' . $dir_fecha . '&_file=' . $nom_file_artic . '&_fid=' . $FORM{'_fid'} . '&_path_conf=' . $FORM{'_path_conf'} . '&fotosvtxt=/1/2/3/4' . $popup . $port_preview . $upd_port_preview . "\n\n";    # 1.15
-    
+
 };
 
 # ---------------------------------------------------------------
@@ -600,7 +609,9 @@ sub call_dam2save {
 sub call_taxports_regen {
     my $rutaScript = shift;
     my $param_especif_taxport = shift;
-    my $cmd = "/usr/bin/nice -n19 $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if($pathnice);
+    my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
@@ -610,7 +621,9 @@ sub call_list_regen {
     my $rutaScript = shift;
     my $param_especif_list = shift;
     return if($prontus_varglb::LIST_PROCESO_INTERNO ne 'SI');
-    my $cmd = "/usr/bin/nice -n19 $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif_list >/dev/null 2>&1 &";
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if($pathnice);
+    my $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif_list >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };

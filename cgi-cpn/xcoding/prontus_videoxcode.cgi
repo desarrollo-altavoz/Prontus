@@ -1,5 +1,14 @@
 #!/usr/bin/perl
+
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
 #
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 # -----------------------COMENTARIO GLOBAL-----------------------
 # ---------------------------------------------------------------
 # PROPOSITO
@@ -116,13 +125,7 @@ sub startXCode {
         return (0, 'Error: Se detectó un proceso activo de transcodificación para el video indicado.');
     };
     use FindBin '$Bin';
-    my $pathnice = '/usr/bin/nice';
-    if (! -f $pathnice) {
-      $pathnice = '/usr/local/bin/nice';
-      if (! -f $pathnice) {
-        $pathnice = '';
-      }
-    }
+    my $pathnice = &lib_prontus::get_path_nice();
     my $cmd = "$pathnice /usr/bin/perl $Bin/prontus_videodoxcode.cgi $origen $prontus_id";
     # Gatilla la transcodificacion en background.
     # print "$cmd \n";

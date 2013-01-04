@@ -29,6 +29,7 @@
         Admin.init('%%_prontus_id%%');
         Opciones.init();
         Opciones.validarMaxartics('%%TAXPORT_MAXARTICS%%');
+        Opciones.validarTaxNivCero('%%TAXONOMIA_NIVELES%%');
 
         $.datepicker.setDefaults($.datepicker.regional.es);
         $('#fecharegen').datepicker({

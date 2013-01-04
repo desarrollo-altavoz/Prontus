@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # PROPOSITO.
@@ -23,8 +32,11 @@ package lib_thumb;
 
 use strict;
 
-
 use lib_prontus;
+
+
+my $JPEG_COMPRESSION = 85;
+
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
 # ---------------------------------------------------------------
@@ -181,7 +193,7 @@ sub make_thumbnail {
     my $bin_buffer;
 
     if ($tipo eq 'jpg') {
-        $bin_buffer = $thumb->jpeg(85);
+        $bin_buffer = $thumb->jpeg($JPEG_COMPRESSION);
     }else{
         $bin_buffer = $thumb->png();
     };
@@ -270,7 +282,7 @@ sub make_resize {
     my $bin_buffer;
 
     if ($tipo eq 'jpg') {
-        $bin_buffer = $thumb->jpeg(85);
+        $bin_buffer = $thumb->jpeg($JPEG_COMPRESSION);
     }else{
         $bin_buffer = $thumb->png();
     };
@@ -355,7 +367,7 @@ sub make_crop {
     # No graba, sino que retorna el buffer binario de la foto para ser guardada por quien invoco a la funcion.
     my $bin_buffer;
     if ($tipo eq 'jpg') {
-        $bin_buffer = $dstImage->jpeg(85);
+        $bin_buffer = $dstImage->jpeg($JPEG_COMPRESSION);
     } else {
         $bin_buffer = $dstImage->png();
     };
@@ -430,7 +442,7 @@ sub make_crop {
 #    # No graba, sino que retorna el buffer binario de la foto para ser guardada por quien invoco a la funcion.
 #    my $bin_buffer;
 #    if ($tipo eq 'jpg') {
-#        $bin_buffer = $dstImage->jpeg(85);
+#        $bin_buffer = $dstImage->jpeg($JPEG_COMPRESSION);
 #    } else {
 #        $bin_buffer = $dstImage->png();
 #    };
@@ -491,7 +503,7 @@ sub make_flip {
     # No graba, sino que retorna el buffer binario de la foto para ser guardada por quien invoco a la funcion.
     my $bin_buffer;
     if ($tipo eq 'jpg') {
-        $bin_buffer = $srcImage->jpeg(85);
+        $bin_buffer = $srcImage->jpeg($JPEG_COMPRESSION);
     } else {
         $bin_buffer = $srcImage->png();
     };
@@ -567,7 +579,7 @@ sub make_rotate {
     # No graba, sino que retorna el buffer binario de la foto para ser guardada por quien invoco a la funcion.
     my $bin_buffer;
     if ($tipo eq 'jpg') {
-        $bin_buffer = $dstImage->jpeg(85);
+        $bin_buffer = $dstImage->jpeg($JPEG_COMPRESSION);
     } else {
         $bin_buffer = $dstImage->png();
     };

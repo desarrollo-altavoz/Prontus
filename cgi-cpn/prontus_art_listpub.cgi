@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # PROPOSITO .
@@ -493,7 +502,7 @@ sub get_artic_parsed {
         $loop_art_tpl =~ s/%%_vobo_st_img%%/nopub/g;
     };
 
-    
+
     $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo/g;
     $loop_art_tpl =~ s/%%_voboboto_class_name%%/voboboto/g;
     $loop_art_tpl =~ s/%%_vobo%%/$st_vb/g;
@@ -547,9 +556,9 @@ sub get_artic_parsed {
     }
 
     # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
-  	if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-  	  $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'});
-  	}
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+      $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'});
+    }
     $loop_art_tpl =~ s/%%_file%%/$marca_file/g;
     $loop_art_tpl =~ s/%%_autoinc%%/$art_autoinc/g;
     $loop_art_tpl =~ s/%%_titular%%/$titulo/g;

@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# --------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# --------------------------------------------------------------
+
 #/cgi-cpn/prontus_check_install.cgi?prontus=/prontus_dev
 
 #Prontus - Chequeo de Instalación

@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# --------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# --------------------------------------------------------------
+
 # Copia portada prontus especificada del prontus_noticias a un directorio especial (online)
 # desde donde queda disponible para el sitio web visible.
 

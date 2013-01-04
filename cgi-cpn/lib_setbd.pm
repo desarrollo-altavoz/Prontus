@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# --------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# --------------------------------------------------------------
+
 #-------------------------------COMENTARIO GLOBAL---------------
 #---------------------------------------------------------------
 # PROPOSITO.
@@ -270,7 +279,7 @@ sub crear_tabla_asset {
                 ASSET_ART_HFOTO int,
                 PRIMARY KEY  (ASSET_FILE, ASSET_ART_ID),
                 FULLTEXT WK (ASSET_SEARCH_WORDKEY)
-                )
+                ) ENGINE = MYISAM;
             ";
             $base->do($sql) || return("Error al crear la tabla ASSET:" . $base->errstr, 1);
             $msg_ret = "- Tabla ASSET creada OK.";
@@ -296,59 +305,59 @@ sub crear_tabla_art {
     if ($motor eq 'MYSQL') {
       $sql = "
             create table ART (
-              ART_AUTOINC int(18) auto_increment not null,
-            	ART_ID char(14) not null default '' ,
+                ART_AUTOINC int(18) auto_increment not null,
+                ART_ID char(14) not null default '' ,
 
-            	ART_IDSECC1 int(5) not null default 0,
-            	ART_IDTEMAS1 int(5) not null default 0,
-            	ART_IDSUBTEMAS1 int(5) not null default 0,
+                ART_IDSECC1 int(5) not null default 0,
+                ART_IDTEMAS1 int(5) not null default 0,
+                ART_IDSUBTEMAS1 int(5) not null default 0,
 
-            	ART_IDSECC2 int(5) not null default 0,
-            	ART_IDTEMAS2 int(5) not null default 0,
-            	ART_IDSUBTEMAS2 int(5) not null default 0,
+                ART_IDSECC2 int(5) not null default 0,
+                ART_IDTEMAS2 int(5) not null default 0,
+                ART_IDSUBTEMAS2 int(5) not null default 0,
 
-            	ART_IDSECC3 int(5) not null default 0,
-            	ART_IDTEMAS3 int(5) not null default 0,
-            	ART_IDSUBTEMAS3 int(5) not null default 0,
+                ART_IDSECC3 int(5) not null default 0,
+                ART_IDTEMAS3 int(5) not null default 0,
+                ART_IDSUBTEMAS3 int(5) not null default 0,
 
-              ART_AUTOR varchar(32) not null default '',
+                ART_AUTOR varchar(32) not null default '',
 
-            	ART_TITU varchar(255) not null default '',
-            	ART_BAJA varchar(200) not null default '',
-            	ART_FECHAP char(8) not null default '',
-            	ART_HORAP char(4) not null default '',
-            	ART_FECHAPHORAP char(12) not null default '',
-            	ART_DIRFECHA char(8) not null default '' ,
-            	ART_EXTENSION varchar(4) not null default '' ,
+                ART_TITU varchar(255) not null default '',
+                ART_BAJA varchar(200) not null default '',
+                ART_FECHAP char(8) not null default '',
+                ART_HORAP char(4) not null default '',
+                ART_FECHAPHORAP char(12) not null default '',
+                ART_DIRFECHA char(8) not null default '' ,
+                ART_EXTENSION varchar(4) not null default '' ,
 
-            	ART_TIPOFICHA varchar(64) not null default '' ,
-            	ART_ALTA varchar(1) not null default '',
-            	ART_IDUSR int(5) not null default 0,
+                ART_TIPOFICHA varchar(64) not null default '' ,
+                ART_ALTA varchar(1) not null default '',
+                ART_IDUSR int(5) not null default 0,
 
-            	ART_FECHAE char(8) not null default '99999999',
-            	ART_HORAE char(4) not null default '0000',
-            	ART_SOLOPORTADAS varchar(1) not null default '1',
-            	ART_FECHAEHORAE char(12) not null default '',
+                ART_FECHAE char(8) not null default '99999999',
+                ART_HORAE char(4) not null default '0000',
+                ART_SOLOPORTADAS varchar(1) not null default '1',
+                ART_FECHAEHORAE char(12) not null default '',
 
-            	PRIMARY KEY (ART_AUTOINC),
-            	UNIQUE INDEX TS (ART_ID),
-            	INDEX SEC1 (ART_IDSECC1),
-            	INDEX SEC2 (ART_IDSECC2),
-            	INDEX SEC3 (ART_IDSECC3),
-            	INDEX SECTST1 (ART_IDSECC1, ART_IDTEMAS1, ART_IDSUBTEMAS1),
-            	INDEX FP(ART_FECHAP),
-            	INDEX FH (ART_FECHAPHORAP),
-            	INDEX FHE (ART_FECHAEHORAE),
-              INDEX TF (ART_TIPOFICHA),
-              INDEX AL (ART_ALTA),
-              INDEX DF (ART_DIRFECHA),
-              FULLTEXT AU (ART_AUTOR),
-            	FULLTEXT TI (ART_TITU),
-            	FULLTEXT BA (ART_BAJA),
-            	INDEX FEHE (ART_FECHAE, ART_HORAE),
-            	INDEX FPHP (ART_FECHAP, ART_HORAP)
+                PRIMARY KEY (ART_AUTOINC),
+                UNIQUE INDEX TS (ART_ID),
+                INDEX SEC1 (ART_IDSECC1),
+                INDEX SEC2 (ART_IDSECC2),
+                INDEX SEC3 (ART_IDSECC3),
+                INDEX SECTST1 (ART_IDSECC1, ART_IDTEMAS1, ART_IDSUBTEMAS1),
+                INDEX FP(ART_FECHAP),
+                INDEX FH (ART_FECHAPHORAP),
+                INDEX FHE (ART_FECHAEHORAE),
+                INDEX TF (ART_TIPOFICHA),
+                INDEX AL (ART_ALTA),
+                INDEX DF (ART_DIRFECHA),
+                FULLTEXT AU (ART_AUTOR),
+                FULLTEXT TI (ART_TITU),
+                FULLTEXT BA (ART_BAJA),
+                INDEX FEHE (ART_FECHAE, ART_HORAE),
+                INDEX FPHP (ART_FECHAP, ART_HORAP)
 
-            )
+            ) ENGINE = MYISAM;
 
       ";
       $base->do($sql) || return("Error al crear la tabla ART:" . $base->errstr, 1);

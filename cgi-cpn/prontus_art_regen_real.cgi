@@ -1,6 +1,13 @@
 #!/usr/bin/perl
 
-
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
 
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
@@ -163,7 +170,7 @@ sub reparsea_artic {
     @lisdir = grep !/edic/, @lisdir; # Elimina directorios edic
 
     # @lisdir = grep /^\d{8}$/, @lisdir; # Deja sólo los directorios con Dirfecha
-    @lisdir = sort {$a <=> $b} (@lisdir);
+    @lisdir = sort {$b <=> $a} (@lisdir);
 
     # Para cada dirfecha, primero procesa vista normal.
     my $dircounter = 0;
@@ -175,7 +182,7 @@ sub reparsea_artic {
                 next if ($dirfecha > $DIRFECHA_INI);
             }
         }
-
+        #~ print STDERR "$ruta_dir/$dirfecha/xml\n";
         if (-d "$ruta_dir/$dirfecha/xml") {
             $dircounter++;
             &messageLoading('Directorios Procesados: <b>' . $dircounter . '</b>');
@@ -326,7 +333,7 @@ sub messageLoading {
 sub valida_y_ajusta_fechaini {
 
     $DIRFECHA_INI =~ s/"//sig;
-    
+
     if ($DIRFECHA_INI =~ /^([<>]?)(\d{8})$/) { # 20120412 - jor - agrega "" a er
         $DIRFECHA_INI = $2;
         my $signo = $1;
@@ -343,7 +350,7 @@ sub valida_y_ajusta_fechaini {
 
     } else {
         $DIRFECHA_INI = '';
-    }    
+    }
     print STDERR "FECHAINI_MAYORQUE[$FECHAINI_MAYORQUE]\n";
     print STDERR "FECHAINI_MENORQUE[$FECHAINI_MENORQUE]\n";
 }

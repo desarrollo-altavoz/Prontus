@@ -1,4 +1,14 @@
 #!/usr/bin/perl
+
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 #
 # -----------------------COMENTARIO GLOBAL-----------------------
 # ---------------------------------------------------------------
@@ -47,7 +57,6 @@ use lib_prontus;
 use prontus_varglb; &prontus_varglb::init();
 use glib_fildir_02;
 use glib_hrfec_02;
-use lib_prontus;
 
 use strict;
 use FindBin '$Bin';
@@ -222,13 +231,7 @@ sub get_cmd_ffmpeg {
         }
     };
 
-    my $pathnice = '/usr/bin/nice';
-    if (! -f $pathnice) {
-      $pathnice = '/usr/local/bin/nice';
-      if (! -f $pathnice) {
-        $pathnice = '';
-      }
-    }
+    my $pathnice = &lib_prontus::get_path_nice();
 
     # si el codec de video es h264 y el perfil es baseline,
     #if ( ($acodec =~ /aac/i || $acodec  =~ /mp3/i) && $vcodec =~ /h264/i && $vcodec =~ /baseline/i) {

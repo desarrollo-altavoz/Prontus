@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # PROPOSITO .
@@ -1089,13 +1098,13 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg =~ s/%%relpath_foto%%/$relpath_foto/ig;
-        
+
         # Para los campos hidden de las fotos que no se desplegarán
         my $bufferBancoImg2 = $moldeBancoImg2;
         $bufferBancoImg2 =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg2 =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg2 =~ s/%%relpath_foto%%/$relpath_foto/ig;
-		
+
         # Foto iconizada
         # my $alt = "$nom_campo\nW:$wfoto\nH:$hfoto\n$kbytes_foto";
         my $foto_iconizada;
@@ -1158,7 +1167,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $foto_iconizada =~ s/> />/sg;
         # print STDERR '2 --> '.$foto_iconizada;
         $fotos_icono{$nom_campo} = $foto_iconizada;
-        
+
 
       };
 
@@ -1314,8 +1323,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   foreach $nom_campo (sort {$b cmp $a} keys %fotos_controls) {
 
     if($nro_fotos_banco >= $prontus_varglb::BANCO_IMG_MAX) {
-		my $valor_campo = $fotos_hidden{$nom_campo};
-		$pag =~ s/%%_HIDDEN_FOTOS%%/$valor_campo%%_HIDDEN_FOTOS%%/ig;
+        my $valor_campo = $fotos_hidden{$nom_campo};
+        $pag =~ s/%%_HIDDEN_FOTOS%%/$valor_campo%%_HIDDEN_FOTOS%%/ig;
         $nro_fotos_banco++;
         next;
     };
@@ -1368,7 +1377,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $pag =~ s/<!--vermas imagenes-->(.*?)<!--\/vermas imagenes-->//isg;
 
   }
-  
+
   # Finalmente se borra el Loop y el Hidden
   $pag =~ s/%%LOOP_FOTOS%%.*?%%\/LOOP_FOTOS%%//isg;
   $pag =~ s/%%_HIDDEN_FOTOS%%//isg;

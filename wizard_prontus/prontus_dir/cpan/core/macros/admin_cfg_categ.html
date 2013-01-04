@@ -43,6 +43,10 @@
                                                 <option value="2"%%TAXONOMIA_NIVELES_2%%>2</option>
                                                 <option value="3"%%TAXONOMIA_NIVELES_3%%>3</option>
                                             </select>
+                                            <div id="msg-taxniv-cero" class="msg-alert">
+                                                <b>Atención:</b> Dejando la variable TAXONOMIA_NIVELES en 0, se ha deshabilitado el uso de categorías en el sitio web,
+                                                y por lo tanto, el resto de las variables de esta página no tendrán efecto.
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -90,7 +94,7 @@
                                         </td>
                                         <td>
                                             <input type="text" name="TAXPORT_MAXARTICS" value="%%TAXPORT_MAXARTICS%%" class="fieldform" maxlength="4" style="width: 30px;"/>
-                                            <div class="msg-maxartics">
+                                            <div id="msg-maxartics" class="msg-alert">
                                                 <b>Atención:</b> La variable TAXPORT_MAXARTICS, ha superado el límite de seguridad. Este número se recomienda que sea
                                                 menor a <span>1000</span>, para no afectar el rendimiento de Prontus.
 

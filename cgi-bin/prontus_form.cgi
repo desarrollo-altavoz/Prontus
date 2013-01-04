@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# --------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# --------------------------------------------------------------
+
 # El Formulario Prontus (prontus_form.cgi) es una aplicacion cgi que permite procesar el contenido
 # de un formulario publicado a traves de un articulo Prontus.
 # De esta manera, el operador Prontus crear formularios de contacto, encuestas y otros a voluntad,

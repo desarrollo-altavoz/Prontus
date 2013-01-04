@@ -377,8 +377,15 @@ var Opciones = {
     // -------------------------------------------------------------------------
     validarMaxartics: function(maxartics) {
         if(maxartics > Opciones.maxarticsLimit) {
-            $('.msg-maxartics span').html(Opciones.maxarticsLimit);
-            $('.msg-maxartics').show();
+            $('#msg-maxartics span').html(Opciones.maxarticsLimit);
+            $('#msg-maxartics').show();
+        }
+    },
+
+    // -------------------------------------------------------------------------
+    validarTaxNivCero: function(taxniv) {
+        if(taxniv == '0') {
+            $('#msg-taxniv-cero').show();
         }
     }
 

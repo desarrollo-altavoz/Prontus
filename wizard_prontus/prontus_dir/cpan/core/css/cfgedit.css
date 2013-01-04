@@ -17,5 +17,5 @@
 .col960 > .auxi {display:none;}
 #tab7 {display:block;}
 
-.msg-maxartics {width:240px; font-size:11px; color:#c00; font-weight:normal; display:none; float:right;}
-.msg-maxartics span {font-weight:bold;}
+.msg-alert {width:240px; font-size:11px; color:#c00; font-weight:normal; display:none; float:right;}
+.msg-alert span {font-weight:bold;}

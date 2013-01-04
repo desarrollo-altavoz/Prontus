@@ -1,4 +1,14 @@
 #!/usr/bin/perl
+
+# --------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# --------------------------------------------------------------
+
 if (! &is_win32()) {
   if (&myself_running() > 4) {
     print "Content-Type: text/html\n\n";

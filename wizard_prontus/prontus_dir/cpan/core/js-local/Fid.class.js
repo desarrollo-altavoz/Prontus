@@ -89,7 +89,7 @@ var Fid = {
         });
         // Para Tabs Alternativos
         $(".tabs-alt").idTabs(0);
-        
+
         // Para lazyLoad
         /*
         $("#ARTFOTOS img[id^='foto_']").lazyload({
@@ -99,7 +99,7 @@ var Fid = {
 
         // Upload masivo de imagenes
         $('#uploadcomplete').hide();
-        
+
 
         /* Verificar si d&d es compatible con el browser. */
         var showDragDrop = false;
@@ -269,7 +269,7 @@ var Fid = {
         if($('.cabecera:visible').size() < 1) {
             $('.tabs a:first').trigger('click');
         }
-        
+
         // Codigo para soporte de flash
         if(!jQuery.browser.flash) {
             $('.browser-comun').not('.browser-noflash').remove();
@@ -290,14 +290,14 @@ var Fid = {
             // Para el copiar al Clipboard
             ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
             var clip = new ZeroClipboard.Client();
-    		clip.setHandCursor(true);
-    		clip.setCSSEffects(true);
+            clip.setHandCursor(true);
+            clip.setCSSEffects(true);
             clip.addEventListener('mouseDown', function (client, text) {
                 var theUrl = $('#copy-artic-url').attr('href');
                 clip.setText(theUrl);
-    			Fid.showTooltipCopiar(client.domElement.offsetLeft, client.domElement.offsetTop);
-    			return true;
-    		});
+                Fid.showTooltipCopiar(client.domElement.offsetLeft, client.domElement.offsetTop);
+                return true;
+            });
             clip.glue('copy-artic-int', 'copy-artic-ext', {position:'relative', left:'0', top:'0'});
         }
     },
@@ -328,14 +328,14 @@ var Fid = {
         $('.tabs a').removeClass('selected');
         $('.tabs a[href="'+thediv+'"]').addClass('selected');
         Fid.activarFotosFijas();
-        
+
         // Se muestran / ocultan los botones de publicar foto
         if($(thediv).find('[id^="FOTOFIJA_"]').size() > 0) {
             $("#banco-img .botonera .publicar").show();
         } else {
             $("#banco-img .botonera .publicar").hide();
         }
-        
+
         // Para la transcodificación
         if(typeof Transcoding !== 'undefined') {
             Transcoding.init(thediv);
@@ -357,10 +357,10 @@ var Fid = {
         }
         return html;
     },
-    
+
     // -----------------------------------------
     asignarFotoFija: function(idFoto) {
-        
+
         var htmlFoto = $('#'+idFoto).parent().html();
         var currBody = '#'+$('#_curr_body').val();
         //alert(currBody + ' [id^="FOTOFIJA_"]');
@@ -509,11 +509,11 @@ var Fid = {
     // -----------------------------------------
     //Activa los controles del formulario
     activarFotosFijas: function() {
-		$('iframe[id^=FOTOFIJA]').each(function(){
+        $('iframe[id^=FOTOFIJA]').each(function(){
             try {
                 if (Fid.isGecko) {
-					// A contar de Firefox 11
-                    // this.contentDocument.designMode = 'on'; 
+                    // A contar de Firefox 11
+                    // this.contentDocument.designMode = 'on';
                     // this.contentWindow.document.contentEditable = true;
                     this.contentWindow.document.body.contentEditable = true;
                     this.contentWindow.document.addEventListener( "click", Fid.cancel_event, true );
@@ -583,14 +583,14 @@ var Fid = {
         window.open(url);
 
     },
-    
+
     // -------------------------------------------------------------------------
     copyArtic: function(ts) {
-        
+
         if(! confirm("Este artículo será copiado.\nSe perderán los datos que no hayas guardado.\n¿Deseas continuar?")) {
             return;
         }
-        
+
         if(FidConfig.cargando) {
             alert(FidConfig.msgCargando);
             return false;
@@ -601,7 +601,7 @@ var Fid = {
         $.ajax({
             type: "GET",
             dataType: 'json',
-            url: actionURL,            
+            url: actionURL,
             data: {
                 _path_conf: Admin.path_conf,
                 _ts: ts
@@ -620,7 +620,7 @@ var Fid = {
                 SubmitForm.handleError(actionURL, XMLHttpRequest, textStatus, errorThrown);
                 Fid.setGUIProcesando(false);
             }
-        });      
+        });
     },
 
     // -------------------------------------------------------------------------
@@ -759,7 +759,7 @@ var Fid = {
             $('.botones a').fadeIn();
         }
     },
-	
+
     // -------------------------------------------------------------------------
     // Bloquea controles mientras se procesa
     actualizaFechaHora: function(tipo) {
@@ -822,12 +822,19 @@ var Fid = {
     // -------------------------------------------------------------------------
     // Muestra las imagenes restantes del banco de imagenes
     verMasImagenes: function() {
+
         $('.banco-vermas a').hide();
         $('.banco-vermas img').show();
         var theurl = './prontus_art_banco.cgi?_ts='+mainFidJs.TS+'&_path_conf='+Admin.path_conf;
         $('#banco-content').load(theurl, function(responseText, textStatus, XMLHttpRequest) {
             $('.banco-vermas').remove();
-            $('#banco-content').slideDown().css('border-top','1px #ccc solid');
+            $('#banco-content').slideDown('fast', function() {
+                $(this).css('border-top','1px #ccc solid');
+                var curr_body = '#' + $('#_curr_body').val();
+                if($(curr_body).find('[id^="FOTOFIJA_"]').size() > 0) {
+                    $("#banco-content .botonera .publicar").show();
+                }
+            });
         });
     },
 
