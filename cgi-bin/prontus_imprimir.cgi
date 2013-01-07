@@ -345,7 +345,7 @@ sub parse_prontus {
   #
   # %%_FECHAC%%     = Fecha de creación, en formato ISO
 
-  $FORM{'_FILE'} =~ /^(\d{8})/;
+  $FORM{'_FILE'} =~ /(\d{8})\d{6}\.\w+/;
   my $fechac = $1;
 
   my $fechaclong = &expande_fecha($fechac);
@@ -356,10 +356,11 @@ sub parse_prontus {
 
   $buffer_tpl =~ s/%%_FECHAC%%/$fechac/isg;
 
-  $FORM{'_FILE'} =~ /^(\d{14})/;
+  $FORM{'_FILE'} =~ /(\d{14})\.\w+/;
   my $ts = $1;
   $buffer_tpl =~ s/%%_TS%%/$ts/isg;
   $buffer_tpl =~ s/%%_FILE%%/$FORM{'_FILE'}/isg;
+  $buffer_tpl =~ s/%%_PRONTUS_ID%%/$RUTA_PRONTUS/isg;
 
   return $buffer_tpl;
 

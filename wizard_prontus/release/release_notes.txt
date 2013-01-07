@@ -5492,3 +5492,73 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/models/modelo_vacio/js-local/Captcha.class.js
         /wizard_prontus/models/modelo_simple/js-local/Captcha.class.js
 
+
+====================================================================================================
+11.2.53 - 27/12/2012 - CVI/RCB
+====================================================================================================
+- Prontus en General
+    [change]
+        - Se incluye licencia LGPL para el producto Prontus
+        - Se agregan encabezados para archivos de prontus, con la identificación de licencia y producto.
+    [files]
+        /cgi-bin/*.*
+        /cgi-bin/coment/*.*
+        /cgi-cpn/*.*
+        /cgi-cpn/coment/*.*
+        /cgi-cpn/dam/*.*
+        /cgi-cpn/xcoding/*.*
+        /wizard_prontus/prontus_dir/cpan/core/license/license.txt
+        /wizard_prontus/prontus_dir/cpan/core/license/license.html
+        /wizard_prontus/core/index.html
+
+- FID
+    [bugfixes]
+        - Al cargar las fotos "restantes" del banco de imagenes, no se estaba considerando el
+          control: "Asignar imagen a todos los controles"
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+
+- Regeneración Masiva de Artículos
+    [change]
+        - Se cambia el orden de procesamiento. Ahora se procesarán los artículos mas nuevos primero
+    [files]
+        /cgi-cpn/prontus_art_regen_real.cgi
+
+- Categorías
+    [bugfixes]
+        - Se corrige la forma en que se aplica nice a taxport, tagport y xcode, por una mas robusta.
+          Se revisa en 3 rutas distintas y si aún así no se encuentra, no se aplica nice.
+    [files]
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/lib_prontus.pm
+
+- Editor de CFG
+    [bugfixes]
+        - Se corrige error al dejar la variable TAXPORT_NIVELES en cero, si el resto de las variables
+          de categoría estaba seteao, el prontus arrojaba un mega error.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/css/cfgedit.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Opciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_categ.html
+
+- Base de Datos
+    [bugfixes]
+        - Se agrega explícitamente la creacion de ASSET y ART como MYISAM, ya que esas tablas usan
+          FULLTEXT, para prevenir el caso en que el ENGINE por defecto sea INNODB
+    [files]
+        /cgi-cpn/lib_setbd.pm
+
+
+====================================================================================================
+11.2.54 - xx/01/2013 - CVI/RCB/JOR
+====================================================================================================
+- Imprimir
+    [bugfixes]
+        - Se corrigen algunos campos que se estaban parseando mal, como _prontus_id, _ts, _fechac, etc
+    [files]
+        /cgi-bin/prontus_imprimir.cgi
