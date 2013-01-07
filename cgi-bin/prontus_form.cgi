@@ -320,7 +320,8 @@ sub data_management {
         $from = $PRONTUS_VARS{'form_from'};
     };
     $subj = $PRONTUS_VARS{'form_subject'.$VISTAVAR};
-    # 1.1
+    # 1.1    
+    $subj = &procesaIFs($subj,1);
     foreach my $key (@DATOS) {
         # Elimina espacios para que no molesten.
         $data = &glib_str_02::trim(&glib_cgi_04::param($key));
@@ -613,8 +614,8 @@ sub salida {
         # Parsea los datos dentro de la plantilla y dentro del mensaje de exito.
         foreach my $key (@DATOS) {
             my $valor = &glib_html_02::text2html(&glib_str_02::trim(&glib_cgi_04::param($key)));
-            $plantilla =~ s/%%$key%%/$valor/sie;
-            $err =~ s/%$key%/$valor/sie;
+            $plantilla =~ s/%%$key%%/$valor/sieg;
+            $err =~ s/%$key%/$valor/sieg;
         };
         # Inserta mensaje de error.
         $err =~ s/%err%/$msg/si;
