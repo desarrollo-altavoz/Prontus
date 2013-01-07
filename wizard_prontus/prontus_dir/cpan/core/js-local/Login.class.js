@@ -99,7 +99,8 @@ var Login = {
         $('#FrmLogin').unbind('submit');
         $('#FrmLogin').attr('action', '/' + Login.dir_cgi_cpan + '/prontus_art_newadmin.cgi');
         $('#FrmLogin').attr('method', 'get');
-        //~ $('#_sbmit').trigger('click');
+        $('#FrmLogin').find('input[name="_usr"]').remove();
+        $('#FrmLogin').find('input[name="_psw"]').remove();
         $('#FrmLogin').submit();
     }
 
