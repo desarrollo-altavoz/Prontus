@@ -23,7 +23,7 @@ fi
 
 echo "Generando archivo tgz"
 cd $BASEDIR
-tar czf "$RELEASEPATH/files.$release.tgz" --exclude=*.log cgi-bin/ cgi-cpn/ wizard_prontus/core/ wizard_prontus/prontus_dir/cpan/core/
+tar czf "$RELEASEPATH/files.$release.tgz" --exclude=*.log --exclude=cgi-cpn/develop_calculo_quota.pl cgi-bin/ cgi-cpn/ wizard_prontus/core/ wizard_prontus/prontus_dir/cpan/core/
 
 echo "Generando md5"
 cd $RELEASEPATH
