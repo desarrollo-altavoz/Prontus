@@ -1,10 +1,3 @@
-====================================================================================================
-11.2.54 - 07/01/2013
-====================================================================================================
-- bugfix: Se corrigen marcas no parseadas en el imprimir
-- bugfix: Se soluciona bug en el login, ya no queda en los parámetros de la url el usuario y passwd.
-- bugfix: Las marcas de los campos solo se podian utilizar una vez en los mensaje de exito o autorespuesta.
-- bugfix: No se estaban parseando los if/nif en el asunto para el mail del administrador. (form_subject)
 
 ====================================================================================================
 11.2.53 - 27/12/2012

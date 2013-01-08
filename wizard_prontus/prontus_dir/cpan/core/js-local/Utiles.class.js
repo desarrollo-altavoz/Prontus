@@ -45,8 +45,8 @@ var Utiles = {
         options = (typeof options === 'undefined') ? this.configWinDefault : options;
         options = 'width=' + ancho + ',height=' + alto
                 + ',top=' + thisposy + ',left=' + thisposx
-                + ',screenX=' + thisposx + ',screenY=' + thisposy;
-                + options;
+                + ',screenX=' + thisposx + ',screenY=' + thisposy
+                + ',' + options;
 
         // Internet Explorer arroja error cuando el nombre de la ventana trae, por ejemplo, puntos.
         if((typeof nom === 'undefined') || (nom === "")) {

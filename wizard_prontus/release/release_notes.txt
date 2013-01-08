@@ -5555,7 +5555,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.54 - 07/01/2013 - CVI/JOR
+11.2.54 - 08/01/2013 - CVI/JOR
 ====================================================================================================
 - Imprimir
     [bugfixes]
@@ -5575,3 +5575,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - No se estaban parseando los if/nif en el asunto para el mail del administrador. (form_subject)
     [files]
         /cgi-bin/prontus_form.cgi
+
+- Prontus en General
+    [bugfixes]
+        - Se soluciona problema con apertura de ventanas popup, no se estaba agregando la opción de scrollbar.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
