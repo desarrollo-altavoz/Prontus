@@ -16,6 +16,7 @@ var Transcoding, Msg, Flash;
         cgiStatus: 'prontus_videoxcodestatus.cgi',
         cgiSnap: 'prontus_videogetsnapshot.cgi',
         cgiCut: 'prontus_videocut.cgi',
+        cgiQt: 'prontus_qtfaststart_check.cgi',
 
         videoExtension: '.mp4',
         imageExtension: '.jpg',
@@ -58,7 +59,47 @@ var Transcoding, Msg, Flash;
                     Transcoding.checkStatus();
                 } else {
                     //alert('Transcoding.loadFlash');
-                    Transcoding.loadFlash();
+                    Transcoding.checkMp4();
+                }
+            });
+        },
+        // -------------------------------------------------------------------------
+        checkMp4: function () {
+            $.ajax({
+                url: Transcoding.dirCgi + Transcoding.cgiQt,
+                type: "post",
+                dataType: 'json',
+                data: {video: Transcoding.linkVideo, prontus_id: Admin.prontus_id},
+                success: function (data) {
+                    if (typeof data !== 'undefined' && typeof data.status !== 'undefined') {
+                        if (data.status == '1') {
+                            if (data.msg == 'FIX') {
+                                Msg.setStatusMessage('El video mp4 necesita ser ajustado para su correcta reproducción, por favor espere mientras es procesado.');
+                                setTimeout(function () {
+                                    Transcoding.checkMp4();
+                                }, Transcoding.timeStatus);
+                            } else if (data.msg == 'Busy') {
+                                Msg.setStatusMessage('El video mp4 necesita ser ajustado para su correcta reproducción, por favor espere mientras es procesado.');
+                                setTimeout(function () {
+                                    Transcoding.checkMp4();
+                                }, Transcoding.timeStatus);
+                            } else if (data.msg == 'OK') {
+                                Msg.setInfoMessage('El video mp4 se encuentra ajustado para su correcta reproducción.');
+                                setTimeout(function () {
+                                    Transcoding.loadFlash();
+                                }, 250);
+                            } else {
+                                Msg.setAlertMessage('Se ha producido un error:<br/> Respuesta no válida');
+                            }
+                        } else {
+                            Msg.setAlertMessage('Se ha producido un error al realizar el ajuste del Video:<br/> ' + data.msg);
+                        }
+                    } else {
+                        Msg.setAlertMessage('Se ha producido un error crítico al realizar el ajuste del Video:<br/> ' + data);
+                    }
+                },
+                error:  function (msg) {
+                    Msg.setAlertMessage('Se ha producido un error al recuperar el Status:<br/> ' + msg);
                 }
             });
         },
@@ -74,7 +115,6 @@ var Transcoding, Msg, Flash;
                     if (msg == 'None') {
                         Msg.setStatusMessage('El video está siendo procesado');
                         Transcoding.procesarVideo();
-
                     } else if (msg == 'Busy') {
                         Transcoding.transcoding = true;
                         Msg.setStatusMessage('El video está siendo procesado');
@@ -99,7 +139,6 @@ var Transcoding, Msg, Flash;
                 }
             });
         },
-
         // -------------------------------------------------------------------------
         procesarVideo: function () {
             $.ajax({
