@@ -554,66 +554,66 @@ sub calcular_proporcion_img {
 # Para centralizar la escritura de la imagen
 sub write_image {
 
-	my ($dst_path, $binfoto) = @_;
-	return unless($binfoto);
-    
+    my ($dst_path, $binfoto) = @_;
+    return unless($binfoto);
+
     my $tipo = &get_imag_extension($dst_path);
     if($tipo eq 'png') {
-		#~ &glib_fildir_02::write_file($dst_path.'-orig.png', $binfoto);
-		#~ $binfoto = &optimize_png_image($binfoto);
-	}
-	
-	&glib_fildir_02::write_file($dst_path, $binfoto);
-	
-	if($tipo eq 'jpg') {
-		&optimize_jpg_image($dst_path);
-	}
+        #~ &glib_fildir_02::write_file($dst_path.'-orig.png', $binfoto);
+        #~ $binfoto = &optimize_png_image($binfoto);
+    }
+
+    &glib_fildir_02::write_file($dst_path, $binfoto);
+
+    if($tipo eq 'jpg') {
+        &optimize_jpg_image($dst_path);
+    }
 }
 
 # ---------------------------------------------------------------
 # Revisa si existe las libreria App::PNGCrush o Image::JpegTran
 # para optimizar con lossless compression los pngs o jpgs, respectivamente
 sub optimize_jpg_image {
-    
+
     my ($filename) = @_;
-	
-	#~ http://search.cpan.org/~mons/Image-JpegTran-0.02/lib/Image/JpegTran.pm
-	eval "require Image::JpegTran;";  my $no_hay_libreria = $@;
-	return if ($no_hay_libreria);
-	#~ print STDERR "Modulo Image::JpegTran instalado...\n";
-	use Image::JpegTran qw(jpegtran);
-	
-	#~ Creamos archivo temporal para trabajar
-	use File::Temp;
-	my $fh = File::Temp->new();
-	my $fname = $fh->filename;
-	jpegtran $filename, $fname, copy => 'none', optimize => 1;
-	
-	use File::Copy qw(move);
-	#~ copy($filename, $filename.'-orig.jpg');
-	move($fname, $filename);
-	chmod 0644, $filename;
-	
+
+    #~ http://search.cpan.org/~mons/Image-JpegTran-0.02/lib/Image/JpegTran.pm
+    eval "require Image::JpegTran;";  my $no_hay_libreria = $@;
+    return if ($no_hay_libreria);
+    #~ print STDERR "Modulo Image::JpegTran instalado...\n";
+    require Image::JpegTran;
+
+    #~ Creamos archivo temporal para trabajar
+    use File::Temp;
+    my $fh = File::Temp->new();
+    my $fname = $fh->filename;
+    jpegtran $filename, $fname, copy => 'none', optimize => 1;
+
+    use File::Copy qw(move);
+    #~ copy($filename, $filename.'-orig.jpg');
+    move($fname, $filename);
+    chmod 0644, $filename;
+
 }
 
 # ---------------------------------------------------------------
 # Revisa si existe las libreria App::PNGCrush o Image::JpegTran
 # para optimizar con lossless compression los pngs o jpgs, respectivamente
 sub optimize_png_image {
-	
-	my ($binfoto) = @_;
-	
-	#~ http://search.cpan.org/~acmcmen/Image-Pngslimmer-0.30/lib/Image/Pngslimmer.pm
-	eval "require Image::Pngslimmer;";  my $no_hay_libreria = $@;
-	return $binfoto if ($no_hay_libreria);
-	
-	#~ print STDERR "Modulo Image::Pngslimmer instalado...";
-	use Image::Pngslimmer;
-	
-	$binfoto = Image::Pngslimmer::discard_noncritical($binfoto);
-	#~ $binfoto = Image::Pngslimmer::filter($binfoto);
-	#~ $binfoto = Image::Pngslimmer::zlibshrink($binfoto);
-	return $binfoto;
+
+    my ($binfoto) = @_;
+
+    #~ http://search.cpan.org/~acmcmen/Image-Pngslimmer-0.30/lib/Image/Pngslimmer.pm
+    eval "require Image::Pngslimmer;";  my $no_hay_libreria = $@;
+    return $binfoto if ($no_hay_libreria);
+
+    #~ print STDERR "Modulo Image::Pngslimmer instalado...";
+    require Image::Pngslimmer;
+
+    $binfoto = Image::Pngslimmer::discard_noncritical($binfoto);
+    #~ $binfoto = Image::Pngslimmer::filter($binfoto);
+    #~ $binfoto = Image::Pngslimmer::zlibshrink($binfoto);
+    return $binfoto;
 }
 
 # ---------------------------------------------------------------
