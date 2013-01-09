@@ -1,3 +1,15 @@
+====================================================================================================
+11.2.54 - 09/01/2013
+====================================================================================================
+- notice: Primera release generada integramente con GIT.
+- bugfix: Se soluciona problema con apertura de ventanas popup, no se estaba agregando la opción de scrollbar.
+- bugfix: Se corrige bug en el login, ya no queda en los parámetros de la url el usuario y passwd.
+- bugfix: No se estaban quitando las rutas absolutas de las imágenes en el VTXT, al guardar un artículo.
+- bugfix: Las marcas de los campos, del Prontus form, solo se podian utilizar una vez en los mensaje de exito o autorespuesta.
+- bugfix: En el Prontus form, no se estaban parseando los if/nif en el asunto para el mail del administrador. (form_subject)
+- Se corrigen algunos campos que se estaban parseando mal en el Imprimir: _prontus_id, _ts, _fechac, etc
+- improvement: Se agrega corrección para el inicio rápido al ver videos, cuando el video ya es mp4
+- improvement: Se da la posibilidad de usar el modulo: Image::JpegTran, para realizar lossless compression en JPG's
 
 ====================================================================================================
 11.2.53 - 27/12/2012

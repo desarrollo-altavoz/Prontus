@@ -5555,7 +5555,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.54 - 08/01/2013 - CVI/JOR
+11.2.54 - 09/01/2013 - CVI/JOR/EAG
 ====================================================================================================
 - Prontus en General
     [bugfixes]
@@ -5573,7 +5573,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Artículos
     [bugfixes]
-        - No se estaban quitando las rutas absolutas de las imágenes al guardar un artículo.
+        - No se estaban quitando las rutas absolutas de las imágenes en el VTXT, al guardar un artículo.
     [files]
         /cgi-cpn/Artic.pm
 
