@@ -71,7 +71,6 @@ use File::Copy;
 use Session;
 use lib_thumb;
 
-
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
@@ -162,7 +161,7 @@ main: {
                 my ($wnew, $hnew) = &lib_thumb::calcular_proporcion_img($wfoto, $hfoto, $wmax, $hmax);
                 my ($binfoto, $wfoto, $hfoto) = &lib_thumb::make_resize($wnew, $hnew, $dst_path);
                 $dst_path =~ s/\.gif$/\.png/i if($dst_path =~ /\.gif$/i);
-                &glib_fildir_02::write_file($dst_path, $binfoto) if ($binfoto);
+                &lib_thumb::write_image($dst_path, $binfoto);
             };
         };
 

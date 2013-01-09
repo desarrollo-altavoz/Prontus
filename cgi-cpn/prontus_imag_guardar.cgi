@@ -210,14 +210,14 @@ sub do_crop {
     my ($srcX, $srcY, $width, $height, $path_img_dst) = @_;
     my ($binfoto, $final_dimx, $final_dimy) = &lib_thumb::make_crop($srcX, $srcY, $width, $height, $path_img_dst);
     $path_img_dst =~ s/\.gif$/\.png/i if($path_img_dst =~ /\.gif$/i);
-    &glib_fildir_02::write_file($path_img_dst, $binfoto) if ($binfoto);
+    &lib_thumb::write_image($path_img_dst, $binfoto);
 };
 # ---------------------------------------------------------------
 sub do_resize {
     my ($width, $height, $path_img_dst) = @_;
     my ($binfoto, $anchofinal, $altofinal) = &lib_thumb::make_resize($width, $height, $path_img_dst);
     $path_img_dst =~ s/\.gif$/\.png/i if($path_img_dst =~ /\.gif$/i);
-    &glib_fildir_02::write_file($path_img_dst, $binfoto) if ($binfoto);
+    &lib_thumb::write_image($path_img_dst, $binfoto);
 };
 # ---------------------------------------------------------------
 sub do_flip {
@@ -225,7 +225,7 @@ sub do_flip {
     my ($path_img_dst) = shift;
     my $binfoto = &lib_thumb::make_flip($sentido, $path_img_dst);
     $path_img_dst =~ s/\.gif$/\.png/i if($path_img_dst =~ /\.gif$/i);
-    &glib_fildir_02::write_file($path_img_dst, $binfoto) if ($binfoto);
+    &lib_thumb::write_image($path_img_dst, $binfoto);
 };
 
 # ---------------------------------------------------------------
@@ -234,9 +234,8 @@ sub do_rotate {
     my ($path_img_dst) = shift;
     my $binfoto = &lib_thumb::make_rotate($degrees, $path_img_dst);
     $path_img_dst =~ s/\.gif$/\.png/i if($path_img_dst =~ /\.gif$/i);
-    &glib_fildir_02::write_file($path_img_dst, $binfoto) if ($binfoto);
+    &lib_thumb::write_image($path_img_dst, $binfoto);
 };
-
 
 # --------------------------------------------------------------------#
 sub garbage_work_images {

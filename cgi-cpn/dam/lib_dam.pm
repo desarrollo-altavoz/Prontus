@@ -183,8 +183,8 @@ sub genera_thumbnail_for_dam {
     print STDERR "generando thumb: $lafoto [$maxw, $maxh]\n";
     my ($binfoto, $anchofinal, $altofinal) = &lib_thumb::make_thumbnail($maxw, $maxh, $lafoto, 0);
     $lafoto =~ s/(\.\w+)$/-dam\1/;
-
-    &glib_fildir_02::write_file($lafoto, $binfoto);
+	
+    &lib_thumb::write_image($lafoto, $binfoto);
     return;
 };
 

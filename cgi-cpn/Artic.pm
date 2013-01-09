@@ -1127,6 +1127,7 @@ sub _add_foto_filesystem {
     $this->_add_foto_prontus_xml($foto_dimx, $foto_dimy, "$nom_foto.$foto_ext");
     return "$nom_foto.$foto_ext";
 };
+
 # ---------------------------------------------------------------
 sub _guarda_binfoto_prontus {
     my ($this, $val_campo, $final_dimx, $final_dimy, $binfoto, $arch_existente) = @_;
@@ -1142,7 +1143,7 @@ sub _guarda_binfoto_prontus {
 
     # warn "dst_img[$this->{dst_foto}] - nom_arch[$nom_arch]";
     my $dst_binfoto = "$this->{dst_foto}/$nom_arch";
-    &glib_fildir_02::write_file($dst_binfoto, $binfoto);
+    &lib_thumb::write_image($dst_binfoto, $binfoto);
     &lib_prontus::purge_cache($dst_binfoto);
 
     return $nom_arch;
@@ -1179,7 +1180,7 @@ sub _genera_fotofija {
         if ($nom_foto =~ /(foto_\w+)$this->{ts}\.\w+/) {
             # Foto local al articulo
             my $nom_campo_orig = $1;
-            # print "$fotofija, $path_foto, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar, $nom_campo_orig\n";
+            print STDERR "$fotofija, $path_foto, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar, $nom_campo_orig\n";
             $this->_add_foto_sitiolocal_articulolocal($fotofija, $path_foto, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar, $nom_campo_orig);
         } else {
             return "Error en regexp: nom_foto[$nom_foto]";
