@@ -4,8 +4,8 @@ Prontus
 GIT del Producto Prontus
 
 
-LICENCIA
-=======
+Licencia
+========
 
 Prontus trabaja bajo licencia LGPL.
 Más información en el archivo:
