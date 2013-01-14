@@ -5618,3 +5618,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Por defecto al crear las tablas, quedan con charset UTF8, engine MYISAM y collate utf8_general_ci
     [files]
         /cgi-cpn/lib_setdb.cgi
+
+- Sistema de Logs:
+	[mejoras]
+        - Al hacer "garbage collector", si hay más de 10 logs ahora deja sólo 10 (antes borraba el último nomas)
+    [files]
+		/cgi-cpn/lib_stdlog.pm
+
