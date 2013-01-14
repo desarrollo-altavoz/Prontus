@@ -1170,7 +1170,7 @@ sub parseRegen {
 
     #~ CVI - 17/08/2012 - Se muestran solo los que estan configurados
     my @fidlist;
-    foreach my $strfid (keys %prontus_varglb::FORM_PLTS) {
+    foreach my $strfid (sort keys %prontus_varglb::FORM_PLTS) {
         #~ print STDERR "strfid[$strfid]\n";
         if($strfid =~ /^(.*?):(.*?)$/) {
             push @fidlist, {label    => $2, value   => $1, checked => 1};
