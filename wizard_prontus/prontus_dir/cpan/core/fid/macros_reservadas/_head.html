@@ -98,3 +98,13 @@
       FidConfig.cargando = false;
     });
   </script>
+
+  %%_upd_port_dd%%
+  <script type="text/javascript">
+      if (window.opener) {
+          window.opener.PortDD.refrescar();
+      } else {
+          alert("Advertencia: No se pudo actualizar la ventana de interfaz Drag & Drop.");
+      }
+  </script>
+  %%/_upd_port_dd%%

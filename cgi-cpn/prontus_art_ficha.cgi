@@ -140,6 +140,8 @@ $FORM{'_port'} = &glib_cgi_04::param('_port');
 $FORM{'_area'} = &glib_cgi_04::param('_area');
 
 $FORM{'_popup'} = &glib_cgi_04::param('_popup');
+$FORM{'_port_dd'} = &glib_cgi_04::param('_port_dd');
+$FORM{'_upd_port_dd'} = &glib_cgi_04::param('_upd_port_dd');
 
 # Ajusta path_conf para completar path y/o cambiar \ por /
 $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
@@ -222,6 +224,7 @@ if ($FORM{'_file'} eq '') {
     $pagina =~ s/%%_CURR_BODY%%/$FORM{'_curr_body'}/ig;
     $pagina =~ s/%%_PLT%%/Plantilla :<br\/> $html_tpag/ig;
     $pagina =~ s/%%_CMB_MV%%/$cmb_multivistas/ig;
+    $pagina =~ s/%%_port_dd%%/$FORM{'_port_dd'}/ig;
 
     # Para no perder el titular
     $pagina =~ s/%%_saved_titular%%/$FORM{'_txt_titular'}/ig;
@@ -436,6 +439,12 @@ if($FORM{'_popup'} eq '1') {
 } else {
   $pagina =~ s/%%_code4popup%%.*?%%\/_code4popup%%//isg;
 }
+
+if ($FORM{'_upd_port_dd'}) {
+    $pagina =~ s/%%_upd_port_dd%%(.*?)%%\/_upd_port_dd%%/\1/isg;
+} else {
+    $pagina =~ s/%%_upd_port_dd%%.*?%%\/_upd_port_dd%%//isg;
+};
 
 $pagina =~ s/%%.+?%%//g;
 
@@ -848,6 +857,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   $pag =~ s/%%_ART_AUTOINC%%/$ART_AUTOINC/ig;
   $pag =~ s/%%_ART%%/$FORM{'_file'}/ig;
   $pag =~ s/%%_CURR_BODY%%/$FORM{'_curr_body'}/ig;
+  $pag =~ s/%%_port_dd%%/$FORM{'_port_dd'}/ig;
   my $cmb_multivistas;
   if (keys(%prontus_varglb::MULTIVISTAS)) {
     $cmb_multivistas = 'Vista: ' . &lib_prontus::generar_popup_multivistas();
@@ -1098,13 +1108,13 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg =~ s/%%relpath_foto%%/$relpath_foto/ig;
-
+        
         # Para los campos hidden de las fotos que no se desplegarán
         my $bufferBancoImg2 = $moldeBancoImg2;
         $bufferBancoImg2 =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg2 =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg2 =~ s/%%relpath_foto%%/$relpath_foto/ig;
-
+		
         # Foto iconizada
         # my $alt = "$nom_campo\nW:$wfoto\nH:$hfoto\n$kbytes_foto";
         my $foto_iconizada;
@@ -1167,7 +1177,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $foto_iconizada =~ s/> />/sg;
         # print STDERR '2 --> '.$foto_iconizada;
         $fotos_icono{$nom_campo} = $foto_iconizada;
-
+        
 
       };
 
@@ -1323,8 +1333,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   foreach $nom_campo (sort {$b cmp $a} keys %fotos_controls) {
 
     if($nro_fotos_banco >= $prontus_varglb::BANCO_IMG_MAX) {
-        my $valor_campo = $fotos_hidden{$nom_campo};
-        $pag =~ s/%%_HIDDEN_FOTOS%%/$valor_campo%%_HIDDEN_FOTOS%%/ig;
+		my $valor_campo = $fotos_hidden{$nom_campo};
+		$pag =~ s/%%_HIDDEN_FOTOS%%/$valor_campo%%_HIDDEN_FOTOS%%/ig;
         $nro_fotos_banco++;
         next;
     };
@@ -1377,7 +1387,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $pag =~ s/<!--vermas imagenes-->(.*?)<!--\/vermas imagenes-->//isg;
 
   }
-
+  
   # Finalmente se borra el Loop y el Hidden
   $pag =~ s/%%LOOP_FOTOS%%.*?%%\/LOOP_FOTOS%%//isg;
   $pag =~ s/%%_HIDDEN_FOTOS%%//isg;

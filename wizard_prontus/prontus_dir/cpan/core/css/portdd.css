@@ -1,0 +1,216 @@
+#prontusportdd-botones {height: 35px;margin: 5px auto 0;width: 200px;}
+#prontusportdd-botones a {float: left;margin: 0 0 0 5px;text-decoration: none;}
+#prontusportdd-botones .loading-action {padding-top: 10px;padding-left: 20px;}
+
+#prontusportddportada {min-height: 500px; float: left;}
+#prontusportddportada .area {min-height: 20px; position: relative;}
+#prontusportddportada .area-empty {border: 1px dashed gray; }
+#prontusportddportada .area li {list-style: none;}
+#prontusportddportada .area .updating {background: none repeat scroll 0 0 white;height: 100%; position: absolute; top: 0;width: 100%; z-index: 100; opacity: 0.9;}
+#prontusportddportada .area .updating span {font-weight: bold; text-align: center;width: 100%; position: absolute; bottom: 50%;}
+#prontusportddportada .area .updating2 {background: none repeat scroll 0 0 white;height: 100%; top: 0; width: 100%; z-index: 100; min-height: 100px}
+#prontusportddportada .area .updating2 span {position: absolute; bottom:50%; font-weight: bold; text-align: center;width: 100%;}
+#prontusportddportada .area .item-area {position: relative; min-height: 40px;}
+#prontusportddportada .area .item-area .overlay {width: 100%; height: 100%; background: #000000; opacity: 0.5; position: absolute; display: none;}
+#prontusportddportada .area .item-area .controls {display: none; }
+/*
+#prontusportddportada .area .item-area-placeholder {background: #403B3B; height: 20px; min-width: 20px;}
+*/
+#prontusportddportada .area .item-area .tools {background: #dedede; opacity: 0.9; position: absolute; width: 100%; height: 20px; cursor: pointer; z-index: 100; border-top: 1px dotted #9E9E9E; }
+#prontusportddportada .area .item-area .tools .dragdrop {background: url("../imag/boto/mover2.png") no-repeat scroll right 1px transparent;float: left;height: 16px;width: 16px;}
+#prontusportddportada .area .item-area .tools a {float: right; margin-right: 3px; margin-top: 1px;}
+#prontusportddportada .area .item-area .tools .titarea {background: none repeat scroll 0 0 #1A1A1A;color: #FFFFFF;float: left;font-size: 12px;margin: 2px 4px;opacity: 0.8; display: none;}
+#prontusportdd-listnopub {position: absolute; right: 50px; top: 46px; width: 470px; z-index: 130;}
+#prontusportdd-listnopub #cont-nopub .div-loading {border-left: 1px solid #E6E6E6;border-right: 1px solid #E6E6E6;border-bottom: 1px solid #E6E6E6;}
+
+#prontusportddportada .area .ui-sortable-placeholder {visibility: visible !important; background: #403B3B; width:100%;}
+/*
+#prontusportddportada .area .item-area .tools-subitem {background: url(../imag/visual-tools-bg2.png); position: absolute; width: 100%; height: 20px; cursor: pointer; z-index: 100; bottom:0;}
+*/
+#prontusportddportada .lv1 .item-area .tools-subitem {background: url("../imag/visual-tools-bg2.png") repeat scroll 0 0 transparent;bottom: 0;cursor: pointer;height: 55px;position: absolute;right: 0;width: 20px;z-index: 100;}
+#prontusportddportada .lv1 .item-area .tools-subitem a {float: right; margin-right: 2px;}
+/*
+#prontusportddportada .area .lv1 .item-area-placeholder {background: #1760cd; height: 20px; min-width: 20px;}
+*/
+#prontusportddportada .area .lv1 .ui-sortable-placeholder {border: 1px dashed black; visibility: visible !important; background: #1760cd;}
+#prontusportddportada .titarealv1 {background: none repeat scroll 0 0 #1760cd;color: #FFFFFF;float: left;font-size: 12px;opacity: 0.8; position: absolute; z-index: 120;}
+
+#prontusportddportada .area .lv2 .item-area .tools-subitem {background: url("../imag/visual-tools-bg3.png") repeat scroll 0 0 transparent;bottom: 0;cursor: pointer;height: 20px;left: 0;position: absolute;width: 60px;z-index: 100;}
+#prontusportddportada .area .lv2 .item-area .tools-subitem a {float: right; margin-right: 2px;}
+#prontusportddportada .area .lv2 .item-area-placeholder {background: #A52A2A; height: 20px; min-width: 20px;}
+#prontusportddportada .titarealv2 {background: none repeat scroll 0 0 #A52A2A;color: #FFFFFF;float: left;font-size: 12px;opacity: 0.8; position: absolute; z-index: 120;}
+
+#prontusportddportada .titarea {background: none repeat scroll 0 0 #1A1A1A;color: #FFFFFF;float: left;font-size: 12px;opacity: 0.8; position: absolute; z-index: 120; display: none;}
+
+/* Duplicados*/
+#prontusportddportada .area .item-area .dup {background: none repeat scroll 0 0 red;height: 100%;opacity: 0.5;position: absolute;width: 100%; z-index: 120;}
+
+#prontusportdd-mensajes {}
+#prontusportdd-mensajes #concurrency {margin: 3px auto 1px;width: 400px; display: none;}
+#prontusportdd-mensajes #concurrency img {float: left;margin-right: 3px;margin-top: -3px;}
+#prontusportdd-mensajes #concurrency span {font-size: 15px; font-family:Georgia,Arial,Helvetica,Sans-Serif,Tahoma,Verdana;}
+#prontusportdd-mensajes #global-msg {background-color: #FFFEEA;border: 1px solid #DDDDDD;clear: both;padding: 5px; margin: 0 auto; width: 30%; display: none;}
+#prontusportdd-mensajes #global-msg span {font-size: 11px;font-weight: normal;text-align: left; color: #555555; margin-left: 10px;}
+#prontusportdd-mensajes #global-msg img {vertical-align: middle;}
+#prontusportdd-mensajes .msg-global {background-color: #FFFEEA;border: 1px solid #DDDDDD;clear: both;padding: 5px;}
+
+/* listado de articulos */
+
+#prontusportdd-listnopub .col470 {background: none repeat scroll 0 0 white;border-radius: 5px 5px 0 0;margin: 0;padding: 0;width: 470px;}
+#prontusportdd-listnopub .col470 .flecha {width:25px; float:left; text-align:center; padding:5px 0 0 0;}
+#prontusportdd-listnopub .col470 .rotulo .link {width:100px; float:right; padding:5px 0 0 0;}
+#prontusportdd-listnopub .col470 .rotulo .link a {font-size:11px; color:#FFFFFF;}
+#prontusportdd-listnopub .col470 .rotulo .link a:hover {text-decoration:underline;}
+#prontusportdd-listnopub .col470 .rotulo {width:470px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot470_azul.jpg") no-repeat left top;}
+#prontusportdd-listnopub .col470 .rotulo .titulo {font-size:13px; color:#FFFFFF; font-weight:bold; float:left; margin:0; padding:5px 0 0 0;}
+#prontusportdd-listnopub .col470 .rotulo.selected {width:470px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot470_rojo.jpg") no-repeat left top;}
+#prontusportdd-listnopub .col470 .rotulo-gris {width:470px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot470_gris.jpg") no-repeat left top; cursor: pointer;}
+#prontusportdd-listnopub .col470 .rotulo-gris .titulo {font-size:13px; color:#333333; font-weight:bold; float:left; margin:0 15px; padding:5px 0 0 0;}
+#prontusportdd-listnopub .col470 ul {clear:both; margin:0; padding:0; list-style: none outside none;}
+#prontusportdd-listnopub .col470 ul li {clear:both; margin:0; padding:0; list-style: none outside none;}
+#prontusportdd-listnopub .col470 ul.area-list {padding-bottom:4px; background-color:#cccccc;}
+#prontusportdd-listnopub .col470 ul.area-list li {background-color:#ffffff; height:26px; overflow:hidden; border-left:1px solid #e6e6e6; border-right:1px solid #e6e6e6; border-bottom:1px solid #e6e6e6;}
+#prontusportdd-listnopub .col470 ul li {cursor:default;}
+#prontusportdd-listnopub .col470 .fila1, .cont-right .fila1 {border-left:1px solid #E6E6E6;border-right:1px solid #E6E6E6;margin:0;padding:7px 0;}
+#prontusportdd-listnopub .col470 li .fila1 {margin:0; padding:3px 0; border-width:0; overflow: hidden;}
+#prontusportdd-listnopub .col470 .fila1.gris, .cont-right .fila1.gris {background:#f3f3f3;}
+#prontusportdd-listnopub .col470 .fila1 .mover {width:24px; text-align:center; float:left; margin-right:2px;} /* flecha mover */
+#prontusportdd-listnopub .col470 .fila1 .contenido {width:440px; float:left; margin:2px 0px; overflow: hidden;} /* textos y links */
+#prontusportdd-listnopub .col470 .fila1 .contenido .titulo {font-size:11px; color:#999999; margin-bottom:2px; line-height:18px;}
+#prontusportdd-listnopub .col470 .fila1 .contenido .titulo .titulo-left {width:335px; float:left;}
+#prontusportdd-listnopub .col470 .fila1 .contenido .titulo .titulo-left a {font-size:12px; color:#333333;}
+#prontusportdd-listnopub .col470 .fila1 .mostrar {float:left; font-size:11px; color:#999999; margin:0 0 0 12px; padding:5px 0 0 0;}
+#prontusportdd-listnopub .col470 .fila1 .paginacion {float:left; font-size:11px; color:#333333; margin:0 0 0 12px; padding:0;}
+#prontusportdd-listnopub .col470 .fila1 .mostrar .selected, .col470 .fila1 .paginacion .selected {text-decoration:underline;}
+#prontusportdd-listnopub .col470 .fila1 .mostrar a {font-size:11px; color:#666666;}
+#prontusportdd-listnopub .col470 .fila1 .paginacion a {font-size:11px; color:#333333;}
+#prontusportdd-listnopub .col470 .fila1 .paginacion a img {vertical-align:middle; margin-bottom:2px;}
+#prontusportdd-listnopub .col470 .fila1 .contenido .titulo a:hover, .col470 .fila1 .mostrar a:hover, .col470 .fila1 .paginacion a:hover {color:#FF0000;}
+#prontusportdd-listnopub .col470 .rotulo .titulo-activo {color:#FF8000;}
+
+#prontusportdd-listnopub .area-list .fila1 .agranda_fila {float:left; margin:1px 8px 0px 0px; cursor:pointer;}
+#prontusportdd-listnopub .area-list .fila1 .agranda_fila .down {display:none;}
+#prontusportdd-listnopub .area-list .fila1 .ocultar {display:none;}
+#prontusportdd-listnopub .area-list .fila1 .controles {display:none;}
+#prontusportdd-listnopub .area-list .fila1 .flecha_publicar {float:left; margin:4px 0 0 4px;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones {float:right; width:105px; overflow:visible;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .autoinc {float:right; text-align:right; margin-bottom:2px;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .botones {float:right; height: 20px; margin-right:6px;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .botones.pub {float:right; height: 20px; margin-right:0px;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .autoinc * {font-family:Georgia,Arial,Helvetica,Sans-Serif,Tahoma,Verdana; font-size:11px; color:#333333;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .status {float:right; margin:0 3px 0 3px; width:20px;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .vobo {float:right; margin:2px 0 0 5px; width:19px;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .voboboto {float:left; margin:2px 0 0 5px; width:21px;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .vobo_disabled {display: none;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .voboboto_disabled {display: none;}
+#prontusportdd-listnopub .area-list .fila1 .titu-botones .iconos-listado {clear:both; float:right; margin:8px 6px 0px; overflow:visible; line-height: 16px;}
+#prontusportdd-listnopub .area-list .fila1 .iconos {float:right;}
+#prontusportdd-listnopub .area-list .fila1 .iconos {float:right;}
+#prontusportdd-listnopub .area-list .fila1 .datos {font-size:11px; color:#666666; padding:0; margin-top:4px;}
+#prontusportdd-listnopub .area-list .fila1 .datos .tax {float:left; width:190px; color:#aaaaaa; overflow:hidden; margin-left: 10px;}
+#prontusportdd-listnopub .area-list .fila1 .datos .fechas {float: left; width: 130px; }
+#prontusportdd-listnopub .area-list .fila1 .mostrar {float:left; font-size:11px; color:#666666; margin:0 0 0 15px; padding:30px 0 0 0;}
+#prontusportdd-listnopub .area-list .fila1 .mover .handler {display:block; cursor:move; width:16px; height:16px; margin:2px 4px; float:left; background:url("../imag/boto/mover2.png") no-repeat scroll top right;}
+#prontusportdd-listnopub .area-list li.moved .mover .handler {background:url("../imag/boto/mover2_on.png") no-repeat scroll top right;}
+#prontusportdd-listnopub .area-list li.disabled .fila1, .area-list li._artic_sin_file .fila1, .area-list li.editable_list0 .fila1 {background-color:#ffffea;}
+#prontusportdd-listnopub .area-list li.disabled .fila1 .handler, .area-list li._artic_sin_file .fila1 .handler, .area-list li.editable_list0 .fila1 .handler {background-image:url("../imag/boto/mover2_of.png"); cursor:default;}
+
+#prontusportdd-listnopub #tooltip-public {position:absolute; overflow:visible; display:none; z-index: 100;}
+#prontusportdd-listnopub #tooltip-public .resumen-pub {width:300px; overflow:visible;}
+#prontusportdd-listnopub #tooltip-public .resumen-pub .top {margin:0px; padding:0px 4px; height:36px; background:url("../imag/auxi/tooltip-grey-top.png") no-repeat scroll top left;}
+#prontusportdd-listnopub #tooltip-public .resumen-pub .middle {margin:-6px 0 0; padding:0px 4px; background:url("../imag/auxi/tooltip-grey-middle.png") repeat-y scroll top left;}
+#prontusportdd-listnopub #tooltip-public .resumen-pub .bottom {margin:0px; padding:0px 4px; height:10px; background:url("../imag/auxi/tooltip-grey-bottom.png") no-repeat scroll top left;}
+#prontusportdd-listnopub #tooltip-public .resumen-pub .tooltip-ini-pub {padding:0px 4px;}
+#prontusportdd-listnopub #tooltip-public .resumen-pub h2 {font-size:12px; font-weight:bold; margin:5px 5px 2px; width:240px;}
+#prontusportdd-listnopub #tooltip-public .resumen-pub h3 {font-size:12px; color:#666666; font-weight:bold;}
+#prontusportdd-listnopub #tooltip-public .resumen-pub li {font-size:11px; color:#666666; font-weight:normal; border:0;}
+#prontusportdd-listnopub .tooltip-ini {display:none; position:absolute;}
+
+#prontusportdd-listnopub .editar_item_fake {display:none;}
+#prontusportdd-listnopub .editable0 .editar_item {display:none;}
+#prontusportdd-listnopub .editable0 .editar_item_fake {display:inline;}
+#prontusportdd-listnopub .borrar_item_fake {display:none;}
+#prontusportdd-listnopub .fila1 .editable0 .borrar_item {display:none;}
+#prontusportdd-listnopub .fila1 .editable0 .borrar_item_fake {display:inline;}
+#prontusportdd-listnopub .aleft .fila1 .borrar_item, .aleft .fila1 .borrar_item_fake {display:none;}
+#prontusportdd-listnopub .flecha_mover_fake {display:none;}
+#prontusportdd-listnopub .fila1 .editable0 .flecha_mover {display:none;}
+#prontusportdd-listnopub .fila1 .editable1 .flecha_mover {display:none;}
+#prontusportdd-listnopub .fila1 .editable0 .flecha_mover_fake {display:inline;}
+#prontusportdd-listnopub .aright .fila1 .flecha_mover, .aright .fila1 .flecha_mover_fake {display:none;}
+#prontusportdd-listnopub .disable-flecha .flecha_publicar {display:none;}
+#prontusportdd-listnopub .disabled .flecha_publicar, .editable_list0 .flecha_publicar {display:none;}
+#prontusportdd-listnopub .aleft .fila1 .flecha_publicar {display:none;}
+#prontusportdd-listnopub .area-list .fila1 .ocultar {display:none;}
+#prontusportdd-listnopub .area-list .fila1 .controles {display:none;}
+#prontusportdd-listnopub ._artic_sin_file .iconos {display:none;}
+#prontusportdd-listnopub ._artic_sin_file .autoinc {display:none;}
+
+#prontusportdd-listnopub .tooltip-ini {display:none; position:absolute;}
+#prontusportdd-listnopub .loading-borrar {display: none;}
+#prontusportdd-listnopub .list-loading {width:100%; height:150px; background:url("../imag/loading.gif") no-repeat scroll center center;}
+#prontusportdd-listnopub .content-buscador{height: 65px;}
+
+/* Buscador */
+#prontusportdd-listnopub .buscador {width:218px; float:right; margin:0 15px 0 0; text-align:right;}
+#prontusportdd-listnopub .buscador table {width:218px; height:29px; margin:0 0 2px;}
+#prontusportdd-listnopub .buscador td.bg-campo {background:url(../imag/auxi/buscador_back.gif) no-repeat left top;}
+#prontusportdd-listnopub .buscador td.bg-boto {background:url(../imag/auxi/buscador_lupa.jpg) no-repeat left top;}
+#prontusportdd-listnopub .buscador input.campo {width:150px; border:none; background:none; font-size:12px; color:#666; padding:3px 5px 5px;}
+#prontusportdd-listnopub .buscador .avanzado a {clear:both; font-size:11px; color:#666666; margin:0; padding:8px 0 0 0; }
+#prontusportdd-listnopub .buscador .avanzado a:hover {color:#FF0000;}
+
+/* Megalupa */
+#formMegalupa .main-megalupa .tableform td {text-align:left; font-family: Arial,Helvetica,Sans-Serif,Tahoma,Verdana;}
+#formMegalupa .box-gris {background-color: #FAFAFA;border: 1px solid #E6E6E6;color: #666666;font-size: 12px;margin: 0;padding: 7px 0;width: 99%; float: left;}
+#formMegalupa .col470 {margin: 0;padding: 0;width: 470px;}
+#formMegalupa .col470 .rotulo {background: url("../imag/auxi/rot470_azul.jpg") no-repeat scroll left top transparent;float: left;height: 25px;margin: 0;padding: 0;width: 470px;}
+#formMegalupa .col470 .flecha {float: left;padding: 5px 0 0;text-align: center;width: 25px;}
+#formMegalupa .col470 .rotulo .flecha span.opened {background: url("../imag/boto/flecha_abajo.png") no-repeat scroll right top transparent;display: block;height: 13px;margin: 2px 5px;width: 13px;}
+#formMegalupa .col470 .rotulo .titulo {color: #FFFFFF;float: left;font-size: 13px;font-weight: bold;margin: 0;padding: 5px 0 0;}
+#formMegalupa .main-megalupa .ui-datepicker-trigger {margin-left: 5px;}
+#formMegalupa .main-megalupa .fecha {width:50% !important;}
+#formMegalupa .main-megalupa .autoinc {width:30% !important;}
+#formMegalupa .main-megalupa .tax select {width:90% !important;}
+#formMegalupa .main-megalupa .tableform td {text-align: left;color: #4D4D4D;font-size: 13px;font-weight: bold;padding: 1px;}
+#formMegalupa .main-megalupa .tableform select {background-color: #FFFFFF;border: 1px solid #CCCCCC;color: #666666;font-size: 12px;padding: 4px;}
+#formMegalupa .main-megalupa .tableform .fieldform {background-color: #FFFFFF;border: 1px solid #CCCCCC;color: #666666;font-size: 12px;padding: 6px;width: 90%;}
+#formMegalupa .main-megalupa .boton-gris2 { margin:0;}
+#formMegalupa .main-megalupa .boton-gris2 a.button {text-decoration: none; background: url("../imag/boto/boto_gris3_right.gif") no-repeat scroll top right;  display:block; float:left; height:26px; margin:0 3px 0 0; padding:0 10px 3px 0; color:#666666; font-size:12px; font-weight:bold;}
+#formMegalupa .main-megalupa .boton-gris2 a.button span {background: url("../imag/boto/boto_gris3_left.gif") no-repeat; display:block; line-height:17px; padding:3px 0 3px 10px;}
+#formMegalupa .main-megalupa .boton-gris2 a.button:hover {background: url("../imag/boto/boto_azul2_right.jpg") no-repeat scroll top right; display:block; float:left; height:26px; margin:0 3px 0 0; padding:0 10px 3px 0; color:#FFFFFF; font-size:12px; font-weight:bold;}
+#formMegalupa .main-megalupa .boton-gris2 a.button:hover span {background: url("../imag/boto/boto_azul2_left.jpg") no-repeat;}
+#formMegalupa .main-megalupa .box-auxi .tableform {margin: 0 0 8px;width: 100%; float: left;}
+#formMegalupa .main-megalupa .separa {clear:both; height:1px; margin:0; padding:0;}
+
+/* BOTONES REDONDEADOS ARTICULO */
+#prontusportdd-listnopub .boton-gris2 { margin:0;}
+#prontusportdd-listnopub .boton-gris2 a.button {background: url("../imag/boto/boto_gris3_right.gif") no-repeat scroll top right;  display:block; float:left; height:26px; margin:0 3px 0 0; padding:0 10px 3px 0; color:#666666; font-size:12px; font-weight:bold;}
+#prontusportdd-listnopub .boton-gris2 a.button span {background: url("../imag/boto/boto_gris3_left.gif") no-repeat; display:block; line-height:17px; padding:3px 0 3px 10px;}
+#prontusportdd-listnopub .boton-gris2 a.button:hover {background: url("../imag/boto/boto_azul2_right.jpg") no-repeat scroll top right; display:block; float:left; height:26px; margin:0 3px 0 0; padding:0 10px 3px 0; color:#FFFFFF; font-size:12px; font-weight:bold;}
+#prontusportdd-listnopub .boton-gris2 a.button:hover span {background: url("../imag/boto/boto_azul2_left.jpg") no-repeat;}
+#prontusportdd-listnopub .boton-gris2 .button-input {float:left; width:120px; padding:2px;}
+
+
+/*------------------- FORMULARIOS -----------------------*/
+#prontusportdd-listnopub .tableform {width:100%; margin:0 0 8px 0;}
+#prontusportdd-listnopub .tableform td {padding:8px; font-size:13px; font-weight:bold; color:#4D4D4D;}
+#prontusportdd-listnopub .tableform .items {padding:5px 0; font-size:13px; font-weight:bold; color:#4D4D4D;}
+#prontusportdd-listnopub .tableform .nota1 {font-size:12px; font-weight:normal; color:#666666;}
+#prontusportdd-listnopub .tableform .subtitulo2 {font-size:12px; font-weight:bold; color:#000000; border-bottom:1px solid #ececec; margin:5px 0 8px 0; padding:5px 0; }
+#prontusportdd-listnopub .tableform .foto {float:left; font-size:12px; font-weight:normal; color:#666666; margin:0 25px 0 0;}
+#prontusportdd-listnopub .tableform .foto-recuadro {width:120px; height:120px; border:1px solid #e6e6e6; background:#FFFFFF; margin:4px 0;}
+#prontusportdd-listnopub .tableform select {padding:4px; font-size:12px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+#prontusportdd-listnopub .box-gris .tableform td {padding:1px; font-size:13px; font-weight:bold; color:#4D4D4D;}
+#prontusportdd-listnopub .tableform2 td {padding:1px; font-size:13px; font-weight:bold; color:#4D4D4D;}
+#prontusportdd-listnopub .box-gris .tableform3 td {padding:0; font-size:11px; color:#666666;}
+#prontusportdd-listnopub .fieldform {width:90%; padding:6px; font-size:12px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+#prontusportdd-listnopub .fieldform-short {width:90%; padding:2px; font-size:12px; font-weight:normal; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+#prontusportdd-listnopub .tableform .head {background-color: #E0E0E0;}
+#prontusportdd-listnopub .ui-datepicker-trigger {cursor:pointer; margin-left:4px;}
+#prontusportdd-listnopub a {text-decoration:none;color:#0099ff;}
+#prontusportdd-listnopub a:hover {color:#FF0000;text-decoration:none;}
+#prontusportdd-listnopub img {border:0;}
+#prontusportdd-listnopub * {font-family: Arial,Helvetica,Sans-Serif,Tahoma,Verdana; margin: 0; padding: 0;}
+#prontusportdd-listnopub strong {font-weight: bold;}
+#prontusportdd-listnopub div {overflow: hidden;}
