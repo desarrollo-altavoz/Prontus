@@ -653,6 +653,13 @@ sub parseaVars {
         $pagina =~ s/%%EDITOR_EDITAR_ARTICULOS_AJENOS_SI%%//ig;
         $pagina =~ s/%%EDITOR_EDITAR_ARTICULOS_AJENOS_NO%%/ checked="checked"/ig;
     };
+    if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'SI') {
+        $pagina =~ s/%%EDITOR_ADMINISTRAR_EDICIONES_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%EDITOR_ADMINISTRAR_EDICIONES_NO%%//ig;
+    } else {
+        $pagina =~ s/%%EDITOR_ADMINISTRAR_EDICIONES_SI%%//ig;
+        $pagina =~ s/%%EDITOR_ADMINISTRAR_EDICIONES_NO%%/ checked="checked"/ig;
+    };
 
     # -tax.cfg
     if ($prontus_varglb::TAXONOMIA_NIVELES eq '0') {

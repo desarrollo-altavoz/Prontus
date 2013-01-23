@@ -5605,7 +5605,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.55 - 16/01/2013 - CVI
+11.2.55 - 23/01/2013 - CVI/JOR
 ====================================================================================================
 - Reparseo de artículos:
     [mejoras]
@@ -5639,4 +5639,20 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
 		/cgi-cpn/prontus_regenera_taxport.cgi
 
-	
+- Administrador de ediciones
+    [cambios]
+        - Se agrega la posibilidad de que usuarios con perfil EDITOR puedan administrar las ediciones
+        - Se puede habilitar/deshabilitar en la configuracion.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_usr.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/menu_head1.html
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_edi_admin.cgi
+        /cgi-cpn/prontus_edi_borrar.cgi
+        /cgi-cpn/prontus_edi_ficha.cgi
+        /cgi-cpn/prontus_edi_guardar.cgi
+        /cgi-cpn/prontus_edi_otras.cgi
+    
+    
