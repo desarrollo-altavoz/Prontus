@@ -113,10 +113,14 @@ if ($prontus_varglb::USERS_ID eq '') {
     &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
 };
 
-# Acceso permitido solo para admin
-if ($prontus_varglb::USERS_PERFIL ne 'A') {
-    &glib_html_02::print_pag_result('Error','La funcionalidad requerida está disponible sólo para el administrador del sistema.', 1, 'exit=1,ctype=1');
-};
+    if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
+        &glib_html_02::print_pag_result('Error', 'La funcionalidad requerida está disponible sólo para el administrador del sistema.', 1, 'exit=1,ctype=1');
+    };
+
+    # Acceso permitido solo para admin
+    if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
+        &glib_html_02::print_pag_result('Error', 'La funcionalidad requerida está disponible sólo para el administrador del sistema y editores', 1, 'exit=1,ctype=1');
+    };
 
 
   # Cargar plantilla de la pagina a imprimir (ficha de edicion)

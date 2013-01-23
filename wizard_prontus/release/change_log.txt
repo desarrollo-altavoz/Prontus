@@ -1,4 +1,13 @@
 ====================================================================================================
+11.2.55 - 23/01/2013
+====================================================================================================
+- improvement: En las opciones avanzadas, ahora los FIDs se ordenan por orden alfabético
+- improvement: Al hacer "garbage collector", si hay más de 10 logs ahora deja sólo 10 (antes borraba el último nomas)
+- improvement: Se crea el script: prontus_regenera_taxport.cgi, para regenerar todas las portadas taxonómicas.
+- changes: Por defecto al crear las tablas, quedan con charset UTF8, engine MYISAM y collate utf8_general_ci
+- changes: Se agrega la posibilidad de que usuarios con perfil EDITOR puedan administrar las ediciones
+
+====================================================================================================
 11.2.54 - 09/01/2013
 ====================================================================================================
 - notice: Primera release generada integramente con GIT.

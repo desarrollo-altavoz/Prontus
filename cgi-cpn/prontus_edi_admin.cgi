@@ -105,11 +105,14 @@ main: {
         &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
-    # Acceso permitido solo para admin
-    if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_pag_result('Error','La funcionalidad requerida está disponible sólo para el administrador del sistema.', 1, 'exit=1,ctype=1');
+    if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
+        &glib_html_02::print_pag_result('Error', 'La funcionalidad requerida está disponible sólo para el administrador del sistema.', 1, 'exit=1,ctype=1');
     };
 
+    # Acceso permitido solo para admin
+    if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
+        &glib_html_02::print_pag_result('Error', 'La funcionalidad requerida está disponible sólo para el administrador del sistema y editores', 1, 'exit=1,ctype=1');
+    };
 
     my $pagina = &glib_fildir_02::read_file($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . '/prontus_edi_admin.html');
     $pagina = &lib_prontus::set_coreplt_ppal($pagina);

@@ -166,11 +166,15 @@ my ($RELDIR_TEMP_HPAGE);
         &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
     };
 
-    # Acceso permitido solo para admin
-    if ($prontus_varglb::USERS_PERFIL ne 'A') {
+
+    if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
         &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema', 'exit=1,ctype=1');
     };
 
+    # Acceso permitido solo para admin
+    if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
+        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema y editores', 'exit=1,ctype=1');
+    };
 
 # ---------BOTON GUARDAR--------------------------------------------------
 

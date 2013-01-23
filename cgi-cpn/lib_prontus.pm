@@ -1488,6 +1488,11 @@ sub load_config {
   if ($buffer =~ m/\s*EDITOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $e_ver_art_ajenos = $2;
   };
+  
+  my $e_adm_ediciones = 'SI'; # valor por defecto. # 8.0
+  if ($buffer =~ m/\s*EDITOR_ADMINISTRAR_EDICIONES\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $e_adm_ediciones = $2;
+  };
 
   my $port_ini_selected = ''; # valor por defecto. # 7.0
   if ($buffer =~ m/\s*PORT_INI_SELECTED\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -2057,6 +2062,7 @@ sub load_config {
 
   $prontus_varglb::EDITOR_EDITAR_ARTICULOS_AJENOS = $e_edit_art_ajenos;
   $prontus_varglb::EDITOR_VER_ARTICULOS_AJENOS = $e_ver_art_ajenos;
+  $prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES = $e_adm_ediciones;
 
 
   $prontus_varglb::PRONTUS_EDITOR = $peditor;
@@ -5877,6 +5883,16 @@ sub set_coreplt_ppal {
 
     # oculta sistema comentarios
     $buffer =~ s/<!--comentarios-->.*?<!--\/comentarios-->//sg if ($prontus_varglb::COMENTARIOS ne 'SI');
+
+    # quita la opcion de editar ediciones si el usuario no es admin o editor.
+    if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
+        $buffer =~ s/<!--admin_ediciones-->.*?<!--\/admin_ediciones-->//sg;
+    };
+    
+    # quita la opcion de editar ediciones si esta deshabilitado y el usuario es editor.
+    if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
+        $buffer =~ s/<!--admin_ediciones-->.*?<!--\/admin_ediciones-->//sg;
+    };
 
 
     # parseos comunes
