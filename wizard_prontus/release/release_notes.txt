@@ -5444,26 +5444,26 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         por esos procesos.
     [files]
         /cgi-cpn/prontus_art_sbmit.cgi
-        
+
 - Prontus Form
     [bugfixes]
         - Ocurria un problema cuando se ingresaba un email con mayusculas.
         La expresión regular que valida el email solo estaba considerando TLDs con minúscula.
     [files]
         /cgi-cpn/lib_validator.pm
-        
+
 - Administrador de artículos
     [bugfixes]
         - Se elimina botón de funcionalidad no disponible.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
-        
+
 - Transcoding
     [bugfixes]
         - Se soluciona problema con cgi de transcodificación, faltó definir ámbito de variables.
     [files]
         /cgi-cpn/xcoding/prontus_videodoxcode.cgi
-        
+
 - Wizard
     [cambios]
         - Se agrega ejecución de script de regeneración de tabla multimedia.
@@ -5561,14 +5561,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Se soluciona problema con apertura de ventanas popup, no se estaba agregando la opción de scrollbar.
     [mejoras]
-		- Se da la posibilidad de usar el modulo: Image::JpegTran, para realizar lossless compression en JPG's
-		- Alternativamente está en desarrollo la utilización de un módulo similar para los png
+        - Se da la posibilidad de usar el modulo: Image::JpegTran, para realizar lossless compression en JPG's
+        - Alternativamente está en desarrollo la utilización de un módulo similar para los png
     [files]
-		/cgi-bin/prontus_art_upfoto.cgi
-		/cgi-cpn/Artic.pm
-		/cgi-cpn/lib_thumb.pm
-		/cgi-cpn/prontus_imag_guardar.cgi        
-		/cgi-cpn/dam/lib_dam.pm
+        /cgi-bin/prontus_art_upfoto.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/prontus_imag_guardar.cgi
+        /cgi-cpn/dam/lib_dam.pm
         /wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
 
 - Artículos
@@ -5602,3 +5602,57 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrigen algunos campos que se estaban parseando mal, como _prontus_id, _ts, _fechac, etc
     [files]
         /cgi-bin/prontus_imprimir.cgi
+
+
+====================================================================================================
+11.2.55 - 23/01/2013 - CVI/JOR
+====================================================================================================
+- Reparseo de artículos:
+    [mejoras]
+        - En las opciones avanzadas, ahora los FIDs se ordenan por orden alfabético
+    [files]
+        /cgi-cpn/prontus_admin_main.cgi
+
+- Base de Datos:
+    [change]
+        - Por defecto al crear las tablas, quedan con charset UTF8, engine MYISAM y collate utf8_general_ci
+    [files]
+        /cgi-cpn/lib_setdb.cgi
+
+- Sistema de Logs:
+	[mejoras]
+        - Al hacer "garbage collector", si hay más de 10 logs ahora deja sólo 10 (antes borraba el último nomas)
+    [files]
+		/cgi-cpn/lib_stdlog.pm
+
+- Portadas Taxonómicas:
+	[mejoras]
+        - Se crea el script: prontus_regenera_taxport.cgi, para regenerar todas las portadas taxonómicas.
+		  Esto, para suplir el hecho de que ahora el prontus_cron_taxport.cgi, ya no procesa invocaciones sin fid
+		  o sin seccion, por un tema de rendimiento.
+		  La invocaciones es:
+				./prontus_regenera_taxport.cgi <prontus_id>
+		  Lo que hace es gatillar el prontus_cron_taxport.cgi dependiendo de las categorías y fids existente.
+		  Se aplica un cierto grado de inteligencia, al no gatillar ni fids sin taxonomía, ni niveles inferiores
+		  luego de un nivel más específico (ya que al gatillar un secc/tema/stema se gatillan tb los niveles: 
+		  secc/tema y secc)
+    [files]
+		/cgi-cpn/prontus_regenera_taxport.cgi
+
+- Administrador de ediciones
+    [cambios]
+        - Se agrega la posibilidad de que usuarios con perfil EDITOR puedan administrar las ediciones
+        - Se puede habilitar/deshabilitar en la configuracion.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_usr.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/menu_head1.html
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_edi_admin.cgi
+        /cgi-cpn/prontus_edi_borrar.cgi
+        /cgi-cpn/prontus_edi_ficha.cgi
+        /cgi-cpn/prontus_edi_guardar.cgi
+        /cgi-cpn/prontus_edi_otras.cgi
+    
+    

@@ -125,6 +125,7 @@ main: {
     $hash_defaultvars{'usr'}{'REDACTOR_EDITAR_ARTICULOS_AJENOS'} = 'REDACTOR_EDITAR_ARTICULOS_AJENOS;(SI|NO);SI;U';
     $hash_defaultvars{'usr'}{'EDITOR_VER_ARTICULOS_AJENOS'} = 'EDITOR_VER_ARTICULOS_AJENOS;(SI|NO);SI;U';
     $hash_defaultvars{'usr'}{'EDITOR_EDITAR_ARTICULOS_AJENOS'} = 'EDITOR_EDITAR_ARTICULOS_AJENOS;(SI|NO);SI;U';
+    $hash_defaultvars{'usr'}{'EDITOR_ADMINISTRAR_EDICIONES'} = 'EDITOR_ADMINISTRAR_EDICIONES;(SI|NO);SI;U';
 
     # -tax.cfg
     $hash_defaultvars{'tax'}{'TAXONOMIA_NIVELES'} = 'TAXONOMIA_NIVELES;[0-3];0;U';

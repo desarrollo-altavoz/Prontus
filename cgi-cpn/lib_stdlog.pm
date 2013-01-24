@@ -65,9 +65,17 @@ sub do_garbage {
     my $num_files = @dir_list_out;
     # print STDERR "num_files[$num_files]\n";
     if ($num_files > 10) {
-        # borra el mas antiguo que es el primero de la lista
-        print STDERR "borrando[$dir_list_out[0]] por ser log mas antiguo\n";
-        unlink "$dir/$dir_list_out[0]";
+        if($num_files == 11) {
+            # borra el mas antiguo que es el primero de la lista
+            print STDERR "borrando[$dir_list_out[0]] por ser log mas antiguo\n";
+            unlink "$dir/$dir_list_out[0]";
+        } else {
+            # Si hay mas de 11 los borra todos hasta dejar solo 10
+            for(my $i = 0; $i < ($num_files - 10); $i++) {
+                print STDERR "borrando[$dir_list_out[$i]] por ser log mas antiguo\n";
+                unlink "$dir/$dir_list_out[$i]";
+            }
+        };
     };
 };
 

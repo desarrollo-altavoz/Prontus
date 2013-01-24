@@ -62,6 +62,9 @@ sub crear_tabla_secc {
                     PRIMARY KEY  (SECC_ID),
                     KEY SECC_NOM (SECC_NOM)
                     )
+                        CHARACTER SET utf8
+                        COLLATE utf8_general_ci
+                        ENGINE = MYISAM;
             ";
             $base->do($sql) || return("Error al crear la tabla SECC:" . $base->errstr, 1);
             $msg_ret = "- Tabla 'SECC' creada OK.";
@@ -99,6 +102,9 @@ sub crear_tabla_temas {
                     KEY TEMAS_IDSECC (TEMAS_IDSECC),
                     KEY TEMAS_NOM (TEMAS_NOM)
                     )
+                        CHARACTER SET utf8
+                        COLLATE utf8_general_ci
+                        ENGINE = MYISAM;
             ";
             $base->do($sql) || return("Error al crear la tabla TEMAS:" . $base->errstr, 1);
             $msg_ret = "- Tabla TEMAS creada OK.";
@@ -135,6 +141,9 @@ sub crear_tabla_subtemas {
                     KEY SUBTEMAS_IDTEMAS (SUBTEMAS_IDTEMAS),
                     KEY SUBTEMAS_NOM (SUBTEMAS_NOM)
                     )
+                        CHARACTER SET utf8
+                        COLLATE utf8_general_ci
+                        ENGINE = MYISAM;
             ";
             $base->do($sql) || return("Error al crear la tabla SUBTEMAS:" . $base->errstr, 1);
             $msg_ret = "- Tabla SUBTEMAS creada OK.";
@@ -169,6 +178,9 @@ sub crear_tabla_tags {
                     KEY TAG (TAGS_TAG),
                     KEY COUNT (TAGS_COUNT)
                     )
+                        CHARACTER SET utf8
+                        COLLATE utf8_general_ci
+                        ENGINE = MYISAM;
             ";
             $base->do($sql) || return("Error al crear la tabla TAGS:" . $base->errstr, 1);
             $msg_ret = "- Tabla TAGS creada OK.";
@@ -200,6 +212,9 @@ sub crear_tabla_tagsart {
                 KEY IDART (TAGSART_IDART),
                 KEY IDTAGS (TAGSART_IDTAGS)
                 )
+                    CHARACTER SET utf8
+                    COLLATE utf8_general_ci
+                    ENGINE = MYISAM;
             ";
             $base->do($sql) || return("Error al crear la tabla TAGSART:" . $base->errstr, 1);
             $msg_ret = "- Tabla TAGSART creada OK.";
@@ -239,6 +254,9 @@ sub crear_tabla_coment {
                 KEY COMENT_NICK (COMENT_NICK),
                 KEY ID_ST (COMENT_OBJID, COMENT_STATUS)
                 )
+                    CHARACTER SET utf8
+                    COLLATE utf8_general_ci
+                    ENGINE = MYISAM;
 
             ";
             $base->do($sql) || return("Error al crear la tabla COMENT:" . $base->errstr, 1);
@@ -279,7 +297,10 @@ sub crear_tabla_asset {
                 ASSET_ART_HFOTO int,
                 PRIMARY KEY  (ASSET_FILE, ASSET_ART_ID),
                 FULLTEXT WK (ASSET_SEARCH_WORDKEY)
-                ) ENGINE = MYISAM;
+                )
+                    CHARACTER SET utf8
+                    COLLATE utf8_general_ci
+                    ENGINE = MYISAM;
             ";
             $base->do($sql) || return("Error al crear la tabla ASSET:" . $base->errstr, 1);
             $msg_ret = "- Tabla ASSET creada OK.";
@@ -357,7 +378,10 @@ sub crear_tabla_art {
                 INDEX FEHE (ART_FECHAE, ART_HORAE),
                 INDEX FPHP (ART_FECHAP, ART_HORAP)
 
-            ) ENGINE = MYISAM;
+            )
+                CHARACTER SET utf8
+                COLLATE utf8_general_ci
+                ENGINE = MYISAM;
 
       ";
       $base->do($sql) || return("Error al crear la tabla ART:" . $base->errstr, 1);
