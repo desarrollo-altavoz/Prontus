@@ -116,6 +116,7 @@ main: {
     $hash_defaultvars{'port'}{'ADMIN_PORT'} = 'ADMIN_PORT;(SI|NO);NO;U';
     $hash_defaultvars{'port'}{'EDICBASE_INI_SELECTED'} = 'EDICBASE_INI_SELECTED;(SI|NO);NO;U';
     $hash_defaultvars{'port'}{'BASE_PORTS'} = 'BASE_PORTS;(.*?);;M';
+    $hash_defaultvars{'port'}{'PORT_DRAGANDROP'} = 'PORT_DRAGANDROP;(.*?);;M';
     $hash_defaultvars{'port'}{'PORT_PLTS'} = 'PORT_PLTS;(.*?);;M';
     $hash_defaultvars{'port'}{'PORT_INI_SELECTED'} = 'PORT_INI_SELECTED;(.*?);;U';
     $hash_defaultvars{'port'}{'PORT_HOME'} = 'PORT_HOME;(.*?);;U';

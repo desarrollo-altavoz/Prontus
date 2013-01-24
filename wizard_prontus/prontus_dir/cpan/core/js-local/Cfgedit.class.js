@@ -100,6 +100,14 @@ var Cfgedit = {
                 });
                 $('input[name="BASE_PORTS"]').val(base_ports);
                 
+                var ports_dd = '';
+                $('[name="INPUT_PORT_DRAGANDROP[]"]').each(function () {
+                    if (!$(this).is(':disabled')) {
+                        ports_dd += $(this).val() + "|";
+                    }
+                });
+                $('input[name="PORT_DRAGANDROP"]').val(ports_dd);
+                
             } else if (cfg === 'tax') {
                 var taxport_orden = '';
                 taxport_orden = $('select[name="TAXPORT_ORDEN_TIPO"]').val() + '(' + $('select[name="TAXPORT_ORDEN_ORD"]').val() + ')';
@@ -241,6 +249,14 @@ var Cfgedit = {
             $('#baseport_' + id).removeAttr("disabled");
         }
     },
+    quitarPortDD: function (obj, id) {
+        if ($(obj).is(':checked')) {
+            // Deshabilitar inputs, para que no sean enviados en el formulario.
+            $('#portdd_' + id).attr("disabled", "disabled");
+        } else {
+            $('#portdd_' + id).removeAttr("disabled");
+        }
+    },
     quitarMV: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
@@ -346,6 +362,18 @@ var Cfgedit = {
 
     setPortNom: function (value, id) {
         $('input[name="nom_portada_' + id + '"]').val(value);
-    }
+    },
+
+    showHelpCompatibilidad: function() {
+        var obj = Opciones.optsDefault;
+        //obj.href = Opciones.urlCheckPlat + '?prontus_id=' + Admin.prontus_id;
+        obj.width = '600px';
+        obj.height = '450px';
+        obj.href = '/' + Admin.prontus_id + '/cpan/core/port_dd/compatibilidad.html'
+        obj.onLoad = function() {
+            Admin.mostrarBarraColorbox();
+        };
+        $.fn.colorbox(obj);
+    },
     
 };

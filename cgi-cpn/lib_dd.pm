@@ -27,6 +27,14 @@ sub check_portada {
             print STDERR "Esta interfaz no está disponible para las portadas que comienzan con _ (underscore).\n";
             return "Esta interfaz no est&aacute; disponible para las portadas que comienzan con _ (underscore).\n";
         };
+
+        $path_plt =~ /\/port\/(.*?\..*?)$/;
+        my $port = $1;
+        if (!$prontus_varglb::PORT_DRAGANDROP{$port}) {
+            print STDERR "La plantilla tiene deshabilitada la interfaz drag & drop via CFG.\n";
+            return "La plantilla no tiene habilitada la interfaz drag & drop en la configuraci&oacute;n.";
+        };
+        
         my $buffer_plt = &glib_fildir_02::read_file($path_plt);
 
         if ($buffer_plt =~ /<!--cfg_dd=no-->/isg) {

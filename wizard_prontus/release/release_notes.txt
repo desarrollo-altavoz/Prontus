@@ -5655,4 +5655,49 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_edi_guardar.cgi
         /cgi-cpn/prontus_edi_otras.cgi
     
-    
+====================================================================================================
+11.2.56 - 23/01/2013 - JOR
+====================================================================================================
+
+- Administrador de artículos
+    [mejoras]
+        - Se agrega interfaz drag & drop para la edición de la portada.
+    [files]
+        /cgi-cpn/lib_dd.pm
+        /cgi-cpn/prontus_dd_admin.cgi
+        /cgi-cpn/prontus_dd_public.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_subitem_area.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_item_area.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_beg_body.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_end_body.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_head.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/prontus_port_dd.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/compatibilidad.html
+        /wizard_prontus/prontus_dir/cpan/core/css/portdd.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/PortDD.class.js
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/grid_of.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/grid_on.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/visual-tools-bg.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/visual-tools-bg2.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/quitar_of.png
+
+- Editor de CFG
+    [cambios]
+        - Se agrega nueva variable de configuracion PORT_DRAGANDROP, para especificar
+        cuales son las portadas que podrán usar la interfaz. Esto es independiende de si la portada
+        es compatible o no.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_port.html
+        /wizard_prontus/prontus_dir/cpan/core/css/portdd.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        
+        

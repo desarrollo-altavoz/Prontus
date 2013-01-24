@@ -623,6 +623,50 @@ sub parseaVars {
     $pagina =~ s/%%listado_paralelas%%/$option_select_paralelas/sig;
 
 
+    # portadas drag & drop.
+
+    $buffer = '';
+    $pagina =~ /<!--loop_ports_dragnadndrop-->(.*?)<!--\/loop_ports_dragnadndrop-->/s;
+    $loop = $1;
+    my $cont = 1;
+
+    my %portdd_habilitadas;
+    foreach my $port (keys (%prontus_varglb::PORT_DRAGANDROP)) {
+        if ($port ne '') {
+            $temp = $loop;
+            my $name = $port;
+            $name = $prontus_varglb::PORT_PLTS_NOM{$port} if ($prontus_varglb::PORT_PLTS_NOM{$port} ne '');
+            $name = ($name);
+            $temp =~ s/%%port_name%%/$name/isg;
+            $temp =~ s/%%port_valor%%/$port/isg;
+            $temp =~ s/%%num%%/$cont/isg;
+            $portdd_habilitadas{$port} = 1;
+            $buffer = $buffer . $temp;
+            $cont++;
+        };
+    };
+
+
+    $pagina =~ s/<!--loop_ports_dragnadndrop-->.*?<!--\/loop_ports_dragnadndrop-->/$buffer/sig;
+
+    $buffer = '';
+    $pagina =~ /<!--loop_portadas_dd-->(.*?)<!--\/loop_portadas_dd-->/s;
+    $loop = $1;
+
+    foreach my $port (sort {lc($PORTS_TO_ORDER{$a}) cmp lc($PORTS_TO_ORDER{$b})} keys %PORTS_TO_ORDER) {
+        my $name = $prontus_varglb::PORT_PLTS_NOM{$port} if ($prontus_varglb::PORT_PLTS_NOM{$port} ne '');
+        next if ($port =~ /^\./);
+        next if ($portdd_habilitadas{$port});
+        $name = $port if ($name eq '');
+        $temp = $loop;
+        $temp =~ s/%%value%%/$port/isg;
+        $temp =~ s/%%name%%/$name/isg;
+
+        $buffer = $buffer . $temp;
+    };
+
+    $pagina =~ s/<!--loop_portadas_dd-->.*?<!--\/loop_portadas_dd-->/$buffer/sig;
+    
     # -------------------------------------------------------------------------------
     # -usr.cfg
     if ($prontus_varglb::PERIODISTA_VER_ARTICULOS_AJENOS eq 'SI') {

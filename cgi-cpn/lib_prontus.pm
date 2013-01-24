@@ -1296,6 +1296,12 @@ sub load_config {
      push @prontus_varglb::BASE_PORTS, $valor;
   };
 
+  # ports dd habilitadas.
+  while ($buffer =~ m/\s*PORT\_DRAGANDROP\s*=\s*("|')(.*?)("|')/g) {
+     $valor = $2;
+     $prontus_varglb::PORT_DRAGANDROP{$valor} = 1;
+  };
+
 
   my $server_name;
   if ($buffer =~ m/\s*PUBLIC\_SERVER\_NAME\s*=\s*("|')(.*?)("|')/) {

@@ -4,6 +4,7 @@ var PortDD = {
     _port: '',
     _edic: '',
     portlevels: '',
+    grid_status: 'on',
     inProccess: 0,
     init: function () {
         Listartic.path_conf = PortDD._path_conf;
@@ -208,6 +209,10 @@ var PortDD = {
                     $('input[name="_from_area_mod"]').val('');
                     $('input[name="_port_mod"]').val('');
                     $('input[name="_from_port_mod"]').val('');
+                }
+
+                if (PortDD.grid_status == 'off') {
+                    $('#prontusportddportada .area .item-area .tools').hide();
                 }
 
                 PortDD._instalaSortable();
@@ -488,6 +493,29 @@ var PortDD = {
             $('#prontusportdd-botones').hide();
             PortDD.setGlobalMsg("Error: Existen articulos duplicados. Para continuar debe corregir esto." + strdups, 'error');
             return;
+        }
+    },
+
+    toggleAreaDD: function (o) {
+        var imgObj = $(o).children();
+        var st = $('#prontusportddportada .area .item-area .tools').toggle().css('display');
+        
+        if (st == 'block') {
+            var txt = 'Ocultar áreas drag & drop';
+            var src = imgObj.attr("src");
+            src = src.replace('grid_of.png', 'grid_on.png');
+            imgObj.attr("src", src);
+            imgObj.attr("alt", txt);
+            imgObj.attr("title", txt);
+            PortDD.grid_status = 'on';
+        } else {
+            var txt = 'Visualizar áreas drag & drop';
+            var src = imgObj.attr("src");
+            src = src.replace('grid_on.png', 'grid_of.png');
+            imgObj.attr("src", src);
+            imgObj.attr("alt", txt);
+            imgObj.attr("title", txt);
+            PortDD.grid_status = 'off';
         }
     }
 
