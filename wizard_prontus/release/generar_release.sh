@@ -26,6 +26,7 @@ cd $BASEDIR
 tar czf "$RELEASEPATH/files.$release.tgz" \
 	--exclude=*.log \
 	--exclude=cgi-cpn/develop_calculo_quota.pl \
+	--exclude=*.orig \
 	cgi-bin/ \
 	cgi-cpn/ \
 	wizard_prontus/core/ \
