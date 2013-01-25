@@ -3,6 +3,7 @@ Prontus
 
 GIT del Producto Prontus
 
+<<<<<<< HEAD
 Para más información visite: http://www.prontus.cl
 
 
@@ -175,3 +176,13 @@ Prontus se distribuye bajo la licencia LGPL.
 	apply, that proxy's public statement of acceptance of any version is
 	permanent authorization for you to choose that version for the
 	Library.
+=======
+
+Licencia
+========
+
+Prontus trabaja bajo licencia LGPL.
+Más información en el archivo:
+
+/wizard_prontus/prontus_dir/cpan/core/license/license.txt
+>>>>>>> origin/developdd

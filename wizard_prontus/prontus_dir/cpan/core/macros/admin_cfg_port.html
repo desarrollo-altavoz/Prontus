@@ -27,6 +27,7 @@
                                     <input type="hidden" name="_tab" value="cfg-tab6" />
                                     <input type="hidden" name="PORT_PLTS" value="" />
                                     <input type="hidden" name="BASE_PORTS" value="" />
+                                    <input type="hidden" name="PORT_DRAGANDROP" value="" />
                                     <tr class="head">
                                         <td>Variable</td>
                                         <td>Valor</td>
@@ -220,6 +221,55 @@
                                             </table>
                                         </td>
                                     </tr>
+                                    <!--dragANDdrop-->
+                                    <tr id="tr_multiedicion">
+                                        <td style="width: 300px;" valign="top">
+                                            PORT_DRAGANDROP<br>
+                                            <span class="ayuda">
+                                                Indica cuales son las portadas que tendrán habilitada la interfaz de edición drag & drop.
+                                                <br/>
+                                                <br/>
+                                                Esta función se habilitará siempre y cuando la portada sea compatible y no esté deshabilitada de manera forzada en la plantilla con el flag &lt;!--cfg_dd=no--&gt;
+                                                <br/>
+                                                Para ver las condiciones de compatibilidad, haga click <a href="#" onclick="Cfgedit.showHelpCompatibilidad(); return false;" class="">aquí</a>
+                                                <br/>
+                                                <br/>
+                                                Si la portada no es compatible, no aparecerá el icono que abre la interfaz.
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%">
+                                                <tr class="head">
+                                                    <td>Portada</td>
+                                                    <td align="center">Quitar</td>
+                                                </tr>
+                                                <!--loop_ports_dragnadndrop-->
+                                                <tr>
+                                                    <td>
+                                                        %%port_name%%
+                                                        <input name="INPUT_PORT_DRAGANDROP[]" value="%%port_valor%%" type="hidden" id="portdd_%%num%%"/>
+                                                    </td>
+                                                    <td align="center">
+                                                        <input type="checkbox" name="quitar_dd[]" value="%%port_valor%%" onclick="Cfgedit.quitarPortDD(this, '%%num%%');"/>
+                                                    </td>
+                                                </tr>
+                                                <!--/loop_ports_dragnadndrop-->
+                                                <tr>
+                                                    <td>
+                                                        <select name="INPUT_PORT_DRAGANDROP[]" >
+                                                            <option value="">- Seleccione -</option>
+                                                            <!--loop_portadas_dd-->
+                                                            <option value="%%value%%">%%name%%</option>
+                                                            <!--/loop_portadas_dd-->
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!--/dragANDdrop-->
                                 </table>
                             </form>
                             <div class="botones">

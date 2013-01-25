@@ -1,0 +1,20 @@
+<div class="titarea">Area %%loop_num%%</div>
+<div id="area_%%loop_num%%_%%_portname%%" class="area" rel="%%_port%%">
+    %%LOOP%%loop_num%%%%loop_nom%%%%
+    <div class="item-area" rel="%%_ts%%" title="">
+        <div class="tools">
+            <span class="dragdrop">&nbsp;</span>
+            <a href="#" onclick="PortDD.despublicarArticulo(this); return false;" class="nohandler"><img src="/%%_prontus_id%%/cpan/core/imag/boto/quitar_of.png" title="Quitar" /></a>
+            <a href="%%url_editar%%" onclick="" class="editar_item open_in_popup nohandler" title="Editar"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" /></a>
+            <span class="autoinc">%%_fid%%</span>
+        </div>
+        <div class="controls">
+            <input type="hidden" name="_area_%%_ts%%" value="%%loop_num%%" />
+            <input type="hidden" name="_orden_%%_ts%%" value="" />
+            <input type="hidden" name="_vb_%%_ts%%" value="" />
+            <input type="hidden" name="_port_%%_ts%%" value="%%_port%%" />
+        </div>
+        %%item_loop%%
+    </div>
+    %%/LOOP%%
+</div>
