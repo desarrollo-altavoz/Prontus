@@ -3,10 +3,7 @@ Prontus
 
 GIT del Producto Prontus
 
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
->>>>>>> 73c784009c4197425e5eba6bbdddaf182e56c053
 Para más información visite: http://www.prontus.cl
 
 
