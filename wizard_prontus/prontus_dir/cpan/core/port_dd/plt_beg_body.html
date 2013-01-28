@@ -1,0 +1,42 @@
+<body>
+    <div id="prontusportdd-botones">
+        <div class="loading-action" style="display: none;">
+            <img width="128" height="15" alt="loading" src="/%%_prontus_id%%/cpan/core/imag/loading_bar.gif">
+        </div>
+        <a href="#" onclick="PortDD.refrescar(); return false;">
+            <img width="32" height="32" class="cambia-boton" title="Refrescar" alt="Refrescar" src="/%%_prontus_id%%/cpan/core/imag/boto/ref_of.png">
+        </a>
+        &nbsp;&nbsp;
+        <a href="#" onclick="PortDD.guardarPortada(); return false;">
+            <img width="32" height="32" class="cambia-boton" title="Guardar Portada" alt="Guardar Portada" src="/%%_prontus_id%%/cpan/core/imag/boto/gua_of.png">
+        </a>
+        &nbsp;&nbsp;
+        <a href="#" onclick="PortDD.toggleAreaDD(this); return false;">
+            <img width="32" height="32" class="cambia-boton" title="Ocultar áreas drag & drop'" alt="Ocultar áreas drag & drop'" src="/%%_prontus_id%%/cpan/core/imag/boto/grid_on.png">
+        </a>
+        &nbsp;&nbsp;
+        <a target="_blank" id="link-port" href="/%%_prontus_id%%/site/edic/base/port/%%_port%%" style="display: inline;">
+            <img width="32" height="32" class="cambia-boton" title="Ver Portada" alt="Ver Portada" src="/%%_prontus_id%%/cpan/core/imag/boto/ver_of.png">
+        </a>
+        &nbsp;&nbsp;
+        <a href="prontus_art_ficha.cgi?_path_conf=%%_path_conf%%&_port_dd=1" class="open_in_pop">
+            <img src="/%%_prontus_id%%/cpan/core/imag/boto/new_of.png" width="32" height="32" alt="Crear nuevo Artículo" title="Crear nuevo Artículo" class="cambia-boton" />
+        </a>
+    </div>
+    <div id="prontusportdd-mensajes">
+        <div id="global-msg"></div>
+        <div id="concurrency" class="msg-global"></div>
+    </div>
+    <input type="hidden" name="port-modified" id="port-modified" value="0" />
+    <div id="prontusportddportada">
+        <!--prontusportddportada-->
+        <form name="portpreview" id="portpreview" action="/%%_dir_cgi_cpn%%/prontus_dd_admin.cgi">
+            <input type="hidden" name="_edic" value="%%_edic%%" />
+            <input type="hidden" name="_port" value="%%_port%%" />
+            <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+            <input type="hidden" name="_accion" value="update" />
+            <input type="hidden" name="_area_mod" value="" />
+            <input type="hidden" name="_port_mod" value="" />
+            <input type="hidden" name="_from_port_mod" value="" />
+            <input type="hidden" name="_from_area_mod" value="" />
+            
