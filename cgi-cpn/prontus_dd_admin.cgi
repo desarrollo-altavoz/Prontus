@@ -68,8 +68,10 @@ main: {
         %lib_dd::PORTLEVELS = %{$hashref};
     }
 
+    &glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/cpan/procs/dd/port");
+    
     my $DST_SEC = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/site/edic/$FORM{'edic'}/port/dd_$FORM{'port'}";
-    my $DST_TSEC = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/plantillas/preview/port/$FORM{'port'}";
+    my $DST_TSEC = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/cpan/procs/dd/port/$FORM{'port'}";
     my $path_port = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP . "/edic/nroedic/port/$FORM{'port'}";
     
     # Verificar si la plantilla es compatible con Drag & Drop. Solo la vista principal.
@@ -153,7 +155,7 @@ main: {
         $plt_port_dd =~ s/%%listnopub%%/$pagina/;
 
         # Escribir la plantilla DD en disco.
-        my $dir_procs_visualadmin = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/plantillas/preview/port";
+        my $dir_procs_visualadmin = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/cpan/procs/dd/port";
         &glib_fildir_02::check_dir($dir_procs_visualadmin);
         my $work_plt_path = $dir_procs_visualadmin . "/$FORM{'port'}";
         &glib_fildir_02::write_file($work_plt_path, $plt_port_dd);
