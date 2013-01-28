@@ -286,16 +286,6 @@ if ($PRONTUS eq '') { # Muestra pagina en blanco.
 };
 if ($DEBUG) { print "\n<pre>PRONTUS = $PRONTUS \n"; };
 
-# Carga configuración de prontus.
-$FORM{'path_conf'} = "/$PRONTUS/cpan/$PRONTUS.cfg";
-
-# Ajusta path_conf para completar path y/o cambiar \ por /
-$FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
-
-# Carga variables de configuracion.
-&lib_prontus::load_config($FORM{'path_conf'});
-$FORM{'path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
-
 
 my $PRONTUS_DIR = "$DOCUMENT_ROOT/$PRONTUS";
 my $SEARCH_DIR = "$PRONTUS_DIR/cpan/data/search"; # Directorio de trabajo.
@@ -327,6 +317,16 @@ if(($FORM{'search_resxpag'} eq '') || ($FORM{'search_resxpag'} > $CFG{'RESPERPAG
 };
 if(($FORM{'search_maxpags'} eq '') || ($FORM{'search_maxpags'} > $CFG{'MAXPAGS'})) {
   $FORM{'search_maxpags'} = $CFG{'MAXPAGS'};
+};
+
+# Cargar variables de configuración necesarias para friendly url desde archivo -var
+my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
+if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::FRIENDLY_URLS = $2;
+};
+
+if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
 };
 
 # Parsea y muestra primera parte de la pagina de resultados.

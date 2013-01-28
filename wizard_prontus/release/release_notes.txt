@@ -5655,9 +5655,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_edi_guardar.cgi
         /cgi-cpn/prontus_edi_otras.cgi
     
-<<<<<<< HEAD
-    
-=======
 ====================================================================================================
 11.2.56 - 23/01/2013 - JOR
 ====================================================================================================
@@ -5702,6 +5699,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_port.html
         /wizard_prontus/prontus_dir/cpan/core/css/portdd.css
         /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
-        
-        
->>>>>>> origin/developdd
+
+- Prontus Search
+    [mejoras]
+        - Se quita la inicialización de todas las variables prontus y se cargan solo las necesarias para las friendly url.
+    [files]
+        /cgi-bin/prontus_search.cgi
+
+
