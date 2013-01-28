@@ -5711,7 +5711,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se agrega a la release postproceso de generación de galería de fotos a partir de un archivo zip.
     [files]
         /cgi-cpn/pproc/lib_ppart_galeria.pm
-        /cgi-cpn/pproc/prontus_ppart_galeria.cgi
+        /cgi-cpn/pproc/prontus_galeria_ppart.cgi
         /cgi-cpn/pproc/prontus_galeria_delete.cgi
 
-    
+

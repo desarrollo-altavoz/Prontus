@@ -1,4 +1,12 @@
 ====================================================================================================
+11.2.56 - 28/01/2013
+====================================================================================================
+- improvement: Se agrega interfaz drag & drop para la edición de la portada.
+- changes: Se agrega nueva variable de configuracion PORT_DRAGANDROP, para especificar cuales son las portadas que podrán usar la interfaz. Esto es independiende de si la portadaes compatible o no.
+- improvement: Para prontus_search, se quita la inicialización de todas las variables prontus y se cargan solo las necesarias para las friendly url.
+- improvement: Se agrega a la release postproceso de generación de galería de fotos a partir de un archivo zip.
+
+====================================================================================================
 11.2.55 - 23/01/2013
 ====================================================================================================
 - improvement: En las opciones avanzadas, ahora los FIDs se ordenan por orden alfabético
