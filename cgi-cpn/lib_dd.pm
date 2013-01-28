@@ -164,7 +164,7 @@ sub genera_vista_include {
     my $portname = $1;
     
     my $dstsitefile = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/site/edic/$edic/port/dd_$port";
-    my $dstpltfile = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/plantillas/preview/port/$port";
+    my $dstpltfile = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/cpan/procs/dd/port/$port";
     my $port_xml_path = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EDIC . "/$edic/xml/$port_xml_filename";
     my $buffer_include = &glib_fildir_02::read_file($filepath);
     my $buffer_copy = $buffer_include;
