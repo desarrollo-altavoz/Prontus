@@ -5714,4 +5714,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/pproc/prontus_galeria_ppart.cgi
         /cgi-cpn/pproc/prontus_galeria_delete.cgi
 
-
+- Wizard
+    [cambios]
+        - La creación de las tablas se crean por defecto con codificación utf8 y con motor MYISAM.
+    [files]
+        /cgi-cpn/lib_setbd.pm    
