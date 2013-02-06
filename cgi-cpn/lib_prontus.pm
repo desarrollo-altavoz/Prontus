@@ -2458,16 +2458,19 @@ sub generic_parse_port {
 
   # Encuentra los tags de area dentro del template (%%LOOPi%%...%%/LOOP%%),
   # y produce los contenidos.
-  my $repet_areas = '1';
+  #~ my $repet_areas = '1';
   my %areas;
+  my %area_cont;
   # while ($buffer =~ /%%LOOP(\d+)%%(.*?)%%\/LOOP%%/isg) {
   while ($buffer =~ /%%LOOP(\d+)(\([^)]+?\))?%%(.*?)%%\/LOOP%%/isg) {
-
     my ($are,$tmp) = ($1,$3);
     my $pure_are = $are;
+    if (!exists $area_cont{$pure_are}) {
+        $area_cont{$pure_are} = 1;
+    };
     if (exists $areas{$are}) {
-      $are .= '_' . $repet_areas;
-      $repet_areas++;
+      $are .= '_' . $area_cont{$pure_are};
+      $area_cont{$pure_are}++;
     };
     # Parsea el area usando $2 como template parcial.
     $areas{$are} = &parser_area($pure_are,$tmp, $dir_server, $prontus_id,
@@ -5265,7 +5268,6 @@ sub get_nomtax_envista {
 # ---------------------------------------------------------------
 sub get_nom4vistas {
     my ($mv, $id_s, $id_t, $id_st) = @_;
-    return ('', '', '') if (!$mv);
 
     # Conectar a BD si es que no viene la conexion
     if (! ref($prontus_varglb::BD_CONN)) {
@@ -5277,7 +5279,26 @@ sub get_nom4vistas {
         };
     };
 
+
     my ($nom_s, $nom_t, $nom_st); # nombres en la vista dada
+
+    if (!$mv) {
+        # Vista principal.
+        if ($id_s) {
+            $nom_s = &existe_registro("select SECC_NOM from SECC where SECC_ID='$id_s'", $prontus_varglb::BD_CONN);
+        };
+
+        if ($id_t) {
+            $nom_t = &existe_registro("select TEMAS_NOM from TEMAS where TEMAS_ID='$id_t'", $prontus_varglb::BD_CONN);
+        };
+
+        if ($id_st) {
+            $nom_st = &existe_registro("select SUBTEMAS_NOM from SUBTEMAS where SUBTEMAS_ID='$id_st'", $prontus_varglb::BD_CONN);
+        };
+
+        return ($nom_s, $nom_t, $nom_st);
+    };
+
     if ($id_s) {
         my $secc_nom4vistas = &existe_registro("select SECC_NOM4VISTAS from SECC where SECC_ID='$id_s'", $prontus_varglb::BD_CONN);
         if ($secc_nom4vistas) {
