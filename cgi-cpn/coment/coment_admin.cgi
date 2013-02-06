@@ -201,7 +201,7 @@ sub make_lista {
     &carga_tabla_secc();
     &carga_tabla_temas();
     &carga_tabla_subtemas();
-    
+
 #  my $filtros;
 #  if ($FORM{'OBJID'}) {
 #    $filtros = "where COMENT_OBJTIPO = \"$FORM{'OBJTIPO'}\" and COMENT_OBJID = \"$FORM{'OBJID'}\" ";
@@ -226,6 +226,7 @@ sub make_lista {
   $hash_cond{'STATUS'} = " COMENT_STATUS  = \"$FORM{'STATUS'}\" ";
   $hash_cond{'OBJID'} = " COMENT_OBJID = \"$FORM{'OBJID'}\" ";
   $hash_cond{'NICK'} = " LOWER(COMENT_NICK) = LOWER(\"$FORM{'NICK'}\") ";
+  $hash_cond{'EMAIL'} = " COMENT_EMAIL = \"$FORM{'EMAIL'}\" ";
   my $tit_search = $BD->quote($FORM{'OBJTIT_SEARCH'});
   $tit_search =~ s/^'/'%/;
   $tit_search =~ s/'$/%'/;
@@ -265,6 +266,8 @@ sub make_lista {
   ($tot_artics, $limit, $desde_nroreg, $page) = &activa_paginacion($filasxpag, $filtros, $from);
   # --- END:instrucciones paginacion ---
 
+  #Valida si existe la columna, si no la crea
+  my $ret = &glib_dbi_02::check_table_column($BD, "COMENT", "COMENT_EMAIL", "VARCHAR(100) NOT NULL DEFAULT ''");
 
   # Generar la lista. # custom
   $sql = "SELECT "
@@ -276,6 +279,7 @@ sub make_lista {
        . "COMENT_OBJID, "
        . "COMENT_TEXTO, "
        . "COMENT_NICK, "
+       . "COMENT_EMAIL, "
        . "ART_IDSECC1, "
        . "ART_IDTEMAS1, "
        . "ART_IDSUBTEMAS1 "
@@ -295,6 +299,7 @@ sub make_lista {
            $hash_data{'COMENT_OBJID'},
            $hash_data{'COMENT_TEXTO'},
            $hash_data{'COMENT_NICK'},
+           $hash_data{'COMENT_EMAIL'},
            $hash_data{'ART_IDSECC1'},
            $hash_data{'ART_IDTEMAS1'},
            $hash_data{'ART_IDSUBTEMAS1'}
@@ -347,14 +352,14 @@ sub generar_fila {
 
     $url =~ s/<idobj>/$hash_data{'COMENT_OBJID'}/ig;
     if ($url eq '') {
-    	my $fec = substr($hash_data{'COMENT_OBJID'},0, 8);
-    	my $artic_extension = $HASH_TIPOS{$hash_data{'COMENT_OBJTIPO'}}{'ARTIC_EXTENSION'};
-    	$url = "/$FORM{'_prontus_id'}/site/artic/$fec/pags/$hash_data{'COMENT_OBJID'}.$artic_extension";
-    	# CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
-    	if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-    	  $url = &lib_prontus::parse_filef('%%_FILEURL%%', $hash_data{'COMENT_OBJTIT'}, $hash_data{'COMENT_OBJID'}, $FORM{'_prontus_id'}, $url,
+        my $fec = substr($hash_data{'COMENT_OBJID'},0, 8);
+        my $artic_extension = $HASH_TIPOS{$hash_data{'COMENT_OBJTIPO'}}{'ARTIC_EXTENSION'};
+        $url = "/$FORM{'_prontus_id'}/site/artic/$fec/pags/$hash_data{'COMENT_OBJID'}.$artic_extension";
+        # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
+        if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+          $url = &lib_prontus::parse_filef('%%_FILEURL%%', $hash_data{'COMENT_OBJTIT'}, $hash_data{'COMENT_OBJID'}, $FORM{'_prontus_id'}, $url,
           $TABLA_SECC{$hash_data{'ART_IDSECC1'}}, $TABLA_TEMAS{$hash_data{'ART_IDTEMAS1'}}, $TABLA_SUBTEMAS{$hash_data{'ART_IDSUBTEMAS1'}});
-    	}
+        }
     }
     my $lnk_tit = "<a href=\"$url\" target=\"_blank\">$hash_data{'COMENT_OBJTIT'}</a>";
 
@@ -363,6 +368,7 @@ sub generar_fila {
     $hash_data{'COMENT_TEXTO'} = &lib_coment::basic_escape_html($hash_data{'COMENT_TEXTO'});
     $fila =~ s/%%COMENT_TEXTO%%/$hash_data{'COMENT_TEXTO'}/ig;
     $fila =~ s/%%COMENT_NICK%%/$hash_data{'COMENT_NICK'}/ig;
+    $fila =~ s/%%COMENT_EMAIL%%/$hash_data{'COMENT_EMAIL'}/ig;
     $VERNICK = $hash_data{'COMENT_NICK'};
 
     # ver solo opin. de este item

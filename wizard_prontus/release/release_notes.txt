@@ -5720,3 +5720,29 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_setbd.pm
 
+====================================================================================================
+11.2.57 - 06/02/2013 - JOR
+====================================================================================================
+
+- Administrador de artículos
+    [bugfixes]
+        - Cuando una portada tenía muchos loops repetidos el parseador reemplazaba de manera
+        incorrecta el contenido de los loops, por lo tanto quedaban los datos corridos.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Regeneración masiva de artículos
+    [bugfixes]
+        - No se estaba actualizando la taxonomia en los articulos regenerados cuando esta cambiaba de nombre en la bd.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/Artic.pm
+
+- Sistema de comentarios
+    [cambios]
+        - Se agrega email al formulario de comentario.
+    [files]
+        /cgi-bin/coment/coment_enviar.cgi
+        /cgi-cpn/coment/coment_admin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/coment.css
+        /wizard_prontus/prontus_dir/cpan/core/coment/coment_admin.html
