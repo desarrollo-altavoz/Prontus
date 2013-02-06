@@ -1697,6 +1697,10 @@ sub parse_artic_data {
     my %campos_xml = %$ref_campos_xml;
     undef $ref_campos_xml;
 
+    # Obtiene nom de secc, tema y subtema vista principal.
+    ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
+    = &lib_prontus::get_nom4vistas('', $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+
     # Obtiene nom de secc, tema y subtema en vista correspondiente
     if ($fullpath_vista =~ /\/pags\-(\w+)\/[0-9]{14}\.\w+$/) {
         my $mv = $1;
