@@ -3,6 +3,7 @@
 ====================================================================================================
 - bugfix: Cuando una portada tenía muchos loops repetidos el parseador reemplazaba de manera incorrecta el contenido de los loops, por lo tanto quedaban los datos corridos.
 - bugfix: En la regeneración masiva, no se estaba actualizando la taxonomia en los articulos regenerados cuando esta cambiaba de nombre en la bd.
+- changes: Se agrega campo email al formulario del sistema de comentarios.
 
 ====================================================================================================
 11.2.56 - 28/01/2013
