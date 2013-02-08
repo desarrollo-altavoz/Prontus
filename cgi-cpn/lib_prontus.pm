@@ -973,6 +973,17 @@ sub load_artic_pubs {
     my (@ediciones) = &lib_prontus::get_edics4update();
     my %hash_artics;
 
+	# Solo si la edicion es base, se guardan sólo las portadas base
+	my %ports_base;
+	if($prontus_varglb::MULTI_EDICION eq 'SI') {
+		foreach my $port_base (@prontus_varglb::BASE_PORTS) {
+			$ports_base{$port_base} = 1;
+			print STDERR "Base: $port_base\n";
+		}
+	} else {
+		%ports_base = %prontus_varglb::PORT_PLTS;
+	}
+	
     foreach my $edic (@ediciones) {
 
         # print STDERR "edic[$edic]\n";
@@ -984,10 +995,18 @@ sub load_artic_pubs {
                         $prontus_varglb::DIR_SECC;
 
         my @entries = &glib_fildir_02::lee_dir($pathdir_seccs);
-
+        
         # Para cada port.
         foreach $port (@entries) {
             next if ($port =~ /^\./);
+            
+            # No se toman en cuenta las que no esten en el CFG
+            next unless ($prontus_varglb::PORT_PLTS{$port});
+            
+            if($prontus_varglb::MULTI_EDICION eq 'SI' && $edic eq 'base') {
+				next unless($ports_base{$port});
+			}
+            
             # portada en el site
             $arch_seccion = "$pathdir_seccs/$port";
 

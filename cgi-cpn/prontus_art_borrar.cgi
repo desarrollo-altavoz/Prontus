@@ -125,72 +125,28 @@ sub artic_in_ports {
 # Obtiene las portadas en donde se encuentra publicado un articulo
 
     my $ts = shift;
-
-    # procesa edicion, vigente, la ultima y la base.
-    my (@ediciones) = &lib_prontus::get_edics4update();
-
-    my $referencias;
-    foreach my $edic (@ediciones) {
-        # print STDERR "edic[$edic]\n";
-        # Dir destino de las portadas de la ed.
-        $pathdir_seccs = $prontus_varglb::DIR_SERVER .
-                        $prontus_varglb::DIR_CONTENIDO .
-                        $prontus_varglb::DIR_EDIC .
-                        "/$edic" .
-                        $prontus_varglb::DIR_SECC;
-
-        my @entries = &glib_fildir_02::lee_dir($pathdir_seccs);
-
-        # Para cada port.
-        foreach $port (@entries) {
-
-            next if ($port =~ /^\./);
-
-            # portada en el site
-            $arch_seccion = "$pathdir_seccs/$port";
-
-            my ($arch_xml) = $arch_seccion;
-            $arch_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/\1\.xml/;
-
-            # template de la portada
-            $path_tsec = $prontus_varglb::DIR_SERVER .
-                        $prontus_varglb::DIR_TEMP .
-                        $prontus_varglb::DIR_EDIC .
-                        $prontus_varglb::DIR_NROEDIC .
-                        $prontus_varglb::DIR_SECC . "/$port";
-
-            # print STDERR "arch_xml[$arch_xml]\n";
-
-            next if ((! -f $arch_xml) || ($port =~ /^preview/i));
-
-
-            $text_seccion = &glib_fildir_02::read_file($arch_xml);
-            $text_seccion = &lib_prontus::ajusta_crlf($text_seccion);
-            
-            #~ CVI - 16/08/2012 - Se optimiza
-            if ($text_seccion =~ /<rowartic>\s*<dir>\d+?<\/dir>\s*<file>$ts<\/file>.*?<\/rowartic>/is) {
-                $referencias .= "$edic/$port\n";
+	my $referencias;
+	
+	# CVI - 08/02/2013 - Se carga el Hash de Articulos publicados en portadas
+    my %hash_artic_pubs = &lib_prontus::load_artic_pubs();
+    my $hash = \%hash_artic_pubs;
+    
+    if($hash->{$ts}) {
+		my $ediciones;
+        foreach my $edic (keys %{$hash->{$ts}}) {
+			my $portadas;
+            foreach my $port (keys %{$hash->{$ts}->{$edic}}) {
+                $referencias = "$referencias$edic/$port\n";
             }
-
-            #~ # Rescatar la info de c/artic de la port actual
-            #~ while ($text_seccion =~ /<rowartic>[ \n]*?<dir>(\d+?)<\/dir>[ \n]*?<file>(.*?)<\/file>[ \n]*?<area>(\d*?)<\/area>[ \n]*?<ord>(\d*?)<\/ord>[ \n]*?(<vb>(\w*?)<\/vb>)?[ \n]*?<?i?n?>?([\w\/\-]*?)<?\/?i?n?>?[ \n]*?<?o?u?t?>?([\w\/\-]*?)<?\/?o?u?t?>?[ \n]*?<?p?u?b?>?(\d?)<?\/?p?u?b?>?[ \n]*?<\/rowartic>/isg) {
-                #~ my ($dirfecha,$art,$area,$prio,$pub,$ext_art,$vb) = '';
-                #~ ($dirfecha,$art,$area,$prio,$vb,$pub) = ($1,$2,$3,$4,$6,$9);
-                #~ # print STDERR "ENTRA con[$dirfecha,$art,$area,$prio,$vb,$in,$out]";
-                #~ # print STDERR "art[$art]\n";
-                #~ if ($art eq $ts) {
-                    #~ # Articulo publicado en esta port
-                    #~ $referencias .= "$edic/$port\n";
-                #~ };
-            #~ }; # while art. de esta portada
-
-
-        }; # foreach portadas de la edicion
-
-    }; # foreach
-
-    $referencias = $referencias . "\n";
-    return $referencias;
+        }
+        print STDERR "El articulo [$ts] no se pudo eliminar\n";
+        
+	} else {
+		print STDERR "El articulo [$ts] se puede borrar OK\n";
+	}
+	$referencias = $referencias . "\n";
+	return $referencias;
+	
 };
 # ---------------------------------------------------------------
 sub borra_artic {

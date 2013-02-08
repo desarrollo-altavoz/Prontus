@@ -5751,6 +5751,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.58 - 07/02/2013 - CVI
 ====================================================================================================
 
+- Prontus en General:
+    [mejoras]
+        - Se centraliza y mejora el chequeo de publicación para saber si un artículo está publicado o no
+		utilizado al borrar y en el listado. Ahora no se toman en cuenta los xml fantasmas.
+    [files]
+		/cgi-cpn/lib_prontus.pm
+		/cgi-cpn/prontus_art_borrar.cgi
+		
 - Prontus update:
     [mejoras]
         - Cuando no hay conexión a www.prontus.cl se usa un ícono de alert en vez de usar el mismo ícono de No Updates
