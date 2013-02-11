@@ -5760,9 +5760,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 		/cgi-cpn/prontus_art_borrar.cgi
 	
 - Administrador de artículos
-    [mejoras]
+	[mejoras]
         - Se mejora respuesta para los artículos corruptos
         - Se elimina el CSS: listartic.css ya que no estaba siendo usado
+	[cambio]
+		- Se cambia la forma en que se busca por titular.
+		Ahora permite buscar por frases entre comillas dobles (útil, por ejemplo, para palabras muy cortas)
     [files]
 		/cgi-cpn/prontus_art_listnopub.cgi
 		/cgi-cpn/prontus_art_listpub.cgi
