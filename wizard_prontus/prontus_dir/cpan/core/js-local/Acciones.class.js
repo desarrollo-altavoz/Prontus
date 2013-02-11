@@ -172,19 +172,6 @@ var Acciones = {
     },
 
     // -------------------------------------------------------------------------
-    showAdministrarPortadas: function () {
-        $.fn.colorbox({
-            open: true,
-            href: Listartic.urlAdministrarPortadas+'?_path_conf='+Admin.path_conf,
-            width: 730,
-            height: 580,
-            maxWidth: '95%',
-            maxHeight: '90%',
-            opacity: 0.8
-        });
-    },
-
-    // -------------------------------------------------------------------------
     toggleVoBo: function (obj, ts) {
         var vb_input_obj = $('input[name="_vb_' + ts + '"]');
         var st_vb = $(vb_input_obj).val();

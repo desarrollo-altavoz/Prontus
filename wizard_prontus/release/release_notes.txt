@@ -5767,3 +5767,26 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Update.pm
         /cgi-cpn/prontus_head_info.cgi
         /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
+		
+- Administrar Portadas:
+    [bugfixes]
+        - Cuando se duplicaba, la nueva portada quedaba con el mismo nombre de la original. Ahora, lo que se hace
+        es dejar el nombre del nuevo archivo como nombre de la portada
+    [mejoras]
+		- Se cambia distribución de elementos para que sea similar al Administrador de Ediciones
+		- Se deja el duplicador como primera Pestaña        
+    [files]
+		/cgi-cpn/prontus_pltport_admin.cgi
+		/cgi-cpn/prontus_pltport_duplicar.cgi
+		/wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+		/wizard_prontus/prontus_dir/cpan/core/prontus_pltport_admin.html
+		/wizard_prontus/prontus_dir/cpan/core/css/intercambiar.css		
+		/wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+		
+		
+- Administrar Ediciones:
+    [mejoras]
+		- Se agrega un botón Volver para mejorar la usabilidad
+    [files]
+		/wizard_prontus/prontus_dir/cpan/core/prontus_edi_admin.html
+	
