@@ -5755,9 +5755,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se centraliza y mejora el chequeo de publicación para saber si un artículo está publicado o no
 		utilizado al borrar y en el listado. Ahora no se toman en cuenta los xml fantasmas.
+		- Al hacer chequeo de sesion para entrar directo al Publicador, se actualiza el descriptor con
+		la última versión disponible de prontus.
     [files]
 		/cgi-cpn/lib_prontus.pm
 		/cgi-cpn/prontus_art_borrar.cgi
+		/cgi-cpn/prontus_check_session.cgi
 	
 - Administrador de artículos
 	[mejoras]

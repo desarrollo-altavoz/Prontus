@@ -31,6 +31,7 @@ use lib_search;
 use coment_varglb;
 use lib_coment;
 
+use Update;
 use strict;
 
 my %FORM;
@@ -51,12 +52,22 @@ main: {
     $FORM{'path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
     print "Content-Type: text/html\n\n";
-    
+
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     if ($prontus_varglb::USERS_ID eq '') {
         print "0";
+
     } else {
+        # Descarga archivo descriptor de update
+        my $upd_obj = Update->new(
+                        'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                        'version_prontus'   => $prontus_varglb::VERSION_PRONTUS,
+                        'path_conf'         => $FORM{'path_conf'},
+                        'document_root'     => $prontus_varglb::DIR_SERVER)
+                        || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
+        $upd_obj->descarga_upd_descriptor();
+
         print "1";
     };
 
