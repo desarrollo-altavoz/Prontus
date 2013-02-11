@@ -940,6 +940,7 @@ sub get_artic_parsed {
     if (! -f $path_artic) {
         $loop_art_tpl =~ s/%%_ts%%/$ts/g;
         $loop_art_tpl =~ s/%%_artic_sin_file%%/_artic_sin_file/g;
+        $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo_disabled/g;
         $loop_art_tpl =~ s/%%\w+?%%//g;
         return $loop_art_tpl;
     };
