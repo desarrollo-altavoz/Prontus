@@ -366,16 +366,20 @@ label {cursor:pointer;}
 .area-list .fila1 .titu-botones .vobo_disabled {display: none;}
 .area-list .fila1 .titu-botones .voboboto_disabled {display: none;}
 .area-list .fila1 .titu-botones .iconos-listado {clear:both; float:right; margin:8px 6px 0px; overflow:visible; line-height: 16px;}
-#tooltip-public {position:absolute; overflow:visible; display:none;}
+
+.tooltip-ini {display:none; position:absolute;}
+.tooltip-ini-pub {text-align:left; margin:5px 5px 2px;}
+.tooltip-ini-pub h2 {font-size:12px; font-weight:bold; margin-bottom:10px;}
+.tooltip-ini-pub h3 {font-size:11px; color:#666666; font-weight:bold;}
+.tooltip-ini-pub li {font-size:10px; color:#666666; font-weight:normal; border:0;}
+/**
 #tooltip-public .resumen-pub {width:300px; overflow:visible;}
 #tooltip-public .resumen-pub .top {margin:0px; padding:0px 4px; height:36px; background:url("../imag/auxi/tooltip-grey-top.png") no-repeat scroll top left;}
 #tooltip-public .resumen-pub .middle {margin:0px; padding:0px 4px; background:url("../imag/auxi/tooltip-grey-middle.png") repeat-y scroll top left;}
 #tooltip-public .resumen-pub .bottom {margin:0px; padding:0px 4px; height:10px; background:url("../imag/auxi/tooltip-grey-bottom.png") no-repeat scroll top left;}
 #tooltip-public .resumen-pub .tooltip-ini-pub {padding:0px 4px;}
-#tooltip-public .resumen-pub h2 {font-size:12px; font-weight:bold; margin:5px 5px 2px; width:240px;}
-#tooltip-public .resumen-pub h3 {font-size:12px; color:#666666; font-weight:bold;}
-#tooltip-public .resumen-pub li {font-size:11px; color:#666666; font-weight:normal; border:0;}
-.tooltip-ini {display:none; position:absolute;}
+**/
+
 
 .area-list .fila1 .iconos {float:right;}
 .area-list .fila1 .datos {font-size:11px; color:#666666; padding:0; margin-top:4px;}
