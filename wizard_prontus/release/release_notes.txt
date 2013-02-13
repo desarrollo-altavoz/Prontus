@@ -5748,7 +5748,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/coment/coment_admin.html
 
 ====================================================================================================
-11.2.58 - 07/02/2013 - CVI
+11.2.58 - 13/02/2013 - CVI
 ====================================================================================================
 
 - Prontus en General:
