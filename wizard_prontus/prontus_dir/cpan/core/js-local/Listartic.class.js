@@ -235,6 +235,21 @@ var Listartic = {
 
     // -------------------------------------------------------------------------
     instalaTooltipPublic: function() {
+		
+		$(document).tooltip({
+			position: {
+				my: "right middle", 
+				at: "left-15 middle"
+			},
+			show: {effect: "fadeIn", duration: 200 },
+			hide: {effect: "hide" },
+			items: ".iconos img.artic_pub",
+			content: function() {
+				//alert($(this).parent().find('.tooltip-ini-pub').html());
+				return $(this).parent().find('.tooltip-ini').html();
+			}
+		});
+		/**
         $('.iconos img.artic_pub').live('mouseover', function() {
             var thishref = $(this).attr('src');
             if(thishref.indexOf('port_artic_si') > 0) {
@@ -250,6 +265,7 @@ var Listartic = {
             //$('#tooltip-public').hide().empty().offset({top:0, left:0});
             $('#tooltip-public').offset({top:0, left:0}).hide();
         });
+        * **/
     },
 
     // -------------------------------------------------------------------------

@@ -5754,9 +5754,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Prontus en General:
     [mejoras]
         - Se centraliza y mejora el chequeo de publicación para saber si un artículo está publicado o no
-        utilizado al borrar y en el listado. Ahora no se toman en cuenta los xml fantasmas.
+          utilizado al borrar y en el listado. Ahora no se toman en cuenta los xml fantasmas.
         - Al hacer chequeo de sesion para entrar directo al Publicador, se actualiza el descriptor con
-        la última versión disponible de prontus.
+          la última versión disponible de prontus.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_art_borrar.cgi
@@ -5766,16 +5766,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se mejora respuesta para los artículos corruptos
         - Se elimina el CSS: listartic.css ya que no estaba siendo usado
-    [cambio]
+    [cambios]
         - Se cambia la forma en que se busca por titular.
-        Ahora permite buscar por frases entre comillas dobles (útil, por ejemplo, para palabras muy cortas)
+          Ahora permite buscar por frases entre comillas dobles (útil, por ejemplo, para palabras muy cortas)
     [files]
         /cgi-cpn/prontus_art_listnopub.cgi
         /cgi-cpn/prontus_art_listpub.cgi
         /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
         /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
         /wizard_prontus/prontus_dir/cpan/core/css/listartic.css (deleted)
-
+        
 - Buscador de Prontus
     [bugfixes]
         - Se corrige vulnerabilidad XSS al usar parámetro search_comodines
@@ -5796,7 +5796,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Administrar Portadas:
     [bugfixes]
         - Cuando se duplicaba, la nueva portada quedaba con el mismo nombre de la original. Ahora, lo que se hace
-        es dejar el nombre del nuevo archivo como nombre de la portada
+          es dejar el nombre del nuevo archivo como nombre de la portada
     [mejoras]
         - Se cambia distribución de elementos para que sea similar al Administrador de Ediciones
         - Se deja el duplicador como primera Pestaña        
@@ -5824,3 +5824,32 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_thumb.pm
     
+- Prontus en General:
+    [cambios]
+        - Se actualiza la version de la UI de jquery a la 1.9.2
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_otras.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_imag_ficha.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_pltport_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_tags4fids.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_tags_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_usr_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/coment/coment_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/mant_seccs/prontus_seccion_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_head.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/ui/ (muchos cambios)
+
+- Administrador de artículos
+    [cambios]
+        - Se cambian los tooltips para indicar si un artículo está publicado, por los tooltips de la UI de jquery
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/listado_iconos.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+
+
