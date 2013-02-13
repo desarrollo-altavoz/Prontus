@@ -5620,24 +5620,24 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_setdb.cgi
 
 - Sistema de Logs:
-	[mejoras]
+    [mejoras]
         - Al hacer "garbage collector", si hay más de 10 logs ahora deja sólo 10 (antes borraba el último nomas)
     [files]
-		/cgi-cpn/lib_stdlog.pm
+        /cgi-cpn/lib_stdlog.pm
 
 - Portadas Taxonómicas:
-	[mejoras]
+    [mejoras]
         - Se crea el script: prontus_regenera_taxport.cgi, para regenerar todas las portadas taxonómicas.
-		  Esto, para suplir el hecho de que ahora el prontus_cron_taxport.cgi, ya no procesa invocaciones sin fid
-		  o sin seccion, por un tema de rendimiento.
-		  La invocaciones es:
-				./prontus_regenera_taxport.cgi <prontus_id>
-		  Lo que hace es gatillar el prontus_cron_taxport.cgi dependiendo de las categorías y fids existente.
-		  Se aplica un cierto grado de inteligencia, al no gatillar ni fids sin taxonomía, ni niveles inferiores
-		  luego de un nivel más específico (ya que al gatillar un secc/tema/stema se gatillan tb los niveles: 
-		  secc/tema y secc)
+          Esto, para suplir el hecho de que ahora el prontus_cron_taxport.cgi, ya no procesa invocaciones sin fid
+          o sin seccion, por un tema de rendimiento.
+          La invocaciones es:
+                ./prontus_regenera_taxport.cgi <prontus_id>
+          Lo que hace es gatillar el prontus_cron_taxport.cgi dependiendo de las categorías y fids existente.
+          Se aplica un cierto grado de inteligencia, al no gatillar ni fids sin taxonomía, ni niveles inferiores
+          luego de un nivel más específico (ya que al gatillar un secc/tema/stema se gatillan tb los niveles:
+          secc/tema y secc)
     [files]
-		/cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
 
 - Administrador de ediciones
     [cambios]
@@ -5654,7 +5654,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_edi_ficha.cgi
         /cgi-cpn/prontus_edi_guardar.cgi
         /cgi-cpn/prontus_edi_otras.cgi
-    
+
 ====================================================================================================
 11.2.56 - 28/01/2013 - JOR
 ====================================================================================================
@@ -5746,3 +5746,71 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/coment/coment_admin.cgi
         /wizard_prontus/prontus_dir/cpan/core/css/coment.css
         /wizard_prontus/prontus_dir/cpan/core/coment/coment_admin.html
+
+====================================================================================================
+11.2.58 - 13/02/2013 - CVI
+====================================================================================================
+
+- Prontus en General:
+    [mejoras]
+        - Se centraliza y mejora el chequeo de publicación para saber si un artículo está publicado o no
+		utilizado al borrar y en el listado. Ahora no se toman en cuenta los xml fantasmas.
+		- Al hacer chequeo de sesion para entrar directo al Publicador, se actualiza el descriptor con
+		la última versión disponible de prontus.
+    [files]
+		/cgi-cpn/lib_prontus.pm
+		/cgi-cpn/prontus_art_borrar.cgi
+		/cgi-cpn/prontus_check_session.cgi
+	
+- Administrador de artículos
+	[mejoras]
+        - Se mejora respuesta para los artículos corruptos
+        - Se elimina el CSS: listartic.css ya que no estaba siendo usado
+	[cambio]
+		- Se cambia la forma en que se busca por titular.
+		Ahora permite buscar por frases entre comillas dobles (útil, por ejemplo, para palabras muy cortas)
+    [files]
+		/cgi-cpn/prontus_art_listnopub.cgi
+		/cgi-cpn/prontus_art_listpub.cgi
+		/wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+		/wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+    	/wizard_prontus/prontus_dir/cpan/core/css/listartic.css (deleted)
+
+- Buscador de Prontus
+    [bugfixes]
+		- Se corrige vulnerabilidad XSS al usar parámetro search_comodines
+		- Se hace un barrido buscando valores faltantes sin corregir. Se filtran las fechas para no permitir
+		valores que no sean fechas.
+    [files]
+		/cgi-bin/prontus_search.cgi
+
+- Prontus update:
+    [mejoras]
+        - Cuando no hay conexión a www.prontus.cl se usa un ícono de alert en vez de usar el mismo ícono de No Updates
+        - Se cambia el nombre de una función que estaba mal escrito
+    [files]
+        /cgi-cpn/Update.pm
+        /cgi-cpn/prontus_head_info.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
+		
+- Administrar Portadas:
+    [bugfixes]
+        - Cuando se duplicaba, la nueva portada quedaba con el mismo nombre de la original. Ahora, lo que se hace
+        es dejar el nombre del nuevo archivo como nombre de la portada
+    [mejoras]
+		- Se cambia distribución de elementos para que sea similar al Administrador de Ediciones
+		- Se deja el duplicador como primera Pestaña        
+    [files]
+		/cgi-cpn/prontus_pltport_admin.cgi
+		/cgi-cpn/prontus_pltport_duplicar.cgi
+		/wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+		/wizard_prontus/prontus_dir/cpan/core/prontus_pltport_admin.html
+		/wizard_prontus/prontus_dir/cpan/core/css/intercambiar.css		
+		/wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+		
+- Administrar Ediciones:
+    [mejoras]
+		- Se agrega un botón Volver para mejorar la usabilidad
+    [files]
+		/wizard_prontus/prontus_dir/cpan/core/prontus_edi_admin.html
+	

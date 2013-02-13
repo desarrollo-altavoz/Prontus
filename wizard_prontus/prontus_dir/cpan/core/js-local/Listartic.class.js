@@ -361,7 +361,7 @@ var Listartic = {
 
     // -------------------------------------------------------------------------
     procesarCorruptos: function(listado, elementos) {
-        $(listado).each(function() {
+		$(listado).each(function() {
             $(this).find(elementos + '._artic_sin_file').each(function() {
                 // Se ocultan los datos que no se necesitan
                 $(this).find('.status').remove();
@@ -371,7 +371,9 @@ var Listartic = {
                 var tit_artic_sin_file = 'Artículo Eliminado o Corrupto';
                 $(this).find('.titulo-left span:first').css('color', '#800000').html('('+ts+')');
                 $(this).find('.titulo-left a').replaceWith(tit_artic_sin_file);
-                $(this).find('.datos').html('Para eliminar de la portada, debe guardar ésta');
+                $(this).find('.datos').html('');
+                $(this).find('.datos').append('<span class="msg-pub">Para eliminar de la portada, debe guardar ésta</span>');
+                $(this).find('.datos').append('<span class="msg-nopub">Para eliminar del listado, se debe "Regenerar tabla de Artículos"</span>');
                 // $(this).find('.titulo-left').css('padding-top', '5px');
                 // Se agrega campo oculto para que el Prontus lo borre
                 $(this).find('.controles').html('<input type="hidden" name="_corrupt_'+ts+'" value="1" class="area" />');

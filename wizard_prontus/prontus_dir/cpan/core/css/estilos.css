@@ -337,7 +337,11 @@ label {cursor:pointer;}
 .area-list .fila1 .ocultar {display:none;}
 .area-list .fila1 .controles {display:none;}
 ._artic_sin_file .iconos {display:none;}
-._artic_sin_file .autoinc {display:none;}
+._artic_sin_file .autoinc {display:none !important;}
+._artic_sin_file .botones {display:none !important;}
+.datos .msg-pub, .datos .msg-nopub {display:none;}
+#cont-nopub .datos .msg-nopub, #cont-pub .datos .msg-pub {display:inline;}
+._artic_sin_file .datos {margin-bottom:5px;}
 
 /* Para manejar los botones para hacer fold de las areas */
 .rotulo .flecha span {cursor:pointer;}

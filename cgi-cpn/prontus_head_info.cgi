@@ -136,7 +136,7 @@ main: {
                         'just_status'           => '1')
                         || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
 
-        $status_upd = $upd_obj->get_satus_update();
+        $status_upd = $upd_obj->get_status_update();
     } else {
         $status_upd = 'no_user';
     }
