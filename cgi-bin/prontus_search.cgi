@@ -204,7 +204,7 @@ BEGIN {
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.15
   use vars qw($DIR_CGI_CPAN $DIR_CGI_PUBLIC); # para que queden disponibles como vars. globales
   require 'dir_cgi.pm';
-
+  
   my ($ROOTDIR) = '';  # 1.12 desde el web
   if ($ENV{'DOCUMENT_ROOT'} ne '') {
     $ROOTDIR = $ENV{'DOCUMENT_ROOT'};
@@ -506,7 +506,7 @@ sub parsea_plantilla2 {
             . '&amp;search_texto=' . &lib_search::escapehtml($FORM{'search_texto'})
             . '&amp;search_modo=' . $FORM{'search_modo'}
             . '&amp;search_comodines=' . $FORM{'search_comodines'}
-            . '&amp;vista=' . $FORM{'vista'}
+            . '&amp;vista=' . &lib_search::escapehtml($FORM{'vista'})
             . '">' . $i . '</a> '; # 1.7 1.26
     }else{
       $pags .= "<span class='pag_actual'> $i </span>";
@@ -1230,8 +1230,7 @@ sub getFormData {
   $FORM{'vista'} =~ s/[^\w]//sg; # 1.18
   $VISTA = ''; # 1.18
   if ($FORM{'vista'} ne '')    { $VISTA = '-' . $FORM{'vista'}; }; # 1.18
-  if (
-         ($FORM{'search_seccion'} ne '')
+  if (($FORM{'search_seccion'} ne '')
       || ($FORM{'search_tema'} ne '')
       || ($FORM{'search_subtema'} ne '')
       || ($FORM{'search_fechaini'} ne '')
@@ -1250,9 +1249,26 @@ sub getFormData {
   };
   if ($FORM{'search_fechaini'} ne '') {
     $FORMfechaini = &lib_search::fecha2iso($FORM{'search_fechaini'});
+    # CVI - Para limpiar/formatear la fecha
+    if($FORMfechaini eq '') {
+		$FORM{'search_fechaini'} = '';
+	} else {
+		$FORM{'search_fechaini'} = &lib_search::iso2fechacorta($FORMfechaini);  
+	}
   };
   if ($FORM{'search_fechafin'} ne '') {
     $FORMfechafin = &lib_search::fecha2iso($FORM{'search_fechafin'});
+    # CVI - Para limpiar/formatear la fecha
+    if($FORMfechaini eq '') {
+		$FORM{'search_fechafin'} = '';
+	} else {
+		$FORM{'search_fechafin'} = &lib_search::iso2fechacorta($FORMfechafin);  
+	}
   };
+  
+  # CVI - se limpian las variables restantes
+  $FORM{'search_comodines'} =~ s/[^\w]//sg;
+  if ($FORM{'search_comodines'} ne 'yes')    { $FORM{'search_comodines'} = 'no'; };
+  
   # print "<p>FILTROACTIVO = $FILTROACTIVO $FORMfechaini $FORMfechafin"; # debug
 }; # getFormData
