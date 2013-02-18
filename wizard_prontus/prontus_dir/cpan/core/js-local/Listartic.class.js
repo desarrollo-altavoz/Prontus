@@ -87,6 +87,9 @@ var Listartic = {
 
         // Para el Preview
         Preview.init();
+        
+        // Para el modificado a las
+        Listartic.updateLastMod();
     },
 
     // -------------------------------------------------------------------------
@@ -771,8 +774,65 @@ var Listartic = {
         $(item).find('.contenido .titulo').off('hover');
         $(item).find('.status').show();
         $(item).find('.vobo_disabled').removeClass('vobo_disabled').addClass('vobo').show();
-    }
+    },
+    
+    updateLastMod: function() {
+        
+        setInterval(function() {
+            
+            var mod = $('#_localmodtime').val();
+            if(mod) {
+                var thestring;
+                var dmod = new Date(mod*1000);
+                mod = dmod.getTime();
+                var dnow = new Date();
+                var now = dnow.getTime();
+                
+                if(mod > now) {
+                    // La fecha de ahora es mas antigua
+                    $('#lastmodPortada').html('');
+                    return;
+                }
+                var diff = now - mod; // En milisegundos
+                diff = diff / 1000; // En segundos
+                if(diff < 60) {
+                    thestring = "Modificada hace unos segundos";
+                } else if(diff < 3600) {
+                    diff = Math.round(diff/60);
+                    if(diff == 1) {
+                        thestring = "Modificada hace un minuto";
+                    } else {
+                        thestring = "Modificada hace "+diff+" minutos";
+                    }
+                } else {
+                    var dnow2 = dnow;
+                    dnow2.setTime(dnow2.getTime() - 86400);
+                    var fechamod = dmod.getYear()+'-'+dmod.getMonth()+'-'+dmod.getDate();
+                    var fechahoy = dnow.getYear()+'-'+dnow.getMonth()+'-'+dnow.getDate();
+                    var fechaayer = dnow2.getYear()+'-'+dnow2.getMonth()+'-'+dnow2.getDate();
+                    
+                    if(fechamod == fechahoy) {
+                        var hora = Utiles.getHora(mod, true);
+                        thestring = "Modificada hoy a las "+hora+" hrs";
+                        
+                    } else if(fechamod == fechaayer) {
+                        var hora = Utiles.getHora(mod, true);
+                        thestring = "Modificada ayer a las "+hora+" hrs";
+                    } else {
+                        var hora = Utiles.getHora(mod, true);                            
+                        var fecha = Utiles.getFecha(mod, true);
+                        thestring = "Modificada el "+fecha;
+                    }
+                }
+                $('#lastmodPortada').html(thestring);
 
+            } else {
+                //No se pudo leer la fecha de modififcacion
+                $('#lastmodPortada').html('');
+            }
+            
+        }, 1000);
+    }
 }; // fin clase
 
 

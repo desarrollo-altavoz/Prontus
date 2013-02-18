@@ -109,6 +109,8 @@ label {cursor:pointer;}
 .content .top-titulo {width:580px; margin:0 0 020px 0; padding:0; float:left;}
 .content .top-titulo960 {width:960px; margin:0 0 020px 0; padding:0; float:left;}
 .content .top-titulo h1.titular, .content .top-titulo960 h1.titular {font-size:24px; color:#0099ff; margin:0; padding:0; float:left;}
+.content .top-titulo h2 {font-size:12px; color:#888888; font-weight:bold;}
+.content .top-titulo .msg-sub-title {font-size:11px; color:#aaaaaa; font-weight:bold; clear:both;}
 .content .top-titulo .botones {float:right;}
 .content .top-titulo .botones img {float:left; margin:0 3px 0 0;}
 .content .top-titulo960 .boton {margin:5px 0 0 10px;}

@@ -959,7 +959,7 @@ sub check_artic_pub {
 #        foreach my $clave (@ports) {
 #            $portadas =
 #        }
-        warn('Ediciones: '.$ediciones);
+        #~ warn('Ediciones: '.$ediciones);
         return $ediciones;
     }
     return '';
@@ -978,7 +978,7 @@ sub load_artic_pubs {
 	if($prontus_varglb::MULTI_EDICION eq 'SI') {
 		foreach my $port_base (@prontus_varglb::BASE_PORTS) {
 			$ports_base{$port_base} = 1;
-			print STDERR "Base: $port_base\n";
+			#~ print STDERR "Base: $port_base\n";
 		}
 	} else {
 		%ports_base = %prontus_varglb::PORT_PLTS;
