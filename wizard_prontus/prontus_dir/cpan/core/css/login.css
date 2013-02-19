@@ -4,15 +4,17 @@
 .box-login .auxi p { margin:25px 0 10px 55px; text-align:left; }
 .box-login .auxi .fieldform {width:220px; margin:4px 0 0 0; padding:5px 5px; font-size:15px; font-weight:normal; color:#000000; background-color:#FFFFFF; border:none;}
 
-.box-login .auxi2 {width:350px; height:220px; clear:both; font-size:13px; color:#FFFFFF; font-weight:bold; background: url("../imag/auxi/login_back.jpg") no-repeat left top;}
+.box-login .auxi2 {width:350px; height:220px; clear:both; font-size:13px; color:#FFFFFF; font-weight:bold; background: url("../imag/auxi/login_back.jpg") no-repeat left top; margin: 0 100px;}
 .box-login .auxi2 p { margin:7px 0 10px 55px; text-align:left; }
 .box-login .auxi2 .fieldform {width:220px; margin:4px 0 0 0; padding:5px 5px; font-size:15px; font-weight:normal; color:#000000; background-color:#FFFFFF; border:none;}
 
 .box-login .celeste a {font-size:11px;}
 .box-login .auxi .loading-action {display: none; margin-top: 11px;}
-.box-login .info {background-color: #DEDEDE; border:1px solid #AAAAAA; margin-bottom:15px;}
+.box-login .info {background-color: #FDF2AB; border:1px solid #AAAAAA; margin-bottom:15px;}
 .box-login .info p {font-size:12px; padding-bottom:5px; padding-left:20px; padding-top:5px; text-align:left;}
 .boton-gris3 {margin-left: 99px;}
+
+.box-changepass {width: 550px;}
 
 .checkSession {margin-top: 80px;}
 .checkSession img {margin-top: 15px;}
