@@ -5288,6 +5288,11 @@ sub get_nomtax_envista {
 sub get_nom4vistas {
     my ($mv, $id_s, $id_t, $id_st) = @_;
 
+    my $key = $id_s.'/'.$id_t.'/'.$id_st.'/'.$mv;
+    if($prontus_varglb::cache_nom4vista{$key}) {
+        return $prontus_varglb::cache_nom4vista{$key};
+    }
+
     # Conectar a BD si es que no viene la conexion
     if (! ref($prontus_varglb::BD_CONN)) {
         # print STDERR "connect a BD dentro\n";
@@ -5297,7 +5302,6 @@ sub get_nom4vistas {
             die "ERROR: $msg_err_bd\n";
         };
     };
-
 
     my ($nom_s, $nom_t, $nom_st); # nombres en la vista dada
 
@@ -5338,7 +5342,8 @@ sub get_nom4vistas {
             $nom_st = &lib_prontus::get_nomtax_envista($mv, $subtemas_nom4vistas);
         };
     };
-
+    
+    $prontus_varglb::cache_nom4vista{$key} = ($nom_s, $nom_t, $nom_st);  
     return ($nom_s, $nom_t, $nom_st);
 };
 
