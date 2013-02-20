@@ -1723,6 +1723,7 @@ sub parse_artic_data {
         my $val_campo = $campos_xml{$nom_campo};
         next if (!$val_campo);
         next if ($nom_campo =~ /^_fecha(p|e)$/);
+        next if ($nom_campo =~ /^chk_cuadrar_fotofija|^_NOMfoto_|^_wfoto_|^_hfoto_|^foto_\d+/);
 
         my $replace_done = 0;
         if ($nom_campo =~ /^vtxt_/) {
@@ -1879,7 +1880,8 @@ sub _parsing_fotos {
     my ($msg, $foto_dimx, $foto_dimy);
     my %campos = $this->get_xml_content();
 
-    $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
+    $buffer =~ s/%%$nom_campo%%/$val_campo/isg;
+    #~ $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
 
     my $este_prontus = "/$this->{prontus_id}/site/artic";
     if ($val_campo =~ /$este_prontus/i) { # val_campo es del tipo: /prontus_dev/site/artic/20060410/imag/FOTO_0120060410165548.jpg
@@ -1918,6 +1920,8 @@ sub _parsing_vtxt {
 
 #    my $refhash_subtits = shift;
 #    my %hash_subtits = %$refhash_subtits;
+
+    return $buffer if($buffer !~ /%%$nom_campo/i);
 
     my ($looptit, $tithtml) = $this->_get_data4subtit($buffer, $nom_campo);
     my $curr_nrotit = '0';
