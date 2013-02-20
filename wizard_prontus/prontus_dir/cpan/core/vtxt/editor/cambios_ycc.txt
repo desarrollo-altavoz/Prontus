@@ -1,33 +1,14 @@
 Cambios aplicados sobre version base.
 
 1. Tablas:
-- vtxt\editor\plugins\table\table.htm
-  - lin. 40 y 41: aplica style="display:none" para ocultar controles para alinear tabla, esto porque para alinear en vez de usar estilos lo hace con la prop. align del tag table la cual no es válida en xhtml estricto. Además, corta y pega los 2 td correspondientes a la propiedad "borde" ANTES de los td con controles de alineacion, para que no quede el espacio luego de ocultarlos. (MEJORA)
-  - lin. 64: aplica style="display:none" para ocultar opción de caption para la tabla.
-  - lin. 82,92,99,111,125,143 : aplica style="display:none"  a TRs para ocultar opciones poco relevantes de la pestaña "avanzado"
-  * lin. 29: elimina clase que hacía que el campo "col" tomara el foco. Se tuvo que eliminar porque en IE daba error cuando este campo se deshabilitaba ál editar la tabla. (BUG)
-    En particular, se cambió class="required number min1 mceFocus" por class="required number min1".
-
-- vtxt\editor\plugins\table\cell.htm
-  - lin. 169: agrega opción (option al select) de aplicar cambios de celda a toda la columna actual.
-
-- vtxt\editor\plugins\table\row.htm
-  - aplica display none a orientacion del lenguaje y codigo del lenguaje
-
-
-- vtxt\editor\plugins\table\langs\es_dlg.js
-  - lin. 42: Agrega label para soporte de aplicar cambios de celda a toda la columna actual.
-
-- vtxt\editor\plugins\table\js\cell.js (MEJORA)
-  - lin. 101: Agrega case "col" para soporte de aplicar cambios de celda a toda la columna actual.
-
 - vtxt\editor\langs\es.js (BUG)
   - lin. 101: Cambia label "Inserta una nueva tabla" por "Insertar/editar tabla".
 
-
 2. Imágenes:
 - vtxt\editor\plugins\advimage\js\image.js
-  - lin. 40: al editar la foto, elimina de entradita el width:50px que venia "en duro" en el style de la imagen (sólo el width 50, no lo demás que haya en el style ya que en este caso particular de la imagen el alineamiento tb. se hace via style.)
+  - lin. 40: al editar la foto, elimina de entradita el width:50px que venia "en duro" en el style 
+    de la imagen (sólo el width 50, no lo demás que haya en el style ya que en este caso particular 
+    de la imagen el alineamiento tb. se hace via style.)
 
 - vtxt\editor\plugins\advimage\image.htm
   - lin. 19: comenta la pestaña "avanzado"
@@ -35,12 +16,6 @@ Cambios aplicados sobre version base.
 3. Hipervínculos
 - vtxt\editor\plugins\advlink\link.htm
   - lin. 19 y 20: comenta pestañas "eventos" y "avanzado"
-
-4. Buscar y reemplazar (BUG)
-- vtxt\editor\plugins\searchreplace\langs\es_dlg.js
-  Cambia textos de algunos botones para que quepan en los botones:
-    lin 13: "Buscar siguiente" -> "Buscar sgte."
-    lin 15: "Reemplazar todo" -> "Reempl. todo"
 
 5. Botón "preview" del vtxt (BUG)
 - vtxt\editor\plugins\preview\preview.html
