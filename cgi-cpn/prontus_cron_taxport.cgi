@@ -607,7 +607,9 @@ sub generar_taxports_thislevel {
 
                     $filas{"$mv|$nombase_plt"} .= $fila_content;
 
-                    usleep(25000);
+                    if ($nro_pag > 0) {
+                        sleep 2;
+                    };
                 };
             };
             
