@@ -122,7 +122,10 @@ var ImgEdit = {
     },
     // ---------------------------------------------------------------
     crop_start: function () {
-        $('#imagenSelector').resizable('destroy');
+        
+        if($('#imagenSelector').data('resizable')) {
+            $('#imagenSelector').resizable('destroy');
+        }
 
         var imagen_pos = $('#imagenContenedor').position();
 
@@ -267,7 +270,9 @@ var ImgEdit = {
     crop_aspect_free: function () {
         ImgEdit.toggleImg('btn_crop_aspect');
         if (ImgEdit.crop_aspect) {
-            $('#imagenSelector').resizable('destroy');
+            if($('#imagenSelector').data('resizable')) {
+                $('#imagenSelector').resizable('destroy');
+            }
             $('#imagenSelector').resizable({
                 resize: function() {
                     var nuevo_width = $('#imagenSelector').width();
@@ -283,7 +288,9 @@ var ImgEdit = {
             });
             ImgEdit.crop_aspect = false;
         } else {
-            $('#imagenSelector').resizable('destroy');
+            if($('#imagenSelector').data('resizable')) {
+                $('#imagenSelector').resizable('destroy');
+            }
             $('#imagenSelector').resizable({
                 resize: function() {
                     var nuevo_width = $('#imagenSelector').width();
@@ -302,26 +309,32 @@ var ImgEdit = {
     },
     // ---------------------------------------------------------------
     crop_destroy: function () {
-        ImgEdit.toggleImg('btn_crop', true);
-        $('#btn_crop_aplicar').hide();
-        $('#btn_crop_aspect').hide();
-        $('#imagenSelector').hide();
-        $('#imagenSelector').removeClass();
-        $('#imagenSelector').draggable('destroy');
-        $('#imagenSelector').resizable('destroy');
-        $('#imagenContenedor').unbind('mousemove');
-        $('#imagenContenedor').unbind('mousedown');
-        $('#imagenSelector').unbind('mouseup');
-        $('#imagenContenedor').unbind('mouseup');
-        $('#imagenContenedor').css('cursor','default');
-        $('#imagenSelector').unbind('dblclick');
-        $('#width').val('');
-        $('#height').val('');
-        $('#crop').val(0);
-        ImgEdit.crop = false;
-        ImgEdit.cropStatus = false;
-        $('#h').unbind('change');
-        $('#w').unbind('change');
+        if(ImgEdit.cropStatus) {
+            ImgEdit.toggleImg('btn_crop', true);
+            $('#btn_crop_aplicar').hide();
+            $('#btn_crop_aspect').hide();
+            $('#imagenSelector').hide();
+            $('#imagenSelector').removeClass();
+            if($('#imagenSelector').data('draggable')) {
+                $('#imagenSelector').draggable('destroy');
+            }
+            if($('#imagenSelector').data('resizable')) {
+                $('#imagenSelector').resizable('destroy');
+            }
+            $('#imagenContenedor').unbind('mousemove');
+            $('#imagenContenedor').unbind('mousedown');
+            $('#imagenSelector').unbind('mouseup');
+            $('#imagenContenedor').unbind('mouseup');
+            $('#imagenContenedor').css('cursor','default');
+            $('#imagenSelector').unbind('dblclick');
+            $('#width').val('');
+            $('#height').val('');
+            $('#crop').val(0);
+            ImgEdit.crop = false;
+            ImgEdit.cropStatus = false;
+            $('#h').unbind('change');
+            $('#w').unbind('change');
+        }
     },
     // ---------------------------------------------------------------
     crop_move: function () {
@@ -370,8 +383,12 @@ var ImgEdit = {
             $('#imagenSelector').height(img_h-2);
             $('#imagenSelector').show();
             $('#imagenSelector').addClass('resizing');
-            $('#imagenSelector').draggable('destroy');
-            $('#imagenSelector').resizable('destroy');
+            if($('#imagenSelector').data('draggable')) {
+                $('#imagenSelector').draggable('destroy');
+            }
+            if($('#imagenSelector').data('resizable')) {
+                $('#imagenSelector').resizable('destroy');
+            }
             $('#imagenSelector').resizable({
                 aspectRatio: true,
                 resize: function () {
@@ -403,8 +420,12 @@ var ImgEdit = {
         $('#imagenSelector').height(img_h-2);
         $('#imagenSelector').show();
         $('#imagenSelector').addClass('resizing');
-        $('#imagenSelector').draggable('destroy');
-        $('#imagenSelector').resizable('destroy');
+        if($('#imagenSelector').data('draggable')) {
+            $('#imagenSelector').draggable('destroy');
+        }
+        if($('#imagenSelector').data('resizable')) {
+            $('#imagenSelector').resizable('destroy');
+        }
         $('#imagenSelector').resizable({
             resize: function () {
                 ImgEdit.resize_do();
@@ -477,23 +498,29 @@ var ImgEdit = {
     },
     // ---------------------------------------------------------------
     resize_destroy: function () {
-        ImgEdit.resizeStatus = false;
-        ImgEdit.toggleImg('btn_resize', true);
-        $('#imagenSelector').removeClass('resizing');
-        $('#imagenSelector').draggable('destroy');
-        $('#imagenSelector').resizable('destroy');
-        $('#imagenSelector').width(30);
-        $('#imagenSelector').height(30);
-        $('#imagenSelector').hide();
-        $('#btn_resize_aplicar').hide();
-        $('#btn_resize_aspect').hide();
+        if(ImgEdit.resizeStatus) {
+            ImgEdit.resizeStatus = false;
+            ImgEdit.toggleImg('btn_resize', true);
+            $('#imagenSelector').removeClass('resizing');
+            if($('#imagenSelector').data('draggable')) {
+                $('#imagenSelector').draggable('destroy');
+            }
+            if($('#imagenSelector').data('resizable')) {
+                $('#imagenSelector').resizable('destroy');
+            }
+            $('#imagenSelector').width(30);
+            $('#imagenSelector').height(30);
+            $('#imagenSelector').hide();
+            $('#btn_resize_aplicar').hide();
+            $('#btn_resize_aspect').hide();
 
-        $('#new_width').val('');
-        $('#new_height').val('');
-        $('#resize').val(0);
+            $('#new_width').val('');
+            $('#new_height').val('');
+            $('#resize').val(0);
 
-        $('#h').unbind('change');
-        $('#w').unbind('change');
+            $('#h').unbind('change');
+            $('#w').unbind('change');
+        };
     },
     // ---------------------------------------------------------------
     resize_aplicar: function () {
@@ -507,7 +534,7 @@ var ImgEdit = {
 
         $('#new_width').val(nuevo_width);
         $('#new_height').val(nuevo_height);
-        $('#Contenedor').resizable('destroy');
+        //$('#Contenedor').resizable('destroy');
         $('#resize').val(1);
         
         ImgEdit._toggleCargando();

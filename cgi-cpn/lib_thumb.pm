@@ -587,8 +587,8 @@ sub optimize_jpg_image {
     use File::Temp;
     my $fh = File::Temp->new();
     my $fname = $fh->filename;
-    jpegtran $filename, $fname, copy => 'none', optimize => 1;
-
+    Image::JpegTran::jpegtran($filename, $fname, copy => 'none', optimize => 1);
+    
     use File::Copy qw(move);
     #~ copy($filename, $filename.'-orig.jpg');
     move($fname, $filename);

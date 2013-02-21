@@ -118,7 +118,7 @@ main: {
   $pagina =~ s/%%himage_orig%%/$himgOrig/isg;
 
   $pagina =~ s/%%REL_PATH_PRONTUS%%/$prontus_varglb::RELDIR_BASE\/$prontus_varglb::PRONTUS_ID/isg;
-  $pagina =~ s/%%PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
+  $pagina =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/isg;
   $pagina =~ s/<!--\w+-->//sg;
   $pagina =~ s/<!--\/\w+-->//sg;
   print "Cache-Control: no-cache\n";

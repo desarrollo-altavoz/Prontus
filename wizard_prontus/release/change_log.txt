@@ -1,4 +1,22 @@
 ====================================================================================================
+11.2.59 - 21/02/2013
+====================================================================================================
+- notice: Se actualiza la version de la UI de jquery a la 1.9.2
+- improvement: Se optimiza la lectura de los nombres de las taxonomías, guardandolas en un caché temporal
+- improvement: Se evita el parseo de marcas innecesarias.
+- changes: Se cambian los tooltips para indicar si un artículo está publicado, por los tooltips de la UI de jquery 
+- changes: Se agrega el nombre del archivo de la portada (sobre el nombre) + la fecha/hora de la ultima modificacion
+- changes: En el FID, se cambia el texto de cierre de comentarios por uno más claro.
+- bugfix: Editor de Imagenes: Se corrige bug al intentar usar el módulo opcional: Image::JpegTran
+- bugfix: Se actualiza la versión del TinyMCE de la 3.4.2  a la 3.5.8, para corregir un bug.
+- changes: Se agrega al botón para "Seleccionar todo" a la botonera del VTXT
+- bugfix: En la transcodificación, se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
+- bugfix: Se soluciona problema de seguridad con archivo inf.txt, en el Wizard Prontus
+- changes: Se mejora el diseño de la página del cambio de contraseña
+- changes: Se agrega un delay de 2 segundos luego de procesar la primera página de las portadas taxonómicas.
+- changes: Se agrega chequeo del módulo perl Digest::SHA1 que es utilizado por lib_captcha2
+
+====================================================================================================
 11.2.58 - 13/02/2013
 ====================================================================================================
 - improvement: Se centraliza y mejora el chequeo de publicación para saber si un artículo está publicado o no.

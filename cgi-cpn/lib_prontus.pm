@@ -959,7 +959,7 @@ sub check_artic_pub {
 #        foreach my $clave (@ports) {
 #            $portadas =
 #        }
-        warn('Ediciones: '.$ediciones);
+        #~ warn('Ediciones: '.$ediciones);
         return $ediciones;
     }
     return '';
@@ -978,7 +978,7 @@ sub load_artic_pubs {
 	if($prontus_varglb::MULTI_EDICION eq 'SI') {
 		foreach my $port_base (@prontus_varglb::BASE_PORTS) {
 			$ports_base{$port_base} = 1;
-			print STDERR "Base: $port_base\n";
+			#~ print STDERR "Base: $port_base\n";
 		}
 	} else {
 		%ports_base = %prontus_varglb::PORT_PLTS;
@@ -3894,10 +3894,9 @@ sub replace_in_artic {
     $buffer =~ s/%%$nom_campo%%/$valor_campo/isg;
 
     # parsea marcas con ajuste de chars
-    $buffer = &parse_maxchars($nom_campo, $valor_campo, $buffer);
-
-
-
+    if ($nom_campo !~ /^asocfile_|^swf_|^multimedia_|^fotofija_|^_hfoto|^_wfoto|^chk_cuadrar_fotofija|^_NOMfoto_|^foto_\d+/i) {
+        $buffer = &parse_maxchars($nom_campo, $valor_campo, $buffer);
+    };
 
     # Ahora parsear en la pagina la version minitext del campo TXT_identif --> identif
     if ($nom_campo =~ /^(_)?V?TXT_(\w+?)$/i) {
@@ -5288,6 +5287,11 @@ sub get_nomtax_envista {
 sub get_nom4vistas {
     my ($mv, $id_s, $id_t, $id_st) = @_;
 
+    my $key = $id_s.'/'.$id_t.'/'.$id_st.'/'.$mv;
+    if($prontus_varglb::cache_nom4vista{$key}) {
+        return $prontus_varglb::cache_nom4vista{$key};
+    }
+
     # Conectar a BD si es que no viene la conexion
     if (! ref($prontus_varglb::BD_CONN)) {
         # print STDERR "connect a BD dentro\n";
@@ -5297,7 +5301,6 @@ sub get_nom4vistas {
             die "ERROR: $msg_err_bd\n";
         };
     };
-
 
     my ($nom_s, $nom_t, $nom_st); # nombres en la vista dada
 
@@ -5338,7 +5341,8 @@ sub get_nom4vistas {
             $nom_st = &lib_prontus::get_nomtax_envista($mv, $subtemas_nom4vistas);
         };
     };
-
+    
+    $prontus_varglb::cache_nom4vista{$key} = ($nom_s, $nom_t, $nom_st);  
     return ($nom_s, $nom_t, $nom_st);
 };
 

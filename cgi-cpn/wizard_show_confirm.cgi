@@ -64,7 +64,7 @@ use lib_prontus;
 # ---------------------------------------------------------------
 
 my (%PRONTUS);
-my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/data";
+my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/_data";
 my ($INF_FILE) = "$INF_DIR/inf.txt";
 
 

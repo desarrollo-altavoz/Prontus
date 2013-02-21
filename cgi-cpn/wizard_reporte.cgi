@@ -54,7 +54,7 @@ use strict;
 # ------
 
 my (%FORM, $LOOP, %PRONTUS); # Variable global uno.
-my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/data";
+my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/_data";
 my ($INF_FILE) = "$INF_DIR/inf.txt";
 my ($CRLF) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
 
@@ -121,6 +121,9 @@ main:{
   my $lnk_sitio = "/$prontus_id/index.$extension";
 
   $pagina =~ s/%%lnk_sitio%%/$lnk_sitio/ig;
+
+  # Eliminar archivo inf.
+  unlink $INF_FILE;
 
   print $pagina;
 };

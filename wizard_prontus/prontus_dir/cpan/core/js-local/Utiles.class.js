@@ -199,6 +199,44 @@ var Utiles = {
                 $(this).val(texto).addClass('texto-ayuda');
             }
         });
-    }
+    },
 
+    getFecha: function(thetime, human) {
+        var date = new Date(thetime);
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+        var fecha;
+        if(human) {
+            var arr = ['enero', 'febrero', 'marzo', 'abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+            fecha = d+" de "+arr[m]+' de '+y;
+            
+        } else {
+            d = (d<=9?'0'+d:d);
+            m = m + 1;
+            m = (m<=9?'0'+m:m);                   
+            fecha = d+'/'+m+'/'+y;
+        }
+        return fecha;
+    },
+    
+    getHora: function(thetime, sinsegundos) {
+        
+        var date = new Date(thetime);
+        var h = date.getHours();
+        h = (h<=9?'0'+h:h);
+        
+        var m = date.getMinutes()+1;
+        m = (m<=9?'0'+m:m);        
+        
+        var s = date.getSeconds();
+        s = (s<=9?'0'+s:s);       
+        if(sinsegundos) {
+            return h+':'+m;
+        } else {
+            return h+':'+m+':'+s;
+        }
+        
+        
+    }
 };
