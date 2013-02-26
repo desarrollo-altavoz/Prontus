@@ -1695,9 +1695,9 @@ sub parse_artic_data {
     my $buffer = shift;
     my $ref_campos_xml = shift;
     my $vars_adicionales = shift;
-    
+
     my %campos_xml = %$ref_campos_xml;
-    undef $ref_campos_xml;
+    #undef $ref_campos_xml;
 
     # Obtiene nom de secc, tema y subtema en vista correspondiente
     if ($fullpath_vista =~ /\/pags\-(\w+)\/[0-9]{14}\.\w+$/) {
@@ -1726,22 +1726,22 @@ sub parse_artic_data {
         next if ($val_campo eq '');
         next if ($nom_campo =~ /^_fecha(p|e)$/);
         next if ($nom_campo =~ /^chk_cuadrar_fotofija|^_NOMfoto_|^_wfoto_|^_hfoto_|^foto_\d+/);
-        
-        print STDERR "$nom_campo\n" if($campos_xml{'_ts'} eq '20080612171406');
-        
+
+        #~ print STDERR "$nom_campo\n" if($campos_xml{'_ts'} eq '20080612171406');
+
         if ($nom_campo =~ /^vtxt_/) {
             # warn "[$nom_campo][$val_campo]";
             $buffer = $this->_parsing_vtxt($buffer, $nom_campo, $val_campo);
-            
+
         } elsif ($nom_campo =~ /^asocfile_|^swf_|^multimedia_/) {
             $buffer = $this->_parsing_recursos($nom_campo, $val_campo, $buffer);
-            
+
         } elsif ($nom_campo =~ /^fotofija_/) {
             $buffer = $this->_parsing_fotos($nom_campo, $val_campo, $buffer);
-            
+
         } else {
             # Replace en artic, incluye minitext
-            $nom_campo = 
+            $nom_campo =
             $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
         };
     };
@@ -1793,7 +1793,7 @@ sub get_xdata {
     my ($buffer) = shift;
     my (%xdata, $nom_marca, $valor_marca);
     my %globalxdata;
-    
+
     my ($pathdir_xdata) = "$this->{document_root}/$this->{prontus_id}/xdata";
     return %xdata if (!-d $pathdir_xdata);
 
@@ -1821,7 +1821,7 @@ sub get_xdata {
             };
             %prontus_varglb::globalxdata = %xdata;
         };
-            
+
         # Detecta marcas especificas para este articulo
         my $fechac = $this->{fechac};
         my $path = '';

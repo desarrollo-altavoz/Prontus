@@ -70,10 +70,6 @@
 BEGIN {
     use FindBin '$Bin';
     unshift(@INC,$Bin); # Para dejar disponibles las librerias
-
-    # Captura STDERR
-    # use lib_stdlog;
-    # &lib_stdlog::set_stdlog($0, 51200);
 };
 
 use strict;
@@ -83,6 +79,8 @@ use glib_dbi_02;
 use glib_fildir_02;
 use Artic;
 use lib_tax;
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
 
 close STDOUT;
 # ---------------------------------------------------------------
@@ -119,6 +117,8 @@ my ($RELDIR_LIST_TMP) = "$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_LIST";
 my ($RELDIR_LIST_MACROS) = "$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_LIST_MACROS";
 my (%EXT_PORT_TMP, %BUF_PLT, %BUF_PLT_LOOP, %MSGS, %LOADED_NAMES_PLT);
 my ($CURR_DTIME) = &glib_hrfec_02::get_dtime_pack4();
+
+my (%ART_XML_FIELDS, %ART_XDATA_FIELDS);
 
 #if (&lib_maxrunning::maxExcedido(1)) {
 #  die "[$CURR_DTIME] prontus_cron_taxport en proceso, se aborta ejecucion de [prontus_cron_taxport.cgi $FORM{'prontus'} $FORM{'params_especif'}]\n";
@@ -202,7 +202,7 @@ sub procesar_plantilla {
 
     #TODO Queda pendiente el manejo de semáforos
 
-    my (%filas, %art_xml_fields);
+    my (%filas);
 
     my $filtros = &crear_filtros_list($secc_id, $temas_id, $subtemas_id, $fids, $CURR_DTIME);
     # print STDERR "[$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
@@ -248,12 +248,13 @@ sub procesar_plantilla {
         my $mv = '';
 
         my $fila_content;
-        my $auxref;
+        my ($auxref, $auxref2);
 
         # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
-        ($fila_content, $auxref) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id});
+        ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id});
 
-        $art_xml_fields{$art_id} = $auxref if (! exists $art_xml_fields{$art_id}); # para no leer 2 veces un xml
+        $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
+        $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer 2 veces un xml
 
         $filas{"$mv|$nombase_plt"} .= $fila_content;
 

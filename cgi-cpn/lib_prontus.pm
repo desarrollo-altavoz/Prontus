@@ -973,17 +973,17 @@ sub load_artic_pubs {
     my (@ediciones) = &lib_prontus::get_edics4update();
     my %hash_artics;
 
-	# Solo si la edicion es base, se guardan sólo las portadas base
-	my %ports_base;
-	if($prontus_varglb::MULTI_EDICION eq 'SI') {
-		foreach my $port_base (@prontus_varglb::BASE_PORTS) {
-			$ports_base{$port_base} = 1;
-			#~ print STDERR "Base: $port_base\n";
-		}
-	} else {
-		%ports_base = %prontus_varglb::PORT_PLTS;
-	}
-	
+    # Solo si la edicion es base, se guardan sólo las portadas base
+    my %ports_base;
+    if($prontus_varglb::MULTI_EDICION eq 'SI') {
+        foreach my $port_base (@prontus_varglb::BASE_PORTS) {
+            $ports_base{$port_base} = 1;
+            #~ print STDERR "Base: $port_base\n";
+        }
+    } else {
+        %ports_base = %prontus_varglb::PORT_PLTS;
+    }
+
     foreach my $edic (@ediciones) {
 
         # print STDERR "edic[$edic]\n";
@@ -995,18 +995,18 @@ sub load_artic_pubs {
                         $prontus_varglb::DIR_SECC;
 
         my @entries = &glib_fildir_02::lee_dir($pathdir_seccs);
-        
+
         # Para cada port.
         foreach $port (@entries) {
             next if ($port =~ /^\./);
-            
+
             # No se toman en cuenta las que no esten en el CFG
             next unless ($prontus_varglb::PORT_PLTS{$port});
-            
+
             if($prontus_varglb::MULTI_EDICION eq 'SI' && $edic eq 'base') {
-				next unless($ports_base{$port});
-			}
-            
+                next unless($ports_base{$port});
+            }
+
             # portada en el site
             $arch_seccion = "$pathdir_seccs/$port";
 
@@ -1513,7 +1513,7 @@ sub load_config {
   if ($buffer =~ m/\s*EDITOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $e_ver_art_ajenos = $2;
   };
-  
+
   my $e_adm_ediciones = 'SI'; # valor por defecto. # 8.0
   if ($buffer =~ m/\s*EDITOR_ADMINISTRAR_EDICIONES\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $e_adm_ediciones = $2;
@@ -3891,7 +3891,7 @@ sub replace_in_artic {
     $valor_campo = &parrafea_texto($valor_campo) if ($nom_campo =~ /^_?TXT_/i);
 
     # sustitucion en la pagina
-    $buffer =~ s/%%$nom_campo%%/$valor_campo/sg;
+    $buffer =~ s/%%$nom_campo%%/$valor_campo/isg;
 
     # parsea marcas con ajuste de chars
     $buffer = &parse_maxchars($nom_campo, $valor_campo, $buffer);
@@ -5339,8 +5339,8 @@ sub get_nom4vistas {
             $nom_st = &lib_prontus::get_nomtax_envista($mv, $subtemas_nom4vistas);
         };
     };
-    
-    $prontus_varglb::cache_nom4vista{$key} = ($nom_s, $nom_t, $nom_st);  
+
+    $prontus_varglb::cache_nom4vista{$key} = ($nom_s, $nom_t, $nom_st);
     return ($nom_s, $nom_t, $nom_st);
 };
 
@@ -5936,7 +5936,7 @@ sub set_coreplt_ppal {
     if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
         $buffer =~ s/<!--admin_ediciones-->.*?<!--\/admin_ediciones-->//sg;
     };
-    
+
     # quita la opcion de editar ediciones si esta deshabilitado y el usuario es editor.
     if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
         $buffer =~ s/<!--admin_ediciones-->.*?<!--\/admin_ediciones-->//sg;
