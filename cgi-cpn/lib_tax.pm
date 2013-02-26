@@ -258,10 +258,12 @@ sub make_lista {
 # ---------------------------------------------------------------
 sub generar_fila {
 # Genera y retorna cada fila de la tabla.
-    my ($reldir_artic, $art_id, $art_extension, $loop, $loopcounter, $tot_artics, $refhash_campos_xml) = @_;
+    my ($reldir_artic, $art_id, $art_extension, $loop, $loopcounter, $tot_artics, $refhash_campos_xml, $refhash_campos_xdata) = @_;
 
-    my %campos_xml;
-    %campos_xml = %$refhash_campos_xml if (ref $refhash_campos_xml);
+    my %campos_xml = %$refhash_campos_xml if (ref $refhash_campos_xml);
+    my %campos_xdata = %$refhash_campos_xdata if (ref $refhash_campos_xdata);
+    my %claves_adicionales;
+    
     my $fila = $loop;
     # warn "fila1[$fila]";
 
@@ -284,8 +286,14 @@ sub generar_fila {
         if ((! ref $refhash_campos_xml) || ($campos_xml{'_txt_titular'} eq '')) {
             %campos_xml = $artic_obj->get_xml_content();
         };
-
-        my %claves_adicionales = $artic_obj->get_xdata($buffer);
+        
+        if(%campos_xdata) {
+          %claves_adicionales = %campos_xdata;
+          undef %campos_xdata;
+          
+        } else {
+          %claves_adicionales = $artic_obj->get_xdata($buffer);
+        }
         $claves_adicionales{_ts} = $art_id;
         $claves_adicionales{_loopcounter} = $loopcounter;
         $claves_adicionales{_totartics} = $tot_artics;
@@ -310,8 +318,9 @@ sub generar_fila {
     };
 
     my $p = \%campos_xml;
+    my $x = \%claves_adicionales;
 
-    return ($fila, $p);
+    return ($fila, $p, $x);
 
 };
 
