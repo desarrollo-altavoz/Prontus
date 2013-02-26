@@ -5931,8 +5931,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Esto, para evitar issue de overflow de contenido en un directorio (ocurrido en sistema de comentarios)
         - Al leer las marcas externas, las marcas globales se "cachean" en prontus_varglb.
         - En la función: lib_tax::generar_fila, se agrega la opción se pasar las marcas externas, previamente cacheadas.
-        - Al ejecutarse el prontus_cron_taxport, se dejan los XMLs leídos como variable global, así se mantienen 
-          por todo el proceso, optimizando el script.
+        - Al ejecutarse el prontus_cron_taxport y prontus_cron_list, se dejan los XMLs leídos como variable global, 
+          así se mantienen por todo el proceso, optimizando el script.
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_prontus.pm

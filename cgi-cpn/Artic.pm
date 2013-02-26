@@ -1697,7 +1697,7 @@ sub parse_artic_data {
     my $vars_adicionales = shift;
 
     my %campos_xml = %$ref_campos_xml;
-    #undef $ref_campos_xml;
+    undef $ref_campos_xml;
 
     # Obtiene nom de secc, tema y subtema en vista correspondiente
     if ($fullpath_vista =~ /\/pags\-(\w+)\/[0-9]{14}\.\w+$/) {
@@ -1718,7 +1718,6 @@ sub parse_artic_data {
         };
         undef $vars_adicionales;
     };
-    #~ print STDERR "$campos_xml{'_ts'}\n";
 
     # Parsea campos
     foreach my $nom_campo (keys %campos_xml) {
@@ -1727,24 +1726,22 @@ sub parse_artic_data {
         next if ($nom_campo =~ /^_fecha(p|e)$/);
         next if ($nom_campo =~ /^chk_cuadrar_fotofija|^_NOMfoto_|^_wfoto_|^_hfoto_|^foto_\d+/);
 
-        #~ print STDERR "$nom_campo\n" if($campos_xml{'_ts'} eq '20080612171406');
-
-        if ($nom_campo =~ /^vtxt_/) {
+        if ($nom_campo =~ /^vtxt_/i) {
             # warn "[$nom_campo][$val_campo]";
             $buffer = $this->_parsing_vtxt($buffer, $nom_campo, $val_campo);
 
-        } elsif ($nom_campo =~ /^asocfile_|^swf_|^multimedia_/) {
+        } elsif ($nom_campo =~ /^asocfile_|^swf_|^multimedia_/i) {
             $buffer = $this->_parsing_recursos($nom_campo, $val_campo, $buffer);
 
-        } elsif ($nom_campo =~ /^fotofija_/) {
+        } elsif ($nom_campo =~ /^fotofija_/i) {
             $buffer = $this->_parsing_fotos($nom_campo, $val_campo, $buffer);
 
         } else {
             # Replace en artic, incluye minitext
-            $nom_campo =
             $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
         };
     };
+
 
 
     # Parseos especiales para fechas y horas
@@ -1898,7 +1895,7 @@ sub _parsing_fotos {
     my ($msg, $foto_dimx, $foto_dimy);
     my %campos = $this->get_xml_content();
 
-    return $buffer unless(index($buffer, $nom_campo) > -1);
+    #~ return $buffer unless(index($buffer, $nom_campo) > -1);
     $buffer =~ s/%%$nom_campo%%/$val_campo/isg;
     #~ $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
 

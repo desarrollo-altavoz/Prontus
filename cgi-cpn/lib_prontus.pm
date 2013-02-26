@@ -3894,7 +3894,9 @@ sub replace_in_artic {
     $buffer =~ s/%%$nom_campo%%/$valor_campo/isg;
 
     # parsea marcas con ajuste de chars
-    $buffer = &parse_maxchars($nom_campo, $valor_campo, $buffer);
+    if ($nom_campo !~ /^asocfile_|^swf_|^multimedia_|^fotofija_|^_hfoto|^_wfoto|^chk_cuadrar_fotofija|^_NOMfoto_|^foto_\d+/i) {
+        $buffer = &parse_maxchars($nom_campo, $valor_campo, $buffer);
+    };
 
     # Ahora parsear en la pagina la version minitext del campo TXT_identif --> identif
     if ($nom_campo =~ /^(_)?V?TXT_(\w+?)$/i) {
