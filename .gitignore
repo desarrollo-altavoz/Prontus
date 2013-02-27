@@ -24,6 +24,7 @@ Thumbs.db
 /.project
 /.settings
 /cgi-cpn/prontus_error_log/
+/cgi-cpn/prontus_temp/
 taxport_new.sh
 taxport_orig.sh
 
