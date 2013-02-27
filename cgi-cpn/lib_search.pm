@@ -203,23 +203,6 @@ sub get_config {
   return %pairs;
 }; # get_config
 
-# --------------------------------------------------------------- #
-# Esta rutina mide la cantidad de procesos de igual nombre que el mismo script
-# esta corriendo en el servidor.
-# Ojo que a veces se cuenta la misma pregunta como un proceso (ps ax...), asi que
-# el resultado puede tener 1 proceso de mas.
-sub myself_running {
-  if ($ENV{'PATH_TRANSLATED'} =~ /^[C-Z]\:\\/ ) { # 1.8 parte de la C en vez de la A.
-    return 0;
-  }else{
-    my(@res) = qx/ps -axww | grep $0/; # 1.8 agrega una w al ps.
-    return $#res;
-  };
-}; # myself_running
-
-# #############################################
-#  Manejo de archivos y directorios
-
 # -------------------------------------------------------------------------#
 # Genera un friendly URL a partir del titular, del prontus_id y del ts.
 sub friendlyUrl {

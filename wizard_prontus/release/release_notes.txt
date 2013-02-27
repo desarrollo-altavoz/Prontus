@@ -5948,3 +5948,24 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
+- Código Fuente:
+    [mejoras]
+        - Se comienza a usar lib_maxrunning.pm en las CGIs de Comentarios, Enviar, Imprimir, Posting, Prontus Form
+        - Se eliminan referencias a funciones locales de chequeo de instancias corriendo (para centralizar en lib_maxrunning.pm)
+        - Se cambia el uso de funciones locales del tipo: is_win32, para centralizar en &lib_prontus::is_win32()
+          Pese a que Prontus ya no posee soporte para win32, no se eliminan estos chequeos por ahora.
+    [files]
+        /cgi-bin/coment/coment_enviar.cgi
+        /cgi-bin/prontus_art_posting.cgi
+        /cgi-bin/prontus_enviar.cgi
+        /cgi-bin/prontus_form.cgi
+        /cgi-bin/prontus_imprimir.cgi
+        /cgi-cpn/coment/coment_varglb.pm
+        /cgi-cpn/lib_form.pm
+        /cgi-cpn/lib_search.pm
+        /cgi-cpn/lib_waitlock.pm
+
+
+
+
+

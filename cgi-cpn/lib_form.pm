@@ -53,38 +53,6 @@ sub garbage_collection {
 }; # garbage_collection
 
 # ------------------------------------------------------------------------- #
-# Detecta si es plataforma win32, solo para ambiente web.
-sub is_win32 {
-    my $ruta_script = $ENV{'SCRIPT_FILENAME'};
-    if ($ruta_script eq '') {
-        $ruta_script = $ENV{'PATH_TRANSLATED'}; # win
-    };
-    if ($ruta_script =~ /^\w:/) {
-        return 1; # Es Windows.
-    } else {
-        return 0; # Es Unix.
-    };
-}; # is_win32
-
-# ------------------------------------------------------------------------- #
-# Retorna las copias de del script que se encuentran corriendo.
-sub myself_running {
-    my($res) = qx/ps axww | grep $0 | grep -v ' grep ' | wc -l/;
-    $res =~ s/\D//gs;
-    return $res;
-}; # myself_running
-
-# ------------------------------------------------------------------------- #
-# Aborta si hay mas de $max copias corriendo.
-sub max_running {
-    my($max) = $_[0];
-    if (! &is_win32()) {
-        if (&myself_running() > $max) {
-            &aborta("Error: Servidor ocupado. Intente otra vez m&aacute;s tarde."); # 1.3.1 # 1.10
-        };
-    };
-}; # max_running
-# ------------------------------------------------------------------------- #
 # Aborta y sale con un mensaje de error.
 sub aborta {
     #~ print "Content-Type: text/html\n\n";

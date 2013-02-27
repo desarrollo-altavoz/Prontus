@@ -51,6 +51,7 @@
 package lib_waitlock;
 
 use strict;
+use lib_prontus;
 
 our $MAX_SEGS = 60; # max. duracion del bloqueo, en segs
 #---------------------------------------------------------------#
@@ -61,7 +62,7 @@ sub lock_file {
 
   my ($path_semaforo) = $_[0];
 
-  if (&is_win32()) {
+  if (&lib_prontus::is_win32()) {
 
     while (! &chequear_lock($path_semaforo)) {  };
   }
@@ -87,7 +88,7 @@ sub lock_file {
 sub unlock_file {
   my ($path_semaforo) = $_[0];
 
-  if (&is_win32()) {
+  if (&lib_prontus::is_win32()) {
     &lock_remove($path_semaforo);
   }
   else {
@@ -103,29 +104,6 @@ sub unlock_file {
       exit;
     };
   };
-};
-
-# ---------------------------------------------------------------
-sub is_win32 {
-# Detecta si es plataforma win32, solo para ambiente web.
-    # return 1; # debug
-
-    my $ruta_script;
-    if ($ENV{'SCRIPT_FILENAME'} ne '') {
-      $ruta_script = $ENV{'SCRIPT_FILENAME'}; # unix
-    }
-    else {
-      $ruta_script = $ENV{'PATH_TRANSLATED'}; # win
-    };
-
-    # SI WIN
-    if ($ruta_script =~ /^\w:/) {
-      return 1;
-    }
-    # SI UNIX
-    else {
-      return 0;
-    };
 };
 
 # ---------------------RUTINAS PARA WIN32------------------------#

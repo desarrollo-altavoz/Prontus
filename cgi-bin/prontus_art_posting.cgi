@@ -9,16 +9,6 @@
 # http://www.prontus.cl/license.html
 # --------------------------------------------------------------
 
-if (! &is_win32()) {
-  if (&myself_running() > 4) {
-    print "Content-Type: text/html\n\n";
-    print "Error: Servidor ocupado.";
-    exit;
-  };
-};
-
-
-
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # PROPOSITO .
@@ -95,10 +85,19 @@ use lib_thumb;
 use lib_captcha;
 use lib_ipcheck;
 use lib_artic;
+use lib_maxrunning;
+
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
 my (%CONFIG_POSTING, $ARTIC_OBJ);
+
+# Soporta un maximo de n copias corriendo.
+if (&lib_maxrunning::maxExcedido(4)) {
+    print "Content-Type: text/html\n\n";
+    print "Error: Servidor ocupado.";
+    exit;
+};
 
 &main();
 exit;
@@ -397,39 +396,6 @@ sub load_default_posting_params {
   $CONFIG_POSTING{'_tema1'} = '0' if (!&param('_tema1'));
   $CONFIG_POSTING{'_subtema1'} = '0' if (!&param('_subtema1'));
 };
-# ---------------------------------------------------------------
-# Esta rutina mide la cantidad de procesos de igual nombre que el mismo script
-# esta corriendo en el servidor.
-# Ojo que a veces se cuenta la misma pregunta como un proceso (ps ax...), asi que
-# el resultado puede tener 1 proceso de mas.
-sub myself_running {
-  my(@res) = qx/ps ax | grep $0/;
-  return $#res;
-}; # myself_running
-
-# ---------------------------------------------------------------
-sub is_win32 {
-# Detecta si es plataforma win32, solo para ambiente web.
-    # return 1; # debug
-
-    my $ruta_script;
-    if ($ENV{'SCRIPT_FILENAME'} ne '') {
-      $ruta_script = $ENV{'SCRIPT_FILENAME'}; # unix
-    }
-    else {
-      $ruta_script = $ENV{'PATH_TRANSLATED'}; # win
-    };
-
-    # SI WIN
-    if ($ruta_script =~ /^\w:/) {
-      return 1;
-    }
-    # SI UNIX
-    else {
-      return 0;
-    };
-};
-
 
 # -------------------------------END SCRIPT----------------------
 

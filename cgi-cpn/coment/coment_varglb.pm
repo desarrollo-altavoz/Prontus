@@ -11,12 +11,6 @@
 
 package coment_varglb;
 
-if (&myself_running() > 6) {
-  print "Content-Type: text/html\n\n";
-  print "Error: Server too busy. Please <a href=\"javascript:window.location.reload();\">try again</a>";
-  exit;
-};
-
 # ----------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # PROPOSITO.
@@ -62,15 +56,7 @@ $MAIL_ADM_REPLYTO_EMAIL = '';
 
 # Icono de foto existente
 $ICON_VERFOTO = '<img src="/cpan/imag/ficha/foto.gif" width="21" height="22" border="0" valign="middle">';
-# ---------------------------------------------------------------
-# Esta rutina mide la cantidad de procesos de igual nombre que el mismo script
-# esta corriendo en el servidor.
-# Ojo que a veces se cuenta la misma pregunta como un proceso (ps ax...), asi que
-# el resultado puede tener 1 proceso de mas.
-sub myself_running {
-  my(@res) = qx/ps ax | grep $0/;
-  return $#res;
-}; # myself_running
+
 #--------------------------------------------------------------------#
 sub test_htaccess {
 
