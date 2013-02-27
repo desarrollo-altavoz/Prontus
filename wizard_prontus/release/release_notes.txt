@@ -5920,7 +5920,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.60 - 26/02/2013 - CVI
+11.2.60 - 27/02/2013 - CVI
 ====================================================================================================
 
 - Prontus en General:
@@ -5939,5 +5939,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_tax.pm
         /cgi-cpn/prontus_cron_taxport.cgi
         
-        
-        
+- Marcas Prontus:
+    [bugfixes]
+        - Se corrige bug de la marca %%_totartics%% que tomaba todos los artículos, aunque no estuvieran publicados
+          Ahora no considera en el conteo los sin alta, con mala fecha, o sin VoBo.
+    [mejoras]
+        - Se agrega la marca %%_area%% en portadas, con el número del área.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
