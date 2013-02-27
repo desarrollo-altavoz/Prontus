@@ -1585,12 +1585,12 @@ sub load_config {
 
 
   # Taxonomia
-  my $taxport_refresh = 'SI'; # valor por defecto. Si es NO, entonces no se regenera el cache de las taxports, sino que se actualizan masivamente via CRON
-  if ($buffer =~ m/\s*TAXPORT_REFRESH\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $taxport_refresh = $2;
-  };
-  $prontus_varglb::TAXPORT_REFRESH = $taxport_refresh;
-
+  # CVI - Deprecated - Ya no se usa esto
+  #~ my $taxport_refresh = 'SI'; # valor por defecto. Si es NO, entonces no se regenera el cache de las taxports, sino que se actualizan masivamente via CRON
+  #~ if ($buffer =~ m/\s*TAXPORT_REFRESH\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    #~ $taxport_refresh = $2;
+  #~ };
+  #~ $prontus_varglb::TAXPORT_REFRESH = $taxport_refresh;
 
 
   my $taxport_maxartics = '500'; # valor por defecto.
@@ -1820,20 +1820,19 @@ sub load_config {
   };
   $prontus_varglb::TAXPORT_ARTXPAG = $taxport_artxpag;
 
-
-  my $taxport_refresh_segs = 1800; # valor default  media hora
-  if ($buffer =~ m/\s*TAXPORT_REFRESH_SEGS\s*=\s*("|')(\d+?)("|')/) {
-    $taxport_refresh_segs = $2;
-    if (($taxport_refresh_segs =~ /\d+/) && (! $tax_niv)) {
-      #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
-      #~ print STDERR "Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-      #~ print "Content-Type: text/html\n\n";
-      #~ print "<P>Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-      #~ exit;
-    };
-  };
-
-  $prontus_varglb::TAXPORT_REFRESH_SEGS = $taxport_refresh_segs;
+  # CVI - DEPRECATED - Esta marca ya no se usa
+  #~ my $taxport_refresh_segs = 1800; # valor default  media hora
+  #~ if ($buffer =~ m/\s*TAXPORT_REFRESH_SEGS\s*=\s*("|')(\d+?)("|')/) {
+    #~ $taxport_refresh_segs = $2;
+    #~ if (($taxport_refresh_segs =~ /\d+/) && (! $tax_niv)) {
+      # 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
+      # print STDERR "Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
+      # print "Content-Type: text/html\n\n";
+      # print "<P>Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
+      # exit;
+    #~ };
+  #~ };
+  #~ $prontus_varglb::TAXPORT_REFRESH_SEGS = $taxport_refresh_segs;
 
   # TAXPORT_ORDEN
   $prontus_varglb::TAXPORT_ORDEN = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.

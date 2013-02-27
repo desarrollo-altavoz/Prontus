@@ -5950,7 +5950,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se agrega la marca %%_area%% en portadas, con el número del área.
     [files]
         /cgi-cpn/lib_prontus.pm
-
+        
+- Categorías:
+    [cambios]
+        - Se eliminan todas las referencias a las variables: TAXPORT_REFRESH y TAXPORT_REFRESH_SEGS, por estar obsoletas
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_categ.html
+        
 - Código Fuente:
     [mejoras]
         - Se comienza a usar lib_maxrunning.pm en las CGIs de Comentarios, Enviar, Imprimir, Posting, Prontus Form
@@ -5984,7 +5994,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/css/usradmin.css
         /wizard_prontus/prontus_dir/cpan/core/prontus_usr_ficha.html
 
-    
-
+- Base de Datos
+    [bugfixes]
+        - Se corrige error al crear tablas, bajo ciertas circunstancias, no mostraba la creación de tablas
+        - Error al contar los registros de la tabla: TAGSART
+    [files]
+        /cgi-cpn/prontus_set_bd.cgi
 
 
