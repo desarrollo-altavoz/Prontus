@@ -84,6 +84,10 @@ var Preview = {
         if(!Preview.isOpen) {
             return;
         }
+        if(Preview.isBussy) {
+            Admin.displayMessage('Por favor, espere a que termine de generar el Preview', 'alert');
+            return;
+        }
         Preview.isOpen = false;
         clearTimeout(Preview.timer);
         Preview.stopTimeleft();
@@ -92,13 +96,17 @@ var Preview = {
             //$('html,body').animate({scrollLeft: 0}, Preview.animationSpeed);
                 $('#preview .tab .abrir').show();
                 $('#preview .tab .cerrar').hide();
+                $('.loading-preview').hide();
             });
         } else {
             $('#preview .cont').animate({marginLeft: '+=' + Preview.widthTable, width: Preview.widthTab}, Preview.animationSpeed, function() {
                 $('#preview .tab .abrir').show();
                 $('#preview .tab .cerrar').hide();
+                $('.loading-preview').hide();
             });
         }
+        
+        
     },
 
     // -------------------------------------------------------------------------

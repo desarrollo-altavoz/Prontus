@@ -5965,6 +5965,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_search.pm
         /cgi-cpn/lib_waitlock.pm
 
+- Preview:
+    [cambios]
+        - Se evita que el preview se cierre mientras estén en modo "Loading", para evitar comportamientos extraños
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Preview.class.js
+        
 
 
 
