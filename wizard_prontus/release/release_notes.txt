@@ -5924,6 +5924,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 
 - Prontus en General:
+    [bugfixes]
+        - Se agrega la codificación utf8 a los logs de procesamiento, ya que si el server no estaba 
+          seteado para entregar utf8 por defecto, salían caracteres extraños
     [mejoras]
         - Se hacen varias mejoras menores de rendimiento
         - Al leer las marcas externas, se cambia el formato para considerar: /sist_externo/fechac/ts/, en vez del antiguo
