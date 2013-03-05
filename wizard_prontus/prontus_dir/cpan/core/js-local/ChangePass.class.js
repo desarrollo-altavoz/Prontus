@@ -14,6 +14,9 @@ var ChangePass = {
                     return;
                 };
                 if (json.status == '1') {
+                    if (typeof json.msg != 'undefined' && json.msg != '') {
+                        alert(unescape(json.msg));
+                    }
                     window.location.href = '/' + ProntusDetect.getIdProntus() + '/cpan/core/prontus_index.html';
                 } else  {
                     alert(unescape(json.msg));
