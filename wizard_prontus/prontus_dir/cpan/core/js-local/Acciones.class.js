@@ -167,7 +167,7 @@ var Acciones = {
             $('.top-titulo .botones .loading-action').fadeIn();
         } else {
             $('.top-titulo .botones .loading-action').hide();
-            $('.top-titulo .botones a').fadeIn();
+            $('.top-titulo .botones a').filter(':not("#port_dd_btn")').fadeIn();
         }
     },
 
