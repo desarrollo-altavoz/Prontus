@@ -3,6 +3,7 @@
 <title>Asistente Prontus: Paso 3</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="/wizard_prontus/core/css/estilos.css" rel="stylesheet" type="text/css">
+<SCRIPT language="JavaScript" src="/wizard_prontus/core/js/jquery/jquery.js"></SCRIPT>
 <SCRIPT language="JavaScript" src="/wizard_prontus/core/js/comun.js"></SCRIPT>
 <SCRIPT language="JavaScript" src="/wizard_prontus/core/js/paso5.js"></SCRIPT>
 <SCRIPT language="JavaScript" src="/wizard_prontus/core/js/botones.js"></SCRIPT>
@@ -11,28 +12,27 @@
 <center>
 <div id="main">
 <form name="form1" method="post" action="wizard_deploy.cgi">
-    <div><a href="http://www.prontus.cl" target="_blank"><img src="/wizard_prontus/core/imag/head.gif" border="0"></a></div>
+    <div><a href="http://www.prontus.cl" target="_blank"><img src="/wizard_prontus/coreimag/head.gif" border="0" width="702" height="52" alt="Logo Prontus"></a></div>
     <div id="content">
-      <div style="float:right;">
-
-        <a href="javascript:subwin('/wizard_prontus/core/ayuda.html#paso3', 500, 75)" onMouseOver="ima_on('ayu','boto')" onMouseOut="ima_of('ayu','boto')"><img src="/wizard_prontus/core/imag/boto/ayu_of.gif" border="0" alt="Ayuda" name="ayu" width="61" height="19"></a>
+      <div class="help">
+        <a href="#"><img src="/wizard_prontus/core/imag/boto/ayu_of.gif" width="61" height="19" alt="Ayuda" name="ayu" class="cambia-boton"></a>
       </div>
       <div class="separa">
-      <div id="datos">
-        		<div class="pasos">
-        		<img src="/wizard_prontus/core/imag/titu/1b.gif" alt="paso 1" title="paso 1"/>
-        		<h2>DATOS BÁSICOS</h2>
-        		</div>
-        		<div class="pasos">
-        		<img src="/wizard_prontus/core/imag/titu/2b.gif" alt="paso 2" title="paso 2"/>
-        		<h2>SELECCIONAR MODELOS</h2>
-        		</div>
-        		<div class="pasos">
-        		<img src="/wizard_prontus/core/imag/titu/3.gif" alt="confirmación" title="confirmación"/>
-        		<h1>CONFIRMAR CONFIGURACIÓN</h1>
-        		</div>
-        		</div>
-      </div>
+          <div id="datos">
+            <div class="pasos">
+            <img src="imag/titu/1b.gif" alt="paso 1" title="paso 1" width="29" height="29" />
+            <h1>DATOS BÁSICOS</h1>
+            </div>
+            <div class="pasos">
+            <img src="imag/titu/2b.gif" alt="paso 2" title="paso 2" width="29" height="29" />
+            <h2>SELECCIONAR MODELOS</h2>
+            </div>
+            <div class="pasos">
+            <img src="imag/titu/3.gif" alt="confirmación" title="confirmación" width="29" height="29" />
+            <h2>CONFIRMAR CONFIGURACIÓN</h2>
+            </div>
+            </div>
+          </div>
       <div id="table01">
         <h3>
          <p>Antes de crear el Administrador de Contenidos Prontus, revise el siguiente detalle, de acuerdo a las opciones seleccionadas en los pasos anteriores:</p>
@@ -161,18 +161,18 @@
           </tr>
 
         </table>
-   <table border="0" width="80%" cellspacing="0" cellpadding="0">
-         <tr>
-           <td align="left">
-            <input type="button" name="imprimir" value="&nbsp;&nbsp;&nbsp;Imprimir este informe&nbsp;&nbsp;&nbsp;" class="boto" onClick="window.print();">
+        <table border="0" width="90%" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="left">
+              <input type="button" name="cancelar" value="Cancelar" class="boto" onclick="/wizard_prontus/" />
+              <input type="button" name="imprimir" value="&nbsp;&nbsp;&nbsp;Imprimir este informe&nbsp;&nbsp;&nbsp;" class="boto" onClick="window.print();">
             </td>
-           <td align="right">
-             <input type="button" name="anterior" value="&lt;&lt; Anterior" class="boto" onClick="history.back();">
-           </td>
-           <td align="right">
-             <input type="button" name="siguiente" value="Generar mi sitio" class="boto" onClick="enviar();">
-             <input type="hidden" name="Sbm_ACCION" value="Siguiente"></td>
-         </tr>
+            <td align="right">
+              <input type="button" name="anterior" value="&lt;&lt; Anterior" class="boto" onClick="history.back();">
+              <input type="button" name="siguiente" value="Generar mi sitio" class="boto" onClick="enviar();">
+              <input type="hidden" name="Sbm_ACCION" value="Siguiente">
+            </td>
+          </tr>
         </table>
         <p>&nbsp;</p>
   </div>
