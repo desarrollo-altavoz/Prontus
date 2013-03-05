@@ -998,6 +998,7 @@ sub parseaVars {
     $pagina =~ s/%%SCRIPT_QUOTA%%/$prontus_varglb::SCRIPT_QUOTA/ig;
 
     $pagina =~ s/%%FOTO_MAX_PIXEL%%/$prontus_varglb::FOTO_MAX_PIXEL/ig;
+    $pagina =~ s/%%FFMPEG_PARAMS%%/$prontus_varglb::FFMPEG_PARAMS/ig;
     $pagina =~ s/%%MAX_XCODING%%/$prontus_varglb::MAX_XCODING/ig;
 
     $buffer = '';
