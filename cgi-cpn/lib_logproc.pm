@@ -19,6 +19,7 @@ sub log_init {
   my ($title, $desc) = ($_[0], $_[1]);
   my ($buffer) = q{<html><head><title>%%title%%</title>
     <http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style type="text/css">
     body {font-family:Arial,Helvetica,sans-serif;}
     a {color:#00F;}

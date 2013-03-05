@@ -190,11 +190,11 @@ sub add2result {
   my $msg = $_[0];
   my $werr = $_[1];
   if ($werr) {
-    $RESULT .= "$msg<br/>";
     $HAY_ERROR = 1;
+    $RESULT .= "$msg<br/>";
   }
   else {
-    $RESULT .= "$msg<br/>" if (!$HAY_ERROR);
+    $RESULT .= "$msg<br/>";
     $HAY_ERROR = 0;
   };
 };
@@ -252,6 +252,7 @@ sub get_count {
   my ($sql, $salida, $nom);
   my $campo = $tabla . '_ID';
   $campo = 'ASSET_ART_ID' if ($tabla eq 'ASSET');
+  $campo = 'TAGSART_IDTAGS' if ($tabla eq 'TAGSART');
   $sql = "SELECT count($campo) from $tabla";
   $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($nom));
   $salida->fetch;

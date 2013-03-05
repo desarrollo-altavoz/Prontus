@@ -14,7 +14,7 @@
 	$config['PSpell.mode'] = PSPELL_FAST;
 	$config['PSpell.spelling'] = "";
 	$config['PSpell.jargon'] = "";
-	$config['PSpell.encoding'] = "utf-8";
+	$config['PSpell.encoding'] = "";
 
 	// PSpellShell settings
 	$config['PSpellShell.mode'] = PSPELL_FAST;

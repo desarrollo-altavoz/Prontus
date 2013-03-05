@@ -169,9 +169,9 @@ sub make_lista {
       last;
     };
     $loopcounter++;
-  	my ($una_fila, $filler) = &generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop, $loopcounter);
+    my ($una_fila, $filler, $filler2) = &generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop, $loopcounter);
 
-  	$filas .= $una_fila;
+    $filas .= $una_fila;
     $nro_filas++;
   };
   $salida->finish;
@@ -194,7 +194,7 @@ sub make_lista {
 #  if ($art_id ne '') {
 #
 #    $reldir_artic =~ s/%%DIRFECHA%%/$art_dirfecha/i;
-#		$lnk = "$reldir_artic/$art_id" . '.' . $art_extension;
+#       $lnk = "$reldir_artic/$art_id" . '.' . $art_extension;
 #
 #
 #    if (($art_fecha eq '00000000') or ($art_fecha eq '999999999') or ($art_fecha eq '')) {
@@ -258,10 +258,9 @@ sub make_lista {
 # ---------------------------------------------------------------
 sub generar_fila {
 # Genera y retorna cada fila de la tabla.
-    my ($reldir_artic, $art_id, $art_extension, $loop, $loopcounter, $tot_artics, $refhash_campos_xml) = @_;
+    my ($reldir_artic, $art_id, $art_extension, $loop, $loopcounter, $tot_artics, $refhash_campos_xml, $refhash_campos_xdata) = @_;
 
-    my %campos_xml;
-    %campos_xml = %$refhash_campos_xml if (ref $refhash_campos_xml);
+    my (%campos_xml, %claves_adicionales);
     my $fila = $loop;
     # warn "fila1[$fila]";
 
@@ -283,9 +282,15 @@ sub generar_fila {
 
         if ((! ref $refhash_campos_xml) || ($campos_xml{'_txt_titular'} eq '')) {
             %campos_xml = $artic_obj->get_xml_content();
-        };
+        } else {
+            %campos_xml = %$refhash_campos_xml;
+        }
 
-        my %claves_adicionales = $artic_obj->get_xdata($buffer);
+        if (! ref $refhash_campos_xdata) {
+            %claves_adicionales = $artic_obj->get_xdata($buffer);
+        } else {
+            %claves_adicionales = %$refhash_campos_xdata;
+        }
         $claves_adicionales{_ts} = $art_id;
         $claves_adicionales{_loopcounter} = $loopcounter;
         $claves_adicionales{_totartics} = $tot_artics;
@@ -309,9 +314,12 @@ sub generar_fila {
         $fila = '';
     };
 
-    my $p = \%campos_xml;
+    #~ print STDERR "SECCION [$campos_xml{'_ts'}]: $campos_xml{'_nom_seccion1'}\n";
 
-    return ($fila, $p);
+    my $p = \%campos_xml;
+    my $x = \%claves_adicionales;
+
+    return ($fila, $p, $x);
 
 };
 
@@ -536,9 +544,9 @@ sub make_lista_manualtax {
   while ($salida->fetch) {
     $loopcounter++;
     # print STDERR "\n$art_fecha $art_horap Y $dt_system $hhmm_system\n";
-  	my ($una_fila, $filler) = &generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop, $loopcounter);
+    my ($una_fila, $filler) = &generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop, $loopcounter);
 
-  	$filas .= $una_fila;
+    $filas .= $una_fila;
     $nro_filas++;
 
   };
@@ -597,17 +605,17 @@ sub procesar_condicional_extra {
         $res = $2;
         $mod = $loopcounter % $div;
         if ($mod != $res) {
-            $localbuf =~ s/%%(IFV\($div\, *$res\))%%(.+?)%%\/(IFV)%%//is; 
+            $localbuf =~ s/%%(IFV\($div\, *$res\))%%(.+?)%%\/(IFV)%%//is;
 
         };
     };
-    
+
     while ($buffer =~ /%%NIFV\((\d+)\, *(\d+)\)%%.+?%%\/NIFV%%/isg) {
         $div = $1;
         $res = $2;
         $mod = $loopcounter % $div;
         if ($mod == $res) {
-            $localbuf =~ s/%%(NIFV\($div\, *$res\))%%(.+?)%%\/(NIFV)%%//is; 
+            $localbuf =~ s/%%(NIFV\($div\, *$res\))%%(.+?)%%\/(NIFV)%%//is;
 
         };
     };

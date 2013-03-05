@@ -1,4 +1,31 @@
 ====================================================================================================
+11.2.60 - 05/03/2013
+====================================================================================================
+- bugfix: Se agrega la el meta tag de codificación utf8 a los logs de procesamiento.
+- improvement: Se hacen varias mejoras menores de rendimiento.
+- improvement: Al leer las marcas externas, se cambia el formato para considerar: /sist_externo/fechac/ts/, en vez del antiguo.
+- improvement: Al leer las marcas externas, las marcas globales se "cachean" en prontus_varglb.
+- improvement: En la función: lib_tax::generar_fila, se agrega la opción se pasar las marcas externas, previamente cacheadas.
+- improvement: Al ejecutarse el prontus_cron_taxport y prontus_cron_list, se dejan los XMLs leídos como variable global.
+- bugfix: En el Listado de Artículos, al guardar la portada, duarante una milésimas de segundo, se veía el ícono de Drag & Drop.
+- bugfix: Se corrigen algunos plugins y archivos de lenguaje, que quedaron malos con el cambio de versión de VTXT.
+- bugfix: Se corrige bug de la marca %%_totartics%% que tomaba todos los artículos, aunque no estuvieran publicados.
+- improvement: Se agrega la marca %%_area%% en portadas, con el número del área.
+- changes: Se eliminan todas las referencias a las variables: TAXPORT_REFRESH y TAXPORT_REFRESH_SEGS, por estar obsoletas
+- bugfix: Se corrige bug en prontus_regenera_taxport.cgi, que invocaba incluso tripletas que no existían.
+- changes: Se baja el tiempo de sleep al generar las páginas > 1, de 2 segundos a medio segundo.
+- improvement: Se comienza a usar lib_maxrunning.pm en las CGIs de Comentarios, Enviar, Imprimir, Posting, Prontus Form
+- improvement: Se eliminan referencias a funciones locales de chequeo de instancias corriendo (para centralizar en lib_maxrunning.pm)
+- improvement: Se cambia el uso de funciones locales del tipo: is_win32, para centralizar en &lib_prontus::is_win32()
+- changes: Se evita que el preview se cierre mientras esta en modo "Loading", para evitar comportamientos extraños
+- bugfix: En el Administrar usuarios, se corrige error en chrome que descuadraba el listado de portadas y artículos
+- improvement: Se mejora un poco la gráfica para facilitar la usabilidad del Administrar usuarios
+- bugfix: Se corrige error al crear tablas, bajo ciertas circunstancias, no mostraba la creación de algunas tablas
+- bugfix: Error al contar los registros de la tabla: TAGSART
+- changes: Se agrega variable FFMPEG_PARAMS, para ingresar parámetros custom en la transcodificación de videos.
+- bugfix: Se mejora la manera en que se recupera la contraseña, agregando una confirmación por email antes del cambio.
+    
+====================================================================================================
 11.2.59 - 21/02/2013
 ====================================================================================================
 - notice: Se actualiza la version de la UI de jquery a la 1.9.2

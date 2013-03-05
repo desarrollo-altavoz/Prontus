@@ -9,7 +9,6 @@
 # http://www.prontus.cl/license.html
 # --------------------------------------------------------------
 
-&_PARCHE_max_running(5); # Soporta un maximo de 5 copias corriendo.
 # ##########################################
 # Proposito.
 #
@@ -153,7 +152,14 @@ use lib_captcha;
 use lib_captcha2;
 use Artic;
 use glib_str_02;
+use lib_maxrunning;
 
+# Soporta un maximo de n copias corriendo.
+if (&lib_maxrunning::maxExcedido(5)) {
+    print "Content-type: text/html\n";
+    print "\n<html><body><p>Error: Servidor ocupado. Intente otra vez m&aacute;s tarde.</p></body></html>.\n";
+    exit;
+};
 
 
 # ##############################################
@@ -667,44 +673,3 @@ sub des_normaliza_fecha {
 
   return "$dia/$mes/$ano";
 }; # des_normaliza_fecha.
-
-# ******************** PARCHE AUTOMATICO ***********************************
-# 11/2007 - ych - Parche aplicado AUTOMATICAMENTE para controlar
-# nro. de instacias simulataneas.
-
-# ------------------------------------------------------------------------- #
-# Detecta si es plataforma win32, solo para ambiente web.
-sub _PARCHE_is_win32 {
-  my $ruta_script = $ENV{'SCRIPT_FILENAME'};
-  if ($ruta_script eq '') {
-    $ruta_script = $ENV{'PATH_TRANSLATED'}; # win
-  };
-  if ($ruta_script =~ /^\w:/) {
-    return 1; # Es Windows.
-  }else{
-    return 0; # Es Unix.
-  };
-}; # _PARCHE_is_win32
-
-# ------------------------------------------------------------------------- #
-# Retorna las copias de del script que se encuentran corriendo.
-sub _PARCHE_myself_running {
-   my($res) = qx/ps axww | grep $0 | grep -v ' grep ' | wc -l/;
-   $res =~ s/\D//gs;
-   return $res;
-}; # _PARCHE_myself_running
-
-# ------------------------------------------------------------------------- #
-# Aborta si hay mas de $max copias corriendo.
-sub _PARCHE_max_running {
-  my($max) = $_[0];
-  if (! &_PARCHE_is_win32()) {
-    if (&_PARCHE_myself_running() > $max) {
-      print "Content-type: text/html\n";
-      print "\n<html><body><p>Error: Servidor ocupado. Intente otra vez m&aacute;s tarde.</p></body></html>.\n";
-      exit;
-    };
-  };
-}; # _PARCHE_max_running
-# ******************** FIN PARCHE AUTOMATICO ********************************
-# -------------------------------END SCRIPT----------------------
