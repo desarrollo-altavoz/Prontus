@@ -44,6 +44,7 @@
 # 1.2 - 08/10/2012 - EAG - Se agrega nice al momento de transcodificar
 # 1.3 - 19/10/2012 - EAG - Se corrige bug en el comando de transcodificación
 # 1.4 - 26/10/2012 - EAG - Se transcodifica cualquier audio excepto AAC.
+# 1.5 - 05/03/2013 - EAG - Se agrega variable prontus para parametros de transcodificación.
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -204,7 +205,12 @@ sub get_cmd_ffmpeg {
     my $destino = shift;
     my @info =`$prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen 2>&1`; # instantaneo
     my ($width, $height);
-    my $videoFlags = "-flags +loop -cmp +chroma -partitions +parti8x8+parti4x4+partp8x8+partb8x8 -me_method umh -subq 8 -me_range 16 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 2 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -directpred 3 -trellis 1 -wpredp 2 -coder 0 -bf 0 -refs 1 -flags2 -wpred-dct8x8+mbtree -level 30 -maxrate 10000000 -bufsize 10000000 -wpredp 0 -g 25 -b 600000"; #configuracion de compresion, para no utilizar presets ffmpeg
+
+    my $videoFlags = $prontus_varglb::FFMPEG_PARAMS;
+    if ($videoFlags eq '' ) {
+        $videoFlags = "-flags +loop -cmp +chroma -partitions +parti8x8+parti4x4+partp8x8+partb8x8 -me_method umh -subq 8 -me_range 16 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 2 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -directpred 3 -trellis 1 -coder 0 -bf 0 -refs 1 -flags2 -wpred-dct8x8+mbtree -level 30 -maxrate 10000000 -bufsize 10000000 -wpredp 0 -g 25 -b 600000"; #configuracion de compresion, para no utilizar presets ffmpeg
+    }
+
     my ($h264, $baseline,$vcodec,$acodec,$ext);
     print STDERR "$origen \n";
     if ($origen =~ /.+\/\d{8}\/mmedia\/multimedia_video.+?\d{6}\.(\w+)$/) {
