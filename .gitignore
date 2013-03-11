@@ -15,15 +15,14 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
-# Local Files #
+# Server Files #
 ###############
 /_prontus_update
-/cesarcillo
 /release
 /index.html
 /.project
 /.settings
-/cgi-cpn/prontus_error_log/
-taxport_new.sh
-taxport_orig.sh
-/wizard_prontus/_data/
+/cgi-cpn/prontus_error_log
+/wizard_prontus/_data
+/wizard_prontus/models
+
