@@ -88,9 +88,6 @@ if (isset($config['general.remote_rpc_url'])) {
 	die();
 }
 
-
-
-
 // Get JSON data
 $json = new Moxiecode_JSON();
 $input = $json->decode($raw);
@@ -101,12 +98,6 @@ if (isset($config['general.engine'])) {
 	$result = call_user_func_array(array($spellchecker, $input['method']), $input['params']);
 } else
 	die('{"result":null,"id":null,"error":{"errstr":"You must choose an spellchecker engine in the config.php file.","errfile":"","errline":null,"errcontext":"","level":"FATAL"}}');
-
-// fix from http://tinymce.moxiecode.com/forum/viewtopic.php?id=19879
-if ($input['method'] == 'getSuggestions') {
-    $result = array_map('utf8_decode', $result);
-}
-
 
 // Request and response id should always be the same
 $output = array(

@@ -610,8 +610,8 @@ sub generar_taxports_thislevel {
                     $filas{"$mv|$nombase_plt"} .= $fila_content;
 
                     if ($nro_pag > 0) {
-                        #~ print STDERR "A dormir se ha dicho\n";
-                        #sleep 2;
+                        # Se baja a medio segundo
+                        usleep(500000);
                     };
                 };
             };

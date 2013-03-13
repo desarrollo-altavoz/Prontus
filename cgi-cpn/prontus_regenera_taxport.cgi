@@ -65,8 +65,8 @@ my %NOMBASE_PLTS;
 my ($FILASXPAG);
 
 if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
-  print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
-  exit;
+    print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
+    exit;
 };
 
 $FORM{'prontus'} = $ARGV[0];
@@ -86,17 +86,21 @@ my %FIDS2PROCESS;
 main:{
 
     my $ini_t = time; # debug
-	
-	# Se cargan todos los niveles, de manera inteligente
+        
+    # Se cargan todos los niveles, de manera inteligente
     &cargar_taxports();
     
-	# Se gatillan los procesos taxport    
+    #~ foreach my $level (sort keys %LEVELS2TRIGGER) {
+    #~     print STDERR "$level\n" if($LEVELS2TRIGGER{$level});
+    #~ };
+    
+    # Se gatillan los procesos taxport    
     &gatillar_procesos();
-
 };
 
 # ---------------------------------------------------------------
 sub conecta_db {
+    
     # Conectar a BD
     my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($base)) {
@@ -118,41 +122,39 @@ sub cargar_taxports {
     %TABLA_SECC = &lib_tax::carga_tabla_seccion($base);
     %TABLA_TEM = &lib_tax::carga_tabla_temas($base);
     %TABLA_STEM = &lib_tax::carga_tabla_subtemas($base);
-
-	%FIDS2PROCESS = &get_fids2process($base);
-
+    %FIDS2PROCESS = &get_fids2process($base);
+    
     $base->disconnect;
 
     # secc
-	my ($secc_id, $secc_nom, $secc_port, $secc_nom4vistas);
-	my $pid;
-	my (@pid) = (); # PIDs de los procesos hijos.
-	foreach $secc_id (keys %TABLA_SECC) {
+    my $pid;
+    my (@pid) = (); # PIDs de los procesos hijos.
+    foreach my $secc_id (keys %TABLA_SECC) {
+        my ($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
+        &agregar_taxports_thislevel($secc_id, '', '');
+        
+        # subtemas
+        foreach my $temas_id (keys %TABLA_TEM) {
+            my ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
+            next unless($secc_id eq $temas_idparent);
+            &agregar_taxports_thislevel($secc_id, $temas_id, '');
 
-		($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
-		&agregar_taxports_thislevel($secc_id, '', '');
-		
-		my ($temas_id, $temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas);
-		foreach $temas_id (keys %TABLA_TEM) {
-			($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
-			&agregar_taxports_thislevel($secc_id, $temas_id, '');
+            # subtemas
+            foreach my $subtemas_id (keys %TABLA_STEM) {
+                my ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
+                next unless($temas_id eq $subtemas_idparent);
+                &agregar_taxports_thislevel($secc_id, $temas_id, $subtemas_id);
+            };
 
-			# subtemas
-			my ($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas);
-			foreach $subtemas_id (keys %TABLA_STEM) {
-				($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
-				&agregar_taxports_thislevel($secc_id, $temas_id, $subtemas_id);
-			};
-
-		}; # foreach temas
-		
-	}; # foreach seccs
-	
-	my @levels = keys %LEVELS2TRIGGER;
-	my $totartics = (scalar @levels);
-	if($totartics == 0) {
-		&agregar_taxports_thislevel('', '', ''); # todas
-	};
+        }; # foreach temas
+                
+    }; # foreach seccs
+        
+    my @levels = keys %LEVELS2TRIGGER;
+    my $totartics = (scalar @levels);
+    if($totartics == 0) {
+        &agregar_taxports_thislevel('', '', ''); # todas
+    };
 };
 
 # ---------------------------------------------------------------
@@ -161,71 +163,71 @@ sub agregar_taxports_thislevel {
 # a este nivel taxonomico, para todas las vistas declaradas y fids.
 
     my ($secc_id, $temas_id, $subtemas_id) = @_;
-	
-	if($subtemas_id) {
-		$LEVELS2TRIGGER{"$secc_id/$temas_id/$subtemas_id"} = 1;
-		$LEVELS2TRIGGER{"$secc_id/$temas_id/"} = 0;
-		$LEVELS2TRIGGER{"$secc_id//"} = 0;
-		
-	} elsif($temas_id) {
-		if(! exists $LEVELS2TRIGGER{"$secc_id/$temas_id/"}) {
-			$LEVELS2TRIGGER{"$secc_id/$temas_id/"} = 1;
-			$LEVELS2TRIGGER{"$secc_id//"} = 0;
-		}
-	} else {
-		if(! exists $LEVELS2TRIGGER{"$secc_id//"}) {
-			$LEVELS2TRIGGER{"$secc_id//"} = 1;
-		}
-	};
+        
+    if($subtemas_id) {
+        $LEVELS2TRIGGER{"$secc_id/$temas_id/$subtemas_id"} = 1;
+        $LEVELS2TRIGGER{"$secc_id/$temas_id/"} = 0;
+        $LEVELS2TRIGGER{"$secc_id//"} = 0;
+            
+    } elsif($temas_id) {
+        if(! exists $LEVELS2TRIGGER{"$secc_id/$temas_id/"}) {
+            $LEVELS2TRIGGER{"$secc_id/$temas_id/"} = 1;
+            $LEVELS2TRIGGER{"$secc_id//"} = 0;
+        }
+    } else {
+        if(! exists $LEVELS2TRIGGER{"$secc_id//"}) {
+            $LEVELS2TRIGGER{"$secc_id//"} = 1;
+        }
+    };
 };
 
 # ---------------------------------------------------------------
 sub gatillar_procesos {
-	
-	use FindBin '$Bin';
+        
+    use FindBin '$Bin';
     my $rutaScript = $Bin;
     my $pathnice = &lib_prontus::get_path_nice();
     $pathnice = "$pathnice -n19 " if($pathnice);
-    
-	foreach my $fid_name (keys %FIDS2PROCESS) { # key = 'fid_general:General(general.php)'
-		
-		foreach my $levels (sort keys %LEVELS2TRIGGER) {
-			
-			next unless($LEVELS2TRIGGER{$levels});
-			my $param_especif_taxport = "$fid_name/$levels";			
-			my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
-			print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
-			system $cmd;
-		}
-	}
+
+    foreach my $fid_name (keys %FIDS2PROCESS) { # key = 'fid_general:General(general.php)'
+
+        foreach my $levels (sort keys %LEVELS2TRIGGER) {
+
+            next unless($LEVELS2TRIGGER{$levels});
+            my $param_especif_taxport = "$fid_name/$levels";                        
+            my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
+            print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+            system $cmd;
+        }
+    }
 }
 # ---------------------------------------------------------------
 sub get_fids2process {
 # Obtiene fids para los cuales se generaran portadas taxonomicas.
 # Estos son solo los que cuenten con plantilla taxonomica en el dir correspondiente:
 # /<_prontus_id>/plantillas/tax/port/<_fid>[-<_mv>]/taxport[_<_seccion>][_<_tema>][_<_subtema>].<ext>
-	
-	my $base = $_[0];
-	
+        
+    my $base = $_[0];
+        
     my %fids;
-	my %fidswithtax;
-	my $fid;
-	
-	foreach my $key (keys %prontus_varglb::FORM_PLTS) { # key = 'fid_general:General(general.php)'
-		my $fid_name;
-		next if ($key !~ /^(\w+) *:/);
-		$fid_name = $1;
-		$fids{$fid_name} = 1;
-	};
-	
-	my $sql = "select ART_TIPOFICHA from ART where ART_IDSECC1<>0 or ART_IDSECC2<>0 or ART_IDSECC3<>0 group by ART_TIPOFICHA";
+    my %fidswithtax;
+    my $fid;
+    
+    foreach my $key (keys %prontus_varglb::FORM_PLTS) { # key = 'fid_general:General(general.php)'
+        my $fid_name;
+        next if ($key !~ /^(\w+) *:/);
+        $fid_name = $1;
+        $fids{$fid_name} = 1;
+    };
+    
+    my $sql = "select ART_TIPOFICHA from ART where ART_IDSECC1<>0 or ART_IDSECC2<>0 or ART_IDSECC3<>0 group by ART_TIPOFICHA";
     my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($fid));
     while ($salida->fetch) {
-		if($fids{$fid}) {
-			$fidswithtax{$fid} = 1;
-		};
+        if($fids{$fid}) {
+            $fidswithtax{$fid} = 1;
+        };
     };
-	
+
     return %fidswithtax;
 };
 # -------------------------END SCRIPT----------------------

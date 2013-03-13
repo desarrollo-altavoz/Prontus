@@ -153,6 +153,11 @@ sub carga_modelos {
 # Valida y carga modelos prontus disponibles.
   my $buffer = $_[0];
   my $models_dir = "$prontus_varglb::DIR_SERVER/wizard_prontus/models";
+  
+  if(! -d $models_dir) {
+    return 'Directorio de modelos, no valido.';
+  }
+  
   my @lisdir = &glib_fildir_02::lee_dir($models_dir);
   @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
   my $k;
