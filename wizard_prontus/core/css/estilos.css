@@ -1,7 +1,7 @@
 /* CSS Document */
 body { margin:0px; background: #F5F5F5; font-family:Tahoma, Arial, Helvetica, sans-serif; }
 a {text-decoration:underline; font-size:11px; color:#b4d6ee;}
-a:hover {color:#cc0000;}
+a:hover {color:#ffffff;}
 h1,h2,p { text-align:left; color: white;}
 h3 { width:100%; font-size:13px; font-weight:bold; color:#ffffff; margin:0; padding:5px 0 0 5px; text-align:left;}
 h3 p {padding:0 5px 5px 5px; margin:0; color:#ffffff;}
@@ -15,6 +15,8 @@ form { margin:0px;}
 #table01 { width:620px; padding:0; margin: 0 auto 15px auto; background-color:#0576c6;}
 #table01 #tab{width:93%; border:0; padding:7px;}
 
+.link-reporte {font-size:13px; font-weight:bold;}
+.separador {clear:both;}
 .separa {display:table; width:620px; margin:5px auto 0 auto; clear:both; text-align:left;}
 .separa p { font-size:12px; color:#ffffff; margin:0 0 10px 0;}
 .separa h1{ margin:0 0 5px 0;}
@@ -53,4 +55,37 @@ form { margin:0px;}
 #models {width:100%; margin-top:5px;}
 #models th {background-color:#333333; color:#ffffff; padding:4px 8px; font-size:13px;}
 #models td {background-color:#F5F5F5; padding:2px 4px; font-size:12px;}
-#models td a {color:#0576C6;}
+#models tr.newmodel td {background-color:#E0E0E0; color:#555555;}
+#models td h4 {font-size:14px; margin:4px 2px;}
+#models td .desc {font-size:12px;}
+#models td .desc p.description {color:#0576C6; display:block;}
+#models td .desc p.description a {color:#0576C6;}
+#models td.version {width:120px;}
+#models td.version div {padding:5px 0px;} 
+#models td.version .status {font-weight:900; color:#006600;} 
+#models td.acciones {width:120px;}
+#models td.screenshot {width:120px; text-align:center;}
+#models .acciones .boton-gris3 .icono {vertical-align:middle;}
+
+/** control de los botones **/
+#models .newmodel .description {display:none;}
+#models .newmodel .eliminar {display:none;}
+#models .newmodel .actualizar {display:none;}
+#models .newmodel .descargar {display:block;}
+#models .installed .description {display:inline;}
+#models .installed .eliminar {display:block;}
+#models .installed .actualizar {display:none;}
+#models .installed .actualizable .actualizar {display:block;}
+#models .installed .descargar {display:none;}
+#models .content-loading {display:none;}
+
+.boton-gris3 {margin:5px 0; clear:both;}
+.boton-gris3 a.button {background: url("../imag/boto/boto_gris3_right.png") no-repeat scroll top right;  display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#333333; font-size:11px; font-weight:bold; text-decoration:none;}
+.boton-gris3 a.button span {background: url("../imag/boto/boto_gris3_left.png") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
+.boton-gris3 a.button:hover {background: url("../imag/boto/boto_azul2_right.png") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button:hover span {background: url("../imag/boto/boto_azul2_left.png") no-repeat;}
+.boton-gris3 a.button.selected {background: url("../imag/boto/boto_azul2_right.png") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button.selected span {background: url("../imag/boto/boto_azul2_left.png") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
+
+#table01 .item a {font-size:13px;}
+#table01 .item img {vertical-align:middle;}

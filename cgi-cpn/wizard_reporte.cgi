@@ -112,7 +112,7 @@ main:{
   $pagina =~ s/%%dir_sup%%/$aux/ if ($FORM{'DIR'} ne '');
   $pagina =~ s/%%tope%%/$FORM{'TOPE'}/;
 
-  if ($FORM{'TOPE'} eq $FORM{'DIR'}) {
+  if ($FORM{'TOPE'} eq $FORM{'DIR'} || $FORM{'DIR'} eq "/$prontus_id") {
     $pagina =~ s/<!--ATRAS-->.*<!--\/ATRAS-->//s;
   };
 
@@ -123,7 +123,7 @@ main:{
   $pagina =~ s/%%lnk_sitio%%/$lnk_sitio/ig;
 
   # Eliminar archivo inf.
-  unlink $INF_FILE;
+  #~ unlink $INF_FILE;
 
   print $pagina;
 };

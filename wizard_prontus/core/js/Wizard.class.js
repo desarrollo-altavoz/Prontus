@@ -1,6 +1,12 @@
 
 var Wizard = {
     
+    downloadingModel: false,
+    
+    /**
+     * Funcion que inicia los pasos comunes.
+     * Recibe como parámetro el paso que se va a ejecutar
+     **/
     init: function(paso) {
         
         $('#link-check').click(function() {
@@ -26,7 +32,11 @@ var Wizard = {
         }       
     },
     
-    // -----------------------------------------------------------------    
+    /**
+     * Inicializa el link para desplegar la ayuda en algunos de los pasos del Wizard
+     * El link a la ayuda se define en el botón correspondiente. Lo que hace este función
+     * es setear el handler para abrirla en colorbox
+     **/
     initHelp: function() {
         $('h3').bind('click', function() {
             $('.info p').hide();
@@ -43,19 +53,31 @@ var Wizard = {
         }
     },
     
-    // -----------------------------------------------------------------
+    /**
+     * Inicializa el administrador de modelos.
+     **/
     initDescarga: function() {
         
-        $('.screenshot').colorbox();
+        $('.screenshot a').colorbox();
+        
         $('.description').live('click', function() {
             var url = $(this).attr('href');
-            var name = $(this).attr('rel');
-            Utiles.subWin(url, name, 730, 700, 500, 75);
+            $(this).colorbox({
+                open: true,
+                href: url,
+                width:'900px',
+                height:'650px',
+                //scrolling: false,
+                iframe: true
+            });
+            return false;
         });
         
     },
     
-    // -----------------------------------------------------------------
+    /**
+     * Gatilla la CGI para el chequeo de plataforma
+     **/
     check_install: function() {
     
         var validator = new Validador('form1','one','#FDF8C1');
@@ -69,6 +91,10 @@ var Wizard = {
         $.fn.colorbox({open:true, href: urlcheck, width:'750px', height:'580px'});
     },
 
+    /**
+     * Validaciones para el áso numero 1
+     * Luego de validar, envía el formulario para pasar al paso 2
+     **/
     enviarPaso1: function() {
         
         var validator = new Validador('form1','one','#FDF8C1');
@@ -101,31 +127,248 @@ var Wizard = {
         validator.send();
     },    
     
+    /**
+     * Validaciones y envío del paso 2
+     * Luego de validar, envía el formulario para pasar al resumen
+     **/
     enviarPaso2: function() {
+        
+        var validator = new Validador('form1','one','#FDF8C1');
+        validator.addconstraint('PRONTUS_MODEL','obligatorio','','Debe indicar el Modelo Prontus que va a utilizar.');
+                
+        if (!validator.validar()) {
+            return false;
+        };
+        validator.send();
+    },
+    
+    /**
+     * Gatilla la CGI que genera el Prontus, al final del Wizard
+     * Por ahor asólo se hace un submit, pero a futuro se podrían agregar
+     * validaciones o confirmaciones, etc
+     **/
+    enviarConfirmacion: function() {
+        
+        $('[name="form1"]').trigger('submit');
         
     },
     
+    /**
+     * Funcion encargada de volver al comienzo del Wizard.
+     * Como ese se abre generalmente en una ventana normal, no se pude hacer window.close()
+     * Se usa esta función, para centralizar el comportamiento del botón.
+     **/
     cancelarWizard: function() {
         
         window.location.href='/wizard_prontus/';
         
     },
     
-    showDescargar: function() {
+    /**
+     * Centraliza la función de imprimir del Paso de Confirmación
+     * Actualmente sólo realiza un window.print(), pero a futuro, se podría implementar
+     * algo un poco más elaborado.
+     **/
+    imprimirResumen: function() {
         
-        window.location.href = 'wizard_show_descargar.cgi';
+        window.print();
     },
     
+    /**
+     * Muestra la ventana de administración de los modelos
+     **/
+    showDescargar: function() {
+        
+        window.location.href = 'wizard_show_models.cgi';
+    },
+    
+    /**
+     * Muestra el paso numero 2.
+     * Se usa para volver, desde el resumen o el admin de modelos
+     **/
     showPaso2: function() {
         
         window.location.href = 'wizard_show_paso2.cgi';
     },
+    
+    /**
+     * Muestra el paso numero 2.
+     * Se usa para volver, desde el paso 2
+     **/
     showPaso1: function() {
         
         window.location.href = '/wizard_prontus/core/paso1.html';
+    },
+    
+    /**
+     * Handler utilizado en el Administrador de Modelos.
+     * Recibe como parámetro el modelo que se desea eliminar
+     * Invoca la CGI de borrado y luego borra el modelo del listado
+     **/
+    eliminarModelo: function(id) {
+        
+        if(confirm('¿Está seguro que desea eliminar este modelo?')) {
+            
+            var urlCGI = './wizard_model_delete.cgi';
+            $.ajax({
+                url: urlCGI,
+                data: {
+                    modelid: id
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+
+                    Wizard.handleError(urlCGI, jqXHR, textStatus, errorThrown);
+
+                },
+                success: function(resp) {
+                    
+                    if(typeof resp !== 'Object' && typeof resp !== 'object') {
+                        alert('Respuesta no valida desde el servidor');
+                        return;
+                    }
+                    if(resp.error) {
+                        alert(resp.msg);
+                        
+                    } else {
+                        if(resp.nodisponible) {
+                            $('#idmodel-'+id).fadeOut(function() {
+                                $(this).remove();
+                            });
+                        } else {
+                            $('#idmodel-'+id+' .version .actual span').html('No instalado');
+                            $('#idmodel-'+id).removeClass('installed');
+                            $('#idmodel-'+id).addClass('newmodel');
+                            $('#idmodel-'+id).insertAfter('#models .installed:last');
+                        }
+                    }
+                }
+            });
+        }
+    },
+        
+    descargarModelo: function(id) {
+        
+        if(Wizard.downloadingModel) {
+            alert('Por favor, espere a que termine la descarga anterior');
+            return;
+        }
+        
+        Wizard.showLoading(id, true);
+        var urlCGI = './wizard_model_download.cgi';
+        $.ajax({
+            url: urlCGI,
+            data: {
+                modelid: id
+                
+            },
+            complete: function() {
+                Wizard.showLoading(id, false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                
+                Wizard.handleError(urlCGI, jqXHR, textStatus, errorThrown);
+                
+            },
+            success: function(resp) {
+                
+                if(typeof resp !== 'Object' && typeof resp !== 'object') {
+                    alert('Respuesta no valida desde el servidor');
+                    return;
+                }
+                if(resp.error) {
+                    alert(resp.msg);
+                    
+                } else {
+                    var offset = $('#models').offset();
+                    $('html, body').animate({scrollTop: offset.top}, 'fast');
+                    $('#idmodel-'+id).insertAfter('#models tr:first');                    
+                    
+                    $('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
+                    $('#idmodel-'+id).removeClass('newmodel').addClass('installed');
+                    
+                    var color = $('#idmodel-'+id+' td').css('background-color');
+                    $('#idmodel-'+id+' td').css('background-color', '#F0E0D0');
+                    setTimeout(function() {
+                        $('#idmodel-'+id+' td').css('background-color', '');
+                    }, 2000);
+                }
+               
+            }
+            
+        });
+        
+    },
+    
+    actualizarModelo: function(id) {
+        
+        if(Wizard.downloadingModel) {
+            alert('Por favor, espere a que termine la descarga anterior');
+            return;
+        }
+        
+        Wizard.showLoading(id, true);
+        var urlCGI = './wizard_model_download.cgi';
+        $.ajax({
+            url: urlCGI,
+            data: {
+                modelid: id
+                
+            },
+            complete: function() {
+                Wizard.showLoading(id, false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                Wizard.handleError(urlCGI, jqXHR, textStatus, errorThrown);
+            },
+            success: function(resp) {
+                
+                if(typeof resp !== 'Object' && typeof resp !== 'object') {
+                    alert('Respuesta no valida desde el servidor');
+                    return;
+                }
+                if(resp.error) {
+                    alert(resp.msg);
+                    
+                } else {
+                    $('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
+                    $('#idmodel-'+id).removeClass('newmodel').addClass('installed');
+                    
+                    $('#idmodel-'+id+' .version .status').html('Actualizado');
+                    $('#idmodel-'+id+' .actualizable').removeClass('actualizable');
+                }
+            }
+        });
+    },
+    
+    /**
+     * Para manejar el evento de descarga. Se centraliza en este método
+     * la lógica de "bloquear" la interface mientras está descargando
+     **/
+    showLoading: function(id, flag) {
+        
+        if(flag) {
+            Wizard.downloadingModel = true;
+            $("#idmodel-"+id+' .acciones .content-buttons').hide();
+            $("#idmodel-"+id+' .acciones .content-loading').show();
+            
+        } else {
+            Wizard.downloadingModel = false;
+            $("#idmodel-"+id+' .acciones .content-buttons').show();
+            $("#idmodel-"+id+' .acciones .content-loading').hide();
+        }
+    },
+    
+    /**
+     * Funcion encargada de manejar el error que viene de las respuestas Ajax
+     * Se deja centralizado para cambiar el tipo de manejo en caso necesario
+     **/
+    handleError: function(url, XMLHttpRequest, textStatus, errorThrown) {
+        
+        alert("Server error procesando request ajax:\nURL invocada:"
+                + url + "\ntextStatus="
+                + textStatus + "\nXMLHttpRequest.status="
+                + XMLHttpRequest.status + '-' + XMLHttpRequest.statusText
+                + "\nXMLHttpRequest.responseText=[" + XMLHttpRequest.responseText
+                + "]\nResponseHeaders=" + XMLHttpRequest.getAllResponseHeaders());
     }
-    
-    
-    
-    
 }
