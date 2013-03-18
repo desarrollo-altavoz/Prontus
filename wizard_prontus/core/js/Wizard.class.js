@@ -56,12 +56,20 @@ var Wizard = {
     /**
      * Inicializa el administrador de modelos.
      **/
-    initDescarga: function() {
+    initAdminModels: function() {
         
-        $('.screenshot a').colorbox();
+        $('.screenshot a').each(function() {
+            if($(this).attr('href') == $(this).find('img').attr('src')) {
+                $(this).replaceWith($(this).find('img'));
+                
+            } else {
+                $(this).colorbox();
+            }
+        });
         
-        $('.description').live('click', function() {
+        $('.description a').live('click', function() {
             var url = $(this).attr('href');
+            //~ alert(url);
             $(this).colorbox({
                 open: true,
                 href: url,
@@ -209,7 +217,7 @@ var Wizard = {
         
         if(confirm('¿Está seguro que desea eliminar este modelo?')) {
             
-            var urlCGI = './wizard_model_delete.cgi';
+            var urlCGI = './wizard_models_delete.cgi';
             $.ajax({
                 url: urlCGI,
                 data: {
@@ -221,7 +229,6 @@ var Wizard = {
 
                 },
                 success: function(resp) {
-                    
                     if(typeof resp !== 'Object' && typeof resp !== 'object') {
                         alert('Respuesta no valida desde el servidor');
                         return;
@@ -235,17 +242,22 @@ var Wizard = {
                                 $(this).remove();
                             });
                         } else {
-                            $('#idmodel-'+id+' .version .actual span').html('No instalado');
-                            $('#idmodel-'+id).removeClass('installed');
-                            $('#idmodel-'+id).addClass('newmodel');
-                            $('#idmodel-'+id).insertAfter('#models .installed:last');
+                            $('#idmodel-'+id).fadeOut('slow', function() {
+                                $('#idmodel-'+id).insertAfter('#models .instalado:last').show();
+                                $('#idmodel-'+id+' .version .actual').html('No instalado');
+                                $('#idmodel-'+id).removeClass('actualizar').removeClass('actualizado').removeClass('nodisponible');
+                                $('#idmodel-'+id).removeClass('instalado').addClass('noinstalado');
+                            });
                         }
                     }
                 }
             });
         }
     },
-        
+    
+    /**
+     * Metodo encargado de invocar la CGI que hace la descarga del modelo
+     **/
     descargarModelo: function(id) {
         
         if(Wizard.downloadingModel) {
@@ -254,7 +266,7 @@ var Wizard = {
         }
         
         Wizard.showLoading(id, true);
-        var urlCGI = './wizard_model_download.cgi';
+        var urlCGI = './wizard_models_download.cgi';
         $.ajax({
             url: urlCGI,
             data: {
@@ -281,16 +293,20 @@ var Wizard = {
                 } else {
                     var offset = $('#models').offset();
                     $('html, body').animate({scrollTop: offset.top}, 'fast');
-                    $('#idmodel-'+id).insertAfter('#models tr:first');                    
-                    
-                    $('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
-                    $('#idmodel-'+id).removeClass('newmodel').addClass('installed');
-                    
-                    var color = $('#idmodel-'+id+' td').css('background-color');
-                    $('#idmodel-'+id+' td').css('background-color', '#F0E0D0');
-                    setTimeout(function() {
-                        $('#idmodel-'+id+' td').css('background-color', '');
-                    }, 2000);
+                    $('#idmodel-'+id).fadeOut('slow', function() {
+                        $('#idmodel-'+id).insertAfter('#models tr:first').show();
+                        
+                        $('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
+                        $('#idmodel-'+id).removeClass('noinstalado').addClass('instalado')
+                        $('#idmodel-'+id).addClass('actualizado');
+                        
+                        var color = $('#idmodel-'+id+' td').css('background-color');
+                        $('#idmodel-'+id+' td').css('background-color', '#F0E0D0');
+                        setTimeout(function() {
+                            $('#idmodel-'+id+' td').css('background-color', '');
+                        }, 1500);
+                    });
+
                 }
                
             }
@@ -299,6 +315,10 @@ var Wizard = {
         
     },
     
+    /**
+     * Este metodo se usa para Actualizar un modelo
+     * Pese a que usa la misma CGI de descarga, el comportamiento post descarga es distinto
+     **/
     actualizarModelo: function(id) {
         
         if(Wizard.downloadingModel) {
@@ -307,7 +327,7 @@ var Wizard = {
         }
         
         Wizard.showLoading(id, true);
-        var urlCGI = './wizard_model_download.cgi';
+        var urlCGI = './wizard_models_download.cgi';
         $.ajax({
             url: urlCGI,
             data: {
@@ -331,10 +351,11 @@ var Wizard = {
                     
                 } else {
                     $('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
-                    $('#idmodel-'+id).removeClass('newmodel').addClass('installed');
+                    $('#idmodel-'+id+'').removeClass('actualizar').addClass('actualizado');
+                    //~ $('#idmodel-'+id+' .version .status').html('Actualizado');
+                    //$('#idmodel-'+id).removeClass('noinstalado').addClass('instalado');
+                    //~ $('#idmodel-'+id+' .actualizar').removeClass('actualizable');
                     
-                    $('#idmodel-'+id+' .version .status').html('Actualizado');
-                    $('#idmodel-'+id+' .actualizable').removeClass('actualizable');
                 }
             }
         });

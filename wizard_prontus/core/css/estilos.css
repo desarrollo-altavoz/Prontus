@@ -52,40 +52,71 @@ form { margin:0px;}
 #contentPop p { font-size:11px; color:#ffffff; text-align:justify;}
 #contentPop h3 p {font-size:12px; padding:0 0 5px 0; margin:0; color:#ffffff;}
 
+#table01 .item a {font-size:13px;}
+#table01 .item img {vertical-align:middle;}
+
+/** Estilos para el admin de modelos **/
 #models {width:100%; margin-top:5px;}
 #models th {background-color:#333333; color:#ffffff; padding:4px 8px; font-size:13px;}
-#models td {background-color:#F5F5F5; padding:2px 4px; font-size:12px;}
-#models tr.newmodel td {background-color:#E0E0E0; color:#555555;}
-#models td h4 {font-size:14px; margin:4px 2px;}
-#models td .desc {font-size:12px;}
-#models td .desc p.description {color:#0576C6; display:block;}
-#models td .desc p.description a {color:#0576C6;}
-#models td.version {width:120px;}
-#models td.version div {padding:5px 0px;} 
-#models td.version .status {font-weight:900; color:#006600;} 
-#models td.acciones {width:120px;}
-#models td.screenshot {width:120px; text-align:center;}
-#models .acciones .boton-gris3 .icono {vertical-align:middle;}
+#models tr td {background-color:#F5F5F5; color:#000000; padding:2px 4px; font-size:12px;}
+#models tr.instalado td {background-color:#F5F5F5; color:#000000;}
+#models tr.noinstalado td {background-color:#E0E0E0; color:#555555;}
 
+#models td h4 {font-size:16px; margin:4px 0px;}
+#models td .desc {font-size:12px; color:#555555;}
+#models td .desc p.description {color:#0576C6; margin-bottom:2px; display:block; position:absolute; bottom:2px; right:4px;}
+#models td .desc p.description a {color:#0576C6;}
+
+#models td.version {width:120px; vertical-align:top;}
+#models td.version div {color:#4D4D4D; margin:2px 0px 10px; font-size: 11px;}
+#models td.version div p {margin:2px 0px; color:#000000; font-weight:bold; font-size: 12px;}
+#models td.version div p span {font-size:11px; font-style:italic; font-weight:bold; color:#000000;}
+#models td.version .status {font-weight:900; color:#006600; font-style:italic;} 
+#models td.acciones {width:150px;}
+#models td.screenshot {width:120px; text-align:center;}
+#models td.titulo {vertical-align:top; position:relative;}
+#models td.acciones {vertical-align:top; padding:5px 4px;}
+#models td.acciones .boton-gris3 .icono {vertical-align:middle;}
+#models td.acciones .content-loading {text-align:center; margin-top:10px;}
 /** control de los botones **/
-#models .newmodel .description {display:none;}
+#models .content-loading {display:none;}
+#models .boton-gris3 a {display:none;}
+#models .version .status {display:none;}
+#models .noinstalado .titulo .description {display:none;}
+
+#models .instalado .remove {display:inline;}
+#models .actualizado .version .status {display:inline;}
+#models .actualizar .upgrade {display:inline;}
+#models .noinstalado .download {display:inline;}
+
+/*
+" href="#bodyupload" onclick="Fid.showBody('#bodyupload');"><span>
+                  <img src="/wizard_prontus/core/imag/models_remove.png" width="12" height="12" alt="Descargar Modelo"> Eliminar modelo</span></a>
+                <a class="button download" href="#bodyupload" onclick="Fid.showBody('#bodyupload');"><span>
+                  <img src="/wizard_prontus/core/imag/models_download.png" width="12" height="12" alt="Descargar Modelo"> Descargar modelo</span></a>
+                <a class="button 
+*/
+/*
+
+
+
 #models .newmodel .eliminar {display:none;}
 #models .newmodel .actualizar {display:none;}
 #models .newmodel .descargar {display:block;}
-#models .installed .description {display:inline;}
+#models .installed .description {display:block;}
 #models .installed .eliminar {display:block;}
 #models .installed .actualizar {display:none;}
 #models .installed .actualizable .actualizar {display:block;}
 #models .installed .descargar {display:none;}
-#models .content-loading {display:none;}
+*/
 
-.boton-gris3 {margin:5px 0; clear:both;}
-.boton-gris3 a.button {background: url("../imag/boto/boto_gris3_right.png") no-repeat scroll top right;  display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#333333; font-size:11px; font-weight:bold; text-decoration:none;}
+
+.boton-gris3 a.button img {vertical-align:middle;}
+.boton-gris3 a.button {background: url("../imag/boto/boto_gris3_right.png") no-repeat scroll top right;  display:block; float:left; height:21px; margin:0 3px 5px 0; padding:0 10px 0 0; color:#333333; font-size:11px; font-weight:bold; text-decoration:none;}
 .boton-gris3 a.button span {background: url("../imag/boto/boto_gris3_left.png") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
-.boton-gris3 a.button:hover {background: url("../imag/boto/boto_azul2_right.png") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button:hover {background: url("../imag/boto/boto_azul2_right.png") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 5px 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
 .boton-gris3 a.button:hover span {background: url("../imag/boto/boto_azul2_left.png") no-repeat;}
-.boton-gris3 a.button.selected {background: url("../imag/boto/boto_azul2_right.png") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button.selected {background: url("../imag/boto/boto_azul2_right.png") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 5px 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
 .boton-gris3 a.button.selected span {background: url("../imag/boto/boto_azul2_left.png") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
 
-#table01 .item a {font-size:13px;}
-#table01 .item img {vertical-align:middle;}
+
