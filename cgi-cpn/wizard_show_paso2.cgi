@@ -131,17 +131,28 @@ sub carga_modelos {
         # si lo encuentra asume q se trata de un modelo.
         print STDERR "K[$k]\n";
         if (-f "$models_dir/$k/$k.cfg") {
+            
+            $loop_item = $loop_tpl;
+            
             # valida icono
-            if (! -f "$models_dir/$k/$k.gif") {
-                return "En Modelo [$k] falta icono $k/$k.gif";
-            };
-
+            my $imagen = "/wizard_prontus/models/$k/$k-thumb.png";
+            if(-f "$prontus_varglb::DIR_SERVER$imagen") {
+                $loop_item =~ s/%%MODEL_IMG%%/$imagen/isg;
+            } else {
+                $imagen = "/wizard_prontus/models/$k/$k.gif";
+                if(-f "$prontus_varglb::DIR_SERVER$imagen") {
+                    $loop_item =~ s/%%MODEL_IMG%%/$imagen/isg;
+                } else {
+                    return "En Modelo [$k] falta icono";
+                }
+            }
+            
             # valida q este el arch de obs del modelo
             if (! -f "$models_dir/$k/descripcion/index.html") {
                 return "En Modelo [$k] falta $k/descripcion/index.html";
             };
             $nro_models++;
-            $loop_item = $loop_tpl;
+            
             $loop_item =~ s/%%MODEL_NOM%%/$k/isg;
             
             # Deja el primero como seleccionado por defecto
@@ -151,6 +162,9 @@ sub carga_modelos {
                 $loop_item =~ s/%%checked%%//isg;
             };
             $loop_out .= $loop_item;
+            if($nro_models % 3 == 0) {
+                $loop_out = $loop_out . '<div class="separador"></div>';
+            }
         };
     };
 

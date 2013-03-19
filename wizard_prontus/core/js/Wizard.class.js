@@ -29,7 +29,29 @@ var Wizard = {
         
         if(paso == 'paso1') {
             $('#form1').attr('action', '/' + DIR_CGI_CPAN + '/wizard_paso1.cgi');
-        }       
+            
+        } else if(paso == 'paso2') {
+            $('.modelo a').live('click', function() {
+                var url = $(this).attr('href');
+                $(this).colorbox({
+                    open: true,
+                    href: url,
+                    width:'900px',
+                    height:'650px',
+                    iframe: true
+                });
+                return false;
+            });
+            
+            $('.modelo:first').addClass('chequeado').find('input').attr('checked', 'checked');
+            $('.modelo input').change(function() {
+                $('.modelo').removeClass('chequeado');
+                $(this).parents('.modelo').addClass('chequeado');
+            });
+            
+        }
+            
+            
     },
     
     /**
@@ -217,11 +239,19 @@ var Wizard = {
         
         if(confirm('¿Está seguro que desea eliminar este modelo?')) {
             
+            if(Wizard.downloadingModel) {
+                alert('Por favor, espere a que termine la descarga anterior');
+                return;
+            };
+            Wizard.showLoading(id, true);
             var urlCGI = './wizard_models_delete.cgi';
             $.ajax({
                 url: urlCGI,
                 data: {
                     modelid: id
+                },
+                complete: function() {
+                    Wizard.showLoading(id, false);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
 

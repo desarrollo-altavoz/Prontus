@@ -23,11 +23,13 @@ $INF_FILE = "inf.txt";
 
 $CORE_DIR = '/wizard_prontus/core';
 $MODELS_DIR = '/wizard_prontus/models';
-$URL_MODELS = "http://192.168.8.27/release/models";
+
+$URL_MODELS = "http://www.prontus.cl/release/models";
 $FILE_MODELS = 'models.txt';
 
 $DOWNLOAD_DIR = '/_prontus_update/models/download';
 $BACKUP_DIR = '/_prontus_update/models/backup';
+
 # --------------------------------------------------------------------------------------------------
 # Chequea que se haya pasado por el paso 1
 sub check_paso1 {
@@ -137,8 +139,8 @@ sub get_models {
         next if($model =~ /^\./);
         my %array;
         
-        $rutamodelo = "/wizard_prontus/models/$model";
-        $rutamodelofull = "$prontus_varglb::DIR_SERVER/wizard_prontus/models/$model";
+        $rutamodelo = "$wizard_lib::MODELS_DIR/$model";
+        $rutamodelofull = "$prontus_varglb::DIR_SERVER$wizard_lib::MODELS_DIR/$model";
         
         my $buffer = &glib_fildir_02::read_file("$rutamodelofull/$model.cfg");
         if($buffer eq '') {
@@ -178,10 +180,10 @@ sub get_models {
         }
         $models{$model}{'last_version'} = '<span>Versi&oacute;n no disponible en el servidor remoto</span>';
         if($cfg{'MODELO_NOMBRE_REAL'}) {
-            $models{$model}{'nombre'} = $cfg{'MODELO_NOMBRE_REAL'};
+            $models{$model}{'nombre'} = "<div>($model)</div>" . $cfg{'MODELO_NOMBRE_REAL'};
             
         } elsif($cfg{'TITLE_SITE_NAME'}) {
-            $models{$model}{'nombre'} = $cfg{'TITLE_SITE_NAME'};
+            $models{$model}{'nombre'} = "<div>($model)</div>" . $cfg{'TITLE_SITE_NAME'};
             
         } else {
             $models{$model}{'nombre'} = $model;
@@ -219,9 +221,9 @@ sub get_models {
             $models{$onlinemodel}{'imagen'} = "$rutamodelo/$onlinemodel-big.png";
         }
         if($cfg{'MODELO_NOMBRE_REAL'}) {
-            $models{$onlinemodel}{'nombre'} = $cfg{'MODELO_NOMBRE_REAL'};
+            $models{$onlinemodel}{'nombre'} = "<div>($onlinemodel)</div>" . $cfg{'MODELO_NOMBRE_REAL'};
         } elsif($cfg{'TITLE_SITE_NAME'}) {
-            $models{$onlinemodel}{'nombre'} = $cfg{'TITLE_SITE_NAME'};
+            $models{$onlinemodel}{'nombre'} = "<div>($onlinemodel)</div>" . $cfg{'TITLE_SITE_NAME'};
         } else {
             $models{$onlinemodel}{'nombre'} = $onlinemodel;
         }; 
@@ -324,82 +326,11 @@ sub es_actualizable {
             if($a3 eq $l3 && $a4) {
                 return 1;
             };
-        }
-        
+        }        
     } else {
         print STDERR "No se pudo leer la versión del modelo online [$model] -> version[$last]\n";
     }
     return 0;
 }
-
-
-# --------------------------------------------------------------------------------------------------
-# Metodos obsoletos. Se mantienen por si acaso
-# --------------------------------------------------------------------------------------------------
-sub carga_portadas {
-# Carga portadas
-
-    my $buffer = $_[0];
-    my $buffer_port = $_[1];
-    my $model_nom = $_[2];
-    my $models_dir = "$prontus_varglb::DIR_SERVER/wizard_prontus/models";
-
-    # Rescata y valida template de loop.
-    my ($loop_tpl, $loop_out, $loop_item);
-    if ($buffer =~ /<!--LOOP_PORT-->(.*?)<!--\/LOOP_PORT-->/is) {
-        $loop_tpl = $1;
-    } else {
-        return 'Error en plantilla wizard. No es posible continuar.';
-    };
-
-    my ($port, $tport, $is_home);
-
-    while ($buffer_port =~ m/([a-z][a-z0-9\_\-]*)\((\w+)\)(\[home\])?/g) {
-        $port = $1;
-        $tport = $2;
-        $is_home = $3;
-        $loop_item = $loop_tpl;
-        $loop_item =~ s/%%MODEL_NOM%%/$model_nom/isg;
-        $loop_item =~ s/%%TPORT%%/$tport/isg;
-        $loop_item =~ s/%%PORTNOM%%/$port $is_home/isg;
-        $loop_out .= $loop_item;
-    };
-
-    $buffer =~ s/<!--LOOP_PORT-->.*?<!--\/LOOP_PORT-->/$loop_out/is;
-    return $buffer;
-};
-# ---------------------------------------------------------------
-sub carga_artics {
-# Carga tipos de articulos
-    my $buffer = $_[0];
-    my $buffer_art = $_[1];
-    my $model_nom = $_[2];
-    my $models_dir = "$prontus_varglb::DIR_SERVER/wizard_prontus/models";
-
-    # Rescata y valida template de loop.
-    my ($loop_tpl, $loop_out, $loop_item);
-    if ($buffer =~ /<!--LOOP_ART-->(.*?)<!--\/LOOP_ART-->/is) {
-        $loop_tpl = $1;
-    } else {
-        return 'Error en plantilla wizard. No es posible continuar.';
-    };
-
-    my $art;
-
-    while ($buffer_art =~ m/([a-z][a-z0-9\_\-]*)\n/g) {
-        $art = $1;
-
-        $loop_item = $loop_tpl;
-        $loop_item =~ s/%%MODEL_NOM%%/$model_nom/isg;
-        $loop_item =~ s/%%ART%%/$art/isg;
-        my $uc_art = ucfirst $art;
-        $loop_item =~ s/%%NOMART%%/$uc_art/isg;
-        $loop_out .= $loop_item;
-    };
-
-    $buffer =~ s/<!--LOOP_ART-->.*?<!--\/LOOP_ART-->/$loop_out/is;
-    return $buffer;
-};
-
 
 return 1;
