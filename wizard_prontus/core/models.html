@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Asistente Prontus: Administrador de Modelos</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="/wizard_prontus/core/css/estilos.css" rel="stylesheet" type="text/css">
+    <link href="/wizard_prontus/core/js/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javaScript" src="/wizard_prontus/core/js/jquery/jquery.js"></script>
+    <script type="text/javaScript" src="/wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script type="text/javaScript" src="/wizard_prontus/core/js/Utiles.class.js"></script>
+    <script type="text/javaScript" src="/wizard_prontus/core/js/Wizard.class.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        Wizard.initAdminModels();
+      });
+    </script>
+  </head>
+  <body>
+    <div id="main">
+      <div class="head">
+        <a href="http://www.prontus.cl" target="_blank"><img src="/wizard_prontus/core/imag/head.gif" width="702" height="52" alt="Logo Prontus"></a>
+      </div>
+      
+      <div id="content">
+        <div class="separa">
+          <div id="datos">
+            <div class="pasos">
+              <img src="/wizard_prontus/core/imag/titu/1b.gif" alt="paso 1" title="paso 1" width="29" height="29">
+              <h1>DATOS BÁSICOS</h1>
+              </div>
+              <div class="pasos">
+              <img src="/wizard_prontus/core/imag/titu/2.gif" alt="paso 2" title="paso 2" width="29" height="29">
+              <h2>SELECCIONAR MODELOS</h2>
+              </div>
+              <div class="pasos">
+              <img src="/wizard_prontus/core/imag/titu/3b.gif" alt="confirmación" title="confirmación" width="29" height="29">
+              <h2>CONFIRMAR CONFIGURACIÓN</h2>
+            </div>
+          </div>
+        </div>
+
+        <h1 class="title">Administrador de Modelos</h1>
+        <h3 class="subtitle">Bienvenido al administrador de Modelos Prontus. Acá podrá descargar nuevos modelos, actualizar los existentes o simplemente eliminar los que no utilice.</h3>
+      </div>          
+      
+      <div id="content2">
+        <form name="form1" method="post" action="wizard_paso2.cgi">
+        <table id="models">
+          <tr align="left" valign="middle">
+            <th>Screenshot</th>
+            <th>Modelo</th>
+            <th>Versiones</th>  
+            <th>Acciones</th>
+          </tr>
+          <!--LOOP_MODELS-->
+          <tr id="idmodel-%%model_id%%" class="%%model_instalado%% %%model_status%%">
+            <td class="screenshot">
+              <a href="%%model_imagen%%">
+                <img src="%%model_thumb%%" width="200" alt="Modelo: %%model_nombre%%">
+              </a>
+            </td>
+            <td class="titulo">
+              <h4>%%model_nombre%%</h4>
+              <div class="desc">
+                %%model_desc%%
+                <p class="description">&raquo; <a href="/wizard_prontus/models/%%model_id%%/descripcion/index.html" rel="%%model_id%%">Ver más</a></p>
+              </div>
+            </td>
+            <td class="version">
+              <div>Versión Instalada:
+                <p class="actual">%%model_version%%</p>
+              </div>
+              <div>Última Versión:
+                <p class="last">%%model_last_version%%</p>
+                <p class="status">Actualizado</p>
+              </div>
+            </td>
+            <td class="acciones">
+              <div class="content-loading">
+                <img src="/wizard_prontus/core/imag/ajax-loader-bar.gif" width="16" height="11" alt="Por favor espere unos segundos">
+                
+              </div>
+              <div class="boton-gris3 content-buttons">
+                <a class="button remove" href="#" onclick="Wizard.eliminarModelo('%%model_id%%'); return false;"><span>
+                  <img src="/wizard_prontus/core/imag/models_remove.png" width="12" height="12" alt="Descargar Modelo"> Eliminar</span></a>
+                <a class="button download" href="#" onclick="Wizard.descargarModelo('%%model_id%%'); return false;"><span>
+                  <img src="/wizard_prontus/core/imag/models_download.png" width="12" height="12" alt="Descargar Modelo"> Descargar</span></a>
+                <a class="button upgrade" href="#b" onclick="Wizard.actualizarModelo('%%model_id%%'); return false;"><span>
+                  <img src="/wizard_prontus/core/imag/models_upgrade.png" width="12" height="12" alt="Descargar Modelo"> Actualizar</span></a>
+              </div>
+            </td>
+          </tr>
+          <!--/LOOP_MODELS-->
+        </table>
+
+        <table class="btn_opc">
+          <tr>
+            <td align="left">
+              <!-- input type="button" name="Cancelar" value="Cancelar" class="boto" onclick="Wizard.cancelarWizard();"/ -->
+            </td>
+            <td align="right">
+              <input type="button" name="anterior" value="&lt;&lt; Anterior" class="boto" onclick="Wizard.showPaso2();">
+              <!-- input type="button" name="siguiente" value="Siguiente &gt;&gt;" class="boto" onclick="document.form1.submit();"/ -->
+              <input type="hidden" name="Sbm_ACCION" value="Siguiente">
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,62 +1,73 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>Asistente Prontus: Paso 2</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link href="/wizard_prontus/core/css/estilos.css" rel="stylesheet" type="text/css" />
-  <script type="text/javaScript" src="/wizard_prontus/core/js/Utiles.class.js"></script>
-  <script type="text/javaScript" src="/wizard_prontus/core/js/comun.js"></script>
-  <script type="text/javaScript" src="/wizard_prontus/core/js/botones.js"></script>
-</head>
-<body>
-  <div id="main">
-    <div>
-      <a href="http://www.prontus.cl" target="_blank"><img src="/wizard_prontus/core/imag/head.gif" border="0"></a>
-    </div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Asistente Prontus: Paso 2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="/wizard_prontus/core/css/estilos.css" rel="stylesheet" type="text/css" />
+    <link href="/wizard_prontus/core/js/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css">
 
-    <div id="content">
-      <div class="help">
-        <a href="#" onclick="javascript:Utiles.subWin('/wizard_prontus/core/ayuda.html#paso2','' ,420, 500, 500, 75)" onmouseover="ima_on('ayu','boto')" onmouseout="ima_of('ayu','boto')">
-           <img src="/wizard_prontus/core/imag/boto/ayu_of.gif" alt="Ayuda" name="ayu"/>
-        </a>
+    <script type="text/javaScript" src="/wizard_prontus/core/js/jquery/jquery.js"></script>
+    <script type="text/javaScript" src="/wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script src="/wizard_prontus/core/js/Utiles.class.js" type="text/javascript"></script>
+    <script src="/wizard_prontus/core/js/Botones.class.js" type="text/javascript"></script>
+    <script src="/wizard_prontus/core/js/Wizard.class.js" type="text/javaScript"></script>
+    <script src="/wizard_prontus/core/js/validator.js" type="text/javaScript"></script>
+
+    <script type="text/javaScript" src="/wizard_prontus/dir_cgi.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        Wizard.init('paso2');
+      });
+    </script>
+      
+  </head>
+  <body>
+    <div id="main">
+      <div class="head">
+        <a href="http://www.prontus.cl" target="_blank"><img src="/wizard_prontus/core/imag/head.gif" width="702" height="52" alt="Logo Prontus"></a>
       </div>
+      <div id="content2">
+        <div id="content">
+          <div class="help">
+            <a href="#"><img src="/wizard_prontus/core/imag/boto/ayu_of.gif" width="61" height="19" alt="Ayuda" name="ayu" class="cambia-boton"></a>
+          </div>
 
-      <div class="separa">
-        <div id="datos">
-        		<div class="pasos">
-        		<img src="/wizard_prontus/core/imag/titu/1b.gif" alt="paso 1" title="paso 1"/>
-        		<h2>DATOS BÁSICOS</h2>
-        		</div>
-        		<div class="pasos">
-        		<img src="/wizard_prontus/core/imag/titu/2.gif" alt="paso 2" title="paso 2"/>
-        		<h1>SELECCIONAR MODELOS</h1>
-        		</div>
-        		<div class="pasos">
-        		<img src="/wizard_prontus/core/imag/titu/3b.gif" alt="confirmación" title="confirmación"/>
-        		<h2>CONFIRMAR CONFIGURACIÓN</h2>
-        		</div>
-        		</div>
-      </div>
-
-      <form name="form1" method="post" action="wizard_paso2.cgi">
-        <div id="table01">
+          <div class="separa">
+            <div id="datos">
+              <div class="pasos">
+                <img src="/wizard_prontus/core/imag/titu/1b.gif" alt="paso 1" title="paso 1" width="29" height="29" />
+                <h1>DATOS BÁSICOS</h1>
+                </div>
+                <div class="pasos">
+                <img src="/wizard_prontus/core/imag/titu/2.gif" alt="paso 2" title="paso 2" width="29" height="29" />
+                <h2>SELECCIONAR MODELOS</h2>
+                </div>
+                <div class="pasos">
+                <img src="/wizard_prontus/core/imag/titu/3b.gif" alt="confirmación" title="confirmación" width="29" height="29" />
+                <h2>CONFIRMAR CONFIGURACIÓN</h2>
+              </div>
+            </div>
+          </div>
           <h3 class="subtitle">Seleccione el modelo de Sitio Prontus a crear:</h3>
-          <table id="tab">
+        </div>
+      
+      
+        <form name="form1" method="post" action="wizard_paso2.cgi">
+        <div id="table03">
+          
+          <table id="tab2">
             <tr align="left" valign="middle">
               <td align="left">
                 <!--LOOP_MODELS-->
                 <div class="modelo">
                   <div>
-                    <a href="#" onclick="javascript:Utiles.subWin('/wizard_prontus/models/%%MODEL_NOM%%/descripcion/index.html','%%MODEL_NOM%%', 730, 700, 500, 75)">
-                      <img src="/wizard_prontus/models/%%MODEL_NOM%%/%%MODEL_NOM%%.gif" alt=""/>
+                    <a href="/wizard_prontus/models/%%MODEL_NOM%%/descripcion/index.html">
+                      <img src="%%MODEL_IMG%%" width="200" alt=""/>
                     </a>
                   </div>
                   <div>
-                    <input type="radio" name="PRONTUS_MODEL" value="%%MODEL_NOM%%" %%checked%% />
-                    <a href="#" onclick="javascript:Utiles.subWin('/wizard_prontus/models/%%MODEL_NOM%%/descripcion/index.html','%%MODEL_NOM%%', 730, 700, 500, 75)">
-                      %%MODEL_NOM%%
-                    </a>
+                    <input type="radio" name="PRONTUS_MODEL" id="PRONTUS_MODEL_%%MODEL_NOM%%"value="%%MODEL_NOM%%"/>
+                    <label for="PRONTUS_MODEL_%%MODEL_NOM%%">%%MODEL_NOM%%</label>
                   </div>
                 </div>
                 <!--/LOOP_MODELS-->
@@ -67,11 +78,12 @@
           <table class="btn_opc">
             <tr>
               <td align="left">
-                <input type="button" name="Cancelar" value="Cancelar" class="boto" onclick="window.close();"/>
+                  <input type="button" name="cancelar" value="Cancelar" class="boto" onclick="Wizard.cancelarWizard()" />
+                <input type="button" name="Descargar" value="Descargar Modelos" class="boto" onclick="Wizard.showDescargar();"/>
               </td>
               <td align="right">
-                <input type="button" name="anterior" value="&lt;&lt; Anterior" class="boto" onclick="history.back();" />
-                <input type="button" name="siguiente" value="Siguiente &gt;&gt;" class="boto" onclick="document.form1.submit();"/>
+                <input type="button" name="anterior" value="&lt;&lt; Anterior" class="boto" onclick="Wizard.showPaso1();" />
+                <input type="button" name="siguiente" value="Siguiente &gt;&gt;" class="boto" onclick="Wizard.enviarPaso2();"/>
                 <input type="hidden" name="Sbm_ACCION" value="Siguiente" />
               </td>
             </tr>

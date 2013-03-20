@@ -1,46 +1,104 @@
 /* CSS Document */
 body { margin:0px; background: #F5F5F5; font-family:Tahoma, Arial, Helvetica, sans-serif; }
 a {text-decoration:underline; font-size:11px; color:#b4d6ee;}
-a:hover {color:#cc0000;}
+a:hover {color:#ffffff;}
 h1,h2,p { text-align:left; color: white;}
 h3 { width:100%; font-size:13px; font-weight:bold; color:#ffffff; margin:0; padding:5px 0 0 5px; text-align:left;}
-#contentPop h3 { width:100%; background:url(../imag/rot385_azul.jpg) no-repeat top left; font-size:13px; font-weight:bold; color:#ffffff; margin:0; padding:5px 0 0 5px; text-align:left;}
 h3 p {padding:0 5px 5px 5px; margin:0; color:#ffffff;}
 p { font-size:11px; color:#b4d6ee;}
 form { margin:0px;}
 #main { border: 0px solid #DEDEDE; margin: 15px auto 15px auto; width:700px; background-color:#0576c6;}
-#mainPop { border: 0px solid #0099CC; margin: 10px auto 10px auto; width:400px; background-color:#0576C6;}
-#content { margin: 15px auto 0 auto; width:650px;padding-bottom:25px;}
-#contentPop { margin: 15px 0 0 0; width:380px;}
-#contentPop p { font-size:11px; color:#ffffff; text-align:justify;}
-#contentPop h3 p {font-size:12px; padding:0 5px 5px 5px; margin:0; color:#ffffff;}
+#content {margin: 15px auto 0 auto; width:650px;padding-bottom:25px;}
+#content2 {margin: 15px 5px 0 5px; padding-bottom:25px;}
 #tab { font-size:12px; margin:20px auto 15px auto; color:#ffffff;}
 #tab .nota { font-size:11px; color:#ffffff;}
-#table01 { width:620px; padding:0; margin: 0 auto 15px auto; background-color:#0576c6;}
+#table01 {width:650px; padding:0; margin: 0 auto 15px auto; background-color:#0576c6;}
 #table01 #tab{width:93%; border:0; padding:7px;}
 
+.link-reporte {font-size:13px; font-weight:bold;}
+.separador {clear:both;}
 .separa {display:table; width:620px; margin:5px auto 0 auto; clear:both; text-align:left;}
 .separa p { font-size:12px; color:#ffffff; margin:0 0 10px 0;}
 .separa h1{ margin:0 0 5px 0;}
 .cel14 { font-size:40px; color:#ffffff;}
 .boto { background:url(../imag/back_boto.jpg) repeat-x; border:1px solid #4d9cd4; color:#FFFFFF; font-size:20px; font-weight:normal; padding:3px; cursor:pointer;}
 .campo {font-family:Tahoma, Arial, Helvetica, sans-serif; font-size:11px; color:#000000; border: 1px solid #cccccc;  background-color:#FFFFFF; padding:3px;}
-.modelo {width:45%; float:left; margin:0 0 10px 10px; font-size:12px; color:#003366;}
-.modelo a { font-size:12px; color:#ffffff; text-decoration:none;}
-.modelo a:hover { color:#CC0000; text-decoration:none;}
 .check {font-family:Tahoma, Arial, Helvetica, sans-serif; font-size:11px;}
 #table02 { display:table; width:580px; padding:0 15px 0 15px;  border: 0px solid #259CCF; margin:0 auto 15px auto; background-color:#0576c6;}
 .TEXTsubtitulo {font-weight: bold;}
 
-
 /* Wizard  CPN */
 .help{float:right;}
-.help img{border:0; width:61px; height:19px;}
+.help img{border:0;}
 .subtitle{height:20px; color:ffffff;}
-.btn_opc{margin:15px auto 15px auto; width:80%; border:0; padding:0;}
+.btn_opc{margin:15px auto 15px auto; width:90%; border:0; padding:0;}
 /* MIGAS DE PAN */
 #datos{width:640px; height:50px; border-bottom: 1px solid #3399cc;}
 #datos img{float:left;margin:2px 10px 0 0;}
 .pasos{width:190px; height:30px;float:left;}
 .pasos h1{width:100px;float: left;font-size:14px; color:#ffffff; font-weight:bold;}
 .pasos h2{width:100px;float: left;font-size:14px; color:#99ccff; font-weight:bold;margin:0;}	
+
+#cboxLoadedContent div {font-size:13px !important;}
+
+#mainPop h3 {margin-top:5px; cursor:pointer;}
+#mainPop .info {border:1px solid #39C; border-top:0; padding:5px; margin-bottom:5px;}
+#mainPop { border: 0px solid #0099CC; margin: 10px auto 10px auto; width:400px; background-color:#0576C6;}
+#contentPop { margin: 5px auto 0 auto; width:385px;}
+#contentPop h3 { width:100%; background:url(../imag/rot385_azul.jpg) no-repeat top left; font-size:13px; font-weight:bold; color:#ffffff; margin:0; padding:5px 0 0 5px; text-align:left;}
+#contentPop p { font-size:11px; color:#ffffff; text-align:justify;}
+#contentPop h3 p {font-size:12px; padding:0 0 5px 0; margin:0; color:#ffffff;}
+
+#table03 {width:680px; padding:0; margin: 0 auto 15px auto; background-color:#0576c6;}
+#table03 h3 {margin-left:10px;}
+#table03 .item a {font-size:13px;}
+#table03 .item img {vertical-align:middle;}
+#table03 .modelo.chequeado {background-color:#024;}
+#table03 .modelo {width:200px; float:left; margin:0 0 20px 12px; padding:5px; font-size:12px; color:#003366;}
+#table03 .modelo label {font-size:13px; color:#ffffff; font-weight:bold; text-decoration:none;}
+#table03 .modelo input {margin:0px; vertical-align:middle;}
+
+/** Estilos para el admin de modelos **/
+#models {width:100%; margin-top:5px;}
+#models th {background-color:#333333; color:#ffffff; padding:4px 8px; font-size:13px;}
+#models tr td {background-color:#F5F5F5; color:#000000; padding:2px 4px; font-size:12px;}
+#models tr.instalado td {background-color:#F5F5F5; color:#000000;}
+#models tr.noinstalado td {background-color:#E0E0E0; color:#555555;}
+
+#models td h4 {font-size:16px; margin:4px 0px;}
+#models td h4 div {font-size:11px; color:#555555; font-style:italic; margin-bottom:2px;}
+#models td .desc {font-size:12px; color:#555555;}
+#models td .desc p.description {color:#0576C6; margin-bottom:2px; display:block; position:absolute; bottom:2px; right:4px;}
+#models td .desc p.description a {color:#0576C6;}
+
+#models td.version {width:110px; vertical-align:top;}
+#models td.version div {color:#4D4D4D; margin:2px 0px 10px; font-size: 11px;}
+#models td.version div p {margin:2px 0px; color:#000000; font-weight:bold; font-size: 12px;}
+#models td.version div p span {font-size:11px; font-style:italic; font-weight:bold; color:#000000;}
+#models td.version .status {font-weight:900; color:#006600; font-style:italic;} 
+#models td.acciones {width:100px;}
+#models td.screenshot {width:200px; text-align:center;}
+#models td.titulo {vertical-align:top; position:relative;}
+#models td.acciones {vertical-align:top; padding:5px 4px;}
+#models td.acciones .boton-gris3 .icono {vertical-align:middle;}
+#models td.acciones .content-loading {text-align:center; margin-top:10px;}
+/** control de los botones **/
+#models .content-loading {display:none;}
+#models .boton-gris3 a {display:none;}
+#models .version .status {display:none;}
+#models .noinstalado .titulo .description {display:none;}
+
+#models .instalado .remove {display:inline;}
+#models .actualizado .version .status {display:inline;}
+#models .actualizar .upgrade {display:inline;}
+#models .noinstalado .download {display:inline;}
+
+.boton-gris3 a.button img {vertical-align:middle;}
+.boton-gris3 a.button {background: url("../imag/boto/boto_gris3_right.png") no-repeat scroll top right;  display:block; float:left; height:21px; margin:0 3px 5px 0; padding:0 10px 0 0; color:#333333; font-size:11px; font-weight:bold; text-decoration:none;}
+.boton-gris3 a.button span {background: url("../imag/boto/boto_gris3_left.png") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
+.boton-gris3 a.button:hover {background: url("../imag/boto/boto_azul2_right.png") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 5px 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button:hover span {background: url("../imag/boto/boto_azul2_left.png") no-repeat;}
+.boton-gris3 a.button.selected {background: url("../imag/boto/boto_azul2_right.png") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 5px 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
+.boton-gris3 a.button.selected span {background: url("../imag/boto/boto_azul2_left.png") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
+
+
