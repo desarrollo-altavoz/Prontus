@@ -6045,9 +6045,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/prontus_olvidopass.html
 
 ====================================================================================================
-11.2.61 - 07/03/2013 - CVI
+11.2.61 - 20/03/2013 - CVI/JOR
 ====================================================================================================
 
+- Listado de Artículos:
+    [cambios]
+        - Se aumenta el tiempo que dura la Cookie con el estado de la portada, edicion, numero de articulos
+          por pagina, y orden, a 1 año (vale decir, se mantiene aunque se cierre el navegador)
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        
 - FID:
     [bugfixes]
         - Se corrige error en el Upload de Imagenes con drag & drop. La CGI que procesaba, se había borrado.

@@ -545,14 +545,14 @@ var Listartic = {
     guardaEstado: function() {
 
         var portada = $('#cmb_port').val();
-        Cookies.createCookie('port', portada);
+        Cookies.createCookie('port', portada, 365);
 
         var edicion = $('#cmb_edic').val();
-        Cookies.createCookie('edic', edicion);
+        Cookies.createCookie('edic', edicion, 365);
 
-        Cookies.createCookie('itemsPerPage', Listartic.itemsPerPage);
+        Cookies.createCookie('itemsPerPage', Listartic.itemsPerPage, 365);
 
-        Cookies.createCookie('ordenLista', Listartic.ordenLista);
+        Cookies.createCookie('ordenLista', Listartic.ordenLista, 365);
     },
 
     // -------------------------------------------------------------------------
