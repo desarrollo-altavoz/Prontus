@@ -6048,6 +6048,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.61 - 07/03/2013 - CVI
 ====================================================================================================
 
+- FID:
+    [bugfixes]
+        - Se corrige error en el Upload de Imagenes con drag & drop. La CGI que procesaba, se había borrado.
+    [files]
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+
 - Wizard Prontus:
     [bugfixes]
         - En una release anterior, se comenzó a eliminar el archivo: inf.txt. 
