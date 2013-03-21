@@ -491,25 +491,32 @@ sub validarArt {
     my ($item) = shift;
 
     # validar existencia de fids y plantillas.
-    $item =~ /(.*?):(.*?)\((.*?)\)/;
-
+    $item =~ /(.+?):(.+)\((.+?)\)/;
+    my $fid = $1;
+    my $nom = $2;
+    my $plts = $3;
+    
+    print STDERR "$fid, $nom, $plts\n";
+    
     my $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
-    if (! -f $dir_fid . $1 . '.html') {
-        &glib_html_02::print_json_result(0, "No se pudo localizar el FID [$prontus_varglb::PRONTUS_ID/cpan/fid/$1.html].", 'exit=1,ctype=1');
+    if (! -f $dir_fid . $fid . '.html') {
+        &glib_html_02::print_json_result(0, "No se pudo localizar el FID [$prontus_varglb::PRONTUS_ID/cpan/fid/$fid.html].", 'exit=1,ctype=1');
     };
 
     # Validar que venga el nombre del FID.
-    if ($2 eq '') {
-        &glib_html_02::print_json_result(0, "Debe ingresar el Nombre para el FID [$1].", 'exit=1,ctype=1');
-    };
+    if ($nom eq '') {
+        &glib_html_02::print_json_result(0, "Debe ingresar el Nombre para el FID [$fid].", 'exit=1,ctype=1');
+    } elsif ($nom =~ /\(|\)/) {
+        &glib_html_02::print_json_result(0, "El nombre del artículo no puede contener paréntesis [$nom].", 'exit=1,ctype=1');
+    }
 
     # Validar que vengan alguna plantilla.
-    if ($3 eq '') {
-        &glib_html_02::print_json_result(0, "Debe seleccionar al menos una plantilla para el FID [$1].", 'exit=1,ctype=1');
+    if ($plts eq '') {
+        &glib_html_02::print_json_result(0, "Debe seleccionar al menos una plantilla para el FID [$fid].", 'exit=1,ctype=1');
     };
 
     my $dir_plantilla = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/plantillas/artic/fecha/pags/';
-    my @plantillas = split(/;/, $3);
+    my @plantillas = split(/;/, $plts);
     foreach my $plt (@plantillas) {
         if (! -f $dir_plantilla . $plt) {
             &glib_html_02::print_json_result(0, "No se pudo localizar la Plantilla de Artículo [$prontus_varglb::PRONTUS_ID/plantillas/artic/fecha/pags/$plt]", 'exit=1,ctype=1');

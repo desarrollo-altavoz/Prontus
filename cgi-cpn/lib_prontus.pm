@@ -1276,7 +1276,7 @@ sub load_config {
   };
 
 
-  while ($buffer =~ m/\s*FORM\_PLTS\s*=\s*("|')(.*?:.*?)\((.*?)\)("|')/g) {
+  while ($buffer =~ m/\s*FORM\_PLTS\s*=\s*("|')(.+?:.+)\((.+?)\)("|')/g) {
      $clave = $2;
      $valor = $3;
      $prontus_varglb::FORM_PLTS{$clave} = $valor;
