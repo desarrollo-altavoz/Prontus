@@ -9,14 +9,6 @@
 # http://www.prontus.cl/license.html
 # --------------------------------------------------------------
 
-if (! &is_win32()) {
-  if (&myself_running() > 4) {
-    print "Content-Type: text/html\n\n";
-    print "0|Error: Servidor ocupado.";
-    exit;
-  };
-};
-
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # SCRIPT.
@@ -71,13 +63,7 @@ if (! &is_win32()) {
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
 #
-#BEGIN {
-#  require 'coment_dir_cgi.pm';
-#  my ($ROOTDIR) = $ENV{'DOCUMENT_ROOT'};  # desde el web
-#  $ROOTDIR .= '/' . $DIR_CGI_CPAN;
-#  unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
-#
-#};
+
 
 BEGIN {
     require '../dir_cgi.pm';
@@ -108,6 +94,9 @@ use lib_val;
 use lib_phpsession;
 use lib_ipcheck;
 
+use lib_captcha;
+use lib_captcha2;
+use lib_maxrunning;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -126,11 +115,17 @@ my $MODERACION;
 
 main:{
     print "Content-Type: text/html\n\n";
-
     # Recibe campos del form
     my @campos = &glib_cgi_04::param();
     foreach my $key (@campos) {
         $FORM{$key} = &glib_cgi_04::param($key);
+    };
+
+    # Soporta un maximo de n copias corriendo.
+    if (&lib_maxrunning::maxExcedido(6)) {
+        print "Content-Type: text/html\n\n";
+        print "0|Error: Servidor ocupado.";
+        exit;
     };
 
     # Despulgues varios
@@ -143,7 +138,7 @@ main:{
     $FORM{'COMENT_TEXTO'} =~ s/\\//sg;
     $FORM{'COMENT_TEXTO'}=~s/\r//sg;
     $FORM{'COMENT_TEXTO'}=~s/\n{3,}/\n\n/sg;
-    $FORM{'CODSEG'} =~ s/[^\w]//sg;
+    #~ $FORM{'CODSEG'} =~ s/[^\w]//sg;
 
     # Validacion y gestion de ip bloqueada
     my $dir_ip_control = "$coment_varglb::DIR_SERVER/coment/cpan/ip_control";
@@ -198,18 +193,38 @@ main:{
     };
 
     $MODERACION = $hash_tipos{$FORM{'OBJTIPO'}}{'MODERACION'};
-    if ($MODERACION eq '') $MODERACION = 'SI';
+    if ($MODERACION eq '') {
+        $MODERACION = 'SI';
+    };
 
 
-    # Valida captcha de sesion php
-    # 1.4 Valida captcha
-    if(lc($hash_tipos{$FORM{'OBJTIPO'}}{'CAPTCHA'}) eq 'si') {
-        my $msg_captcha = &check_captcha($hash_tipos{$FORM{'OBJTIPO'}}{'PHP_SESSION_NAME'}, $hash_tipos{$FORM{'OBJTIPO'}}{'PHP_SESSION_PATH'});
-        if ($msg_captcha) {
-            print "0|$msg_captcha";
+    # Usando la nueva lib_captcha se manejan ambos formatos
+    my $captcha_input = &glib_cgi_04::param('_CAPTCHA');
+    my $captcha_type = 'form'; # custom
+    my $captcha_img = &glib_cgi_04::param('_captcha_img');
+    my $captcha_code = &glib_cgi_04::param('_captcha_code');
+    $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
+
+
+    if($captcha_img && $captcha_code) {
+        # Valida nuevo captcha sin sesion
+        &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
+        my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
+        if ($msg_err_captcha ne '') {
+            print "0|$msg_err_captcha\n";
             exit;
         };
-    };
+    } else {
+        # Valida captcha de sesion php
+        # 1.4 Valida captcha
+        if(lc($hash_tipos{$FORM{'OBJTIPO'}}{'CAPTCHA'}) eq 'si') {
+            my $msg_captcha = &check_captcha($hash_tipos{$FORM{'OBJTIPO'}}{'PHP_SESSION_NAME'}, $hash_tipos{$FORM{'OBJTIPO'}}{'PHP_SESSION_PATH'});
+            if ($msg_captcha) {
+                print "0|$msg_captcha";
+                exit;
+            };
+        };
+    }
 
     # Validacion custom, optativa
     my $msg_custom = &lib_val::validation(\%hash_tipos, \%FORM);
@@ -237,6 +252,7 @@ main:{
     exit;
 
 };
+
 # ---------------------------------------------------------------
 sub check_captcha {
     my ($session_name, $session_path) = @_;
@@ -271,9 +287,12 @@ sub guarda_comentario {
     };
 
   my $coment_status = '1';
-  if ($MODERACION) eq 'SI') {
+  if ($MODERACION eq 'SI') {
     $coment_status = '0';
   };
+
+  my $ret = &glib_dbi_02::check_table_column($BD, "COMENT", "COMENT_EMAIL", "VARCHAR(100) NOT NULL DEFAULT ''");
+
   my $sql = " insert COMENT set "
           . "COMENT_OBJTIPO = \"$FORM{'OBJTIPO'}\", "
           . "COMENT_OBJID = \"$FORM{'OBJID'}\", "
@@ -281,6 +300,7 @@ sub guarda_comentario {
           . "COMENT_DATETIME = \"$CURR_DTIME\", "
           . "COMENT_TEXTO = \"$FORM{'COMENT_TEXTO'}\", "
           . "COMENT_NICK = \"$FORM{'NICK'}\", "
+          . "COMENT_EMAIL = \"$FORM{'EMAIL'}\", "
           . "COMENT_STATUS = \"$coment_status\" ";
   my $new_coment_id = &glib_dbi_02::insert_dev_id($BD, $sql);
 
@@ -294,41 +314,5 @@ sub guarda_comentario {
 
   $BD->disconnect;
 };
-
-
-# ---------------------------------------------------------------
-# Esta rutina mide la cantidad de procesos de igual nombre que el mismo script
-# esta corriendo en el servidor.
-# Ojo que a veces se cuenta la misma pregunta como un proceso (ps ax...), asi que
-# el resultado puede tener 1 proceso de mas.
-sub myself_running {
-   my($res) = qx/ps axww | grep $0 | grep -v ' grep ' | wc -l/;
-   $res =~ s/\D//gs;
-   return $res;
-}; # myself_running
-
-# ---------------------------------------------------------------
-sub is_win32 {
-# Detecta si es plataforma win32, solo para ambiente web.
-    # return 1; # debug
-
-    my $ruta_script;
-    if ($ENV{'SCRIPT_FILENAME'} ne '') {
-      $ruta_script = $ENV{'SCRIPT_FILENAME'}; # unix
-    }
-    else {
-      $ruta_script = $ENV{'PATH_TRANSLATED'}; # win
-    };
-
-    # SI WIN
-    if ($ruta_script =~ /^\w:/) {
-      return 1;
-    }
-    # SI UNIX
-    else {
-      return 0;
-    };
-};
-
 
 # -------------------------END SCRIPT----------------------

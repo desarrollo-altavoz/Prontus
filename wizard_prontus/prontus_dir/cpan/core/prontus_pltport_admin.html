@@ -1,143 +1,190 @@
-<link type="text/css" rel="stylesheet" href="%%REL_PATH_PRONTUS%%/cpan/core/css/intercambiar.css" />
-<script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
-<script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/SubmitForm.class.js"></script>
-<script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/jquery/plugins/jquery.idTabs.js"></script>
-<script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/Intercambio.class.js"></script>
-<script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/PortAdmin.class.js"></script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Administrar Portadas &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css"/>
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/intercambiar.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
 
-<div class="div_intercambiar">
-    <div class="rotulo">
-        <div class="titulo">Administrar Portadas</div>
-    </div>
-    <div class="separa" style="clear: both;"></div>
-    <div class="box-gris">
-        <div id="tabs-admin" class="boton-gris1">
-          <a href="#tab1" class="button selected"><span>Intercambiar</span></a>
-          <a href="#tab2" class="button"><span>Duplicar</span></a>
-          <a href="#tab3" class="button"><span>Eliminar</span></a>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/lang/jquery.ui.datepicker-es.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.idTabs.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/Intercambio.class.js"></script>
+    <script type="text/javascript" src="%%REL_PATH_PRONTUS%%/cpan/core/js-local/PortAdmin.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Opciones.class.js"></script>
+
+  </head>
+  <body class="bodysite">
+
+    <div id="main">
+        %%MACRO(menu_head1b.html)%%
+
+        <!--INICIO CONTENIDO-->
+          <div class="main-left">
+             <div class="content">
+
+                <!--TITULO PRINCIPAL-->
+                <div class="top-titulo960">
+                  <h1 class="titular">Administrar Portadas</h1>
+                  <div class="boton-gris3 aright"><a href="prontus_edi_admin.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg" class="button"><span>&laquo; Volver</span></a></div>
+                </div>
+                <!-- / TITULO PRINCIPAL-->
+
+                <div class="separa"></div>
+
+                <!--COLUMNA IZQUIERDA-->
+                <div class="col960 div_intercambiar">
+
+                    <div id="tabs-admin" class="boton-gris1">
+                      <a href="#tab1" class="button selected"><span>Duplicar</span></a>
+                      <a href="#tab2" class="button"><span>Intercambiar</span></a>
+                      <a href="#tab3" class="button"><span>Eliminar</span></a>
+                    </div>
+
+                    <div id="tab1" class="auxi">
+                        <form name="frmDuplicar" id="frmDuplicar">
+                            <input type="hidden" name="NEW_PORT">
+                            <input type="hidden" name="TIPO_PORT" value="PORTACT">
+                            <input type="hidden" name="_path_conf" value="%%_path_conf%%">
+                            <table width="100%">
+                              <tr>
+                                <td colspan="2" align="left" class="titulo">
+                                <b>Plantillas Actuales</b>
+                                <p>(de acuerdo a %%_prontus_id%%.cfg)</p>
+                                </td>
+                              </tr>
+                              <tr>
+                                  <td>
+                                  <table>
+                                      <tr>
+                                        <td class="td-combo-multi">%%Lst_PORT3%%</td>
+                                      </tr>
+                                  </table>
+                                  </td>
+                              </tr>
+                              <!--multied-->
+                              <tr>
+                                <td align="left" colspan="2"><label for="portada_base">Configurar como base: </label>
+                                  <input type="checkbox" name="portada_base" id="portada_base" value="1"/></td>
+                              </tr>
+                              <!--/multied-->
+                              <tr>
+                                <td colspan="2" align="center">
+                                    <div class="botones">
+                                      <a onclick="PortAdmin.duplicar(); return false;" href="#" class="button"><span>Duplicar</span></a>
+                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+                                    </div>
+                                    <!--multied-->
+                                    <div class="cuadro-texto">
+                                        <p><b>*</b> La plantilla corresponde a una portada base.</p>
+                                    </div>
+                                    <!--/multied-->
+                                </td>
+                              </tr>
+                            </table>
+                        </form>
+                    </div>
+
+                    <div id="tab2" class="auxi">
+                        <form name="frmIntercambio" id="frmIntercambio">
+                            <input type="hidden" name="_path_conf" value="%%_path_conf%%">
+                            <input type="hidden" name="NEW_PORT">
+                            <input type="hidden" name="TIPO_PORT">
+                            <table width="100%">
+                              <tr>
+                                <td colspan="2" align="left" class="titulo">
+                                <b>Seleccione portadas a Intercambiar</b>
+                                </td>
+                              </tr>
+                              <tr>
+                                  <td>
+                                  <table>
+                                      <tr>
+                                        <td class="td-combo-multi">%%Lst_PORT1%%</td>
+                                        <td class="td-combo-multi">%%Lst_PORT2%%</td>
+                                      </tr>
+                                  </table>
+                                  </td>
+                              </tr>
+                              <tr>
+                                <td colspan="2" align="center">
+                                    <div class="botones">
+                                      <a onclick="Intercambio.cambiar(); return false;" href="#" class="button"><span>Intercambiar portadas seleccionadas</span></a>
+                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+                                    </div>
+                                    <div class="cuadro-texto">
+                                      <p>Este proceso dejará la portada del lado izquierdo con las <b>plantillas y contenido</b> de la portada de la derecha y viceversa. </p>
+                                      <p><b>Tip:</b> Para deshacer el último intercambio realizado, puede proceder a intercambiar las mismas portadas nuevamente.</p>
+                                      <!--multied--><p><b>*</b> La plantilla corresponde a una portada base.</p><!--/multied-->
+                                    </div>
+                                </td>
+                              </tr>
+                            </table>
+                        </form>
+                    </div>
+
+                    <div id="tab3" class="auxi">
+                        <form name="frmBorrar" id="frmBorrar">
+                            <input type="hidden" name="_path_conf" value="%%_path_conf%%">
+                            <table width="100%">
+                              <tr>
+                                <td colspan="2" align="left" class="titulo">
+                                <b>Plantillas Actuales</b>
+                                <p>(de acuerdo a %%_prontus_id%%.cfg)</p>
+                                </td>
+                              </tr>
+                              <tr>
+                                  <td>
+                                  <table>
+                                      <tr>
+                                        <td class="td-combo-multi">%%Lst_PORT4%%</td>
+                                      </tr>
+                                  </table>
+                                  </td>
+                              </tr>
+                              <tr>
+                                <td colspan="2" align="center">
+                                    <div class="botones">
+                                      <a onclick="PortAdmin.borrar(); return false;" href="#" class="button"><span>Eliminar portada</span></a>
+                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+                                    </div>
+                                    <!--multied-->
+                                    <div class="cuadro-texto">
+                                        <p><b>*</b> La plantilla corresponde a una portada base.</p>
+                                    </div>
+                                    <!--/multied-->
+                                </td>
+                              </tr>
+                            </table>
+                        </form>
+                    </div>
+
+
+                </div>
+                <!-- / COLUMNA IZQUIERDA-->
+
+              </div>
+           </div>
         </div>
-        <div id="tab1">
-            <form name="frmIntercambio" id="frmIntercambio">
-                <input type="hidden" name="_path_conf" value="%%_path_conf%%">
-                <input type="hidden" name="NEW_PORT">
-                <input type="hidden" name="TIPO_PORT">
-                <table width="100%">
-                  <tr>
-                    <td colspan="2" align="left" class="titulo">
-                    <b>Seleccione portadas a Intercambiar</b>
-                    </td>
-                  </tr>
-                  <tr>
-                      <td>
-                      <table>
-                          <tr>
-                            <td class="td-combo-multi">%%Lst_PORT1%%</td>
-                            <td class="td-combo-multi">%%Lst_PORT2%%</td>
-                          </tr>
-                      </table>
-                      </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" align="center">
-                        <div class="botones">
-                          <a onclick="Intercambio.cambiar(); return false;" href="#" class="button"><span>Intercambiar portadas seleccionadas</span></a>
-                          <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
-                        </div>
-                        <div class="cuadro-texto">
-                          <p>Este proceso dejará la portada del lado izquierdo con las <b>plantillas y contenido</b> de la portada de la derecha y viceversa. </p>
-                          <p><b>Tip:</b> Para deshacer el último intercambio realizado, puede proceder a intercambiar las mismas portadas nuevamente.</p>
-                          <!--multied--><p><b>*</b> La plantilla corresponde a una portada base.</p><!--/multied-->
-                        </div>
-                    </td>
-                  </tr>
-                </table>
-            </form>
-        </div>
-        <div id="tab2">
-            <form name="frmDuplicar" id="frmDuplicar">
-                <input type="hidden" name="NEW_PORT">
-                <input type="hidden" name="TIPO_PORT" value="PORTACT">
-                <input type="hidden" name="_path_conf" value="%%_path_conf%%">
-                <table width="100%">
-                  <tr>
-                    <td colspan="2" align="left" class="titulo">
-                    <b>Plantillas Actuales</b>
-                    <p>(de acuerdo a %%PRONTUS_ID%%.cfg)</p>
-                    </td>
-                  </tr>
-                  <tr>
-                      <td>
-                      <table>
-                          <tr>
-                            <td class="td-combo-multi">%%Lst_PORT3%%</td>
-                          </tr>
-                      </table>
-                      </td>
-                  </tr>
-                  <!--multied-->
-                  <tr>
-                    <td align="left" colspan="2"><label for="portada_base">Configurar como base: </label>
-                      <input type="checkbox" name="portada_base" id="portada_base" value="1"/></td>
-                  </tr>
-                  <!--/multied-->
-                  <tr>
-                    <td colspan="2" align="center">
-                        <div class="botones">
-                          <a onclick="PortAdmin.duplicar(); return false;" href="#" class="button"><span>Duplicar</span></a>
-                          <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
-                        </div>
-                        <!--multied-->
-                        <div class="cuadro-texto">
-                            <p><b>*</b> La plantilla corresponde a una portada base.</p>
-                        </div>
-                        <!--/multied-->
-                    </td>
-                  </tr>
-                </table>
-            </form>
-        </div>
-        <div id="tab3">
-            <form name="frmBorrar" id="frmBorrar">
-                <input type="hidden" name="_path_conf" value="%%_path_conf%%">
-                <table width="100%">
-                  <tr>
-                    <td colspan="2" align="left" class="titulo">
-                    <b>Plantillas Actuales</b>
-                    <p>(de acuerdo a %%PRONTUS_ID%%.cfg)</p>
-                    </td>
-                  </tr>
-                  <tr>
-                      <td>
-                      <table>
-                          <tr>
-                            <td class="td-combo-multi">%%Lst_PORT4%%</td>
-                          </tr>
-                      </table>
-                      </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" align="center">
-                        <div class="botones">
-                          <a onclick="PortAdmin.borrar(); return false;" href="#" class="button"><span>Borrar</span></a>
-                          <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
-                        </div>
-                        <!--multied-->
-                        <div class="cuadro-texto">
-                            <p><b>*</b> La plantilla corresponde a una portada base.</p>
-                        </div>
-                        <!--/multied-->
-                    </td>
-                  </tr>
-                </table>
-            </form>
-        </div>
-    </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function () {
-    Intercambio.dir_cgi_cpan = DIR_CGI_CPAN;
-    Intercambio.path_conf = '%%_path_conf%%';
-    $('#tabs-admin').idTabs();
-    Intercambio.init();
-});
-</script>
+        <!--/Fin Contenido-->
+        <script type="text/javascript">
+        $(document).ready(function () {
+
+            Admin.init('%%_prontus_id%%');
+            Intercambio.dir_cgi_cpan = DIR_CGI_CPAN;
+            Intercambio.path_conf = '%%_path_conf%%';
+            $('#tabs-admin').idTabs();
+            Intercambio.init();
+        });
+        </script>
+  </body>
+</html>
+

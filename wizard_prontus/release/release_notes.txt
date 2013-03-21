@@ -5620,24 +5620,24 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_setdb.cgi
 
 - Sistema de Logs:
-	[mejoras]
+    [mejoras]
         - Al hacer "garbage collector", si hay más de 10 logs ahora deja sólo 10 (antes borraba el último nomas)
     [files]
-		/cgi-cpn/lib_stdlog.pm
+        /cgi-cpn/lib_stdlog.pm
 
 - Portadas Taxonómicas:
-	[mejoras]
+    [mejoras]
         - Se crea el script: prontus_regenera_taxport.cgi, para regenerar todas las portadas taxonómicas.
-		  Esto, para suplir el hecho de que ahora el prontus_cron_taxport.cgi, ya no procesa invocaciones sin fid
-		  o sin seccion, por un tema de rendimiento.
-		  La invocaciones es:
-				./prontus_regenera_taxport.cgi <prontus_id>
-		  Lo que hace es gatillar el prontus_cron_taxport.cgi dependiendo de las categorías y fids existente.
-		  Se aplica un cierto grado de inteligencia, al no gatillar ni fids sin taxonomía, ni niveles inferiores
-		  luego de un nivel más específico (ya que al gatillar un secc/tema/stema se gatillan tb los niveles: 
-		  secc/tema y secc)
+          Esto, para suplir el hecho de que ahora el prontus_cron_taxport.cgi, ya no procesa invocaciones sin fid
+          o sin seccion, por un tema de rendimiento.
+          La invocaciones es:
+                ./prontus_regenera_taxport.cgi <prontus_id>
+          Lo que hace es gatillar el prontus_cron_taxport.cgi dependiendo de las categorías y fids existente.
+          Se aplica un cierto grado de inteligencia, al no gatillar ni fids sin taxonomía, ni niveles inferiores
+          luego de un nivel más específico (ya que al gatillar un secc/tema/stema se gatillan tb los niveles:
+          secc/tema y secc)
     [files]
-		/cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
 
 - Administrador de ediciones
     [cambios]
@@ -5654,5 +5654,468 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_edi_ficha.cgi
         /cgi-cpn/prontus_edi_guardar.cgi
         /cgi-cpn/prontus_edi_otras.cgi
+<<<<<<< HEAD
     
     
+=======
+
+====================================================================================================
+11.2.56 - 28/01/2013 - JOR
+====================================================================================================
+
+- Administrador de artículos
+    [mejoras]
+        - Se agrega interfaz drag & drop para la edición de la portada.
+    [files]
+        /cgi-cpn/lib_dd.pm
+        /cgi-cpn/prontus_dd_admin.cgi
+        /cgi-cpn/prontus_dd_public.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_subitem_area.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_item_area.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_beg_body.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_end_body.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_head.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/prontus_port_dd.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/compatibilidad.html
+        /wizard_prontus/prontus_dir/cpan/core/css/portdd.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/PortDD.class.js
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/grid_of.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/grid_on.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/visual-tools-bg.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/visual-tools-bg2.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/quitar_of.png
+
+- Editor de CFG
+    [cambios]
+        - Se agrega nueva variable de configuracion PORT_DRAGANDROP, para especificar
+        cuales son las portadas que podrán usar la interfaz. Esto es independiende de si la portada
+        es compatible o no.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_port.html
+        /wizard_prontus/prontus_dir/cpan/core/css/portdd.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+
+- Prontus Search
+    [mejoras]
+        - Se quita la inicialización de todas las variables prontus y se cargan solo las necesarias para las friendly url.
+    [files]
+        /cgi-bin/prontus_search.cgi
+
+- FIDs
+    [mejoras]
+        - Se agrega a la release postproceso de generación de galería de fotos a partir de un archivo zip.
+    [files]
+        /cgi-cpn/pproc/lib_ppart_galeria.pm
+        /cgi-cpn/pproc/prontus_galeria_ppart.cgi
+        /cgi-cpn/pproc/prontus_galeria_delete.cgi
+
+- Wizard
+    [cambios]
+        - La creación de las tablas se crean por defecto con codificación utf8 y con motor MYISAM.
+    [files]
+        /cgi-cpn/lib_setbd.pm
+
+====================================================================================================
+11.2.57 - 06/02/2013 - JOR
+====================================================================================================
+
+- Administrador de artículos
+    [bugfixes]
+        - Cuando una portada tenía muchos loops repetidos el parseador reemplazaba de manera
+        incorrecta el contenido de los loops, por lo tanto quedaban los datos corridos.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Regeneración masiva de artículos
+    [bugfixes]
+        - No se estaba actualizando la taxonomia en los articulos regenerados cuando esta cambiaba de nombre en la bd.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/Artic.pm
+
+- Sistema de comentarios
+    [cambios]
+        - Se agrega email al formulario de comentario.
+    [files]
+        /cgi-bin/coment/coment_enviar.cgi
+        /cgi-cpn/coment/coment_admin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/coment.css
+        /wizard_prontus/prontus_dir/cpan/core/coment/coment_admin.html
+
+====================================================================================================
+11.2.58 - 13/02/2013 - CVI
+====================================================================================================
+
+- Prontus en General:
+    [mejoras]
+        - Se centraliza y mejora el chequeo de publicación para saber si un artículo está publicado o no
+          utilizado al borrar y en el listado. Ahora no se toman en cuenta los xml fantasmas.
+        - Al hacer chequeo de sesion para entrar directo al Publicador, se actualiza el descriptor con
+          la última versión disponible de prontus.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_art_borrar.cgi
+        /cgi-cpn/prontus_check_session.cgi
+    
+- Administrador de artículos
+    [mejoras]
+        - Se mejora respuesta para los artículos corruptos
+        - Se elimina el CSS: listartic.css ya que no estaba siendo usado
+    [cambios]
+        - Se cambia la forma en que se busca por titular.
+          Ahora permite buscar por frases entre comillas dobles (útil, por ejemplo, para palabras muy cortas)
+    [files]
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/css/listartic.css (deleted)
+        
+- Buscador de Prontus
+    [bugfixes]
+        - Se corrige vulnerabilidad XSS al usar parámetro search_comodines
+        - Se hace un barrido buscando valores faltantes sin corregir. Se filtran las fechas para no permitir
+        valores que no sean fechas.
+    [files]
+        /cgi-bin/prontus_search.cgi
+
+- Prontus update:
+    [mejoras]
+        - Cuando no hay conexión a www.prontus.cl se usa un ícono de alert en vez de usar el mismo ícono de No Updates
+        - Se cambia el nombre de una función que estaba mal escrito
+    [files]
+        /cgi-cpn/Update.pm
+        /cgi-cpn/prontus_head_info.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
+        
+- Administrar Portadas:
+    [bugfixes]
+        - Cuando se duplicaba, la nueva portada quedaba con el mismo nombre de la original. Ahora, lo que se hace
+          es dejar el nombre del nuevo archivo como nombre de la portada
+    [mejoras]
+        - Se cambia distribución de elementos para que sea similar al Administrador de Ediciones
+        - Se deja el duplicador como primera Pestaña        
+    [files]
+        /cgi-cpn/prontus_pltport_admin.cgi
+        /cgi-cpn/prontus_pltport_duplicar.cgi
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_pltport_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/css/intercambiar.css      
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        
+- Administrar Ediciones:
+    [mejoras]
+        - Se agrega un botón Volver para mejorar la usabilidad
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_admin.html
+    
+====================================================================================================
+11.2.59 - 21/02/2013 - CVI/EAG/JOR
+====================================================================================================
+
+- Prontus en General:
+    [cambios]
+        - Se actualiza la version de la UI de jquery a la 1.9.2
+        - Se optimiza la lectura de los nombres de las taxonomías, guardandolas en un caché temporal
+          Con esto se evita que se hagan multiples consultas a la BD, sobre todo en procesos masivos
+        - Se evita el parseo de marcas innecesarias.
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_imag_ficha.cgi
+        /cgi-cpn/prontus_pltport_admin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_otras.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_imag_ficha.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_pltport_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_tags4fids.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_tags_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_usr_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/coment/coment_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/mant_seccs/prontus_seccion_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/port_dd/plt_head.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/ui/ (muchos cambios)
+        /wizard_prontus/prontus_dir/cpan/core/js-local/ImgEdit.class.js
+
+- Administrador de artículos:
+    [cambios]
+        - Se cambian los tooltips para indicar si un artículo está publicado, por los tooltips de la UI de jquery
+        - Se agrega el nombre del archivo de la portada (sobre el nombre) + la fecha/hora de la ultima modificacion
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_art_listpub.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/LoadDiv.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/listado_iconos.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+  
+- FIDS:
+    [cambios]
+        - Se cambia el texto de cierre de comentarios por uno más claro.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_general_comentarios.html
+        
+- Editor de Imagenes:
+    [bugfixes]
+        - Se corrige bug al intentar usar el módulo opcional: Image::JpegTran
+    [files]
+        /cgi-cpn/lib_thumb.pm
+   
+- VTXT:
+    [cambios]
+        - Se actualiza la versión del TinyMCE de la 3.4.2  a la 3.5.8, para corregir un bug con 
+          unos extraños span "fantasma" con line-height, que aparecían en navegadores webkit.
+        - Se agrega al botón para "Seleccionar todo" a la botonera del VTXT
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/
+
+- Transcoding:
+    [bugfixes]
+        - Se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
+    [files]
+        /cgi-cpn/xcoding/qtfaststart.cgi
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+
+- Wizard Prontus:
+    [bugfixes]
+        - Se soluciona problema de seguridad con archivo inf.txt
+    [files]
+        /cgi-cpn/wizard_paso1.cgi
+        /cgi-cpn/wizard_paso2.cgi
+        /cgi-cpn/wizard_deploy.cgi
+        /cgi-cpn/wizard_show_paso2.cgi
+        /cgi-cpn/wizard_show_confirm.cgi
+        /cgi-cpn/wizard_reporte.cgi
+
+- Login:
+    [cambios]
+        - Se mejora el diseño de la página del cambio de contraseña que ocurre cuando se logea por primera vez o cuando se resetea la contraseña.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/prontus_changepass.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/ChangePass.class.js
+        /wizard_prontus/prontus_dir/cpan/core/css/login.css
+
+- Categorías:
+    [cambios]
+        - Se agrega un delay de 2 segundos luego de procesar la primera página de las portadas taxonómicas.
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+
+- Chequeo de plataforma:
+    [cambios]
+        - Se agrega chequeo del módulo perl Digest::SHA1 que es utilizado por lib_captcha2
+    [files]
+        - /cgi-cpn/prontus_check_platform.cgi
+
+
+====================================================================================================
+11.2.60 - 05/03/2013 - CVI/JOR
+====================================================================================================
+
+- Prontus en General:
+    [bugfixes]
+        - Se agrega la codificación utf8 a los logs de procesamiento, ya que si el server no estaba 
+          seteado para entregar utf8 por defecto, salían caracteres extraños
+    [mejoras]
+        - Se hacen varias mejoras menores de rendimiento
+        - Al leer las marcas externas, se cambia el formato para considerar: /sist_externo/fechac/ts/, en vez del antiguo
+          que no consideraba fechac/. El sistema aún revisa el formato antiguo para retro-compatibilidad.
+          Esto, para evitar issue de overflow de contenido en un directorio (ocurrido en sistema de comentarios)
+        - Al leer las marcas externas, las marcas globales se "cachean" en prontus_varglb.
+        - En la función: lib_tax::generar_fila, se agrega la opción se pasar las marcas externas, previamente cacheadas.
+        - Al ejecutarse el prontus_cron_taxport y prontus_cron_list, se dejan los XMLs leídos como variable global, 
+          así se mantienen por todo el proceso, optimizando el script.
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/prontus_cron_taxport.cgi
+
+- Listado de Artículos:
+    [bugfixes]
+        - Al guardar la portada, duarante una milésimas de segundo, se veía el ícono de Drag & Drop
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+
+- VTXT:
+    [bugfixes]
+        - Se corrigen algunos plugins y archivos de lenguaje, que quedaron malos.
+          Había un error específico al editar/agregar imagenes en el vtxt
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/
+
+- Marcas Prontus:
+    [bugfixes]
+        - Se corrige bug de la marca %%_totartics%% que tomaba todos los artículos, aunque no estuvieran publicados
+          Ahora no considera en el conteo los sin alta, con mala fecha, o sin VoBo.
+    [mejoras]
+        - Se agrega la marca %%_area%% en portadas, con el número del área.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Categorías:
+    [cambios]
+        - Se eliminan todas las referencias a las variables: TAXPORT_REFRESH y TAXPORT_REFRESH_SEGS, por estar obsoletas
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_categ.html
+        
+- Portadas Taxonómicas:
+    [bugfixes]
+        - Se corrige bug en prontus_regenera_taxport.cgi, que invocaba incluso tripletas que no existían.
+          Ahora revisa que los Temas pertenezca a su Sección padre, y los Subtemas con su Tema padre
+    [cambios]
+        - Se baja el tiempo de sleep al generar las páginas > 1, de 2 segundos a medio segundo.
+    [files]
+        /cgi-cpn/prontus_regenera_taxport.cgi
+
+- Código Fuente:
+    [mejoras]
+        - Se comienza a usar lib_maxrunning.pm en las CGIs de Comentarios, Enviar, Imprimir, Posting, Prontus Form
+        - Se eliminan referencias a funciones locales de chequeo de instancias corriendo (para centralizar en lib_maxrunning.pm)
+        - Se cambia el uso de funciones locales del tipo: is_win32, para centralizar en &lib_prontus::is_win32()
+          Pese a que Prontus ya no posee soporte para win32, no se eliminan estos chequeos por ahora.
+    [files]
+        /cgi-bin/coment/coment_enviar.cgi
+        /cgi-bin/prontus_art_posting.cgi
+        /cgi-bin/prontus_enviar.cgi
+        /cgi-bin/prontus_form.cgi
+        /cgi-bin/prontus_imprimir.cgi
+        /cgi-cpn/coment/coment_varglb.pm
+        /cgi-cpn/lib_form.pm
+        /cgi-cpn/lib_search.pm
+        /cgi-cpn/lib_waitlock.pm
+
+- Preview:
+    [cambios]
+        - Se evita que el preview se cierre mientras estén en modo "Loading", para evitar comportamientos extraños
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Preview.class.js
+
+- Administrar usuarios:
+    [bugfixes]
+        - Se corrige error en chrome que descuadraba el listado de portadas y artículos
+    [mejoras]
+        - Se mejora un poco la gráfica para facilitar la usabilidad
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/css/usradmin.css
+        /wizard_prontus/prontus_dir/cpan/core/prontus_usr_ficha.html
+
+- Base de Datos:
+    [bugfixes]
+        - Se corrige error al crear tablas, bajo ciertas circunstancias, no mostraba la creación de tablas
+        - Error al contar los registros de la tabla: TAGSART
+    [files]
+        /cgi-cpn/prontus_set_bd.cgi
+
+- Editor de CFG
+    [cambios]
+        - Se agrega variable FFMPEG_PARAMS, que son los parámetros que se utilizarán con el comando ffmpeg en la transcodificación de videos.
+    [files]
+       /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+       /cgi-cpn/prontus_admin_main.cgi
+       /cgi-cpn/prontus_cfg_save.cgi
+       /cgi-cpn/lib_prontus.pm
+
+- Recuperación de contraseña
+    [bugfixes]
+        - Se mejora la manera en que se recupera la contraseña de un usuario, agregando la confirmación como paso previo al cambio
+        de contraseña.
+    [files]
+        /cgi-cpn/prontus_changepass.cgi
+        /cgi-cpn/prontus_olvidopass.cgi
+        /cgi-cpn/prontus_recordarpass.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/olvidopass.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/ChangePass.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_olvidopass.html
+
+====================================================================================================
+11.2.61 - 20/03/2013 - CVI/JOR
+====================================================================================================
+
+- Listado de Artículos:
+    [cambios]
+        - Se aumenta el tiempo que dura la Cookie con el estado de la portada, edicion, numero de articulos
+          por pagina, y orden, a 1 año (vale decir, se mantiene aunque se cierre el navegador)
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        
+- FID:
+    [bugfixes]
+        - Se corrige error en el Upload de Imagenes con drag & drop. La CGI que procesaba, se había borrado.
+    [files]
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+
+- Wizard Prontus:
+    [bugfixes]
+        - En una release anterior, se comenzó a eliminar el archivo: inf.txt. 
+          Se hace rollback, debido a que al navegar por el arbol o refrescar la página de reporte, arroja error
+    [notice]
+        - Se agrega la nueva interface de descarga/administración de modelos en el "Paso 2"
+    [mejoras]
+        - Se actualiza la versión de jquery del Wizard a la 1.7.1 (la misma que usa prontus)
+        - Se agrega la librería validator.js para las validaciones de los pasos
+        - Se crea librería wizard_lib.pm para manejo de funciones comunes
+    [cambios]
+        - Se cambia el botón "Cancelar" por un redirect a /wizard_prontus, en vez del window.close();
+        - Se elimina librería FontSize y se actualizan Botones y Utiles desde el core del Prontus
+        - Se eliminan JS sueltos y se reemplazan por Wizard.class.js
+        - Se hace un orden y reestructuración del html, js, y css
+        - Se cambian los íconos del arbol de directorios del Reporte del Wizard
+    [files]
+        /cgi-cpn/wizard_model_delete.cgi
+        /cgi-cpn/wizard_model_download.cgi
+        /cgi-cpn/wizard_lib.pm
+        /cgi-cpn/wizard_reporte.cgi
+        /cgi-cpn/wizard_show_models.cgi
+        /wizard_prontus/core/ayuda.html
+        /wizard_prontus/core/confirm.html
+        /wizard_prontus/core/models.html
+        /wizard_prontus/core/index.html
+        /wizard_prontus/core/paso1.html
+        /wizard_prontus/core/paso2.html
+        /wizard_prontus/core/reporte.html
+        /wizard_prontus/core/css/estilos.css
+        /wizard_prontus/core/imag/loader/       
+        /wizard_prontus/core/imag/boto/boto_azul2_left.png
+        /wizard_prontus/core/imag/boto/boto_azul2_right.png
+        /wizard_prontus/core/imag/boto/boto_gris3_left.png
+        /wizard_prontus/core/imag/boto/boto_gris3_right.png
+        /wizard_prontus/core/imag/models_download.png
+        /wizard_prontus/core/imag/models_remove.png
+        /wizard_prontus/core/imag/models_upgrade.png
+        /wizard_prontus/core/imag/reporte_file.png
+        /wizard_prontus/core/imag/reporte_folder.png
+        /wizard_prontus/core/imag/reporte_up.png
+        /wizard_prontus/core/js/Botones.class.js
+        /wizard_prontus/core/js/Utiles.class.js
+        /wizard_prontus/core/js/Wizard.class.js
+        /wizard_prontus/core/js/validator.js
+        /wizard_prontus/core/js/jquery/jquery-1.7.1.js
+        /wizard_prontus/core/js/jquery/jquery-1.7.1.min.js
+        /wizard_prontus/core/js/jquery/jquery.js
+        /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox-min.js
+        /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox.js
+
+
+
+>>>>>>> e75ff0774ee36fa9857c22717e1eca50c33c0c1f

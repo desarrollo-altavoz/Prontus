@@ -62,6 +62,7 @@
 #    1.0.0 - 2011-12-06 - CVI - Primera version
 # ---------------------------------------------------------------
 # 1.0.0 - 08/01/2013 - EAG - Primera version.
+# 1.0.1 - 19/02/2013 - EAG - Se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
@@ -208,6 +209,9 @@ sub get_index {
             read($datastream, my $data, 8);
             $atom_size = unpack("Q", $data);
             $skip = 16;
+        }
+        if($atom_size == 0){
+            last;
         }
         my $atom_pos = tell($datastream) - $skip;
         if($toplevel) {

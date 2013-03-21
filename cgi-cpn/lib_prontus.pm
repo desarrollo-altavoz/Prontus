@@ -959,7 +959,7 @@ sub check_artic_pub {
 #        foreach my $clave (@ports) {
 #            $portadas =
 #        }
-        warn('Ediciones: '.$ediciones);
+        #~ warn('Ediciones: '.$ediciones);
         return $ediciones;
     }
     return '';
@@ -972,6 +972,17 @@ sub load_artic_pubs {
     # procesa edicion, vigente, la ultima y la base.
     my (@ediciones) = &lib_prontus::get_edics4update();
     my %hash_artics;
+
+    # Solo si la edicion es base, se guardan sólo las portadas base
+    my %ports_base;
+    if($prontus_varglb::MULTI_EDICION eq 'SI') {
+        foreach my $port_base (@prontus_varglb::BASE_PORTS) {
+            $ports_base{$port_base} = 1;
+            #~ print STDERR "Base: $port_base\n";
+        }
+    } else {
+        %ports_base = %prontus_varglb::PORT_PLTS;
+    }
 
     foreach my $edic (@ediciones) {
 
@@ -988,6 +999,14 @@ sub load_artic_pubs {
         # Para cada port.
         foreach $port (@entries) {
             next if ($port =~ /^\./);
+
+            # No se toman en cuenta las que no esten en el CFG
+            next unless ($prontus_varglb::PORT_PLTS{$port});
+
+            if($prontus_varglb::MULTI_EDICION eq 'SI' && $edic eq 'base') {
+                next unless($ports_base{$port});
+            }
+
             # portada en el site
             $arch_seccion = "$pathdir_seccs/$port";
 
@@ -1494,7 +1513,7 @@ sub load_config {
   if ($buffer =~ m/\s*EDITOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $e_ver_art_ajenos = $2;
   };
-  
+
   my $e_adm_ediciones = 'SI'; # valor por defecto. # 8.0
   if ($buffer =~ m/\s*EDITOR_ADMINISTRAR_EDICIONES\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $e_adm_ediciones = $2;
@@ -1566,12 +1585,12 @@ sub load_config {
 
 
   # Taxonomia
-  my $taxport_refresh = 'SI'; # valor por defecto. Si es NO, entonces no se regenera el cache de las taxports, sino que se actualizan masivamente via CRON
-  if ($buffer =~ m/\s*TAXPORT_REFRESH\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $taxport_refresh = $2;
-  };
-  $prontus_varglb::TAXPORT_REFRESH = $taxport_refresh;
-
+  # CVI - Deprecated - Ya no se usa esto
+  #~ my $taxport_refresh = 'SI'; # valor por defecto. Si es NO, entonces no se regenera el cache de las taxports, sino que se actualizan masivamente via CRON
+  #~ if ($buffer =~ m/\s*TAXPORT_REFRESH\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    #~ $taxport_refresh = $2;
+  #~ };
+  #~ $prontus_varglb::TAXPORT_REFRESH = $taxport_refresh;
 
 
   my $taxport_maxartics = '500'; # valor por defecto.
@@ -1801,20 +1820,19 @@ sub load_config {
   };
   $prontus_varglb::TAXPORT_ARTXPAG = $taxport_artxpag;
 
-
-  my $taxport_refresh_segs = 1800; # valor default  media hora
-  if ($buffer =~ m/\s*TAXPORT_REFRESH_SEGS\s*=\s*("|')(\d+?)("|')/) {
-    $taxport_refresh_segs = $2;
-    if (($taxport_refresh_segs =~ /\d+/) && (! $tax_niv)) {
-      #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
-      #~ print STDERR "Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-      #~ print "Content-Type: text/html\n\n";
-      #~ print "<P>Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-      #~ exit;
-    };
-  };
-
-  $prontus_varglb::TAXPORT_REFRESH_SEGS = $taxport_refresh_segs;
+  # CVI - DEPRECATED - Esta marca ya no se usa
+  #~ my $taxport_refresh_segs = 1800; # valor default  media hora
+  #~ if ($buffer =~ m/\s*TAXPORT_REFRESH_SEGS\s*=\s*("|')(\d+?)("|')/) {
+    #~ $taxport_refresh_segs = $2;
+    #~ if (($taxport_refresh_segs =~ /\d+/) && (! $tax_niv)) {
+      # 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
+      # print STDERR "Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
+      # print "Content-Type: text/html\n\n";
+      # print "<P>Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
+      # exit;
+    #~ };
+  #~ };
+  #~ $prontus_varglb::TAXPORT_REFRESH_SEGS = $taxport_refresh_segs;
 
   # TAXPORT_ORDEN
   $prontus_varglb::TAXPORT_ORDEN = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
@@ -2009,6 +2027,10 @@ sub load_config {
   # El valor por defecto es vacio
   if ($buffer =~ m/\s*FOTO_MAX_PIXEL\s*=\s*("|')(.*?)("|')/) {
     $prontus_varglb::FOTO_MAX_PIXEL = $2;
+  };
+  
+  if ($buffer =~ m/\s*FFMPEG_PARAMS\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::FFMPEG_PARAMS = $2;
   };
 
   # El valor por defecto es vacio
@@ -2458,16 +2480,19 @@ sub generic_parse_port {
 
   # Encuentra los tags de area dentro del template (%%LOOPi%%...%%/LOOP%%),
   # y produce los contenidos.
-  my $repet_areas = '1';
+  #~ my $repet_areas = '1';
   my %areas;
+  my %area_cont;
   # while ($buffer =~ /%%LOOP(\d+)%%(.*?)%%\/LOOP%%/isg) {
   while ($buffer =~ /%%LOOP(\d+)(\([^)]+?\))?%%(.*?)%%\/LOOP%%/isg) {
-
     my ($are,$tmp) = ($1,$3);
     my $pure_are = $are;
+    if (!exists $area_cont{$pure_are}) {
+        $area_cont{$pure_are} = 1;
+    };
     if (exists $areas{$are}) {
-      $are .= '_' . $repet_areas;
-      $repet_areas++;
+      $are .= '_' . $area_cont{$pure_are};
+      $area_cont{$pure_are}++;
     };
     # Parsea el area usando $2 como template parcial.
     $areas{$are} = &parser_area($pure_are,$tmp, $dir_server, $prontus_id,
@@ -2661,53 +2686,102 @@ sub add_macros {
 # -------------------------------------------------------------------------#
 # Genera un area de acuerdo al template suministrado.
 # Retorna el buffer parseado y el nro. de articulos en el area
-
 # %AREA = ();
 # %PRIO = ();
-
 sub parser_area {
 
-    my($area, $theloop, $dir_server, $prontus_id,
-    $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil) = @_;
-
+    my($area, $theloop, $dir_server, $prontus_id, 
+            $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil) = @_;
+        
     # Obtiene lista de articulos de esta area.
     my $num_artics_in_area = 0;
     my (%articulos) = (); # Articulos que pertenecen a esta area.
     foreach my $key (sort{$b cmp $a}(keys %lib_prontus::AREA)) {
         if ($lib_prontus::AREA{$key} eq $area) {
             $articulos{$key} = $lib_prontus::AREA{$key};
-            # print STDERR "key[$key] AREA[$lib_prontus::AREA{$key}] area[$area]\n";
-            $num_artics_in_area++;
         };
     };
 
-    # Ordena los art. de esta area por prioridad y timestamp.
+    # Ordena los art. de esta area por prioridad y timestamp
     my @keys_articulos = sort {$lib_prontus::PRIO{$a} <=> $lib_prontus::PRIO{$b} or $b <=> $a} keys %articulos;
+    my @filtered_keys;
 
-    my $j = 0;
     my $ultimo;
     my %hash_ifvs;
-    my $instancias_x_area = 0;
-    my $stop_loop = 0;
-
+    my $totartics = 0;
     my $salida_html;
 
+    # Aca se calculan los articulos que efectivamente serán publicados
+    my %array_artics;
+    foreach my $key (@keys_articulos) {
+        
+        my $ts_artic = $key;
+        $ts_artic =~ s/\..*//; # borra extension al nombre del archivo
+        
+        # Revisar VoBo de publicacion
+        my $vb_key = $lib_prontus::VB{$ts_artic};
+        $vb_key = 1 if ($vb_key eq '');
+        if ($vb_key eq '0') {
+            next;
+        };
+        
+        my $artic_obj = Artic->new(
+                'prontus_id'=>$prontus_id,
+                'public_server_name'=>$prontus_varglb::PUBLIC_SERVER_NAME,
+                'cpan_server_name'=>$prontus_varglb::IP_SERVER,
+                'document_root'=>$dir_server,
+                'ts'=>$ts_artic, # si no va, asigna uno nuevo
+                'campos'=>{}) || die "Error inicializando objeto articulo: $Artic::ERR\n";
+        my %campos_xml = $artic_obj->get_xml_content();
+        
+        # Filtro por fechap/horap y fechae/horae del artic
+        if ($control_fecha eq 'SI') {
+            if (! &fechas_ok($ts_preview, $campos_xml{'_fechap'}, $campos_xml{'_horap'}, $campos_xml{'_fechae'}, $campos_xml{'_horae'})) {
+                next;
+            };
+        };
 
-    while (($j <= $#keys_articulos) && ($stop_loop < 1)) {
-        # $ultimo = 'ifv';
-        # print STDERR "*********** area: $area ***********************" . "\n";
-        # print STDERR "stop_loop[$stop_loop]\n";
-        my $key = $keys_articulos[$j]; # <ts>
+        # Filtro por alta
+        if ($controlar_alta_articulos eq 'SI') {
+            my $alta_key = $campos_xml{'_alta'};
+            if (! $alta_key) { # sin alta
+                next;
+            };
+        };
+        # Se guarda el objeto para usarlo mas abajo
+        $filtered_keys[$totartics] = $key;
+        $array_artics{$ts_artic} = \%campos_xml;
+        $totartics++;
+    };
 
-        $j++;
-        # print STDERR "key[$key]\n";
-        $instancias_x_area++;
-        # print STDERR "\ninstancias_x_area[$instancias_x_area]\n"; # debug
-        my $dirfecha = &get_dirfecha_by_ts($key);
-        my $reldir_artic = "/$prontus_id/site/artic/$dirfecha";
-        my $reldir_artic_pags = "$reldir_artic/pags";
-        my $relpath_artic = "$reldir_artic_pags/$key";
+    # Aca se asume que todos los artículos serán parseados
+    my $stop_loop = 0;
+    my $loopcounter = 0;
+    while (($loopcounter <= $#filtered_keys) && ($stop_loop < 1)) {    
+        
+        my $key = $filtered_keys[$loopcounter];
+        my $ts_artic = $key;
+        $ts_artic =~ s/\..*//; # borra extension al nombre del archivo
+        if($ts_artic !~ /\d{14}/) {
+            $ts_artic = '';
+        };        
+        
+        my $artic_obj = Artic->new(
+                'prontus_id'=>$prontus_id,
+                'public_server_name'=>$prontus_varglb::PUBLIC_SERVER_NAME,
+                'cpan_server_name'=>$prontus_varglb::IP_SERVER,
+                'document_root'=>$dir_server,
+                'ts'=>$ts_artic, # si no va, asigna uno nuevo
+                'campos'=>{}) || die "Error inicializando objeto articulo: $Artic::ERR\n";
+        my %campos_xml;
+        if(ref $array_artics{$ts_artic}) {
+            my $ref = $array_artics{$ts_artic};
+            %campos_xml = %$ref;
+        } else {
+            %campos_xml = $artic_obj->get_xml_content();
+        };
 
+        $loopcounter++;
         my $localbuf = $theloop; # Copia sub-template para generar instancia.
 
         # ------------- IFVs.
@@ -2715,16 +2789,15 @@ sub parser_area {
         my $buf_aux = $localbuf;
         my ($div, $res, $mod, $instancias);
         if (($buf_aux =~ /%%IFVC\((\d+)\, *(\d+)\)%%.+?%%\/IFVC%%/is) and ($buf_aux !~ /%%IFV\((\d+)\, *(\d+)\)%%.+?%%\/IFV%%/is)) {
-            return ('Error en Loop: Sentencia IFVC debe ir acompañada de a lo menos un IFV', $num_artics_in_area);
+            return ('Error en Loop: Sentencia IFVC debe ir acompañada de a lo menos un IFV', $loopcounter);
         };
-
         while ($buf_aux =~ /%%IFV(C?)\((\d+)\, *(\d+)\)%%.+?%%\/IFV\1%%/isg) {
             my $ifvc = $1;
-            # print STDERR "pesouno[$1]\n";
+            #~ print STDERR "pesouno[$1]\n";
             $div = $2;
             $res = $3;
-            $mod = $instancias_x_area % $div;
-            # print STDERR "var[$instancias_x_area] % div[$div] = mod[$mod] y res[$res] y ifvc[$ifvc]<br>"; # DEBUG
+            $mod = $loopcounter % $div;
+            #~ print STDERR "var[$loopcounter] % div[$div] = mod[$mod] y res[$res] y ifvc[$ifvc]\n"; # DEBUG
             # elimina los segmentos q no corresponden, dejando solo uno de acuerdo a la iteracion q toca.
             if ($mod == $res) {
                 if ($ifvc) {
@@ -2732,16 +2805,16 @@ sub parser_area {
                 } else {
                     $ultimo = 'ifv';
                 };
-                # print STDERR "\nCALZA EN [%%IFV$ifvc($div,$res)%%.+?%%/IFV%%] EN instancias_x_area[$instancias_x_area]\n";
-                # print STDERR "\nultimo[$ultimo]\n";
-                $hash_ifvs{$instancias_x_area} = $ultimo;
+                #~ print STDERR "CALZA EN [%%IFV$ifvc($div,$res)%%.+?%%/IFV%%] EN instancias_x_area[$loopcounter]\n";
+                #~ print STDERR "ultimo[$ultimo]\n";
+                $hash_ifvs{$loopcounter} = $ultimo;
 
-                $localbuf =~ s/%%(IFV$ifvc\($div\, *$res\))%%(.+?)%%\/(IFV$ifvc)%%/##\1##\2##\/\3##/is; # try sian (enmascarar)
+                $localbuf =~ s/%%(IFV$ifvc\($div\, *$res\))%%(.+?)%%\/(IFV$ifvc)%%/##\1##\2##\/\3##/is; # try again (enmascarar)
                 last; # try
 
             };
-            if (($key eq 'filler') && ($instancias_x_area == $div)) {
-                # print STDERR "\nSTOP LOOP - INSTANCIAS == DIV\n";
+            if (($key eq 'filler') && ($loopcounter == $div)) {
+                #~ print STDERR "STOP LOOP - INSTANCIAS == DIV\n";
                 $stop_loop = 1;
             };
         }; # while %%IFV...
@@ -2754,7 +2827,6 @@ sub parser_area {
         $localbuf =~ s/%%\/IFVC?%%//isg;
         # ------------- /IFVs.
 
-
         # ------------- NIFVs.
         # Si el contador de articulos para este loop MOD div == res entonces borrar contenido
         $buf_aux = $localbuf;
@@ -2762,8 +2834,8 @@ sub parser_area {
         while ($buf_aux =~ /%%NIFV\((\d+)\, *(\d+)\)%%.+?%%\/NIFV%%/isg) {
             $div = $1;
             $res = $2;
-            $mod = $instancias_x_area % $div;
-            # print "var[$instancias_x_area] % div[$div] = mod[$mod] y res[$res]<br>"; # DEBUG
+            $mod = $loopcounter % $div;
+            # print "var[$loopcounter] % div[$div] = mod[$mod] y res[$res]<br>"; # DEBUG
 
             if ($mod == $res) {
                 $localbuf =~ s/%%NIFV\($div\, *$res\)%%.+?%%\/NIFV%%//isg;
@@ -2774,56 +2846,15 @@ sub parser_area {
         $localbuf =~ s/%%\/NIFV%%//isg;
         # ------------- /NIFVs.
 
-
-        my $ts_artic = $key;
-        $ts_artic =~ s/\..*//; # borra extension al nombre del archivo
-
         # Parsea datos del artic
-        my %campos_xml;
-
         if ($key eq 'filler') {
+            #~ print STDERR "Haciendo filler de la iteracion\n";
             my %nodata;
-            $localbuf = &procesa_condicional($localbuf, \%nodata, \%nodata);
+            my %fillerdata;
+            $fillerdata{_ts} = $ts_artic;
+            $localbuf = &procesa_condicional($localbuf, \%fillerdata, \%nodata);
+            $localbuf =~ s/%%.*?%%//g;
         } else {
-
-            my $artic_obj = Artic->new(
-            'prontus_id'=>$prontus_id,
-            'public_server_name'=>$prontus_varglb::PUBLIC_SERVER_NAME,
-            'cpan_server_name'=>$prontus_varglb::IP_SERVER,
-            'document_root'=>$dir_server,
-            'ts'=>$ts_artic, # si no va, asigna uno nuevo
-            'campos'=>{}) || die "Error inicializando objeto articulo: $Artic::ERR\n";
-            my %campos_xml = $artic_obj->get_xml_content();
-
-            # Filtro por fechap/horap y fechae/horae del artic
-            if ($control_fecha eq 'SI') {
-                print STDERR "\nts[$ts_artic][$campos_xml{'_txt_titular'}] " if ($DEBUG_FECHAS);
-                if (! &fechas_ok($ts_preview, $campos_xml{'_fechap'}, $campos_xml{'_horap'}, $campos_xml{'_fechae'}, $campos_xml{'_horae'})) {
-                    $instancias_x_area-- if (($localbuf) && ($instancias_x_area));
-                    $localbuf = ''; # no publicar articulo # 1.22
-                    print STDERR " no publicado - fechas_ok($ts_preview, $campos_xml{'_fechap'}, $campos_xml{'_horap'}, $campos_xml{'_fechae'}, $campos_xml{'_horae'})\n" if ($DEBUG_FECHAS);
-                } else {
-                    print STDERR " si publicado - fechas_ok($ts_preview, $campos_xml{'_fechap'}, $campos_xml{'_horap'}, $campos_xml{'_fechae'}, $campos_xml{'_horae'})\n" if ($DEBUG_FECHAS);
-                };
-            };
-
-            # Filtro por alta
-            if ($controlar_alta_articulos eq 'SI') {
-                my $alta_key = $campos_xml{'_alta'};
-                if (! $alta_key) { # sin alta
-                    $instancias_x_area-- if (($localbuf) && ($instancias_x_area));
-                    $localbuf = ''; # no publicar articulo
-                };
-            };
-
-            # Revisar VoBo de publicacion
-            my $vb_key = $lib_prontus::VB{$ts_artic};
-            $vb_key = 1 if ($vb_key eq '');
-            if ($vb_key eq '0') {
-                $instancias_x_area-- if (($localbuf) && ($instancias_x_area));
-                $localbuf = ''; # no publicar articulo
-            }
-
             # Recupera marcas externas (desde /xdata)
             my %claves_adicionales = $artic_obj->get_xdata($buffer);
 
@@ -2831,38 +2862,34 @@ sub parser_area {
             if ($localbuf ne '') {
                 # warn "entra";
                 $claves_adicionales{_ts} = $ts_artic;
-                $claves_adicionales{_loopcounter} = $instancias_x_area;
-                $claves_adicionales{_totartics} = $num_artics_in_area;
+                $claves_adicionales{_loopcounter} = $loopcounter;
+                $claves_adicionales{_totartics} = $totartics;
+                $claves_adicionales{_area} = $area;
                 # warn $localbuf;
                 $localbuf = &procesa_condicional($localbuf, \%campos_xml, \%claves_adicionales);
             };
-
             my $fullpath_vista = $artic_obj->get_fullpath_artic($mv, $campos_xml{'_plt'});
             $localbuf = $artic_obj->parse_artic_data($fullpath_vista, $localbuf, \%campos_xml, \%claves_adicionales);
         };
-
         $salida_html .= $localbuf;
 
-
-
-        if ($j > $#keys_articulos) {
-            # print STDERR "\ninstancias_x_area[$instancias_x_area] - FINALMENTE TOCO UN[$hash_ifvs{$instancias_x_area}]\n";
-            if ($hash_ifvs{$instancias_x_area} eq 'ifvc') {
-                push @keys_articulos, 'filler';
-                if ($instancias_x_area > 10000) {
+        if ($loopcounter >= $totartics) {
+            #~ print STDERR "-- Instancias_x_area[$loopcounter] - FINALMENTE TOCO UN[$hash_ifvs{$loopcounter}]\n";
+            if ($hash_ifvs{$loopcounter} eq 'ifvc') {
+                push @filtered_keys, 'filler';
+                if ($loopcounter > 10000) {
                     $stop_loop = 1;
-                    # print STDERR "STOPLOOP forced\n";
+                    #~ print STDERR "STOPLOOP forced\n";
                 };
             } else {
                 $stop_loop = 1;
-                # print STDERR "STOPLOOP -> \n";
+                #~ print STDERR "STOPLOOP\n";
             };
         };
-
-
+        
+        #~ print STDERR "Fin de la iteracion $loopcounter / $totartics\n\n";
     };
-
-
+    #~ print STDERR "Fin del area $area\n------------------ \n\n\n";
     return $salida_html;
 
 }; # parserArea
@@ -3872,10 +3899,9 @@ sub replace_in_artic {
     $buffer =~ s/%%$nom_campo%%/$valor_campo/isg;
 
     # parsea marcas con ajuste de chars
-    $buffer = &parse_maxchars($nom_campo, $valor_campo, $buffer);
-
-
-
+    if ($nom_campo !~ /^asocfile_|^swf_|^multimedia_|^fotofija_|^_hfoto|^_wfoto|^chk_cuadrar_fotofija|^_NOMfoto_|^foto_\d+/i) {
+        $buffer = &parse_maxchars($nom_campo, $valor_campo, $buffer);
+    };
 
     # Ahora parsear en la pagina la version minitext del campo TXT_identif --> identif
     if ($nom_campo =~ /^(_)?V?TXT_(\w+?)$/i) {
@@ -5265,7 +5291,11 @@ sub get_nomtax_envista {
 # ---------------------------------------------------------------
 sub get_nom4vistas {
     my ($mv, $id_s, $id_t, $id_st) = @_;
-    return ('', '', '') if (!$mv);
+
+    my $key = $id_s.'/'.$id_t.'/'.$id_st.'/'.$mv;
+    if($prontus_varglb::cache_nom4vista{$key}) {
+        return $prontus_varglb::cache_nom4vista{$key};
+    }
 
     # Conectar a BD si es que no viene la conexion
     if (! ref($prontus_varglb::BD_CONN)) {
@@ -5278,6 +5308,24 @@ sub get_nom4vistas {
     };
 
     my ($nom_s, $nom_t, $nom_st); # nombres en la vista dada
+
+    if (!$mv) {
+        # Vista principal.
+        if ($id_s) {
+            $nom_s = &existe_registro("select SECC_NOM from SECC where SECC_ID='$id_s'", $prontus_varglb::BD_CONN);
+        };
+
+        if ($id_t) {
+            $nom_t = &existe_registro("select TEMAS_NOM from TEMAS where TEMAS_ID='$id_t'", $prontus_varglb::BD_CONN);
+        };
+
+        if ($id_st) {
+            $nom_st = &existe_registro("select SUBTEMAS_NOM from SUBTEMAS where SUBTEMAS_ID='$id_st'", $prontus_varglb::BD_CONN);
+        };
+
+        return ($nom_s, $nom_t, $nom_st);
+    };
+
     if ($id_s) {
         my $secc_nom4vistas = &existe_registro("select SECC_NOM4VISTAS from SECC where SECC_ID='$id_s'", $prontus_varglb::BD_CONN);
         if ($secc_nom4vistas) {
@@ -5299,6 +5347,7 @@ sub get_nom4vistas {
         };
     };
 
+    $prontus_varglb::cache_nom4vista{$key} = ($nom_s, $nom_t, $nom_st);
     return ($nom_s, $nom_t, $nom_st);
 };
 
@@ -5894,7 +5943,7 @@ sub set_coreplt_ppal {
     if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
         $buffer =~ s/<!--admin_ediciones-->.*?<!--\/admin_ediciones-->//sg;
     };
-    
+
     # quita la opcion de editar ediciones si esta deshabilitado y el usuario es editor.
     if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
         $buffer =~ s/<!--admin_ediciones-->.*?<!--\/admin_ediciones-->//sg;

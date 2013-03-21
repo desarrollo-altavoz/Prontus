@@ -108,10 +108,18 @@ main: {
                                                  '%%Lst_PORT4%%', $lst_port4,'','',
                                                  '%%_path_conf%%', $FORM{'_path_conf'},'','',
                                                  $plantilla);
+    
+    $pagina = &lib_prontus::set_coreplt_ppal($pagina);
+        # En primer lugar, agrega macros
+    my ($dir_macros_cpan) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/macros";
+    $pagina = &lib_prontus::add_macros($pagina, $dir_macros_cpan, '', '');
+    $pagina =~ s/%25%25/%%/sg;
 
+    # oculta html correspondiente solo a admin
+    $pagina =~ s/<!--admin_only-->.*?<!--\/admin_only-->//sg if ($prontus_varglb::USERS_PERFIL ne 'A');
 
   $pagina =~ s/%%REL_PATH_PRONTUS%%/$prontus_varglb::RELDIR_BASE\/$prontus_varglb::PRONTUS_ID/isg;
-  $pagina =~ s/%%PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
+  $pagina =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/isg;
 
   # Saca boton "duplicar para multied" si no es un prontus con multied.
   if ($prontus_varglb::MULTI_EDICION ne 'SI') {

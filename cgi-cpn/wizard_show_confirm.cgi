@@ -64,12 +64,11 @@ use lib_prontus;
 # ---------------------------------------------------------------
 
 my (%PRONTUS);
-my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/data";
+my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/_data";
 my ($INF_FILE) = "$INF_DIR/inf.txt";
 
 
 main:{
-
 
   # Valida informacion de paso anter.
   my ($msg_err,
@@ -216,81 +215,5 @@ sub check_paso_anterior {
   return ('', $prontus_id, $extension, $smtp, $model_nom, $new_title_site_name, $server_bd, $nom_bd, $user_bd,$pwd_bd,$superuser_bd,$superpwd_bd);
 
 };
-# ---------------------------------------------------------------
-sub carga_portadas {
-# Carga portadas
-
-  my $buffer = $_[0];
-  my $buffer_port = $_[1];
-  my $model_nom = $_[2];
-  my $models_dir = "$prontus_varglb::DIR_SERVER/wizard_prontus/models";
-
-  # Rescata y valida template de loop.
-  my ($loop_tpl, $loop_out, $loop_item);
-  if ($buffer =~ /<!--LOOP_PORT-->(.*?)<!--\/LOOP_PORT-->/is) {
-    $loop_tpl = $1;
-  }
-  else {
-    return 'Error en plantilla wizard. No es posible continuar.';
-  };
-
-
-  my ($port, $tport, $is_home);
-
-  while ($buffer_port =~ m/([a-z][a-z0-9\_\-]*)\((\w+)\)(\[home\])?/g) {
-    $port = $1;
-    $tport = $2;
-    $is_home = $3;
-    $loop_item = $loop_tpl;
-    $loop_item =~ s/%%MODEL_NOM%%/$model_nom/isg;
-    $loop_item =~ s/%%TPORT%%/$tport/isg;
-    $loop_item =~ s/%%PORTNOM%%/$port $is_home/isg;
-    $loop_out .= $loop_item;
-  };
-
-  $buffer =~ s/<!--LOOP_PORT-->.*?<!--\/LOOP_PORT-->/$loop_out/is;
-  return $buffer;
-
-
-};
-
-# ---------------------------------------------------------------
-sub carga_artics {
-# Carga tipos de articulos
-  my $buffer = $_[0];
-  my $buffer_art = $_[1];
-  my $model_nom = $_[2];
-  my $models_dir = "$prontus_varglb::DIR_SERVER/wizard_prontus/models";
-
-  # Rescata y valida template de loop.
-  my ($loop_tpl, $loop_out, $loop_item);
-  if ($buffer =~ /<!--LOOP_ART-->(.*?)<!--\/LOOP_ART-->/is) {
-    $loop_tpl = $1;
-  }
-  else {
-    return 'Error en plantilla wizard. No es posible continuar.';
-  };
-
-
-  my $art;
-
-  while ($buffer_art =~ m/([a-z][a-z0-9\_\-]*)\n/g) {
-    $art = $1;
-
-    $loop_item = $loop_tpl;
-    $loop_item =~ s/%%MODEL_NOM%%/$model_nom/isg;
-    $loop_item =~ s/%%ART%%/$art/isg;
-    my $uc_art = ucfirst $art;
-    $loop_item =~ s/%%NOMART%%/$uc_art/isg;
-    $loop_out .= $loop_item;
-  };
-
-
-  $buffer =~ s/<!--LOOP_ART-->.*?<!--\/LOOP_ART-->/$loop_out/is;
-  return $buffer;
-
-
-};
-
 # -------------------------------END SCRIPT----------------------
 

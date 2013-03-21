@@ -45,6 +45,7 @@ var LoadDiv = {
                 $('#cmb_edic option[value="'+opts._edic+'"]').attr('selected', 'selected').change();
                 $('#cmb_port option[value="'+opts._port+'"]').attr('selected', 'selected').change();
                 $('#nomPortada').text(opts.nom_port);
+                $('#filePortada').text(opts._port);
 
                 $(Listartic.idDivPub).hide().html(resp).fadeIn(300);
                 Listartic.instalaDragAndDrop(Listartic.idUlPub);

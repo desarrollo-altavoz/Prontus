@@ -9,15 +9,7 @@ document.write('<base href="' + tinyMCEPopup.getWindowArg("base") + '">');
 </script>
 <title>{#preview.preview_desc}</title>
 </head>
-
-<!--body id="content"-->
-<script type="text/javascript"><!--
-// ych: agrega el body_class al html previsualizado
-document.write('<body id="content" class="' + tinyMCEPopup.editor.getParam("body_class") + '">');
-// -->
-</script>
-
-
+<body id="content">
 <script type="text/javascript">
 	document.write(tinyMCEPopup.editor.getContent());
 </script>

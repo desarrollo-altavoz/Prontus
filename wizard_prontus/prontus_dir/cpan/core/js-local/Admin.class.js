@@ -48,8 +48,8 @@ var Admin = {
 
         Admin.randcode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
     },
-    
-    
+
+
     // -------------------------------------------------------------------------
     openArtic: function(obj) {
         var lnk = $(obj).attr('href');
@@ -81,10 +81,10 @@ var Admin = {
             }
         });
     },
-    
+
     // -------------------------------------------------------------------------
     cerrarSesion: function() {
-        
+
         $.ajax({
             url: '/' + Admin.dir_cgi_cpn + '/' + Admin.urlLogout,
             data: {
@@ -191,7 +191,7 @@ var Admin = {
             $('.lockscreen').css('top', 143); // !!! no me rete cesar!
         }
     },
-    
+
     // -------------------------------------------------------------------------
     closeMessage: function(str, tipo) {
         $('#msg-global').fadeOut();
@@ -311,15 +311,21 @@ var Admin = {
         var imag = '/'+Admin.prontus_id+'/cpan/core/imag/auxi';
         var dim = ' width="16" height="16"';
         var content, texto;
-        if(status_upd == 'no_user') {
-            // En este caso, el usuario no es Admin, así que no se muestra nada
-            texto = '';
-            content = '';
-
+        var patt = /\d+\.\d+\.\d+/g;
+        if(patt.test(status_upd)) {
+            // Para el caso normal en que si hay un update
+            texto = 'Actualizar a la release \''+status_upd+'\'';
+            content = "<a href=\"#\" onclick=\"Admin.prontusUpdate('" + status_upd + "'); return false;\">";
+            content = content + '<img src="'+imag+'/upd_update.png"'+dim+' alt="'+texto+'" title="'+texto+'" /></a>';
         } else if(status_upd == 'no_updates') {
             // Para cuando no hay updates
             texto = 'No hay actualizaciones disponibles';
             content = '<img src="'+imag+'/upd_noupdates.png"'+dim+' alt="'+texto+'" title="'+texto+'" />';
+
+        } else if(status_upd == 'no_user') {
+            // En este caso, el usuario no es Admin, así que no se muestra nada
+            texto = '';
+            content = '';
 
         } else if(status_upd == 'disabled') {
             // Cuando estan deshabilitadas desde el CFG
@@ -327,16 +333,8 @@ var Admin = {
             content = '<img src="'+imag+'/upd_disabled.png"'+dim+'  alt="'+texto+'" title="'+texto+'" />';
 
         } else {
-            var patt = /\d+\.\d+\.\d+/g;
-            if(patt.test(status_upd)) {
-                texto = 'Actualizar a la release \''+status_upd+'\'';
-                content = "<a href=\"#\" onclick=\"Admin.prontusUpdate('" + status_upd + "'); return false;\">";
-                content = content + '<img src="'+imag+'/upd_update.png"'+dim+' alt="'+texto+'" title="'+texto+'" /></a>';
-
-            } else {
-                texto = 'No se pudo obtener información sobre las actualizaciones';
-                content = '<img src="'+imag+'/upd_alert.png"'+dim+' alt="'+texto+'" title="'+texto+'" />';
-            }
+            texto = 'No se pudo obtener información sobre las actualizaciones';
+            content = '<img src="'+imag+'/upd_alert.png"'+dim+' alt="'+texto+'" title="'+texto+'" />';
         }
         $('#update-content').html(content);
     },
@@ -380,7 +378,7 @@ var Admin = {
         }
         return str;
     },
-    
+
     // -------------------------------------------------------------------------
     // Abre un colorbox con el formulario para cambiar contraseña.
     mostrarCambiarPassword: function () {

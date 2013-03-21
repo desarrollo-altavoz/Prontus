@@ -730,7 +730,7 @@ sub parseaVars {
 
     $pagina =~ s/%%NUM_RELAC_DEFAULT%%/$prontus_varglb::NUM_RELAC_DEFAULT/ig;
     $pagina =~ s/%%TAXPORT_ARTXPAG%%/$prontus_varglb::TAXPORT_ARTXPAG/ig;
-    $pagina =~ s/%%TAXPORT_REFRESH_SEGS%%/$prontus_varglb::TAXPORT_REFRESH_SEGS/ig;
+    #~ $pagina =~ s/%%TAXPORT_REFRESH_SEGS%%/$prontus_varglb::TAXPORT_REFRESH_SEGS/ig;
     $pagina =~ s/%%TAXPORT_MAXARTICS%%/$prontus_varglb::TAXPORT_MAXARTICS/ig;
 
     my $txport_orden = $prontus_varglb::TAXPORT_ORDEN;
@@ -770,13 +770,13 @@ sub parseaVars {
         $pagina =~ s/%%TAXPORT_ORDEN_ASC%%//ig;
     };
 
-    if ($prontus_varglb::TAXPORT_REFRESH eq 'SI') {
-        $pagina =~ s/%%TAXPORT_REFRESH_SI%%/ checked="checked"/ig;
-        $pagina =~ s/%%TAXPORT_REFRESH_NO%%//ig;
-    } else {
-        $pagina =~ s/%%TAXPORT_REFRESH_SI%%//ig;
-        $pagina =~ s/%%TAXPORT_REFRESH_NO%%/ checked="checked"/ig;
-    };
+    #~ if ($prontus_varglb::TAXPORT_REFRESH eq 'SI') {
+        #~ $pagina =~ s/%%TAXPORT_REFRESH_SI%%/ checked="checked"/ig;
+        #~ $pagina =~ s/%%TAXPORT_REFRESH_NO%%//ig;
+    #~ } else {
+        #~ $pagina =~ s/%%TAXPORT_REFRESH_SI%%//ig;
+        #~ $pagina =~ s/%%TAXPORT_REFRESH_NO%%/ checked="checked"/ig;
+    #~ };
 
     # -tag.cfg
 
@@ -998,6 +998,7 @@ sub parseaVars {
     $pagina =~ s/%%SCRIPT_QUOTA%%/$prontus_varglb::SCRIPT_QUOTA/ig;
 
     $pagina =~ s/%%FOTO_MAX_PIXEL%%/$prontus_varglb::FOTO_MAX_PIXEL/ig;
+    $pagina =~ s/%%FFMPEG_PARAMS%%/$prontus_varglb::FFMPEG_PARAMS/ig;
     $pagina =~ s/%%MAX_XCODING%%/$prontus_varglb::MAX_XCODING/ig;
 
     $buffer = '';

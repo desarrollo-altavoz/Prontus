@@ -4,15 +4,14 @@
 	    <input type="hidden" name="_path_conf" value="%%_PATH_CONF%%">
 	    <input type="hidden" name="_usr" value="%%_PRONTUS_USER_NAME%%">
 	    <input type="hidden" name="_psw" value="%%_PRONTUS_USER_PASS%%">
-        <div class="box-login">
+        <div class="box-login box-changepass">
             <div class="logo">
                 <img src="imag/auxi/logo_login.jpg" width="225" height="60" border="0" alt="Prontus" title="Prontus" />
             </div>
             <div class="info">
-                <p>
-                Estimado %%_PRONTUS_USER_NAME%%,<br/>ésta es la primera vez que usted ingresa a Prontus CMS,<br/>o bien, su contraseña fue reseteada recientemente.
-                <br/>Antes de comenzar a operar, por favor proceda a cambiar su contraseña:
-                </p>
+                <p><strong>Estimado %%_PRONTUS_USER_NAME%%:</strong></p>
+                <p>Esta es la primera vez que usted ingresa a Prontus CMS, o bien, su contraseña fue reseteada recientemente.</p>
+                <p>Antes de comenzar a operar, por favor proceda a cambiar su contraseña.</p>
             </div>
             <div class="auxi2">
                 <p>Nueva Contraseña:<br/>
@@ -21,7 +20,7 @@
                 <input type="password" name="_new_psw_confirm" size="30" value="" class="fieldform"></p>
                 <p>Email:<br/>
                 <input type="text" name="_email" size="50" value="%%_PRONTUS_USER_EMAIL%%" class="fieldform"></p>
-                <div class="loading-action"><img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
+                <div class="loading-action" style="margin: 0 auto;"><img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
                 <div class="boton-gris3 aleft"><a class="button" href="#" onclick="ChangePass.enviar(DIR_CGI_CPAN); return false;"><span>Actualizar contraseña</span></a></div>
             </div>
         </div> <!-- box-login -->

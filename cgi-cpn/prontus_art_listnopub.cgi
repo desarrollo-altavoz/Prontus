@@ -449,7 +449,7 @@ sub make_lista {
         $sql =~ s/%%FILTRO%%//;
     };
 
-    # print STDERR "sql filtro[$sql]\n\n";
+    print STDERR "sql filtro[$sql]\n\n";
     my ($art_id, $art_dirfecha, $art_tit, $art_seccion, $art_tema, $art_subtema, $art_extension, $art_autoinc, $art_tipoficha, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae);
     my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($art_id, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_dirfecha, $art_tit, $art_extension, $art_autoinc, $art_tipoficha, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae));
     my $nro_filas = 0;
@@ -547,7 +547,8 @@ sub genera_filtros {
   $FORM{'ts'} = &glib_cgi_04::param('ts');
 
   $FORM{'autor'} =~ s/\"/\'/sig;
-  $FORM{'titu'} =~ s/\"/\'/sig;
+  #~ $FORM{'titu'} =~ s/\"/\'/sig ($FORM{'titu'} =~ /".*?"/);
+  $FORM{'titu'} =~ s/'/\\'/sig;
   $FORM{'baja'} =~ s/\"/\'/sig;
 
   if ($FORM{'autoinc'} ne '') {
@@ -628,17 +629,25 @@ sub genera_filtros {
       my $titu4query = $FORM{'titu'};
 
       if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
-        $titu4query =~ s/ / \+/g;  # mysql
-        $titu4query =~ s/^/+/;     # mysql
-        $filtros .= " and MATCH (ART_TITU) AGAINST (\"$titu4query\" IN BOOLEAN MODE)" if $filtros ne ''; # mysql
-        $filtros = " MATCH (ART_TITU) AGAINST (\"$titu4query\" IN BOOLEAN MODE)" if $filtros eq '';      # mysql
+        if($titu4query =~ /".*?"/) {
+            $filtros .= " and MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros ne ''; # mysql
+            $filtros = " MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
+
+        } else {
+            $titu4query =~ s/ / \+/g;  # mysql
+            $titu4query =~ s/^/+/;     # mysql
+            $filtros .= " and MATCH (ART_TITU) AGAINST (\"$titu4query\" IN BOOLEAN MODE)" if $filtros ne ''; # mysql
+            $filtros = " MATCH (ART_TITU) AGAINST (\"$titu4query\" IN BOOLEAN MODE)" if $filtros eq '';      # mysql
+        };
       };
+
 
       if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
         $filtros .= " and ART_TITU like (\"%$titu4query%\")" if $filtros ne ''; # sqlite
         $filtros = " ART_TITU like (\"%$titu4query%\")" if $filtros eq '';      # sqlite
       };
       my $esc_value = &lib_prontus::escape_html($FORM{'titu'});
+      $esc_value =~ s/\\//sig;
       $filtros_texto .= " | <b>Titular:</b> $esc_value" if $filtros_texto ne '';
       $filtros_texto = "<b>Titular:</b> $esc_value" if $filtros_texto eq '';
     };
@@ -940,6 +949,7 @@ sub get_artic_parsed {
     if (! -f $path_artic) {
         $loop_art_tpl =~ s/%%_ts%%/$ts/g;
         $loop_art_tpl =~ s/%%_artic_sin_file%%/_artic_sin_file/g;
+        $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo_disabled/g;
         $loop_art_tpl =~ s/%%\w+?%%//g;
         return $loop_art_tpl;
     };

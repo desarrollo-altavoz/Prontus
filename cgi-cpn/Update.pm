@@ -83,6 +83,7 @@ sub new {
     $upd_obj->{nom_cgibin_current} = $prontus_varglb::DIR_CGI_PUBLIC;
     # $upd_obj->{nom_cgibin_current} = 'cgi-bin-test'; # DEBUG
 
+    $upd_obj->{buffer_last} = &glib_fildir_02::read_file($upd_obj->{dir_updates} . '/' . $upd_obj->{nom_file_vdescriptor}); # last.11.0.txt
     $upd_obj->{last_version_disponible} = $upd_obj->update_disponible();
 
     $upd_obj->{ts_actualizacion} = &glib_hrfec_02::get_dtime_pack4();
@@ -239,7 +240,7 @@ sub update_disponible {
 
     if ($this->{rama_instalada} ne '')  {
 
-        my $buffer_last_v = &glib_fildir_02::read_file($this->{dir_updates} . '/' . $this->{nom_file_vdescriptor}); # last.11.0.txt
+        my $buffer_last_v = $this->{buffer_last};
         my $rama_instalada = $this->{rama_instalada};
         if ($buffer_last_v =~ /$rama_instalada\.([0-9]+)(\.beta)?/) {
             my $nro_revision_last = $1;
@@ -253,14 +254,19 @@ sub update_disponible {
     return '';
 };
 # ---------------------------------------------------------------
-sub get_satus_update {
+sub get_status_update {
     my ($this) = shift;
     my $status_upd;
     if ($this->{actualizaciones} eq 'SI') {
-        if ($this->{last_version_disponible} ne '') {
-            $status_upd = $this->{last_version_disponible};
+        if($this->{buffer_last}) {
+            # Existe una actualizacion, ahora se compara para ver si es mas actual
+            if($this->{last_version_disponible}) {
+                $status_upd = $this->{last_version_disponible};
+            } else {
+                $status_upd = "no_updates";
+            }
         } else {
-            $status_upd = "no_updates";
+            $status_upd = "notfound";
         };
     } else {
         $status_upd = "disabled";
@@ -818,7 +824,7 @@ Instanciar y acceder a un metodo publico:
                     || die("Error inicializando objeto Update: $Update::ERR\n");
 
     # Obtener link para descargar el update disponible
-    my $lnk_update = $upd_obj->get_satus_update();
+    my $lnk_update = $upd_obj->get_status_update();
 
 =for comment
 # ---------------------------------------------------------------

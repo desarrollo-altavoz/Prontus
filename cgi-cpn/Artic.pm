@@ -1694,6 +1694,8 @@ sub parse_artic_data {
     my $fullpath_vista = shift; # se requiere minimo el relativo, si es el abs, se despulga
     my $buffer = shift;
     my $ref_campos_xml = shift;
+    my $vars_adicionales = shift;
+
     my %campos_xml = %$ref_campos_xml;
     undef $ref_campos_xml;
 
@@ -1701,10 +1703,13 @@ sub parse_artic_data {
     if ($fullpath_vista =~ /\/pags\-(\w+)\/[0-9]{14}\.\w+$/) {
         my $mv = $1;
         ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
-         = &lib_prontus::get_nom4vistas($mv, $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+            = &lib_prontus::get_nom4vistas($mv, $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+    } else {
+        # Obtiene nom de secc, tema y subtema vista principal.
+        ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
+            = &lib_prontus::get_nom4vistas('', $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
     };
 
-    my $vars_adicionales = shift;
     # Agrega algunas vars adicionales que no vienen en el XML.
     # Es posible que estas sobreescriban las del XML
     if (ref $vars_adicionales) {
@@ -1717,28 +1722,26 @@ sub parse_artic_data {
     # Parsea campos
     foreach my $nom_campo (keys %campos_xml) {
         my $val_campo = $campos_xml{$nom_campo};
-        next if (!$val_campo);
+        next if ($val_campo eq '');
         next if ($nom_campo =~ /^_fecha(p|e)$/);
+        next if ($nom_campo =~ /^chk_cuadrar_fotofija|^_NOMfoto_|^_wfoto_|^_hfoto_|^foto_\d+/);
 
-        my $replace_done = 0;
-        if ($nom_campo =~ /^vtxt_/) {
+        if ($nom_campo =~ /^vtxt_/i) {
             # warn "[$nom_campo][$val_campo]";
             $buffer = $this->_parsing_vtxt($buffer, $nom_campo, $val_campo);
-            $replace_done = 1; # el parseo ya lo hizo la funcion
 
-        } elsif ($nom_campo =~ /^asocfile_|^swf_|^multimedia_/) {
+        } elsif ($nom_campo =~ /^asocfile_|^swf_|^multimedia_/i) {
             $buffer = $this->_parsing_recursos($nom_campo, $val_campo, $buffer);
-            $replace_done = 1; # el parseo ya lo hizo la funcion
 
-        } elsif ($nom_campo =~ /^fotofija_/) {
+        } elsif ($nom_campo =~ /^fotofija_/i) {
             $buffer = $this->_parsing_fotos($nom_campo, $val_campo, $buffer);
-            $replace_done = 1; # el parseo ya lo hizo la funcion
+
+        } else {
+            # Replace en artic, incluye minitext
+            $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
         };
-
-
-        # Replace en artic, incluye minitext
-        $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer) if (! $replace_done);
     };
+
 
 
     # Parseos especiales para fechas y horas
@@ -1748,7 +1751,7 @@ sub parse_artic_data {
     # Replace en artic el UTC de publicacion
     my $fechap_horap_iso = $campos_xml{'_fechap'} . &lib_prontus::get_hora_iso($campos_xml{'_horap'});
     my $utc_pub = &lib_prontus::get_dtime_rfc822($fechap_horap_iso);
-    $buffer = &lib_prontus::replace_in_artic($utc_pub, '_UTCP', $buffer);
+    $buffer = &lib_prontus::replace_in_artic($utc_pub, '_utcp', $buffer);
 
     # Reemplaza TS, FECHAC, FECHACLONG, FECHACSHRT
     $buffer = &lib_prontus::replace_tsdata($buffer, $this->{ts});
@@ -1786,6 +1789,7 @@ sub get_xdata {
     my ($this) = shift;
     my ($buffer) = shift;
     my (%xdata, $nom_marca, $valor_marca);
+    my %globalxdata;
 
     my ($pathdir_xdata) = "$this->{document_root}/$this->{prontus_id}/xdata";
     return %xdata if (!-d $pathdir_xdata);
@@ -1796,27 +1800,43 @@ sub get_xdata {
     foreach my $sist_externo (@lisdir) {
         next if (!-d "$pathdir_xdata/$sist_externo"); # solo lee directorios
 
-        # Lee dir del sistema externo
-        my @lisdir = &glib_fildir_02::lee_dir("$pathdir_xdata/$sist_externo");
-        @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
-        foreach my $k (@lisdir) {
-            # Detecta marcas comunes a todos los articulos
-            if ((-f "$pathdir_xdata/$sist_externo/$k") && ($k =~ /^(\w+)\.txt$/i)) {
-                $nom_marca = $1;
-                next if ($nom_marca =~ /^_/); # descarta las q comienzan con _
-                $valor_marca = &glib_fildir_02::read_file("$pathdir_xdata/$sist_externo/$k");
-                $xdata{$nom_marca} = $valor_marca;
-            # Detecta marcas especificas para este articulo
-            } elsif ((-d "$pathdir_xdata/$sist_externo/$k") && ($k eq $this->{ts})) {
-                my @lisdir_ts = &glib_fildir_02::lee_dir("$pathdir_xdata/$sist_externo/$k");
-                @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
-                foreach my $marca (@lisdir_ts) {
-                    next if ($marca =~ /^_/); # descarta las q comienzan con _
-                    if ((-f "$pathdir_xdata/$sist_externo/$k/$marca") && ($marca =~ /^(\w+)\.txt$/i)) {
-                        $nom_marca = $1;
-                        $valor_marca = &glib_fildir_02::read_file("$pathdir_xdata/$sist_externo/$k/$marca");
-                        $xdata{$nom_marca} = $valor_marca;
-                    };
+        # Detecta marcas comunes a todos los articulos
+        if(%prontus_varglb::globalxdata) {
+            # Utiliza cache de las marcas comunes
+            %xdata = %prontus_varglb::globalxdata;
+        } else {
+            # Si no está cacheado, lee el directorio y busca las marcas
+            my @lisdirext = &glib_fildir_02::lee_dir("$pathdir_xdata/$sist_externo");
+            @lisdirext = grep !/^\./, @lisdirext; # Elimina directorios . y ..
+            foreach my $k (@lisdirext) {
+                if ((-f "$pathdir_xdata/$sist_externo/$k") && ($k =~ /^(\w+)\.txt$/i)) {
+                    $nom_marca = $1;
+                    next if ($nom_marca =~ /^_/); # descarta las q comienzan con _
+                    $valor_marca = &glib_fildir_02::read_file("$pathdir_xdata/$sist_externo/$k");
+                    $xdata{$nom_marca} = $valor_marca;
+                };
+            };
+            %prontus_varglb::globalxdata = %xdata;
+        };
+
+        # Detecta marcas especificas para este articulo
+        my $fechac = $this->{fechac};
+        my $path = '';
+        if (-d "$pathdir_xdata/$sist_externo/$this->{ts}") {
+            $path = "$pathdir_xdata/$sist_externo/$this->{ts}";
+
+        } elsif (-d "$pathdir_xdata/$sist_externo/$fechac/$this->{ts}") {
+            $path = "$pathdir_xdata/$sist_externo/$fechac/$this->{ts}";
+        };
+        if($path) {
+            my @lisdir_ts = &glib_fildir_02::lee_dir($path);
+            @lisdir_ts = grep !/^\./, @lisdir_ts; # Elimina directorios . y ..
+            foreach my $marca (@lisdir_ts) {
+                next if ($marca =~ /^_/); # descarta las q comienzan con _
+                if ((-f "$path/$marca") && ($marca =~ /^(\w+)\.txt$/i)) {
+                    $nom_marca = $1;
+                    $valor_marca = &glib_fildir_02::read_file("$path/$marca");
+                    $xdata{$nom_marca} = $valor_marca;
                 };
             };
         };
@@ -1875,7 +1895,9 @@ sub _parsing_fotos {
     my ($msg, $foto_dimx, $foto_dimy);
     my %campos = $this->get_xml_content();
 
-    $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
+    #~ return $buffer unless(index($buffer, $nom_campo) > -1);
+    $buffer =~ s/%%$nom_campo%%/$val_campo/isg;
+    #~ $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
 
     my $este_prontus = "/$this->{prontus_id}/site/artic";
     if ($val_campo =~ /$este_prontus/i) { # val_campo es del tipo: /prontus_dev/site/artic/20060410/imag/FOTO_0120060410165548.jpg
@@ -1914,6 +1936,8 @@ sub _parsing_vtxt {
 
 #    my $refhash_subtits = shift;
 #    my %hash_subtits = %$refhash_subtits;
+
+    return $buffer if($buffer !~ /%%$nom_campo/i);
 
     my ($looptit, $tithtml) = $this->_get_data4subtit($buffer, $nom_campo);
     my $curr_nrotit = '0';
@@ -1984,7 +2008,7 @@ sub _parsing_vtxt {
     };
     # Eliminar TITLOOP sobrante.
     $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%//isg;
-    # eliminar BLOQUE %%TITHTML%% sobrante
+    # Eliminar BLOQUE %%TITHTML%% sobrante
     $buffer =~ s/%%_SUBTIT_HTML_$nom_campo%%(.*?)%%\/_SUBTIT_HTML_$nom_campo%%//isg;
 
     # Detectar si el VTXT esta insertando invocaciones a funciones js derivadas del uso del boton media.

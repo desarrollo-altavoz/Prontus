@@ -40,6 +40,7 @@
 #    History
 #    -------
 #    1.0.0 - 2011-12-06 - CVI - Primera version
+#    1.0.1 - 19/02/2013 - EAG - Se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
 
 use strict;
 
@@ -52,7 +53,6 @@ my $CHUNK_SIZE = 8192;
 my %INDICES;
 my %STCOs;
 main: {
-
     my $infile = $ARGV[0];
     # my $infile = '/var/www/prontus_development/web/cgi-cpn/xcoding/multimedia_video120111130160451_a.mp4';
     if($infile eq '' || !(-f $infile)) {
@@ -100,6 +100,9 @@ sub get_index {
             read($datastream, my $data, 8);
             $atom_size = unpack("Q", $data);
             $skip = 16;
+        }
+        if($atom_size == 0){
+            last;
         }
         my $atom_pos = tell($datastream) - $skip;
         if($toplevel) {

@@ -63,19 +63,21 @@ use glib_html_02;
 use strict;
 use lib_prontus;
 
+use wizard_lib;
+
 # ---------------------------------------------------------------
 # MAIN.
 # ---------------------------------------------------------------
 
 my (%PRONTUS);
-my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/data";
+my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/_data";
 my ($INF_FILE) = "$INF_DIR/inf.txt";
 
 
 main:{
 
   # Valida informacion de paso 1.
-  my $msg_err = &check_paso1();
+  my $msg_err = &wizard_lib::check_paso1();
   if ($msg_err) {
 
     $prontus_varglb::DIR_CORE = '/wizard_prontus/core'; # solo para efectos de la plantilla de mensaje
@@ -100,107 +102,79 @@ main:{
 
 };
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 # SUB-RUTINAS.
-# ---------------------------------------------------------------
-sub check_paso1 {
-# Chequea que se haya pasado por el paso 1
+# --------------------------------------------------------------------------------------------------
 
-  if (! -f $INF_FILE) {
-    return "[errInfFile] Solicitud de ejecución no válida.";
-  };
-
-  # Leer y cargar y validar contenido del paso1.
-  my $buffer = &glib_fildir_02::read_file($INF_FILE);
-  my $prontus_id;
-  if ($buffer =~ /(\[PRONTUS\].*\[\/PRONTUS\]\n\n)/s) {
-    my $buffer_prontus = $1;
-    # Validar id
-    if ($buffer_prontus !~ /PRONTUS_ID=(\w+)\n/) {
-      return 'Información de paso previo está corrupta. Para poder continuar debe volver al paso anterior.';
-    }
-    else {
-      $prontus_id = $1;
-    };
-  }
-  else {
-    return 'Información de paso previo está corrupta. Para poder continuar debe volver al paso anterior.';
-  };
-
-  # Validar que no exista el dir destino del prontus.
-  # Esto ya se chequea en el paso 1 pero se hace nuevamente por seguridad.
-  my $dir_prontus = "$prontus_varglb::DIR_SERVER/$prontus_id";
-
-  if (-d $dir_prontus) {
-    return "El directorio prontus ya existe. Para continuar con el proceso de instalación Ud. debe cambiar el nombre especificado para el publicador, o bien, <br>eliminar manualmente el directorio existente que genera el conflicto.";
-  }
-  else {
-    # Lo creo y luego lo borro para verificar que este ok.
-    if (&glib_fildir_02::check_dir($dir_prontus)) {
-      &glib_fildir_02::borra_dir($dir_prontus);
-    }
-    else {
-      return "No se puede crear el directorio destino del publicador. No es posible continuar con la instalación.";
-    };
-  };
-
-
-  return '';
-
-};
 # ---------------------------------------------------------------
 sub carga_modelos {
-# Valida y carga modelos prontus disponibles.
-  my $buffer = $_[0];
-  my $models_dir = "$prontus_varglb::DIR_SERVER/wizard_prontus/models";
-  my @lisdir = &glib_fildir_02::lee_dir($models_dir);
-  @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
-  my $k;
-  my $nro_models;
-  my ($loop_tpl, $loop_out, $loop_item);
-  if ($buffer =~ /<!--LOOP_MODELS-->(.*?)<!--\/LOOP_MODELS-->/is) {
-    $loop_tpl = $1;
-  }
-  else {
-    return 'Error en plantilla wizard. No es posible continuar.';
-  };
-  foreach $k (@lisdir) {
-    # localiza cfg descriptor del modelo,
-    # si lo encuentra asume q se trata de un modelo.
-    print STDERR "K[$k]\n";
-    if (-f "$models_dir/$k/$k.cfg") {
-      # valida icono
-      if (! -f "$models_dir/$k/$k.gif") {
-        return "En Modelo [$k] falta icono $k/$k.gif";
-      };
-
-      # valida q este el arch de obs del modelo
-      if (! -f "$models_dir/$k/descripcion/index.html") {
-        return "En Modelo [$k] falta $k/descripcion/index.html";
-      };
-      $nro_models++;
-      $loop_item = $loop_tpl;
-      $loop_item =~ s/%%MODEL_NOM%%/$k/isg;
-      # Deja el primero como seleccionado por defecto
-      if ($nro_models == 1) {
-        $loop_item =~ s/%%checked%%/checked/isg;
-      }
-      else {
-        $loop_item =~ s/%%checked%%//isg;
-      };
-      $loop_out .= $loop_item;
+    # Valida y carga modelos prontus disponibles.
+    my $buffer = $_[0];
+    my $models_dir = "$prontus_varglb::DIR_SERVER/wizard_prontus/models";
+  
+    if(! -d $models_dir) {
+        return 'Directorio de modelos, no valido.';
+    }
+  
+    my @lisdir = &glib_fildir_02::lee_dir($models_dir);
+    @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
+    my $k;
+    my $nro_models;
+    my ($loop_tpl, $loop_out, $loop_item);
+    if ($buffer =~ /<!--LOOP_MODELS-->(.*?)<!--\/LOOP_MODELS-->/is) {
+        $loop_tpl = $1;
+    } else {
+        return 'Error en plantilla wizard. No es posible continuar.';
     };
-  };
+    foreach $k (@lisdir) {
+        # localiza cfg descriptor del modelo,
+        # si lo encuentra asume q se trata de un modelo.
+        print STDERR "K[$k]\n";
+        if (-f "$models_dir/$k/$k.cfg") {
+            
+            $loop_item = $loop_tpl;
+            
+            # valida icono
+            my $imagen = "/wizard_prontus/models/$k/$k-thumb.png";
+            if(-f "$prontus_varglb::DIR_SERVER$imagen") {
+                $loop_item =~ s/%%MODEL_IMG%%/$imagen/isg;
+            } else {
+                $imagen = "/wizard_prontus/models/$k/$k.gif";
+                if(-f "$prontus_varglb::DIR_SERVER$imagen") {
+                    $loop_item =~ s/%%MODEL_IMG%%/$imagen/isg;
+                } else {
+                    return "En Modelo [$k] falta icono";
+                }
+            }
+            
+            # valida q este el arch de obs del modelo
+            if (! -f "$models_dir/$k/descripcion/index.html") {
+                return "En Modelo [$k] falta $k/descripcion/index.html";
+            };
+            $nro_models++;
+            
+            $loop_item =~ s/%%MODEL_NOM%%/$k/isg;
+            
+            # Deja el primero como seleccionado por defecto
+            if ($nro_models == 1) {
+                $loop_item =~ s/%%checked%%/checked/isg;
+            } else {
+                $loop_item =~ s/%%checked%%//isg;
+            };
+            $loop_out .= $loop_item;
+            if($nro_models % 3 == 0) {
+                $loop_out = $loop_out . '<div class="separador"></div>';
+            }
+        };
+    };
 
-  # Debe haber por lo menos 1 modelo.
-  if (! $nro_models) {
-    return "No hay Modelos Prontus disponibles.<br>No es posible continuar.";
-  }
-  else {
-    $buffer =~ s/<!--LOOP_MODELS-->.*?<!--\/LOOP_MODELS-->/$loop_out/is;
-    return ('', $buffer);
-  };
-
+    # Debe haber por lo menos 1 modelo.
+    if (! $nro_models) {
+        return "No hay Modelos Prontus disponibles.<br>No es posible continuar.";
+    } else {
+        $buffer =~ s/<!--LOOP_MODELS-->.*?<!--\/LOOP_MODELS-->/$loop_out/is;
+        return ('', $buffer);
+    };
 };
 
 # -------------------------------END SCRIPT----------------------

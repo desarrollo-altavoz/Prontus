@@ -1,1 +1,141 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">  <head>    <title>Administrar comentarios &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/coment.css" />    <script type="text/javascript" src="/%%_prontus_id%%/cpan/dir_cgi.js"></script>    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.8.16.custom.min.js"></script>    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.sort.min.js"></script>    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Coment.class.js"></script>    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>  </head>  <body class="bodysite">    <div id="main">        %%MACRO(menu_head3.html)%%        <!--INICIO CONTENIDO-->          <div class="main-left">             <div class="content">                <!--TITULO PRINCIPAL-->                <div class="top-titulo">                  <h1 class="titular">Comentarios</h1>                </div>                <!-- / TITULO PRINCIPAL-->                <div class="separa"></div>                <div class="filtros">                    <div class="aleft">	                    <form name="coment" enctype="multipart/form-data" method="post" action="coment_admin.cgi?_prontus_id=%%_prontus_id%%">		                    <input type="hidden" name="OBJTIPO" value="articulo"/>		                    <input type="hidden" name="_prontus_id" value="%%_prontus_id%%"/>		                    <table class="tableform">		                        <tr>		                            <td width="215">Ver por Titular art&iacute;culo:</td>		                            <td width="150"><input class="fieldform filtroinput" type="text" name="OBJTIT_SEARCH"/></td>		                            <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif" alt="lu2"/></a></td>		                        </tr>		                        <tr>		                            <td width="215">Ver por Timestamp de art&iacute;culo:</td>		                            <td width="150"><input class="fieldform filtroinput" type="text" name="OBJID"/></td>		                            <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif" alt="lu2"/></a></td>		                        </tr>		                        <tr>		                           <td>Ver por Status:</td>		                           <td>			                           <select name="STATUS" class="fieldform"> <!-- onchange="document.coment.submit();" -->					                       <option value="">Todos</option>					                       <option value="1">Con Alta</option>					                       <option value="0">Sin Alta </option>				                       </select>		                           </td>		                           <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif" alt="lu2"/></a></td>		                        </tr>		                        <tr>		                           <td>Ver por Nick:</td>		                           <td><input type="text" name="NICK" class="fieldform filtroinput"/></td>		                           <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif" alt="lu2"/></a></td>		                        </tr>		                    </table>	                    </form>                    </div>                    <div class="aright">                        <div class="coment_reload">                            <div class="boton-gris3 aleft"><a class="button" href="#" onclick="window.location.reload();"><span>Refresh</span></a></div>                        </div>                    </div>                </div> <!-- filtros  -->                <div class="paginas">%%PAGINACION%%</div>                <!--COLUMNA IZQUIERDA-->                <div class="col960">                  <div class="rotulo">                    <div class="col0 aleft">&nbsp;&nbsp;Fecha/Hora</div>                    <div class="col1 aleft">Titular</div>                    <div class="col2 aleft">Comentario</div>                    <div class="col4 aleft">Nick</div>                  </div>                  <ul>                   <!--LOOP-->                   <li id="coment-%%COMENT_ID%%">                    <div class="fila1 gris">                        <div class="col0 aleft">                        %%COMENT_DATETIME%%                        </div>                        <div class="col1 aleft">                          <b>%%LNK_TIT%%</b>                        </div>                        <div class="col2 aleft">                          %%COMENT_TEXTO%%<br/>                        </div>                        <div class="col4 aleft">%%COMENT_NICK%%</div>                        <div class="col3 aleft">                          <div class="fila_loading" style="display: none;">                            <img src="/%%_prontus_id%%/cpan/core/imag/loading_button.gif" alt="loading"/>                          </div>                          %%LNK_VERMAS%%                          <a href="#" onclick="Coment.toggleSt(this, '%%COMENT_ID%%'); return false;"><img class="status" src="/%%_prontus_id%%/cpan/core/imag/boto/%%status%%.png" width="18" height="18" alt="%%status%%" title="Aprobar comentario" /></a>                          <a href="#" onclick="Coment.borrar(this, '%%COMENT_ID%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/borrar.png" width="18" height="18" alt="borrar" title="Borrar comentario" /></a>                        </div>                    </div>                   </li>                   <!--/LOOP-->                  </ul>                </div>                <!-- / COLUMNA IZQUIERDA-->              </div>           </div>        </div>        <!--/Fin Contenido-->   <script type="text/javascript">   $(document).ready(function () {	   Coment.dir_cgi_cpan = DIR_CGI_CPAN;	   Coment.prontus_id = '%%_prontus_id%%';	   Admin.init('%%_prontus_id%%');	   $('.status').each(function () {		   if ($(this).attr('alt') == 'btn_ticket_green') {			   $(this).attr('title', 'Desaprobar comentario');		   } else {			   $(this).attr('title', 'Aprobar comentario');		   }	   });	   $('.fila1:odd').removeClass('gris');   });   </script>  </body></html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Administrar comentarios &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/coment.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
+    
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.sort.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Coment.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+  </head>
+  <body class="bodysite">
+
+    <div id="main">
+
+        %%MACRO(menu_head3.html)%%
+
+        <!--INICIO CONTENIDO-->
+          <div class="main-left">
+             <div class="content">
+
+                <!--TITULO PRINCIPAL-->
+                <div class="top-titulo">
+                  <h1 class="titular">Comentarios</h1>
+                </div>
+                <!-- / TITULO PRINCIPAL-->
+
+                <div class="separa"></div>
+
+                <div class="filtros">
+                    <div class="aleft">
+                        <form name="coment" enctype="multipart/form-data" method="post" action="coment_admin.cgi?_prontus_id=%%_prontus_id%%">
+                            <input type="hidden" name="OBJTIPO" value="articulo"/>
+                            <input type="hidden" name="_prontus_id" value="%%_prontus_id%%"/>
+                            <table class="tableform">
+                                <tr>
+                                    <td width="215">Ver por Titular art&iacute;culo:</td>
+                                    <td width="150"><input class="fieldform filtroinput" type="text" name="OBJTIT_SEARCH"/></td>
+                                    <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif" alt="lu2"/></a></td>
+                                </tr>
+                                <tr>
+                                    <td width="215">Ver por Timestamp de art&iacute;culo:</td>
+                                    <td width="150"><input class="fieldform filtroinput" type="text" name="OBJID"/></td>
+                                    <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif" alt="lu2"/></a></td>
+                                </tr>
+                                <tr>
+                                   <td>Ver por Status:</td>
+                                   <td>
+                                       <select name="STATUS" class="fieldform"> <!-- onchange="document.coment.submit();" -->
+                                           <option value="">Todos</option>
+                                           <option value="1">Con Alta</option>
+                                           <option value="0">Sin Alta </option>
+                                       </select>
+                                   </td>
+                                   <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif" alt="lu2"/></a></td>
+                                </tr>
+                                <tr>
+                                   <td>Ver por Nick:</td>
+                                   <td><input type="text" name="NICK" class="fieldform filtroinput"/></td>
+                                   <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.gif" alt="lu2"/></a></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div class="aright">
+                        <div class="coment_reload">
+                            <div class="boton-gris3 aleft"><a class="button" href="#" onclick="window.location.reload();"><span>Refresh</span></a></div>
+                        </div>
+                    </div>
+                </div> <!-- filtros  -->
+                <div class="paginas">%%PAGINACION%%</div>
+                <!--COLUMNA IZQUIERDA-->
+                <div class="col960">
+
+                  <div class="rotulo">
+                    <div class="col0 aleft">&nbsp;&nbsp;Fecha/Hora</div>
+                    <div class="col1 aleft">Titular</div>
+                    <div class="col2 aleft">Comentario</div>
+                    <div class="col4 aleft">Nick</div>
+                    <div class="col5 aleft">Email</div>
+                  </div>
+
+                  <ul>
+                   <!--LOOP-->
+                   <li id="coment-%%COMENT_ID%%">
+                    <div class="fila1 gris">
+                        <div class="col0 aleft">
+                        %%COMENT_DATETIME%%
+                        </div>
+                        <div class="col1 aleft">
+                          <b>%%LNK_TIT%%</b>
+                        </div>
+                        <div class="col2 aleft">
+                          %%COMENT_TEXTO%%<br/>
+                        </div>
+                        <div class="col4 aleft">%%COMENT_NICK%%</div>
+                        <div class="col5 aleft">%%COMENT_EMAIL%%</div>
+                        <div class="col3 aleft">
+                          <div class="fila_loading" style="display: none;">
+                            <img src="/%%_prontus_id%%/cpan/core/imag/loading_button.gif" alt="loading"/>
+                          </div>
+                          %%LNK_VERMAS%%
+                          <a href="#" onclick="Coment.toggleSt(this, '%%COMENT_ID%%'); return false;"><img class="status" src="/%%_prontus_id%%/cpan/core/imag/boto/%%status%%.png" width="18" height="18" alt="%%status%%" title="Aprobar comentario" /></a>
+                          <a href="#" onclick="Coment.borrar(this, '%%COMENT_ID%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/borrar.png" width="18" height="18" alt="borrar" title="Borrar comentario" /></a>
+                        </div>
+                    </div>
+                   </li>
+                   <!--/LOOP-->
+                  </ul>
+                </div>
+                <!-- / COLUMNA IZQUIERDA-->
+              </div>
+           </div>
+        </div>
+        <!--/Fin Contenido-->
+   <script type="text/javascript">
+   $(document).ready(function () {
+       Coment.dir_cgi_cpan = DIR_CGI_CPAN;
+       Coment.prontus_id = '%%_prontus_id%%';
+       Admin.init('%%_prontus_id%%');
+
+       $('.status').each(function () {
+           if ($(this).attr('alt') == 'btn_ticket_green') {
+               $(this).attr('title', 'Desaprobar comentario');
+           } else {
+               $(this).attr('title', 'Aprobar comentario');
+           }
+       });
+       $('.fila1:odd').removeClass('gris');
+   });
+   </script>
+  </body>
+</html>

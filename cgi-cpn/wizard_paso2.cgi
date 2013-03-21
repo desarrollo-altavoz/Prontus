@@ -56,7 +56,7 @@ use strict;
 # ------
 
 my (%FORM, %PRONTUS);
-my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/data";
+my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/_data";
 my ($INF_FILE) = "$INF_DIR/inf.txt";
 
 main:{
@@ -71,6 +71,7 @@ main:{
     $prontus_varglb::DIR_CORE = '/wizard_prontus/core'; # solo para efectos de la plantilla de mensaje
     &glib_html_02::print_pag_result('Error', $msg_err, 0, "exit=1, ctype=1");
   };
+
 
   &grabar_datos($model_ext, $title_site_name);
 

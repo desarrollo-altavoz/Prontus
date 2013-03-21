@@ -47,6 +47,7 @@ use lib_prontus;
 use lib_mail;
 use lib_captcha2;
 use glib_str_02;
+use glib_fildir_02;
 
 use strict;
 
@@ -88,11 +89,12 @@ main: {
     if ( ($user_valido) && ($captcha_valido) ) {
 
         if (!$USERS_EMAIL) {
-            &glib_html_02::print_json_result(1, 'Tu cuenta Prontus no registra email, no es posible enviar contraseña.', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(1, 'Tu cuenta Prontus no registra email, no es posible enviar confirmación de cambio de contraseña.', 'exit=1,ctype=1');
         };
 
-        my $new_pass = &set_new_pass();
-        &enviar_clave($USERS_EMAIL, $new_pass);
+        #~ my $new_pass = &set_new_pass();
+        #~ &enviar_clave($USERS_EMAIL, $new_pass);
+        &enviar_confirmacion($USERS_USR, $USERS_EMAIL);
         &glib_html_02::print_json_result(1, 'La nueva contraseña ha sido enviada a tu email registrado en Prontus.', 'exit=1,ctype=1');
     }
     else {
@@ -117,14 +119,15 @@ sub is_user_valido {
     return 0;
 };
 # ---------------------------------------------------------------
-sub set_new_pass {
-    my $new_pass = &glib_str_02::random_string(3) . 'prontus' . &glib_str_02::random_string(3);
-    my ($key, $val);
-    # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
-    $prontus_varglb::USERS{$USERS_ID} = $USERS_NOM . '|' . $USERS_USR . '|' . md5_hex($new_pass) . '|' . $USERS_PERFIL . '|' . $USERS_EMAIL;
-    &lib_prontus::close_dbm_files();
-    return $new_pass;
-};
+#~ sub set_new_pass {
+    #~ my $new_pass = &glib_str_02::random_string(3) . 'prontus' . &glib_str_02::random_string(3);
+    #~ my ($key, $val);
+    #~ # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
+    #~ $prontus_varglb::USERS{$USERS_ID} = $USERS_NOM . '|' . $USERS_USR . '|' . md5_hex($new_pass) . '|' . $USERS_PERFIL . '|' . $USERS_EMAIL;
+    #~ &lib_prontus::close_dbm_files();
+    #~ return $new_pass;
+#~ };
+
 # ---------------------------------------------------------------
 sub is_captcha_valido {
     
@@ -145,24 +148,75 @@ sub is_captcha_valido {
     return 1;
 };
 # ---------------------------------------------------------------
-sub enviar_clave {
-    my ($email, $new_pass) = @_;
+#~ sub enviar_clave {
+    #~ my ($email, $new_pass) = @_;
+    #~ my ($from) = 'prontus@altavoz.net';
+    #~ my ($replyto_name) = 'Prontus CMS';
+    #~ my ($replyto_email) =  'prontus@altavoz.net';
+    #~ my ($asunto) = "Claves Prontus para $prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID";
+#~ 
+    #~ my ($texto) = "Estimado usuario:\nTus claves para ingresar al Panel de Control Prontus en $prontus_varglb::PUBLIC_SERVER_NAME son:\n\nUsuario: $FORM{'_usr'}\nContraseña: $new_pass\n\n---\nEmail automático, favor no lo respondas.\nSi crees que este correo no corresponde, ponte en contacto con tu WebMaster.";
+    #~ # Codifica en UTF8
+    #~ utf8::encode($texto);
+#~ 
+    #~ my ($htmldoc) = '';
+    #~ my ($attach) = '';
+    #~ my ($url) = '';
+    #~ my ($dir_attach) = '';
+    #~ my ($smtp) = $prontus_varglb::SERVER_SMTP;
+#~ 
+    #~ &lib_mail::enviar_mail($email, $from, $replyto_name, $replyto_email, $asunto, $texto, $htmldoc, $attach, $url, $dir_attach, $smtp);
+#~ };
+
+sub enviar_confirmacion {
+    my $user = $_[0];
+    my $email = $_[1];
+    my ($asunto, $cuerpo, $token);
+    my ($dirproc, $filepath, $urltoken);
+    
+    $dirproc = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass";
+    &glib_fildir_02::check_dir($dirproc);
+    $filepath = "$dirproc/$user.txt";
+    
+    if (-f $filepath) {
+        # Si el archivo existe, ya tiene una confirmacion de cambio de contraseña pendiente.
+        # Verificar fecha de modificacion del archivo, si es mayor a 1 hora, volver a generar un nuevo token.
+        my $mtime = (stat($filepath))[9];
+        my $diffsecs = time - $mtime;
+        if ($diffsecs > 3600) {
+            $token = md5_hex(md5_hex(&glib_str_02::random_string(10)));
+        } else {
+            # Usar el mismo.
+            $token = &glib_fildir_02::read_file($filepath);
+            $token =~ s/\n//s;
+            $token =~ s/\r//s;
+            $token =~ s/\t//s;
+            $token =~ s/ *//s;
+        };
+    } else {
+        $token = md5_hex(md5_hex(&glib_str_02::random_string(10)));
+    };
+
+    &glib_fildir_02::write_file($filepath, $token);
+
+    $urltoken = "http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::DIR_CGI_CPAN/prontus_olvidopass.cgi?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg&_token=$token&_usr=$user";
+
+    $asunto = "[http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID] Confirmación de recuperación de contraseña";
+    $cuerpo = "Estimado usuario ($user):<br/><br/>";
+    $cuerpo .= "Alguien ha solicitado restablecer la contraseña de su cuenta para acceder al Panel de Control Prontus en http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID.<br/>Visite la siguiente url para iniciar el proceso de recuperación, de lo contrario puede ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
+    utf8::encode($cuerpo);
+    utf8::encode($asunto);
+
     my ($from) = 'prontus@altavoz.net';
     my ($replyto_name) = 'Prontus CMS';
-    my ($replyto_email) =  'prontus@altavoz.net';
-    my ($asunto) = "Claves Prontus para $prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID";
-
-    my ($texto) = "Estimado usuario:\nTus claves para ingresar al Panel de Control Prontus en $prontus_varglb::PUBLIC_SERVER_NAME son:\n\nUsuario: $FORM{'_usr'}\nContraseña: $new_pass\n\n---\nEmail automático, favor no lo respondas.\nSi crees que este correo no corresponde, ponte en contacto con tu WebMaster.";
-    # Codifica en UTF8
-    utf8::encode($texto);
-
-    my ($htmldoc) = '';
+    my ($replyto_email) =  'area_prontus@altavoz.net';
     my ($attach) = '';
     my ($url) = '';
     my ($dir_attach) = '';
     my ($smtp) = $prontus_varglb::SERVER_SMTP;
 
-    &lib_mail::enviar_mail($email, $from, $replyto_name, $replyto_email, $asunto, $texto, $htmldoc, $attach, $url, $dir_attach, $smtp);
+    &lib_mail::enviar_mail($email, $from, $replyto_name, $replyto_email, $asunto, '', $cuerpo, $attach, $url, $dir_attach, $smtp);
+    
 };
 
 # -------------------------------END SCRIPT----------------------

@@ -108,6 +108,7 @@ main: {
     $hash_defaultvars{'var'}{'ABRIR_FIDS_EN_POP'} = 'ABRIR_FIDS_EN_POP;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'SCRIPT_QUOTA'} = 'SCRIPT_QUOTA;(\w+);;U';
     $hash_defaultvars{'var'}{'FOTO_MAX_PIXEL'} = 'FOTO_MAX_PIXEL;(.*?);;U';
+    $hash_defaultvars{'var'}{'FFMPEG_PARAMS'} = 'FFMPEG_PARAMS;(.*?);;U';
     $hash_defaultvars{'var'}{'BLOQUEO_EDICION'} = 'BLOQUEO_EDICION;(\d+);;U';
     $hash_defaultvars{'var'}{'MAX_XCODING'} = 'MAX_XCODING;(\d+);50;U';
 
@@ -132,8 +133,8 @@ main: {
     $hash_defaultvars{'tax'}{'TAXONOMIA_NIVELES'} = 'TAXONOMIA_NIVELES;[0-3];0;U';
     $hash_defaultvars{'tax'}{'NUM_RELAC_DEFAULT'} = 'NUM_RELAC_DEFAULT;^(\d+)$;5;U';
     $hash_defaultvars{'tax'}{'TAXPORT_ARTXPAG'} = 'TAXPORT_ARTXPAG;^(\d+)$;20;U';
-    $hash_defaultvars{'tax'}{'TAXPORT_REFRESH_SEGS'} = 'TAXPORT_REFRESH_SEGS;^(\d+)$;1800;U';
-    $hash_defaultvars{'tax'}{'TAXPORT_REFRESH'} = 'TAXPORT_REFRESH;(SI|NO);NO;U';
+    #~ $hash_defaultvars{'tax'}{'TAXPORT_REFRESH_SEGS'} = 'TAXPORT_REFRESH_SEGS;^(\d+)$;1800;U';
+    #~ $hash_defaultvars{'tax'}{'TAXPORT_REFRESH'} = 'TAXPORT_REFRESH;(SI|NO);NO;U';
     $hash_defaultvars{'tax'}{'TAXPORT_MAXARTICS'} = 'TAXPORT_MAXARTICS;^(\d+)$;500;U';
     $hash_defaultvars{'tax'}{'TAXPORT_ORDEN'} = 'TAXPORT_ORDEN;^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$;PUBLICACION(DESC);U';
 
@@ -474,6 +475,13 @@ sub validarVar {
     if ($var eq 'FOTO_MAX_PIXEL') {
         if ($item !~ /^\d+x\d+$/) {
             &glib_html_02::print_json_result(0, "La variable FOTO_MAX_PIXEL tiene datos inválidos. El valor debe ser, por ejemplo: 1920x1080", 'exit=1,ctype=1');
+        };
+    };
+
+    # Los parámetros no pueden tener " o '
+    if ($var eq 'FFMPEG_PARAMS') {
+        if ($item =~ /["|']/) {
+            &glib_html_02::print_json_result(0, "La variable FFMPEG_PARAMS tiene datos inválidos. No puede contener caracteres como \" o '.", 'exit=1,ctype=1');
         };
     };
 

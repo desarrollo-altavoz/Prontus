@@ -165,6 +165,7 @@ use lib_captcha2;
 use lib_form;
 use lib_validator;
 use lib_mail;
+use lib_maxrunning;
 
 my $DEBUG = 0;    # 1.6 Flag para debug.
 
@@ -205,8 +206,12 @@ $MSGS{'required_data'} = 'Este dato es obligatorio:';
 $MSGS{'wrong_data'} = 'Este dato es incorrecto:';
 $MSGS{'wrong_captcha'} = 'El c&oacute;digo de validaci&oacute;n ingresado no es v&aacute;lido';
 
-&lib_form::max_running(5); # Soporta un maximo de 5 copias corriendo.
-
+#~ &lib_form::max_running(5); # Soporta un maximo de 5 copias corriendo.
+# Soporta un maximo de n copias corriendo.
+if (&lib_maxrunning::maxExcedido(5)) {
+    &aborta("Error: Servidor ocupado. Intente otra vez m&aacute;s tarde."); # 1.3.1 # 1.10
+};
+    
 # Variables globales.
 my $ROOTDIR = $prontus_varglb::DIR_SERVER; # 1.4
 

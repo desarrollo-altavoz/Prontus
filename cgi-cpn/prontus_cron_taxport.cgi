@@ -105,6 +105,10 @@ close STDOUT;
 # MAIN.
 # ---------------------------------------------------------------
 
+my %ART_XML_FIELDS;
+my %ART_XDATA_FIELDS;
+    
+
 my ($LOOP, %FORM, $NOM_PRONTUS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC);
 my %NOMBASE_PLTS;
 # my %HASH_FILES;
@@ -510,16 +514,12 @@ sub generar_taxports_thislevel {
 
     my ($secc_id, $temas_id, $subtemas_id, $tax_fixedurl, $ref_hash, $base) = @_;
 
-
-
     my %fids2process = %$ref_hash;
     # si se invoca sin fid, considera el filtro sin fid
     $fids2process{''} = 1 if ($FORM{'fid_especif'} eq '');
 
     # para uso normal desde el fid, en donde se invoca siempre con fid. Entonces si viene una tax definida, genera para esa tax con el fid, pero tb. para la tax sin fid especifico
     $fids2process{''} = 1 if ($FORM{'seccion_especif'});
-
-    my %art_xml_fields;
 
     my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/taxport_smf";
     &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
@@ -593,7 +593,7 @@ sub generar_taxports_thislevel {
                     my $loop_plt = &get_loop_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
                     next if (!$loop_plt);
                     my $fila_content;
-                    my $auxref;
+                    my ($auxref, $auxref2);
                     
                     # En estos casos sólo es válida la primera página
                     my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
@@ -601,13 +601,18 @@ sub generar_taxports_thislevel {
                         next;
                     };
 
-                    ($fila_content, $auxref) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id});
+                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id});
 
-                    $art_xml_fields{$art_id} = $auxref if (! exists $art_xml_fields{$art_id}); # para no leer 2 veces un xml
+                    $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
+                    $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
+                    
 
                     $filas{"$mv|$nombase_plt"} .= $fila_content;
 
-                    usleep(25000);
+                    if ($nro_pag > 0) {
+                        # Se baja a medio segundo
+                        usleep(500000);
+                    };
                 };
             };
             

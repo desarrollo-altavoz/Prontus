@@ -204,7 +204,7 @@ BEGIN {
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.15
   use vars qw($DIR_CGI_CPAN $DIR_CGI_PUBLIC); # para que queden disponibles como vars. globales
   require 'dir_cgi.pm';
-
+  
   my ($ROOTDIR) = '';  # 1.12 desde el web
   if ($ENV{'DOCUMENT_ROOT'} ne '') {
     $ROOTDIR = $ENV{'DOCUMENT_ROOT'};
@@ -286,16 +286,6 @@ if ($PRONTUS eq '') { # Muestra pagina en blanco.
 };
 if ($DEBUG) { print "\n<pre>PRONTUS = $PRONTUS \n"; };
 
-# Carga configuración de prontus.
-$FORM{'path_conf'} = "/$PRONTUS/cpan/$PRONTUS.cfg";
-
-# Ajusta path_conf para completar path y/o cambiar \ por /
-$FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
-
-# Carga variables de configuracion.
-&lib_prontus::load_config($FORM{'path_conf'});
-$FORM{'path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
-
 
 my $PRONTUS_DIR = "$DOCUMENT_ROOT/$PRONTUS";
 my $SEARCH_DIR = "$PRONTUS_DIR/cpan/data/search"; # Directorio de trabajo.
@@ -327,6 +317,16 @@ if(($FORM{'search_resxpag'} eq '') || ($FORM{'search_resxpag'} > $CFG{'RESPERPAG
 };
 if(($FORM{'search_maxpags'} eq '') || ($FORM{'search_maxpags'} > $CFG{'MAXPAGS'})) {
   $FORM{'search_maxpags'} = $CFG{'MAXPAGS'};
+};
+
+# Cargar variables de configuración necesarias para friendly url desde archivo -var
+my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
+if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::FRIENDLY_URLS = $2;
+};
+
+if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
 };
 
 # Parsea y muestra primera parte de la pagina de resultados.
@@ -506,7 +506,7 @@ sub parsea_plantilla2 {
             . '&amp;search_texto=' . &lib_search::escapehtml($FORM{'search_texto'})
             . '&amp;search_modo=' . $FORM{'search_modo'}
             . '&amp;search_comodines=' . $FORM{'search_comodines'}
-            . '&amp;vista=' . $FORM{'vista'}
+            . '&amp;vista=' . &lib_search::escapehtml($FORM{'vista'})
             . '">' . $i . '</a> '; # 1.7 1.26
     }else{
       $pags .= "<span class='pag_actual'> $i </span>";
@@ -1230,8 +1230,7 @@ sub getFormData {
   $FORM{'vista'} =~ s/[^\w]//sg; # 1.18
   $VISTA = ''; # 1.18
   if ($FORM{'vista'} ne '')    { $VISTA = '-' . $FORM{'vista'}; }; # 1.18
-  if (
-         ($FORM{'search_seccion'} ne '')
+  if (($FORM{'search_seccion'} ne '')
       || ($FORM{'search_tema'} ne '')
       || ($FORM{'search_subtema'} ne '')
       || ($FORM{'search_fechaini'} ne '')
@@ -1250,9 +1249,26 @@ sub getFormData {
   };
   if ($FORM{'search_fechaini'} ne '') {
     $FORMfechaini = &lib_search::fecha2iso($FORM{'search_fechaini'});
+    # CVI - Para limpiar/formatear la fecha
+    if($FORMfechaini eq '') {
+		$FORM{'search_fechaini'} = '';
+	} else {
+		$FORM{'search_fechaini'} = &lib_search::iso2fechacorta($FORMfechaini);  
+	}
   };
   if ($FORM{'search_fechafin'} ne '') {
     $FORMfechafin = &lib_search::fecha2iso($FORM{'search_fechafin'});
+    # CVI - Para limpiar/formatear la fecha
+    if($FORMfechaini eq '') {
+		$FORM{'search_fechafin'} = '';
+	} else {
+		$FORM{'search_fechafin'} = &lib_search::iso2fechacorta($FORMfechafin);  
+	}
   };
+  
+  # CVI - se limpian las variables restantes
+  $FORM{'search_comodines'} =~ s/[^\w]//sg;
+  if ($FORM{'search_comodines'} ne 'yes')    { $FORM{'search_comodines'} = 'no'; };
+  
   # print "<p>FILTROACTIVO = $FILTROACTIVO $FORMfechaini $FORMfechafin"; # debug
 }; # getFormData

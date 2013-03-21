@@ -168,7 +168,6 @@ main: {
 };
 
 # ---------------------------------------------------------------
-
 sub update_cfg {
     # nom_port --> nombre con extension y sin path.
 
@@ -195,12 +194,13 @@ sub update_cfg {
 
     $buffer =~ s/$crlf/\x0a/sg;
 
-
-  # Duplica linea del cfg
+    # Duplica linea del cfg
     $buffer =~ /( *PORT_PLTS *= *['"]$FORM{'Lst_PORTACT'}(\(.*\)){0,3}['"].*\n?)/i;
     my $newline = $1;
     $newline =~ s/(PORT_PLTS *= *['"])$FORM{'Lst_PORTACT'}((\(.*\)){0,3}['"].*\n?)/\1$FORM{'NEW_PORT'}\2/i;
-    $newline =~ /PORT_PLTS *= *['"](.*?)\((.*?)\)\((.*?)\)\((.*?)\)['"]/i;
+    if($newline =~ /PORT_PLTS *= *['"](.*?)\((.*?)\)\((.*?)\)\((.*?)\)['"]/i) {
+		$newline = "PORT_PLTS = \"$1($1)($3)($4)\"";
+	};
     print STDERR "[newline]$newline";
     $buffer =~ s/( *PORT_PLTS *= *['"]$FORM{'Lst_PORTACT'}(\(.*\)){0,3}['"].*\n?)/\1$newline/i;
     # Configurar portada como base si es q se requiere.

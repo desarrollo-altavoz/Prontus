@@ -167,21 +167,8 @@ var Acciones = {
             $('.top-titulo .botones .loading-action').fadeIn();
         } else {
             $('.top-titulo .botones .loading-action').hide();
-            $('.top-titulo .botones a').fadeIn();
+            $('.top-titulo .botones a').filter(':not("#port_dd_btn")').fadeIn();
         }
-    },
-
-    // -------------------------------------------------------------------------
-    showAdministrarPortadas: function () {
-        $.fn.colorbox({
-            open: true,
-            href: Listartic.urlAdministrarPortadas+'?_path_conf='+Admin.path_conf,
-            width: 730,
-            height: 580,
-            maxWidth: '95%',
-            maxHeight: '90%',
-            opacity: 0.8
-        });
     },
 
     // -------------------------------------------------------------------------

@@ -3,9 +3,11 @@
 .aright .coment_reload {margin-top: 55px; margin-right: 215px;}
 .vermas {background: url('../imag/boto/flecha_mover.png') no-repeat; width: 18px; height: 18px; display: inline-table;}
 .fila_loading { width: 50px;}
-.col960 .rotulo .col0, .col960 .rotulo .col1, .col960 .rotulo .col2, .col960 .rotulo .col3, .col960 .rotulo .col4 {font-size:14px; color:#FFFFFF; font-weight:bold; padding:5px 0 0 0;}
+.col960 .rotulo .col0, .col960 .rotulo .col1, .col960 .rotulo .col2, .col960 .rotulo .col3, .col960 .rotulo .col4, .col960 .rotulo .col5{font-size:14px; color:#FFFFFF; font-weight:bold; padding:5px 0 0 0;}
 .col960 .rotulo .col0, .col960 .fila1 .col0 {width:125px; margin:0 0 0 8px;}
-.col960 .rotulo .col2, .col960 .fila1 .col2 {width:405px; margin:0 0 0 20px;}
+.col960 .rotulo .col2, .col960 .fila1 .col2 {width:300px; margin:0 0 0 10px;}
 .col960 .rotulo .col4  {width: 85px; margin:0 0 0 20px;}
-.col960 .fila1 .col4  {width: 85px; margin:0 0 0 20px;}
-.col960 .fila1 .col3  {width: 60px; margin:0 0 0 5px;}
+.col960 .rotulo .col5  {width: 85px; margin:0 0 0 20px;}
+.col960 .fila1 .col4  {width: 85px; margin:0 0 0 10px; word-wrap: break-word;}
+.col960 .fila1 .col5  {width: 110px; margin:0 0 0 10px; word-wrap: break-word;}
+.col960 .fila1 .col3  {width: 60px; margin:0 5px 0 5px; float: right;}

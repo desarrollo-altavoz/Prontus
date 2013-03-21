@@ -9,13 +9,13 @@ var ImageDialog = {
 	},
 
 	init : function(ed) {
-		var f = document.forms[0], nl = f.elements, ed = tinyMCEPopup.editor, dom = ed.dom, n = ed.selection.getNode();
+		var f = document.forms[0], nl = f.elements, ed = tinyMCEPopup.editor, dom = ed.dom, n = ed.selection.getNode(), fl = tinyMCEPopup.getParam('external_image_list', 'tinyMCEImageList');
 
 		tinyMCEPopup.resizeToInnerSize();
 		this.fillClassList('class_list');
-		this.fillFileList('src_list', 'tinyMCEImageList');
-		this.fillFileList('over_list', 'tinyMCEImageList');
-		this.fillFileList('out_list', 'tinyMCEImageList');
+		this.fillFileList('src_list', fl);
+		this.fillFileList('over_list', fl);
+		this.fillFileList('out_list', fl);
 		TinyMCE_EditableSelects.init();
 
 		if (n.nodeName == 'IMG') {
@@ -36,11 +36,6 @@ var ImageDialog = {
 			nl.usemap.value = dom.getAttrib(n, 'usemap');
 			nl.longdesc.value = dom.getAttrib(n, 'longdesc');
 			nl.insert.value = ed.getLang('update');
-
-            // ych: al editar la foto, elimina de entradita el width:50px que venia "en duro" en el style de la imagen.
-            if (/width:\s*50px;/.test(nl.style.value))
-                nl.style.value = nl.style.value.replace(/width:\s*50px;/, '');
-
 
 			if (/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/.test(dom.getAttrib(n, 'onmouseover')))
 				nl.onmouseoversrc.value = dom.getAttrib(n, 'onmouseover').replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
@@ -176,9 +171,13 @@ var ImageDialog = {
 		if (el && el.nodeName == 'IMG') {
 			ed.dom.setAttribs(el, args);
 		} else {
-			ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" />', {skip_undo : 1});
-			ed.dom.setAttribs('__mce_tmp', args);
-			ed.dom.setAttrib('__mce_tmp', 'id', '');
+			tinymce.each(args, function(value, name) {
+				if (value === "") {
+					delete args[name];
+				}
+			});
+
+			ed.execCommand('mceInsertContent', false, tinyMCEPopup.editor.dom.createHTML('img', args), {skip_undo : 1});
 			ed.undoManager.add();
 		}
 
@@ -292,7 +291,7 @@ var ImageDialog = {
 	fillFileList : function(id, l) {
 		var dom = tinyMCEPopup.dom, lst = dom.get(id), v, cl;
 
-		l = window[l];
+		l = typeof(l) === 'function' ? l() : window[l];
 		lst.options.length = 0;
 
 		if (l && l.length > 0) {
@@ -396,12 +395,14 @@ var ImageDialog = {
 					if (v == '0')
 						img.style.border = isIE ? '0' : '0 none none';
 					else {
-						if (b.length == 3 && b[isIE ? 2 : 1])
-							bStyle = b[isIE ? 2 : 1];
+						var isOldIE = tinymce.isIE && (!document.documentMode || document.documentMode < 9);
+
+						if (b.length == 3 && b[isOldIE ? 2 : 1])
+							bStyle = b[isOldIE ? 2 : 1];
 						else if (!bStyle || bStyle == 'none')
 							bStyle = 'solid';
 						if (b.length == 3 && b[isIE ? 0 : 2])
-							bColor = b[isIE ? 0 : 2];
+							bColor = b[isOldIE ? 0 : 2];
 						else if (!bColor || bColor == 'none')
 							bColor = 'black';
 						img.style.border = v + 'px ' + bStyle + ' ' + bColor;

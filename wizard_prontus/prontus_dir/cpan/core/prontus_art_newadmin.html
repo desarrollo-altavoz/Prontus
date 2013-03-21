@@ -4,12 +4,12 @@
     <title>Administrar art&iacute;culos &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
-    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
 
     <!-- jquery base -->
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.9.2.custom.min.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/lang/jquery.ui.datepicker-es.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
@@ -49,7 +49,9 @@
         <div class="content">
           <!--TITULO PRINCIPAL-->
           <div class="top-titulo titulo-port aleft">
-            <h1 class="titular">Portada <span id="nomPortada">%%_port_nom%%</span></h1>
+            <h2>Portada <span id="filePortada"></span></h2>
+            <h1 class="titular" id="nomPortada">%%_port_nom%%</h1>
+            <div id="lastmodPortada" class="msg-sub-title"></div>
             
             <input type="hidden" value="" id="openblank" />            
             <div class="separa"></div>
@@ -69,7 +71,7 @@
               <a href="#" onclick="Preview.previewNewWin(); return false;"><img class="cambia-boton" width="32" height="32" title="Previsualizar Portada en una ventana nueva" alt="Previsualizar Portada" src="/%%_prontus_id%%/cpan/core/imag/boto/pre_of.png"></a>
               <!--admin_only-->
               <!--ADMIN_PORT-->
-              <a href="#" onclick="Acciones.showAdministrarPortadas(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/int_of.png" width="32" height="32" alt="Administrar Portadas" title="Administrar Portadas" class="cambia-boton" /></a>
+              <a href="prontus_pltport_admin.cgi?_path_conf=%%_path_conf%%" ><img src="/%%_prontus_id%%/cpan/core/imag/boto/int_of.png" width="32" height="32" alt="Administrar Portadas" title="Administrar Portadas" class="cambia-boton" /></a>
               <!--/ADMIN_PORT-->
               <!--/admin_only-->
               <a id="port_dd_btn" style="display: none;" href="#" onclick="window.open('/cgi-cpn/prontus_dd_admin.cgi?_edic=base&_port=' + $('#cmb_port').val() + '&_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg', 'portpreview', 'width=1300,scrollbars=1,resizable=1'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/dd_of.png" width="32" height="32" alt="Interfaz drag & drop" title="Interfaz con drag & drop" class="cambia-boton" /></a>
@@ -110,15 +112,6 @@
 
           </div>
           <!-- / TITULO PRINCIPAL-->
-
-          <!--Para los tooltips de Publicados-->
-          <div id="tooltip-public">
-            <div class="resumen-pub">
-              <div class="top"><h2>El artículo está publicado en las siguientes portadas:</h2></div>
-              <div class="middle"></div>
-              <div class="bottom"></div>
-            </div>
-          </div>
 
           <div class="separa"></div>
 

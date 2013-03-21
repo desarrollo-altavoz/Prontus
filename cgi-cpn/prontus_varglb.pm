@@ -46,7 +46,7 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   require 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.55 - 23/01/2013';
+  $VERSION_PRONTUS = '11.2.60 - 05/03/2013';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
@@ -100,7 +100,7 @@ sub init { # Prontus 6.0
   $TAXPORT_MAXARTICS_SECURITY = 100000;
 
   # [CANTIDAD DE SEGUNDOS DE ANTIGUEDAD MAXIMA QUE TENDRAN LAS TAXPORTS]
-  $TAXPORT_REFRESH_SEGS;
+  #~ $TAXPORT_REFRESH_SEGS;
 
   # Tiene que cambiar esto
   $ABRIR_FIDS_EN_POP = '';

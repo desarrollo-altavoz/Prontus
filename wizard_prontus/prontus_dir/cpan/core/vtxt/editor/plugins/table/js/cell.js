@@ -63,6 +63,11 @@ function init() {
 function updateAction() {
 	var el, inst = ed, tdElm, trElm, tableElm, formObj = document.forms[0];
 
+	if (!AutoValidator.validate(formObj)) {
+		tinyMCEPopup.alert(AutoValidator.getErrorMessages(formObj).join('. ') + '.');
+		return false;
+	}
+
 	tinyMCEPopup.restoreSelection();
 	el = ed.selection.getStart();
 	tdElm = ed.dom.getParent(el, "td,th");
@@ -123,21 +128,31 @@ function updateAction() {
 
 			break;
 
-		// ych - actualiza todaslas celdas de la columna actual
 		case "col":
-			var rows = tableElm.getElementsByTagName("tr");
+			var curr, col = 0, cell = trElm.firstChild, rows = tableElm.getElementsByTagName("tr");
+
+			if (cell.nodeName != "TD" && cell.nodeName != "TH")
+				cell = nextCell(cell);
+
+			do {
+				if (cell == tdElm)
+					break;
+				col += cell.getAttribute("colspan")?cell.getAttribute("colspan"):1;
+			} while ((cell = nextCell(cell)) != null);
 
 			for (var i=0; i<rows.length; i++) {
-				var cell = rows[i].firstChild;
+				cell = rows[i].firstChild;
 
 				if (cell.nodeName != "TD" && cell.nodeName != "TH")
 					cell = nextCell(cell);
 
+				curr = 0;
 				do {
-				  // alert(cell.cellIndex)
-				  if (tdElm.cellIndex == cell.cellIndex) {
-					  cell = updateCell(cell, true);
-					};
+					if (curr == col) {
+						cell = updateCell(cell, true);
+						break;
+					}
+					curr += cell.getAttribute("colspan")?cell.getAttribute("colspan"):1;
 				} while ((cell = nextCell(cell)) != null);
 			}
 

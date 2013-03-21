@@ -1,8 +1,13 @@
 .usr_ficha {width:685px; margin:0px auto;}
 .usr_ficha .box-gris {width:672px; padding:0px 5px;}
-.usr_ficha table tr td {text-align:left; font-size:14px; color:#333333; margin:0; padding:8px 10px 3px 0; font-weight: bold;}
-.usr_ficha table tr td select {width: 130px; font-size: 14px;}
-.usr_ficha table tr td input {font-size: 14px;}
+.usr_ficha table td {text-align:left; font-size:14px; color:#333333; margin:0; padding:8px 10px 3px 0; font-weight: bold;}
+.usr_ficha table .name-field {vertical-align:top;}
+.usr_ficha .table_top input, .usr_ficha .table_top select {width:90%; padding:2px; font-size:11px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
+.usr_ficha .table_top td select {width: 130px; font-size: 14px;}
+.usr_ficha .table_top td input {font-size: 14px;}
+.usr_ficha .ayuda {color:#888888;}
+.usr_ficha tr.separador td {border-top:1px solid #E6E6E6;}
+
 .usr_ficha .list {width:180px;}
 .usr_ficha .list select {width:170px; height:100px;}
 .usr_ficha .rotulo {width:685px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot685_azul.gif") no-repeat left top;}

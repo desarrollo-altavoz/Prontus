@@ -1,4 +1,82 @@
 ====================================================================================================
+11.2.60 - 05/03/2013
+====================================================================================================
+- bugfix: Se agrega la el meta tag de codificación utf8 a los logs de procesamiento.
+- improvement: Se hacen varias mejoras menores de rendimiento.
+- improvement: Al leer las marcas externas, se cambia el formato para considerar: /sist_externo/fechac/ts/, en vez del antiguo.
+- improvement: Al leer las marcas externas, las marcas globales se "cachean" en prontus_varglb.
+- improvement: En la función: lib_tax::generar_fila, se agrega la opción se pasar las marcas externas, previamente cacheadas.
+- improvement: Al ejecutarse el prontus_cron_taxport y prontus_cron_list, se dejan los XMLs leídos como variable global.
+- bugfix: En el Listado de Artículos, al guardar la portada, duarante una milésimas de segundo, se veía el ícono de Drag & Drop.
+- bugfix: Se corrigen algunos plugins y archivos de lenguaje, que quedaron malos con el cambio de versión de VTXT.
+- bugfix: Se corrige bug de la marca %%_totartics%% que tomaba todos los artículos, aunque no estuvieran publicados.
+- improvement: Se agrega la marca %%_area%% en portadas, con el número del área.
+- changes: Se eliminan todas las referencias a las variables: TAXPORT_REFRESH y TAXPORT_REFRESH_SEGS, por estar obsoletas
+- bugfix: Se corrige bug en prontus_regenera_taxport.cgi, que invocaba incluso tripletas que no existían.
+- changes: Se baja el tiempo de sleep al generar las páginas > 1, de 2 segundos a medio segundo.
+- improvement: Se comienza a usar lib_maxrunning.pm en las CGIs de Comentarios, Enviar, Imprimir, Posting, Prontus Form
+- improvement: Se eliminan referencias a funciones locales de chequeo de instancias corriendo (para centralizar en lib_maxrunning.pm)
+- improvement: Se cambia el uso de funciones locales del tipo: is_win32, para centralizar en &lib_prontus::is_win32()
+- changes: Se evita que el preview se cierre mientras esta en modo "Loading", para evitar comportamientos extraños
+- bugfix: En el Administrar usuarios, se corrige error en chrome que descuadraba el listado de portadas y artículos
+- improvement: Se mejora un poco la gráfica para facilitar la usabilidad del Administrar usuarios
+- bugfix: Se corrige error al crear tablas, bajo ciertas circunstancias, no mostraba la creación de algunas tablas
+- bugfix: Error al contar los registros de la tabla: TAGSART
+- changes: Se agrega variable FFMPEG_PARAMS, para ingresar parámetros custom en la transcodificación de videos.
+- bugfix: Se mejora la manera en que se recupera la contraseña, agregando una confirmación por email antes del cambio.
+    
+====================================================================================================
+11.2.59 - 21/02/2013
+====================================================================================================
+- notice: Se actualiza la version de la UI de jquery a la 1.9.2
+- improvement: Se optimiza la lectura de los nombres de las taxonomías, guardandolas en un caché temporal
+- improvement: Se evita el parseo de marcas innecesarias.
+- changes: Se cambian los tooltips para indicar si un artículo está publicado, por los tooltips de la UI de jquery 
+- changes: Se agrega el nombre del archivo de la portada (sobre el nombre) + la fecha/hora de la ultima modificacion
+- changes: En el FID, se cambia el texto de cierre de comentarios por uno más claro.
+- bugfix: Editor de Imagenes: Se corrige bug al intentar usar el módulo opcional: Image::JpegTran
+- bugfix: Se actualiza la versión del TinyMCE de la 3.4.2  a la 3.5.8, para corregir un bug.
+- changes: Se agrega al botón para "Seleccionar todo" a la botonera del VTXT
+- bugfix: En la transcodificación, se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
+- bugfix: Se soluciona problema de seguridad con archivo inf.txt, en el Wizard Prontus
+- changes: Se mejora el diseño de la página del cambio de contraseña
+- changes: Se agrega un delay de 2 segundos luego de procesar la primera página de las portadas taxonómicas.
+- changes: Se agrega chequeo del módulo perl Digest::SHA1 que es utilizado por lib_captcha2
+
+====================================================================================================
+11.2.58 - 13/02/2013
+====================================================================================================
+- improvement: Se centraliza y mejora el chequeo de publicación para saber si un artículo está publicado o no.
+- improvement: Al hacer chequeo de sesion para entrar al Publicador, se actualiza el descriptor con la última versión disponible
+- improvement: Se mejora respuesta para los artículos corruptos
+- changes: Se elimina el CSS: listartic.css ya que no estaba siendo usado
+- changes: Al buscar por titular, ahora permite buscar por frases entre comillas dobles (útil, por ejemplo, para palabras muy cortas)
+- bugfix: En el buscador, se corrige vulnerabilidad XSS al usar parámetro search_comodines
+- bugfix: Se filtran las fechas para no permitir valores que no sean fechas, en el Buscador Prontus
+- improvement: Cuando no hay conexión a www.prontus.cl se usa un ícono de alert en vez de usar el mismo ícono de No Updates
+- improvement: Se cambia el nombre de una función que estaba mal escrito
+- bugfix: Cuando se duplicaba, la nueva portada quedaba con el mismo nombre de la original. Ahora, se deja el nombre del nuevo archivo
+- improvement: Se cambia distribución de elementos del Administrador de Portadas, para que sea similar al Administrador de Ediciones
+- improvement: Se deja el Duplicador como primera Pestaña en el Administrador de Portadas
+- improvement: Administrar Ediciones: Se agrega un botón Volver para mejorar la usabilidad
+
+====================================================================================================
+11.2.57 - 06/02/2013
+====================================================================================================
+- bugfix: Cuando una portada tenía muchos loops repetidos el parseador reemplazaba de manera incorrecta el contenido de los loops, por lo tanto quedaban los datos corridos.
+- bugfix: En la regeneración masiva, no se estaba actualizando la taxonomia en los articulos regenerados cuando esta cambiaba de nombre en la bd.
+- changes: Se agrega campo email al formulario del sistema de comentarios.
+
+====================================================================================================
+11.2.56 - 28/01/2013
+====================================================================================================
+- improvement: Se agrega interfaz drag & drop para la edición de la portada.
+- changes: Se agrega nueva variable de configuracion PORT_DRAGANDROP, para especificar cuales son las portadas que podrán usar la interfaz. Esto es independiende de si la portadaes compatible o no.
+- improvement: Para prontus_search, se quita la inicialización de todas las variables prontus y se cargan solo las necesarias para las friendly url.
+- improvement: Se agrega a la release postproceso de generación de galería de fotos a partir de un archivo zip.
+- changes: La creación de las tablas se crean por defecto con codificación utf8 y con motor MYISAM.
+
+====================================================================================================
 11.2.55 - 23/01/2013
 ====================================================================================================
 - improvement: En las opciones avanzadas, ahora los FIDs se ordenan por orden alfabético
