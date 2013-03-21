@@ -1637,8 +1637,11 @@ sub generar_vista_art {
         my $titular = $titular_crudo;
         $titular =~ s/<\!\[CDATA\[(.*?)\]\]>/\1/i;
         $titular = &lib_prontus::saca_tags_rets($titular);
-
-        $Artic::ERR = 'Plantilla de artículo vacia o no existe, el art. ' . $this->{ts} . ' (' . $titular . ") se creó en blanco. plt[$campos_xml{'_plt'}] vista[$mv]\n";
+        utf8::decode($titular);
+        
+        my $vista;
+        $vista = "<br/>Vista asociada[$mv]\n" if($mv);
+        $Artic::ERR = 'Plantilla de artículo vacia o no existe, el art. ' . $this->{ts} . ' (' . $titular . ") se creó en blanco.<br/>Archivo de plantilla con problemas [".$campos_xml{'_plt'}."]".$vista;
         warn "$Artic::ERR fullpath_plt[$fullpath_plt]";
         return 0;
     };
