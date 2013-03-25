@@ -6045,7 +6045,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/prontus_olvidopass.html
 
 ====================================================================================================
-11.2.61 - 20/03/2013 - CVI/JOR
+11.2.61 - 25/03/2013 - CVI/JOR
 ====================================================================================================
 
 - Listado de Artículos:
@@ -6070,6 +6070,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-bin/prontus_art_upfoto_dd.cgi
         /cgi-cpn/Artic.pm
+
+- Transcodificación:
+    [bugfixes]
+        - En algunos servers como VPSLab, el video quedaba con permiso: 600 después de procesarlo.
+    [files]
+        /cgi-cpn/xcoding/qtfaststart.cgi
 
 - Wizard Prontus:
     [bugfixes]

@@ -69,6 +69,9 @@ main: {
     unlink($infile) if(-f $infile);
     move($outfile, $infile);
 
+    # Fixing: En algunos servers queda como 600
+    chmod 0644, "$infile";
+    
     warn("Proceso terminado ok.");
 }
 
