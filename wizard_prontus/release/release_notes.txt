@@ -6077,6 +6077,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/xcoding/qtfaststart.cgi
 
+- Admin de Usuarios:
+    [cambios]
+        - Se cambia gráfica para soportar nombres de portada más largos.
+        - En caso de que el nombre sea muy largo, se pone "..." y se deja con un Tooltip
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+
 - Wizard Prontus:
     [bugfixes]
         - En una release anterior, se comenzó a eliminar el archivo: inf.txt. 

@@ -61,9 +61,8 @@ use glib_cgi_04;
 
 use lib_prontus;
 
-
 use strict;
-
+my $LIMITE_CHARS_NAME = 28;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -112,35 +111,55 @@ main: {
         ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $value;
     };
 
-    $lst_artdisp = &get_lst_tipoart();
-
-
+    #~ $lst_artdisp = &get_lst_tipoart();
     $dir_tpl_seccs = $prontus_varglb::DIR_SERVER .
                    $prontus_varglb::DIR_TEMP .
                    $prontus_varglb::DIR_EDIC .
                    $prontus_varglb::DIR_NROEDIC .
                    $prontus_varglb::DIR_SECC;
 
-    my $msg_first_login;
-    if ($FORM{'USERS_ID'} ne '1') { # admin
-        $lst_portdisp = &get_lst_port();
-    };
-
     $cmb_perfil = &get_cmb_perfil();
 
     $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . '/prontus_usr_ficha.html';
     $pagina = &glib_html_02::rellenar_plantilla(10, '%%USERS_ID%%', $FORM{'USERS_ID'},'','',
-                                                                       '%%EMAIL%%', $USERS_EMAIL,'','',
-                                                                       '%%NOM%%', $USERS_NOM,'','',
-                                                                       '%%USR%%', $USERS_USR,'','',
-                                                                        '%%Lst_ARTDISP%%', $lst_artdisp,'','',
-                                                                        '%%Lst_PORTDISP%%', $lst_portdisp,'','',
-                                                                        '%%Cmb_PERFIL%%', $cmb_perfil,'','',
-                                                                        '%%_path_conf%%', $FORM{'_path_conf'},'','',
-                                                                       $plantilla);
-
+                                                    '%%EMAIL%%', $USERS_EMAIL,'','',
+                                                    '%%NOM%%', $USERS_NOM,'','',
+                                                    '%%USR%%', $USERS_USR,'','',
+                                                    '%%Cmb_PERFIL%%', $cmb_perfil,'','',
+                                                    '%%_path_conf%%', $FORM{'_path_conf'},'','',
+                                                    $plantilla);
+    
+    #~ Se procesan los checks de Tipo de Artículo
+    if($FORM{'USERS_ID'} eq '1') {
+        $pagina =~ s/%%loop_artics%%(.*?)%%\/loop_artics%%//is;
+        
+    } elsif($pagina =~ /%%loop_artics%%(.*?)%%\/loop_artics%%/is) {
+        my $loop = $1;
+        $lst_artdisp = &get_lst_tipoart($loop);
+        $pagina =~ s/%%loop_artics%%(.*?)%%\/loop_artics%%/$lst_artdisp/is;
+        
+    } else {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","Error en la plantilla. No se encuentra el Loop de Artículos");
+        exit;
+    }
+    
+    #~ Se procesan los checks de Portada
+    if($FORM{'USERS_ID'} eq '1') {
+        $pagina =~ s/%%loop_ports%%(.*?)%%\/loop_ports%%//is;
+        
+    } elsif($pagina =~ /%%loop_ports%%(.*?)%%\/loop_ports%%/is) {
+        my $loop = $1;
+        $lst_portdisp = &get_lst_port($loop);
+        $pagina =~ s/%%loop_ports%%(.*?)%%\/loop_ports%%/$lst_portdisp/is;
+        
+    } else {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","Error en la plantilla. No se encuentra el Loop de Portadas");
+        exit;
+    }
+    
     # &lib_prontus::close_dbm_files();
-
     if ($FORM{'USERS_ID'} ne '') {
         # deshabilitar ingreso o modif. de campo usr.
         $pagina =~ s/<!--USR-->.*?<!--\/USR-->/<SPAN CLASS="P-LABELTABLA">$USERS_USR<\/SPAN><input type="hidden" name="USR" value="$USERS_USR">/sg;
@@ -190,8 +209,10 @@ sub get_cmb_perfil {
 
 # ---------------------------------------------------------------
 sub get_lst_tipoart {
-    my ($key, $key2, $val_display, $clave, $lista, %tipoart_usr);
     
+    my ($loop) = @_;
+    my ($looptot, $looptmp);
+    my ($key, $key2, $val_display, $clave, $lista, %tipoart_usr);
     
     foreach $key2 (keys %prontus_varglb::ARTUSERS) {
         my ($tipart, $usr) = split /\|/, $key2;
@@ -200,7 +221,7 @@ sub get_lst_tipoart {
         };
     };
     
-    foreach $key (keys %prontus_varglb::FORM_PLTS) {
+    foreach $key (sort keys %prontus_varglb::FORM_PLTS) {
         $val_display = $key;
         $val_display =~ s/^.*://;
         $clave = $key;
@@ -212,15 +233,26 @@ sub get_lst_tipoart {
             $checked = "checked=\"checked\"";
             $label_class = "class=\"checked\"";
         };
+        my $val_display_short = &procesar_nombre($val_display);
         
-        $lista = $lista . "<div class=\"itemlistado\"><input type=\"checkbox\" value=\"$clave\"  name=\"arts[]\" id=\"$clave\" $checked\/> <label for=\"$clave\" $label_class>$val_display<\/label><\/div>";
+        $looptmp = $loop;
+        $looptmp =~ s/%%clave%%/$clave/isg;
+        $looptmp =~ s/%%val_display%%/$val_display/isg;
+        $looptmp =~ s/%%val_display_short%%/$val_display_short/isg;
+        $looptmp =~ s/%%checked%%/$checked/isg;
+        $looptmp =~ s/%%label_class%%/$label_class/isg;
+        
+        $looptot = $looptot . $looptmp;
     };
     
-    return $lista;
+    return $looptot;
 };
 
 # ---------------------------------------------------------------
 sub get_lst_port {
+    
+    my ($loop) = @_;
+    my ($looptot, $looptmp);
     my ($key, $key2, %port_usr, $val_display, $clave, $lista);
     
     foreach $key2 (keys %prontus_varglb::PORTUSERS) {
@@ -230,7 +262,7 @@ sub get_lst_port {
         };
     };
         
-    foreach $key (sort {$a cmp $b} keys %prontus_varglb::PORT_PLTS) {
+    foreach $key (sort keys %prontus_varglb::PORT_PLTS) {
         $val_display = $key;
         $val_display =~ s/\..*$//;
         $clave = $key;
@@ -241,12 +273,35 @@ sub get_lst_port {
             $checked = "checked=\"checked\"";
             $label_class = "class=\"checked\"";
         };
+        my $val_display_short = &procesar_nombre($val_display);
         
-        $lista = $lista . "<div class=\"itemlistado\"><input type=\"checkbox\" value=\"$clave\"  name=\"ports[]\" id=\"$val_display\" $checked\/> <label for=\"$val_display\" $label_class>$val_display<\/label><\/div>";
+        $looptmp = $loop;
+        $looptmp =~ s/%%clave%%/$clave/isg;
+        $looptmp =~ s/%%val_display%%/$val_display/isg;
+        $looptmp =~ s/%%val_display_short%%/$val_display_short/isg;
+        $looptmp =~ s/%%checked%%/$checked/isg;
+        $looptmp =~ s/%%label_class%%/$label_class/isg;
+        
+        $looptot = $looptot . $looptmp;
+        #$lista = $lista . "<div class=\"itemlistado\"><input type=\"checkbox\" value=\"$clave\"  name=\"ports[]\" id=\"$val_display\" $checked\/> <label for=\"$val_display\" $label_class>$val_display<\/label><\/div>";
     
     };
     
-    return $lista;
+    return $looptot;
     
 };
+# ---------------------------------------------------------------
+sub procesar_nombre {
+    
+    my ($nombre) = shift;
+    if(length ($nombre) > $LIMITE_CHARS_NAME) {
+        
+        my $newname = substr($nombre, 0, $LIMITE_CHARS_NAME - 3);
+        $nombre = $newname . '...';
+        
+        
+    };
+    return $nombre;
+    
+}
 # -------------------------------END SCRIPT----------------------
