@@ -1,6 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>%%title%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+    <!-- CSS de Prontus -->
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/fids.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/FidConfig.class.js"></script>
+
+    <!-- JQuery y plugins -->
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+  
+    <!-- JS de Prontus -->
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Fid.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Botones.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/validator.js"></script>
+  
+    <script type="text/javascript">
+      var mainFidJs = {
+        PRONTUS_ID: '%%_prontus_id%%',
+        TS: '%%_ts%%'
+      };
+      $(document).ready(function () {
+        Admin.init('%%_prontus_id%%');
+        // Se revisa si el articulo es nuevo o no
+        FidConfig.cargando = false;
+      });
+    </script>
+  </head>
+  <body class="bodysite">
+
+
 <form action="prontus_form_delete.cgi" id="backupDatos">
-  <input type="hidden" name="prontus" value="%%_prontus_id%%" />
-  <input type="hidden" name="ts" value="%%_ts%%" />
+  <input type="hidden" name="_prontus_id" id="prontus" value="%%_prontus_id%%" />
+  <input type="hidden" name="_ts" id="ts" value="%%_ts%%" />
+  <input type="hidden" name="_format" id="_format" value="csv" />
 </form>
 <div class="col960 formbackup">
   <div class="rotulo"><div class="titulo">Administrar Archivo de Datos</div></div>
@@ -15,13 +59,13 @@
         <tr valign="top">
           <td align="left" valign="middle" class="hint" colspan="%%_colspan%%">
             <div class="form_icon">
-              <a href="%%file_backup%%">
+              <a href="javascript:Fid.descargarArchivo()">
                 <img src="/%%_prontus_id%%/cpan/core/imag/form_save.png" alt="Guardar" />
                 <span>Descargar Archivo</span></a>
               Aquí podrá descargar el archivo completo con los datos de los formularios que se han enviado enviado.
             </div>
             <div class="form_icon">
-              <a href="javascript:Fid.eliminaArchivo()">
+              <a href="javascript:Fid.eliminarArchivo()">
                 <img src="/%%_prontus_id%%/cpan/core/imag/form_trash.png" alt="Eliminar" />
                 <span>Eliminar Archivo</span></a>
               <b>Importante:</b> Si ud. borra el archivo de datos, también se borrarán los archivos adjuntos que aquí e muestran.
@@ -51,3 +95,6 @@
     </div>
   </div>
 </div>
+
+</body>
+</html>

@@ -989,6 +989,16 @@ sub parseaVars {
         $pagina =~ s/%%VTXT_DTD_S%%//ig;
         $pagina =~ s/%%VTXT_DTD_T%%//ig;
     };
+    
+    if ($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
+        $pagina =~ s/%%FORM_CSV_CHARSET_1%%//ig;
+        $pagina =~ s/%%FORM_CSV_CHARSET_2%%/ selected="selected"/ig;
+   } else {
+        $pagina =~ s/%%FORM_CSV_CHARSET_1%%/ selected="selected"/ig;
+        $pagina =~ s/%%FORM_CSV_CHARSET_2%%//ig;
+    };
+
+
 
     my $post_proceso = $prontus_varglb::POST_PROCESO{'ART-BORRAR'};
     $post_proceso =~ s/^\((.*?)\)$//ig;

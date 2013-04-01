@@ -66,8 +66,8 @@ my %FORM;        # Contenido del formulario de invocacion.
 &getFormData(); # Lee formulario de invocacion y valida las variables.
 
 my $ROOT    = $ENV{'DOCUMENT_ROOT'};
-my $PRONTUS = $FORM{'prontus'}; # Nombre del publicador Prontus donde se aloja el formulario.
-my $TS      = $FORM{'ts'};      # Nombre del publicador Prontus donde se aloja el formulario.
+my $PRONTUS = $FORM{'_prontus_id'}; # Nombre del publicador Prontus donde se aloja el formulario.
+my $TS      = $FORM{'_ts'};      # Nombre del publicador Prontus donde se aloja el formulario.
 
 if ($PRONTUS eq '') { # Muestra pagina en blanco.
     &glib_html_02::print_json_result(0, 'Directorio Prontus no especificado', 'exit=1,ctype=1');

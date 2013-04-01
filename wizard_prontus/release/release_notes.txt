@@ -6084,6 +6084,24 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
 
+- Prontus Form:
+    [mejoras]
+        - Se agrega variable al CFG, para definir la cofificación del archivo de respaldo del Prontus Form
+          Por defecto queda en utf-8 para ser retro compatible.
+        - Producto de lo anterior, ser agrega una CGI para entregar el archivo de respaldo. Esta cgi
+          se encarga de hacer la conversión de codificación según corresponda.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_form_delete.cgi
+        /cgi-cpn/prontus_form_download.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/cfgedit.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_form_list.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_msg.html
+
 - Wizard Prontus:
     [bugfixes]
         - En una release anterior, se comenzó a eliminar el archivo: inf.txt. 

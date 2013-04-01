@@ -693,12 +693,8 @@ var Fid = {
 
     // -------------------------------------------------------------------------
     //Funcion usada en los formularios para eliminar archivos de respaldos
-    eliminaArchivo: function() {
-        if(mainFidJs.TS === '') {
-            alert(FidConfig.msgNoTS);
-            return;
-        }
-
+    eliminarArchivo: function() {
+        
         if (confirm(FidConfig.msgConfirmRemoveBackup)) {
 
             var config = {
@@ -724,6 +720,14 @@ var Fid = {
             SubmitForm.submitGenericAjax(config, opts);
         }
     },
+    
+    // -------------------------------------------------------------------------
+    //Funcion usada en los formularios para descargar el archivo de respaldo
+    descargarArchivo: function() {
+        
+        var url = "prontus_form_download.cgi?" + $('#backupDatos').serialize();
+        open(url, 'Descargar respaldo');
+    },
 
     // -------------------------------------------------------------------------
     //Funcion usada en los formularios para abrir el administrador de archivos adjuntos
@@ -732,19 +736,13 @@ var Fid = {
         $.fn.colorbox({
                 open: true,
                 href: url,
-                width: Fid.ancho,
+                width: 1000,
                 height: 600,
                 maxWidth: '98%',
                 maxHeight: '98%',
                 opacity: 0.8,
                 scroll: true,
-                onComplete: function() {
-                    $('#cboxLoadedContent .boton-gris3 a').click(function() {
-                        $.fn.colorbox.close();
-                        return false;
-                    });
-                }
-                // iframe: true,
+                iframe: true
         });
     },
 
