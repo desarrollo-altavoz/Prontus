@@ -139,7 +139,12 @@ var Fid = {
                 done: function (e, data) {
                     var arrResp = [];
                     var response = data.result
-                    if (response != '') {
+                    if (response == '0') {
+                        $('#imagenescargadas').append('<div style="margin-left:10px;margin-top:16px;width:120px;height:135px;overflow:auto;display:inline;float:left">' +
+                                '<div style="color:#FFA500;">Imagen con errores</div>' +
+                                '</div>');
+
+                    } else if (response != '') {
                         arrResp = response.split(",");
                         var idFoto = arrResp[0];
                         var wFoto = arrResp[1];

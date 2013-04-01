@@ -99,7 +99,12 @@ main: {
     my $idFoto = $nomfile . $relpath;
     $idFoto =~ s/[^a-zA-Z0-9]//g;
     my ($msg_size, $wfoto, $hfoto) = &lib_prontus::dev_tam_img($dst_path);
-
+    if($msg_size) {
+        print STDERR "No se pudo obtener las dimensiones de la imagen [$msg_size]\n";
+        print "Content-Type: text/html\n\n";
+        print 0;
+        exit;
+    }
     # Redimencionar imagen si es que supera los limites configurados.
     if ($prontus_varglb::FOTO_MAX_PIXEL ne '') { # si está vacio no se hace nada.
         my ($wmax, $hmax) = split("x", $prontus_varglb::FOTO_MAX_PIXEL);

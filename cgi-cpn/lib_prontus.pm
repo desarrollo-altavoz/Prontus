@@ -4404,7 +4404,7 @@ sub ancho_alto_png {
     return ('', $a<<24|$b<<16|$c<<8|$d, $e<<24|$f<<16|$g<<8|$h);
   };
   close $png;
-  return ('', 0,0);
+  return ('error reading png', 0,0);
 };
 # ---------------------------------------------------------------
 sub ancho_alto_jpg {

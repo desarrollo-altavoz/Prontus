@@ -6067,9 +6067,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Se corrige error en el Upload de Imagenes con drag & drop. La CGI que procesaba, se había borrado.
         - Corrección de codificación en el mensaje de error, cuando la plantilla no existía
+    [mejoras]
+        - Al subir imagenes, si una de las imagenes no es valida, se coloca un pequeño mensaje.
+          Antes, si había error quedaba una foto de 0x0px
     [files]
+        /cgi-bin/prontus_art_upfoto.cgi
         /cgi-bin/prontus_art_upfoto_dd.cgi
         /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
 
 - Transcodificación:
     [bugfixes]
