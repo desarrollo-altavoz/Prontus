@@ -72,6 +72,7 @@ main:{
     &glib_html_02::print_pag_result('Error', $msg_err, 0, "exit=1, ctype=1");
   };
 
+
   &grabar_datos($model_ext, $title_site_name);
 
   print "Location: wizard_show_confirm.cgi\n\n";

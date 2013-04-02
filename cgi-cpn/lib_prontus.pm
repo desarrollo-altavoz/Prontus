@@ -1276,7 +1276,7 @@ sub load_config {
   };
 
 
-  while ($buffer =~ m/\s*FORM\_PLTS\s*=\s*("|')(.*?:.*?)\((.*?)\)("|')/g) {
+  while ($buffer =~ m/\s*FORM\_PLTS\s*=\s*("|')(.+?:.+)\((.+?)\)("|')/g) {
      $clave = $2;
      $valor = $3;
      $prontus_varglb::FORM_PLTS{$clave} = $valor;
@@ -2000,6 +2000,18 @@ sub load_config {
   };
   $prontus_varglb::VTXT_DTD = $vtxt_dtd;
 
+  # Configuracion de la codificacion del archivo de respaldo del prontus form
+  my $form_csv_charset = 'utf-8'; # TRANSITIONAL | STRICT
+  if ($buffer =~ m/\s*FORM_CSV_CHARSET\s*=\s*("|')(.*?)("|')/) {
+    $form_csv_charset = $2;
+    if ($form_csv_charset !~ /^(utf-8|iso-8859-1)$/i) {
+      print STDERR "Error en CFG: seteo de variable FORM_CSV_CHARSET\n";
+      print "Content-Type: text/html\n\n";
+      print "<P>Error en CFG: seteo de variable FORM_CSV_CHARSET contiene un valor no v&aacute;lido.<br>Valores posibles: 'utf-8', 'iso-8859-1'<br>Por omisi&oacute;n es: 'utf-8'";
+      exit;
+    };
+  };
+  $prontus_varglb::FORM_CSV_CHARSET = $form_csv_charset;
 
 #  my $pp;
 #  my $pp_tipo;
@@ -4392,7 +4404,7 @@ sub ancho_alto_png {
     return ('', $a<<24|$b<<16|$c<<8|$d, $e<<24|$f<<16|$g<<8|$h);
   };
   close $png;
-  return ('', 0,0);
+  return ('error reading png', 0,0);
 };
 # ---------------------------------------------------------------
 sub ancho_alto_jpg {

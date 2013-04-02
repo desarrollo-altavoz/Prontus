@@ -6016,7 +6016,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/css/usradmin.css
         /wizard_prontus/prontus_dir/cpan/core/prontus_usr_ficha.html
 
-- Base de Datos
+- Base de Datos:
     [bugfixes]
         - Se corrige error al crear tablas, bajo ciertas circunstancias, no mostraba la creación de tablas
         - Error al contar los registros de la tabla: TAGSART
@@ -6043,4 +6043,119 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/css/olvidopass.css
         /wizard_prontus/prontus_dir/cpan/core/js-local/ChangePass.class.js
         /wizard_prontus/prontus_dir/cpan/core/prontus_olvidopass.html
+
+====================================================================================================
+11.2.61 - 02/04/2013 - CVI/JOR
+====================================================================================================
+
+- Listado de Artículos:
+    [cambios]
+        - Se aumenta el tiempo que dura la Cookie con el estado de la portada, edicion, numero de articulos
+          por pagina, y orden, a 1 año (vale decir, se mantiene aunque se cierre el navegador)
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+
+- Artículos:
+    [bugfixes]
+        - Se valida/evita que el nombre del artículo lleve paréntesis, ya que esos son caracteres reservados.
+        - En caso de que el artículo traiga de antes paréntesis, se evita que la carga de los artículos desde el CFG, falle.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        
+- FID:
+    [bugfixes]
+        - Se corrige error en el Upload de Imagenes con drag & drop. La CGI que procesaba, se había borrado.
+        - Corrección de codificación en el mensaje de error, cuando la plantilla no existía
+    [mejoras]
+        - Al subir imagenes, si una de las imagenes no es valida, se coloca un pequeño mensaje.
+          Antes, si había error quedaba una foto de 0x0px
+    [files]
+        /cgi-bin/prontus_art_upfoto.cgi
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+
+- Transcodificación:
+    [bugfixes]
+        - En algunos servers como VPSLab, el video quedaba con permiso: 600 después de procesarlo.
+    [files]
+        /cgi-cpn/xcoding/qtfaststart.cgi
+
+- Admin de Usuarios:
+    [cambios]
+        - Se cambia gráfica para soportar nombres de portada más largos.
+        - En caso de que el nombre sea muy largo, se pone "..." y se deja con un Tooltip
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+
+- Prontus Form:
+    [mejoras]
+        - Se agrega variable al CFG, para definir la cofificación del archivo de respaldo del Prontus Form
+          Por defecto queda en utf-8 para ser retro compatible.
+        - Producto de lo anterior, ser agrega una CGI para entregar el archivo de respaldo. Esta cgi
+          se encarga de hacer la conversión de codificación según corresponda.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_form_delete.cgi
+        /cgi-cpn/prontus_form_download.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/cfgedit.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_form_list.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_msg.html
+
+- Wizard Prontus:
+    [bugfixes]
+        - En una release anterior, se comenzó a eliminar el archivo: inf.txt. 
+          Se hace rollback, debido a que al navegar por el arbol o refrescar la página de reporte, arroja error
+    [notice]
+        - Se agrega la nueva interface de descarga/administración de modelos en el "Paso 2"
+    [mejoras]
+        - Se actualiza la versión de jquery del Wizard a la 1.7.1 (la misma que usa prontus)
+        - Se agrega la librería validator.js para las validaciones de los pasos
+        - Se crea librería wizard_lib.pm para manejo de funciones comunes
+    [cambios]
+        - Se cambia el botón "Cancelar" por un redirect a /wizard_prontus, en vez del window.close();
+        - Se elimina librería FontSize y se actualizan Botones y Utiles desde el core del Prontus
+        - Se eliminan JS sueltos y se reemplazan por Wizard.class.js
+        - Se hace un orden y reestructuración del html, js, y css
+        - Se cambian los íconos del arbol de directorios del Reporte del Wizard
+    [files]
+        /cgi-cpn/wizard_model_delete.cgi
+        /cgi-cpn/wizard_model_download.cgi
+        /cgi-cpn/wizard_lib.pm
+        /cgi-cpn/wizard_reporte.cgi
+        /cgi-cpn/wizard_show_models.cgi
+        /wizard_prontus/core/ayuda.html
+        /wizard_prontus/core/confirm.html
+        /wizard_prontus/core/models.html
+        /wizard_prontus/core/index.html
+        /wizard_prontus/core/paso1.html
+        /wizard_prontus/core/paso2.html
+        /wizard_prontus/core/reporte.html
+        /wizard_prontus/core/css/estilos.css
+        /wizard_prontus/core/imag/loader/       
+        /wizard_prontus/core/imag/boto/boto_azul2_left.png
+        /wizard_prontus/core/imag/boto/boto_azul2_right.png
+        /wizard_prontus/core/imag/boto/boto_gris3_left.png
+        /wizard_prontus/core/imag/boto/boto_gris3_right.png
+        /wizard_prontus/core/imag/models_download.png
+        /wizard_prontus/core/imag/models_remove.png
+        /wizard_prontus/core/imag/models_upgrade.png
+        /wizard_prontus/core/imag/reporte_file.png
+        /wizard_prontus/core/imag/reporte_folder.png
+        /wizard_prontus/core/imag/reporte_up.png
+        /wizard_prontus/core/js/Botones.class.js
+        /wizard_prontus/core/js/Utiles.class.js
+        /wizard_prontus/core/js/Wizard.class.js
+        /wizard_prontus/core/js/validator.js
+        /wizard_prontus/core/js/jquery/jquery-1.7.1.js
+        /wizard_prontus/core/js/jquery/jquery-1.7.1.min.js
+        /wizard_prontus/core/js/jquery/jquery.js
+        /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox-min.js
+        /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox.js
 

@@ -1,9 +1,0 @@
-# AddType text/html .js
-AddHandler server-parsed .js
-Options +Includes
-
-<Files now.js>
-  Header set Cache-Control: no-cache
-  Header append Cache-Control: max-age=0
-  Header append Cache-Control: no-store
-</Files>

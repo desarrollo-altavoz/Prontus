@@ -1,6 +1,0 @@
-13/05/2011	15:15:37	192.168.13.69	admin/porontus	FailLogin	Referer[http://192.168.6.36/modelo_minimo/cpan/core/prontus_index.html]
-13/05/2011	15:15:41	192.168.13.69	admin	Login	
-13/05/2011	16:56:43	192.168.13.69	admin	Login	
-13/05/2011	16:57:51	192.168.13.69	Proceso Control Fecha	Actualiz. masiva	Articulo	
-13/05/2011	16:59:51	192.168.13.69	admin	Actualizar	Portada	/modelo_minimo/site/edic/base/port/inicio.html
-13/05/2011	17:11:03	192.168.13.69	admin	Actualizar	Portada	/modelo_minimo/site/edic/base/port/_p_footer.html

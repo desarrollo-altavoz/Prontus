@@ -1,61 +1,57 @@
+<!DOCTYPE html>
 <html>
-<head>
-<title>Asistente Prontus: Reporte</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link href="/wizard_prontus/core/css/estilos.css" rel="stylesheet" type="text/css">
-<SCRIPT language="JavaScript">
-<!--
-function devuelve_valor(valor) {
-  parent.opener.aceptavalor(valor);
-  top.window.close();
-}
-// -->
-</SCRIPT>
-</head>
-<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<center>
-<div id="main">
- <div><a href="http://www.prontus.cl" target="_blank"><img src="/wizard_prontus/core/imag/head.gif" border="0"></a></div>
- <div id="content">
-   <div style="float:right;">
-   <input type="button" name="imprimir" value="Imprimir" class="boto" onClick="window.print();">
-   <!--input type="button" name="cerrar" value="Cerrar" class="boto" onClick="window.close();"-->
-   </div>
-   <div class="separa">
-     <h1 style="margin:0 0 5px 0;">Reporte de Instalaci&oacute;n<span class="cel14"></span></h1>
-   <p><b>&iexcl;Felicitaciones!</b><br>
-      Ud. ha finalizado exitosamente la instalación de su Sitio Prontus.<br>
-      Puede comenzar a utilizarlo de inmediato:<br><br>
-      &nbsp;&nbsp;&raquo;&nbsp;<a href="%%lnk_sitio%%" target="_blank">Visualizar sitio generado</a><br>
-      &nbsp;&nbsp;&raquo;&nbsp;<a href="%%lnk_cpan%%" target="_blank">Panel de Control</a> (usuario: <b>admin</b> y contraseña: <b>prontus</b>)<br>
-      <br>
+  <head>
+    <title>Asistente Prontus: Reporte</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="/wizard_prontus/core/css/estilos.css" rel="stylesheet" type="text/css">
+    <script src="/wizard_prontus/core/js/Wizard.class.js" type="text/javaScript"></script>
+  </head>
+  <body>
+    <div id="main">
+      <div class="head">
+        <a href="http://www.prontus.cl" target="_blank"><img src="/wizard_prontus/core/imag/head.gif" width="702" height="52" alt="Logo Prontus"></a>
+      </div>
+      <div id="content">
+        <div style="float:right;">
+          <input type="button" name="imprimir" value="Imprimir" class="boto" onclick="Wizard.imprimirResumen();">
+        </div>
+        <div class="separa">
+          <h1 style="margin:0 0 5px 0;">Reporte de Instalaci&oacute;n<span class="cel14"></span></h1>
+          <p><b>&iexcl;Felicitaciones!</b><br>
+          Ud. ha finalizado exitosamente la instalación de su Sitio Prontus.<br>
+          Puede comenzar a utilizarlo de inmediato:<br><br>
+          &nbsp;&nbsp;&raquo;&nbsp;<a href="%%lnk_sitio%%" target="_blank" class="link-reporte">Visualizar sitio generado</a><br>
+          &nbsp;&nbsp;&raquo;&nbsp;<a href="%%lnk_cpan%%" target="_blank" class="link-reporte">Panel de Control</a> (usuario: <b>admin</b> y contraseña: <b>prontus</b>)<br>
+          <br>
 
-      Si lo prefiere, puede examinar los
-      directorios y archivos generados en la instalación haciendo click sobre cada
-      elemento del árbol desplegado abajo.<br>
-      Si lo desea, puede modificar su Sitio Prontus para agregar nuevas prestaciones o
-      ajustarlo a sus necesidades. Para ello consulte el Manual de Desarrollo Prontus.</p>
- </div>
- <div id="table01">
-  <h3><p>Arbol de directorios instalados:</p></h3>
-  <table width="93%" border="0" cellspacing="2" cellpadding="2" id="tab">
-   <tr>
-    <td align="left" valign="middle">
-     <span class="TEXTsubtitulo"><img src="/wizard_prontus/core/imag/flecha.gif" width="8" height="7"><b>Directorio:</b></span>
-     %%DIR_ACTUAL%%</td>
-   </tr> <!--ATRAS-->
-   <tr>
-     <td align="left" valign="middle">
-      <a href="wizard_reporte.cgi?DIR=%%dir_sup%%&TOPE=%%tope%%"><img src="/wizard_prontus/core/imag/back.gif" width="20" height="22" border="0">
-      <span class="TEXTsubtitulo">&nbsp;Directorio superior</a></span></td>
-   </tr> <!--/ATRAS--> <!--LOOP-->
-   <tr>
-     <td><a href="wizard_reporte.cgi?DIR=%%dir%%&TOPE=%%tope%%"><img src="/wizard_prontus/core/imag/%%icono%%.gif" border="0">&nbsp;%%nomdir%%</a></td>
-   </tr>  <!--/LOOP-->
-  </table>
- </div>
-</div>
-</center>
-<p>&nbsp; </p>
-</body>
+          Si lo prefiere, puede examinar los
+          directorios y archivos generados en la instalación haciendo click sobre cada
+          elemento del árbol desplegado abajo.<br>
+          Si lo desea, puede modificar su Sitio Prontus para agregar nuevas prestaciones o
+          ajustarlo a sus necesidades. Para ello consulte el Manual de Desarrollo Prontus.</p>
+        </div>
+        <div id="table01">
+          <h3><p>Arbol de directorios instalados:</p></h3>
+          <table width="93%" border="0" cellspacing="2" cellpadding="2" id="tab">
+            <tr>
+              <td align="left" valign="middle">
+                <span class="TEXTsubtitulo"><img src="/wizard_prontus/core/imag/flecha.gif" width="8" height="7"><b>Directorio:</b></span>
+                %%DIR_ACTUAL%%
+              </td>
+            </tr> <!--ATRAS-->
+            <tr>
+              <td class="item">
+                <img src="/wizard_prontus/core/imag/reporte_up.png" width="16" height="16" border="0">&nbsp;
+                <a href="wizard_reporte.cgi?DIR=%%dir_sup%%&TOPE=%%tope%%" class="TEXTsubtitulo">Directorio superior</a>
+              </td>
+            </tr> <!--/ATRAS--> <!--LOOP-->
+            <tr>
+              <td class="item"><img src="/wizard_prontus/core/imag/reporte_%%icono%%.png" width="16" height="16"  border="0">&nbsp; <a href="wizard_reporte.cgi?DIR=%%dir%%&TOPE=%%tope%%">%%nomdir%%</a></td>
+            </tr>  <!--/LOOP-->
+          </table>
+        </div>
+      </div>
+      <p>&nbsp; </p>
+    </div>
+  </body>
 </html>

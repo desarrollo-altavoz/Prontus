@@ -155,7 +155,7 @@ main:{
     }
 
     # Se chequea existencia del archivo
-    my $path_new_file = "$prontus_varglb::DIR_SERVER$FORM{'curr_dir'}/$FORM{'NOM_NEW_FILE'}";
+    $path_new_file = "$prontus_varglb::DIR_SERVER$FORM{'curr_dir'}/$FORM{'NOM_NEW_FILE'}";
     if (-f $path_new_file) {
       &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un archivo existente, especifique uno distinto por favor.", 'exit=1,ctype=1');
 
@@ -163,7 +163,7 @@ main:{
       &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un directorio existente, especifique uno distinto por favor.", 'exit=1,ctype=1');
     }
 
-    my $path_new_file = "$prontus_varglb::DIR_SERVER$FORM{'curr_dir'}/$FORM{'NOM_NEW_FILE'}";
+    $path_new_file = "$prontus_varglb::DIR_SERVER$FORM{'curr_dir'}/$FORM{'NOM_NEW_FILE'}";
     &glib_fildir_02::write_file($path_new_file, 'Ingrese el texto del archivo.');
 
     #$path_new_file =~ s/$prontus_varglb::DIR_SERVER//;

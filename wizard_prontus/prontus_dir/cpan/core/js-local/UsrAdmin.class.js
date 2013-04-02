@@ -8,7 +8,7 @@ var UsrAdmin = {
     widthAdmin: 735,
     heightAdmin: 390,
     idAdmin: 1,
-
+    
     // -------------------------------------------------------------------------
     cargarFicha: function(id) {
         var url;
@@ -35,6 +35,30 @@ var UsrAdmin = {
             maxHeight: '90%',
             opacity: 0.8
             // iframe: true,
+        });
+    },
+    // -------------------------------------------------------------------------
+    initFicha: function() {
+        
+        $('.list input[type="checkbox"]').bind('click', function() {
+            UsrAdmin.toggleChecked($(this));
+        });
+        $(document).tooltip({
+            position: {
+                my: "center center", 
+                at: "center top-20",
+                within: '#content-list',
+                collision: 'flipfit'
+            },
+            
+            show: {effect: "fadeIn", duration: 200 },
+            hide: {effect: "hide"},
+            items: ".itemlistado label",
+            content: function() {
+                var title = $(this).attr('title');
+                title = "<span class=\"tooltip-ficha\">"+title+"</span>";
+                return title;
+            }
         });
     },
     // -------------------------------------------------------------------------

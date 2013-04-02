@@ -382,7 +382,7 @@ sub sys_read_file {
     return unless defined wantarray ;
 
 # handle list context
-    return split m|?<$/|g, ${$buf_ref} if wantarray ;
+    return split m|?<$/|, ${$buf_ref} if wantarray ;
 
 # handle scalar context
     return ${$buf_ref} ;

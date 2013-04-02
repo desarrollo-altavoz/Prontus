@@ -99,6 +99,7 @@ main: {
     #$hash_defaultvars{'var'}{'VERIFICAR_INSTALACION'} = 'VERIFICAR_INSTALACION;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'VTXT_PASTE_NEWLINES_AS_P'} = 'VTXT_PASTE_NEWLINES_AS_P;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'VTXT_DTD'} = 'VTXT_DTD;(STRICT|TRANSITIONAL);STRICT;U';
+    $hash_defaultvars{'var'}{'FORM_CSV_CHARSET'} = 'FORM_CSV_CHARSET;(utf-8|iso-8859-1);utf-8;U';
     $hash_defaultvars{'var'}{'VARNISH_SERVER_NAME'} = 'VARNISH_SERVER_NAME;(\w+);;M';
     $hash_defaultvars{'var'}{'POST_PROCESO'} = 'POST_PROCESO;(\w+);;U';
     $hash_defaultvars{'var'}{'MULTIVISTA'} = 'MULTIVISTAS;(\w+);;M';
@@ -491,25 +492,32 @@ sub validarArt {
     my ($item) = shift;
 
     # validar existencia de fids y plantillas.
-    $item =~ /(.*?):(.*?)\((.*?)\)/;
-
+    $item =~ /(.+?):(.+)\((.+?)\)/;
+    my $fid = $1;
+    my $nom = $2;
+    my $plts = $3;
+    
+    print STDERR "$fid, $nom, $plts\n";
+    
     my $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
-    if (! -f $dir_fid . $1 . '.html') {
-        &glib_html_02::print_json_result(0, "No se pudo localizar el FID [$prontus_varglb::PRONTUS_ID/cpan/fid/$1.html].", 'exit=1,ctype=1');
+    if (! -f $dir_fid . $fid . '.html') {
+        &glib_html_02::print_json_result(0, "No se pudo localizar el FID [$prontus_varglb::PRONTUS_ID/cpan/fid/$fid.html].", 'exit=1,ctype=1');
     };
 
     # Validar que venga el nombre del FID.
-    if ($2 eq '') {
-        &glib_html_02::print_json_result(0, "Debe ingresar el Nombre para el FID [$1].", 'exit=1,ctype=1');
-    };
+    if ($nom eq '') {
+        &glib_html_02::print_json_result(0, "Debe ingresar el Nombre para el FID [$fid].", 'exit=1,ctype=1');
+    } elsif ($nom =~ /\(|\)/) {
+        &glib_html_02::print_json_result(0, "El nombre del artículo no puede contener paréntesis [$nom].", 'exit=1,ctype=1');
+    }
 
     # Validar que vengan alguna plantilla.
-    if ($3 eq '') {
-        &glib_html_02::print_json_result(0, "Debe seleccionar al menos una plantilla para el FID [$1].", 'exit=1,ctype=1');
+    if ($plts eq '') {
+        &glib_html_02::print_json_result(0, "Debe seleccionar al menos una plantilla para el FID [$fid].", 'exit=1,ctype=1');
     };
 
     my $dir_plantilla = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/plantillas/artic/fecha/pags/';
-    my @plantillas = split(/;/, $3);
+    my @plantillas = split(/;/, $plts);
     foreach my $plt (@plantillas) {
         if (! -f $dir_plantilla . $plt) {
             &glib_html_02::print_json_result(0, "No se pudo localizar la Plantilla de Artículo [$prontus_varglb::PRONTUS_ID/plantillas/artic/fecha/pags/$plt]", 'exit=1,ctype=1');

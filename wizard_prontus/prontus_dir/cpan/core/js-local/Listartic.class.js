@@ -182,10 +182,9 @@ var Listartic = {
             if($(Listartic.idUlPub + ' li[title="'+titlepub+'"]').size() >= 1) {
                 return;
             }
-            //theLi.clone().prependTo('#area-'+Listartic.areaActiva).fadeIn().addClass('moved').height(Listartic.altoFila);
             var cloned = theLi.clone().prependTo('#area-'+Listartic.areaActiva).fadeIn().addClass('moved');
             Listartic.procesarListado(Listartic.idUlPub, 'li');
-            //LoadDiv.refrescaListadoNoPub();
+            
             Preview.startPreview();
             Admin.displayMessage(Listartic.msgChangePort, 'alert');
             Listartic.instalaPortModProtector();
@@ -204,15 +203,10 @@ var Listartic = {
             $(this).parents('.fila1').parent().fadeOut('slow', function() {
                 var titlenopub = $(this).attr('title');
                 $(Listartic.idUlNoPub + ' li[title="'+titlenopub+'"]').fadeOut().remove();
-                //$(this).prependTo(Listartic.idUlNoPub).fadeIn().addClass('moved').height(Listartic.altoFila);
                 $(this).prependTo(Listartic.idUlNoPub).fadeIn().addClass('moved');
-                //Listartic.intercalaGris(Listartic.idUlPub);
-                //Listartic.intercalaGris(Listartic.idUlNoPub);
                 Preview.startPreview();
                 Admin.displayMessage(Listartic.msgChangePort, 'alert');
                 Listartic.instalaPortModProtector();
-                //Listartic.procesarCorruptos(Listartic.idUlNoPub, 'li');
-                //LoadDiv.refrescaListadoNoPub();
                 var item = $(this).after();
                 Listartic.quitarVoBo(item);
             });
@@ -238,43 +232,24 @@ var Listartic = {
 
     // -------------------------------------------------------------------------
     instalaTooltipPublic: function() {
-		
-		$(document).tooltip({
-			position: {
-				my: "right middle", 
-				at: "left-15 middle"
-			},
-			show: {effect: "fadeIn", duration: 200 },
-			hide: {effect: "hide" },
-			items: ".iconos img.artic_pub",
-			content: function() {
-				//alert($(this).parent().find('.tooltip-ini-pub').html());
-				return $(this).parent().find('.tooltip-ini').html();
-			}
-		});
-		/**
-        $('.iconos img.artic_pub').live('mouseover', function() {
-            var thishref = $(this).attr('src');
-            if(thishref.indexOf('port_artic_si') > 0) {
-                $('#tooltip-public .middle').empty();
-                $(this).parent().find('.tooltip-ini-pub').clone().appendTo('#tooltip-public .middle');
-                var newoffset = $(this).parent().offset();
-                //alert('top:'+newoffset.top+', left:'+newoffset.left);
-                newoffset.left = newoffset.left - 300;
-                newoffset.top = newoffset.top - 10;
-                $('#tooltip-public').show().offset({top:newoffset.top, left:newoffset.left});
-            };
-        }).live('mouseout', function() {
-            //$('#tooltip-public').hide().empty().offset({top:0, left:0});
-            $('#tooltip-public').offset({top:0, left:0}).hide();
+        
+        $(document).tooltip({
+            position: {
+                my: "right middle", 
+                at: "left-15 middle"
+            },
+            show: {effect: "fadeIn", duration: 200 },
+            hide: {effect: "hide" },
+            items: ".iconos img.artic_pub",
+            content: function() {
+                return $(this).parent().find('.tooltip-ini').html();
+            }
         });
-        * **/
     },
 
     // -------------------------------------------------------------------------
     instalaDragAndDrop: function(selector) {
         $(selector).sortable({
-            // items: 'li:not(".disabled")',
             cancel: '.disabled, ._artic_sin_file, .editable_list0',
             connectWith: '.area-list',
             dropOnEmpty: true,
@@ -339,7 +314,6 @@ var Listartic = {
                     }
                     var theId = $(this).attr('title');
                     var theTS = theId.substr(theId.length - 14);
-                    //alert(theTS);
                     // Para ocultar los ya publicados
                     $(Listartic.idUlNoPub + ' li[title="artic'+theTS+'"]').addClass('disabled');
                 });
@@ -356,7 +330,6 @@ var Listartic = {
                     if($(this).find(Listartic.controlClass + ' input.area').size() > 0) {
                         $(this).find('input.area').val(area);
                         $(this).find('input.orden').val(orden);
-                        //alert($(this).find('input[name="_orden_'+theTS+'"]').val());
                     } else {
                         var controls = Listartic.generaControles(theTS, area, orden);
                         $(this).find(Listartic.controlClass).html(controls);
@@ -374,13 +347,11 @@ var Listartic = {
         };
         Listartic.procesarCorruptos(listado, elementos);
         Listartic.limpiarControles();
-        //Listartic.intercalaGris(listado);
-        //$(".area-list li.disabled .fila1, .area-list li._artic_sin_file .fila1").css('background-color', '#ffffea');
     },
 
     // -------------------------------------------------------------------------
     procesarCorruptos: function(listado, elementos) {
-		$(listado).each(function() {
+        $(listado).each(function() {
             $(this).find(elementos + '._artic_sin_file').each(function() {
                 // Se ocultan los datos que no se necesitan
                 $(this).find('.status').remove();
@@ -393,7 +364,6 @@ var Listartic = {
                 $(this).find('.datos').html('');
                 $(this).find('.datos').append('<span class="msg-pub">Para eliminar de la portada, debe guardar ésta</span>');
                 $(this).find('.datos').append('<span class="msg-nopub">Para eliminar del listado, se debe "Regenerar tabla de Artículos"</span>');
-                // $(this).find('.titulo-left').css('padding-top', '5px');
                 // Se agrega campo oculto para que el Prontus lo borre
                 $(this).find('.controles').html('<input type="hidden" name="_corrupt_'+ts+'" value="1" class="area" />');
             });
@@ -440,7 +410,6 @@ var Listartic = {
             });
             Listartic.TOTAL_PORTS_values = values;
             Listartic.TOTAL_PORTS_labels = labels;
-            //alert(values.length + ', ' + values[1]);
         }
     },
 
@@ -510,7 +479,6 @@ var Listartic = {
         return value_selected;
     },
 
-
     // -------------------------------------------------------------------------
     cargaEstado: function() {
 
@@ -545,14 +513,14 @@ var Listartic = {
     guardaEstado: function() {
 
         var portada = $('#cmb_port').val();
-        Cookies.createCookie('port', portada);
+        Cookies.createCookie('port', portada, 365);
 
         var edicion = $('#cmb_edic').val();
-        Cookies.createCookie('edic', edicion);
+        Cookies.createCookie('edic', edicion, 365);
 
-        Cookies.createCookie('itemsPerPage', Listartic.itemsPerPage);
+        Cookies.createCookie('itemsPerPage', Listartic.itemsPerPage, 365);
 
-        Cookies.createCookie('ordenLista', Listartic.ordenLista);
+        Cookies.createCookie('ordenLista', Listartic.ordenLista, 365);
     },
 
     // -------------------------------------------------------------------------
@@ -725,18 +693,14 @@ var Listartic = {
         $('.col470.aleft').find('.contenido .titulo').hover(
             function () { // in
                 if (!$(this).hasClass('nohover')) {
-                    //~ $(this).find('.status').hide();
                     $(this).find('.autoinc').hide();
-                    //~ $(this).find('.vobo').hide();
                     $(this).find('.botones').show();
                     $(this).find('.vobo').attr('style', 'float: right; margin: 2px 0px 0 8px;');
                 }
             },
             function () { // out
                 if (!$(this).hasClass('nohover')) {
-                    //~ $(this).find('.status').show();
                     $(this).find('.autoinc').show();
-                    //~ $(this).find('.vobo').show();
                     $(this).find('.botones').hide();
                     $(this).find('.vobo').attr('style', '');
                 }

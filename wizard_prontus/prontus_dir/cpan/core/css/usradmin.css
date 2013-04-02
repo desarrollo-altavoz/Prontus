@@ -6,9 +6,9 @@
 .usr_ficha .table_top td select {width: 130px; font-size: 14px;}
 .usr_ficha .table_top td input {font-size: 14px;}
 .usr_ficha .ayuda {color:#888888;}
-.usr_ficha tr.separador td {border-top:1px solid #E6E6E6;}
+.usr_ficha tr.separador td {border-top:1px solid #E6E6E6; margin-top:10px;}
 
-.usr_ficha .list {width:180px;}
+.usr_ficha .list {width:180px; padding-bottom:10px;}
 .usr_ficha .list select {width:170px; height:100px;}
 .usr_ficha .rotulo {width:685px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot685_azul.gif") no-repeat left top;}
 .usr_ficha .rotulo .titulo {width:200px; float:left; font-size:15px; color:#FFFFFF; font-weight:bold; float:left; margin:0 0 0 10px; padding:5px 0 0 0;}
@@ -17,7 +17,9 @@
 .usr_ficha .botones a.button span {background: url("../imag/boto/boto_gris3_left.gif") no-repeat; display:block; line-height:17px; padding:3px 0 3px 10px;}
 .usr_ficha .botones a.button:hover {background: url("../imag/boto/boto_azul2_right.jpg") no-repeat scroll top right; display:block; float:left; height:26px; margin:0 3px 0 0; padding:0 10px 3px 0; color:#FFFFFF; font-size:12px; font-weight:bold;}
 .usr_ficha .botones a.button:hover span {background: url("../imag/boto/boto_azul2_left.jpg") no-repeat;}
+
 .top-titulo960 .boton-gris3 {margin:5px 0 0 10px;}
+
 .boton-gris3 a.button {background: url("../imag/boto/boto_gris3_right.gif") no-repeat scroll top right;  display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#333333; font-size:11px; font-weight:bold;}
 .boton-gris3 a.button span {background: url("../imag/boto/boto_gris3_left.gif") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
 .boton-gris3 a.button:hover {background: url("../imag/boto/boto_azul2_right.jpg") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
@@ -25,7 +27,9 @@
 .boton-gris3 a.button.selected {background: url("../imag/boto/boto_azul2_right.jpg") no-repeat scroll top right; display:block; float:left; height:21px; margin:0 3px 0 0; padding:0 10px 0 0; color:#FFFFFF; font-size:11px; font-weight:bold;}
 .boton-gris3 a.button.selected span {background: url("../imag/boto/boto_azul2_left.jpg") no-repeat; display:block; line-height:21px; padding:0 0 0 10px;}
 
-.usr_ficha .itemlistado {float: left; width: 150px; padding-bottom: 6px; font-weight: normal; font-size: 13px;}
-.usr_ficha .itemlistado input {float: left;}
+.usr_ficha .itemlistado {float:left; width: 210px; overflow:hidden; padding:2px 2px 6px; font-weight: normal; font-size: 13px; background-color: #FAFAFA;}
+.usr_ficha .itemlistado input {vertical-align:middle;}
 .usr_ficha .itemlistado .checked {color: #003EA8;}
-.usr_ficha .itemlistado label {float: left; padding-left: 5px;}
+.usr_ficha .itemlistado label {vertical-align:middle; padding-left:5px; /*overflow:hidden;*/ /*position:absolute;*/ background-color: #FAFAFA; padding:2px 0;}
+
+.ui-tooltip-content .tooltip-ficha {font-size:12px;}

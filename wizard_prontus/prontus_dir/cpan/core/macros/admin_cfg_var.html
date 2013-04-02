@@ -245,13 +245,30 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
+                                            FORM_CSV_CHARSET<br>
+                                            <span class="ayuda">
+                                                Define el charset del archivo de Respaldo del Prontus Form.<br/>
+                                                Si al importar dicho archivo, aparecen caracteres extraños, se recomienda probar otro valor.</span>
+                                        </td>
+                                        <td>
+                                            <select name="FORM_CSV_CHARSET">
+                                                <option value="utf-8"%%FORM_CSV_CHARSET_1%%>UTF-8</option>
+                                                <option value="iso-8859-1"%%FORM_CSV_CHARSET_2%%>ISO-8859-1</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
                                             POST_PROCESO de borrado de artículos<br>
                                             <span class="ayuda">
                                                 El proceso o script que indique, se ejecutará cada vez que se borre un artículo.<br/>
                                                 Para que sea un script válido, debe ubicarse en el mismo dir. de CGIs de Prontus, o a lo más, un nivel hacia arriba.</span>
+
+                                                </span>
                                         </td>
                                         <td>
                                             <input type="text" name="POST_PROCESO" value="%%POST_PROCESO%%" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+
                                         </td>
                                     </tr>
                                     <tr>

@@ -55,6 +55,11 @@
             if (pa.$('#colorbox').length > 0) {
                 // Es colorbox, cerrarlo.
                 pa.$.fn.colorbox.close();
+                
+            } else if ($('#colorbox').length > 0) {
+                // Es colorbox inline, cerrarlo.
+                $.fn.colorbox.close();
+                
             } else {
                 window.close();
                 if (opener != null) {

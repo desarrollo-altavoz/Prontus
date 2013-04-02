@@ -1,3 +1,4 @@
+
 <div class="usr_ficha">
   <div class="rotulo">
       <div class="titulo">Ficha de Usuario</div>
@@ -43,32 +44,44 @@
         </tr>
       </table>
       <!--LISTAS-->
-      <table width="100%">
-        <tr>
-          <td width="185">&nbsp;</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td colspan="4" class="ayuda">
-            Seleccione las portadas y artículos asociados a este usuario:
-          </td>
-        </tr>
-        <tr>
-          <td class="name-field">* Tipos de art&iacute;culos: </td>
-          <td class="list" colspan="3">
-            %%Lst_ARTDISP%%
-          </td>
-        </tr>
-        <tr class="separador">
-          <td class="name-field">* Portadas:</td>
-          <td class="list" colspan="3">
-            %%Lst_PORTDISP%%
-          </td>
-        </tr>
-      </table>
-      <!--/LISTAS-->
+      <div id="content-list">
+        <table width="100%">
+          <tr>
+            <td colspan="4" class="ayuda">
+              Seleccione las portadas y artículos asociados a este usuario:
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" class="name-field">
+              * Tipos de art&iacute;culos:
+            </td>
+          </tr>
+          <tr>
+            <td class="list" colspan="4">
+              %%loop_artics%%<div class="itemlistado">
+                <input type="checkbox" value="%%clave%%" name="arts[]" id="%%clave%%" %%checked%% />
+                <label for="%%clave%%" %%label_class%% style="width:180px;" title="%%val_display%%">%%val_display_short%%</label>
+              </div>
+              %%/loop_artics%%
+            </td>
+          </tr>
+          <tr class="separador">
+            <td colspan="4" class="name-field">
+              * Portadas:
+            </td>
+          </tr>
+          <tr>
+            <td class="list" colspan="4">
+              %%loop_ports%%<div class="itemlistado">
+                <input type="checkbox" value="%%clave%%" name="ports[]" id="%%clave%%" %%checked%% />
+                <label for="%%clave%%" %%label_class%% style="width:180px;" title="%%val_display%%">%%val_display_short%%</label>
+              </div>
+              %%/loop_ports%%
+            </td>
+          </tr>
+        </table>
+        <!--/LISTAS-->
+      </div>
       <table width="100%">
         <tr>
           <td>
@@ -87,7 +100,15 @@
   </div>
 </div>
 <script type="text/javascript">
-    $('input[type="checkbox"]').click(function () {
-        UsrAdmin.toggleChecked($(this));
-    });
+    UsrAdmin.initFicha();
+        
+        
+/**        
+        $('.list .itemlistado').bind('mouseover', function() {
+            $(this).find('label').css('width', '');
+        });
+        $('.list .itemlistado').bind('mouseout', function() {
+            $(this).find('label').css('width', '180px');
+        });
+**/
 </script>
