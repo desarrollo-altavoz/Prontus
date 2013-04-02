@@ -1,4 +1,29 @@
 ====================================================================================================
+11.2.61 - 02/04/2013
+====================================================================================================
+- notice: Se agrega la nueva interface de descarga/administración de modelos en el "Paso 2", del Wizard
+- bugfix: Se valida/evita que el nombre del artículo lleve paréntesis, ya que esos son caracteres reservados.
+- bugfix: En caso de que el artículo traiga de antes paréntesis, se evita que la carga de los artículos desde el CFG, falle.
+- bugfix: Se corrige error en el Upload de Imagenes con drag & drop. La CGI que procesaba, se había borrado.
+- bugfix: Corrección de codificación en el mensaje de error, cuando la plantilla no existía
+- bugfix: En algunos servers como VPSLab, el video quedaba con permiso: 600 después de procesarlo.
+- bugfix: Ya no se elimina el archivo: inf.txt del Wizard. Se deja como estaba, por error al navegar por el arbol
+- improvement: Al subir imagenes, si una de las imagenes no es valida, se coloca un pequeño mensaje.
+- improvement: Se agrega variable al CFG, para definir la cofificación del archivo de respaldo del Prontus Form
+- improvement: Producto de lo anterior, ser agrega una CGI para entregar el archivo de respaldo.
+- improvement: Se actualiza la versión de jquery del Wizard a la 1.7.1 (la misma que usa prontus)
+- improvement: Se agrega la librería validator.js para las validaciones de los pasos en el Wizard
+- improvement: Se crea librería wizard_lib.pm para manejo de funciones comunes del Wizard
+- changes: Se aumenta el tiempo que dura la Cookie con el estado de la portada, edicion, etc a 1 año
+- changes: Se cambia gráfica para soportar nombres de portada más largos en el Admin de usuario
+- changes: En caso de que el nombre sea muy largo, se pone "..." y se deja con un Tooltip
+- changes: Se cambia el botón "Cancelar" por un redirect a /wizard_prontus, en vez del window.close();
+- changes: Se elimina librería FontSize y se actualizan Botones y Utiles desde el core del Prontus
+- changes: Se eliminan JS sueltos y se reemplazan por Wizard.class.js
+- changes: Se hace un orden y reestructuración del html, js, y css del Wizard
+- changes: Se cambian los íconos del arbol de directorios del Reporte del Wizard
+
+====================================================================================================
 11.2.60 - 05/03/2013
 ====================================================================================================
 - bugfix: Se agrega la el meta tag de codificación utf8 a los logs de procesamiento.
