@@ -231,6 +231,8 @@ sub exec_postproceso {
         $buffer =~ s/\r/\n/sg;
     };
 
+    my $dir_macros = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/macros";
+    $buffer = &lib_prontus::add_macros($buffer, $dir_macros);
 
     my ($post_proceso, $postProcesoLista);
 

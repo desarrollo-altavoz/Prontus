@@ -6159,3 +6159,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox-min.js
         /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox.js
 
+====================================================================================================
+11.2.62 - 10/04/2013 - CVI
+====================================================================================================
+- Post Procesos:
+    [bugfixes]
+        - Al leer los postprocesos de portada, se parsean la macros antes, para permitir definir 
+          Post Procesos dentro de las macros
+    [files]
+        /cgi-cpn/prontus_art_public.cgi
+        /cgi-cpn/prontus_dd_public.cgi
