@@ -14,6 +14,8 @@ package lib_form;
 $Mail::Sender::NO_X_MAILER = 1; # Elimina copyrights.
 $SERVER_SMTP;  # Servidor SMTP.
 
+%MULTIVISTAS;
+
 # ------------------------------------------------------------------------- #
 # Envia un mensaje de correo electronico.
 # &envia_mail($to,$from,$subj,$body,$filename,$filedata)

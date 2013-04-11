@@ -138,8 +138,10 @@
 BEGIN {
     require 'dir_cgi.pm';
     my ($ROOTDIR) = $ENV{'DOCUMENT_ROOT'};  # Desde el web.
+    #~ $ROOTDIR = '/var/www/prontus_development' unless($ROOTDIR);
     $ROOTDIR .= '/' . $DIR_CGI_CPAN;
     unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
+
 };
 
 # Captura STDERR
@@ -205,13 +207,14 @@ $MSGS{'out_of_service'} = 'Sistema fuera de servicio. Intente otra vez m&aacute;
 $MSGS{'required_data'} = 'Este dato es obligatorio:';
 $MSGS{'wrong_data'} = 'Este dato es incorrecto:';
 $MSGS{'wrong_captcha'} = 'El c&oacute;digo de validaci&oacute;n ingresado no es v&aacute;lido';
+$MSGS{'wrong_vista'} = 'La vista ingresada no es v&aacute;lida: ';
 
 #~ &lib_form::max_running(5); # Soporta un maximo de 5 copias corriendo.
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(5)) {
     &aborta("Error: Servidor ocupado. Intente otra vez m&aacute;s tarde."); # 1.3.1 # 1.10
 };
-    
+
 # Variables globales.
 my $ROOTDIR = $prontus_varglb::DIR_SERVER; # 1.4
 
@@ -249,7 +252,7 @@ main: {
 # Envia mails y guarda datos si es pertinente.
 sub data_management {
     my($body,$data,$backupdir,$backupdata,$backupheaders,$buffer);
-    my ($to,$from,$subj,$body,$filename,$filedata,$fecha,$hora,$ip);
+    my ($to,$from,$subj,$filename,$filedata,$fecha,$hora,$ip);
     # my (@datos) = &glib_cgi_04::param();
     my ($result);
     my (%files);
@@ -325,7 +328,7 @@ sub data_management {
         $from = $PRONTUS_VARS{'form_from'};
     };
     $subj = $PRONTUS_VARS{'form_subject'.$VISTAVAR};
-    # 1.1    
+    # 1.1
     $subj = &procesaIFs($subj,1);
     foreach my $key (@DATOS) {
         # Elimina espacios para que no molesten.
@@ -507,6 +510,19 @@ sub valida_data {
     };
     $lib_form::SERVER_SMTP = $server_smtp;
 
+    # Se aprovecha de leer las vistas
+    while ($buffer =~ m/\s*MULTIVISTA\s*=\s*("|')(.+?)("|')/g) {
+        my $clave = $2;
+        $lib_form::MULTIVISTAS{$clave} = 1;
+    };
+
+    # Se valida el campo: _form_vista
+    my $FORM_VISTA = &glib_cgi_04::param('_form_vista');
+    if($FORM_VISTA ne '' && $lib_form::MULTIVISTAS{$FORM_VISTA} != 1) {
+        $MSGS{$FORM_VISTA} = &glib_html_02::text2html($FORM_VISTA) unless($MSGS{$FORM_VISTA});
+        &salida($MSGS{'wrong_vista'} . ' ' . $MSGS{$FORM_VISTA}, $PRONTUS_VARS{'form_msg_error'}, $TMP_ERROR);
+    };
+
     # 1.9
     # Chequea Captcha si es que es requerido
     if($PRONTUS_VARS{'chk_form_captcha_enable'} ne '') {
@@ -526,12 +542,55 @@ sub valida_data {
     };
 
     # Chequea campos requeridos.
-    foreach $key (keys %PRONTUS_VARS) {
-        if ($key =~ /chk_form_required_(\w+)/) {
+    if($PRONTUS_VARS{'chk_form_multivista_strict'}) {
+        print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
+        
+        print STDERR "Vistas: \n";
+        foreach my $v (keys %lib_form::MULTIVISTAS) {
+            print STDERR "[$v]\n";
+        }
+        
+        foreach $key (keys %PRONTUS_VARS) {
+            next unless($key =~ /chk_form_required_(\w+)/);
+            
             $nombre = $1;
-            $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
-            if (&glib_cgi_04::param($nombre) eq '') {
-                &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+            print STDERR "check encontrado: [$key]\n";
+            print STDERR "vistavar: [$VISTAVAR]\n";
+            print STDERR "nombre: [$nombre]\n";
+            
+            # Estamos en una vista, por lo tanto se valida sólo si el nombre termina en esa vista
+            if($VISTAVAR) {
+                
+                if($nombre =~ /${VISTAVAR}$/) {
+                    $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
+                    if (&glib_cgi_04::param($nombre) eq '') {
+                        &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                    };
+                };
+            
+            # Si no viene la vista no puede terminar en ninguna de las vistas
+            } elsif($nombre =~ /_([^_]+?)$/) {
+                my $posiblevista = $1;
+                print STDERR "posiblevista: $posiblevista\n";
+                print STDERR "validando: $prontus_varglb::MULTIVISTAS{$posiblevista}\n";
+                
+                if(! $lib_form::MULTIVISTAS{$posiblevista}) {
+                    $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
+                    if (&glib_cgi_04::param($nombre) eq '') {
+                        &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                    };
+                };
+            };
+        };
+
+    } else {
+        foreach $key (keys %PRONTUS_VARS) {
+            if ($key =~ /chk_form_required_(\w+)/) {
+                $nombre = $1;
+                $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
+                if (&glib_cgi_04::param($nombre) eq '') {
+                    &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                };
             };
         };
     };
