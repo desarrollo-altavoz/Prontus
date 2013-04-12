@@ -6159,3 +6159,35 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox-min.js
         /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox.js
 
+====================================================================================================
+11.2.62 - 12/04/2013 - CVI
+====================================================================================================
+- Post Procesos:
+    [bugfixes]
+        - Al leer los postprocesos de portada, se parsean la macros antes, para permitir definir 
+          Post Procesos dentro de las macros
+    [files]
+        /cgi-cpn/prontus_art_public.cgi
+        /cgi-cpn/prontus_dd_public.cgi
+
+- Prontus Form:
+    [bugfixes]
+        - Se mejora la validación de los campos chk_form_required_<campo> cuando es multivista
+          Se dejan 2 modos, el normal que funciona igual como ahora.
+          Y un modo especial para las vistas en idiomas que tienen chk_form_required independientes 
+          para cada vista. En este caso, se debe agregar al FID un campo llamado: chk_form_multivista_strict
+          Ejemplo:
+          <input type="hidden" name="chk_form_multivista_strict" id="chk_form_multivista_strict" value="si" >
+          Al agregar dicho campo, si se está en la vista normal, no se validarán los campos que terminen en alguna vista.
+          Si se está en la vista normal, no se validarán los campos que no terminen con dicha vista.
+        - Se valida que el campo: _form_vista traiga el nombre de una vista válida definida en el CFG (o bien vacío)
+        - Producto de lo anterior, se crea el mensage: MSG ->  wrong_vista que puede ser re-definido en la plantilla
+    [mejoras]
+        - La CGI que descarga el archivo de respaldo de datos, ya no entrega el CSV, sino que arma un CSV nuevo en base
+          a los archivos JSON que se han creado, de esta forma los datos no se descuadran. 
+          De todas formas se deja el CSV antiguo por compatibilidad.
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/lib_form.pm
+        /cgi-cpn/prontus_form_download.cgi
+        
