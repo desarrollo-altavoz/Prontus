@@ -6160,7 +6160,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/core/js/jquery/plugins/colorbox/jquery.colorbox.js
 
 ====================================================================================================
-11.2.62 - 11/04/2013 - CVI
+11.2.62 - 12/04/2013 - CVI
 ====================================================================================================
 - Post Procesos:
     [bugfixes]
@@ -6185,7 +6185,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - La CGI que descarga el archivo de respaldo de datos, ya no entrega el CSV, sino que arma un CSV nuevo en base
           a los archivos JSON que se han creado, de esta forma los datos no se descuadran. 
-          De todas formas se deja el CSV antiguo por compatibilidad
+          De todas formas se deja el CSV antiguo por compatibilidad.
     [files]
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/lib_form.pm

@@ -1,4 +1,13 @@
 ====================================================================================================
+11.2.62 - 12/04/2013
+====================================================================================================
+- bugfix: Al leer los postprocesos de portada, se parsean la macros antes. Así se puede definir Post Procesos en las macros
+- bugfix: Se mejora la validación de los campos chk_form_required_<campo> cuando es multivista en prontus form
+- bugfix: En prontus form, se valida que el campo: _form_vista traiga el nombre de una vista válida definida en el CFG (o bien vacío)
+- improvement: Producto de lo anterior, se crea el mensage: MSG ->  wrong_vista que puede ser re-definido en la plantilla
+- improvement: La CGI que descarga el archivo de respaldo de datos del prontus form, arma un CSV nuevo en base a los archivos JSON
+          
+====================================================================================================
 11.2.61 - 02/04/2013
 ====================================================================================================
 - notice: Se agrega la nueva interface de descarga/administración de modelos en el "Paso 2", del Wizard
