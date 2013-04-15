@@ -1259,6 +1259,15 @@ sub genera_filtros_taxports {
                 };
             };
         };
+        
+    } else {
+        if($fid eq '') {
+            $filtros = "(";
+            $filtros .= "ART_IDSECC1 <> \"\"";
+            $filtros .= " or ART_IDSECC2 <> \"\"" if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^(2|3)$/);
+            $filtros .= " or ART_IDSECC3 <> \"\"" if ($prontus_varglb::TAXONOMIA_NIVELES eq '3');
+            $filtros .= ")";
+        };
     };
 
     if ($fid) {

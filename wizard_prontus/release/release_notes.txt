@@ -6190,9 +6190,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/lib_form.pm
         /cgi-cpn/prontus_form_download.cgi
-        
+
+
 ====================================================================================================
-11.2.63 - 15/04/2013 - JOR
+11.2.63 - 15/04/2013 - CVI
 ====================================================================================================
 - Prontus Functions
     [bugfixes]
@@ -6201,4 +6202,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
-
+- Portadas Taxonómicas
+    [cambios]
+        - Al generar los filtros de "///" se dejan fuera los que no tengan sección, así se evita 
+          que aparezcan aquellos fids que no tienen taxonomía (links, rótulos, etc).
+          Hay que notar que si es "fid///" SI se incluyen artículos sin sección.
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
