@@ -5209,6 +5209,7 @@ sub parser_custom_function {
         $params = join('","', @newarr);
         $params = '"' . $params . '"';
         # print STDERR "\nPARAMS: $params\n\n";
+        $params =~ s/\$/\\\$/sg; # escapea $.
         $newfunction =~ s/^(\w+)\((.*?)\)$/\1($params)/s;
       };
 
