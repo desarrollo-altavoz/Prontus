@@ -5761,7 +5761,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_art_borrar.cgi
         /cgi-cpn/prontus_check_session.cgi
-    
+
 - Administrador de artículos
     [mejoras]
         - Se mejora respuesta para los artículos corruptos
@@ -5775,7 +5775,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
         /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
         /wizard_prontus/prontus_dir/cpan/core/css/listartic.css (deleted)
-        
+
 - Buscador de Prontus
     [bugfixes]
         - Se corrige vulnerabilidad XSS al usar parámetro search_comodines
@@ -5792,28 +5792,28 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Update.pm
         /cgi-cpn/prontus_head_info.cgi
         /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
-        
+
 - Administrar Portadas:
     [bugfixes]
         - Cuando se duplicaba, la nueva portada quedaba con el mismo nombre de la original. Ahora, lo que se hace
           es dejar el nombre del nuevo archivo como nombre de la portada
     [mejoras]
         - Se cambia distribución de elementos para que sea similar al Administrador de Ediciones
-        - Se deja el duplicador como primera Pestaña        
+        - Se deja el duplicador como primera Pestaña
     [files]
         /cgi-cpn/prontus_pltport_admin.cgi
         /cgi-cpn/prontus_pltport_duplicar.cgi
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
         /wizard_prontus/prontus_dir/cpan/core/prontus_pltport_admin.html
-        /wizard_prontus/prontus_dir/cpan/core/css/intercambiar.css      
+        /wizard_prontus/prontus_dir/cpan/core/css/intercambiar.css
         /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
-        
+
 - Administrar Ediciones:
     [mejoras]
         - Se agrega un botón Volver para mejorar la usabilidad
     [files]
         /wizard_prontus/prontus_dir/cpan/core/prontus_edi_admin.html
-    
+
 ====================================================================================================
 11.2.59 - 21/02/2013 - CVI/EAG/JOR
 ====================================================================================================
@@ -5859,22 +5859,22 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/macros/listado_iconos.html
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
-  
+
 - FIDS:
     [cambios]
         - Se cambia el texto de cierre de comentarios por uno más claro.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_general_comentarios.html
-        
+
 - Editor de Imagenes:
     [bugfixes]
         - Se corrige bug al intentar usar el módulo opcional: Image::JpegTran
     [files]
         /cgi-cpn/lib_thumb.pm
-   
+
 - VTXT:
     [cambios]
-        - Se actualiza la versión del TinyMCE de la 3.4.2  a la 3.5.8, para corregir un bug con 
+        - Se actualiza la versión del TinyMCE de la 3.4.2  a la 3.5.8, para corregir un bug con
           unos extraños span "fantasma" con line-height, que aparecían en navegadores webkit.
         - Se agrega al botón para "Seleccionar todo" a la botonera del VTXT
     [files]
@@ -5925,7 +5925,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Prontus en General:
     [bugfixes]
-        - Se agrega la codificación utf8 a los logs de procesamiento, ya que si el server no estaba 
+        - Se agrega la codificación utf8 a los logs de procesamiento, ya que si el server no estaba
           seteado para entregar utf8 por defecto, salían caracteres extraños
     [mejoras]
         - Se hacen varias mejoras menores de rendimiento
@@ -5934,7 +5934,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Esto, para evitar issue de overflow de contenido en un directorio (ocurrido en sistema de comentarios)
         - Al leer las marcas externas, las marcas globales se "cachean" en prontus_varglb.
         - En la función: lib_tax::generar_fila, se agrega la opción se pasar las marcas externas, previamente cacheadas.
-        - Al ejecutarse el prontus_cron_taxport y prontus_cron_list, se dejan los XMLs leídos como variable global, 
+        - Al ejecutarse el prontus_cron_taxport y prontus_cron_list, se dejan los XMLs leídos como variable global,
           así se mantienen por todo el proceso, optimizando el script.
     [files]
         /cgi-cpn/Artic.pm
@@ -5973,7 +5973,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cfg_save.cgi
         /cgi-cpn/prontus_varglb.pm
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_categ.html
-        
+
 - Portadas Taxonómicas:
     [bugfixes]
         - Se corrige bug en prontus_regenera_taxport.cgi, que invocaba incluso tripletas que no existían.
@@ -6062,7 +6062,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_cfg_save.cgi
-        
+
 - FID:
     [bugfixes]
         - Se corrige error en el Upload de Imagenes con drag & drop. La CGI que procesaba, se había borrado.
@@ -6110,7 +6110,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Wizard Prontus:
     [bugfixes]
-        - En una release anterior, se comenzó a eliminar el archivo: inf.txt. 
+        - En una release anterior, se comenzó a eliminar el archivo: inf.txt.
           Se hace rollback, debido a que al navegar por el arbol o refrescar la página de reporte, arroja error
     [notice]
         - Se agrega la nueva interface de descarga/administración de modelos en el "Paso 2"
@@ -6138,7 +6138,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/core/paso2.html
         /wizard_prontus/core/reporte.html
         /wizard_prontus/core/css/estilos.css
-        /wizard_prontus/core/imag/loader/       
+        /wizard_prontus/core/imag/loader/
         /wizard_prontus/core/imag/boto/boto_azul2_left.png
         /wizard_prontus/core/imag/boto/boto_azul2_right.png
         /wizard_prontus/core/imag/boto/boto_gris3_left.png
@@ -6165,7 +6165,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Post Procesos:
     [bugfixes]
-        - Al leer los postprocesos de portada, se parsean la macros antes, para permitir definir 
+        - Al leer los postprocesos de portada, se parsean la macros antes, para permitir definir
           Post Procesos dentro de las macros
     [files]
         /cgi-cpn/prontus_art_public.cgi
@@ -6175,7 +6175,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Se mejora la validación de los campos chk_form_required_<campo> cuando es multivista
           Se dejan 2 modos, el normal que funciona igual como ahora.
-          Y un modo especial para las vistas en idiomas que tienen chk_form_required independientes 
+          Y un modo especial para las vistas en idiomas que tienen chk_form_required independientes
           para cada vista. En este caso, se debe agregar al FID un campo llamado: chk_form_multivista_strict
           Ejemplo:
           <input type="hidden" name="chk_form_multivista_strict" id="chk_form_multivista_strict" value="si" >
@@ -6185,7 +6185,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Producto de lo anterior, se crea el mensage: MSG ->  wrong_vista que puede ser re-definido en la plantilla
     [mejoras]
         - La CGI que descarga el archivo de respaldo de datos, ya no entrega el CSV, sino que arma un CSV nuevo en base
-          a los archivos JSON que se han creado, de esta forma los datos no se descuadran. 
+          a los archivos JSON que se han creado, de esta forma los datos no se descuadran.
           De todas formas se deja el CSV antiguo por compatibilidad.
     [files]
         /cgi-bin/prontus_form.cgi
@@ -6194,13 +6194,18 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.63 - 15/04/2013 - CVI
+11.2.63 - 19/04/2013 - CVI
 ====================================================================================================
 
 - Portadas Taxonómicas
     [cambios]
-        - Al generar los filtros de "///" se dejan fuera los que no tengan sección, así se evita 
+        - Al generar los filtros de "///" se dejan fuera los que no tengan sección, así se evita
           que aparezcan aquellos fids que no tienen taxonomía (links, rótulos, etc).
           Hay que notar que si es "fid///" SI se incluyen artículos sin sección.
+        - Se cambia formato de los logs de errores al renovar semaforos para facilitar lectura
+        - Se baja el sleep al crear las páginas, de 500000us a 5000us
+          En algunos sitios, como cooperativa, se quedaba pegado en algunos casos (sobre todo producto de los semaforos)
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
+
+

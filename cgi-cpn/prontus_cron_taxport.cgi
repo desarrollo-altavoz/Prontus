@@ -107,7 +107,7 @@ close STDOUT;
 
 my %ART_XML_FIELDS;
 my %ART_XDATA_FIELDS;
-    
+
 
 my ($LOOP, %FORM, $NOM_PRONTUS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC);
 my %NOMBASE_PLTS;
@@ -115,7 +115,6 @@ my %NOMBASE_PLTS;
 # cd /sites/prontus_development/web/cgi-cpn
 # perl /sites/prontus_development/web/cgi-cpn/prontus_cron_taxport.cgi prontus_toolbox
 my ($FILASXPAG);
-
 
 if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
   print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
@@ -165,7 +164,7 @@ main:{
     foreach my $todelete (@files2delete) {
         unlink $todelete;
     };
-    
+
 };
 
 # ---------------------------------------------------------------
@@ -179,13 +178,13 @@ sub renovar_semaforos {
     &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
     my $pid_propio = $$;
 
-            
+
     # si se invoca sin fid, considera el filtro sin fid
     $fids2process{''} = 1 if ($FORM{'fid_especif'} eq '');
 
     # para uso normal desde el fid, en donde se invoca siempre con fid. Entonces si viene una tax definida, genera para esa tax con el fid, pero tb. para la tax sin fid especifico
     $fids2process{''} = 1 if ($FORM{'seccion_especif'});
-    
+    print STDERR "[$$] renovando semaforos\n";
     foreach my $fid (keys %fids2process) {
         # Nivel superior.
         my $id_level =  '____' . $fid;
@@ -193,7 +192,7 @@ sub renovar_semaforos {
         foreach my $file2delete (@files2delete) {
             if ($file2delete !~ /\.$pid_propio$/) {
                 unlink $file2delete;
-                print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                print STDERR "[$$] hice abortar al: $file2delete !\n";
             };
         };
         &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
@@ -207,7 +206,7 @@ sub renovar_semaforos {
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
-                    print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                    print STDERR "[$$] hice abortar al: $file2delete !\n";
                 };
             };
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
@@ -260,22 +259,22 @@ sub renovar_semaforos {
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
-                    print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                    print STDERR "[$$] hice abortar al: $file2delete !\n";
                 };
             };
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
-            
+
             # Tema.
             my $id_level = $secc_id . '_' . $temas_id . '__' . $fid;
             my @files2delete = glob("$dir_semaf/$id_level" . '.*');
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
-                    print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                    print STDERR "[$$] hice abortar al: $file2delete !\n";
                 };
             };
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
-            
+
             # Todos los subtemas para el tema.
             #~ my ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas);
             #~ foreach my $subtemaid (keys %TABLA_STEM) {
@@ -303,29 +302,29 @@ sub renovar_semaforos {
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
-                    print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                    print STDERR "[$$] hice abortar al: $file2delete !\n";
                 };
             };
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
-            
+
             # Tema.
             my $id_level = $secc_id . '_' . $temas_id . '__' . $fid;
             my @files2delete = glob("$dir_semaf/$id_level" . '.*');
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
-                    print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                    print STDERR "[$$] hice abortar al: $file2delete !\n";
                 };
             };
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
-            
+
             # Subtema.
             my $id_level = $secc_id . '_' . $temas_id . '_' . $subtemas_id . '_' . $fid;
             my @files2delete = glob("$dir_semaf/$id_level" . '.*');
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
-                    print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                    print STDERR "[$$] hice abortar al: $file2delete !\n";
                 };
             };
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
@@ -341,7 +340,7 @@ sub renovar_semaforos {
                 foreach my $file2delete (@files2delete) {
                     if ($file2delete !~ /\.$pid_propio$/) {
                         unlink $file2delete;
-                        print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                        print STDERR "[$$] hice abortar al: $file2delete !\n";
                     };
                 };
                 &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
@@ -359,7 +358,7 @@ sub renovar_semaforos {
                         foreach my $file2delete (@files2delete) {
                             if ($file2delete !~ /\.$pid_propio$/) {
                                 unlink $file2delete;
-                                print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                                print STDERR "[$$] hice abortar al: $file2delete !\n";
                             };
                         };
                         &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
@@ -374,7 +373,7 @@ sub renovar_semaforos {
                                 foreach my $file2delete (@files2delete) {
                                     if ($file2delete !~ /\.$pid_propio$/) {
                                         unlink $file2delete;
-                                        print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                                        print STDERR "[$$] hice abortar al: $file2delete !\n";
                                     };
                                 };
                                 &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
@@ -383,22 +382,24 @@ sub renovar_semaforos {
                     };
                 };
             };
-            
+
         }; # end no hay seccion.
-        
+
         my $id_level = '___' . $fid;
         my @files2delete = glob("$dir_semaf/$id_level" . '.*');
         foreach my $file2delete (@files2delete) {
             if ($file2delete !~ /\.$pid_propio$/) {
                 unlink $file2delete;
-                print STDERR "\n[$$] hice abortar al: $file2delete !\n";
+                print STDERR "[$$] hice abortar al: $file2delete !\n";
             };
         };
         &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
     };
-        
+    print STDERR "[$$] semaforos renovados\n\n";
+
 };
 
+# ---------------------------------------------------------------
 sub conecta_db {
     # Conectar a BD
     my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
@@ -429,13 +430,13 @@ sub generar_taxports {
     my %fids2process = &get_fids2process();
 
     # print STDERR "\nMI PID: $$\n";
-    
+
     # Escribe los semaforos de los id levels q va a utilizar (en realidad solo cambia el fid)
     # y borra los escritos por otros procesos para este mismo level, para provocar q aborten
     &renovar_semaforos($FORM{'seccion_especif'}, $FORM{'tema_especif'}, $FORM{'subtema_especif'}, \%fids2process);
-    
+
     &generar_taxports_thislevel('', '', '', '', \%fids2process, $base); # todas
-        
+
     if (($FORM{'seccion_especif'}) || ($FORM{'params_especif'} eq '')) {
 
         # secc
@@ -452,7 +453,7 @@ sub generar_taxports {
             if ($FORM{'seccion_especif'}) {
                 &generar_taxports_thislevel($secc_id, '', '', $secc_port, \%fids2process, $base);
             }
-            
+
             my ($temas_id, $temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas);
             foreach $temas_id (keys %TABLA_TEM) {
                 ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
@@ -464,7 +465,7 @@ sub generar_taxports {
                 if ($FORM{'tema_especif'}) {
                     &generar_taxports_thislevel($secc_id, $temas_id, '', $temas_port, \%fids2process, $base);
                 }
-                
+
                 # subtemas
                 my ($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas);
                 foreach $subtemas_id (keys %TABLA_STEM) {
@@ -472,7 +473,7 @@ sub generar_taxports {
                     next if ($subtemas_idparent != $temas_id);
                     if ($FORM{'subtema_especif'}) {
                         next if ($FORM{'subtema_especif'} != $subtemas_id);
-                    };          
+                    };
                     if ($FORM{'subtema_especif'}) {
                         &generar_taxports_thislevel($secc_id, $temas_id, $subtemas_id, $subtemas_port, \%fids2process, $base);
                     }
@@ -532,7 +533,7 @@ sub generar_taxports_thislevel {
             next;
         };
         my $base = &conecta_db();
-        
+
         my $filtros = &genera_filtros_taxports($secc_id, $temas_id, $subtemas_id, $fid, $CURR_DTIME);
         my $tot_artics = &get_tot_artics($filtros, $base);
         print STDERR "[$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
@@ -557,7 +558,7 @@ sub generar_taxports_thislevel {
         my $arrayref = $salida->fetchall_arrayref;
         $salida->finish;
         $base->disconnect;
-        
+
         foreach my $row (@{$arrayref}) {
             my $art_id = $row->[0];
             my $art_fecha = $row->[1];
@@ -568,7 +569,7 @@ sub generar_taxports_thislevel {
             my $art_tipoficha = $row->[6];
             my $art_idtemas1 = $row->[7];
             my $art_baja = $row->[8];
-            
+
             $nro_filas++;
             if (-f "$dir_semaf/$id_level.$pid_propio") {
                 my $nro_pag_to_write = $nro_pag + 1;
@@ -588,13 +589,13 @@ sub generar_taxports_thislevel {
             $vistas{''} = 1; # vista default
             foreach $mv (keys %vistas) {
                 foreach my $nombase_plt (keys %NOMBASE_PLTS) {
-                    
+
                     # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
                     my $loop_plt = &get_loop_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
                     next if (!$loop_plt);
                     my $fila_content;
                     my ($auxref, $auxref2);
-                    
+
                     # En estos casos sólo es válida la primera página
                     my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
                     if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 1) {
@@ -605,20 +606,20 @@ sub generar_taxports_thislevel {
 
                     $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
                     $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
-                    
+
 
                     $filas{"$mv|$nombase_plt"} .= $fila_content;
 
                     if ($nro_pag > 0) {
-                        # Se baja a medio segundo
-                        usleep(500000);
+                        # Se baja al minimo
+                        usleep(5000);
                     };
                 };
             };
-            
+
             # escribir la pag actual y cambiar a la pagina siguiente
             if ($nro_filas >= $FILASXPAG) {
-                
+
                 $nro_pag++; # avanza pag
                 &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas);
                 $nro_filas = 0; # resetea conta de filas para empezar del ppio en la pagina que viene.
@@ -635,7 +636,7 @@ sub generar_taxports_thislevel {
             print STDERR "[$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
         };
     };
-    
+
 };
 # ---------------------------------------------------------------
 sub get_loop_plt {
@@ -850,13 +851,13 @@ sub write_pag {
             # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
             my $pagina = &get_buffer_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
             next if (!$pagina);
-            
+
             # En estos casos sólo es válida la primera página
             my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
             if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 1) {
                 next;
             };
-            
+
             ($pagina, $MSGS{"$mv|$nombase_plt"}) = &carga_mensajes($pagina); # 1.8
             $pagina =~ s/%%_totartics%%/$tot_artics/ig;
             my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
@@ -914,11 +915,11 @@ sub write_pag {
 #            };
 
 
-                
+
     #~ my $delta_t = time - $ini_t;
     #~ print STDERR "\tescribiendo[$delta_t][$k]\n"; # debug
     $COUNTER_TOTAL_PAGS++;
-    
+
             &glib_fildir_02::write_file($k, $pagina);
             &lib_prontus::purge_cache($k);
             # print STDERR "writing [$k]\n";
@@ -1197,7 +1198,7 @@ sub get_fids2process {
             };
         };
     };
-    
+
     return %fids;
 
 };
@@ -1259,7 +1260,7 @@ sub genera_filtros_taxports {
                 };
             };
         };
-        
+
     } else {
         if($fid eq '') {
             $filtros = "(";
