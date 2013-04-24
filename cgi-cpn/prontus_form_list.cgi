@@ -59,113 +59,185 @@ use glib_cgi_04;
 use lib_prontus;
 use lib_form;
 
-
-# --------------------------------------
-
-my $MAX_COLS = 5; # Numero maximo de columnas que se desplegarán
-
-# --------------------------------------
-
-
 my %FORM; # Contenido del formulario de invocacion.
+my $DIRFORM;
+my $ROOT;
+my $PRONTUS;
+my $TS;
+main: {
 
-&getFormData(); # Lee formulario de invocacion y valida las variables.
+    my $hashref = &lib_form::getFormData(); # Lee formulario de invocacion y valida las variables.
+    %FORM = %$hashref;
 
-my $ROOT      = $ENV{'DOCUMENT_ROOT'};
-my $PRONTUS   = $FORM{'_prontus_id'}; # Nombre del publicador Prontus donde se aloja el formulario.
-my $TS        = $FORM{'_ts'};      # Nombre del publicador Prontus donde se aloja el formulario.
+    $ROOT      = $ENV{'DOCUMENT_ROOT'};
+    $PRONTUS   = $FORM{'_prontus_id'}; # Nombre del publicador Prontus donde se aloja el formulario.
+    $TS        = $FORM{'_ts'};      # Nombre del publicador Prontus donde se aloja el formulario.
 
-if ($PRONTUS eq '') { # Muestra pagina en blanco.
-    &lib_form::aborta("Directorio Prontus no especificado."); 
-};
+    if ($PRONTUS eq '') { # Muestra pagina en blanco.
+        &lib_form::aborta("Directorio Prontus no especificado.");
+    };
 
-my $PATH_CONF = "/$PRONTUS/cpan/$PRONTUS.cfg";
+    my $PATH_CONF = "/$PRONTUS/cpan/$PRONTUS.cfg";
 
-# Ajusta path_conf para completar path y/o cambiar \ por /
-$PATH_CONF = &lib_prontus::ajusta_pathconf($PATH_CONF);
+    # Ajusta path_conf para completar path y/o cambiar \ por /
+    $PATH_CONF = &lib_prontus::ajusta_pathconf($PATH_CONF);
 
-# Carga variables de configuracion.
-&lib_prontus::load_config($PATH_CONF);  # Prontus 6.0
-$PATH_CONF =~ s/^$prontus_varglb::DIR_SERVER//;
+    # Carga variables de configuracion.
+    &lib_prontus::load_config($PATH_CONF);  # Prontus 6.0
+    $PATH_CONF =~ s/^$prontus_varglb::DIR_SERVER//;
 
-# Se chequean los permisos
-($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
+    # Se chequean los permisos
+    ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
 
-print "Content-type: text/html\n\n";
+    print "Content-type: text/html\n\n";
 
-if ($TS eq '') {
-    &glib_html_02::print_pag_result("Listado de Datos", 'Formulario no especificado', 1, '');
-    exit;
-};
-my $PLANTILLA = &glib_fildir_02::read_file("$ROOT$prontus_varglb::DIR_CORE/prontus_form_list.html");
-if ($PLANTILLA eq '') { # Muestra pagina en blanco.
-    &glib_html_02::print_pag_result("Listado de Datos", 'La Plantilla no existe', 1, '');
-    exit;
-};
+    if ($TS eq '') {
+        &glib_html_02::print_pag_result("Listado de Datos", 'Formulario no especificado', 1, '');
+        exit;
+    };
+    my $PLANTILLA = &glib_fildir_02::read_file("$ROOT$prontus_varglb::DIR_CORE/prontus_form_list.html");
+    if ($PLANTILLA eq '') { # Muestra pagina en blanco.
+        &glib_html_02::print_pag_result("Listado de Datos", 'La Plantilla no existe', 1, '');
+        exit;
+    };
 
-my $DIRFORM     = "/$PRONTUS/cpan/procs/form/$TS";
-my $BACKUPFILE  = "backup.csv";
-if (!(-d $ROOT . $DIRFORM) || !(-f $ROOT . $DIRFORM . '/' . $BACKUPFILE)) { # Muestra pagina en blanco.
-    &glib_html_02::print_pag_result("Listado de Datos", 'El archivo de datos está vacío', 1, '');
-    exit;
-};
+    # Se revisa que el archivo de "orden" exista
+    $DIRFORM     = "/$PRONTUS/cpan/procs/form/$TS";
+    my $ORDERFILE  = "order.json";
+    my $BACKUPFILE  = "backup.csv";
+    if (-d "$ROOT$DIRFORM" && -f "$ROOT$DIRFORM/$ORDERFILE") {
 
-# &glib_html_02::print_pag_result("Eliminar datos", 'El archivo de datos de respaldo ha sido eliminado', 1, '');
-$PLANTILLA =~ s/%%_prontus_id%%/$PRONTUS/g;
-$PLANTILLA =~ s/%%_ts%%/$TS/g;
-$PLANTILLA =~ s/%%file_backup%%/$DIRFORM\/$BACKUPFILE/g;
+        # Se lee el archivo de orden
+        my $jsonorder = &glib_fildir_02::read_file("$ROOT$DIRFORM/$ORDERFILE");
+        my $orderhashref = &JSON::from_json($jsonorder);
+        my %orderhash = %$orderhashref;
 
-open(BACKUP, $ROOT.$DIRFORM.'/'.$BACKUPFILE);
+        # Se agregan las 3 primeras columnas fijas
+        my @orderreal;
+        push(@orderreal, '_fecha');
+        push(@orderreal, '_hora');
+        push(@orderreal, '_ip');
+        foreach my $index (sort keys %orderhash) {
+            my $col = $orderhash{$index};
+            $col =~ s/"/""/;
+            push(@orderreal, $orderhash{$index});
+        };
 
-# Se procesa el header
-$PLANTILLA =~ /%%loop_head%%(.*?)%%\/loop_head%%/s;
-my $header = $1;
-my $row = <BACKUP>;
-$header = &procesarHeader($row, $header);
-$PLANTILLA =~ s/%%loop_head%%.*?%%\/loop_head%%/$header/s;
+        # Se procesan las filas
+        $PLANTILLA =~ /%%loop_row%%(.*?)%%\/loop_row%%/s;
+        my $origStr = $1;
+        $origStr =~ /%%loop_item%%(.*?)%%\/loop_item%%/s;
+        my $itemLoop = $1;
+        my $totalStr;
+        my $tempStr;
+        my $tempStr2;
+        my $sumrow;
+        my $counter = 0;
 
-my $colspan = $MAX_COLS + 1;
-$PLANTILLA =~ s/%%_colspan%%/$colspan/gs;
-$PLANTILLA =~ s/%%_max_cols%%/$MAX_COLS/gs;
+        # Se leen los archivos de json (los nuevos primero)
+        my @files =  &glib_fildir_02::lee_dir("$ROOT$DIRFORM");
+        foreach my $file (sort {$b <=> $a} @files) {
 
+            next unless($file =~ /\d{14}\.json/);
+            my $json = &glib_fildir_02::read_file("$ROOT$DIRFORM/$file");
+            my $jsonhashref = &JSON::from_json($json);
+            my %jsonhash = %$jsonhashref;
+            my @CSV_ROW;
+            # Se recorren según el orden
+            foreach my $name (@orderreal) {
+                push (@CSV_ROW, $jsonhash{$name});
+                delete $jsonhash{$name};
+            }
 
-# Se procesan las filas
-$PLANTILLA =~ /%%loop_row%%(.*?)%%\/loop_row%%/s;
-my $origStr = $1;
-$origStr =~ /%%loop_item%%(.*?)%%\/loop_item%%/s;
-my $itemLoop = $1;
-my $totalStr;
-my $tempStr;
-my $tempStr2;
-my $sumrow;
-while(<BACKUP>) {
-    my $newrow = $_;
-    if($newrow =~ /";\s*$/) {
-        $newrow = $sumrow . $newrow;
-        my $tempStr = &procesarFila($newrow, $itemLoop);
-        $tempStr2 = $origStr;
-        $tempStr2 =~ s/%%loop_item%%.*?%%\/loop_item%%/$tempStr/gs;
-        $totalStr = $totalStr . $tempStr2;
-        $sumrow = '';
+            # Lo que no estaba antes, se agrega ahora y se agrega al orden
+            foreach my $name (sort keys %jsonhash) {
+                push (@CSV_ROW, $jsonhash{$name});
+                push(@orderreal, $name);
+                # undef $jsonhash{$name};
+            }
+
+            # Una vez que tenemos la fila CSV, se arma la tabla
+            my $tempStr = &procesarFila($itemLoop, @CSV_ROW);
+            $tempStr2 = $origStr;
+            $tempStr2 =~ s/%%loop_item%%.*?%%\/loop_item%%/$tempStr/gs;
+            $totalStr = $totalStr . $tempStr2;
+
+            $counter++;
+            last if($counter >= $lib_form::MAX_ROWS);
+        }
+        # Cuando recorremos todos los archivos reemplazamos
+        $PLANTILLA =~ s/%%loop_row%%.*?%%\/loop_row%%/$totalStr/s;
+
+        # Se procesa el header ordenado y recortado
+        splice(@orderreal, 0, 3, 'Fecha','Hora','IP');
+        $PLANTILLA = &procesarHeader($PLANTILLA, @orderreal);
+        $PLANTILLA =~ s/%%_rows_order%%/&uacute;ltimas/g;
+
+    } elsif (-d "$ROOT$DIRFORM" && -f "$ROOT$DIRFORM/$BACKUPFILE") {
+
+        open(BACKUP, $ROOT.$DIRFORM.'/'.$BACKUPFILE);
+
+        # Se procesa el header
+        my $row = <BACKUP>;
+        my @hash = &strToArray($row);
+        $PLANTILLA = &procesarHeader($PLANTILLA, @hash);
+
+        # Se procesan las filas
+        $PLANTILLA =~ /%%loop_row%%(.*?)%%\/loop_row%%/s;
+        my $origStr = $1;
+        $origStr =~ /%%loop_item%%(.*?)%%\/loop_item%%/s;
+        my $itemLoop = $1;
+        my $totalStr;
+        my $tempStr;
+        my $tempStr2;
+        my $sumrow;
+        my $counter = 0;
+        while(<BACKUP>) {
+            my $newrow = $_;
+            if($newrow =~ /";\s*$/) {
+                $newrow = $sumrow . $newrow;
+                my @hash = &strToArray($newrow);
+                my $tempStr = &procesarFila($itemLoop, @hash);
+                $tempStr2 = $origStr;
+                $tempStr2 =~ s/%%loop_item%%.*?%%\/loop_item%%/$tempStr/gs;
+                $totalStr = $totalStr . $tempStr2;
+                $sumrow = '';
+                $counter++;
+                last if($counter >= $lib_form::MAX_ROWS);
+
+            } else {
+                $sumrow = $sumrow . $newrow;
+            }
+        };
+        $PLANTILLA =~ s/%%loop_row%%.*?%%\/loop_row%%/$totalStr/s;
+        $PLANTILLA =~ s/%%_rows_order%%/primeras/g;
+
     } else {
-        $sumrow = $sumrow . $newrow;
+
+        # Si ningun archivo existe, se arroja error
+        &glib_html_02::print_pag_result("Listado de Datos", 'El archivo de datos está vacío o no existe', 1, '');
+        exit;
     }
+
+    # Se parsean los datos comunes
+    $PLANTILLA =~ s/%%_max_rows%%/$lib_form::MAX_ROWS/g;
+    $PLANTILLA =~ s/%%_prontus_id%%/$PRONTUS/g;
+    $PLANTILLA =~ s/%%_ts%%/$TS/g;
+    $PLANTILLA =~ s/%%file_backup%%/$DIRFORM\/$BACKUPFILE/g;
+    $PLANTILLA =~ s/%%title%%/Administrar Archivo de Datos/g;
+    print $PLANTILLA;
 };
-$PLANTILLA =~ s/%%loop_row%%.*?%%\/loop_row%%/$totalStr/s;
-
-print $PLANTILLA;
-
-
-
 ########################################
 ## Funciones
 ########################################
-
-# -------------------------------------------------------------------#
+# --------------------------------------------------------------------------------------------------
 sub procesarHeader {
 
-    my ($row, $plt) = ($_[0], $_[1]);
-    my @hash = &strToArray($row);
+    my ($plantilla, @hash) = (@_);
+
+    $plantilla =~ /%%loop_head%%(.*?)%%\/loop_head%%/s;
+    my $plt = $1;
+
     my $totalStr;
     my $tempStr;
     my $count;
@@ -174,30 +246,32 @@ sub procesarHeader {
         $tempStr =~ s/%%head_name%%/$item/ig;
         $totalStr = $totalStr . $tempStr;
         $count++;
-        last if($count >= $MAX_COLS);
-    };
-    if($count < $MAX_COLS) {
-        $MAX_COLS = $count;
+        last if($count >= $lib_form::MAX_COLS);
     };
     $tempStr = $plt;
     $tempStr =~ s/%%head_name%%/Archivos Descargables/ig;
     $totalStr = $totalStr . $tempStr;
-    return $totalStr;
+
+    $plantilla =~ s/%%loop_head%%.*?%%\/loop_head%%/$totalStr/s;
+    my $colspan = $count + 1;
+    $plantilla =~ s/%%_colspan%%/$colspan/gs;
+    $plantilla =~ s/%%_max_cols%%/$count/gs;
+
+    return $plantilla;
 };
 
-# -------------------------------------------------------------------#
-#
+# --------------------------------------------------------------------------------------------------
 sub procesarFila {
 
-    my ($row, $plt) = ($_[0], $_[1]);
-    my @hash = &strToArray($row);
+    my ($plt, @hash) = (@_);
+
     my @files;
     my $totalStr;
     my $tempStr;
     my $count;
     foreach my $item (@hash) {
         $count++;
-        if($count <= $MAX_COLS) {
+        if($count <= $lib_form::MAX_COLS) {
             $tempStr = $plt;
             $tempStr =~ s/%%item_value%%/$item/ig;
             $totalStr = $totalStr . $tempStr;
@@ -219,7 +293,7 @@ sub procesarFila {
     return $totalStr;
 }
 
-# -------------------------------------------------------------------#
+# --------------------------------------------------------------------------------------------------
 sub strToArray {
 
     my $row = $_[0];
@@ -230,7 +304,7 @@ sub strToArray {
     return @hash;
 }
 
-# -------------------------------------------------------------------#
+# --------------------------------------------------------------------------------------------------
 sub isFile {
 
     my $item = $_[0];
@@ -241,34 +315,3 @@ sub isFile {
     };
     return 0;
 }
-
-# -------------------------------------------------------------------#
-# Rescata y valida las variables del chorro.
-sub getFormData {
-    my($pair,$buffer);
-    if ($ENV{'REQUEST_METHOD'} eq 'GET') {
-        $buffer = $ENV{'QUERY_STRING'};
-    } else {
-        read(STDIN, $buffer, $ENV{'CONTENT_LENGTH'});
-    };
-    my(@pairs) = split(/&/, $buffer);
-    foreach $pair (@pairs) {
-        my($name, $value) = split(/=/,$pair);
-        # Un-Webify plus signs and %-encoding
-        $value =~ tr/+/ /;
-        $value =~ s/%([0-9A-Ha-h]{2})/pack("c",hex($1))/ge;
-        # 1.9 $value =~ s/~!/ ~!/g;
-        $value =~ s/\.\.\///g; # 1.4 Elimina toda referencia de directorios hacia atras.
-        # 1.9 $value =~ s/\|//g;     # 1.4 Elimina toda posibilidad de activar pipes.
-        $value =~ s/\x00//g;   # 1.4 Elimina nulls.
-        $value =~ s/\x1B//g;   # 1.4 Elimina escapes.
-        $value =~ s/[<>%!\|\\\~\$]/ /g; # 1.9 Elimina caracteres peligrosos
-        # $value =~ s/[\+\.\^\$\(\)\[\]\{\}\|\\]//g;   # 1.8 Elimina caracteres reservados de Perl.
-        $name = lc $name; # 1.3
-        $FORM{$name} = $value;
-    };
-    # Valida variables.
-    $FORM{'ts'} =~ s/[^\d]//g; # Elimina todos los no-numeros.
-    $FORM{'prontus'} =~ s/[^\w\.\-]//g; # Elimina caracteres no validos como nombres de prontus.
-    # print "<p>FILTROACTIVO = $FILTROACTIVO $FORMfechaini $FORMfechafin"; # debug
-}; # getFormData

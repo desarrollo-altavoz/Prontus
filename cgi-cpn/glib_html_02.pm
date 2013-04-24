@@ -79,12 +79,12 @@ sub imprimir_celdas {
       $link = $_[$i+2];
       $target = $_[$i+3];
       # Se imprime la fila.
-      print	q{<td width="};
+      print q{<td width="};
       print $width_col;
       print q{%" class="};   # 01c
       print $estilo;         # 01c
       print q{">};
-  	  print q{&nbsp;};
+      print q{&nbsp;};
 
       # Si el link no es nulo, se imprime.
       if ( $link ne '' ) {
@@ -94,8 +94,8 @@ sub imprimir_celdas {
           print '" target ="' . $target .'">';
         }
         else {
-  		    print '">';
-  		  }
+          print '">';
+        }
         print $valor_campo;
         print q{</a></td>};
       }
@@ -137,7 +137,7 @@ sub generar_celdas {
       $celdas .= q{%" class="};
       $celdas .= $estilo;
       $celdas .= q{">};
-  	  $celdas .= q{&nbsp;};
+      $celdas .= q{&nbsp;};
 
       # Si el link no es nulo, se genera.
       if ( $link ne '' ) {
@@ -147,8 +147,8 @@ sub generar_celdas {
           $celdas .= '" target ="' . $target .'">';
         }
         else {
-  		    $celdas .= '">';
-  		  }
+          $celdas .= '">';
+        }
         $celdas .= $valor_campo;
         $celdas .= q{</a></td>};
       }
@@ -186,14 +186,14 @@ sub rellenar_plantilla {
 
   # Abrir y cargar archivo corresp. a la plantilla
   open (archivo,$plantilla) || die "$!\n";
-	$size_arch = (-s $plantilla);
+  $size_arch = (-s $plantilla);
   read archivo, $pagina, $size_arch;
   close archivo;
   if ($pagina !~ /\n/) { # 2.3
     $pagina =~ s/\r/\n/sg;
   };
 
-	# Realizar el reemplazo de las marcas en la variable $pagina.
+  # Realizar el reemplazo de las marcas en la variable $pagina.
   for ($i=1; $i <= $nro_marcas*4; $i=$i+4) {
       $marca = $_[$i];
       $valor_marca = $_[$i+1];
@@ -205,7 +205,7 @@ sub rellenar_plantilla {
       #$valor_marca =~ s/$er_elim2//g;  # interfieren en nt #01h
 
       # Reemplazo de marca por valor.
-    	$pagina =~ s/$marca/$valor_marca/g;
+      $pagina =~ s/$marca/$valor_marca/g;
   };
   return $pagina;
 };
@@ -235,7 +235,7 @@ sub get_datos_desde_html {
 
   # Abrir y cargar archivo en la variable $str_arch.
   open (archivo,$arch_html) || die "$!\n";
-	$size_arch = (-s $arch_html);
+  $size_arch = (-s $arch_html);
   binmode archivo;
   read archivo, $str_arch, $size_arch;
   close archivo;
@@ -245,10 +245,10 @@ sub get_datos_desde_html {
   for ($i=1; $i <= $nro_valores; $i=$i+1) {
       $nombre_campo = $_[$i];
       $delimitador_inicio = '<!--DC__' . $nombre_campo . '-->';
-	    $delimitador_fin = '<!--/DC__' . $nombre_campo . '-->';
+      $delimitador_fin = '<!--/DC__' . $nombre_campo . '-->';
 
       # Sacar contenido.
-	   	$str_arch =~ /$delimitador_inicio(.*)?$delimitador_fin/sg;
+      $str_arch =~ /$delimitador_inicio(.*)?$delimitador_fin/sg;
       $valor_campo = $1;
 
       # Cargar hash.
@@ -275,9 +275,14 @@ sub print_json_result {
     $resp->{'status'} = $status;
     $resp->{'msg'} = $msg;
     print "Content-Type: text/html\n\n" if ($ctype);
-    my $json = new JSON;
+    if($JSON::VERSION =~ /^1\./) {
+        print objToJson($resp);
+    } else {
+        print &JSON::to_json($resp);
+    }
+    #~ my $json = new JSON;
     # print $json->to_json($resp);
-    print &JSON::to_json($resp);
+    #~ print &JSON::to_json($resp);
     exit if ($exit);
 }
 #--------------------------------------------------------------------#
@@ -291,11 +296,16 @@ sub print_json_result_hash {
     $ctype = 1 if ($options =~ /(^|,) *ctype *= *1 *(,|$)/);
 
     binmode(STDOUT, ":utf8");
-       
+
     print "Content-Type: text/html\n\n" if ($ctype);
-    my $json = new JSON;
+    if($JSON::VERSION =~ /^1\./) {
+        print objToJson($hash);
+    } else {
+        print &JSON::to_json($hash);
+    }
+    #~ my $json = new JSON;
     # print $json->to_json($resp);
-    print &JSON::to_json($hash);
+    #~ print &JSON::to_json($hash);
     exit if ($exit);
 };
 
@@ -324,9 +334,9 @@ sub print_pag_result {
   my $pagina;
   if (-f $plantilla) {
     open (archivo,$plantilla) || die "$!\n";
-  	my $size_arch = (-s $plantilla);
+    my $size_arch = (-s $plantilla);
 
-  	binmode archivo;
+    binmode archivo;
     read archivo, $pagina, $size_arch;
     close archivo;
     if ($pagina !~ /\n/) { # 2.3
@@ -831,11 +841,11 @@ sub generar_filas_tabla_checkbox {
         my $checked = '';
         my $id = $name;
         $id =~ s/\[|\]//sig;
-        
+
         if ($item->{checked} == 1) {
             $checked = ' checked="checked"';
         };
-        
+
         $buffer .= '
         <tr>
             <td align="left"><label for="'. $ident . $id . $counter . '">' . $item->{label} . '</label></td>
@@ -844,9 +854,9 @@ sub generar_filas_tabla_checkbox {
         ';
         $counter++;
     };
-    
+
     return $buffer;
-    
+
 };
 
 #-------------------------------END LIBRERIA------------------

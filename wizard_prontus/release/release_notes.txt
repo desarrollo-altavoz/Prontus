@@ -6193,8 +6193,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.63 - 19/04/2013 - CVI
+11.2.63 - 19/04/2013 - CVI/JOR
 ====================================================================================================
+- Prontus en General
+    [bugfixes]
+        - Se agrega un IF en la glib_html_02 para prevenir error en sitios con módulo JSON version 1
+    [files]
+        /cgi-cpn/glib_html_02.pm
+
 - Prontus Functions
     [bugfixes]
         - Se escapea el caracter $ en caso que venga en los parámetros de la PF, ya que se evalúa en la expresión regular causando problemas
@@ -6212,5 +6218,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           En algunos sitios, como cooperativa, se quedaba pegado en algunos casos (sobre todo producto de los semaforos)
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
+
+- Prontus Form
+    [bugfixes]
+        - El listado de los envíos, ahora lee desde el json. Si no hay order.json desde el csv.
+        - Se agrega código para prevenir error en sitios con módulo JSON version 1
+    [cambios]
+        - Se limita el listado de los envíos a los últimos 50 (en el caso de json) o primeros 50 (en el caso de csv).
+          El CSV que uno descarga trae todo el resto de los envíos. Esto se indica en el listado de envíos.
+        - Se mueven funciones hacia la lib_form.pm para centralizar código
+    [files]
+
+
 
 

@@ -42,45 +42,45 @@ use lib_prontus;
 use lib_form;
 
 use JSON;
-
-my $SEPARADOR = ';';
+my %FORM;
 my $CSV;
 
 main: {
-    
-    # Rescatar parametros recibidos
-    &glib_cgi_04::new();
+
+    # Lee formulario de invocacion y valida las variables.
+    my $hashref = &lib_form::getFormData();
+    %FORM = %$hashref;
+
     my $ROOT      = $ENV{'DOCUMENT_ROOT'};
-    
-    my $PRONTUS   = &glib_cgi_04::param('_prontus_id');     # Nombre del publicador Prontus donde se aloja el formulario.
-    my $TS        = &glib_cgi_04::param('_ts');             # Nombre del publicador Prontus donde se aloja el formulario.
-    my $FORMAT    = &glib_cgi_04::param('_format');         # Nombre del publicador Prontus donde se aloja el formulario.
-    
+    my $PRONTUS   = $FORM{'_prontus_id'};
+    my $TS        = $FORM{'_ts'};
+    my $FORMAT    = $FORM{'_format'};
+
     if($PRONTUS eq '' || ! -d "$ROOT/$PRONTUS") {
         &send_error("Directorio Prontus no es v&aacute;lido [$PRONTUS]");
         exit;
     }
-    
+
     # Carga variables de configuracion.
     my $PATH_CONF = "/$PRONTUS/cpan/$PRONTUS.cfg";
     $PATH_CONF = &lib_prontus::ajusta_pathconf($PATH_CONF);
     &lib_prontus::load_config($PATH_CONF);  # Prontus 6.0
-    
-    # Se comprueba que venga el TS del artículo    
+
+    # Se comprueba que venga el TS del artículo
     if($TS !~ /\d{14}/) {
         &send_error("El parámetro _ts no es válido");
         exit;
     };
-    
+
     # Se comprueba que venga el formato a descargar
     if($FORMAT eq '') {
         $FORMAT = 'csv';
-    
+
     } elsif($FORMAT !~ /^csv$/) {
         &send_error("El parámetro _format no es válido");
         exit;
     };
-    
+
     # Se revisa que el archivo de "orden" exista
     my $DIRFORM     = "/$PRONTUS/cpan/procs/form/$TS";
     my $ORDERFILE  = "order.json";
@@ -95,12 +95,17 @@ main: {
         $CSV = &glib_fildir_02::read_file("$ROOT$DIRFORM/$BACKUPFILE");
 
     } else {
-        
+
         my $jsonorder = &glib_fildir_02::read_file("$ROOT$DIRFORM/$ORDERFILE");
-        my $orderhashref = &JSON::from_json($jsonorder);
+        my $orderhashref;
+        if($JSON::VERSION =~ /^1\./) {
+            $orderhashref = jsonToObj($jsonorder);
+        } else {
+            $orderhashref = JSON->decode_json($jsonorder);
+        }
         my %orderhash = %$orderhashref;
-        # print "Content-Type:text/html\n\n"; 
-        
+        # print "Content-Type:text/html\n\n";
+
         my @orderreal;
         push(@orderreal, '_fecha');
         push(@orderreal, '_hora');
@@ -108,69 +113,59 @@ main: {
         foreach my $index (sort keys %orderhash) {
             push(@orderreal, $orderhash{$index});
         };
-        
+
         my @files =  &glib_fildir_02::lee_dir("$ROOT$DIRFORM");
         # print "Total: $#files<br><hr>";
         foreach my $file (sort @files) {
-            
+
             next unless($file =~ /\d{14}\.json/);
             my $json = &glib_fildir_02::read_file("$ROOT$DIRFORM/$file");
-            my $jsonhashref = &JSON::from_json($json);
+            my $jsonhashref;
+            if($JSON::VERSION =~ /^1\./) {
+                $jsonhashref = jsonToObj($json);
+            } else {
+                $jsonhashref = JSON->decode_json($json);
+            }
             my %jsonhash = %$jsonhashref;
-            
+
             # Se recorren según el orden
             foreach my $name (@orderreal) {
-                $CSV = $CSV . &add_to_csv($jsonhash{$name});
+                $CSV = $CSV . &lib_form::add_to_csv($jsonhash{$name});
                 delete $jsonhash{$name};
             }
-            
+
             # Lo que no estaba antes, se agrega ahora y se agrega al orden
             foreach my $name (sort keys %jsonhash) {
-                $CSV = $CSV . &add_to_csv($jsonhash{$name});
+                $CSV = $CSV . &lib_form::add_to_csv($jsonhash{$name});
                 push(@orderreal, $name);
                 # undef $jsonhash{$name};
             }
-            $CSV =~ s/$SEPARADOR$/\n/;
+            $CSV =~ s/$lib_form::SEPARADOR$/\n/;
         }
 
-        my $total = $#orderreal;
-        my $headers;
-        $headers = $headers . &add_to_csv('Fecha');
-        $headers = $headers . &add_to_csv('Hora');
-        $headers = $headers . &add_to_csv('IP');
-        for(my $i = 3; $i <= $total; $i++) {
-            $headers = $headers . &add_to_csv($orderreal[$i]);
-        };
-        $headers =~ s/$SEPARADOR$/\n/;
-        $CSV = $headers . $CSV;
-    }  
-    
-   
+        splice(@orderreal,0,3,'Fecha','Hora','IP');
+        my $headers = &lib_form::array_to_csv(@orderreal);
+        $CSV = $headers . "\n". $CSV;
+    }
+
+
     # El archivo viene en UTF-8
     #~ print STDERR "$lib_prontus::FORM_CSV_CHARSET\n";
     if($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
         utf8::decode($CSV);
     };
-    
-    print "Content-Type:application/x-download\n"; 
+
+    print "Content-Type:application/x-download\n";
     print "Content-Disposition:attachment;filename=$BACKUPFILE\n\n";
     print $CSV;
 
 }
-# --------------------------------------------------------------------------------------------------
-sub add_to_csv {
-    
-    my $data = shift;
-    $data = &glib_str_02::trim($data); # Elimina espacios para que no molesten.
-    $data =~ s/\"/\'\'/gs; # Convierte comillas para que no arruinen el archivo csv.
-    $data =~ s/\r//gs;     # 1.5 Elimina retornos de carro para que no arruinen el archivo csv.
-    return "\"$data\"$SEPARADOR";    
-};
+
 # --------------------------------------------------------------------------------------------------
 sub send_error {
-    
+
     my $error = shift;
-    
+
     print "Content-type: text/html\n\n";
     print $error;
 }
