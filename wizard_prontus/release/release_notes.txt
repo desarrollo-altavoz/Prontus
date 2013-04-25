@@ -6227,13 +6227,31 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Prontus Form
     [bugfixes]
-        - El listado de los envíos, ahora lee desde el json. Si no hay order.json desde el csv.
         - Se agrega código para prevenir error en sitios con módulo JSON version 1
+        - También se agrega código para setear binmode, para evitar error al descargar en utf8
+    [mejoras]
+        - El listado de los envíos, ahora lee desde el json. Si no hay order.json desde el csv.
+        - Se crea nueva macro resevada de FID, llamada: _form_cabecera.html, la cual posee los siguientes campos:
+            form_subject, form_subject_auto, form_admin, chk_form_force_from, form_from
     [cambios]
+        - Se agrega una nueva marca reservada de prontus form: chk_form_force_from
+          Al agregar dicha marca al FID, se puede forzar el uso del EMAIL de destimo como FROM en el mail que va al admin.
+          Ejemplo de uso:
+            <tr>
+                <td class="nombre">E-Mail(s) de destino</td>
+                <td class="campo"><input type="text" name="form_admin" size="60" value="%%form_admin%%" class="fieldform" /><br/>
+                    <span class="ayuda">Correo electrónico del administrador que recibirá los datos.<br/>Pueden ser varios separados por comas.</span><br/>
+                    <input type="checkbox" name="chk_form_force_from" id="chk_form_force_from" value="si" /> <label for="chk_form_force_from">Usar siempre este correo como remitente</label>
+
+                </td>
+            </tr>
+            Esto ya va incluído en la nueva macro: _form_cabecera.html
+        - Se aplican cambios menores en la macro _form_backup.html, para ordenar
         - Se limita el listado de los envíos a los últimos 50 (en el caso de json) o primeros 50 (en el caso de csv).
           El CSV que uno descarga trae todo el resto de los envíos. Esto se indica en el listado de envíos.
         - Se mueven funciones hacia la lib_form.pm para centralizar código
     [files]
+        /cgi-bin/prontus_form.cgi
         /cgi-cpn/lib_form.pm
         /cgi-cpn/prontus_form_delete.cgi
         /cgi-cpn/prontus_form_download.cgi

@@ -322,7 +322,9 @@ sub data_management {
     $body .= $msg_signature;
 
     # Envia mail a el o los administradores.
-    if (&glib_cgi_04::param('email') ne '') {
+    if($PRONTUS_VARS{'chk_form_force_from'}) {
+        $from = $PRONTUS_VARS{'form_from'};
+    } elsif (&glib_cgi_04::param('email') ne '') {
         $from = &glib_cgi_04::param('email');
     } else {
         $from = $PRONTUS_VARS{'form_from'};
@@ -544,36 +546,36 @@ sub valida_data {
     # Chequea campos requeridos.
     if($PRONTUS_VARS{'chk_form_multivista_strict'}) {
         print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
-        
+
         print STDERR "Vistas: \n";
         foreach my $v (keys %lib_form::MULTIVISTAS) {
             print STDERR "[$v]\n";
         }
-        
+
         foreach $key (keys %PRONTUS_VARS) {
             next unless($key =~ /chk_form_required_(\w+)/);
-            
+
             $nombre = $1;
             print STDERR "check encontrado: [$key]\n";
             print STDERR "vistavar: [$VISTAVAR]\n";
             print STDERR "nombre: [$nombre]\n";
-            
+
             # Estamos en una vista, por lo tanto se valida sólo si el nombre termina en esa vista
             if($VISTAVAR) {
-                
+
                 if($nombre =~ /${VISTAVAR}$/) {
                     $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
                     if (&glib_cgi_04::param($nombre) eq '') {
                         &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
                     };
                 };
-            
+
             # Si no viene la vista no puede terminar en ninguna de las vistas
             } elsif($nombre =~ /_([^_]+?)$/) {
                 my $posiblevista = $1;
                 print STDERR "posiblevista: $posiblevista\n";
                 print STDERR "validando: $prontus_varglb::MULTIVISTAS{$posiblevista}\n";
-                
+
                 if(! $lib_form::MULTIVISTAS{$posiblevista}) {
                     $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
                     if (&glib_cgi_04::param($nombre) eq '') {

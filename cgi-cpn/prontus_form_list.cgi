@@ -109,7 +109,12 @@ main: {
 
         # Se lee el archivo de orden
         my $jsonorder = &glib_fildir_02::read_file("$ROOT$DIRFORM/$ORDERFILE");
-        my $orderhashref = &JSON::from_json($jsonorder);
+        my $orderhashref;
+        if($JSON::VERSION =~ /^1\./) {
+            $orderhashref = objToJson($jsonorder);
+        } else {
+            $orderhashref = &JSON::from_json($jsonorder);
+        }
         my %orderhash = %$orderhashref;
 
         # Se agregan las 3 primeras columnas fijas
@@ -140,7 +145,12 @@ main: {
 
             next unless($file =~ /\d{14}\.json/);
             my $json = &glib_fildir_02::read_file("$ROOT$DIRFORM/$file");
-            my $jsonhashref = &JSON::from_json($json);
+            my $jsonhashref;
+            if($JSON::VERSION =~ /^1\./) {
+                $jsonhashref = objToJson($json);
+            } else {
+                $jsonhashref = &JSON::from_json($json);
+            }
             my %jsonhash = %$jsonhashref;
             my @CSV_ROW;
             # Se recorren según el orden

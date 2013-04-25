@@ -41,7 +41,9 @@ use glib_cgi_04;
 use lib_prontus;
 use lib_form;
 
+use Encode;
 use JSON;
+
 my %FORM;
 my $CSV;
 
@@ -101,7 +103,7 @@ main: {
         if($JSON::VERSION =~ /^1\./) {
             $orderhashref = jsonToObj($jsonorder);
         } else {
-            $orderhashref = JSON->decode_json($jsonorder);
+            $orderhashref = &JSON::from_json($jsonorder);
         }
         my %orderhash = %$orderhashref;
         # print "Content-Type:text/html\n\n";
@@ -124,7 +126,7 @@ main: {
             if($JSON::VERSION =~ /^1\./) {
                 $jsonhashref = jsonToObj($json);
             } else {
-                $jsonhashref = JSON->decode_json($json);
+                $jsonhashref = &JSON::from_json($json);
             }
             my %jsonhash = %$jsonhashref;
 
@@ -148,11 +150,14 @@ main: {
         $CSV = $headers . "\n". $CSV;
     }
 
-
-    # El archivo viene en UTF-8
-    #~ print STDERR "$lib_prontus::FORM_CSV_CHARSET\n";
+    # Se hace esto para que no se caiga la funcion con strings muy largos
     if($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
-        utf8::decode($CSV);
+        my $oct = decode("utf8", $CSV);
+        $CSV = encode("iso-8859-1", $oct);
+        binmode STDOUT, ":iso-8859-1";
+
+    } else {
+        binmode STDOUT, ":utf8";
     };
 
     print "Content-Type:application/x-download\n";
