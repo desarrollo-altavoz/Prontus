@@ -1,4 +1,21 @@
 ====================================================================================================
+11.2.63 - 25/04/2013
+====================================================================================================
+bugfix: Se agrega un IF en la glib_html_02 y Prontus Form para prevenir error en sitios con módulo JSON version 1
+bugfix: Se escapea el caracter $ en caso que venga en los parámetros de la Prontus Function
+changes: En la Portadas Taxonómicas, al generar los filtros de "///" se dejan fuera los que no tengan sección
+changes: Se cambia formato de los logs de errores al renovar semaforos, en las Portadas Taxonómicas, para facilitar lectura
+changes: Se baja el sleep al crear las Portadas Taxonómicas, de 500000us a 5000us
+bugfix: Se arregla listado de portadas disponibles para interfaz drag & drop. El nombre quedaba repetido.
+bugfix: Se agrega código para setear binmode al descargar en utf8, el archivo de respaldo de Prontus Form
+improvement: El listado de los envíos, ahora lee desde el json. Si no hay order.json desde el csv.
+improvement: Se crea nueva macro resevada de FID, llamada: _form_cabecera.html
+changes: Se agrega una nueva marca reservada de prontus form: chk_form_force_from, para forzar en FROM del correo que va al admin
+changes: Se aplican cambios menores en la macro _form_backup.html, para ordenar
+changes: Se limita el listado de los envíos del Prontus Form a los últimos 50 (en el caso de json) o primeros 50 (en el caso de csv).
+changes: Se mueven algunas funciones de Prontus Form hacia la lib_form.pm para centralizar código
+
+====================================================================================================
 11.2.62 - 12/04/2013
 ====================================================================================================
 - bugfix: Al leer los postprocesos de portada, se parsean la macros antes. Así se puede definir Post Procesos en las macros
@@ -6,7 +23,7 @@
 - bugfix: En prontus form, se valida que el campo: _form_vista traiga el nombre de una vista válida definida en el CFG (o bien vacío)
 - improvement: Producto de lo anterior, se crea el mensage: MSG ->  wrong_vista que puede ser re-definido en la plantilla
 - improvement: La CGI que descarga el archivo de respaldo de datos del prontus form, arma un CSV nuevo en base a los archivos JSON
-          
+
 ====================================================================================================
 11.2.61 - 02/04/2013
 ====================================================================================================
@@ -58,14 +75,14 @@
 - bugfix: Error al contar los registros de la tabla: TAGSART
 - changes: Se agrega variable FFMPEG_PARAMS, para ingresar parámetros custom en la transcodificación de videos.
 - bugfix: Se mejora la manera en que se recupera la contraseña, agregando una confirmación por email antes del cambio.
-    
+
 ====================================================================================================
 11.2.59 - 21/02/2013
 ====================================================================================================
 - notice: Se actualiza la version de la UI de jquery a la 1.9.2
 - improvement: Se optimiza la lectura de los nombres de las taxonomías, guardandolas en un caché temporal
 - improvement: Se evita el parseo de marcas innecesarias.
-- changes: Se cambian los tooltips para indicar si un artículo está publicado, por los tooltips de la UI de jquery 
+- changes: Se cambian los tooltips para indicar si un artículo está publicado, por los tooltips de la UI de jquery
 - changes: Se agrega el nombre del archivo de la portada (sobre el nombre) + la fecha/hora de la ultima modificacion
 - changes: En el FID, se cambia el texto de cierre de comentarios por uno más claro.
 - bugfix: Editor de Imagenes: Se corrige bug al intentar usar el módulo opcional: Image::JpegTran
