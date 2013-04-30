@@ -1638,7 +1638,7 @@ sub generar_vista_art {
         $titular =~ s/<\!\[CDATA\[(.*?)\]\]>/\1/i;
         $titular = &lib_prontus::saca_tags_rets($titular);
         utf8::decode($titular);
-        
+
         my $vista;
         $vista = "<br/>Vista asociada[$mv]\n" if($mv);
         $Artic::ERR = 'Plantilla de artículo vacia o no existe, el art. ' . $this->{ts} . ' (' . $titular . ") se creó en blanco.<br/>Archivo de plantilla con problemas [".$campos_xml{'_plt'}."]".$vista;
@@ -1937,10 +1937,10 @@ sub _parsing_vtxt {
     my $nom_campo = shift;
     my $val_campo = shift;
 
-#    my $refhash_subtits = shift;
-#    my %hash_subtits = %$refhash_subtits;
+    #~ my $refhash_subtits = shift;
+    #~ my %hash_subtits = %$refhash_subtits;
 
-    return $buffer if($buffer !~ /%%$nom_campo/i);
+    #~ return $buffer if($buffer !~ /%%$nom_campo/i);
 
     my ($looptit, $tithtml) = $this->_get_data4subtit($buffer, $nom_campo);
     my $curr_nrotit = '0';

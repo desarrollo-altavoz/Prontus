@@ -6264,6 +6264,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.64 - 30/04/2013 - CVI
 ====================================================================================================
 
+- Prontus en General:
+    [bugfixes]
+        - Se corrige error al parsear VTXT cuando no había VTXT, por ejemplo en portadas.
+    [files]
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+
 - Transcodificacion:
     [bugfixes]
         - Se captura excepción al intentar hacer un unpack Q, ya que se caía.
