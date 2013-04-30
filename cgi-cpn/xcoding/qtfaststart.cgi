@@ -71,7 +71,7 @@ main: {
 
     # Fixing: En algunos servers queda como 600
     chmod 0644, "$infile";
-    
+
     warn("Proceso terminado ok.");
 }
 
@@ -197,7 +197,11 @@ sub process {
     binmode $datastream;
 
     # Get the top level atom index
-    &get_index($datastream, 1);
+    eval { &get_index($datastream, 1) };
+    if ($@) {
+        print STDERR "Error al hacer get_index[$@]";
+        return;
+    }
 
     my %indices = %INDICES;
     my $mdat_pos = 999999999;

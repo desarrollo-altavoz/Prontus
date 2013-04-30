@@ -246,7 +246,11 @@ sub checkMp4 {
     binmode $datastream;
 
     # Get the top level atom index
-    &get_index($datastream, 1);
+    eval { &get_index($datastream, 1) };
+    if ($@) {
+        print STDERR "Error al hacer get_index[$@]";
+        return 1;
+    }
 
     my %indices = %INDICES;
     my $mdat_pos = 999999999;
