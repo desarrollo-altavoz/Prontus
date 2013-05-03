@@ -5,14 +5,14 @@ var Admin = {
     dir_cgi_cpn: '',
     dir_cgi_bin: '',
 
-    counterError: 0,
-    maxErrorCounter: 3,
+    counterError:0,
+    maxErrorCounter:3,
 
     urlLogout: './prontus_logout.cgi',
     urlPing: './prontus_ping_inuse.cgi',
     urlUserInfo: 'prontus_head_info.cgi',
 
-    timePing: 10000,
+    timePing: 5000,
     timerPingId: null,
 
     isMSIE: false,
@@ -47,6 +47,7 @@ var Admin = {
         });
 
         Admin.randcode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+        Admin.instalaDialogo();
     },
 
 
@@ -235,17 +236,19 @@ var Admin = {
             dataType: 'json',
             cache: false,
             complete: function() {
-                //alert(nom_rec);
-                // alert('en 10 segundos mas vuelvo...');
                 Admin.timerPingId = setTimeout(function() {
                     completeFunc();
                 }, Admin.timePing);
-
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 Admin.counterError++;
                 if(Admin.counterError >= Admin.maxErrorCounter) {
-                    SubmitForm.handleError(Admin.urlPing, XMLHttpRequest, textStatus, errorThrown);
+                    if($('#dialogping').dialog("isOpen") !== true) {
+                        //alert(XMLHttpRequest+', '+textStatus+', '+errorThrown);
+                        $('#dialogping .error').html(errorThrown);
+                        $('#dialogping .detalle').html("Status:\n"+XMLHttpRequest.status+"\n\nResponseHeaders:\n"+XMLHttpRequest.getAllResponseHeaders());
+                        $('#dialogping').dialog("open");
+                    }
                 }
             },
             success: function(resp, textStatus) {
@@ -256,11 +259,43 @@ var Admin = {
                 if(resp.status != 1) {
                     Admin.displayMessage(resp.msg, 'error');
                 } else {
+                    if($('#dialogping').dialog("isOpen") === true) {
+                        $('#dialogping').dialog("close");
+                    };
                     Admin.updateConcurrency(resp.msg, tipo_rec);
                     Admin.updateLockRecurso(resp.lock, tipo_rec);
                 }
             }
         });
+    },
+    // -------------------------------------------------------------------------
+    instalaDialogo: function () {
+
+        if($("#dialogping").size() < 1) {
+            $("body").append('<div></div>');
+            $("body div:last").attr('id', "dialogping");
+            var strerror = "Se ha producido un error de conexión.<br/>El status entregado por el servidor:<br/><br/><span class=\"error\"></span><br/><br/>"
+                    + "Espere unos minutos, si el problema persiste, consulte con el administrador de su servidor web. "
+                    + "Para ver el detalle técnico del error presione <a href=\"#\">aquí</a>"
+                    + "<textarea class=\"detalle\"></textarea>";
+            $("#dialogping").html(strerror);
+            $("#dialogping a").bind('click', function() {
+                $("#dialogping .detalle").toggle();
+            });
+            $("#dialogping").dialog({
+                title: "Error de Conexión",
+                draggable: false,
+                width: 600,
+                height: 400,
+                modal: true,
+                autoOpen: false,
+                position: {
+                    my: "center",
+                    at: "center top+300",
+                    of: '#main'
+                }
+            });
+        }
     },
 
     // -------------------------------------------------------------------------

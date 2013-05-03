@@ -20,6 +20,11 @@ img {border:0;}
 /* Retoques para el datepicker */
 .bodysite .ui-datepicker {font-size:75%;}
 .ui-datepicker-trigger {cursor:pointer; margin-left:4px;}
+.ui-dialog .ui-dialog-title {font-size:80%;}
+#dialogping {font-size:14px; color:#888888;}
+#dialogping .error {font-weight:bold;}
+#dialogping .detalle {width:500px; height:200px; margin-top:4px; border:1px solid #cccccc; font-family:monospace; display:none;}
+#dialogping a {font-weight: bold; color: #09F;}
 /* Para que los labels tengan la manito */
 label {cursor:pointer;}
 /* Para que funcione correctamente el Colorbox */
