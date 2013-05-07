@@ -278,7 +278,12 @@ sub check_xcoding {
     if($resp =~ /--enable-libx264/) {
       print "ok\n";
     } else {
-      print "<span class=\"check-error\">not enabled</span>\n";
+      my $resp = `ffmpeg -codecs 2> /dev/null | grep x264`;
+      if($resp ne '') {
+        print "ok\n";
+      } else {
+        print "<span class=\"check-error\">not enabled</span>\n";
+      };
     }
 
     # Se comprueba soporte para libfaac
@@ -286,8 +291,13 @@ sub check_xcoding {
     if($resp =~ /--enable-libfaac/) {
       print "ok\n";
     } else {
-      print "<span class=\"check-error\">not enabled</span>\n";
-    }
+      my $resp = `ffmpeg -codecs 2> /dev/null | grep libfaac`;
+      if($resp ne '') {
+        print "ok\n";
+      } else {
+        print "<span class=\"check-error\">not enabled</span>\n";
+      };
+    };
 
     # Se comprueba presencia de la libx264
     printf("* %28s %-12s ", 'libreria x264', '');

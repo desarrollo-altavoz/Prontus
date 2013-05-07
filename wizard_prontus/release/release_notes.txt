@@ -6264,11 +6264,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.64 - 03/05/2013 - CVI
 ====================================================================================================
 
-- Prontus en General:
+- Prontus en General
     [bugfixes]
         - Se corrige error al parsear VTXT cuando no había VTXT, por ejemplo en portadas.
-        - Se elimina el use lib_prontus; de la cgi: prontus_chek_platform.cgi no era necesario, y si un
-          modulo usado en la lib_prontus no existía, se cae el chequeo de plataforma
     [cambio]
         - Se cambia el alert cuando no hay conexión o errores en el servidor por un Dialog modal (de la UI jQuery)
           El alert era muy molestoso y poco elegante. Más adelante se podría bloquear completamente la interface.
@@ -6280,8 +6278,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
         /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
 
-
-- Transcodificacion:
+- Transcodificacion
     [bugfixes]
         - Se captura excepción al intentar hacer un unpack Q, ya que se caía.
           Se investigará mas adelante si se puede arreglar de mejor manera
@@ -6289,4 +6286,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
         /cgi-cpn/xcoding/qtfaststart.cgi
 
-
+- Verificar Plataforma
+    [bugfixes]
+        - Se elimina el use lib_prontus; de la cgi: prontus_chek_platform.cgi no era necesario, y si un
+          modulo usado en la lib_prontus no existía, se cae el chequeo de plataforma
+    [mejoras]
+        - Al chequear el soporte de libx264 y libfaac, se habilita el chequeo a través de "ffmpeg -codecs"
+          en vez de depender de que el soporte venga en la versión del ffmpeg
+    [files]
+        /cgi-cpn/prontus_check_platform.cgi
