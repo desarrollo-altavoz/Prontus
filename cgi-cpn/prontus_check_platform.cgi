@@ -25,7 +25,7 @@ BEGIN {
 
 use strict;
 use prontus_varglb;
-use lib_prontus;
+#~ use lib_prontus;
 &prontus_varglb::init();
 
 $| = 1;
@@ -58,7 +58,7 @@ my $MODULES = [
   {name => 'URI::Escape', version => '3.20'},
 
   {name => 'PHP::Session', version => '0.26'},
-  
+
   {name => 'Digest::SHA1', version => '2.0'}
 
 
