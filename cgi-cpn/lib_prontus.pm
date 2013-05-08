@@ -2040,7 +2040,7 @@ sub load_config {
   if ($buffer =~ m/\s*FOTO_MAX_PIXEL\s*=\s*("|')(.*?)("|')/) {
     $prontus_varglb::FOTO_MAX_PIXEL = $2;
   };
-  
+
   if ($buffer =~ m/\s*FFMPEG_PARAMS\s*=\s*("|')(.*?)("|')/) {
     $prontus_varglb::FFMPEG_PARAMS = $2;
   };
@@ -2702,9 +2702,9 @@ sub add_macros {
 # %PRIO = ();
 sub parser_area {
 
-    my($area, $theloop, $dir_server, $prontus_id, 
+    my($area, $theloop, $dir_server, $prontus_id,
             $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil) = @_;
-        
+
     # Obtiene lista de articulos de esta area.
     my $num_artics_in_area = 0;
     my (%articulos) = (); # Articulos que pertenecen a esta area.
@@ -2726,17 +2726,17 @@ sub parser_area {
     # Aca se calculan los articulos que efectivamente serán publicados
     my %array_artics;
     foreach my $key (@keys_articulos) {
-        
+
         my $ts_artic = $key;
         $ts_artic =~ s/\..*//; # borra extension al nombre del archivo
-        
+
         # Revisar VoBo de publicacion
         my $vb_key = $lib_prontus::VB{$ts_artic};
         $vb_key = 1 if ($vb_key eq '');
         if ($vb_key eq '0') {
             next;
         };
-        
+
         my $artic_obj = Artic->new(
                 'prontus_id'=>$prontus_id,
                 'public_server_name'=>$prontus_varglb::PUBLIC_SERVER_NAME,
@@ -2745,7 +2745,7 @@ sub parser_area {
                 'ts'=>$ts_artic, # si no va, asigna uno nuevo
                 'campos'=>{}) || die "Error inicializando objeto articulo: $Artic::ERR\n";
         my %campos_xml = $artic_obj->get_xml_content();
-        
+
         # Filtro por fechap/horap y fechae/horae del artic
         if ($control_fecha eq 'SI') {
             if (! &fechas_ok($ts_preview, $campos_xml{'_fechap'}, $campos_xml{'_horap'}, $campos_xml{'_fechae'}, $campos_xml{'_horae'})) {
@@ -2769,15 +2769,15 @@ sub parser_area {
     # Aca se asume que todos los artículos serán parseados
     my $stop_loop = 0;
     my $loopcounter = 0;
-    while (($loopcounter <= $#filtered_keys) && ($stop_loop < 1)) {    
-        
+    while (($loopcounter <= $#filtered_keys) && ($stop_loop < 1)) {
+
         my $key = $filtered_keys[$loopcounter];
         my $ts_artic = $key;
         $ts_artic =~ s/\..*//; # borra extension al nombre del archivo
         if($ts_artic !~ /\d{14}/) {
             $ts_artic = '';
-        };        
-        
+        };
+
         my $artic_obj = Artic->new(
                 'prontus_id'=>$prontus_id,
                 'public_server_name'=>$prontus_varglb::PUBLIC_SERVER_NAME,
@@ -2898,7 +2898,7 @@ sub parser_area {
                 #~ print STDERR "STOPLOOP\n";
             };
         };
-        
+
         #~ print STDERR "Fin de la iteracion $loopcounter / $totartics\n\n";
     };
     #~ print STDERR "Fin del area $area\n------------------ \n\n\n";
@@ -4699,7 +4699,10 @@ sub borra_taxport {
 # 20120723 - JOR - Los ultimos 3 parametros corresponden al nombre de la seccion, tema y subtema para construir la version 2.0 de las friendly url.
 sub parse_filef {
   my ($buffer, $titular, $ts, $prontus_id, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1) = @_;
+
   return $buffer if (!$ts || !$prontus_id || !$titular);
+  return $buffer unless($buffer =~ /%%_FILEURL%%/i);
+
   my $ext;
   $ext = $1 if ($relpath_artic =~ /\.(\w+)$/);
   $titular = &saca_tags_rets($titular);

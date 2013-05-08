@@ -6272,6 +6272,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           El alert era muy molestoso y poco elegante. Más adelante se podría bloquear completamente la interface.
         - Se agrega información básica sobre el error
         - Se baja el tiempo request de 10 segundos a 5 segundos
+    [mejoras]
+        - Se evita el cálculo de la Friendly URL si el buffer no trae %%_fileurl%%
     [files]
         /cgi-cpn/prontus_check_platform.cgi
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
