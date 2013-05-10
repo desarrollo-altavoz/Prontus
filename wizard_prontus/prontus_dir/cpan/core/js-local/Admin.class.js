@@ -271,9 +271,10 @@ var Admin = {
     // -------------------------------------------------------------------------
     instalaDialogo: function () {
 
-        if($("#dialogping").size() < 1) {
-            $("body").append('<div></div>');
-            $("body div:last").attr('id', "dialogping");
+        if($("#dialogping-outter").size() < 1) {
+            $("body").append('<div class="dialogping-outter"></div>');
+            $(".dialogping-outter:last").append('<div></div>');
+            $(".dialogping-outter div:last").attr('id', 'dialogping');
             var strerror = "Se ha producido un error de conexión.<br/>El status entregado por el servidor:<br/><br/><span class=\"error\"></span><br/><br/>"
                     + "Espere unos minutos, si el problema persiste, consulte con el administrador de su servidor web. "
                     + "Para ver el detalle técnico del error presione <a href=\"#\">aquí</a>"
