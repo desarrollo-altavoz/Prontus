@@ -631,7 +631,7 @@ label {cursor:pointer;}
 .franja-head .custom-combobox-input {font-size: 11px !important;height: 15px;margin: 0;padding: 3px; color: #333333 !important; }
 .franja-head .ui-state-default .ui-icon {background-image: url("../js-local/jquery/ui/css/ui-lightness/images/ui-icons_222222_256x240.png") !important;}
 .franja-head .custom-combobox-toggle {float: right;height: 21px;}
-.ui-autocomplete {overflow: auto; height: 450px; font-size: 13px !important; text-align: left;}
+.ui-autocomplete {overflow: auto; max-height: 450px; font-size: 13px !important; text-align: left;}
 .ui-menu-item a:hover {background: #cecece !important;border-color: #cecece;border-radius: 0;color: #333333;}
 .franja-head .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
     background: #cecece !important;
