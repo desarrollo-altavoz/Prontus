@@ -10,6 +10,7 @@
     <!-- jquery base -->
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/jquery.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery.combobox.widget.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/lang/jquery.ui.datepicker-es.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
@@ -37,6 +38,7 @@
       $(document).ready(function () {
         Admin.init('%%_prontus_id%%');
         Listartic.init('%%_prontus_id%%');
+        $( "#cmb_port" ).combobox();
       });
     </script>
   </head>
