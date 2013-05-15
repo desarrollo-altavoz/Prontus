@@ -669,5 +669,22 @@ label {cursor:pointer;}
 /* Pantalla de bloqueo */
 .lockscreen {background: none repeat scroll 0% 0% black; height: 100%; position: absolute; z-index: 99999; opacity: 0.8; filter: alpha(opacity = 80); border: 4px solid rgb(255, 128, 0); width: 972px; top: 130px;}
 .lockscreen h3 {margin-top: 250px; color: #FFFFFF;}
+
+/* Comobox de portadas. */
+.franja-head .custom-combobox a:hover {background: none repeat scroll 0 0 #cecece;color: #333333;border-color: #cecece;}
+.franja-head .custom-combobox-input {font-size: 11px !important;height: 15px;margin: 0;padding: 3px; color: #333333 !important; }
+.franja-head .ui-state-default .ui-icon {background-image: url("../js-local/jquery/ui/css/ui-lightness/images/ui-icons_222222_256x240.png") !important;}
+.franja-head .custom-combobox-toggle {float: right;height: 21px;}
+.ui-autocomplete {overflow: auto; max-height: 450px; font-size: 13px !important; text-align: left;}
+.ui-menu-item a:hover {background: #cecece !important;border-color: #cecece;border-radius: 0;color: #333333;}
+.franja-head .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    background: #cecece !important;
+    border-color: #cecece !important;
+    border-radius: 0;
+    color: #333333 !important;
+}
+
 /*-------------------oo------------------------*/
 /*FIN*/
+
+
