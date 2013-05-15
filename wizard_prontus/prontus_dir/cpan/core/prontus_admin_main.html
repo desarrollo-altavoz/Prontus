@@ -27,19 +27,9 @@
       // Variables globales usadas para el publicador.
       $(document).ready(function () {
         Admin.init('%%_prontus_id%%');
-        Opciones.init();
+        Opciones.init('%%_prontus_id%%');
         Opciones.validarMaxartics('%%TAXPORT_MAXARTICS%%');
         Opciones.validarTaxNivCero('%%TAXONOMIA_NIVELES%%');
-
-        $.datepicker.setDefaults($.datepicker.regional.es);
-        $('#fecharegen').datepicker({
-            //dateFormat: 'dd/mm/yy',
-            dateFormat: 'yymmdd',
-            buttonImage: '/%%_prontus_id%%/cpan/core/imag/boto/calendar.gif',
-            buttonImageOnly: true,
-            showOn: 'both'
-        });
-
       });
     </script>
   </head>
@@ -67,7 +57,7 @@
             <div class="boton-gris1" id="tabs-admin">
               <a class="button" href="#tab7"><span>Configuración</span></a>
               <a class="button" href="#tab1"><span>Base de Datos</span></a>
-              <a class="button" href="#tab2"><span>Regeneración de artículos</span></a>
+              <a class="button" href="#tab2"><span>Regeneración</span></a>
               <a class="button" href="#tab3"><span>Buscador</span></a>
               <a class="button" href="#tab4"><span>Logs de operación</span></a>
               <a class="button" href="#tab5"><span>Crons</span></a>

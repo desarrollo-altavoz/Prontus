@@ -2,7 +2,7 @@ var Opciones = {
     urlBD: 'prontus_set_bd.cgi',
     urlRegenBD: 'prontus_regenerabd.cgi',
     urlRegenART: 'prontus_art_regen.cgi',
-    urlRegenARTMain: 'prontus_art_regen_main.cgi',
+    urlRegenPORT: 'prontus_port_regen.cgi',
     urlRegenDamBD: 'dam/prontus_dam_regen.cgi',
     urlCheckInst: 'prontus_check_install.cgi',
     urlCheckPlat: 'prontus_check_platform.cgi',
@@ -18,16 +18,17 @@ var Opciones = {
     maxarticsLimit: 1000,
 
     // -------------------------------------------------------------------------
-    init: function() {
+    init: function(prontus_id) {
 
         var default_tab = $('#default_tab').val();
-
         if (default_tab === '') {
             $('#tabs-admin').idTabs();
             $('#tabs-config').idTabs();
+            $('#tabs-regen').idTabs();
         } else {
             $('#tabs-admin').idTabs('tab7');
             $('#tabs-config').idTabs(default_tab);
+            $('#tabs-regen').idTabs();
         }
 
         // Deshabilita el ESC
@@ -40,6 +41,15 @@ var Opciones = {
           maxWidth: '95%',
           maxHeight: '90%',
           iframe: true
+        });
+
+        // Para el Datepicker de las opciones avanzadas
+        $.datepicker.setDefaults($.datepicker.regional.es);
+        $('#fecharegen').datepicker({
+            dateFormat: 'dd-mm-yy',
+            buttonImage: '/'+prontus_id+'/cpan/core/imag/boto/calendar.gif',
+            buttonImageOnly: true,
+            showOn: 'both'
         });
     },
 
@@ -105,19 +115,11 @@ var Opciones = {
     },
 
     // -------------------------------------------------------------------------
-    //~ accionActualizacionMasiva: function() {
-        //~ var obj = Opciones.optsDefault;
-        //~ obj.href = Opciones.urlRegenARTMain + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg';
-        //~ obj.height = '360';
-        //~ $.fn.colorbox(obj);
-    //~ },
-
-    // -------------------------------------------------------------------------
     ejecutarActualizacionMasiva: function () {
         // Validaciones.
         var fids_checked = $('input[name="INPUT_FIDS_REGEN[]"]:checked').size();
         if (fids_checked == 0) {
-            alert("Debe seleccionar al menos 1 FID.")
+            alert("Debe seleccionar al menos 1 FID.");
         } else {
              var href = '/' + Admin.dir_cgi_cpn + '/' +Opciones.urlRegenART + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg';
             // Fids.
@@ -140,10 +142,17 @@ var Opciones = {
             href += '&mvs=' + mvs_str;
 
             // Fecha.
-            var fecha = $('input[name="fecharegen"]').val();
+            var fecha = $('#fecharegen').val();
             if (fecha != '') {
+
+                var arr = fecha.split('-');
+                if(arr.length !== 3) {
+                    alert("El formato de la fecha no es válido, intente dd-mm-yyyy  ");
+                    return;
+                }
+                fecha = '' + arr[2] + arr[1] + arr[0];
                 href += '&fecha=' + fecha;
-                href += '&op=' + $('select[name="operador"]').val();
+                href += '&op=' + $('#operador-art').val();
             } else {
                 href += '&fecha=@all&op=';
             }
@@ -155,7 +164,31 @@ var Opciones = {
             }
         }
     },
+    // -------------------------------------------------------------------------
+    ejecutarActualizacionMasivaPortadas: function() {
 
+         var href = '/' + Admin.dir_cgi_cpn + '/' +Opciones.urlRegenPORT + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg';
+
+        // Ejecutar Post Procesos
+        var check_pp = $('#CHK_regenerar_post_procesos').is(':checked') ? 'si' : '';
+        href = href + '&check_pp='+check_pp;
+
+        // Ejecutar Operador para las ediciones
+        var operador = $('#operador').val();
+        operador = (typeof operador === 'undefined') ? '' : operador;
+        href = href + '&operador='+operador;
+
+        var cmb_edic = $('#cmb_edic').val();
+        cmb_edic = (typeof cmb_edic === 'undefined') ? '' : cmb_edic;
+        href = href + '&cmb_edic='+cmb_edic;
+
+        if (confirm('¿Está seguro de ejecutar la actualización masiva de portadas?')) {
+            var obj = Opciones.optsDefault;
+            obj.href = href;
+            obj.height = '360';
+            $.fn.colorbox(obj);
+        }
+    },
     // -------------------------------------------------------------------------
     checkboxToggleChecked: function(name, action) {
         if (action == true) {
@@ -371,7 +404,7 @@ var Opciones = {
             $(o).addClass('selected');
         }
 
-        $('.regen_avanzado').slideToggle('fast');
+        $(o).parents('.mensajes').siblings('.regen_avanzado').slideToggle('fast');
     },
 
     // -------------------------------------------------------------------------

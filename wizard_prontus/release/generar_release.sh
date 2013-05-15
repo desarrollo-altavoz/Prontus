@@ -19,16 +19,16 @@ function limpiarDirectorio {
 function traerModelo {
     modelo=$1;
     url="http://www.prontus.cl/release/models/"
-    
+
     rutamodelos="$RELEASEPATH/wizard_prontus/modelos"
     if [ ! -d "$rutamodelos" ] ; then
         mkdir "$rutamodelos"
     fi
-    
+
     rutamodelo="$rutamodelos/$modelo"
     limpiarDirectorio "$rutamodelo"
     urlmodelo="$url/$modelo"
-    
+
     limpiarDirectorio "$rutamodelo"
     wget -nv "$urlmodelo/$modelo.cfg" -O "$rutamodelo/$modelo.cfg";
     wget -nv "$urlmodelo/$modelo-big.png" -O "$rutamodelo/$modelo-big.png";
@@ -36,10 +36,10 @@ function traerModelo {
     wget -nv "$urlmodelo/$modelo.tgz.md5" -O "$rutamodelo/$modelo.tgz.md5";
     wget -nv "$urlmodelo/$modelo.tgz" -O "$rutamodelo/$modelo.tgz";
     wget -nv "$urlmodelo/release_notes.txt" -O "$rutamodelo/release_notes.txt";
-    
+
     md5a=$(cat $rutamodelo/$modelo.tgz.md5)
     md5a=`expr match "$md5a" '.*= \([a-z0-9]*\)'`
-    
+
     cd $rutamodelo
     if [ -x /sbin/md5 ] ; then
         md5b=`/sbin/md5 "$modelo.tgz"`
@@ -47,8 +47,8 @@ function traerModelo {
         md5b=`/usr/bin/openssl dgst -md5 "$modelo.tgz"`
     fi
     md5b=`expr match "$md5b" '.*= \([a-z0-9]*\)'`
-    
-    if [ "$md5a" == "$md5b" ] 
+
+    if [ "$md5a" == "$md5b" ]
     then
         echo "Modelo descargado correctamente"
         tar xfz "$rutamodelo/$modelo.tgz" -C "$rutamodelo"
@@ -89,12 +89,13 @@ cd $BASEDIR
 tar czf "$RELEASEPATH/files.$release.tgz" \
     --exclude=*.log \
     --exclude=cgi-cpn/develop_calculo_quota.pl \
+    --exclude=cgi-cpn/pproc \
     --exclude=*.orig \
     cgi-bin/ \
     cgi-cpn/ \
     wizard_prontus/core/ \
     wizard_prontus/prontus_dir/cpan/core/
-    
+
 #~ Generando md5
 echo "Generando md5"
 cd $RELEASEPATH
@@ -123,7 +124,7 @@ traerModelo "modelo_simple"
 traerModelo "modelo_vacio"
 
 #~ Finalmente se comprime todo y se deja dentro de release
-cd $RELEASEPATH 
+cd $RELEASEPATH
 tar czf "$BASEDIR/release.$release.tgz" *
 mv "$RELEASEPATH" "$BASEDIR/backup"
 limpiarDirectorio "$RELEASEPATH"

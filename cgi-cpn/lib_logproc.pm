@@ -11,6 +11,7 @@
 
 package lib_logproc;
 
+$JS_FILE = '';
 $LOG_FILE = '';
 $MODO_WEB = 0;
 
@@ -107,7 +108,18 @@ sub add_to_log_finish {
   &add_to_log($newmsg);
   exit if ($do_exit == 1);
 };
+# -------------------------------------------------------------------------------------------------#
+sub finishLoading {
 
+    my ($msg, $total) = ($_[0], $_[1]);
+    if($total) {
+      $msg = '{"status":1, "msg":"'.$msg.'", "total": "'.$total.'"}';
+    } else {
+      $msg = '{"status":1, "msg":"'.$msg.'", "total": "0"}';
+    }
+    print STDERR "msg[$msg]\n";
+    &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$JS_FILE", $msg);
+};
 # ------------------------------------------------------------------------------
 sub handle_error {
   my ($msg, $ok_regs) = @_;
