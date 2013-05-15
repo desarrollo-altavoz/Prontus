@@ -1,0 +1,59 @@
+
+    <div class="mensajes">
+        <p>Este proceso regenerará todas las <b>portadas</b> existentes en el publicador. En el caso de ser múltiedición, se regenerará la edición base, la actual y la última.
+            Puede revisar la configuración avanzada, para regenerar sólo algunas.</p>
+        <div class="botonera-general">
+            <div class="boton-generico aleft"><a href="#" onclick="Opciones.ejecutarActualizacionMasivaPortadas(); return false;" class="button"><span>Ejecutar el Proceso</span></a></div>
+        </div>
+        <br/>
+
+        <div class="botonera-adicional">
+            <div class="boton-gris3 aleft">
+                <a onclick="Opciones.toggleRegenAvanzado(this); return false;" href="#" class="button"><span>Ver configuración avanzada</span></a>
+            </div>
+            <!--link_last_proc-->
+            <div class="boton-gris3 aleft">
+                <a onclick="Opciones.openPopupLog(this); return false;" href="/%%_prontus_id%%/cpan/procs/prontus_port_regen_log.html" class="button"><span>Ver log del último proceso</span></a>
+            </div>
+            <!--/link_last_proc-->
+        </div>
+    </div>
+    <div class="regen_avanzado" style="display: none;">
+        <h3 class="titulo">Configuración avanzada</h3>
+        <table width="100%">
+            <tr>
+                <td width="40%" valign="top">
+                    <div class="regen_port">
+                        <p>Post Procesos</p>
+                        <span class="ayuda">Indique si desea que los post procesos de portada se ejecuten para cada portada</span>
+                        <div class="opcion">
+                            <input type="checkbox" name="CHK_regenerar_post_procesos" id="CHK_regenerar_post_procesos" value="si" />
+                            <label for="CHK_regenerar_post_procesos">Ejecutar post procesos</label>
+                        </div>
+                    </div>
+                </td>
+                <!--admin_ediciones-->
+                <td width="1%" class="separador">&nbsp;</td>
+                <td width="60%" valign="top">
+                    <div class="regen_port">
+                        <p>Ediciones</p>
+                        <span class="ayuda">Si no se selecciona nada, se regenerarán las ediciones:<br/> base, última y vigente</span>
+                        <table class="tableform cmbedic">
+                        <tr>
+                            <td align="left">Edición(es)</td>
+                            <td align="left">
+                                <select name="operador" id="operador">
+                                    <option value="igual">Exactamente</option>
+                                    <option value="menor">Menor o igual que</option>
+                                    <option value="mayor">Mayor o igual que</option>
+                                </select>
+                            </td>
+                            <td align="left">%%_edic%%</td>
+                        </tr>
+                        </table>
+                    </div>
+                </td>
+                <!--/admin_ediciones-->
+            </tr>
+        </table>
+    </div>

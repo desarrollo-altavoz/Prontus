@@ -6261,12 +6261,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.64 - 14/05/2013 - CVI/JOR
+11.2.64 - 15/05/2013 - CVI/JOR
 ====================================================================================================
 
 - Prontus en General
     [bugfixes]
         - Se corrige error al parsear VTXT cuando no había VTXT, por ejemplo en portadas.
+        - Se eliminan de la release algunos archivos basura de la carpeta: /cgi-cpn/pproc
     [cambio]
         - Se cambia el alert cuando no hay conexión o errores en el servidor por un Dialog modal (de la UI jQuery)
           El alert era muy molestoso y poco elegante. Más adelante se podría bloquear completamente la interface.
@@ -6307,12 +6308,37 @@ Esto quedó actualizado en el check platform y detallado más abajo.
        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/ui/js/jquery.combobox.widget.js
        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+<<<<<<< HEAD
        /wizard_prontus/prontus_dir/cpan/core/macros/listado_titulos.html
     
+=======
+
+>>>>>>> 14c52fa7907e8ddd62ca79ca7d8ba0adff2c847b
 - Editor de CFG GUI
     [cambios]
         - Se limita a 25 número de caracteres para el nombre de las portadas.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_port.html
 
-        
+- Regenerador Masivo
+    [mejoras]
+        - Se deja disponible un regenerador de portadas, similar al regenerador de artículos, con opciones avanzadas
+        - Producto de lo anterior, se cambia levemente la gráfica del regenerador de artículos, dejando
+          un par de pestañas similares a las de Configuración, para elegir entre Articulos y Portadas.
+        - Se centraliza la función &finishLoading() del regenerador de artículos (y portadas) en la lib_logproc.
+          Producto de esto, ahora se debe setaear la variable: $lib_logproc::JS_FILE antes de usar dicha función
+    [files]
+        /cgi-cpn/lib_logproc.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_regen_real.cgi
+        /cgi-cpn/prontus_port_regen.cgi
+        /cgi-cpn/prontus_port_regen_real.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/cfgedit.css
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Opciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_regen.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_regen_art.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_regen_port.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_loading_port_regen.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_loading_art_regen.html

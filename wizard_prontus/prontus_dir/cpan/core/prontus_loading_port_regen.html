@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Regeneración Masiva de Artículos</title>
+    <title>Regeneración Masiva de Portadas</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link type="text/css" rel="stylesheet" href="css/estilos.css" />
     <script type="text/javascript" src="js-local/jquery/jquery.js"></script>
@@ -11,14 +11,14 @@
     <script type="text/javascript" src="js-local/Utiles.class.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        Opciones.checkStatus('../procs/result_art_regen.js');
+        Opciones.checkStatus('../procs/result_port_regen.js');
       });
     </script>
   </head>
   <body class="bodysite loading-page">
     <div class="col470">
       <div class="rotulo">
-        <div class="titulo">&nbsp; &nbsp;Regeneración Masiva de Artículos</div>
+        <div class="titulo">&nbsp; &nbsp;Regeneración Masiva de Portadas</div>
       </div>
       <div class="box-gris">
         <div class="box-auxi">
@@ -28,17 +28,17 @@
               <img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /><br/><br/>
               En Proceso...<br/>
               Por favor espere hasta que el proceso termine.<br/>
-              Dependiendo del número de artículos, este proceso puede demorar varios minutos.
+              Dependiendo del número de portadas y ediciones, este proceso puede demorar varios minutos.
             </div>
             <div id="inprogress" class="msg-result">
 
             </div>
             <div id="msg-result" class="msg-result">
-              El proceso de Regenerar Masivamente los Artículos<br>ha finalizado de manera exitosa.<br/><br/>
-              <span style="display:none;">Total de Artículos Procesados: <span id="total" style="color:red;"></span></span><br/><br/><br/>
+              El proceso de Regenerar Masivamente las Portadas<br>ha finalizado de manera exitosa.<br/><br/>
+              <span style="display:none;">Total de Portadas Procesadas: <span id="total" style="color:red;"></span></span><br/><br/><br/>
             </div>
             <div id="msg-log" class="msg-result">
-              <a href="../procs/prontus_art_regen_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_regen_art">&raquo; Revisar el Log con el resumen de la operación</a>
+              <a href="../procs/prontus_port_regen_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_regen_port">&raquo; Revisar el Log con el resumen de la operación</a>
             </div>
             <br/><br/>
             <div class="boton-generico boton-loading">

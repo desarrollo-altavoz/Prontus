@@ -1,0 +1,78 @@
+
+    <div class="mensajes">
+        <p>Este proceso regenerará todos los <b>artículos</b> existentes en el publicador en base a su plantilla actual,
+            salvo que seleccione los filtros disponibles en la configuración avanzada.</p>
+        <div class="botonera-general">
+            <div class="boton-generico aleft"><a href="#" onclick="Opciones.ejecutarActualizacionMasiva(); return false;" class="button"><span>Ejecutar el Proceso</span></a></div>
+        </div>
+        <br/>
+
+        <div class="botonera-adicional">
+            <div class="boton-gris3 aleft">
+                <a onclick="Opciones.toggleRegenAvanzado(this); return false;" href="#" class="button"><span>Ver configuración avanzada</span></a>
+            </div>
+            <!--link_last_proc-->
+            <div class="boton-gris3 aleft">
+                <a onclick="Opciones.openPopupLog(this); return false;" href="/%%_prontus_id%%/cpan/procs/prontus_art_regen_log.html" class="button"><span>Ver log del último proceso</span></a>
+            </div>
+            <!--/link_last_proc-->
+        </div>
+    </div>
+    <div class="regen_avanzado" style="display: none;">
+        <h3 class="titulo">Configuración avanzada</h3>
+        <table width="100%">
+            <tr>
+                <td width="50%" valign="top" rowspan="2">
+                    <div class="regen_artic">
+                        <p>Artículos que se incluirán en el proceso</p>
+                        <span class="ayuda">Debe seleccionar al menos un tipo de Artículo</span>
+                        <div class="utiles"><a href="#" onclick="Opciones.checkboxToggleChecked('INPUT_FIDS_REGEN[]', true); return false;">Seleccionar todo</a> | <a href="#" onclick="Opciones.checkboxToggleChecked('INPUT_FIDS_REGEN[]', false); return false;">Seleccionar ninguno</a></div>
+                        <table class="tableform">
+                            <tr class="head">
+                                <th>FID</th>
+                                <th width="100">Incluir</th>
+                            </tr>
+                            %%filas_tabla_checkbox_fids%%
+                        </table>
+                    </div>
+                </td>
+                <td width="1%" class="separador" rowspan="2">&nbsp;</td>
+                <td width="50%" valign="top" class="regla">
+                    <div class="regen_artic">
+                        <p>Fecha de directorios de artículos</p>
+                        <span class="ayuda">Deje la fecha en blanco para procesar todo</span>
+                        <div class="utiles"></div>
+                        <table class="tableform fechac">
+                        <tr>
+                            <td align="left">Fecha</td>
+                            <td align="left">
+                                <select name="operador-art" id="operador-art">
+                                    <option value="mayor">Mayor o igual que</option>
+                                    <option value="menor">Menor o igual que</option>
+                                </select>
+                            </td>
+                            <td align="left"><input type="text" name="fecharegen" id="fecharegen" value="" class="fieldform" /></td>
+                        </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <div class="regen_artic">
+                        <p>Vistas que se incluirán en el proceso</p>
+                        <span class="ayuda">Debe seleccionar al menos una Vista</span>
+                        <div class="utiles"><a href="#" onclick="Opciones.checkboxToggleChecked('INPUT_MVS_REGEN[]', true); return false;">Seleccionar todo</a> | <a href="#" onclick="Opciones.checkboxToggleChecked('INPUT_MVS_REGEN[]', false); return false;">Seleccionar ninguno</a></div>
+                        <table class="tableform">
+                            <tr class="head">
+                                <th>Vista</th>
+                                <th width="100">Incluir</th>
+                            </tr>
+                            %%filas_tabla_checkbox_mvs%%
+                        </table>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>

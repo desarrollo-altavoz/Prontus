@@ -606,21 +606,65 @@ label {cursor:pointer;}
 .check-install .item .help {font-size:12px; color:#aaaaaa;}
 .botonera-general {width:180px;}
 
+/**
+ {width:101px; margin-top:10px; position: absolute; float: left; background: none;}
+
 .regen_main {}
 .regen_main table tr th {padding: 8px !important;}
 .regen_main table tr td {border: 1px solid #F0F0F0; padding: 8px !important;}
 .regen_main .links-utiles a {color: #0099FF !important;}
 .regen_main .links-utiles a:hover {color: #FF0000 !important;}
 
+.regen .boton-gris1 a.button2 { display:block; height:30px; color:#FFFFFF; font-size:14px; font-weight:bold; margin-bottom: 3px;}
+.regen .boton-gris1 a.button2 span {background: url("../imag/boto/boto_gris2_regen_left.jpg") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
+.regen .boton-gris1 a.button2:hover {display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold;}
+.regen .boton-gris1 a.button2:hover span {background: url("../imag/boto/boto_gris1_regen_left.gif") no-repeat;}
+.regen .boton-gris1 a.button2.selected { display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold; margin-bottom: 3px;}
+.regen .boton-gris1 a.button2.selected span {background: url("../imag/boto/boto_gris1_regen_left.gif") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
+**/
+#tabs-regen {width: 170px; margin-top:10px; position: absolute;}
+.regen .boton-gris1 a.button2 { display:block; height:30px; color:#FFFFFF; font-size:14px; font-weight:bold; margin-bottom: 3px;}
+.regen .boton-gris1 a.button2 span {background: url("../imag/boto/boto_gris2_cfg_left.jpg") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
+.regen .boton-gris1 a.button2:hover {display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold;}
+.regen .boton-gris1 a.button2:hover span {background: url("../imag/boto/boto_gris1_cfg_left.gif") no-repeat;}
+.regen .boton-gris1 a.button2.selected { display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold; margin-bottom: 3px;}
+.regen .boton-gris1 a.button2.selected span {background: url("../imag/boto/boto_gris1_cfg_left.gif") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
+
+.regen {padding: 0px 10px 5px;}
+.regen .separa {border-bottom: 1px solid #DDDDDD; margin-bottom: 5px;}
+.regen .titulo {font-size: 18px; color: #666; font-weight: bold;}
+.regen .desc {font-size: 13px; color: #888; padding: 5px 10px;}
+
+/*
+.contenido-regen {width:840px; float: left;font-size: 15px;color: #888;margin-top: 5px;border: 1px solid #DFDFDF;margin-left: 100px;}
+*/
+.contenido-regen {width:760px; float: left; font-size: 15px; color: #888888; margin-top: 5px; border: 1px solid #f1f1f0; margin-left: 169px;}
+.contenido-regen .listado .tableform td {border:1px solid #f0f0f0;}
+.contenido-regen .listado .head td {background-color:#e0e0e0;}
+.contenido-regen > div {display:none;}
+
 .regen_avanzado {color: #666666; font-size: 15px;margin: 0 auto 20px; text-align: center; width: 99%;}
-.regen_avanzado .titulo {border-bottom: 1px solid #DDDDDD; }
-.regen_artic {min-height: 170px;}
-.regen_artic .utiles {font-size: 12px; height: 14px;}
+.regen_avanzado h3.titulo {text-align:left; border-bottom: 1px solid #DDDDDD; padding:2px 5px; margin-bottom:5px;}
 .regen_avanzado .separador {border-right: 1px solid #D0D0D0;}
-.regen_artic p {}
-.regen_artic .ayuda {font-size: 11px; font-weight: bold;}
+.regen_avanzado .regla {border-bottom: 1px solid #D0D0D0;}
+.regen_artic {padding:5px 10px;}
+.regen_artic .utiles {font-size: 12px; height: 14px; text-align:left;}
+.regen_artic p {text-align:left;}
+.regen_artic .ayuda {font-size: 11px; font-weight: bold; text-align:left; display:block;}
+.regen_artic .fechac td {border:0 solid #F0F0F0;}
+.regen_artic .fechac td .fieldform {width:80px;}
 .regen_artic table tr th {padding: 2px !important; font-size: 13px;}
 .regen_artic table tr td {border: 1px solid #F0F0F0; padding-bottom: 2px !important; padding-left: 8px; padding-right: 2px !important; padding-top: 2px !important;}
+
+.regen_port {min-height:120px; padding:5px 20px;}
+.regen_port p {text-align:left;}
+.regen_port .utiles {font-size: 12px; height: 14px; text-align:left;}
+.regen_port .ayuda {font-size: 11px; font-weight: bold; text-align:left; display:block;}
+.regen_port .opcion {text-align:left; display:block; padding:8px;}
+.regen_port .cmbedic select {width:140px;}
+.regen_port table tr th {padding: 2px !important; font-size: 13px;}
+.regen_artic table tr td {border: 1px solid #F0F0F0; padding-bottom: 2px !important; padding-left: 8px; padding-right: 2px !important; padding-top: 2px !important;}
+
 
 /* Pantalla de bloqueo */
 .lockscreen {background: none repeat scroll 0% 0% black; height: 100%; position: absolute; z-index: 99999; opacity: 0.8; filter: alpha(opacity = 80); border: 4px solid rgb(255, 128, 0); width: 972px; top: 130px;}

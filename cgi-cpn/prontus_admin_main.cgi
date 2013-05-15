@@ -667,7 +667,7 @@ sub parseaVars {
     };
 
     $pagina =~ s/<!--loop_portadas_dd-->.*?<!--\/loop_portadas_dd-->/$buffer/sig;
-    
+
     # -------------------------------------------------------------------------------
     # -usr.cfg
     if ($prontus_varglb::PERIODISTA_VER_ARTICULOS_AJENOS eq 'SI') {
@@ -990,7 +990,7 @@ sub parseaVars {
         $pagina =~ s/%%VTXT_DTD_S%%//ig;
         $pagina =~ s/%%VTXT_DTD_T%%//ig;
     };
-    
+
     if ($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
         $pagina =~ s/%%FORM_CSV_CHARSET_1%%//ig;
         $pagina =~ s/%%FORM_CSV_CHARSET_2%%/ selected="selected"/ig;
@@ -1240,6 +1240,17 @@ sub parseRegen {
         }
     };
 
+    #~ CVI - 13/05/2013 - Para el tema del regenerador de portadas
+    if ($prontus_varglb::MULTI_EDICION eq 'NO') {
+        $pagina =~ s/<!--admin_ediciones-->.*<!--\/admin_ediciones-->//isg;
+    } else {
+        my $dir_edics = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EDIC";
+        #~ print STDERR "dir_edics[$dir_edics]\n";
+        my $html_ediciones = &get_html_ediciones($dir_edics);
+        $pagina =~ s/<!--admin_ediciones-->(.*?)<!--\/admin_ediciones-->/\1/isg;
+        $pagina =~ s/%%_edic%%/$html_ediciones/;
+    };
+
     my $filas_tabla_checkbox_fids = &glib_html_02::generar_filas_tabla_checkbox(\@fidlist, 'INPUT_FIDS_REGEN[]', 'regen');
     $pagina =~ s/%%filas_tabla_checkbox_fids%%/$filas_tabla_checkbox_fids/sig;
 
@@ -1256,4 +1267,14 @@ sub parseRegen {
 
     return $pagina;
 
+};
+# ---------------------------------------------------------------
+sub get_html_ediciones {
+    my $dir_edics = shift;
+    # Generar cod. html correspondiente a la combo de ediciones
+    my $html_ediciones = &lib_prontus::generar_popupdirs_from_dir($dir_edics, 'cmb_edic', '', 1, '', '', '', $prontus_varglb::NRO_EDICS_WORK, 'STRDESC');
+    my $qty_base_ports = @prontus_varglb::BASE_PORTS;
+    # warn "qty_base_ports[$qty_base_ports]";
+    $html_ediciones =~ s/(<select.*?>)/\1<option value="">  <\/option>/is; # eliminar de la combo la edic. base.
+    return $html_ediciones;
 };

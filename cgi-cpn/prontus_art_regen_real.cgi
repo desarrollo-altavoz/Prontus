@@ -107,6 +107,7 @@ if ($ARGV[0]) {
 
 # Establece log file
 $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/prontus_art_regen_log.html";
+$lib_logproc::JS_FILE = "$prontus_varglb::DIR_CPAN/procs/result_art_regen.js";
 $lib_logproc::MODO_WEB = $MODO_WEB;
 
 # Init
@@ -138,7 +139,7 @@ print STDERR "TOT_REGS_CON_ERR[$TOT_REGS_CON_ERR]\n";
 &lib_logproc::add_to_log("Nro. de registros procesados: $TOT_REGS\nRegistros con Errores: $TOT_REGS_CON_ERR");
 &lib_logproc::add_to_log_finish("Operaci&oacute;n finalizada.");
 
-&finishLoading('', $TOT_REGS);
+&lib_logproc::finishLoading('', $TOT_REGS);
 exit;
 
 
@@ -154,7 +155,7 @@ sub reparsea_artic {
     my $base;
     ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($base)) {
-        &finishLoading("Error: $msg_err_bd\nProceso abortado.");
+        &lib_logproc::finishLoading("Error: $msg_err_bd\nProceso abortado.");
         &lib_logproc::handle_error("Error: $msg_err_bd\nProceso abortado.");
     };
 
@@ -201,7 +202,7 @@ sub reparsea_artic {
     };
 
     $base->disconnect;
-    &finishLoading('');
+    &lib_logproc::finishLoading('');
 };
 
 # ---------------------------------------------------------------
@@ -303,19 +304,6 @@ sub registra_artic_error {
     my $msg = $_[0];
     $TOT_REGS_CON_ERR++;
     &lib_logproc::add_to_log($msg);
-};
-
-# ---------------------------------------------------------------
-sub finishLoading {
-
-    my ($msg, $total) = ($_[0], $_[1]);
-    my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_art_regen.js";
-    if($total) {
-      $msg = '{"status":1, "msg":"'.$msg.'", "total": "'.$total.'"}';
-    } else {
-      $msg = '{"status":1, "msg":"'.$msg.'", "total": "0"}';
-    }
-    &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
 };
 
 # ---------------------------------------------------------------
