@@ -28,8 +28,26 @@
             }
           })
           .tooltip({
-            tooltipClass: "ui-state-highlight"
+            tooltipClass: ""
           });
+
+        var parent = this;
+        this.input.on("keyup", function(e) {
+          if(e.which == 13) {
+                $(this).trigger("enter");
+                if (parent.input.val() != '') { 
+                    if ($('option:contains('+ parent.input.val() +')', parent.element).length <= 0) {
+                         parent.input
+                          .attr( "title", "No se encontró nada con:<br/>" + parent.input.val() + "" )
+                          .tooltip( "open" );
+                          parent.input.val( $('#nomPortada').text() );
+                        parent._delay(function() {
+                          parent.input.tooltip( "close" ).attr( "title", "" );
+                        }, 1500 );
+                    }
+                }
+           }
+        });
  
         this._on( this.input, {
           autocompleteselect: function( event, ui ) {
@@ -113,14 +131,22 @@
         }
  
         // Remove invalid value
-        this.input
-          .val( "" )
-          .attr( "title", "No se encontró nada con: " + value + "" )
-          .tooltip( "open" );
+        //~ var selected = this.element.children( ":selected" );
+        //~ var value_selected = selected.val() ? selected.text() : "";
+        
+        if (this.input.val() != '') {
+             this.input
+              .val( $('#nomPortada').text() )
+              .attr( "title", "No se encontró nada con:<br/>" + value + "" )
+              .tooltip( "open" );
+        } else {
+            this.input.val( $('#nomPortada').text() );
+        };
+          
         this.element.val( "" );
         this._delay(function() {
           this.input.tooltip( "close" ).attr( "title", "" );
-        }, 2500 );
+        }, 1500 );
         this.input.data( "ui-autocomplete" ).term = "";
       },
  
