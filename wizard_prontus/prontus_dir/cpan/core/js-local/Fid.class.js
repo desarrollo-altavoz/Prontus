@@ -4,6 +4,7 @@ var Fid = {
 
     objFormFid: '', // se setea en el doc. ready
     isGecko: navigator.userAgent.indexOf('Gecko') !== -1,
+    isMac: navigator.userAgent.indexOf('Macintosh') !== -1,
     animationSlideSpeed: 500,
 
     tooltipId: null,
@@ -305,6 +306,9 @@ var Fid = {
             });
             clip.glue('copy-artic-int', 'copy-artic-ext', {position:'relative', left:'0', top:'0'});
         }
+
+        // Para el drag and drop de Fotofijas en Chrome de Mac
+        Fid.addDragImagenes();
     },
 
     // -------------------------------------------------------------------------
@@ -511,22 +515,62 @@ var Fid = {
         }
     },
 
+
     // -----------------------------------------
-    //Activa los controles del formulario
+    // Activa el handler de Drag&Drop de fotos para Chrome en Mac
+    addDragImagenes: function() {
+        if (Fid.isGecko && Fid.isMac) {
+            var elems = document.getElementsByTagName("img");
+            var matchClass = 'fotodrag';
+            for (i in elems) {
+                if((' ' + elems[i].className + ' ').indexOf(' ' + matchClass + ' ') > -1) {
+                    elems[i].addEventListener("dragstart", function(_event) {
+                        //_event.stopPropagation();
+                        //_event.preventDefault();
+                        //$("#debug1").html(Admin.debugPrintObject(_event.dataTransfer));
+                        _event.dataTransfer.setData('imagen', this.outerHTML);
+                    }, false);
+                }
+            }
+        }
+    },
+
+    // -----------------------------------------
+    //Activa los controles de Fotofija del Fid
     activarFotosFijas: function() {
         $('iframe[id^=FOTOFIJA]').each(function(){
             try {
+                var bodyiframe = this.contentWindow.document.body;
                 if (Fid.isGecko) {
                     // A contar de Firefox 11
                     // this.contentDocument.designMode = 'on';
                     // this.contentWindow.document.contentEditable = true;
-                    this.contentWindow.document.body.contentEditable = true;
-                    this.contentWindow.document.addEventListener( "click", Fid.cancel_event, true );
-                    this.contentWindow.document.addEventListener( "keydown", Fid.cancel_event, true );
+                    if(Fid.isMac) {
+                        bodyiframe.contentEditable = true;
+                        bodyiframe.addEventListener("click", Fid.cancel_event, true );
+                        bodyiframe.addEventListener("keydown", Fid.cancel_event, true );
+                        bodyiframe.addEventListener("dragover", function(_event) {
+                            _event.stopPropagation();
+                            _event.preventDefault();
+
+                        }, false);
+                        bodyiframe.addEventListener("drop", function(_event) {
+                            var imagen = _event.dataTransfer.getData('imagen');
+                            if(imagen) {
+                                _event.stopPropagation();
+                                _event.preventDefault();
+                                _event.currentTarget.innerHTML = imagen;
+                            }
+                        }, false);
+                    } else {
+                        bodyiframe.contentEditable = true;
+                        bodyiframe.addEventListener("onclick", Fid.cancel_event);
+                        bodyiframe.addEventListener("onkeydown", Fid.cancel_event);
+                    }
                 } else {
-                    this.contentWindow.document.body.contentEditable = true;
-                    this.contentWindow.document.body.attachEvent("onclick", Fid.cancel_event);
-                    this.contentWindow.document.body.attachEvent("onkeydown", Fid.cancel_event);
+                    bodyiframe.contentEditable = true;
+                    bodyiframe.attachEvent("onclick", Fid.cancel_event);
+                    bodyiframe.attachEvent("onkeydown", Fid.cancel_event);
                 }
             } catch(e) {
                 // Al primer error retorna de inmediato
@@ -837,6 +881,7 @@ var Fid = {
                 if($(curr_body).find('[id^="FOTOFIJA_"]').size() > 0) {
                     $("#banco-content .botonera .publicar").show();
                 }
+                Fid.addDragImagenes();
             });
         });
     },
