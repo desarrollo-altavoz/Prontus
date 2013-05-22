@@ -111,11 +111,24 @@ sub carga_modelos {
     # Valida y carga modelos prontus disponibles.
     my $buffer = $_[0];
     my $models_dir = "$prontus_varglb::DIR_SERVER/wizard_prontus/models";
-  
+
     if(! -d $models_dir) {
-        return 'Directorio de modelos, no valido.';
+        my $msg = "<div class=\"mensaje\">No hay Modelos Prontus disponibles. No es posible continuar.<br>";
+        $msg = $msg . "Seleccione la opci&oacute;n \"Descargar Modelos\" antes de continuar</div>";
+        $buffer =~ s/<!--LOOP_MODELS-->(.*?)<!--\/LOOP_MODELS-->/$msg<div class="separador"><\/div>/isg;
+
+        if($buffer =~ /<!--SIGUIENTE_PASO-->(.*?)<!--\/SIGUIENTE_PASO-->/isg) {
+            my $siguiente = $1;
+            $siguiente =~ s/<input/<input type="button" disabled="disabled" /i;
+            $siguiente =~ s/(class=".*?)(")/\1 disabled\2/i;
+            $siguiente =~ s/onclick=".*?"//i;
+            $buffer =~ s/<!--SIGUIENTE_PASO-->(.*?)<!--\/SIGUIENTE_PASO-->/$siguiente/isg
+
+        }
+        #~ return 'Directorio de modelos, no valido.';
+        return ('', $buffer);
     }
-  
+
     my @lisdir = &glib_fildir_02::lee_dir($models_dir);
     @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
     my $k;
@@ -126,14 +139,15 @@ sub carga_modelos {
     } else {
         return 'Error en plantilla wizard. No es posible continuar.';
     };
+
     foreach $k (@lisdir) {
         # localiza cfg descriptor del modelo,
         # si lo encuentra asume q se trata de un modelo.
         print STDERR "K[$k]\n";
         if (-f "$models_dir/$k/$k.cfg") {
-            
+
             $loop_item = $loop_tpl;
-            
+
             # valida icono
             my $imagen = "/wizard_prontus/models/$k/$k-thumb.png";
             if(-f "$prontus_varglb::DIR_SERVER$imagen") {
@@ -146,15 +160,15 @@ sub carga_modelos {
                     return "En Modelo [$k] falta icono";
                 }
             }
-            
+
             # valida q este el arch de obs del modelo
             if (! -f "$models_dir/$k/descripcion/index.html") {
                 return "En Modelo [$k] falta $k/descripcion/index.html";
             };
             $nro_models++;
-            
+
             $loop_item =~ s/%%MODEL_NOM%%/$k/isg;
-            
+
             # Deja el primero como seleccionado por defecto
             if ($nro_models == 1) {
                 $loop_item =~ s/%%checked%%/checked/isg;

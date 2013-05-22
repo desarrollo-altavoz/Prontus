@@ -37,7 +37,7 @@ form { margin:0px;}
 #datos img{float:left;margin:2px 10px 0 0;}
 .pasos{width:190px; height:30px;float:left;}
 .pasos h1{width:100px;float: left;font-size:14px; color:#ffffff; font-weight:bold;}
-.pasos h2{width:100px;float: left;font-size:14px; color:#99ccff; font-weight:bold;margin:0;}	
+.pasos h2{width:100px;float: left;font-size:14px; color:#99ccff; font-weight:bold;margin:0;}
 
 #cboxLoadedContent div {font-size:13px !important;}
 
@@ -58,6 +58,9 @@ form { margin:0px;}
 #table03 .modelo label {font-size:13px; color:#ffffff; font-weight:bold; text-decoration:none;}
 #table03 .modelo input {margin:0px; vertical-align:middle;}
 
+#tab2 .mensaje {background-color:#FFFFFF; margin:5px 20px; padding:10px 20px;}
+#table03 .btn_opc .disabled {color:#555555;}
+
 /** Estilos para el admin de modelos **/
 #models {width:100%; margin-top:5px;}
 #models th {background-color:#333333; color:#ffffff; padding:4px 8px; font-size:13px;}
@@ -75,7 +78,7 @@ form { margin:0px;}
 #models td.version div {color:#4D4D4D; margin:2px 0px 10px; font-size: 11px;}
 #models td.version div p {margin:2px 0px; color:#000000; font-weight:bold; font-size: 12px;}
 #models td.version div p span {font-size:11px; font-style:italic; font-weight:bold; color:#000000;}
-#models td.version .status {font-weight:900; color:#006600; font-style:italic;} 
+#models td.version .status {font-weight:900; color:#006600; font-style:italic;}
 #models td.acciones {width:100px;}
 #models td.screenshot {width:200px; text-align:center;}
 #models td.titulo {vertical-align:top; position:relative;}

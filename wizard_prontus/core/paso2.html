@@ -19,7 +19,7 @@
         Wizard.init('paso2');
       });
     </script>
-      
+
   </head>
   <body>
     <div id="main">
@@ -50,11 +50,11 @@
           </div>
           <h3 class="subtitle">Seleccione el modelo de Sitio Prontus a crear:</h3>
         </div>
-      
-      
+
+
         <form name="form1" method="post" action="wizard_paso2.cgi">
         <div id="table03">
-          
+
           <table id="tab2">
             <tr align="left" valign="middle">
               <td align="left">
@@ -83,7 +83,9 @@
               </td>
               <td align="right">
                 <input type="button" name="anterior" value="&lt;&lt; Anterior" class="boto" onclick="Wizard.showPaso1();" />
-                <input type="button" name="siguiente" value="Siguiente &gt;&gt;" class="boto" onclick="Wizard.enviarPaso2();"/>
+                <!--SIGUIENTE_PASO-->
+                <input type="button" disabled="disabled" name="siguiente" value="Siguiente &gt;&gt;" class="boto" onclick="Wizard.enviarPaso2();"/>
+                <!--/SIGUIENTE_PASO-->
                 <input type="hidden" name="Sbm_ACCION" value="Siguiente" />
               </td>
             </tr>

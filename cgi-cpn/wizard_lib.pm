@@ -14,7 +14,7 @@
 # PROPOSITO.
 # -----------
 # Libreria comun para las labores que realizan los diferentes modulos del Wizard
-# 
+#
 
 package wizard_lib;
 
@@ -33,7 +33,7 @@ $BACKUP_DIR = '/_prontus_update/models/backup';
 # --------------------------------------------------------------------------------------------------
 # Chequea que se haya pasado por el paso 1
 sub check_paso1 {
-    
+
     my $file = "$prontus_varglb::DIR_SERVER$INF_DIR/$INF_FILE";
     if (! -f $file) {
         return "[errInfFile] Solicitud de ejecución no válida.";
@@ -68,7 +68,7 @@ sub check_paso1 {
             return "No se puede crear el directorio destino del publicador. No es posible continuar con la instalación.";
         };
     };
-    
+
     return '';
 }
 
@@ -76,12 +76,12 @@ sub check_paso1 {
 sub backup_model {
 
     my ($nom_origen) = shift;
-    
+
     my $dir_origen = "$prontus_varglb::DIR_SERVER$MODELS_DIR";
     if(-d "$dir_origen/$nom_origen") {
         my $dir_destino = "$prontus_varglb::DIR_SERVER$BACKUP_DIR";
         &glib_fildir_02::check_dir($dir_destino);
-        
+
         # Se calcula el directorio para los backup
         my $ts = &glib_hrfec_02::get_dtime_pack4();
         my $nom_destino = $ts.'_'.$nom_origen;
@@ -94,7 +94,7 @@ sub backup_model {
         &garbage_dirs($dir_destino, 5);
         return 1;
     };
-    return 0; 
+    return 0;
 }
 
 # ---------------------------------------------------------------
@@ -128,72 +128,78 @@ sub garbage_dirs {
 
 # --------------------------------------------------------------------------------------------------
 sub get_models {
-    
+
     my %models;
     my $models_dir = "$prontus_varglb::DIR_SERVER$wizard_lib::MODELS_DIR";
     my ($rutamodelo, $rutamodelofull);
-    
-    my @lisdir = &glib_fildir_02::lee_dir($models_dir);
-    my $nro_models = 0;
-    foreach my $model (@lisdir) {
-        next if($model =~ /^\./);
-        my %array;
-        
-        $rutamodelo = "$wizard_lib::MODELS_DIR/$model";
-        $rutamodelofull = "$prontus_varglb::DIR_SERVER$wizard_lib::MODELS_DIR/$model";
-        
-        my $buffer = &glib_fildir_02::read_file("$rutamodelofull/$model.cfg");
-        if($buffer eq '') {
-            print STDERR "No existe el CFG del modelo modelo [$rutamodelofull$model]\n";
-            next; 
-        }
-        
-        my $refcfg = &carga_model_cfg($buffer);
-        my %cfg = %$refcfg;
-        
-        # valida q este el arch de obs del modelo
-        if (! -f "$rutamodelofull/descripcion/index.html") {
-            print STDERR "No existe la descripcion del modelo [$model]\n";
-            next;
+
+    if(! -d $models_dir) {
+        &glib_fildir_02::check_dir($models_dir);
+        print STDERR "No existe el directorio de modelos [$models_dir]\n";
+
+    } else {
+
+        my @lisdir = &glib_fildir_02::lee_dir($models_dir);
+        my $nro_models = 0;
+        foreach my $model (@lisdir) {
+            next if($model =~ /^\./);
+            my %array;
+
+            $rutamodelo = "$wizard_lib::MODELS_DIR/$model";
+            $rutamodelofull = "$prontus_varglb::DIR_SERVER$wizard_lib::MODELS_DIR/$model";
+
+            my $buffer = &glib_fildir_02::read_file("$rutamodelofull/$model.cfg");
+            if($buffer eq '') {
+                print STDERR "No existe el CFG del modelo modelo [$rutamodelofull$model]\n";
+                next;
+            }
+
+            my $refcfg = &carga_model_cfg($buffer);
+            my %cfg = %$refcfg;
+
+            # valida q este el arch de obs del modelo
+            if (! -f "$rutamodelofull/descripcion/index.html") {
+                print STDERR "No existe la descripcion del modelo [$model]\n";
+                next;
+            };
+            # valida la imagen del modelo
+            my ($thumb, $imagen);
+            if (-f "$rutamodelofull/$model-thumb.png") {
+                $thumb = "$rutamodelo/$model-thumb.png";
+                $imagen = "$rutamodelo/$model-big.png";
+
+            } elsif (-f "$rutamodelofull/$model.gif") {
+                $thumb = "$rutamodelo/$model.gif";
+                $imagen = "$rutamodelo/$model.gif";
+
+            } else {
+                print STDERR "No existe la imagen del modelo [$model]... [$rutamodelo]";
+                next;
+            }
+            $nro_models++;
+            $models{$model}{'thumb'} = $thumb;
+            $models{$model}{'imagen'} = $imagen;
+            if($cfg{'MODELO_VERSION'}) {
+                $models{$model}{'version'} = $cfg{'MODELO_VERSION'};
+            } else {
+                $models{$model}{'version'} = '1.0.0.beta';
+            }
+            $models{$model}{'last_version'} = '<span>Versi&oacute;n no disponible en el servidor remoto</span>';
+            if($cfg{'MODELO_NOMBRE_REAL'}) {
+                $models{$model}{'nombre'} = "<div>($model)</div>" . $cfg{'MODELO_NOMBRE_REAL'};
+
+            } elsif($cfg{'TITLE_SITE_NAME'}) {
+                $models{$model}{'nombre'} = "<div>($model)</div>" . $cfg{'TITLE_SITE_NAME'};
+
+            } else {
+                $models{$model}{'nombre'} = $model;
+            };
+            $models{$model}{'desc'} = $cfg{'MODELO_DESCRIPTION'};
+            $models{$model}{'instalado'} = 'instalado';
+            $models{$model}{'status'} = 'nodisponible';
+            #~ $models{$model} = %array;
         };
-        # valida la imagen del modelo
-        my ($thumb, $imagen);
-        if (-f "$rutamodelofull/$model-thumb.png") {
-            $thumb = "$rutamodelo/$model-thumb.png";
-            $imagen = "$rutamodelo/$model-big.png";
-            
-        } elsif (-f "$rutamodelofull/$model.gif") {
-            $thumb = "$rutamodelo/$model.gif";
-            $imagen = "$rutamodelo/$model.gif";
-            
-        } else {
-            print STDERR "No existe la imagen del modelo [$model]... [$rutamodelo]";
-            next;
-        }
-        $nro_models++;
-        $models{$model}{'thumb'} = $thumb;
-        $models{$model}{'imagen'} = $imagen;
-        if($cfg{'MODELO_VERSION'}) {
-            $models{$model}{'version'} = $cfg{'MODELO_VERSION'};
-        } else {
-            $models{$model}{'version'} = '1.0.0.beta';
-        }
-        $models{$model}{'last_version'} = '<span>Versi&oacute;n no disponible en el servidor remoto</span>';
-        if($cfg{'MODELO_NOMBRE_REAL'}) {
-            $models{$model}{'nombre'} = "<div>($model)</div>" . $cfg{'MODELO_NOMBRE_REAL'};
-            
-        } elsif($cfg{'TITLE_SITE_NAME'}) {
-            $models{$model}{'nombre'} = "<div>($model)</div>" . $cfg{'TITLE_SITE_NAME'};
-            
-        } else {
-            $models{$model}{'nombre'} = $model;
-        };            
-        $models{$model}{'desc'} = $cfg{'MODELO_DESCRIPTION'};
-        $models{$model}{'instalado'} = 'instalado';
-        $models{$model}{'status'} = 'nodisponible';
-        #~ $models{$model} = %array;
     };
-    
     my ($text, $msg_err) = &lib_prontus::get_url("$URL_MODELS/$FILE_MODELS", 30);
     if($msg_err) {
         print STDERR "No se pudo acceder a los modelos online [$URL_MODELS]";
@@ -209,7 +215,7 @@ sub get_models {
             print STDERR "CFG de modelo no encontrado o invalido [$URL_MODELS]";
             next;
         };
-        
+
         $rutamodelo = "$URL_MODELS/$onlinemodel";
         my $refcfg = &carga_model_cfg($buffercfg);
         my %cfg = %$refcfg;
@@ -226,7 +232,7 @@ sub get_models {
             $models{$onlinemodel}{'nombre'} = "<div>($onlinemodel)</div>" . $cfg{'TITLE_SITE_NAME'};
         } else {
             $models{$onlinemodel}{'nombre'} = $onlinemodel;
-        }; 
+        };
         $models{$onlinemodel}{'desc'} = $cfg{'MODELO_DESCRIPTION'};
         if($models{$onlinemodel}{'version'}) {
             # Este modelo esta instalado
@@ -248,8 +254,8 @@ sub get_models {
         }
         #~ $models{$model} = %array;
         $nro_models++;
-    };    
-    
+    };
+
     if ($nro_models == 0) {
         $msg_err = "No hay Modelos Prontus disponibles.<br>No es posible continuar.";
         $prontus_varglb::DIR_CORE = $CORE_DIR; # solo para efectos de la plantilla de mensaje
@@ -260,10 +266,10 @@ sub get_models {
 
 # --------------------------------------------------------------------------------------------------
 sub descarga_componente {
-    
+
     my $modelid = shift;
     my $nombre = shift;
-    
+
     my $url = $wizard_lib::URL_MODELS . '/' . $modelid . '/' .$nombre;
     my ($content, $msg_err) = &lib_prontus::get_url($url, 30);
     if ($msg_err) {
@@ -277,17 +283,17 @@ sub descarga_componente {
     # Se escribe el CFG leído anteriormente
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$MODELS_DIR/$modelid/$nombre", $content);
     return '';
-    
+
 };
 # --------------------------------------------------------------------------------------------------
 sub carga_model_cfg {
-    
+
     my ($buffer) = @_;
     my %cfg;
-    
+
     #~ $buffer =~ s/\[.*?\]\s*?//ig;
     $buffer =~ s/\n+/\n/ig;
-    #~ print STDERR "BUFFER[$buffer]\n\n";    
+    #~ print STDERR "BUFFER[$buffer]\n\n";
     while($buffer =~ /(\w+)\s*=\s*("|')(.*?)\2/g) {
         $cfg{$1} = $3;
     };
@@ -296,7 +302,7 @@ sub carga_model_cfg {
 }
 # --------------------------------------------------------------------------------------------------
 sub es_actualizable {
-    
+
     my ($actual, $last, $model) = @_;
     my ($a1, $a2, $a3, $a4, $l1, $l2, $l3);
     if($actual =~ /(\d+)\.(\d+)\.(\d+)(\.beta)?/) {
@@ -317,16 +323,16 @@ sub es_actualizable {
         if($a1 != $l1) {
             return 0;
         } elsif($a2 < $l2) {
-            return 1; 
+            return 1;
         } elsif($a3 < $l3) {
-            return 1; 
+            return 1;
         } elsif($a3 < $l3) {
             return 1;
         } else {
             if($a3 eq $l3 && $a4) {
                 return 1;
             };
-        }        
+        }
     } else {
         print STDERR "No se pudo leer la versión del modelo online [$model] -> version[$last]\n";
     }
