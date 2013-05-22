@@ -20,7 +20,7 @@ function traerModelo {
     modelo=$1;
     url="http://www.prontus.cl/release/models/"
 
-    rutamodelos="$RELEASEPATH/wizard_prontus/modelos"
+    rutamodelos="$RELEASEPATH/wizard_prontus/models"
     if [ ! -d "$rutamodelos" ] ; then
         mkdir "$rutamodelos"
     fi
