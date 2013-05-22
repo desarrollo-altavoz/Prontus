@@ -63,6 +63,8 @@
 # ---------------------------------------------------------------
 # 1.0.0 - 08/01/2013 - EAG - Primera version.
 # 1.0.1 - 19/02/2013 - EAG - Se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
+# 1.0.2 - 30/04/2013 - CVI - Se captura excepción al intentar hacer un unpack Q, ya que se caía.
+# 1.1.0 - 16/05/2013 - EAG - Se corrige bug al buscar atoms, si habian atoms duplicados se tomaba en cuenta solo el ultimo, lo que provocaba videos corruptos.
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
@@ -83,8 +85,7 @@ use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
 
-my %INDICES;
-my %STCOs;
+my @INDICES;
 my %FORM;        # Contenido del formulario de invocacion.
 main: {
     # Rescatar parametros recibidos
@@ -202,6 +203,7 @@ sub get_index {
 #    The tuple elements will be in the order that they appear in the file.
 
     my ($datastream, $toplevel) = @_;
+    my %index;
     while(!eof($datastream)) {
         my $skip = 8;
         my ($atom_size, $atom_type) = &read_atom($datastream);
@@ -210,27 +212,22 @@ sub get_index {
             $atom_size = unpack("Q", $data);
             $skip = 16;
         }
-        if($atom_size == 0){
-            last;
-        }
         my $atom_pos = tell($datastream) - $skip;
         if($toplevel) {
-            $INDICES{$atom_type} = [$atom_pos, $atom_size];
+            $index{$atom_type} =  1;
+            push(@INDICES, [$atom_type, $atom_pos, $atom_size]);
         }
-        # The stco|co64 atoms may be inside this atoms
-        if($atom_type =~ /(moov|trak|mdia|minf|stbl)/) {
-            &get_index($datastream, 0);
-            return;
-        }
-        if($atom_type =~ /(stco|co64)/) {
-            $STCOs{$atom_pos} = [$atom_type, $atom_pos, $atom_size];
+
+        if($atom_size == 0){
+            last;
         }
         seek $datastream, ($atom_pos + $atom_size), 0;
     }
 
     # Make sure the atoms we need exist
-    if($toplevel && ( !($INDICES{"moov"}) || !($INDICES{"mdat"}))) {
-        print STDERR "No existe por lo menos uno de los atoms obligatorios";
+    if($toplevel && ( !($index{"moov"}) || !($index{"mdat"}))) {
+        warn("No existe por lo menos uno de los atoms obligatorios");
+        &glib_html_02::print_json_result(0, "Error: No existe por lo menos uno de los atoms obligatorios en el video cargado", 'exit=1,ctype=1');
         exit;
     }
 }
@@ -242,7 +239,7 @@ sub checkMp4 {
 
     # Open the inputfile in binary mode
     my $datastream;
-    open($datastream, "<", $infilename)  or die("No se pudo abrir el archivo: $infilename");
+    open($datastream, "<", $infilename) or die("No se pudo abrir el archivo: $infilename");
     binmode $datastream;
 
     # Get the top level atom index
@@ -252,26 +249,25 @@ sub checkMp4 {
         return 1;
     }
 
-    my %indices = %INDICES;
+    my @indices = @INDICES;
     my $mdat_pos = 999999999;
     my $free_size = 0;
 
     my ($moov_pos, $moov_size);
-
     # Make sure moov occurs AFTER mdat, otherwise no need to run!
-    foreach my $atom (sort keys %indices) {
-        my $pos = $indices{$atom}[0];
-        my $size = $indices{$atom}[1];
+    foreach my $atom (@indices) {
+        my $pos = @{$atom}[1];
+        my $size = @{$atom}[2];
         # The atoms are guaranteed to exist from get_index above!
-        if ($atom eq "moov") {
+        if (@{$atom}[0] eq "moov") {
             $moov_pos = $pos;
             $moov_size = $size;
-        } elsif ($atom eq "mdat") {
+        } elsif (@{$atom}[0] eq "mdat") {
             $mdat_pos = $pos;
-        } elsif ($atom eq "free" && $pos < $mdat_pos) {
+        } elsif (@{$atom}[0] eq "free" && $pos < $mdat_pos) {
             # This free atom is before the mdat!
             $free_size += $size;
-            #warn("Removing free atom at $pos ($size bytes)");
+            warn("Removing free atom at $pos ($size bytes)");
         }
     }
 

@@ -41,6 +41,8 @@
 #    -------
 #    1.0.0 - 2011-12-06 - CVI - Primera version
 #    1.0.1 - 19/02/2013 - EAG - Se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
+#    1.0.2 - 30/04/2013 - CVI - Se captura excepción al intentar hacer un unpack Q, ya que se caía.
+#    1.1.0 - 16/05/2013 - EAG - Se corrige bug al buscar atoms, si habian atoms duplicados se tomaba en cuenta solo el ultimo, lo que provocaba videos corruptos.
 
 use strict;
 
@@ -50,8 +52,8 @@ use File::Temp qw/tempfile/;
 my $VERSION = "1.0";
 my $CHUNK_SIZE = 8192;
 
-my %INDICES;
-my %STCOs;
+my @INDICES;
+my @STCOs;
 main: {
     my $infile = $ARGV[0];
     # my $infile = '/var/www/prontus_development/web/cgi-cpn/xcoding/multimedia_video120111130160451_a.mp4';
@@ -96,6 +98,7 @@ sub get_index {
 #    The tuple elements will be in the order that they appear in the file.
 
     my ($datastream, $toplevel) = @_;
+    my %index;
     while(!eof($datastream)) {
         my $skip = 8;
         my ($atom_size, $atom_type) = &read_atom($datastream);
@@ -104,28 +107,44 @@ sub get_index {
             $atom_size = unpack("Q", $data);
             $skip = 16;
         }
-        if($atom_size == 0){
-            last;
-        }
         my $atom_pos = tell($datastream) - $skip;
         if($toplevel) {
-            $INDICES{$atom_type} = [$atom_pos, $atom_size];
+            $index{$atom_type} =  1;
+            push(@INDICES, [$atom_type, $atom_pos, $atom_size]);
         }
-        # The stco|co64 atoms may be inside this atoms
-        if($atom_type =~ /(moov|trak|mdia|minf|stbl)/) {
-            &get_index($datastream, 0);
-            return;
-        }
-        if($atom_type =~ /(stco|co64)/) {
-            $STCOs{$atom_pos} = [$atom_type, $atom_pos, $atom_size];
+
+        if($atom_size == 0){
+            last;
         }
         seek $datastream, ($atom_pos + $atom_size), 0;
     }
 
     # Make sure the atoms we need exist
-    if($toplevel && ( !($INDICES{"moov"}) || !($INDICES{"mdat"}))) {
+    if($toplevel && ( !($index{"moov"}) || !($index{"mdat"}))) {
         warn("No existe por lo menos uno de los atoms obligatorios");
         exit;
+    }
+}
+# ------------------------------------------------
+sub find_atoms {
+#    Return an index of srco o co64 atoms
+#
+#    The tuple elements will be in the order that they appear in the file.
+    my ($size, $datastream) = @_;
+    my $stop = tell($datastream) + $size;
+    while (tell($datastream) < $stop) {
+        my ($atom_size, $atom_type) = &read_atom($datastream);
+        my $atom_pos = tell($datastream) - 8;
+
+        # The stco|co64 atoms may be inside this atoms
+        if($atom_type =~ /(trak|mdia|minf|stbl)/) {
+            &find_atoms($atom_size, $datastream);
+        } elsif ($atom_type =~ /(stco|co64)/) {
+            push(@STCOs, [$atom_type, $atom_pos, $atom_size]);
+            seek $datastream, ($atom_size - 8), 1;
+        } else {
+            seek $datastream, ($atom_size - 8), 1;
+        }
     }
 }
 
@@ -137,14 +156,12 @@ sub fix_moov {
 
     my ($size, $datastream, $outfile, $offset) = @_;
     my $buffer;
-
     # Ignore moov identifier and size, start reading children
     my $stop = tell($datastream) + $size;
-    foreach my $id (sort keys %STCOs) {
-
-        my $atom_type = $STCOs{$id}[0];
-        my $atom_pos = $STCOs{$id}[1];
-        my $atom_size = $STCOs{$id}[2];
+    foreach my $stco (@STCOs) {
+        my $atom_type = @{$stco}[0];
+        my $atom_pos = @{$stco}[1];
+        my $atom_size = @{$stco}[2];
         # Write between last atom and this atom
         if(tell($datastream) < $atom_pos) {
             my $size = $atom_pos + 12 - tell($datastream);
@@ -203,23 +220,22 @@ sub process {
         return;
     }
 
-    my %indices = %INDICES;
+    my @indices = @INDICES;
     my $mdat_pos = 999999999;
     my $free_size = 0;
 
     my ($moov_pos, $moov_size);
-
     # Make sure moov occurs AFTER mdat, otherwise no need to run!
-    foreach my $atom (sort keys %indices) {
-        my $pos = $indices{$atom}[0];
-        my $size = $indices{$atom}[1];
+    foreach my $atom (@indices) {
+        my $pos = @{$atom}[1];
+        my $size = @{$atom}[2];
         # The atoms are guaranteed to exist from get_index above!
-        if ($atom eq "moov") {
+        if (@{$atom}[0] eq "moov") {
             $moov_pos = $pos;
             $moov_size = $size;
-        } elsif ($atom eq "mdat") {
+        } elsif (@{$atom}[0] eq "mdat") {
             $mdat_pos = $pos;
-        } elsif ($atom eq "free" && $pos < $mdat_pos) {
+        } elsif (@{$atom}[0] eq "free" && $pos < $mdat_pos) {
             # This free atom is before the mdat!
             $free_size += $size;
             warn("Removing free atom at $pos ($size bytes)");
@@ -244,9 +260,16 @@ sub process {
     binmode $outfile;
 
     # Write ftype
-    if($indices{'ftyp'}) {
-        my $pos = $indices{'ftyp'}[0];
-        my $size = $indices{'ftyp'}[1];
+    my @ftyp;
+    foreach my $atom (@indices) {
+        if(@{$atom}[0] eq 'ftyp') {
+            @ftyp = @{$atom};
+        }
+    }
+
+    if(scalar @ftyp > 0 ) {
+        my $pos = $ftyp[1];
+        my $size = $ftyp[2];
         seek($datastream, $pos, 0);
         read($datastream, my $buffer, $size);
         print $outfile $buffer;
@@ -254,22 +277,23 @@ sub process {
         die('No se encontro el atom: ftyp');
     }
 
+    seek($datastream, $moov_pos+8, 0);
+    &find_atoms($moov_size - 8, $datastream, 0);
+
     # Read and fix moov. Also write in to the output file
     seek($datastream, $moov_pos, 0);
     &fix_moov($moov_size, $datastream, $outfile, $offset);
 
+
     # Write the rest
     my $written = 0;
-    my %atoms;
-    foreach my $item (keys %indices) {
-        if($item !~ /^(ftyp|moov|free)$/) {
-            $atoms{$item} = $indices{$item};
-        }
-    }
     # Covers the remaining atoms
-    foreach my $atom (keys %atoms) {
-        my $pos = $atoms{$atom}[0];
-        my $size = $atoms{$atom}[1];
+    foreach my $atom (@indices) {
+        if(@{$atom}[0] =~ /^(ftyp|moov|free)$/) {
+            next;
+        }
+        my $pos = @{$atom}[1];
+        my $size = @{$atom}[2];
         seek($datastream, $pos, 0);
 
         # Write in chunks to not use too much memory
