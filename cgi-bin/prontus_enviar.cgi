@@ -193,14 +193,17 @@ main: {
     $FORM{'_FROM'} =~ s/\s+//sig;
     # warn($FORM{'_SUB'});
     if (! $FORM{'_SUB'}) {
-        $FORM{'_SUB'} = "Artículo de $ENV{'SERVER_NAME'}";
+      $FORM{'_SUB'} = "Artículo de $ENV{'SERVER_NAME'}";
+      utf8::encode($FORM{'_SUB'});
     } else {
-        utf8::decode($FORM{'_SUB'});
-        $FORM{'_SUB'} =~ s/\#$//; # Elimina posible gato final.
+      ##utf8::decode($FORM{'_SUB'});
+      # 11.2.64 - CVI - Para evitar que salan caracteres extraños
+      $FORM{'_SUB'} = &lib_prontus::unescape_xml($FORM{'_SUB'});
+      $FORM{'_SUB'} =~ s/\#$//; # Elimina posible gato final.
     };
 
-    # 2.9
-    $FORM{'_SUB'} = &lib_prontus::escape_html($FORM{'_SUB'});
+    # 11.2.64 - CVI - Para evitar que salan caracteres extraños
+    #~ $FORM{'_SUB'} = &lib_prontus::escape_html($FORM{'_SUB'});
 
     $FORM{'_FILE'} = $FORM{'_URL'}; # onda /prontus_dir/site/artic/20050823/pags/20050823163215.html
     #$FORM{'_FILE'} =~ s/https?:\/\/$ENV{'SERVER_NAME'}//i;
