@@ -4,16 +4,16 @@
         this.wrapper = $( "<span>" )
           .addClass( "custom-combobox" )
           .insertAfter( this.element );
- 
+
         this.element.hide();
         this._createAutocomplete();
         this._createShowAllButton();
       },
- 
+
       _createAutocomplete: function() {
         var selected = this.element.children( ":selected" ),
           value = selected.val() ? selected.text() : "";
- 
+
         this.input = $( "<input>" )
           .appendTo( this.wrapper )
           .val( value )
@@ -35,10 +35,10 @@
         this.input.on("keyup", function(e) {
           if(e.which == 13) {
                 $(this).trigger("enter");
-                if (parent.input.val() != '') { 
+                if (parent.input.val() != '') {
                     if ($('option:contains('+ parent.input.val() +')', parent.element).length <= 0) {
                          parent.input
-                          .attr( "title", "No se encontró nada con:<br/>" + parent.input.val() + "" )
+                          .attr( "title", "<div class=\"tooltip-combobox\">No se encontró ninguna portada con el texto:<br/><b>" + parent.input.val() + "</b></div>" )
                           .tooltip( "open" );
                           parent.input.val( $('#nomPortada').text() );
                         parent._delay(function() {
@@ -48,7 +48,7 @@
                 }
            }
         });
- 
+
         this._on( this.input, {
           autocompleteselect: function( event, ui ) {
             ui.item.option.selected = true;
@@ -56,15 +56,15 @@
               item: ui.item.option
             });
           },
- 
+
           autocompletechange: "_removeIfInvalid"
         });
       },
- 
+
       _createShowAllButton: function() {
         var input = this.input,
           wasOpen = false;
- 
+
         $( "<a>" )
           .attr( "tabIndex", -1 )
           .attr( "title", "" )
@@ -83,17 +83,17 @@
           })
           .click(function() {
             input.focus();
- 
+
             // Close if already visible
             if ( wasOpen ) {
               return;
             }
- 
+
             // Pass empty string as value to search for, displaying all results
             input.autocomplete( "search", "" );
           });
       },
- 
+
       _source: function( request, response ) {
         var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
         response( this.element.children( "option" ).map(function() {
@@ -106,14 +106,14 @@
             };
         }) );
       },
- 
+
       _removeIfInvalid: function( event, ui ) {
- 
+
         // Selected an item, nothing to do
         if ( ui.item ) {
           return;
         }
- 
+
         // Search for a match (case-insensitive)
         var value = this.input.val(),
           valueLowerCase = value.toLowerCase(),
@@ -124,32 +124,32 @@
             return false;
           }
         });
- 
+
         // Found a match, nothing to do
         if ( valid ) {
           return;
         }
- 
+
         // Remove invalid value
         //~ var selected = this.element.children( ":selected" );
         //~ var value_selected = selected.val() ? selected.text() : "";
-        
+
         if (this.input.val() != '') {
              this.input
               .val( $('#nomPortada').text() )
-              .attr( "title", "No se encontró nada con:<br/>" + value + "" )
+              .attr( "title", "<div class=\"tooltip-combobox\">No se encontró ninguna portada con el texto:<br/><b>" + value + "</b></div>" )
               .tooltip( "open" );
         } else {
             this.input.val( $('#nomPortada').text() );
         };
-          
+
         this.element.val( "" );
         this._delay(function() {
           this.input.tooltip( "close" ).attr( "title", "" );
-        }, 1500 );
+        }, 2500 );
         this.input.data( "ui-autocomplete" ).term = "";
       },
- 
+
       _destroy: function() {
         this.wrapper.remove();
         this.element.show();
