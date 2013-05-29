@@ -571,8 +571,9 @@ sub generar_taxports_thislevel {
             my $art_baja = $row->[8];
 
             $nro_filas++;
+            my $nro_pag_to_write;
             if (-f "$dir_semaf/$id_level.$pid_propio") {
-                my $nro_pag_to_write = $nro_pag + 1;
+                $nro_pag_to_write = $nro_pag + 1;
                 # print STDERR "\r                   pag[$nro_pag_to_write] row[$nro_filas]";
                 # sleep (1) if ($nro_filas > 98);
             } else {
@@ -598,11 +599,11 @@ sub generar_taxports_thislevel {
 
                     # En estos casos sólo es válida la primera página
                     my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
-                    if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 1) {
+                    if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 0) {
                         next;
                     };
 
-                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id});
+                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pag_to_write);
 
                     $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
                     $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces

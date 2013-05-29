@@ -228,6 +228,7 @@ sub generar_tagonomicas_thislevel {
     $fids2process{''} = 1 if ($FORM{'tags_id'});
 
     my %art_xml_fields;
+    my %art_xdata_fields;
 
     my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/tagport_smf";
     &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
@@ -307,10 +308,10 @@ sub generar_tagonomicas_thislevel {
                     my $auxref;
 
                     # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
-                    ($fila_content, $auxref) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id});
+                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
 
                     $art_xml_fields{$art_id} = $auxref if (! exists $art_xml_fields{$art_id}); # para no leer 2 veces un xml
-
+                    $art_xdata_fields{$art_id} = $auxref2 if (! exists $art_xdata_fields{$art_id}); # para no leer 2 veces un xml
                     $filas{"$mv|$nombase_plt"} .= $fila_content;
                 };
             };

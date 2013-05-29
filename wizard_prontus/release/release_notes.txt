@@ -6288,6 +6288,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
 
+- Portadas Taxonómicas
+    [mejoras]
+        - Se agrega la marca: %%_nropagina%% para imprimir el número de página (sólo válido en taxport y tagport
+    [files]
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_tags_ports.cgi
+
 - Transcodificacion
     [bugfixes]
         - Se captura excepción al intentar hacer un unpack Q, ya que se caía.

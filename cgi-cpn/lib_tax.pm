@@ -258,7 +258,7 @@ sub make_lista {
 # ---------------------------------------------------------------
 sub generar_fila {
 # Genera y retorna cada fila de la tabla.
-    my ($reldir_artic, $art_id, $art_extension, $loop, $loopcounter, $tot_artics, $refhash_campos_xml, $refhash_campos_xdata) = @_;
+    my ($reldir_artic, $art_id, $art_extension, $loop, $loopcounter, $tot_artics, $refhash_campos_xml, $refhash_campos_xdata, $nro_pag) = @_;
 
     my (%campos_xml, %claves_adicionales);
     my $fila = $loop;
@@ -291,6 +291,7 @@ sub generar_fila {
         } else {
             %claves_adicionales = %$refhash_campos_xdata;
         }
+        $claves_adicionales{_nropagina} = $nro_pag;
         $claves_adicionales{_ts} = $art_id;
         $claves_adicionales{_loopcounter} = $loopcounter;
         $claves_adicionales{_totartics} = $tot_artics;
