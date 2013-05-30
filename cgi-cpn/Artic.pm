@@ -1806,7 +1806,13 @@ sub get_xdata {
         # Detecta marcas comunes a todos los articulos
         if(%prontus_varglb::globalxdata) {
             # Utiliza cache de las marcas comunes
-            %xdata = %prontus_varglb::globalxdata;
+            if(%xdata) {
+                foreach my $key (keys %prontus_varglb::globalxdata) {
+                    $xdata{$key} = $prontus_varglb::globalxdata{$key};
+                };
+            } else {
+                %xdata = %prontus_varglb::globalxdata;
+            };
         } else {
             # Si no está cacheado, lee el directorio y busca las marcas
             my @lisdirext = &glib_fildir_02::lee_dir("$pathdir_xdata/$sist_externo");

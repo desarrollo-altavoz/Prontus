@@ -6268,6 +6268,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Se corrige error al parsear VTXT cuando no había VTXT, por ejemplo en portadas.
         - Se eliminan de la release algunos archivos basura de la carpeta: /cgi-cpn/pproc
+        - Se corrige bug al cargar las marcas externas, cuando convivian 2 o más sistemas
     [cambio]
         - Se cambia el alert cuando no hay conexión o errores en el servidor por un Dialog modal (de la UI jQuery)
           El alert era muy molestoso y poco elegante. Más adelante se podría bloquear completamente la interface.
@@ -6276,6 +6277,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se evita el cálculo de la Friendly URL si el buffer no trae %%_fileurl%%
     [files]
+        /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_check_platform.cgi
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
         /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
