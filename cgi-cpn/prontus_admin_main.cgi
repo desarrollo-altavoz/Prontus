@@ -407,9 +407,9 @@ sub parseaVars {
     $loop = $1;
 
     foreach my $port (sort {lc($PORTS_TO_ORDER{$a}) cmp lc($PORTS_TO_ORDER{$b})} keys %PORTS_TO_ORDER) {
-        my $name = $prontus_varglb::PORT_PLTS_NOM{$port} if ($prontus_varglb::PORT_PLTS_NOM{$port} ne '');
         next if ($port =~ /^\./);
-        $name = $port if ($name eq '');
+        my $name = $port;
+        $name = $prontus_varglb::PORT_PLTS_NOM{$port} if ($prontus_varglb::PORT_PLTS_NOM{$port} ne '');
         $temp = $loop;
         $temp =~ s/%%value%%/$port/isg;
         $temp =~ s/%%name%%/$name/isg;
@@ -432,9 +432,9 @@ sub parseaVars {
 
 
     foreach my $port (sort {lc($PORTS_TO_ORDER{$a}) cmp lc($PORTS_TO_ORDER{$b})} keys %PORTS_TO_ORDER) {
-        my $name = $prontus_varglb::PORT_PLTS_NOM{$port} if ($prontus_varglb::PORT_PLTS_NOM{$port} ne '');
         next if ($port =~ /^\./);
-        $name = $port if ($name eq '');
+        my $name = $port;
+        $name = $prontus_varglb::PORT_PLTS_NOM{$port} if ($prontus_varglb::PORT_PLTS_NOM{$port} ne '');
         $temp = $loop;
         $temp =~ s/%%value%%/$port/isg;
         $temp =~ s/%%name%%/$name/isg;
