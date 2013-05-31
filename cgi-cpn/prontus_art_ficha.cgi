@@ -951,6 +951,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($valor_campo =~ /<!\[CDATA\[(.*?)\]\]>/isg) {
         $valor_campo = $1;
       };
+      $pag =~ s/%%$nom_campo%%/$valor_campo/ig;
       $pag = &procesar_obj_seleccion($pag, 'radio',$nom_campo,$valor_campo);
     }
     # alta control
@@ -996,12 +997,14 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($valor_campo =~ /<!\[CDATA\[(.*?)\]\]>/isg) {
         $valor_campo = $1;
       };
+      $pag =~ s/%%$nom_campo%%/$valor_campo/ig;
       $pag = &procesar_obj_seleccion($pag, 'checkbox',$nom_campo,$valor_campo);
     }
     elsif ($nom_campo =~ /^CMB_\w+/i) {
       if ($valor_campo =~ /<!\[CDATA\[(.*?)\]\]>/isg) {
         $valor_campo = $1;
       };
+      $pag =~ s/%%$nom_campo%%/$valor_campo/ig;
       $pag = &procesar_select($pag,$nom_campo,$valor_campo);
     }
     elsif ($nom_campo =~ /^_SECCION(\d)/i) {
@@ -1108,13 +1111,13 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg =~ s/%%relpath_foto%%/$relpath_foto/ig;
-        
+
         # Para los campos hidden de las fotos que no se desplegarán
         my $bufferBancoImg2 = $moldeBancoImg2;
         $bufferBancoImg2 =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg2 =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg2 =~ s/%%relpath_foto%%/$relpath_foto/ig;
-		
+
         # Foto iconizada
         # my $alt = "$nom_campo\nW:$wfoto\nH:$hfoto\n$kbytes_foto";
         my $foto_iconizada;
@@ -1177,7 +1180,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $foto_iconizada =~ s/> />/sg;
         # print STDERR '2 --> '.$foto_iconizada;
         $fotos_icono{$nom_campo} = $foto_iconizada;
-        
+
 
       };
 
@@ -1387,7 +1390,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $pag =~ s/<!--vermas imagenes-->(.*?)<!--\/vermas imagenes-->//isg;
 
   }
-  
+
   # Finalmente se borra el Loop y el Hidden
   $pag =~ s/%%LOOP_FOTOS%%.*?%%\/LOOP_FOTOS%%//isg;
   $pag =~ s/%%_HIDDEN_FOTOS%%//isg;
