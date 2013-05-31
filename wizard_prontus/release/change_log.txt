@@ -1,19 +1,46 @@
 ====================================================================================================
+11.2.64 - 30/05/2013
+====================================================================================================
+- bugfix: Se corrige error al parsear VTXT cuando no había VTXT, por ejemplo en portadas.
+- bugfix: Se eliminan de la release algunos archivos basura de la carpeta: /cgi-cpn/pproc
+- bugfix: Se corrige bug al cargar las marcas externas, cuando convivian 2 o más sistemas
+- changes: Se cambia el alert cuando no hay conexión o errores en el servidor por un Dialog modal (de la UI jQuery)
+- changes: Se agrega información básica sobre error de conexión
+- changes: Se baja el tiempo request de 10 segundos a 5 segundos
+- improvement: Se evita el cálculo de la Friendly URL si el buffer no trae %%_fileurl%%
+- bugfix: En el editor del CFG, algunas combos de portadas quedaban con una sola repetida.
+- bugfix: Se corrige error al arrastrar fotos a los campos de Foto Fija en Chrome de Mac
+- improvement: Se agrega la marca: %%_nropagina%% para imprimir el número de página (sólo válido en taxport y tagport, dentro del loop)
+- bugfix: Se captura excepción al intentar hacer un unpack Q, ya que se caía.
+- bugfix: Se corrige bug al buscar atoms, si habian atoms duplicados se tomaba en cuenta solo el ultimo, lo que provocaba videos corruptos.
+- bugfix: Se elimina el "use lib_prontus;" de la cgi: prontus_chek_platform.cgi, no era necesario, y botaba el script
+- improvement: Al chequear el soporte de libx264 y libfaac, se habilita el chequeo a través de "ffmpeg -codecs"
+- improvement: Se agrega filtrado de portadas por nombre al combobox de selección de portadas.
+- bugfix: Se soluciona problema con permisos de edición de artículos ajenos para editores y redactores.
+- changes: Se limita a 25 número de caracteres para el nombre de las portadas.
+- improvement: Se deja disponible un regenerador de portadas, similar al regenerador de artículos, con opciones avanzadas
+- changes: Producto de lo anterior, se cambia levemente la gráfica del regenerador de artículos
+- improvement: Se centraliza la función &finishLoading() del regenerador de artículos (y portadas) en la lib_logproc.
+- changes: Se corrige error en el Subject del Enviar Artículo cuando se envían acentos
+- bugfix: Error en el Wizard, tenía mal el directorio de los modelos y llegaba solo al paso 2 en la instalacion de cero
+- improvement: En caso de que el problema anterior se repita, se agregaron varias validaciones y chqueos para evitarlo
+
+====================================================================================================
 11.2.63 - 25/04/2013
 ====================================================================================================
-bugfix: Se agrega un IF en la glib_html_02 y Prontus Form para prevenir error en sitios con módulo JSON version 1
-bugfix: Se escapea el caracter $ en caso que venga en los parámetros de la Prontus Function
-changes: En la Portadas Taxonómicas, al generar los filtros de "///" se dejan fuera los que no tengan sección
-changes: Se cambia formato de los logs de errores al renovar semaforos, en las Portadas Taxonómicas, para facilitar lectura
-changes: Se baja el sleep al crear las Portadas Taxonómicas, de 500000us a 5000us
-bugfix: Se arregla listado de portadas disponibles para interfaz drag & drop. El nombre quedaba repetido.
-bugfix: Se agrega código para setear binmode al descargar en utf8, el archivo de respaldo de Prontus Form
-improvement: El listado de los envíos, ahora lee desde el json. Si no hay order.json desde el csv.
-improvement: Se crea nueva macro resevada de FID, llamada: _form_cabecera.html
-changes: Se agrega una nueva marca reservada de prontus form: chk_form_force_from, para forzar en FROM del correo que va al admin
-changes: Se aplican cambios menores en la macro _form_backup.html, para ordenar
-changes: Se limita el listado de los envíos del Prontus Form a los últimos 50 (en el caso de json) o primeros 50 (en el caso de csv).
-changes: Se mueven algunas funciones de Prontus Form hacia la lib_form.pm para centralizar código
+- bugfix: Se agrega un IF en la glib_html_02 y Prontus Form para prevenir error en sitios con módulo JSON version 1
+- bugfix: Se escapea el caracter $ en caso que venga en los parámetros de la Prontus Function
+- changes: En la Portadas Taxonómicas, al generar los filtros de "///" se dejan fuera los que no tengan sección
+- changes: Se cambia formato de los logs de errores al renovar semaforos, en las Portadas Taxonómicas, para facilitar lectura
+- changes: Se baja el sleep al crear las Portadas Taxonómicas, de 500000us a 5000us
+- bugfix: Se arregla listado de portadas disponibles para interfaz drag & drop. El nombre quedaba repetido.
+- bugfix: Se agrega código para setear binmode al descargar en utf8, el archivo de respaldo de Prontus Form
+- improvement: El listado de los envíos, ahora lee desde el json. Si no hay order.json desde el csv.
+- improvement: Se crea nueva macro resevada de FID, llamada: _form_cabecera.html
+- changes: Se agrega una nueva marca reservada de prontus form: chk_form_force_from, para forzar en FROM del correo que va al admin
+- changes: Se aplican cambios menores en la macro _form_backup.html, para ordenar
+- changes: Se limita el listado de los envíos del Prontus Form a los últimos 50 (en el caso de json) o primeros 50 (en el caso de csv).
+- changes: Se mueven algunas funciones de Prontus Form hacia la lib_form.pm para centralizar código
 
 ====================================================================================================
 11.2.62 - 12/04/2013

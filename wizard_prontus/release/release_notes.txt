@@ -6261,7 +6261,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.64 - 22/05/2013 - CVI/JOR
+11.2.64 - 30/05/2013 - CVI/JOR
 ====================================================================================================
 
 - Prontus en General
@@ -6301,7 +6301,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Transcodificacion
     [bugfixes]
         - Se captura excepción al intentar hacer un unpack Q, ya que se caía.
-          Se investigará mas adelante si se puede arreglar de mejor manera
         - Se corrige bug al buscar atoms, si habian atoms duplicados se tomaba en cuenta solo el
           ultimo, lo que provocaba videos corruptos.
     [files]
@@ -6319,10 +6318,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_check_platform.cgi
 
 - Administrador de portadas
-    [mejoras]
-        - Se agrega filtrado de portadas por nombre al combobox de selección de portadas.
     [bugfixes]
         - Se soluciona problema con permisos de edición de artículos ajenos para editores y redactores.
+    [mejoras]
+        - Se agrega filtrado de portadas por nombre al combobox de selección de portadas.
     [files]
        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/ui/js/jquery.combobox.widget.js
@@ -6330,9 +6329,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
        /wizard_prontus/prontus_dir/cpan/core/macros/listado_titulos.html
 
 - Editor de CFG GUI
+    [bugfixes]
+        - Error en algunas combos de portadas, cuando los nombres estaban vacíos (se repetía siempre una).
     [cambios]
         - Se limita a 25 número de caracteres para el nombre de las portadas.
     [files]
+        /cgi-cpn/prontus_admin_main.cgi guardado
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_port.html
 
 - Regenerador Masivo
