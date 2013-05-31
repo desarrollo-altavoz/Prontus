@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.64 - 30/05/2013
+11.2.64 - 31/05/2013
 ====================================================================================================
 - bugfix: Se corrige error al parsear VTXT cuando no había VTXT, por ejemplo en portadas.
 - bugfix: Se eliminan de la release algunos archivos basura de la carpeta: /cgi-cpn/pproc
