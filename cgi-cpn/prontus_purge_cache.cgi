@@ -78,6 +78,20 @@ sub purge {
         };
     };
     close PURGEFILE;
+
+    # Se intenta realizar el Global Purge, si aplica
+    if($prontus_varglb::VARNISH_GLOBAL_PURGE) {
+        my @arr = split( /[\n\r]/, $prontus_varglb::VARNISH_GLOBAL_PURGE);
+        foreach my $path (@arr) {
+            next unless($path);
+            next unless($path =~ /^\//); # debe empezar con /
+            foreach my $server (keys %prontus_varglb::VARNISH_SERVER_NAME) {
+                my $url_purge = "http://$server$path";
+                my ($resp, $err) = &get_url($url_purge);
+                print STDERR "[$$] global purge -> server[$server], url_purge[$url_purge], status[$err]\n";
+            };
+        };
+    };
 };
 
 sub get_url {

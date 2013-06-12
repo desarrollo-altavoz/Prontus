@@ -101,6 +101,7 @@ main: {
     $hash_defaultvars{'var'}{'VTXT_DTD'} = 'VTXT_DTD;(STRICT|TRANSITIONAL);STRICT;U';
     $hash_defaultvars{'var'}{'FORM_CSV_CHARSET'} = 'FORM_CSV_CHARSET;(utf-8|iso-8859-1);utf-8;U';
     $hash_defaultvars{'var'}{'VARNISH_SERVER_NAME'} = 'VARNISH_SERVER_NAME;(\w+);;M';
+    $hash_defaultvars{'var'}{'VARNISH_GLOBAL_PURGE'} = 'VARNISH_GLOBAL_PURGE;(\w+);;U';
     $hash_defaultvars{'var'}{'POST_PROCESO'} = 'POST_PROCESO;(\w+);;U';
     $hash_defaultvars{'var'}{'MULTIVISTA'} = 'MULTIVISTAS;(\w+);;M';
     $hash_defaultvars{'var'}{'UPLOADS_PERMITIDOS'} = 'UPLOADS_PERMITIDOS;(\w+);' . $prontus_varglb::UPLOADS_PERMITIDOS . ';U';
@@ -496,9 +497,9 @@ sub validarArt {
     my $fid = $1;
     my $nom = $2;
     my $plts = $3;
-    
+
     print STDERR "$fid, $nom, $plts\n";
-    
+
     my $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
     if (! -f $dir_fid . $fid . '.html') {
         &glib_html_02::print_json_result(0, "No se pudo localizar el FID [$prontus_varglb::PRONTUS_ID/cpan/fid/$fid.html].", 'exit=1,ctype=1');

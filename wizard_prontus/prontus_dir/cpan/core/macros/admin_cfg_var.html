@@ -232,6 +232,20 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
+                                            VARNISH_GLOBAL_PURGE<br>
+                                            <span class="ayuda">Indicar las rutas serán expiradas cada vez que se haga purge. Se recomienda indicar sólo lo necesario para no sobrecargar el sistema.
+                                                Una ruta por línea (no debe incluír el dominio).<br/><br/>Ejemplos:<br/>
+                                                /prontus/site/edic/base/port/portada.html<br/>
+                                                /noticias/<br/>
+                                                /<br/>
+                                                </span>
+                                        </td>
+                                        <td>
+                                            <textarea name="VARNISH_GLOBAL_PURGE" cols="80" rows="8" class="fieldform">%%VARNISH_GLOBAL_PURGE%%</textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
                                             VTXT_DTD<br>
                                             <span class="ayuda">Permite definir el uso de xhtml 1.0 strict o transitional para el código generado en el VTXT.</span>
                                         </td>
@@ -346,4 +360,4 @@
                                 <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
                             </div>
                         </div> <!--/listado-->
-                    
+

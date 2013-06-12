@@ -1920,6 +1920,12 @@ sub load_config {
      $prontus_varglb::VARNISH_SERVER_NAME{$varnish_server_name} = 1;
   };
 
+  # Varnish global purge
+  my $varnish_global_purge;
+  while ($buffer =~ m/\s*VARNISH_GLOBAL_PURGE\s*=\s*("|')(.+?)("|')/sg) {
+     $varnish_global_purge = $2;
+  };
+  $prontus_varglb::VARNISH_GLOBAL_PURGE = $varnish_global_purge;
 
   # clustering servers    # CLUSTERING_SERVER = '192.168.1.6(cluster1000)(passcluster1)'
   my $num_server;
@@ -6085,7 +6091,7 @@ sub call_purge_proc {
     if (-f $file_pend) {
         #~ print STDERR "[purge][$$] con archivo\n";
         my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID $file_pend >/dev/null 2>&1 &";
-        #~ print STDERR "cmd[$cmd]\n";
+        print STDERR "purge[$cmd]\n";
         system $cmd;
     }
 };
