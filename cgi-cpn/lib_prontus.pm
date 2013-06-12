@@ -6013,8 +6013,19 @@ sub add_generator_tag {
 sub purge_cache {
     my ($path_file) = shift;
     my $relpath = &remove_front_string($path_file, $prontus_varglb::DIR_SERVER);
-
     if ($relpath !~ /\/site\/tax\/port\//is) {
+        my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
+        &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);
+        my $pid = $$;
+        open(PURGEFILE, ">>$dir_pend/$^T_$pid.txt");
+        print PURGEFILE $relpath . "\n";
+        close PURGEFILE;
+
+    # Segun release_notes:
+    #     "Por el momento, no se está considerando el PURGE de las portadas taxonómica.
+    #      Lo cual en un futuro quedará configurable"
+    # Por ahora, hasta nuevo aviso se aplica sólo si la taxport es la primera página
+    } elsif($relpath !~ /_1\.\w+$/is) {
         my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
         &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);
         my $pid = $$;
@@ -6072,10 +6083,11 @@ sub cerrar_sesion {
 sub call_purge_proc {
     my $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$.txt";
     if (-f $file_pend) {
+        #~ print STDERR "[purge][$$] con archivo\n";
         my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID $file_pend >/dev/null 2>&1 &";
         #~ print STDERR "cmd[$cmd]\n";
         system $cmd;
-    };
+    }
 };
 
 
