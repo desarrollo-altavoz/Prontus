@@ -63,9 +63,8 @@ function traerModelo {
 
 
 #~ A futuro, leer esto desde el prontus_varglb.pm
-#~ echo "Ingrese la release (ej: 11.2.31):"
-#~ read -r release
-release="11.2.66"
+echo "Ingrese la release (ej: 11.2.31):"
+read -r release
 fecha=$(date +"%d/%m/%Y");
 rama=`expr match "$release" '\([0-9]*\.[0-9]*\)\.[0-9]*'`
 
