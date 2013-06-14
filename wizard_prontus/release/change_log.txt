@@ -1,4 +1,12 @@
 ====================================================================================================
+11.2.65 - 14/06/2013
+====================================================================================================
+- improvement: En el FID, las marcas de los campos CHK_ CMB_ y RDO_ se parsearán igual que el resto (antes no se parseaban)
+- improvement: Portadas Taxonómicas: Se comienza a hacer FORK de los procesos que generan los niveles
+- improvement: No se estaba aplicando PURGE a las portadas taxonómicas. Ahora se aplica sólo para la primera página.
+- improvement: Se agrega la nueva variable: VARNISH_GLOBAL_PURGE. Es un textarea para ingresar rutas que se deben expirar siempre que se haga un purge.
+
+====================================================================================================
 11.2.64 - 31/05/2013
 ====================================================================================================
 - bugfix: Se corrige error al parsear VTXT cuando no había VTXT, por ejemplo en portadas.

@@ -430,12 +430,25 @@ sub generar_taxports {
     my %fids2process = &get_fids2process();
 
     # print STDERR "\nMI PID: $$\n";
+    my @childs;
 
     # Escribe los semaforos de los id levels q va a utilizar (en realidad solo cambia el fid)
     # y borra los escritos por otros procesos para este mismo level, para provocar q aborten
     &renovar_semaforos($FORM{'seccion_especif'}, $FORM{'tema_especif'}, $FORM{'subtema_especif'}, \%fids2process);
 
-    &generar_taxports_thislevel('', '', '', '', \%fids2process, $base); # todas
+    my $pid_padre = $$;
+
+    my $pid = fork();
+    if ($pid) {
+        push(@childs, $pid);
+    } elsif ($pid == 0) {
+        &generar_taxports_thislevel('', '', '', '', \%fids2process, $base, $pid_padre); # todas
+        exit 0;
+    } else {
+        print STDERR "No se pudo hacer el fork general: $!\n";
+    };
+
+
 
     if (($FORM{'seccion_especif'}) || ($FORM{'params_especif'} eq '')) {
 
@@ -451,7 +464,16 @@ sub generar_taxports {
             };
 
             if ($FORM{'seccion_especif'}) {
-                &generar_taxports_thislevel($secc_id, '', '', $secc_port, \%fids2process, $base);
+
+                my $pid = fork();
+                if ($pid) {
+                    push(@childs, $pid);
+                } elsif ($pid == 0) {
+                    &generar_taxports_thislevel($secc_id, '', '', $secc_port, \%fids2process, $base, $pid_padre);
+                    exit 0;
+                } else {
+                    print STDERR "No se pudo hacer el fork de seccion: $!\n";
+                };
             }
 
             my ($temas_id, $temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas);
@@ -463,8 +485,16 @@ sub generar_taxports {
                 };
 
                 if ($FORM{'tema_especif'}) {
-                    &generar_taxports_thislevel($secc_id, $temas_id, '', $temas_port, \%fids2process, $base);
-                }
+                    my $pid = fork();
+                    if ($pid) {
+                        push(@childs, $pid);
+                    } elsif ($pid == 0) {
+                        &generar_taxports_thislevel($secc_id, $temas_id, '', $temas_port, \%fids2process, $base, $pid_padre);
+                        exit 0;
+                    } else {
+                        print STDERR "No se pudo hacer el fork de tema: $!\n";
+                    };
+                };
 
                 # subtemas
                 my ($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas);
@@ -475,18 +505,27 @@ sub generar_taxports {
                         next if ($FORM{'subtema_especif'} != $subtemas_id);
                     };
                     if ($FORM{'subtema_especif'}) {
-                        &generar_taxports_thislevel($secc_id, $temas_id, $subtemas_id, $subtemas_port, \%fids2process, $base);
+                        my $pid = fork();
+                        if ($pid) {
+                            push(@childs, $pid);
+                        } elsif ($pid == 0) {
+                            &generar_taxports_thislevel($secc_id, $temas_id, $subtemas_id, $subtemas_port, \%fids2process, $base, $pid_padre);
+                            exit 0;
+                        } else {
+                            print STDERR "No se pudo hacer el fork de subtema: $!\n";
+                        };
                     }
                 };
 
             }; # foreach temas
         }; # foreach seccs
-
     };
 
+    foreach (@childs) {
+        my $tmp = waitpid($_, 0);
+        print STDERR "[$pid_padre] El proceso con pid $tmp, ya termino\n";
+    };
     #~ $base->disconnect;
-
-
 };
 
 
@@ -513,7 +552,7 @@ sub generar_taxports_thislevel {
 # a este nivel taxonomico, para todas las vistas declaradas y fids.
 
 
-    my ($secc_id, $temas_id, $subtemas_id, $tax_fixedurl, $ref_hash, $base) = @_;
+    my ($secc_id, $temas_id, $subtemas_id, $tax_fixedurl, $ref_hash, $base, $pid_padre) = @_;
 
     my %fids2process = %$ref_hash;
     # si se invoca sin fid, considera el filtro sin fid
@@ -524,19 +563,19 @@ sub generar_taxports_thislevel {
 
     my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/taxport_smf";
     &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
-    my $pid_propio = $$;
+    #~ my $pid_propio = $$;
 
     foreach my $fid (keys %fids2process) {
         my $id_level = $secc_id . '_' . $temas_id . '_' . $subtemas_id . '_' . $fid;
-        if (! -f "$dir_semaf/$id_level.$pid_propio") {
-            print STDERR "prontus_cron_taxport.cgi - [$$] PROCESAR LEVEL[$id_level] hasta aca no mas llegamos!\n";
+        if (! -f "$dir_semaf/$id_level.$pid_padre") {
+            print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] hasta aca no mas llegamos!\n";
             next;
         };
         my $base = &conecta_db();
 
         my $filtros = &genera_filtros_taxports($secc_id, $temas_id, $subtemas_id, $fid, $CURR_DTIME);
         my $tot_artics = &get_tot_artics($filtros, $base);
-        print STDERR "[$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
+        print STDERR "[$pid_padre][$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
         my ($secc_nom, $filler) = split (/\t\t/, $TABLA_SECC{$secc_id});
 
         my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
@@ -572,7 +611,7 @@ sub generar_taxports_thislevel {
 
             $nro_filas++;
             my $nro_pag_to_write;
-            if (-f "$dir_semaf/$id_level.$pid_propio") {
+            if (-f "$dir_semaf/$id_level.$pid_padre") {
                 $nro_pag_to_write = $nro_pag + 1;
                 # print STDERR "\r                   pag[$nro_pag_to_write] row[$nro_filas]";
                 # sleep (1) if ($nro_filas > 98);
@@ -632,9 +671,9 @@ sub generar_taxports_thislevel {
         $nro_pag++; # avanza pag
         &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas);
 
-        if (-f "$dir_semaf/$id_level.$pid_propio") {
-            unlink "$dir_semaf/$id_level.$pid_propio";
-            print STDERR "[$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
+        if (-f "$dir_semaf/$id_level.$pid_padre") {
+            unlink "$dir_semaf/$id_level.$pid_padre";
+            print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
         };
     };
 
@@ -908,18 +947,16 @@ sub write_pag {
                                         . '_' . $subtemas_id
                                         . '_' . $nro_pag
                                     . $extension;
-#            # debug
-#            if (! exists $HASH_FILES{$k}) {
-#                $HASH_FILES{$k} = 1;
-#            } else {
-#                print STDERR "escrito de nuevo!![$k]\n";
-#            };
+            # debug
+            #~ if (! exists $HASH_FILES{$k}) {
+                #~ $HASH_FILES{$k} = 1;
+            #~ } else {
+                #~ print STDERR "escrito de nuevo!![$k]\n";
+            #~ };
 
-
-
-    #~ my $delta_t = time - $ini_t;
-    #~ print STDERR "\tescribiendo[$delta_t][$k]\n"; # debug
-    $COUNTER_TOTAL_PAGS++;
+            #~ my $delta_t = time - $ini_t;
+            #~ print STDERR "\tescribiendo[$delta_t][$k]\n"; # debug
+            $COUNTER_TOTAL_PAGS++;
 
             &glib_fildir_02::write_file($k, $pagina);
             &lib_prontus::purge_cache($k);

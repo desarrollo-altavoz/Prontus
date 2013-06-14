@@ -1046,6 +1046,8 @@ sub parseaVars {
         $pagina =~ s/%%ABRIR_FIDS_EN_POP_NO%%/ checked="checked"/ig;
     };
 
+    $pagina =~ s/%%VARNISH_GLOBAL_PURGE%%/$prontus_varglb::VARNISH_GLOBAL_PURGE/ig;
+
     # -clustering.cfg
 
     $buffer = '';
