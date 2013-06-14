@@ -63,8 +63,9 @@ function traerModelo {
 
 
 #~ A futuro, leer esto desde el prontus_varglb.pm
-echo "Ingrese la release (ej: 11.2.31):"
-read -r release
+#~ echo "Ingrese la release (ej: 11.2.31):"
+#~ read -r release
+release="11.2.66"
 fecha=$(date +"%d/%m/%Y");
 rama=`expr match "$release" '\([0-9]*\.[0-9]*\)\.[0-9]*'`
 
@@ -79,22 +80,37 @@ SCRIPTPATH=`dirname $SCRIPT`
 SCRIPTPATH=`dirname $SCRIPTPATH`
 BASEDIR=`dirname $SCRIPTPATH`
 RELEASEPATH="$BASEDIR/release"
+BASEDIRTEMP="$RELEASEPATH/temporal"
 
 #~ Se verifica directorio de destino.
 limpiarDirectorio "$RELEASEPATH"
 
-#~ Generando el TGZ
-echo "Generando archivo tgz"
+#~ Copiando archivos para comprimir
+echo "Copiando archivos para comprimir"
 cd $BASEDIR
-tar czf "$RELEASEPATH/files.$release.tgz" \
-    --exclude=*.log \
-    --exclude=cgi-cpn/develop_calculo_quota.pl \
-    --exclude=cgi-cpn/pproc \
-    --exclude=*.orig \
-    cgi-bin/ \
-    cgi-cpn/ \
-    wizard_prontus/core/ \
-    wizard_prontus/prontus_dir/cpan/core/
+mkdir $BASEDIRTEMP
+cd $BASEDIRTEMP
+cp -rf "$BASEDIR/cgi-bin" .
+cp -rf "$BASEDIR/cgi-cpn" .
+mkdir "$BASEDIRTEMP/wizard_prontus"
+cp -rf "$BASEDIR/wizard_prontus/core" "$BASEDIRTEMP/wizard_prontus"
+mkdir "$BASEDIRTEMP/wizard_prontus/prontus_dir"
+mkdir "$BASEDIRTEMP/wizard_prontus/prontus_dir/cpan"
+cp -rf "$BASEDIR/wizard_prontus/prontus_dir/cpan/core" "$BASEDIRTEMP/wizard_prontus/prontus_dir/cpan"
+rm -rf "$BASEDIRTEMP/cgi-bin/prontus_error_log" "$BASEDIRTEMP/cgi-bin/prontus_temp"
+rm -rf "$BASEDIRTEMP/cgi-cpn/coment/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/coment/prontus_temp"
+rm -rf "$BASEDIRTEMP/cgi-cpn/dam/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/dam/prontus_temp"
+rm -rf "$BASEDIRTEMP/cgi-cpn/xcoding/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/xcoding/prontus_temp"
+rm -rf "$BASEDIRTEMP/cgi-cpn/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/prontus_temp"
+rm -rf "$BASEDIRTEMP/cgi-cpn/pproc"
+rm -rf "$BASEDIRTEMP/cgi-cpn/develop_calculo_quota.pl"
+
+#~ Generando el TGZ
+echo "Generando archivo tgz en: $RELEASEPATH/files.$release.tgz"
+cd $BASEDIRTEMP
+tar czf "$RELEASEPATH/files.$release.tgz" . \
+        --exclude=*.orig
+rm -rf "$BASEDIRTEMP"
 
 #~ Generando md5
 echo "Generando md5"
