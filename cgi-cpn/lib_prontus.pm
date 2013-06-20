@@ -5210,8 +5210,18 @@ sub parser_custom_function {
         my @arrparams = split(/"\s*,\s*"|'\s*,\s*'/, $params);
         my @newarr;
         foreach my $keys (@arrparams) {
-          # $keys =~ s/(["|'])([^\\])"/\1\\"/g;
-          $keys =~ s/([^\\])"/\1\\"/g;
+          #~ $keys =~ s/(["|'])([^\\])"/\1\\"/g;
+          #~ $keys =~ s/([^\\])"/\1\\"/g;
+
+          $keys =~ s/%%(.*?)%%//g;
+          my $security = 0;
+          while($keys =~ s/([^\\])"/\1\\"/) {
+            if($security >= 500) {
+                $keys =~ s/([^\\])"/\1\\"/g;
+                last;
+            }
+            $security++;
+          }
           # print STDERR "keys: $keys... ";
           push(@newarr, $keys);
         }
