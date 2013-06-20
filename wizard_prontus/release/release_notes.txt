@@ -6411,6 +6411,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 11.2.66 - 20/06/2013 - CVI
 ====================================================================================================
+
+- Prontus en General
+    [mejoras]
+        - Se elimina variable basura: VERSION_PRONTUS con una versión antigua en prontus_ping_inuse.cgi
+          No se estaba usando, pero podía prestarse para confusión.
+    [files]
+        /cgi-cpn/prontus_ping_inuse.cgi
+
 - Prontus Functions
     [bugfixes]
         - Se hacer un borrado de las marcas no parseadas en los parámetros de la PF antes de invocarla
@@ -6419,3 +6427,5 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Se recomienda revisar esta parte.
     [files]
         /cgi-cpn/lib_prontus.pm
+
+
