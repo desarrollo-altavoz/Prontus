@@ -6422,6 +6422,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_ping_inuse.cgi
         /cgi-cpn/lib_prontus.pm
 
+- FID
+    [mejoras]
+        - Se mejora la forma en como se Autochequean los checkbox y los radiobutton
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
+
 - VTXT
     [bugfixes]
         - Se evita que aparezca Audio y Video en el plugin de Media, ya que dichas funciones no existían.

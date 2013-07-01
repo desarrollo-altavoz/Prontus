@@ -1499,12 +1499,12 @@ sub procesar_obj_seleccion {
       if (($parte1 =~ /value *= *['"]$valor_campo['"]/is) or ($parte2 =~ /value *= *['"]$valor_campo['"]/is)) { # chequea si el value calza.
 
         # Compone el tag.
-        $tag =~ /^(<.+)\/>$/;
+        $tag =~ /^(<.+?)\/?>$/;
 
         my $tag_aux = $1;
         my $tag_original = $tag;
         #$tag =~ s/>$/$tag_aux checked \/>/is;
-        $tag =~ s/\/>$/ checked \/>/is;
+        $tag =~ s/(\/?>)$/ checked="checked" \1/is;
         $pag =~ s/$tag_original/$tag/is;
       };
     };
