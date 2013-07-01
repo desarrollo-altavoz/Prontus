@@ -6413,11 +6413,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 
 - Prontus en General
+    [bugfixes]
+        - Se elimina debug al hacer purge. Esto hacía que llegaran mail al crons@altavoz.net
     [mejoras]
         - Se elimina variable basura: VERSION_PRONTUS con una versión antigua en prontus_ping_inuse.cgi
           No se estaba usando, pero podía prestarse para confusión.
     [files]
         /cgi-cpn/prontus_ping_inuse.cgi
+        /cgi-cpn/lib_prontus.pm
 
 - Prontus Functions
     [bugfixes]
@@ -6433,4 +6436,5 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Ahora se pueden anidar los Loops con sus padres
     [files]
         /cgi-cpn/lib_prontus.pm
+
 

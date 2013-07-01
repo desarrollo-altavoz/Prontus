@@ -6121,7 +6121,7 @@ sub call_purge_proc {
     if (-f $file_pend) {
         #~ print STDERR "[purge][$$] con archivo\n";
         my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID $file_pend >/dev/null 2>&1 &";
-        print STDERR "purge[$cmd]\n";
+        #~ print STDERR "purge[$cmd]\n";
         system $cmd;
     }
 };
