@@ -6428,4 +6428,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
+- Mapa del Sitio
+    [mejora]
+        - Ahora se pueden anidar los Loops con sus padres
+    [files]
+        /cgi-cpn/lib_prontus.pm
 
