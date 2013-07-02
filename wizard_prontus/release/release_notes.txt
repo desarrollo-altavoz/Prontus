@@ -6452,4 +6452,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
+- Wizard Prontus
+    [bugfixes]
+        - El botón NEXT del paso 2 quedó permanentemente "disabled".
+    [files]
+        /wizard_prontus/core/paso2.html
 
