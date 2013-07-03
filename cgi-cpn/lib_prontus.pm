@@ -5032,18 +5032,21 @@ sub make_mapa {
     my ($loop_mapa_s, $loop_mapa_t, $loop_mapa_st);
     if ($mapa_plt =~ /%%(LOOP_SECCION)%%(.*?)%%\/\1%%/s) {
       $loop_mapa_s = $2;
+      #~ $loop_mapa_s =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
+      #~ $loop_mapa_s =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
     };
     if ($mapa_plt =~ /%%(LOOP_TEMA)%%(.*?)%%\/\1%%/s) {
       $loop_mapa_t = $2;
+      #~ $loop_mapa_t =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
     };
     if ($mapa_plt =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
       $loop_mapa_st = $2;
     };
     my $base_indent = '15';
-    my ($mapa) = &get_arbol_mapa($loop_mapa_s, $loop_mapa_t, $loop_mapa_st, $mv, $base_indent, $bd);
-    $mapa_plt =~ s/%%(LOOP_SECCION)%%.*?%%\/\1%%/$mapa/is;
-    $mapa_plt =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
+    my ($mapa_total) = &get_arbol_mapa($loop_mapa_s, $loop_mapa_t, $loop_mapa_st, $mv, $base_indent, $bd);
     $mapa_plt =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
+    $mapa_plt =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
+    $mapa_plt =~ s/%%(LOOP_SECCION)%%.*?%%\/\1%%/$mapa_total/is;
     $mapa_plt = &parser_custom_function($mapa_plt);
     &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt");
     my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt/$k";
@@ -5055,19 +5058,22 @@ sub make_mapa {
 };
 # ---------------------------------------------------------------
 sub get_arbol_mapa {
-  my ($loop_mapa_s) = $_[0];
-  my ($loop_mapa_t) = $_[1];
-  my ($loop_mapa_st) = $_[2];
-  my ($mv) = $_[3];
-  my ($indent) = $_[4];
-  my ($bd) = $_[5];
+  my ($loop_mapa_s)   = $_[0];
+  my ($loop_mapa_t)   = $_[1];
+  my ($loop_mapa_st)  = $_[2];
+  my ($mv)      = $_[3];
+  my ($indent)  = $_[4];
+  my ($bd)      = $_[5];
 
   my $local_indent;
   my $mapa;
+  my ($mapa_total);
   # print STDERR "loop_mapa[$loop_mapa]\n";
+
+  # -----------------------------------------------------
   # secc
   my $sql = "select SECC_ID, SECC_NOM, SECC_PORT, SECC_NOM4VISTAS from SECC where SECC_ORDEN > 0 order by SECC_ORDEN";
-  my ($secc_id, $secc_nom, $secc_port, $secc_nom4vistas);
+  my ($mapa_s, $nested_s, $secc_id, $secc_nom, $secc_port, $secc_nom4vistas);
   my ($salida) = &glib_dbi_02::ejecutar_sql($bd, $sql);
   $salida->bind_columns(undef, \($secc_id, $secc_nom, $secc_port, $secc_nom4vistas));
   while ($salida->fetch) {
@@ -5080,20 +5086,26 @@ sub get_arbol_mapa {
     $local_indent = $indent;
     $local_indent -= $indent;
 
-    $mapa .= $loop_mapa_s;
-    $mapa =~ s/%%_id%%/$secc_id/ig;
-    $mapa =~ s/%%_nom%%/$secc_nom/ig;
-    $mapa =~ s/%%_indent%%/$local_indent/ig;
+    $mapa_s = $loop_mapa_s;
+    $mapa_s =~ s/%%_id%%/$secc_id/ig;
+    $mapa_s =~ s/%%_nom%%/$secc_nom/ig;
+    $mapa_s =~ s/%%_indent%%/$local_indent/ig;
     my $tax_fixedurl = &lib_prontus::get_tax_link($secc_port, $mv);
-    $mapa =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
-    $mapa =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
-    $mapa =~ s/%%_TEMA[1-3]%%//isg;
-    $mapa =~ s/%%_SUBTEMA[1-3]%%//isg;
+    $mapa_s =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
+    $mapa_s =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
+    $mapa_s =~ s/%%_TEMA[1-3]%%//isg;
+    $mapa_s =~ s/%%_SUBTEMA[1-3]%%//isg;
 
+    if($mapa_s =~ /%%(LOOP_TEMA)%%(.*?)%%\/\1%%/s) {
+      $nested_s = 1;
+    } else {
+      $nested_s = 0;
+    };
 
+    # -----------------------------------------------------
     # temas
     $sql = "select TEMAS_ID, TEMAS_NOM, TEMAS_PORT, TEMAS_NOM4VISTAS from TEMAS where TEMAS_ORDEN > 0 AND TEMAS_IDSECC = '$secc_id' order by TEMAS_ORDEN";
-    my ($temas_id, $temas_nom, $temas_port, $temas_nom4vistas);
+    my ($mapa_t, $mapa_total_t, $temas_id, $temas_nom, $temas_port, $temas_nom4vistas);
     my ($salida_t) = &glib_dbi_02::ejecutar_sql($bd, $sql);
     $salida_t->bind_columns(undef, \($temas_id, $temas_nom, $temas_port, $temas_nom4vistas));
     while ($salida_t->fetch) {
@@ -5103,22 +5115,21 @@ sub get_arbol_mapa {
       $local_indent = $indent * 2;
       $local_indent -= $indent;
 
-      $mapa .= $loop_mapa_t;
-      $mapa =~ s/%%_id%%/$temas_id/ig;
-      $mapa =~ s/%%_nom%%/$temas_nom/ig;
-      $mapa =~ s/%%_indent%%/$local_indent/ig;
-
+      $mapa_t = $loop_mapa_t;
+      $mapa_t =~ s/%%_id%%/$temas_id/ig;
+      $mapa_t =~ s/%%_nom%%/$temas_nom/ig;
+      $mapa_t =~ s/%%_indent%%/$local_indent/ig;
 
       $tax_fixedurl = &lib_prontus::get_tax_link($temas_port, $mv);
-      $mapa =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
-      $mapa =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
-      $mapa =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
-      $mapa =~ s/%%_SUBTEMA[1-3]%%//isg;
+      $mapa_t =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
+      $mapa_t =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
+      $mapa_t =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
+      $mapa_t =~ s/%%_SUBTEMA[1-3]%%//isg;
 
-
+      # -----------------------------------------------------
       # subtemas
       $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM, SUBTEMAS_PORT, SUBTEMAS_NOM4VISTAS from SUBTEMAS where SUBTEMAS_ORDEN > 0 AND SUBTEMAS_IDTEMAS = '$temas_id' order by SUBTEMAS_ORDEN";
-      my ($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas);
+      my ($mapa_st, $subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas);
       my ($salida_st) = &glib_dbi_02::ejecutar_sql($bd, $sql);
       $salida_st->bind_columns(undef, \($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas));
       while ($salida_st->fetch) {
@@ -5127,26 +5138,35 @@ sub get_arbol_mapa {
         $local_indent = $indent * 3;
         $local_indent -= $indent;
 
-        $mapa .= $loop_mapa_st;
-        $mapa =~ s/%%_id%%/$subtemas_id/ig;
-        $mapa =~ s/%%_nom%%/$subtemas_nom/ig;
-        $mapa =~ s/%%_indent%%/$local_indent/ig;
+        $mapa_st = $loop_mapa_st;
+        $mapa_st =~ s/%%_id%%/$subtemas_id/ig;
+        $mapa_st =~ s/%%_nom%%/$subtemas_nom/ig;
+        $mapa_st =~ s/%%_indent%%/$local_indent/ig;
 
         $tax_fixedurl = &lib_prontus::get_tax_link($subtemas_port, $mv);
-        $mapa =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
-        $mapa =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
-        $mapa =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
-        $mapa =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
-
+        $mapa_st =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
+        $mapa_st =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
+        $mapa_st =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
+        $mapa_st =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
       };
+      if($mapa_t =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
+        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st/s
+      } else {
+        $mapa_t = $mapa_t . $mapa_st;
+      };
+      $mapa_total_t = $mapa_total_t . $mapa_t;
       $salida_st->finish;
-
+    };
+    if($nested_s) {
+      $mapa_s =~ s/%%(LOOP_TEMA)%%(.*?)%%\/\1%%/$mapa_total_t/s
+    } else {
+      $mapa_s = $mapa_s . $mapa_total_t;
     };
     $salida_t->finish;
-
+    $mapa_total = $mapa_total . $mapa_s;
   };
   $salida->finish;
-  return $mapa;
+  return ($mapa_total);
 };
 
 # ---------------------------------------------------------------
@@ -5210,8 +5230,18 @@ sub parser_custom_function {
         my @arrparams = split(/"\s*,\s*"|'\s*,\s*'/, $params);
         my @newarr;
         foreach my $keys (@arrparams) {
-          # $keys =~ s/(["|'])([^\\])"/\1\\"/g;
-          $keys =~ s/([^\\])"/\1\\"/g;
+          #~ $keys =~ s/(["|'])([^\\])"/\1\\"/g;
+          #~ $keys =~ s/([^\\])"/\1\\"/g;
+
+          $keys =~ s/%%(.*?)%%//g;
+          my $security = 0;
+          while($keys =~ s/([^\\])"/\1\\"/) {
+            if($security >= 500) {
+                $keys =~ s/([^\\])"/\1\\"/g;
+                last;
+            }
+            $security++;
+          }
           # print STDERR "keys: $keys... ";
           push(@newarr, $keys);
         }
@@ -6091,7 +6121,7 @@ sub call_purge_proc {
     if (-f $file_pend) {
         #~ print STDERR "[purge][$$] con archivo\n";
         my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID $file_pend >/dev/null 2>&1 &";
-        print STDERR "purge[$cmd]\n";
+        #~ print STDERR "purge[$cmd]\n";
         system $cmd;
     }
 };

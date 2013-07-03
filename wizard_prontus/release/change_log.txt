@@ -1,4 +1,16 @@
 ====================================================================================================
+11.2.66 - 03/07/2013
+====================================================================================================
+- bugfix: Se elimina debug al hacer purge. Esto hacía que llegaran mail al crons@altavoz.net
+- improvement: Se elimina variable basura: VERSION_PRONTUS con una versión antigua en prontus_ping_inuse.cgi
+- improvement: Se mejora la forma en como se Autochequean los checkbox y los radiobutton
+- bugfix: En el VTXT, se evita que aparezca Audio y Video en el plugin de Media, ya que dichas funciones no existían.
+- bugfix: Se hacer un borrado de las marcas no parseadas en los parámetros de la PF antes de invocarla
+- bugfix: Se corrige un issue cuando venían 2 comillas dobles juntas, no se escapeaban correctamente.
+- improvement: En el Mapa del Sitio, ahora se pueden anidar los Loops con sus padres
+- bugfix: El botón "Siguiente" del paso 2, del Wizard Prontus quedó permanentemente "disabled" (introducido en 11.2.64)
+
+====================================================================================================
 11.2.65 - 14/06/2013
 ====================================================================================================
 - improvement: En el FID, las marcas de los campos CHK_ CMB_ y RDO_ se parsearán igual que el resto (antes no se parseaban)
