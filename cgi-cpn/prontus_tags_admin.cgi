@@ -106,7 +106,7 @@ main:{
     $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
 
     $FORM{'search'} = &glib_cgi_04::param('search');
-    $FORM{'search'} = &glib_str_02::trim(&lib_prontus::despulga_item_tax($FORM{'search'}));
+    $FORM{'search'} = &glib_str_02::trim(&lib_prontus::despulga_item_tag($FORM{'search'}));
 
     $FORM{'vistas'} = &glib_cgi_04::param('vistas');
     $FORM{'vistas'} = 0 if $FORM{'vistas'} eq '';

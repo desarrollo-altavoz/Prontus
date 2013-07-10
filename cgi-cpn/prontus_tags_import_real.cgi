@@ -284,7 +284,7 @@ sub procesar_xml {
 
     # nom
     if ($xml_segment =~ /<nom>(.*?)<\/nom>/is) {
-        $nom = &lib_prontus::despulga_item_tax($1);
+        $nom = &lib_prontus::despulga_item_tag($1);
         $nom = &lib_prontus::unescape_xml($nom);
 
     };
@@ -305,7 +305,7 @@ sub procesar_xml {
 
     # count
     if ($xml_segment =~ /<count>(.*?)<\/count>/is) {
-        $count = &lib_prontus::despulga_item_tax($1);
+        $count = &lib_prontus::despulga_item_tag($1);
     };
     $count =~ s/[^\d]//g;
     if (!$count || $count !~ /^[\d]+$/) {
@@ -314,7 +314,7 @@ sub procesar_xml {
 
     # mostrar
     if ($xml_segment =~ /<mostrar>(.*?)<\/mostrar>/is) {
-        $mostrar = &lib_prontus::despulga_item_tax($1);
+        $mostrar = &lib_prontus::despulga_item_tag($1);
     };
 
     if ((!$mostrar) || ($mostrar =~ /no/i)) { $mostrar = ''; }
@@ -326,7 +326,7 @@ sub procesar_xml {
         my $nom_envista;
         if ($xml_segment =~ /<nom-$mv>(.*?)<\/nom-$mv>/is) {
             $nom_envista = $1;
-            $nom_envista = &lib_prontus::despulga_item_tax($nom_envista);
+            $nom_envista = &lib_prontus::despulga_item_tag($nom_envista);
             $nom_envista = &lib_prontus::unescape_xml($nom_envista);
         };
         $nom_envista = $nom if (!$nom_envista);

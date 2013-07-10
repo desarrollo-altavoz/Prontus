@@ -6458,3 +6458,24 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /wizard_prontus/core/paso2.html
 
+====================================================================================================
+11.2.67 - 10/07/2013 - JOR
+====================================================================================================
+
+- Administrador de categorías
+    [bugfixes]
+        - Al guardar una sección, tema o subtema se estaba eliminando el caracter | (PIPE), esto debido a que la función de despulge de nombre de tax reemplazaba el pipe por vacio, ya que esto era
+        necesario para los tags. Se creo una función exclusiva para los tags.
+    [files]
+        /cgi-cpn/prontus_tags_admin.cgi
+        /cgi-cpn/prontus_tags_guardar.cgi
+        /cgi-cpn/prontus_tags_import_real.cgi
+        /cgi-cpn/lib_prontus.pm
+
+- Prontus en General
+    [cambios]
+        - Se agrega la extensión csv a la lista de archivos permitidos para upload en los fids.
+    [files]
+        /cgi-cpn/prontus_varglb.pm
+
+        

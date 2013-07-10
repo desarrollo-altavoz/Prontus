@@ -64,7 +64,7 @@ sub init { # Prontus 6.0
   $UPLOADS_PERMITIDOS_ORIG = 'jpg,jpeg,jpe,gif,png,bmp,tif,tiff,ico,asf,asx,wax,wmv,wmx,avi,divx,flv,mov'
                        . ',qt,mpeg,mpg,mpe,3gp,txt,rtx,css,htm,html,mp3,m4a,mp4,m4v,ra,ram,wav,ogg,mid'
                        . ',midi,wma,rtf,pdf,doc,docx,pot,pps,ppt,pptx,wri,xla,xls,xlsx,xlt,xlw,mdb'
-                       . ',mpp,swf,tar,zip,gz,gzip,odt,odp,ods,odg,odc,odb,odf';
+                       . ',mpp,swf,tar,zip,gz,gzip,odt,odp,ods,odg,odc,odb,odf,csv';
 
   $BD_CONN = '';
 

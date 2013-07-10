@@ -132,7 +132,7 @@ main: {
     if ($FORM{'_nom'} eq '') {
         &glib_html_02::print_json_result(0, 'Por favor, ingresa el nombre del ítem', 'exit=1,ctype=1');
     };
-    $FORM{'_nom'} = &lib_prontus::despulga_item_tax($FORM{'_nom'});
+    $FORM{'_nom'} = &lib_prontus::despulga_item_tag($FORM{'_nom'});
     if ($FORM{'_nom'} eq '') {
         &glib_html_02::print_json_result(0, 'Debe ingresar por lo menos dos letras en el nombre del ítem', 'exit=1,ctype=1');
     } else {
@@ -145,7 +145,7 @@ main: {
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         my $k = '_nom' . "-$mv"; # ej: _nom-pda
         my $nom = &glib_cgi_04::param($k);
-        $nom = &lib_prontus::despulga_item_tax(&glib_str_02::trim($nom));
+        $nom = &lib_prontus::despulga_item_tag(&glib_str_02::trim($nom));
         $nom = $FORM{'_nom'} if (!$nom);
         my $strlen_mv = length($nom);
         if ($strlen_mv < 2) {
@@ -181,7 +181,7 @@ main: {
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         my $k = '_nom' . "-$mv"; # ej: _nom-pda
         my $nom = &glib_cgi_04::param($k);
-        $nom = &lib_prontus::despulga_item_tax(&glib_str_02::trim($nom));
+        $nom = &lib_prontus::despulga_item_tag(&glib_str_02::trim($nom));
         $nom = $FORM{'_nom'} if (!$nom);
         $resp->{'theName_' . $mv} = &lib_prontus::escape_xml($nom);
     };
@@ -248,7 +248,7 @@ sub get_nom4vistas {
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         my $k = '_nom' . "-$mv"; # ej: _nom-pda
         my $nom = &glib_cgi_04::param($k);
-        $nom = &lib_prontus::despulga_item_tax(&glib_str_02::trim($nom));
+        $nom = &lib_prontus::despulga_item_tag(&glib_str_02::trim($nom));
         $nom = $FORM{'_nom'} if (!$nom);
         $nom4vistas .= "$mv\t$nom\n";
     };
