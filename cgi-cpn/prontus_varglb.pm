@@ -174,6 +174,9 @@ sub init { # Prontus 6.0
   # Directorios del panel de control, relativos al server, donde estan los formularios usados por el autopublicador.
   $DIR_CPAN = '/cpan';
   $DIR_CORE = '/cpan/core';
+  $DIR_DATA = '/cpan/data';
+  $DIR_MY_SEARCH = '/users/misbusquedas';
+  $MAX_MY_SEARCH = 20;
 
   $MULTI_EDICION = '';
 

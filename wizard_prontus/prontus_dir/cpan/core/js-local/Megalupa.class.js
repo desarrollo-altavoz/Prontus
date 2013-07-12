@@ -26,6 +26,15 @@ var Megalupa = {
             showOn: 'both'
         });
 
+        // Para Mis busquedas
+        $('#SAVE_SEARCH').change(function() {
+            if($(this).is(':checked')) {
+                $(this).parent().find('.name_search').slideDown('fast');
+            } else {
+                $(this).parent().find('.name_search').slideUp('fast');
+            }
+        });
+
         // Se precargan los datos de la búsqueda actual
         Megalupa.cargaCamposMegalupa();
     },
@@ -129,6 +138,14 @@ var Megalupa = {
         BuscadorFields.nom_alta = nom_alta;
         BuscadorFields.alta = alta;
 
+        if($('#SAVE_SEARCH').is(':checked')) {
+            BuscadorFields.save_search = 'si';
+            BuscadorFields.name_search = $('#NAME_SEARCH').val();
+            Buscador.refreshMisBusquedas = true;
+        } else {
+            BuscadorFields.save_search = 'no';
+            BuscadorFields.name_search = '';
+        };
         LoadDiv.refrescaListadoNoPub();
         $.fn.colorbox.close();
     },

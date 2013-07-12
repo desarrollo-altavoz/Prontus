@@ -91,11 +91,11 @@ use glib_html_02;
 use glib_fildir_02;
 use lib_prontus;
 use glib_hrfec_02;
-
 use glib_cgi_04;
-
 use glib_dbi_02;
 use DBI;
+
+use lib_search;
 
 my ($BD, $RESTAR_ARTICS_PUB, $CURRENT_SPARE, %TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS);
 #my (%HASH_NOMPORTS);
@@ -144,6 +144,9 @@ main: {
 
     $FORM{'_rec_ini'} = &glib_cgi_04::param('_rec_ini'); # solo BD
     $FORM{'_rec_ini'} = 0 if $FORM{'_rec_ini'} eq '';    # solo BD
+
+    $FORM{'save_search'} = &glib_cgi_04::param('save_search');
+    $FORM{'name_search'} = &glib_cgi_04::param('name_search');
 
     print "Cache-Control: no-cache\n";
     print "Cache-Control: max-age=0\n";
@@ -226,6 +229,11 @@ main: {
         $open_fid_in_pop = 'open_in_pop';
     }
     $buffer =~ s/%%_class_open_fid%%/$open_fid_in_pop/ig;
+
+    # Para la sección "Mis búquedas"
+    if ($FORM{'save_search'} eq 'si') {
+        &guarda_busqueda();
+    };
 
     # Escribe cache, no cachea busquedas
     if (!$FORM{'_search'}) {
@@ -746,7 +754,68 @@ sub genera_filtros {
 }; # genera_filtros.
 
 
+#-------------------------------------------------------------------------#
+sub guarda_busqueda {
 
+    my %search;
+
+    # Si se llego al limite no se pueden guardar mas
+    my $total = &lib_search::get_total_mis_busquedas($prontus_varglb::USERS_ID);
+    if($total >= $prontus_varglb::MAX_MY_SEARCH) {
+        return;
+    };
+    $search{'name_search'} = $FORM{'name_search'};
+    if($search{'name_search'} eq '') {
+        $search{'name_search'} = "Búsqueda #".($total+1);
+        utf8::encode($search{'name_search'});
+    };
+
+    $search{'seccion'} = $FORM{'seccion'};
+    $search{'tema'} = $FORM{'tema'};
+    $search{'subtema'} = $FORM{'subtema'};
+    $search{'seccion'} = '' if($search{'seccion'} eq '0');
+    $search{'tema'} = '' if($search{'tema'} eq '0');
+    $search{'subtema'} = '' if($search{'subtema'} eq '0');
+
+    $search{'tipart'} = $FORM{'tipart'};
+    $search{'autor'} = $FORM{'autor'};
+    $search{'titu'} = $FORM{'titu'};
+    $search{'ts'} = $FORM{'ts'};
+
+    $search{'baja'} = $FORM{'baja'};
+    $search{'dia'} = $FORM{'dia'};
+    $search{'autoinc'} = $FORM{'autoinc'};
+    $search{'diapub'} = $FORM{'diapub'};
+    $search{'diaexp'} = $FORM{'diaexp'};
+
+    $search{'nom_tipart'} = &glib_cgi_04::param('nom_tipart');
+    $search{'nom_seccion'} = &glib_cgi_04::param('nom_seccion');
+    $search{'nom_tema'} = &glib_cgi_04::param('nom_tema');
+    $search{'nom_subtema'} = &glib_cgi_04::param('nom_subtema');
+
+    $search{'nom_seccion'} = '' if($search{'nom_seccion'} =~ /^\s+$/);
+    $search{'nom_tema'} = '' if($search{'nom_tema'} =~ /^\s+$/);
+    $search{'nom_subtema'} = '' if($search{'nom_subtema'} =~ /^\s+$/);
+
+    $search{'alta'} = $FORM{'alta'};
+    $search{'nom_alta'} = &glib_cgi_04::param('nom_alta');
+
+    my %search_real;
+    foreach my $key (keys %search) {
+        next if($search{$key} eq '');
+        $search_real{$key} = $search{$key};
+    };
+    my $texto = '';
+    #~ binmode(STDOUT, ":utf8");
+    if($JSON::VERSION =~ /^1\./) {
+        $texto = objToJson(\%search_real);
+    } else {
+        $texto = &JSON::to_json(\%search_real);
+    }
+    #~ utf8::encode($texto);
+    my $file = &lib_search::get_file_mis_busquedas($prontus_varglb::USERS_ID);
+    &glib_fildir_02::write_file($file, $texto);
+};
 
 
 #-------------------------------------------------------------------------#

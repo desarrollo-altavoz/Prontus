@@ -11,26 +11,18 @@
 
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
-# PROPOSITO .
+# PROPOSITO.
 # -----------
-# Desplegar la pagina de filtros de la megalupa.
+# Carga el listado de Mis Busquedas con Ajax
 # ---------------------------------------------------------------
-# LLAMADAS A ARCHIVOS EXTERNOS.
-# ------------------------------
-# No registra.
-# ---------------------------------------------------------------
-# INVOCACIONES ACEPTADAS.
+# ARCHIVOS DE ENTRADA.
 # ------------------------
+# plantilla prontus_art_newadmin.html
 
 # ---------------------------------------------------------------
-# PLANTILLAS HTML UTILIZADAS.
-# ------------------------
-
-# ---------------------------------------------------------------
-
 # HISTORIAL DE VERSIONES.
 # ---------------------------
-# 01 - Viernes 02/06/2000 - Primera Version.
+#
 
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -41,96 +33,61 @@ BEGIN {
     use lib_stdlog;
     &lib_stdlog::set_stdlog($0, 51200);
 };
+
 use prontus_varglb; &prontus_varglb::init();
+
+use glib_html_02;
 use glib_fildir_02;
 use lib_prontus;
-use glib_html_02;
 use lib_search;
 
 use glib_cgi_04;
-
-use DBI;
-use glib_dbi_02;
-use lib_secc;
+use strict;
 
 # ---------------------------------------------------------------
 # MAIN.
-# -------------
+# ---------------------------------------------------------------
 
-  my ($BD, %FORM);
+my (%FORM);
+main: {
+    # Recibe parametros.
+    &glib_cgi_04::new();
 
-  #  print "Content-Type: text/html\n\n"; # debug
-  # Rescatar parametros recibidos.
-  &glib_cgi_04::new();
+    $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
 
-  $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
-  # Ajusta path_conf para completar path y/o cambiar \ por /
-  $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
+    # Deduce path conf del referer, en caso de no ser suministrado.
+    $FORM{'_path_conf'} = &get_path_conf() if ($FORM{'_path_conf'} eq '');
 
-  # print STDERR "BD[$prontus_varglb::NOM_BD]";
+    # Ajusta path_conf para completar path y/o cambiar \ por /
+    $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
 
-  &lib_prontus::load_config($FORM{'_path_conf'});
-  $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
+    # Carga variables de configuracion.
+    &lib_prontus::load_config($FORM{'_path_conf'});
+    $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
-  # user check
-  ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
-  if ($prontus_varglb::USERS_ID eq '') {
-     print "Content-Type: text/html\n\n";
-     print "Ud no tiene permisos para ver esta página";
-     exit;
-  };
+    &lib_prontus::test_servers($ENV{'HTTP_REFERER'}) if ($prontus_varglb::IP_SERVER);
 
-  my $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/prontus_art_megalupa.html";
+    # Control de usuarios obligatorio chequeando la cookie contra el dbm.
+    ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
+    if ($prontus_varglb::USERS_ID eq '') {
+        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+    };
 
-  my $pagina = &glib_fildir_02::read_file($plantilla);
+    my $buffer = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/prontus_art_newadmin.html");
+    $buffer = &lib_prontus::set_coreplt_ppal($buffer);
 
+    my $newbuffer;
+    if($buffer =~ /<!--content_mis_busquedas-->(.*?)<!--\/content_mis_busquedas-->/is) {
+      $newbuffer = $1;
 
-  # Conectar a BD
-  my $msg_err_bd;
-  ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
-  if (! ref($BD)) {
-      &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1,ctype=1');
-  };
+      $newbuffer = &lib_search::parsea_mis_busquedas($newbuffer, $prontus_varglb::USERS_ID);
 
-
-  my $arr_tst = &lib_secc::genera_array_temas_subtemas($BD, '');
-  $pagina =~ s/%%ARR_TST%%/$arr_tst/;
-  $pagina = &lib_secc::parse_seccion($pagina, $BD);
-  # CVI - En este caso el onchange se manejara a nivel de jquery
-  $pagina =~ s/ onchange=".*?"//is;
-  $pagina =~ s/(<\/select>)/<option value="SS">- Art&iacute;culos sin secci&oacute;n -<\/option>\1/is;
-  my $tipos_art = &generar_popup_tipos();
-  $tipos_art = &lib_secc::add_items_adicionales($tipos_art, '');
-
-  $pagina =~ s/%%TIPART%%/$tipos_art/;
-
-  $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
-
-  if (! $prontus_varglb::TAXONOMIA_NIVELES ) {
-    $pagina =~ s/<!--TAXONOMIA-->.*<!--\/TAXONOMIA-->//s;
-  };
-
-  if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS ne 'SI') {
-    $pagina =~ s/<!--ALTA-->.*<!--\/ALTA-->//s;
-  };
-
-  if ($prontus_varglb::CONTROL_FECHA ne 'SI') {
-    $pagina =~ s/<!--CONTROL_FECHA-->.*<!--\/CONTROL_FECHA-->//s;
-  };
-
-  $BD->disconnect;
-
-  my $total_mis_busquedas = &lib_search::get_total_mis_busquedas($prontus_varglb::USERS_ID);
-  if($total_mis_busquedas >= $prontus_varglb::MAX_MY_SEARCH) {
-    my $msg = '<span>Se ha alcanzado el máximo de "Mis búsquedas", para crear más debe borrar las que no use</span>';
-    $pagina =~ s/<!--MIS_BUSQUEDAS-->.*?<!--\/MIS_BUSQUEDAS-->/$msg/isg;
-  };
-
-
-  print "Content-Type: text/html\n\n";
-  print $pagina;
-
-
+    } else {
+      $newbuffer = 'Error al cargar la plantilla';
+    };
+    print "Content-type: text/html\n\n";
+    print $newbuffer;
+}; # main
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.

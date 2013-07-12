@@ -35,9 +35,13 @@
 
 package lib_search;
 
-use strict;
+#~ use strict;
 use LWP::UserAgent;
 use HTTP::Response;
+
+
+$MIS_BUSQUEDAS_MSG = "<li class=\"msg\">Ud. no ha guardado ninguna b&uacute;squeda. <br>Vaya a \"B&uacute;squeda avanzada\" y use la opci&oacute;n \"Mis b&uacute;squedas\"</li>";
+
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -560,11 +564,11 @@ sub timestamp_iso {
 # -------------------------------------------------------------- #
 # Toma una fecha d/m/a y la retorna en formato ISO aaaammdd.
 sub fecha2iso {
-	my $fecha = $_[0];
-	my($dia,$mes,$ano);
-	# 1.24
-	if ($fecha =~ /\//) { # Separador = /
-	  $fecha =~ s/[^0-9\/]//g;
+  my $fecha = $_[0];
+  my($dia,$mes,$ano);
+  # 1.24
+  if ($fecha =~ /\//) { # Separador = /
+    $fecha =~ s/[^0-9\/]//g;
     ($dia,$mes,$ano) = split(/\//,$_[0]);
   }elsif($fecha =~ /\-/) { # Separador = -
     $fecha =~ s/[^0-9\-]//g;
@@ -582,8 +586,8 @@ sub fecha2iso {
 # -------------------------------------------------------------- #
 # Toma una fecha ISO y la retorna en formato dd/mm/aaaa.
 sub iso2fechacorta {
-	my $fecha = $_[0];
-	return substr($fecha,6,2) . '/' . substr($fecha,4,2) . '/' . substr($fecha,0,4);
+  my $fecha = $_[0];
+  return substr($fecha,6,2) . '/' . substr($fecha,4,2) . '/' . substr($fecha,0,4);
 }; # iso2fechacorta
 
 ##########################################################################
@@ -604,5 +608,100 @@ sub get_dir_server {
   return $dir_server;
 }; # get_dir_server
 
+#------------------------------------------------------------------------#
+sub get_listado_mis_busquedas {
 
+  my $user = shift;
+  my $dir = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$prontus_varglb::DIR_DATA$prontus_varglb::DIR_MY_SEARCH/user$user";
+  my (%hash_search, %hash_names);
+
+  if(-d $dir) {
+    my @entries = &glib_fildir_02::lee_dir($dir);
+    foreach my $file (@entries) {
+      next unless($file =~ /(\d{14})\.txt/);
+      my $ts = $1;
+
+      my $strjson = &glib_fildir_02::read_file("$dir/$file");
+      my $hashtemp;
+      if($JSON::VERSION =~ /^1\./) {
+        $hashtemp = jsonToObj($strjson);
+      } else {
+        $hashtemp = &JSON::from_json($strjson);
+      }
+      $hash_search{$ts} = $strjson;
+      $hash_names{$ts} = $hashtemp->{'name_search'};
+      #~ print STDERR "strjson[$strjson]\n";
+      #~ $hash_search{$ts} = %hash;
+    };
+  }
+  return (\%hash_search, \%hash_names);
+};
+#------------------------------------------------------------------------#
+sub get_file_mis_busquedas {
+
+    my $user = shift;
+    my $myts = shift;
+    my $ts_busqueda;
+    if($myts) {
+      $ts_busqueda = $myts;
+    } else {
+      $ts_busqueda = &glib_hrfec_02::get_dtime_pack4();
+    };
+    my $file = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$prontus_varglb::DIR_DATA$prontus_varglb::DIR_MY_SEARCH/user$user";
+    &glib_fildir_02::check_dir($file);
+    $file = $file.'/'.$ts_busqueda.'.txt';
+    return $file;
+};
+#------------------------------------------------------------------------#
+sub get_total_mis_busquedas {
+
+  my $user = shift;
+  my $dir = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$prontus_varglb::DIR_DATA$prontus_varglb::DIR_MY_SEARCH/user$user";
+  if(-d $dir) {
+    my @entries = &glib_fildir_02::lee_dir($dir);
+    my $total = 0;
+    foreach my $file (@entries) {
+      $total++ if($file =~ /\d{14}\.txt/);
+    };
+    return $total;
+  }
+  return 0;
+};
+#------------------------------------------------------------------------#
+sub parsea_mis_busquedas {
+
+    my $buffer = shift;
+    my $user = shift;
+
+    my $total_mis_busquedas = &lib_search::get_total_mis_busquedas($user);
+    if($total_mis_busquedas > 0) {
+        my ($loop_total, $loop, $loop_molde);
+        if($buffer =~ /<!--loop_mis_busquedas-->(.*?)<!--\/loop_mis_busquedas-->/is) {
+            $loop_molde = $1;
+            my ($hashref, $hashnamesref) = &lib_search::get_listado_mis_busquedas($user);
+            my %hash_search = %$hashref;
+            my %hash_names = %$hashnamesref;
+
+            foreach my $ts (sort keys %hash_search) {
+                #~ my %hash2 = $hash_search{};
+                my $json = $hash_search{$ts};
+                my $name = $hash_names{$ts};
+                next if($json eq '');
+
+                $loop = $loop_molde;
+                $loop =~ s/%%ts%%/$ts/isg;
+                $loop =~ s/%%nombre%%/$name/isg;
+                $loop =~ s/%%json%%/$json/isg;
+                $loop_total = $loop_total . $loop;
+            };
+            $buffer =~ s/<!--loop_mis_busquedas-->.*?<!--\/loop_mis_busquedas-->/$loop_total/isg;
+        };
+    } else {
+        my $msg = $MIS_BUSQUEDAS_MSG;
+        utf8::encode($msg);
+        $buffer =~ s/<!--loop_mis_busquedas-->.*?<!--\/loop_mis_busquedas-->/$msg/isg;
+    };
+
+    return $buffer;
+};
 return 1;

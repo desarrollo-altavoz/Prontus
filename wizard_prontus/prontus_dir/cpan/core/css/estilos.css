@@ -400,12 +400,12 @@ label {cursor:pointer;}
 .area-list li.disabled .fila1 .handler, .area-list li._artic_sin_file .fila1 .handler, .area-list li.editable_list0 .fila1 .handler {background-image:url("../imag/boto/mover2_of.png"); cursor:default;}
 
 /* Buscador */
-.buscador {width:218px; float:right; margin:0 15px 0 0; text-align:right;}
+.buscador {width:218px; float:right; margin:0 15px 0 0; text-align:right; overflow:visible !important;}
 .buscador table {width:218px; height:29px; margin:0 0 2px;}
 .buscador td.bg-campo {background:url(../imag/auxi/buscador_back.gif) no-repeat left top;}
 .buscador td.bg-boto {background:url(../imag/auxi/buscador_lupa.jpg) no-repeat left top;}
 .buscador input.campo {width:150px; border:none; background:none; font-size:12px; color:#666; padding:3px 5px 5px;}
-.buscador .avanzado a {clear:both; font-size:11px; color:#666666; margin:0; padding:8px 0 0 0; }
+.buscador .avanzado a, .buscador .avanzado {clear:both; font-size:11px; color:#666666; margin:0; padding:4px 0 0 0; }
 .buscador .avanzado a:hover {color:#FF0000;}
 
 /* Megalupa */
@@ -413,6 +413,22 @@ label {cursor:pointer;}
 .main-megalupa .fecha {width:50%;}
 .main-megalupa .autoinc {width:30%;}
 .main-megalupa .tax select {width:90%;}
+.main-megalupa .mis_busquedas td {height:60px; padding-top:10px;}
+.main-megalupa .mis_busquedas td span {font-weight:normal;}
+.main-megalupa .mis_busquedas .name_search {display:none; vertical-align:middle; padding-top:10px;}
+.main-megalupa .mis_busquedas .name_search input {width:180px;}
+
+/** Mis busquedas */
+#layer_mis_busquedas {position:absolute; z-index:500; overflow:visible;}
+#layer_mis_busquedas .content {min-height:200px; z-index:500; width:260px; display:none; position:relative; left:65px; top:-35px; padding:5px 10px; border:1px solid #cccccc; background-color:#f5f5f5;}
+#layer_mis_busquedas .content h3 {font-size:16px; color:#666666; margin-bottom:10px;}
+#layer_mis_busquedas .content li {list-style-type:square; list-style-position:inside;font-size:12px; color:#555555; margin-bottom:4px;}
+#layer_mis_busquedas .content li .search {font-size:12px; font-weight:bold; color:#555555;}
+#layer_mis_busquedas .content li .search:hover {color:#FF0000;}
+#layer_mis_busquedas .content li .borrar {font-size:11px; text-decoration:underline;}
+#layer_mis_busquedas .content li.msg {font-size:12px; font-weight:normal; color:#555555;}
+#layer_mis_busquedas .content li.alert {font-size:12px; color:#FF5555; list-style:none;}
+
 
 /* Layer Preview */
 #preview {width:19px; z-index:150; position:relative; overflow:visible;}
