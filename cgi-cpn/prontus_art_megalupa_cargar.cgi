@@ -85,6 +85,11 @@ main: {
     } else {
       $newbuffer = 'Error al cargar la plantilla';
     };
+
+    print "Cache-Control: no-cache\n";
+    print "Cache-Control: max-age=0\n";
+    print "Cache-Control: no-store\n";
+
     print "Content-type: text/html\n\n";
     print $newbuffer;
 }; # main

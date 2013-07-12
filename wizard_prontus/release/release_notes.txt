@@ -6468,6 +6468,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_varglb.pm
 
+
 - Listado de Artículos
     [mejora]
         - Se agrega nueva feature: Mis búsquedas. Las caracteristicas son:
@@ -6506,4 +6507,4 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Se cierra el STDOUT de la cgi de procesamiento, para que el script termine y no se caiga por timeout
     [files]
-
+        /cgi-cpn/prontus_port_regen_real.cgi
