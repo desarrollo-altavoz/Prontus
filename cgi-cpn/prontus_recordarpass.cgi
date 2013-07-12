@@ -95,7 +95,8 @@ main: {
         #~ my $new_pass = &set_new_pass();
         #~ &enviar_clave($USERS_EMAIL, $new_pass);
         &enviar_confirmacion($USERS_USR, $USERS_EMAIL);
-        &glib_html_02::print_json_result(1, 'La nueva contraseña ha sido enviada a tu email registrado en Prontus.', 'exit=1,ctype=1');
+        my ($casilla, $dominio) = split(/@/, $USERS_EMAIL);
+        &glib_html_02::print_json_result(1, "Se ha enviado un mensaje de confirmación a tu correo electrónico ($casilla@*****) registrado en Prontus.", 'exit=1,ctype=1');
     }
     else {
         &glib_html_02::print_json_result(0, "Usuario no existe o código no es válido.\nImportante: El Sistema distingue mayúsculas y minúsculas para el 'usuario' ingresado.", 'exit=1,ctype=1');
@@ -203,7 +204,7 @@ sub enviar_confirmacion {
 
     $asunto = "[http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID] Confirmación de recuperación de contraseña";
     $cuerpo = "Estimado usuario ($user):<br/><br/>";
-    $cuerpo .= "Alguien ha solicitado restablecer la contraseña de su cuenta para acceder al Panel de Control Prontus en http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID.<br/>Visite la siguiente url para iniciar el proceso de recuperación, de lo contrario puede ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
+    $cuerpo .= "Alguien ha solicitado restablecer la contraseña de tu cuenta para acceder al Panel de Control Prontus en <a href=\"http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan\">http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan</a>.<br/><br/>Visita el siguiente enlace para iniciar el proceso de recuperación, de lo contrario puedes ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
     utf8::encode($cuerpo);
     utf8::encode($asunto);
 

@@ -6459,7 +6459,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/core/paso2.html
 
 ====================================================================================================
-11.2.67 - 12/07/2013 - JOR/CVI
+11.2.67 - 10/07/2013 - JOR
 ====================================================================================================
 
 - Prontus en General
@@ -6517,6 +6517,21 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_tags_guardar.cgi
         /cgi-cpn/prontus_tags_import_real.cgi
         /cgi-cpn/lib_prontus.pm
+
+- Prontus en General
+    [cambios]
+        - Se agrega la extensión csv a la lista de archivos permitidos para upload en los fids.
+    [files]
+        /cgi-cpn/prontus_varglb.pm
+
+- Recuperación de Contraseña
+    [cambios]
+        - Se cambian los mensajes de ajax y de correo.
+    [bugfix]
+        - Se soluciona problema que ocurría al enviar el formulario y volver a la página de inicio, aparecía error de que no se podía cargar el captcha.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Recordarpass.class.js
+        /cgi-cpn/prontus_recordarpass.cgi
 
 - Regenerador de Portadas
     [bugfixes]
