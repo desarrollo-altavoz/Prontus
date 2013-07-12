@@ -6462,6 +6462,36 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.67 - 10/07/2013 - JOR
 ====================================================================================================
 
+- Prontus en General
+    [cambios]
+        - Se agrega la extensión csv a la lista de archivos permitidos para upload en los fids.
+    [files]
+        /cgi-cpn/prontus_varglb.pm
+
+- Listado de Artículos
+    [mejora]
+        - Se agrega nueva feature: Mis búsquedas. Las caracteristicas son:
+          - Al lado del link "Búsqueda avanzada", ahora hay un link: "Mis búsquedas"
+          - Al usar la búsqueda avanzada, al final hay una opción para guardar una búsqueda.
+          - Se puede indicar un nombre de hasta 20 caracteres
+          - Las búsquedas guardadas quedan en el listado mencionado anteriormente.
+          - Estas se pueden borrar, pero no se pueden editar, por ahora.
+          - Se pueden guardar hasta 20 búsquedas.
+          - Las búsquedas se asocian al usuario y se guardan de manera parmenente
+    [files]
+        /cgi-cpn/prontus_art_megalupa_borrar.cgi
+        /cgi-cpn/prontus_art_megalupa_cargar.cgi
+        /cgi-cpn/lib_search.pm
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-cpn/prontus_art_megalupa.cgi
+        /cgi-cpn/prontus_art_newadmin.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Buscador.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Megalupa.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_megalupa.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.htm
+
 - Administrador de categorías
     [bugfixes]
         - Al guardar una sección, tema o subtema se estaba eliminando el caracter | (PIPE), esto debido a que la función de despulge de nombre de tax reemplazaba el pipe por vacio, ya que esto era

@@ -54,8 +54,8 @@
             <h2>Portada <span id="filePortada"></span></h2>
             <h1 class="titular" id="nomPortada">%%_port_nom%%</h1>
             <div id="lastmodPortada" class="msg-sub-title"></div>
-            
-            <input type="hidden" value="" id="openblank" />            
+
+            <input type="hidden" value="" id="openblank" />
             <div class="separa"></div>
             <div class="msg-portada">
               <div id="concurrency" class="msg-global"></div>
@@ -83,7 +83,7 @@
             <div class="botones">
                 <a href="prontus_art_ficha.cgi?_path_conf=%%_path_conf%%" class="%%_class_open_fid%%"><img src="/%%_prontus_id%%/cpan/core/imag/boto/new_of.png" width="32" height="32" alt="Crear nuevo Artículo" title="Crear nuevo Artículo" class="cambia-boton" /></a>
             </div>
-        
+
             <div class="separa"></div>
 
             <div class="fila1">
@@ -108,8 +108,25 @@
                   </tr>
                 </table>
                 </form>
-                <div class="avanzado"><a href="#" onclick="Buscador.showMegalupa('%%_path_conf%%');return false;">B&uacute;squeda avanzada</a></div>
+                <div class="avanzado">
+                  <a href="#" onclick="Buscador.showMisBusquedas('%%_path_conf%%', true);return false;">Mis b&uacute;squedas</a> |
+                  <a href="#" onclick="Buscador.showMegalupa('%%_path_conf%%');return false;">B&uacute;squeda avanzada</a></div>
               </div>
+            </div>
+
+            <div id="layer_mis_busquedas">
+              <!--content_mis_busquedas-->
+              <div class="content">
+                <a href="#" onclick="Buscador.showMisBusquedas('%%_path_conf%%', false);return false;" class="aright"><img alt="Cancelar" title="Cancelar" src="http://localhost/cesarcillo/cpan/core/imag/boto/can_of.png" class="cambia-boton" width="18" height="18"></a>
+                <h3>Mis búsquedas</h3>
+                <ul>
+                <!--loop_mis_busquedas-->
+                  <li><a href="#" id="search%%ts%%" class="search" onclick="Buscador.aplicarBusqueda(this);">%%nombre%%</a> | <a href="#" id="borrar%%ts%%" class="borrar" onclick="Buscador.borrarBusqueda(this);">borrar</a>
+                    <script type="text/javascript">Buscador.addBusqueda('%%ts%%', %%json%%);</script></li>
+                <!--/loop_mis_busquedas-->
+                </ul>
+              </div>
+              <!--/content_mis_busquedas-->
             </div>
 
           </div>
@@ -191,24 +208,24 @@
                         <a href="#" onclick="Preview.changeZoom('-'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/zo2_of.gif" width="76" height="20" alt="Zoom Out" title="Zoom Out" class="cambia-boton" /></a>
                       </div>
                       <div class="datos">
-    									  <table width="100%" class="tableform">
-    	                    <tr>
+                        <table width="100%" class="tableform">
+                          <tr>
                             <td valign="middle" align="left">
-    	                        <div class="titulo">Fecha</div>
-    	                        <input type="text" name="fecha_preview" id="fecha_preview" class="fieldform" style="width:70px;" maxlength="10" onchange="Preview.startPreview();" />
-    	                      </td>
-    	                      <td valign="middle" align="left">
-    	                        <div class="titulo">Hora</div>
-    	                        <input type="text" name="hora_preview" id="hora_preview" class="fieldform" style="width:40px;" maxlength="5" onchange="Preview.startPreview();" />
-    	                      </td>
-    	                      <td valign="middle" align="left">
-    	                        <div class="titulo">Vista</div>
-    			                    <select name="seccion" id="cmb_vista" onchange="Preview.fastPreview();">
-    			                      <option value="">-- Default --</option>
-    		                      </select>
+                              <div class="titulo">Fecha</div>
+                              <input type="text" name="fecha_preview" id="fecha_preview" class="fieldform" style="width:70px;" maxlength="10" onchange="Preview.startPreview();" />
                             </td>
-    	                    </tr>
-    	                  </table>
+                            <td valign="middle" align="left">
+                              <div class="titulo">Hora</div>
+                              <input type="text" name="hora_preview" id="hora_preview" class="fieldform" style="width:40px;" maxlength="5" onchange="Preview.startPreview();" />
+                            </td>
+                            <td valign="middle" align="left">
+                              <div class="titulo">Vista</div>
+                              <select name="seccion" id="cmb_vista" onchange="Preview.fastPreview();">
+                                <option value="">-- Default --</option>
+                              </select>
+                            </td>
+                          </tr>
+                        </table>
                       </div>
 
                       <div class="datos">
@@ -220,13 +237,13 @@
                         </table>
                       </div>
                       <div class="preview-now" style="width:180px;">
-    									  <table width="100%" class="tableform">
-    	                    <tr>
+                        <table width="100%" class="tableform">
+                          <tr>
                             <td valign="middle" align="right">
                               <div class=""><a href="#" onclick="Preview.fastPreview(); return false;">&raquo; Actualizar Preview Ahora</a></div>
-    	                      </td>
-    	                    </tr>
-    	                  </table>
+                            </td>
+                          </tr>
+                        </table>
                       </div>
                       <div class="preview-foto">
                         <div>

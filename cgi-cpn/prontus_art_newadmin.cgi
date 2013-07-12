@@ -66,6 +66,7 @@ use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use glib_fildir_02;
 use lib_prontus;
+use lib_search;
 
 use glib_cgi_04;
 use strict;
@@ -154,6 +155,9 @@ main: {
     $buffer = &set_multi_vista($buffer);
     $buffer = &set_rayo($buffer); # a partir de 11.2.19 el rayo va incorporado al guardar portada
     $buffer = &set_admin_port($buffer);
+
+    #~ Se parsean la seccion de Mis Busquedas
+    $buffer = &lib_search::parsea_mis_busquedas($buffer, $prontus_varglb::USERS_ID);
 
     print "Content-type: text/html\n\n";
     print $buffer;
@@ -271,7 +275,7 @@ sub get_html_port {
         $PORTS_TO_ORDER{$key} = $name;
     };
 
-    
+
     foreach $key (sort {lc($PORTS_TO_ORDER{$a}) cmp lc($PORTS_TO_ORDER{$b})} keys %PORTS_TO_ORDER) {
         my $val_display = $prontus_varglb::PORT_PLTS_NOM{$key};
         $val_display =~ s/^\s+//;
@@ -304,7 +308,7 @@ sub get_html_port {
             $lista = $lista . $val_display . "</option>\n";
         };
     };
-    
+
     $lista = $lista . q{</select>};
 
     return $lista;
@@ -498,9 +502,9 @@ sub set_rayo {
 # ---------------------------------------------------------------
 sub set_admin_port {
     my $buffer = shift;
-	if ($prontus_varglb::ADMIN_PORT eq 'NO') {
-	    $buffer =~ s/<!--ADMIN_PORT-->.*<!--\/ADMIN_PORT-->//isg;
-	};
+    if ($prontus_varglb::ADMIN_PORT eq 'NO') {
+        $buffer =~ s/<!--ADMIN_PORT-->.*<!--\/ADMIN_PORT-->//isg;
+    };
     return $buffer;
 };
 
