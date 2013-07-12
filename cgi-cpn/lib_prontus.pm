@@ -5312,6 +5312,17 @@ sub insert_dev_id {
 sub despulga_item_tax { # rotulos tax
   my $str = $_[0];
   $str =~ s/["']//g;
+  $str =~ s/\t|\r|\n/ /sig;
+  $str =~ s/\\/ /sg;
+  $str =~ s/ +/ /g;
+  $str =~ s/^ +//g;
+  $str =~ s/ +$//g;
+  return $str;
+};
+
+sub despulga_item_tag { # rotulos tag
+  my $str = $_[0];
+  $str =~ s/["']//g;
   $str =~ s/[\t\r\n\,\|\>\<]/ /sg; # la [,|<>] se estripean por req. de la gestion de tags en el FID
   $str =~ s/\\/ /sg;
   $str =~ s/ +/ /g;
