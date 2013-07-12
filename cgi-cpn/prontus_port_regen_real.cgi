@@ -57,7 +57,7 @@ my $TOT_REGS_CON_ERR;
 
 main : {
 
-     #~ close STDOUT;
+    close STDOUT;
 
     $FORM{'path_conf'} = $ARGV[0];
     $FORM{'check_pp'}  = $ARGV[1];

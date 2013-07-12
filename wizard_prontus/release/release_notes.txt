@@ -6502,4 +6502,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_tags_import_real.cgi
         /cgi-cpn/lib_prontus.pm
 
+- Regenerador de Portadas
+    [bugfixes]
+        - Se cierra el STDOUT de la cgi de procesamiento, para que el script termine y no se caiga por timeout
+    [files]
 
