@@ -1,1 +1,101 @@
-<li class="ui-state-disabled" id="nuevo-item-subtema-%%_tema_id%%">    <div class="tema">        <div class="subtema">            <div class="fila1 gris2">              <div class="contenido">                <div class="boton-gris3 aleft">                    <a class="button" href="#" onclick="Tax.mostrarOculto('nuevo-subtema-%%_tema_id%%'); return false;"><span>+ Agregar Subtema</span></a>                    <a class="button" href="#" onclick="Tax.mostrarSubtemas(false, %%_tema_id%%); return false;"><span>Refrescar</span></a>                    </div>              </div>              <div class="contenido oculto" id="nuevo-subtema-%%_tema_id%%" style="height: 25px; min-height: 0;">                    <div class="col0 aleft">&nbsp;</div>                    <div class="col1 aleft nueva-subtema"><input type="text" name="_nom" class="input-sinpulsar input_seccion" value=""/></div>                    <!--vista_loop_edit-->                    <div class="col1 aleft nueva-subtemaVista vista-%%_nom_vista%%" id="vista-%%_tema_id%%-%%_nom_vista%%"%%_vista_style%%><input type="text" name="_nom-%%_nom_vista%%" class="input-sinpulsar input_seccion" value=""/></div>                    <!--/vista_loop_edit-->                    <div class="col2 aleft nueva-subtemaUrl"><input type="text" name="_port" class="input-sinpulsar input_url" value=""/></div>                    <div class="col4-aux aleft nueva-subtemaMostrar">                        <div class="fila_loading">                            <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"/>                        </div>                       <a href="#" onclick="Tax.guardarItemNuevo(this, 'subtema', %%_tema_id%%, 0); return false;">                           <img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png');" />                       </a>                       <a href="#" onclick="Tax.guardarItemNuevo(this, 'subtema', %%_tema_id%%, 1); return false;">                           <img alt="Guardar y nuevo" title="Guardar y nuevo" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_of.png');" />                       </a>                       <a href="#" onclick="Tax.mostrarOculto('nuevo-subtema-%%_tema_id%%'); return false;">                           <img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png');" />                       </a>                    </div>              </div>            </div>        </div>    </div></li><!--item_loop--><li id="item-subtema-%%_id%%">    <div class="tema">        <div class="subtema">             <div class="fila1 gris2" id="mostrar-subtema-%%_id%%">               <div class="mover"><a href="#"><img class="handler" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/mover2.png" alt="Mover" title="Mover" /></a></div>               <div class="contenido">                     <div class="col0 aleft"><strong>%%_id%%</strong></div>                     <div class="col1 aleft"><strong class="txt_nom">%%_nombre%%</strong></div>                     <input type="hidden" name="item-nom-%%_id%%" value="%%_nombre%%"/>                     <!--vista_loop_row-->                     <div class="col1 aleft txt_nom-%%_nom_vista%%"%%_vista_style%%>%%_nom_item_vista%%&nbsp;</div>                     <input type="hidden" name="vista-%%_id%%-%%_nom_vista%%" value="%%_nom_item_vista%%"/>                     <!--/vista_loop_row-->                     <div class="col2 aleft txt_port">%%_taxports%%%%_port%%&nbsp;</div>                     <input type="hidden" name="port-%%_id%%" value="%%_port%%"/>                     <div class="col4-aux aleft"></div>                     <div class="col4 aright">                       <div class="fila_loading">                         <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"/>                       </div>                       <a href="#" onclick="Tax.actualizarMostrar(this, 'subtema',%%_id%%);return false;"><img class="mostrar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" alt="%%_mostrar%%" title="" /></a>                       <a href="#" onclick="Tax.editarItem('subtema', %%_id%%);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar.png" width="18" height="18" alt="Editar" title="Editar" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar.png');"/></a>                       <a href="#" onclick="Tax.borrarItem(this, 'subtema',%%_id%%);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar.png" width="18" height="18" alt="Borrar" title="Borrar" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar.png');"/></a>                     </div>               </div>             </div>             <!-- fila edicion  -->             <div class="fila1 oculto nara" id="edicion-subtema-%%_id%%">               <div class="mover">&nbsp;</div>               <div class="contenido">                     <div class="col0 aleft">&nbsp;</div>                     <div class="col1 aleft">                         <input type="text" name="_nom-subtema-%%_id%%" class="input_seccion" value="%%_nombre%%" maxlength="128"/>                     </div>                     <!--vista_edit_loop_row-->                     <div class="col1 aleft vista-%%_nom_vista%%"%%_vista_style%%>                         <input type="text" name="_nom_vista-subtema-%%_id%%-%%_nom_vista%%" class="input_seccion" value="%%_nom_item_vista%%" maxlength="128"/>                     </div>                     <!--/vista_edit_loop_row-->                     <div class="col2 aleft">                         <input type="text" name="_port-subtema-%%_id%%" class="input_url" value="%%_port%%" maxlength="255"/>                     </div>                     <div class="col4-aux aleft">                     &nbsp;                     </div>                     <div class="col4 aright">                       <div class="fila_loading">                         <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"/>                       </div>                         <a href="#" onclick="Tax.guardarItem(this, 'subtema', '%%_id%%'); return false;">                             <img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png');"/>                         </a>                         <a href="#" onclick="Tax.cancelarEditar(this, 'subtema', '%%_id%%'); return false;">                             <img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png');"/>                         </a>                     </div>               </div>             </div>             <!-- /fila edicion -->         </div>     </div></li><!--/item_loop-->
+<li class="ui-state-disabled" id="nuevo-item-subtema-%%_tema_id%%">
+    <div class="tema">
+        <div class="subtema">
+            <div class="fila1 gris2">
+              <div class="contenido">
+                <div class="boton-gris3 aleft">
+                    <a class="button" href="#" onclick="Tax.mostrarOculto('nuevo-subtema-%%_tema_id%%'); return false;"><span>+ Agregar Subtema</span></a>
+                    <a class="button" href="#" onclick="Tax.mostrarSubtemas(false, %%_tema_id%%); return false;"><span>Refrescar</span></a>
+                    </div>
+              </div>
+              <div class="contenido oculto" id="nuevo-subtema-%%_tema_id%%" style="height: 25px; min-height: 0;">
+                    <div class="col0 aleft">&nbsp;</div>
+                    <div class="col1 aleft nueva-subtema"><input type="text" name="_nom" class="input-sinpulsar input_seccion" value=""/></div>
+                    <!--vista_loop_edit-->
+                    <div class="col1 aleft nueva-subtemaVista vista-%%_nom_vista%%" id="vista-%%_tema_id%%-%%_nom_vista%%"%%_vista_style%%><input type="text" name="_nom-%%_nom_vista%%" class="input-sinpulsar input_seccion" value=""/></div>
+                    <!--/vista_loop_edit-->
+                    <div class="col2 aleft nueva-subtemaUrl"><input type="text" name="_port" class="input-sinpulsar input_url" value=""/></div>
+                    <div class="col4-aux aleft nueva-subtemaMostrar">
+                        <div class="fila_loading">
+                            <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"/>
+                        </div>
+                       <a href="#" onclick="Tax.guardarItemNuevo(this, 'subtema', %%_tema_id%%, 0); return false;">
+                           <img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png');" />
+                       </a>
+                       <a href="#" onclick="Tax.guardarItemNuevo(this, 'subtema', %%_tema_id%%, 1); return false;">
+                           <img alt="Guardar y nuevo" title="Guardar y nuevo" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_of.png');" />
+                       </a>
+                       <a href="#" onclick="Tax.mostrarOculto('nuevo-subtema-%%_tema_id%%'); return false;">
+                           <img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png');" />
+                       </a>
+                    </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</li>
+
+<!--item_loop-->
+<li id="item-subtema-%%_id%%">
+    <div class="tema">
+        <div class="subtema">
+             <div class="fila1 gris2" id="mostrar-subtema-%%_id%%">
+               <div class="mover"><a href="#"><img class="handler" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/mover2.png" alt="Mover" title="Mover" /></a></div>
+               <div class="contenido">
+                     <div class="col0 aleft"><strong>%%_id%%</strong></div>
+                     <div class="col1 aleft"><strong class="txt_nom">%%_nombre%%</strong></div>
+                     <input type="hidden" name="item-nom-%%_id%%" value="%%_nombre%%"/>
+                     <!--vista_loop_row-->
+                     <div class="col1 aleft txt_nom-%%_nom_vista%%"%%_vista_style%%>%%_nom_item_vista%%&nbsp;</div>
+                     <input type="hidden" name="vista-%%_id%%-%%_nom_vista%%" value="%%_nom_item_vista%%"/>
+                     <!--/vista_loop_row-->
+                     <div class="col2 aleft txt_port">%%_taxports%%%%_port%%&nbsp;</div>
+                     <input type="hidden" name="port-%%_id%%" value="%%_port%%"/>
+                     <div class="col4-aux aleft"></div>
+                     <div class="col4 aright">
+                       <div class="fila_loading">
+                         <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"/>
+                       </div>
+                       <a href="#" onclick="Tax.actualizarMostrar(this, 'subtema',%%_id%%);return false;"><img class="mostrar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" alt="%%_mostrar%%" title="" /></a>
+                       <a href="#" onclick="Tax.editarItem('subtema', %%_id%%);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar.png" width="18" height="18" alt="Editar" title="Editar" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar.png');"/></a>
+                       <a href="#" onclick="Tax.borrarItem(this, 'subtema',%%_id%%);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar.png" width="18" height="18" alt="Borrar" title="Borrar" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar.png');"/></a>
+                     </div>
+               </div>
+             </div>
+             <!-- fila edicion  -->
+             <div class="fila1 oculto nara" id="edicion-subtema-%%_id%%">
+               <div class="mover">&nbsp;</div>
+               <div class="contenido">
+                     <div class="col0 aleft">&nbsp;</div>
+                     <div class="col1 aleft">
+                         <input type="text" name="_nom-subtema-%%_id%%" class="input_seccion" value="%%_nombre%%" maxlength="128"/>
+                     </div>
+                     <!--vista_edit_loop_row-->
+                     <div class="col1 aleft vista-%%_nom_vista%%"%%_vista_style%%>
+                         <input type="text" name="_nom_vista-subtema-%%_id%%-%%_nom_vista%%" class="input_seccion" value="%%_nom_item_vista%%" maxlength="128"/>
+                     </div>
+                     <!--/vista_edit_loop_row-->
+                     <div class="col2 aleft">
+                         <input type="text" name="_port-subtema-%%_id%%" class="input_url" value="%%_port%%" maxlength="255"/>
+                     </div>
+                     <div class="col4-aux aleft">
+                     &nbsp;
+                     </div>
+                     <div class="col4 aright">
+                       <div class="fila_loading">
+                         <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"/>
+                       </div>
+                         <a href="#" onclick="Tax.guardarItem(this, 'subtema', '%%_id%%'); return false;">
+                             <img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png');"/>
+                         </a>
+                         <a href="#" onclick="Tax.cancelarEditar(this, 'subtema', '%%_id%%'); return false;">
+                             <img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" onmouseover="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_on.png');" onmouseout="Tax.chgImgSrc(this, '/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png');"/>
+                         </a>
+                     </div>
+               </div>
+             </div>
+             <!-- /fila edicion -->
+         </div>
+     </div>
+</li>
+<!--/item_loop-->

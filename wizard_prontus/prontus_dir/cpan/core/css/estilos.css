@@ -60,6 +60,7 @@ label {cursor:pointer;}
 .main-head .franja-head .seleccion1 {margin:12px 10px 0 10px; font-size:14px; color:#FFFFFF;}
 .main-head .franja-head .seleccion1 img {margin-top:0px;}
 .main-head .franja-head .seleccion1 .editar {margin:0px 10px; float:right; clear:none;}
+.main-head .contacto {float: right; margin-right: 5px; margin-top: 2px;}
 
 /*------------------- INFO USUARIO -----------------------*/
 .userdata {font-size:12px; color:#888888; font-weight:bold; text-align:left; width:981px; height: 32px;}
