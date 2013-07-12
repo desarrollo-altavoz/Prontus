@@ -10,10 +10,18 @@ var Recordarpass = {
 
         
         var optAjax = {
-            complete: function() {
-                Captcha.generate();
-                $('.loading-action').hide();
-                $('.botonIngresar').show();
+            success: function (data) {
+                if (typeof data.status != 'undefined') {
+                    if (data.status == '0') {
+                        alert(data.msg);
+                        Captcha.generate();
+                        $('.loading-action').hide();
+                        $('.botonIngresar').show();
+                    } else if (data.status == '1') {
+                        alert(data.msg);
+                        window.location.href = configAjax.redirURL;
+                    }
+                }
             }
         };
 
