@@ -6538,3 +6538,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cierra el STDOUT de la cgi de procesamiento, para que el script termine y no se caiga por timeout
     [files]
         /cgi-cpn/prontus_port_regen_real.cgi
+
+- Prontus Form
+    [bugfixes]
+        - Problemas con la codificación del archivo de respaldo
+    [files]
+        /cgi-cpn/prontus_form_download.cgi

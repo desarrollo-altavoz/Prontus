@@ -154,15 +154,13 @@ main: {
     if($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
         my $oct = decode("utf8", $CSV);
         $CSV = encode("iso-8859-1", $oct);
-        binmode STDOUT, ":iso-8859-1";
-
-    } else {
-        binmode STDOUT, ":utf8";
     };
 
-    print "Content-Type:application/x-download\n";
-    print "Content-Disposition:attachment;filename=$BACKUPFILE\n\n";
-    print $CSV;
+    print STDOUT "Content-Type:application/x-download\n";
+    print STDOUT "Content-Disposition:attachment;filename=$BACKUPFILE\n\n";
+
+    binmode STDOUT, ":raw";
+    print STDOUT $CSV;
 
 }
 
