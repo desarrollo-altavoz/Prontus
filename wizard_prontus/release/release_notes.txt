@@ -6508,6 +6508,35 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_megalupa.html
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.htm
 
+- Editor VTXT
+    [mejora]
+        - Se agrega la posibilidad de sobre escribir los plugins y los botones de un FID.
+          Para ello, se pueden usar las variables:
+            vtxt_custom_plugins
+            vtxt_custom_buttons1
+            vtxt_custom_buttons2
+            vtxt_custom_buttons3
+          Si no se definen, tomará el valor por defecto.
+          Usando esto, se puede, por ejemplo habilitar los tooltips:
+            <!-- Control VTXT -->
+            <script type="text/javascript">
+                var vtxt_custom_plugins = "advimage,advlink,contextmenu,fullscreen,inlinepopups,media,paste,preview,searchreplace,spellchecker,table,visualchars,tooltip";
+                var vtxt_custom_buttons2 = "pastetext,pasteword,selectall,|,search,replace,|,undo,redo,|,link,unlink,|,tooltip,|,image,enmarcar,original,|,media,|,sub,sup,charmap,hr,|,table,visualaid,|,code,preview,fullscreen,|,help,xhtml";
+            </script>
+            %%_INIT_VTXT%%
+            <!-- /Control VTXT -->
+        - En base a lo anterior, se crea la macro reservada para habilitar los tooltips: _vtxt_enable_tooltips.html
+          Con esto, para habilitar los tooltips en el VTXT, se debe usar:
+          <!-- Control VTXT -->
+            %%MACRO(_vtxt_enable_tooltips.html)%%
+            %%_INIT_VTXT%%
+          <!-- /Control VTXT -->
+          Luego, se debe insertar el JS:  verTooltip.js en el Frontend y listo (se puede tomar del siguiente punto)
+        - Se crea carpeta para colocar archivos de ejemplo para el Frontend: /<prontus_id>/cpan/core/js-local/frontend/
+          Actualmente esta carpeta tiene el archivo: verTooltip.js, para los tooltips en el VTXT
+    [files]
+
+
 - Administrador de categorías
     [bugfixes]
         - Al guardar una sección, tema o subtema se estaba eliminando el caracter | (PIPE), esto debido a que la función de despulge de nombre de tax reemplazaba el pipe por vacio, ya que esto era
