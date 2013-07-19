@@ -92,7 +92,7 @@ $| = 1; # Sin buffer. Despliega a medida que va leyendo.
 # -------------
 
 my ($BD, %FORM,);
-my (%XML_VISTAS);
+my (%XML_VISTAS, %HASH_FS_TAG);
 
 my $RELPATH_TEMPL = '/cpan/core/prontus_tags_admin.html';
 
@@ -152,6 +152,8 @@ main:{
     my $pagina = &glib_fildir_02::read_file($prontus_varglb::DIR_SERVER . "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID$RELPATH_TEMPL");
 
     $pagina = &lib_prontus::set_coreplt_ppal($pagina);
+
+    %HASH_FS_TAG = &cache_dirs_tag();
 
     my $sql;
     my $sql_count;
@@ -280,7 +282,8 @@ sub make_lista {
     my $count;
     while($salida->fetch){
         $tags_tag = &lib_prontus::escape_html($tags_tag);
-        $filas .= &generar_fila($loop, $tags_id, $tags_tag, $tags_count, $tags_tot, $tags_mostrar, $nom4vistas);
+        my $tagports = &get_url_tagports($tags_id);
+        $filas .= &generar_fila($loop, $tags_id, $tags_tag, $tags_count, $tags_tot, $tags_mostrar, $nom4vistas, $tagports);
         $count++;
     };
 
@@ -292,7 +295,7 @@ sub make_lista {
 # ---------------------------------------------------------------
 sub generar_fila {
     # Genera y retorna cada fila de la lista de Areas de Cargo.
-    my ($loop_row, $tags_id, $tags_tag, $tags_count, $tags_tot, $tags_mostrar, $nom4vistas) = @_;
+    my ($loop_row, $tags_id, $tags_tag, $tags_count, $tags_tot, $tags_mostrar, $nom4vistas, $tagports) = @_;
     my $mostrar_ico;
     if ($tags_mostrar) {
         $mostrar_ico = 'btn_ticket_green';
@@ -307,6 +310,7 @@ sub generar_fila {
     $loop_row =~ s/%%_tags_count%%/$tags_count/g;
     $loop_row =~ s/%%_tags_mostrar%%/$tags_mostrar/g;
     $loop_row =~ s/%%_mostrar%%/$mostrar_ico/g;
+    $loop_row =~ s/%%_tagports%%/$tagports/g;
 
     $loop_row = &parse_multivistas($loop_row, $nom4vistas, 'vista_loop_row');
     $loop_row = &parse_multivistas($loop_row, $nom4vistas, 'vista_loop_edit');
@@ -394,5 +398,54 @@ sub generate_pagination_links {
 
   return $links;
 };
+
+sub cache_dirs_tag  {
+    my ($reldir_port_dst) = "$prontus_varglb::DIR_CONTENIDO/tag/port"; # /<prontus_dir>/site/tax/port
+
+    my @lisdir = &glib_fildir_02::lee_dir("$prontus_varglb::DIR_SERVER$reldir_port_dst");
+    @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
+
+    my $urls;
+    my %hash_fs;
+    foreach my $subdir (@lisdir) {
+        next if (!-d "$prontus_varglb::DIR_SERVER$reldir_port_dst/$subdir");
+        my @lisdir_files = &glib_fildir_02::lee_dir("$prontus_varglb::DIR_SERVER$reldir_port_dst/$subdir");
+        @lisdir_files = grep !/^\./, @lisdir_files;
+        foreach my $arch (@lisdir_files) {
+            next if (!-f "$prontus_varglb::DIR_SERVER$reldir_port_dst/$subdir/$arch");
+            next if (!-s "$prontus_varglb::DIR_SERVER$reldir_port_dst/$subdir/$arch");
+
+            $hash_fs{"$reldir_port_dst/$subdir"} .= "$arch;" if ($arch =~ /([^\/]+)_[0-9]+\_1\.\w+$/);
+        };
+    };
+    return %hash_fs;
+}
+
+sub get_url_tagports {
+    my ($id) = $_[0];
+
+    my $urls;
+    foreach my $reldir (keys %HASH_FS_TAG) {
+        my $nom_subdir;
+        if ($reldir =~ /([^\/]+)$/) {
+            $nom_subdir = $1;
+        } else {
+            next;
+        };
+        
+        my @lisdir_files = split(/;/, $HASH_FS_TAG{$reldir});
+        foreach my $arch (@lisdir_files) {
+            $urls .= "&raquo; <a href=\"$reldir/$arch\" target=\"_blank\">$nom_subdir/$1</a><br/>" if ($arch =~ /([^\/]+)_$id\_1\.\w+$/);
+        };
+    };
+
+    $urls =~ s/<br\/>$//;
+
+
+    return $urls;
+
+    
+};
+
 # ----------------------------------------------------------------
 # -------------------------END SCRIPT----------------------

@@ -99,8 +99,9 @@
                         <!--/vista_flechas-->
                     </div>
                     <!--/vista_loop_nav-->
-                    <div class="col3 aleft">Nº Artics</div>
-                    <div class="col4 aleft">Últimos Artics</div>
+                    <div class="col3 aleft algleft">URL</div>
+                    <div class="col5 aleft">Nº Artics</div>
+                    <div class="col5 aleft">Ult. Artics</div>
                     <div class="col5 aleft">&nbsp;</div>
                   </div>
 
@@ -134,9 +135,10 @@
                               <img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" />
                             </a>
                           </div>
-                          <div class="col3 aleft">&nbsp;</div>
-                          <div class="col4 aleft">&nbsp;</div>
+                          <div class="col3 aleft algleft">&nbsp;</div>
                           <div class="col5 aleft">&nbsp;</div>
+                          <div class="col5 aleft">&nbsp;</div>
+                          <div class="col6 aleft">&nbsp;</div>
                         </div>
                       </div>
                     </li>
@@ -153,9 +155,16 @@
                         <!--vista_loop_row-->
                         <div class="col1-tags aleft txt_nom-%%_nom_vista%%"%%_vista_style%%>%%_nom_item_vista%%&nbsp;</div>
                         <!--/vista_loop_row-->
-                        <div class="col3 aleft">%%_tags_tot%%</div>
-                        <div class="col4 aleft"><a href="#" onclick="Tags.resumenItem(this); return false;">Ver</a></div>
-                        <div class="col5 aleft">
+                        <div class="col3 aleft algleft">
+                            <a href="#" onclick="$('#tagports_%%_tags_id%%').slideToggle(); return false;">URLs tagonómicas</a>
+                            <div id="tagports_%%_tags_id%%" style="display: none;">
+                                %%_tagports%%
+                            </div>
+                            &nbsp;
+                        </div>
+                        <div class="col5 aleft">%%_tags_tot%%</div>
+                        <div class="col5 aleft"><a href="#" onclick="Tags.resumenItem(this); return false;">Ver</a></div>
+                        <div class="col6 aleft">
                           <a href="#" onclick="Tags.cambiaEstado(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" class="mostrar" alt="%%_mostrar%%" title="Click para cambiar estado" /></a>
                           <a href="#" onclick="Tags.mostrarEditar(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_of.png" width="18" height="18" alt="Editar" title="Editar"  class="cambia-boton"/></a>
                           <a href="#" onclick="Tags.eliminarTags(this);return false;" class="link-borrar"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="Borrar" title="Borrar"  class="cambia-boton" /></a>
@@ -172,9 +181,10 @@
                             <input type="text" name="_nom%%_tags_id%%-vista-%%_nom_vista%%" id="_nom%%_tags_id%%-vista-%%_nom_vista%%" class="nombre-tag" value="%%_nom_item_vista%%" />
                         </div>
                         <!--/vista_loop_edit-->
-                        <div class="col3 aleft">%%_tags_tot%%</div>
-                        <div class="col4 aleft">&nbsp;</div>
-                        <div class="col5 aleft">
+                        <div class="col3 aleft algleft">&nbsp;</div>
+                        <div class="col5 aleft">%%_tags_tot%%</div>
+                        <div class="col5 aleft">&nbsp;</div>
+                        <div class="col6 aleft">
                           <a href="#" onclick="Tags.guardarItem(this); return false;"><img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" /></a>
                           <a href="#" onclick="Tags.mostrarEditar(this); return false;"><img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" /></a>
                           <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading" class="loading_save oculto" height="18" width="18" />
@@ -194,9 +204,12 @@
                             &nbsp;
                         </div>
                         <!--/vista_loop_hidden1-->
-                        <div class="col3 aleft">0</div>
-                        <div class="col4 aleft"><a href="#" onclick="Tags.resumenItem(this); return false;">Ver</a></div>
-                        <div class="col5 aleft">
+                        <div class="col3 aleft algleft">
+                            <a href="#" onclick="return false;">URLs tagonómicas</a>
+                        </div>
+                        <div class="col5 aleft">0</div>
+                        <div class="col5 aleft"><a href="#" onclick="Tags.resumenItem(this); return false;">Ver</a></div>
+                        <div class="col6 aleft">
                           <a href="#" onclick="Tags.cambiaEstado(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/btn_ticket_green.png" width="18" height="18" class="mostrar" alt="btn_ticket_green" title="Click para cambiar estado" /></a>
                           <a href="#" onclick="Tags.mostrarEditar(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_of.png" width="18" height="18" alt="Editar" title="Editar" class="cambia-boton"/></a>
                           <a href="#" onclick="Tags.eliminarTags(this);return false;" class="link-borrar"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="Borrar" title="Borrar" class="cambia-boton" /></a>
@@ -211,9 +224,10 @@
                             <input type="text" name="nom-new-item-vista-%%_nom_vista%%" class="nombre-tag" value=""/>
                         </div>
                         <!--/vista_loop_hidden2-->
-                        <div class="col3 aleft">0</div>
-                        <div class="col4 aleft">&nbsp;</div>
-                        <div class="col5 aleft">
+                        <div class="col3 aleft algleft">&nbsp;</div>
+                        <div class="col5 aleft">0</div>
+                        <div class="col5 aleft">&nbsp;</div>
+                        <div class="col6 aleft">
                           <a href="#" onclick="Tags.guardarItem(this); return false;"><img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" /></a>
                           <a href="#" onclick="Tags.mostrarEditar(this); return false;"><img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" /></a>
                           <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading" class="loading_save oculto" height="18" width="18" />

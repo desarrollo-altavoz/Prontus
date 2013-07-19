@@ -284,9 +284,10 @@ sub generar_tagonomicas_thislevel {
         my %filas;
         # print STDERR "[$$] FETCHING:\n";
         while ($salida->fetch) {
+            my $nro_pag_to_write;
             $nro_filas++;
             if (-f "$dir_semaf/$id_level.$pid_propio") {
-                my $nro_pag_to_write = $nro_pag + 1;
+                $nro_pag_to_write = $nro_pag + 1;
                 # print STDERR "\r                   pag[$nro_pag_to_write] row[$nro_filas]";
                 # sleep (1) if ($nro_filas > 98);
             } else {
@@ -305,7 +306,7 @@ sub generar_tagonomicas_thislevel {
                     my $loop_plt = &get_loop_plt($tag_id, $fid, $mv, $nombase_plt);
                     next if (!$loop_plt);
                     my $fila_content;
-                    my $auxref;
+                    my ($auxref, $auxref2);
 
                     # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
                     ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);

@@ -6544,3 +6544,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Problemas con la codificación del archivo de respaldo
     [files]
         /cgi-cpn/prontus_form_download.cgi
+
+- Administrador de tags
+    [mejoras]
+        - Se colocaron los links a las portadas tagonómicas.
+    [bugfix]
+        - Se soluciona problema con script de generación de portadas tagonómicas introducido en la versión 11.2.59
+    [files]
+        /cgi-cpn/prontus_tags_admin.cgi
+        /cgi-cpn/prontus_tags_ports.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/tax.css
+        /wizard_prontus/prontus_dir/cpan/core/prontus_tags_admin.html
+
+
