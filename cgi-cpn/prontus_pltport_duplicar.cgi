@@ -127,7 +127,8 @@ main: {
         $FORM{'NEW_PORT'} = $FORM{'NEW_PORT'} . $extension_aux;
     };
 
-    if ($FORM{'NEW_PORT'} !~ /^[a-z\_0-9][a-z\_\-0-9]*\.[a-z\_0-9\-]+$/) {
+    # Se usa la misma validación que la lib_prontus.pm, para no inutilizar el Prontus
+    if ($FORM{'NEW_PORT'} !~ /^\w+\.\w+$/) {
         &glib_html_02::print_json_result(0, 'Nombre de plantilla no válido', 'exit=1,ctype=1');
     };
 
@@ -199,8 +200,8 @@ sub update_cfg {
     my $newline = $1;
     $newline =~ s/(PORT_PLTS *= *['"])$FORM{'Lst_PORTACT'}((\(.*\)){0,3}['"].*\n?)/\1$FORM{'NEW_PORT'}\2/i;
     if($newline =~ /PORT_PLTS *= *['"](.*?)\((.*?)\)\((.*?)\)\((.*?)\)['"]/i) {
-		$newline = "PORT_PLTS = \"$1($1)($3)($4)\"";
-	};
+        $newline = "PORT_PLTS = \"$1($1)($3)($4)\"";
+    };
     print STDERR "[newline]$newline";
     $buffer =~ s/( *PORT_PLTS *= *['"]$FORM{'Lst_PORTACT'}(\(.*\)){0,3}['"].*\n?)/\1$newline/i;
     # Configurar portada como base si es q se requiere.
@@ -218,7 +219,7 @@ sub update_cfg {
             $buffer .= "\n\n$newline";
         };
     };
-    
+
   # Guarda el archivo cfg.
   &glib_fildir_02::write_file("$nomcfg-port.cfg", $buffer);
   # print STDERR "CFG[$buffer]\n";

@@ -6588,4 +6588,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/css/tax.css
         /wizard_prontus/prontus_dir/cpan/core/prontus_tags_admin.html
 
+- Duplicador de Portadas
+    [bugfix]
+        - Se iguala la validación de nombre de portada con la lib_prontus.pm.
+          Con esto se evita que al duplicar con guion, el Prontus quede inutilizable.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_pltport_duplicar.cgi
 
