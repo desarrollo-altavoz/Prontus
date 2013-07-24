@@ -82,6 +82,7 @@ use lib_logproc;
 use Update;
 use lib_mail;
 use lib_loading;
+use lib_quota;
 
 use strict;
 
@@ -234,6 +235,8 @@ sub enviar_mail_notif {
 sub actualizar_prontus {
 
     my $path_conf = shift;
+
+    my ($msg, $quota_usado, $quota_asignado, $usado_porc, $nousado_porc) = &lib_quota::calcula_unix();
     
     &lib_loading::update_loading(100, 5);    
     my $msg_abort = 'No fue posible actualizar Prontus';
@@ -256,11 +259,15 @@ sub actualizar_prontus {
     # Detecta instancias de prontus compatibles con las cgis
     &lib_loading::update_loading(100, 20);
     &lib_logproc::add_to_log_count("Detectando instancias Prontus ...");
+
+    &lib_logproc::add_to_log_count("Calculando espacio disponible ...");
+    my $ret = $upd_obj->check_before_download();
+    return "Error al calcular espacio libre en disco: [$Update::ERR]" if (!$ret);
     
     # Descarga release
     &lib_loading::update_loading(100, 30);
     &lib_logproc::add_to_log_count("Descargando release: " . $upd_obj->{last_version_disponible} . ' desde ' . $upd_obj->{update_server} . '/release ...');
-    my $ret = $upd_obj->descarga_release();
+    $ret = $upd_obj->descarga_release();
     return "Error al descargar release: [$Update::ERR]" if (!$ret);
     &lib_logproc::add_to_log_count("Release descargada ok en /_prontus_update/downloads/" . $upd_obj->{last_version_disponible});
     

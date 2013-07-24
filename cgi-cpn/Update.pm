@@ -16,6 +16,7 @@ use warnings;
 no warnings 'uninitialized';
 
 use DBI;
+use POSIX qw/ceil/;
 
 use glib_fildir_02;
 use File::Copy;
@@ -74,6 +75,12 @@ sub new {
     $upd_obj->{nro_revision_instalada} = '';
     $upd_obj->{nom_file_vdescriptor} = '';
     $upd_obj->_set_info_release_instalada();
+
+    # Datos del espacio en disco.
+    $upd_obj->{quota_usado} = '';
+    $upd_obj->{quota_asignado} = '';
+    $upd_obj->{quota_usado_porc} = '';
+    $upd_obj->_set_info_quota();
 
     use FindBin '$Bin';
     $upd_obj->{nom_cgicpn_current} = ''; # por ej 'cgi-cpn'
@@ -230,6 +237,14 @@ sub _set_info_release_instalada {
     };
 };
 
+sub _set_info_quota {
+    my $this = shift;
+    use lib_quota;
+    my ($msg, $quota_usado, $quota_asignado, $usado_porc, $nousado_porc) = &lib_quota::calcula_unix();
+    $this->{quota_asignado} = $quota_asignado;
+    $this->{quota_usado} = $quota_usado;
+    $this->{quota_usado_porc} = $usado_porc;
+};
 # ---------------------------------------------------------------
 sub update_disponible {
     # Determina y retorna version del update disponible, en caso de haberlo.
@@ -311,6 +326,75 @@ sub descarga_upd_descriptor {
 
 };
 
+sub check_before_download {
+    my $this = shift;
+    my $url = $this->{update_server} . '/release/prontus.' . $this->{rama_instalada} . '/files.' . $this->{last_version_disponible} . '.tgz';
+    my $content_length = &lib_prontus::get_http_content_length($url);
+    $content_length = 0 if (!$content_length);
+    
+    if ($content_length <= 0) {
+        $Update::ERR = "No se pudo determinar el tamaño de la actualización.";
+        cluck $Update::ERR . "\n";
+        return 0;
+    };
+    
+
+    print STDERR "TGZ content_length[$content_length]\n";
+
+    if ($this->{quota_usado_porc} eq '' || $this->{quota_usado} eq '' || $this->{quota_asignado} eq '') {
+        $Update::ERR = "No se pudo determinar el espacio libre en disco.";
+        cluck $Update::ERR . "\n";
+        return 0;
+    };
+
+    $content_length = ceil($content_length / 1024); # kb.
+    my $tgz_size_mb = &lib_quota::format_bytes($content_length);
+    my $disponible_mb = &lib_quota::format_bytes($this->{quota_asignado} - $this->{quota_usado});
+    
+    if ($this->{quota_usado_porc} eq '100%') {
+        $Update::ERR = "No hay suficiente espacio libre en disco para descargar la actualización.";
+        cluck $Update::ERR . "\n";
+        return 0;
+    } else {
+        my $quota_usado = $this->{quota_usado} + $content_length + 1024; # kb, con offset de 1mb.. porsiaca.
+        if ($quota_usado > $this->{quota_asignado}) {
+            $Update::ERR = "No hay suficiente espacio libre en disco para descargar la actualización. (Requerido: $tgz_size_mb, Disponible: $disponible_mb)";
+            cluck $Update::ERR . "\n";
+            return 0;
+         };
+    };
+
+    return 1;
+};
+
+sub check_after_download {
+    my $this = shift;
+    my $path_local_tgz = shift;
+    my $uncompressed;
+
+    my $disponible_mb = &lib_quota::format_bytes($this->{quota_asignado} - $this->{quota_usado});
+    my $gzip_info = `gzip -l $path_local_tgz`;
+    if ($gzip_info =~ /(\d+)\s+(\d+)\s+(.*?%)/isg) {
+        $uncompressed = $2; # bytes.
+        $uncompressed = ceil($uncompressed / 1024); #kb
+        print STDERR "TGZ uncompressed[$uncompressed]\n";
+        my $quota_usado = $this->{quota_usado} + $uncompressed + 1024; # kb, con offset de 1mb.. porsiaca.
+        if ($quota_usado > $this->{quota_asignado}) {
+            my $requerido_mb = &lib_quota::format_bytes($uncompressed);
+            $Update::ERR = "No hay suficiente espacio libre en disco para descomprimir la actualización (Requerido: $requerido_mb, Disponible: $disponible_mb).";
+            cluck $Update::ERR . "\n";
+            return 0;
+         };
+    } else {
+        print STDERR "No se pudo obtener tamaño desde info gzip:\n$gzip_info\n";
+        $Update::ERR = "No se pudo obtener el tamaño del archivo descargado.";
+        cluck $Update::ERR . "\n";
+        return 0;
+    };
+
+    return 1;
+};
+
 # ---------------------------------------------------------------
 sub descarga_release {
 # Descarga tgz, md5 y descomprime:
@@ -369,6 +453,11 @@ sub descarga_release {
                 my $path_local_tgz = $this->{dir_descarga} . '/files.' . $this->{last_version_disponible} . '.tgz';
                 &glib_fildir_02::write_file($path_local_tgz, $tgz_content);
                 if ((-s $path_local_tgz) && (-f $path_local_tgz)) {
+                    my $ret = $this->check_after_download($path_local_tgz); # revisar si hay espacio suficiente para descomprimir el archivo.
+                    if (!$ret) {
+                        return 0;
+                    };
+                    
                     # guardar el .md5 tb, por siaca
                     &glib_fildir_02::write_file("$path_local_tgz.md5", $md5_remoto);
                     # descomprimir en el mismo dir, el .tgz
