@@ -144,8 +144,13 @@ sub procesa_quota_vps {
     my ($usado_raiz, $disponible_raiz);
     
     my $df = `df -T | grep -v tmpfs`;
+
+    return ('','') if (!$df);
+
     my @lineas_df = split(/\n/, $df); shift @lineas_df; # quitar cabecera.
     my $document_root = $prontus_varglb::DIR_SERVER;
+
+    return ('', '') if (scalar @lineas_df == 0);
     
     while ($document_root =~ /^.+(\/.*?)$/sg) {
         my $part = $1;

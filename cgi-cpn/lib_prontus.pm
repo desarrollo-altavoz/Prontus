@@ -1293,7 +1293,7 @@ sub load_config {
      if ($clave !~ /^\w+\.\w+$/) {
         print STDERR "Error en CFG: Nombre de Portada [$clave] no es válido, debe contener sólo caracteres alfanuméricos, incluido el underscore. Además, debe tener una extensión válida.\n";
         print "Content-Type: text/html\n\n";
-        print "<P>Error en CFG: Nombre de Portada [$clave] no es válido, debe contener sólo caracteres alfanuméricos, incluido el underscore. Además, debe tener una extensión válida.";
+        print "<p>Error en CFG: Nombre de Portada [$clave] no es válido, debe contener sólo caracteres alfanuméricos, incluido el underscore. Además, debe tener una extensión válida.<p>";
         exit;
      };
      $prontus_varglb::PORT_PLTS{$clave} = 1;

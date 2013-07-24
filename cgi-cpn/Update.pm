@@ -329,7 +329,14 @@ sub descarga_upd_descriptor {
 sub check_before_download {
     my $this = shift;
     my $url = $this->{update_server} . '/release/prontus.' . $this->{rama_instalada} . '/files.' . $this->{last_version_disponible} . '.tgz';
-    my $content_length = &lib_prontus::get_http_content_length($url);
+
+    if ($this->{quota_usado_porc} eq '' || $this->{quota_usado} eq '' || $this->{quota_asignado} eq '') {
+        $Update::ERR = "No se pudo determinar el espacio libre en disco.";
+        cluck $Update::ERR . "\n";
+        return 0;
+    };
+    
+    my $content_length = &lib_prontus::get_http_content_length($url); # obtener el tamaño del archivo a descargar.
     $content_length = 0 if (!$content_length);
     
     if ($content_length <= 0) {
@@ -340,12 +347,6 @@ sub check_before_download {
     
 
     print STDERR "TGZ content_length[$content_length]\n";
-
-    if ($this->{quota_usado_porc} eq '' || $this->{quota_usado} eq '' || $this->{quota_asignado} eq '') {
-        $Update::ERR = "No se pudo determinar el espacio libre en disco.";
-        cluck $Update::ERR . "\n";
-        return 0;
-    };
 
     $content_length = ceil($content_length / 1024); # kb.
     my $tgz_size_mb = &lib_quota::format_bytes($content_length);
