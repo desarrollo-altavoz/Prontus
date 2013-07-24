@@ -6596,3 +6596,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_pltport_duplicar.cgi
 
+- Regenera Taxport
+    [mejora]
+        - Se agrega chequeo de la lib_maxrunning, no puede haber mas de 1 instancia de ese proceso
+        - Si pilla 15 procesos andando, hace sleep de 2 segundos hasta que sean menos de 15.
+          Si queda en modo sleep, por más de 5 ciclos, se gatilla un proceso de todas formas y vuelve a empezar el conteo.
+    [files]
+        /cgi-cpn/prontus_regenera_taxport.cgi
+
+
