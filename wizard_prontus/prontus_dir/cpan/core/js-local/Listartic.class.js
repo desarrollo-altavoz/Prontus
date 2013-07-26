@@ -485,7 +485,7 @@ var Listartic = {
 
         var edicion = Cookies.readCookie('edic');
         if(edicion !== null && edicion !== '' && $('#div_cmb_edic').is(':visible')) {
-            $('#cmb_port option[value="'+portada+'"]').attr('selected', 'selected');
+            $('#cmb_edic option[value="'+edicion+'"]').attr('selected', 'selected');
         }
 
         var portada = Cookies.readCookie('port');
