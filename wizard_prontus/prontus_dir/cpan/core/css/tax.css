@@ -51,6 +51,8 @@
 .oculto {display: none;}
 .fila_loading {display: none;}
 .botones-imp-exp {float: right;}
+.fila1 .contenido.oculto {height: 25px; min-height: 0;}
+#lista-seccion li.ui-state-disabled {opacity:1;}
 
 /** Para el administrador de tags **/
 .col960 .rotulo2 {width:960px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot960_azul.png") no-repeat left top;}

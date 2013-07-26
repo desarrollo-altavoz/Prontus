@@ -3,7 +3,7 @@ var Acciones = {
 
     // -------------------------------------------------------------------------
     borrarArtic: function(obj, ts, btnover) {
-        
+
         if(!confirm('¿Está seguro que desea eliminar este artículo?')) {
             return false;
         }
@@ -22,7 +22,7 @@ var Acciones = {
             _path_conf: Listartic.path_conf,
             _ts: ts
         };
-        
+
         setTimeout(function() {
 
             $.ajax({
@@ -172,13 +172,21 @@ var Acciones = {
     },
 
     // -------------------------------------------------------------------------
+    openDragAndDrop: function() {
+
+        var port = $('#cmb_port').val();
+        var url = Listartic.urlDragAndDrop + '?_edic=base&_port=' + port + '&_path_conf=' + path_conf;
+        Utiles.subWin(loc, 'portpreview', 1300, 640, 50, 50, 'scrollbars=1,resizable=1');
+    },
+
+    // -------------------------------------------------------------------------
     toggleVoBo: function (obj, ts) {
         var vb_input_obj = $('input[name="_vb_' + ts + '"]');
         var st_vb = $(vb_input_obj).val();
 
         var parent_obj = $(obj).parent()
         var parent_class = parent_obj.attr("class");
-        
+
         if (parent_class == 'vobo') {
              var finder_obj = parent_obj.parent().parent();
         } else if (parent_class == 'voboboto') {

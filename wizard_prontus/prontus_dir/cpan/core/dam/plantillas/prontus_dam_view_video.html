@@ -6,16 +6,17 @@
     <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/jquery/jquery.js"></script>
     <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/jquery/plugins/media/jquery.media.js"></script>
     <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/jquery/plugins/jquery.jqplugin.js"></script>
-    <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/Dam.class.js"></script>
-    <script type="text/javascript">
-        $(function() {
-            Dam.showPlayer('%%view_file%%', '%%view_prontus%%');            
-        });
-    </script>    
   </head>
   <body>
     <div style="width:440px; height:350px; margin:15px auto;">
       <div class="media" id="video_asset"></div>
     </div>
+
+    <script type="text/javascript" src="/%%view_prontus%%/cpan/core/js-local/Dam.class.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            Dam.showPlayer('%%view_file%%', '%%view_prontus%%');
+        });
+    </script>
   </body>
 </html>

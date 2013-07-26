@@ -6,7 +6,7 @@ var Tax  = {
     val_orig: {},
 
     // -------------------------------------------------------------------------
-    init: function() {
+    init: function(_newitem) {
 
         Tax.path_conf = Admin.path_conf;
         Tax.prontus_id = Admin.prontus_id;
@@ -37,6 +37,26 @@ var Tax  = {
             }
         });
 
+        $('#lista-seccion').delegate('.showurls', 'click', function() {
+            var rel = $(this).attr('rel');
+            if(rel) {
+                rel = rel.replace('show', '');
+                Tax.showURLs(rel)
+            }
+            return false;
+        });
+
+        $('.mostrar').each(function () {
+            if ($(this).attr('alt') == 'btn_ticket_green') {
+                $(this).attr('title', 'Click para ocultar en el FID');
+            } else {
+                $(this).attr('title', 'Click para visibilizar en el FID');
+            }
+        });
+
+        if (_newitem == 1) {
+          Tax.mostrarOculto('nuevo-seccion-0');
+        }
     },
 
     // -------------------------------------------------------------------------
@@ -220,7 +240,7 @@ var Tax  = {
         } else {
             form_data += '&_nom=' + Url.encode($(obj_nom).val());
         }
-        
+
         $('#nuevo-item-'+entidad+'-'+identif).find('.nueva-'+entidad+'Vista').each(function () {
             id_vista = ($(this).attr("id")).replace('vista-'+identif+'-', '');
             obj_nom = $(this).find('input[name="_nom-'+id_vista+'"]');
@@ -448,7 +468,7 @@ var Tax  = {
                         $(this).attr('title', 'Click para visibilizar en el FID');
                     };
                 });
-                
+
             });
         } else {
             if (obj !== false) {
@@ -655,7 +675,20 @@ var Tax  = {
                 $('[class*="txt_nom-'+cls[1]+'"]').show();
             };
         };
+    },
+
+    // -------------------------------------------------------------------------
+    showURLs: function(entidad) {
+        if (! $('#tp_div'+entidad).hasClass('visible'+entidad)) {
+            $('#tp_div'+entidad).slideDown();
+            $('#tp_div'+entidad).addClass('visible'+entidad);
+        } else {
+            $('#tp_div'+entidad).slideUp();
+            $('#tp_div'+entidad).removeClass('visible'+entidad);
+        }
     }
+
+
 
 };
 

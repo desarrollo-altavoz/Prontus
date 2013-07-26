@@ -49,6 +49,7 @@ label {cursor:pointer;}
 
 /*------------------- HEAD -----------------------*/
 .main-head .logo {width:145px; margin:0 0 0 17px;}
+.main-head .botonera .change_pass {float: right; margin-right: 7px; margin-top: 5px;}
 .main-head .botonera {width:800px; height:34px; margin:18px 0 0 0;}
 .main-head .botonera a.button {font-size:11px; display:block; float:left; height:35px; margin:0 3px 0 0; padding:0 10px 0 0; color:#666666; font-weight:bold;}
 .main-head .botonera a.button span {display:block; line-height:24px; padding:7px 0 5px 10px;}
@@ -61,6 +62,7 @@ label {cursor:pointer;}
 .main-head .franja-head .seleccion1 img {margin-top:0px;}
 .main-head .franja-head .seleccion1 .editar {margin:0px 10px; float:right; clear:none;}
 .main-head .contacto {float: right; margin-right: 5px; margin-top: 2px;}
+#div_cmb_edic {display:none;}
 
 /*------------------- INFO USUARIO -----------------------*/
 .userdata {font-size:12px; color:#888888; font-weight:bold; text-align:left; width:981px; height: 32px;}
@@ -80,9 +82,6 @@ label {cursor:pointer;}
 .userdata .barra-quota .level1 {background-color:#008000;}
 .userdata .barra-quota .level2 {background-color:#ff8000;}
 .userdata .barra-quota .level3 {background-color:#df0000;}
-
-
-/********************************* ESTILOS COMUNES ********************************************/
 
 /*------------------- TEXTOS Y LINKS -----------------------*/
 .red {color:#FF0000; margin:5px 0;}
@@ -118,21 +117,19 @@ label {cursor:pointer;}
 .content .top-titulo h1.titular, .content .top-titulo960 h1.titular {font-size:24px; color:#0099ff; margin:0; padding:0; float:left;}
 .content .top-titulo h2 {font-size:12px; color:#888888; font-weight:bold;}
 .content .top-titulo .msg-sub-title {font-size:11px; color:#aaaaaa; font-weight:bold; clear:both;}
-.content .top-titulo .botones {float:right;}
-.content .top-titulo .botones img {float:left; margin:0 3px 0 0;}
+.content .top-titulo.botones {float:right;}
+.content .top-titulo.botones img {float:left; margin:0 3px 0 0;}
 .content .top-titulo960 .boton {margin:5px 0 0 10px;}
 .content .top-titulo960 .botones {float:right;}
 .content .top-titulo960 .botones img {float:left; margin:0 0 0 10px;}
 .content .top-titulo select {margin:0 0 0 15px; padding:4px; font-size:12px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
-/* .content form {float:left;} desde 11.1.6 */
 
 /* Rotulos 470 */
 .col470 .flecha {width:25px; float:left; text-align:center; padding:5px 0 0 0;}
-.col470 .rotulo .link {width:100px; float:right; padding:5px 0 0 0;}
-.col470 .rotulo .link a {font-size:11px; color:#FFFFFF;}
-.col470 .rotulo .link a:hover {text-decoration:underline;}
+.col470 .rotulo a.link {display:block; width:100px; float:right; padding:5px 0 0 0; font-size:11px; color:#FFFFFF;}
+.col470 .rotulo a.link:hover {text-decoration:underline;}
 /* Rotulos azul 250 */
-.col250 .rotulo {width:250px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot250_azul.gif") no-repeat left top;}
+.col250 .rotulo {width:250px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot250_azul.png") no-repeat left top;}
 .col250 .rotulo .titulo {width:200px; float:left; font-size:14px; color:#FFFFFF; font-weight:bold; margin:0 0 0 10px; padding:5px 0 0 0;}
 .col250 .rotulo .flecha {width:25px; float:right; text-align:center; padding:5px 0 0 0;}
 /* Rotulos azul 470 */
@@ -140,7 +137,7 @@ label {cursor:pointer;}
 .col470 .rotulo .titulo {font-size:13px; color:#FFFFFF; font-weight:bold; float:left; margin:0; padding:5px 0 0 0;}
 .col470 .rotulo.selected {width:470px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot470_rojo.jpg") no-repeat left top;}
 /* Rotulos azul 685 */
-.col685 .rotulo {width:685px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot685_azul.gif") no-repeat left top;}
+.col685 .rotulo {width:685px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot685_azul.png") no-repeat left top;}
 /* Rotulos azul 960 */
 .col960 .rotulo {width:960px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot960_azul.png") no-repeat left top;}
 .col960 .rotulo .titulo {font-size:13px; text-align:left; color:#FFFFFF; font-weight:bold; margin:0; padding:5px 0 0 10px;}
@@ -185,10 +182,7 @@ label {cursor:pointer;}
 .box-gris .tableform3 td {padding:0; font-size:11px; color:#666666;}
 .fieldform {width:90%; padding:6px; font-size:12px; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
 .fieldform-short {width:90%; padding:2px; font-size:12px; font-weight:normal; color:#666666; background-color:#FFFFFF; border:1px solid #CCC;}
-
 .tableform .head {background-color: #E0E0E0;}
-
-
 
 /*------------------- BOTONES y TABS-----------------------*/
 /* TABS grises */
@@ -228,7 +222,6 @@ label {cursor:pointer;}
 .boton-generico a.button span {background: url("../imag/boto/bd_left.jpg") no-repeat; display:block; line-height:46px; margin:0 0 0 5px; padding:0 0 0 20px;}
 .botonera-bd .texto {width:230px; font-size:11px; color:#666666; text-align:left; clear:both; margin:5px; padding:5px;}
 .botonera-bd a:hover {color:#FF0000;}
-
 .botonera-adicional {margin: 0 auto; overflow: hidden; width: 360px;}
 
 /* Para el sistema de loadings */
@@ -254,7 +247,6 @@ label {cursor:pointer;}
 .loading-preview {display:none; position:absolute; width:440px; height:420px; margin:0px !important; background-color:#ffffff;}
 .loading-page .auxi {background-color: #FAFAFA; border-bottom: 1px solid #E6E6E6; border-left: 1px solid #E6E6E6; border-right: 1px solid #E6E6E6; margin: 0; padding: 25px 0;}
 
-
 #status-progress {background-color:#ffffff;}
 #status-progress .col470 {margin:2px auto;}
 #status-progress .box-gris {width:468px;}
@@ -278,9 +270,6 @@ label {cursor:pointer;}
 #status-progress .loading-borrar {display:none;}
 #status-progress .loading-preview {display:none; position:absolute; width:440px; height:420px; margin:0px !important; background-color:#ffffff;}
 
-
-/******************** ESTILOS POR TIPO DE PAGINAS ********************************************/
-
 /*------------------- LOGIN -----------------------*/
 .box-login {width:350px; margin:100px auto;}
 .box-login .logo {clear:both; margin:0 0 8px 0;}
@@ -294,9 +283,10 @@ label {cursor:pointer;}
 .content .botonera .top-titulo {width: auto; margin: 0 0 10px;}
 .content .botonera .grupo1 {float:left; height: 33px;}
 .content .botonera .grupo1 .loading-action {margin: 10px 0 0 25px;}
-
 .content .titulo-port {width:470px; margin-bottom:2px;}
 .content .titulo-port .fila1 {border:1px solid #E6E6E6; }
+.content .titulo-port.aright {text-align:right;}
+#port_dd_btn {display:none;}
 
 /* colapsar y descolapsar */
 .content .links-utiles {width:465px; margin-left:4px; margin-bottom:4px; font-size:11px; color:#666666;}
@@ -381,14 +371,6 @@ label {cursor:pointer;}
 .tooltip-ini-pub h2 {font-size:12px; font-weight:bold; margin-bottom:10px;}
 .tooltip-ini-pub h3 {font-size:11px; color:#666666; font-weight:bold;}
 .tooltip-ini-pub li {font-size:10px; color:#666666; font-weight:normal; border:0;}
-/**
-#tooltip-public .resumen-pub {width:300px; overflow:visible;}
-#tooltip-public .resumen-pub .top {margin:0px; padding:0px 4px; height:36px; background:url("../imag/auxi/tooltip-grey-top.png") no-repeat scroll top left;}
-#tooltip-public .resumen-pub .middle {margin:0px; padding:0px 4px; background:url("../imag/auxi/tooltip-grey-middle.png") repeat-y scroll top left;}
-#tooltip-public .resumen-pub .bottom {margin:0px; padding:0px 4px; height:10px; background:url("../imag/auxi/tooltip-grey-bottom.png") no-repeat scroll top left;}
-#tooltip-public .resumen-pub .tooltip-ini-pub {padding:0px 4px;}
-**/
-
 
 .area-list .fila1 .iconos {float:right;}
 .area-list .fila1 .datos {font-size:11px; color:#666666; padding:0; margin-top:4px;}
@@ -430,16 +412,16 @@ label {cursor:pointer;}
 #layer_mis_busquedas .content li.msg {font-size:12px; font-weight:normal; color:#555555;}
 #layer_mis_busquedas .content li.alert {font-size:12px; color:#FF5555; list-style:none;}
 
-
 /* Layer Preview */
 #preview {width:19px; z-index:150; position:relative; overflow:visible;}
 #preview .cont {z-index:150; overflow:hidden;}
 #preview .table-preview td {margin:0px; padding:0px;}
 #preview .table-preview {z-index:150;}
+#preview .table-preview .cerrar {display:none;}
 #preview table.timeleft {width:190px;}
 #preview td.timeleft {width:100px; height:15px; border:1px solid #CCC;}
 #preview td.timeleft #inner-timeleft {background-color:#008000; width:0px;}
-#preview .preview-now {float:right; padding-right:20px;}
+#preview .preview-now {float:right; padding-right:20px; width:180px;}
 #preview .preview-now a {font-size:12px; font-weight:bold; color:#FFFFFF;}
 .preview-box {width:470px; height:536px; float:left; margin:0; background-color:#999999;}
 .preview-box .aleft {width:19px;}
@@ -450,6 +432,8 @@ label {cursor:pointer;}
 .preview-box .datos .tableform {width:100%; margin:0 0 8px 0;}
 .preview-box .datos .tableform td {padding:2px; font-size:11px; color:#FFFFFF;}
 .preview-box .datos .tableform select {padding:2px; font-size:11px; color:#666666; background-color:#e1e1e1; border:1px solid #CCC;}
+.preview-box .datos .tableform #fecha_preview {width:70px;}
+.preview-box .datos .tableform #hora_preview {width:40px;}
 .preview-box .datos .fieldform {width:90%; padding:2px; font-size:11px; color:#666666; background-color:#e1e1e1; border:1px solid #CCC;}
 .preview-box .preview-foto {width:460px; margin:0 auto;}
 .preview-box .preview-foto div {color:#fff; font-size:11px; font-weight:bold; text-align:left; margin-top:6px;}
@@ -623,22 +607,6 @@ label {cursor:pointer;}
 .check-install .item .help {font-size:12px; color:#aaaaaa;}
 .botonera-general {width:180px;}
 
-/**
- {width:101px; margin-top:10px; position: absolute; float: left; background: none;}
-
-.regen_main {}
-.regen_main table tr th {padding: 8px !important;}
-.regen_main table tr td {border: 1px solid #F0F0F0; padding: 8px !important;}
-.regen_main .links-utiles a {color: #0099FF !important;}
-.regen_main .links-utiles a:hover {color: #FF0000 !important;}
-
-.regen .boton-gris1 a.button2 { display:block; height:30px; color:#FFFFFF; font-size:14px; font-weight:bold; margin-bottom: 3px;}
-.regen .boton-gris1 a.button2 span {background: url("../imag/boto/boto_gris2_regen_left.jpg") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
-.regen .boton-gris1 a.button2:hover {display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold;}
-.regen .boton-gris1 a.button2:hover span {background: url("../imag/boto/boto_gris1_regen_left.gif") no-repeat;}
-.regen .boton-gris1 a.button2.selected { display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold; margin-bottom: 3px;}
-.regen .boton-gris1 a.button2.selected span {background: url("../imag/boto/boto_gris1_regen_left.gif") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
-**/
 #tabs-regen {width: 170px; margin-top:10px; position: absolute;}
 .regen .boton-gris1 a.button2 { display:block; height:30px; color:#FFFFFF; font-size:14px; font-weight:bold; margin-bottom: 3px;}
 .regen .boton-gris1 a.button2 span {background: url("../imag/boto/boto_gris2_cfg_left.jpg") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
@@ -646,15 +614,11 @@ label {cursor:pointer;}
 .regen .boton-gris1 a.button2:hover span {background: url("../imag/boto/boto_gris1_cfg_left.gif") no-repeat;}
 .regen .boton-gris1 a.button2.selected { display:block; height:30px;  color:#0097fb; font-size:14px; font-weight:bold; margin-bottom: 3px;}
 .regen .boton-gris1 a.button2.selected span {background: url("../imag/boto/boto_gris1_cfg_left.gif") no-repeat; display:block; line-height:26px; height: 30px; padding:3px 0 0 10px;}
-
 .regen {padding: 0px 10px 5px;}
 .regen .separa {border-bottom: 1px solid #DDDDDD; margin-bottom: 5px;}
 .regen .titulo {font-size: 18px; color: #666; font-weight: bold;}
 .regen .desc {font-size: 13px; color: #888; padding: 5px 10px;}
 
-/*
-.contenido-regen {width:840px; float: left;font-size: 15px;color: #888;margin-top: 5px;border: 1px solid #DFDFDF;margin-left: 100px;}
-*/
 .contenido-regen {width:760px; float: left; font-size: 15px; color: #888888; margin-top: 5px; border: 1px solid #f1f1f0; margin-left: 169px;}
 .contenido-regen .listado .tableform td {border:1px solid #f0f0f0;}
 .contenido-regen .listado .head td {background-color:#e0e0e0;}
@@ -682,7 +646,6 @@ label {cursor:pointer;}
 .regen_port table tr th {padding: 2px !important; font-size: 13px;}
 .regen_artic table tr td {border: 1px solid #F0F0F0; padding-bottom: 2px !important; padding-left: 8px; padding-right: 2px !important; padding-top: 2px !important;}
 
-
 /* Pantalla de bloqueo */
 .lockscreen {background: none repeat scroll 0% 0% black; height: 100%; position: absolute; z-index: 99999; opacity: 0.8; filter: alpha(opacity = 80); border: 4px solid rgb(255, 128, 0); width: 972px; top: 130px;}
 .lockscreen h3 {margin-top: 250px; color: #FFFFFF;}
@@ -701,10 +664,3 @@ label {cursor:pointer;}
     border-radius: 0;
     color: #333333 !important;
 }
-
-
-
-/*-------------------oo------------------------*/
-/*FIN*/
-
-

@@ -5,14 +5,14 @@
     <link type="text/css" rel="stylesheet" href="../css/estilos.css" />
 
     <script type="text/javascript" src="../js-local/jquery/jquery.js"></script>
-    <script type="text/javascript" src="../js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="../js-local/jquery/plugins/form/jquery.form.js"></script>
     <script type="text/javascript" src="../js-local/jquery/plugins/filestyle/jquery.filestyle.js"></script>
     <script type="text/javascript" src="../../dir_cgi.js"></script>
     <script type="text/javascript" src="../js-local/SubmitForm.class.js"></script>
     <script type="text/javascript" src="../js-local/ProntusDetect.class.js"></script>
     <script type="text/javascript" src="../js-local/Opciones.class.js"></script>
     <script type="text/javascript" src="../js-local/Utiles.class.js"></script>
-    
+
     <script type="text/javascript">
       $(document).ready(function() {
         var prontus = ProntusDetect.getIdProntus();
@@ -26,7 +26,7 @@
             imagewidth : 82,
             width : 240
         });
-        
+
       });
       function enviarFormulario() {
         if($('#FILE1').val() === '') {

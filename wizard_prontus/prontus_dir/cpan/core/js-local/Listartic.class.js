@@ -28,6 +28,7 @@ var Listartic = {
     urlPing: './prontus_ping_inuse.cgi',
     urlRayo: './prontus_cluster_preport.cgi',
     urlAdministrarPortadas: './prontus_pltport_admin.cgi',
+    urlDragAndDrop: './prontus_dd_admin.cgi',
 
     animationSlideSpeed: 250,
     timePing: 10000,
@@ -87,7 +88,7 @@ var Listartic = {
 
         // Para el Preview
         Preview.init();
-        
+
         // Para el modificado a las
         Listartic.updateLastMod();
     },
@@ -184,7 +185,7 @@ var Listartic = {
             }
             var cloned = theLi.clone().prependTo('#area-'+Listartic.areaActiva).fadeIn().addClass('moved');
             Listartic.procesarListado(Listartic.idUlPub, 'li');
-            
+
             Preview.startPreview();
             Admin.displayMessage(Listartic.msgChangePort, 'alert');
             Listartic.instalaPortModProtector();
@@ -232,10 +233,10 @@ var Listartic = {
 
     // -------------------------------------------------------------------------
     instalaTooltipPublic: function() {
-        
+
         $(document).tooltip({
             position: {
-                my: "right middle", 
+                my: "right middle",
                 at: "left-15 middle"
             },
             show: {effect: "fadeIn", duration: 200 },
@@ -739,11 +740,11 @@ var Listartic = {
         $(item).find('.status').show();
         $(item).find('.vobo_disabled').removeClass('vobo_disabled').addClass('vobo').show();
     },
-    
+
     updateLastMod: function() {
-        
+
         setInterval(function() {
-            
+
             var mod = $('#_localmodtime').val();
             if(mod) {
                 var thestring;
@@ -751,7 +752,7 @@ var Listartic = {
                 mod = dmod.getTime();
                 var dnow = new Date();
                 var now = dnow.getTime();
-                
+
                 if(mod > now) {
                     // La fecha de ahora es mas antigua
                     $('#lastmodPortada').html('');
@@ -774,16 +775,16 @@ var Listartic = {
                     var fechamod = dmod.getYear()+'-'+dmod.getMonth()+'-'+dmod.getDate();
                     var fechahoy = dnow.getYear()+'-'+dnow.getMonth()+'-'+dnow.getDate();
                     var fechaayer = dnow2.getYear()+'-'+dnow2.getMonth()+'-'+dnow2.getDate();
-                    
+
                     if(fechamod == fechahoy) {
                         var hora = Utiles.getHora(mod, true);
                         thestring = "Modificada hoy a las "+hora+" hrs";
-                        
+
                     } else if(fechamod == fechaayer) {
                         var hora = Utiles.getHora(mod, true);
                         thestring = "Modificada ayer a las "+hora+" hrs";
                     } else {
-                        var hora = Utiles.getHora(mod, true);                            
+                        var hora = Utiles.getHora(mod, true);
                         var fecha = Utiles.getFecha(mod, true);
                         thestring = "Modificada el "+fecha;
                     }
@@ -794,7 +795,7 @@ var Listartic = {
                 //No se pudo leer la fecha de modififcacion
                 $('#lastmodPortada').html('');
             }
-            
+
         }, 1000);
     }
 }; // fin clase

@@ -9,7 +9,7 @@
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Recordarpass.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/ProntusDetect.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
-    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/form/jquery.form.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Captcha.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/ChangePass.class.js"></script>
@@ -18,10 +18,10 @@
         var prop = {type:'cpan'};
         Captcha.generate(prop);
         $('#FrmRecordar').bind('submit', function() {
-			Captcha.setRefreshCaptcha();
+            Captcha.setRefreshCaptcha();
         });
     });
-    
+
     </script>
   </head>
   <body class="bodysite">

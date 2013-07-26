@@ -363,10 +363,8 @@ sub get_url_taxports {
 
     $urls =~ s/<br\/>$//;
     if ($urls) {
-
-        $urls = "<a href=\"#\" onclick=\" if (!\$('#tp_div$id$entidad').hasClass('visible$id$entidad')) {  \$('#tp_div$id$entidad').slideDown(); \$('#tp_div$id$entidad').addClass('visible$id$entidad'); } else { \$('#tp_div$id$entidad').slideUp(); \$('#tp_div$id$entidad').removeClass('visible$id$entidad'); }\" >"
-              . "URLs taxon&oacute;micas</a>"
-              . "<div id=\"tp_div$id$entidad\" class=\"oculto\">$urls</div>";
+        $urls = "<a href=\"#\" class=\"showurls\" rel=\"show$entidad$id\">URLs taxon&oacute;micas</a>"
+              . "<div id=\"tp_div$entidad$id\" class=\"oculto\">$urls</div>";
     };
 
 

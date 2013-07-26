@@ -3,7 +3,7 @@
 .div_intercambiar table tr td {text-align:left; font-size:12px; color:#333333; margin:0; padding:8px 10px 3px 0;}
 .div_intercambiar .list {width:180px;}
 .div_intercambiar .list select {width:170px; height:100px;}
-.div_intercambiar .rotulo {width:685px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot685_azul.gif") no-repeat left top;}
+.div_intercambiar .rotulo {width:685px; height:25px; margin:0; padding:0; float:left; background: url("../imag/auxi/rot685_azul.png") no-repeat left top;}
 .div_intercambiar .rotulo .titulo {width:200px; float:left; font-size:15px; color:#FFFFFF; font-weight:bold; float:left; margin:0 0 0 10px; padding:5px 0 0 0;}
 .div_intercambiar .rotulo .flecha {width:25px; float:right; text-align:center; padding:5px 0 0 0;}
 .div_intercambiar .titulo b {font-size:14px;}

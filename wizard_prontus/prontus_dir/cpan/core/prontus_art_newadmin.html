@@ -12,35 +12,8 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.9.2.custom.min.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/js/jquery.combobox.widget.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/ui/lang/jquery.ui.datepicker-es.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/form/jquery.form.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
-
-    <!-- js prontus -->
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Listartic.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Preview.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/LoadDiv.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Buscador.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Acciones.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Opciones.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Cookies.class.js"></script>
-
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Megalupa.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Botones.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/CombosTax.class.js"></script>
-
-    <script type="text/javascript">
-      // Variables globales usadas para el publicador.
-      %%_JS_SPARE%%
-      %%_JS_BASE_PORTS%%
-      $(document).ready(function () {
-        Admin.init('%%_prontus_id%%');
-        Listartic.init('%%_prontus_id%%');
-        $( "#cmb_port" ).combobox();
-      });
-    </script>
   </head>
   <body class="bodysite">
     <div id="main">
@@ -63,22 +36,22 @@
             </div>
 
           </div>
-          <div class="titulo-port aright col470 botonera" style="text-align:right;">
-            <div class="top-titulo">
-            <div class="botones grupo1">
+          <div class="titulo-port aright col470 botonera">
+            <div class="top-titulo botones grupo1">
               <a href="#" onclick="Acciones.refrescarListados(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/ref_of.png" width="32" height="32" alt="Refrescar Listados" title="Refrescar Listados" class="cambia-boton" /></a>
               <a href="#" onclick="Acciones.guardarPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/gua_of.png" width="32" height="32" alt="Guardar Portada" title="Guardar Portada" class="cambia-boton" /></a>
               <a href="#" id="link-port" onclick="Acciones.showPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/ver_of.png" width="32" height="32" alt="Previsualizar" title="Ver Portada" class="cambia-boton" /></a>
-              <!--rayo--><a href="#" onclick="Acciones.clusteringPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/tra_of.png" width="32" height="32" alt="Transmitir a Cluster" title="Transmitir a Cluster" class="cambia-boton" /></a><!--/rayo-->
+          <!--rayo-->
+              <a href="#" onclick="Acciones.clusteringPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/tra_of.png" width="32" height="32" alt="Transmitir a Cluster" title="Transmitir a Cluster" class="cambia-boton" /></a>
+          <!--/rayo-->
               <a href="#" onclick="Preview.previewNewWin(); return false;"><img class="cambia-boton" width="32" height="32" title="Previsualizar Portada en una ventana nueva" alt="Previsualizar Portada" src="/%%_prontus_id%%/cpan/core/imag/boto/pre_of.png"></a>
-              <!--admin_only-->
-              <!--ADMIN_PORT-->
+          <!--admin_only-->
+          <!--ADMIN_PORT-->
               <a href="prontus_pltport_admin.cgi?_path_conf=%%_path_conf%%" ><img src="/%%_prontus_id%%/cpan/core/imag/boto/int_of.png" width="32" height="32" alt="Administrar Portadas" title="Administrar Portadas" class="cambia-boton" /></a>
-              <!--/ADMIN_PORT-->
-              <!--/admin_only-->
-              <a id="port_dd_btn" style="display: none;" href="#" onclick="window.open('/cgi-cpn/prontus_dd_admin.cgi?_edic=base&_port=' + $('#cmb_port').val() + '&_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg', 'portpreview', 'width=1300,scrollbars=1,resizable=1'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/dd_of.png" width="32" height="32" alt="Interfaz drag & drop" title="Interfaz con drag & drop" class="cambia-boton" /></a>
+          <!--/ADMIN_PORT-->
+          <!--/admin_only-->
+              <a id="port_dd_btn" href="#" onclick="Acciones.openDragAndDrop(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/dd_of.png" width="32" height="32" alt="Interfaz drag & drop" title="Interfaz con drag & drop" class="cambia-boton" /></a>
               <div class="loading-action"><img src="/%%_prontus_id%%/cpan/core/imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
-            </div>
             </div>
             <div class="botones">
                 <a href="prontus_art_ficha.cgi?_path_conf=%%_path_conf%%" class="%%_class_open_fid%%"><img src="/%%_prontus_id%%/cpan/core/imag/boto/new_of.png" width="32" height="32" alt="Crear nuevo Artículo" title="Crear nuevo Artículo" class="cambia-boton" /></a>
@@ -91,13 +64,13 @@
                 <span>Mostrar
                   <a href="#" onclick="Listartic.cambiarArticPerPage(this); return false;" rel="10" class="selected">10</a> |
                   <a href="#" onclick="Listartic.cambiarArticPerPage(this); return false;" rel="25">25</a> |
-                  <a href="#" onclick="Listartic.cambiarArticPerPage(this); return false;" rel="50">50</a></span><br />
+                  <a href="#" onclick="Listartic.cambiarArticPerPage(this); return false;" rel="50">50</a>
+                </span><br />
                 <span>Ordenar por
                   <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'C'); return false;" rel="C" class="selected">Creación</a> |
                   <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'F'); return false;" rel="F">Publicación</a> |
-                  <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'T'); return false;" rel="T">Titular</a></span>
-                <!-- span>Orden <a href="#" onclick="Listartic.cambiarOrden(this); return false;" class="selected desc">Descendente</a> |
-                  <a href="#" onclick="Listartic.cambiarOrden(this); return false;" class="asc">Ascendente</a><span><br /-->
+                  <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'T'); return false;" rel="T">Titular</a>
+                </span>
               </div>
               <div class="buscador">
                 <form name="f1" id="f1" enctype="x-www-form-urlencoded" method="post" action="" onsubmit="Buscador.buscarTit(); return false;">
@@ -196,8 +169,8 @@
             <table class="table-preview" cellspacing="0" cellpadding="0">
               <tr>
                 <td class="tab">
-                  <a href="#" class="abrir"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview.gif" width="19" height="536" alt="Previsualizar Portada" title="Previsualizar Portada" /></a>
-                  <a href="#" class="cerrar" style="display:none;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview_ocultar.gif" width="19" height="536" alt="Ocultar Previsualizar" title="Ocultar Previsualizar" /></a>
+                  <a href="#" class="abrir"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview.png" width="19" height="536" alt="Previsualizar Portada" title="Previsualizar Portada" /></a>
+                  <a href="#" class="cerrar"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview_ocultar.png" width="19" height="536" alt="Ocultar Previsualizar" title="Ocultar Previsualizar" /></a>
                 </td>
                 <td>
                   <div class="preview-box">
@@ -212,11 +185,11 @@
                           <tr>
                             <td valign="middle" align="left">
                               <div class="titulo">Fecha</div>
-                              <input type="text" name="fecha_preview" id="fecha_preview" class="fieldform" style="width:70px;" maxlength="10" onchange="Preview.startPreview();" />
+                              <input type="text" name="fecha_preview" id="fecha_preview" class="fieldform" maxlength="10" onchange="Preview.startPreview();" />
                             </td>
                             <td valign="middle" align="left">
                               <div class="titulo">Hora</div>
-                              <input type="text" name="hora_preview" id="hora_preview" class="fieldform" style="width:40px;" maxlength="5" onchange="Preview.startPreview();" />
+                              <input type="text" name="hora_preview" id="hora_preview" class="fieldform" maxlength="5" onchange="Preview.startPreview();" />
                             </td>
                             <td valign="middle" align="left">
                               <div class="titulo">Vista</div>
@@ -236,7 +209,7 @@
                           </tr>
                         </table>
                       </div>
-                      <div class="preview-now" style="width:180px;">
+                      <div class="preview-now">
                         <table width="100%" class="tableform">
                           <tr>
                             <td valign="middle" align="right">
@@ -261,8 +234,32 @@
       </div>
       <!--/FIN CONTENIDO-->
     </div>
-    <!-- <a href="#" onclick="Preview.openPreview();">show</a> |
-    <a href="#" onclick="Preview.closePreview();">hide</a> -->
+
+
+    <!-- js prontus -->
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Listartic.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Preview.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/LoadDiv.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Buscador.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Acciones.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Opciones.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Cookies.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Megalupa.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Botones.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/CombosTax.class.js"></script>
+    <script type="text/javascript">
+      // Variables globales usadas para el publicador.
+      %%_JS_SPARE%%
+      %%_JS_BASE_PORTS%%
+      $(document).ready(function () {
+        Admin.init('%%_prontus_id%%');
+        Listartic.init('%%_prontus_id%%');
+        $( "#cmb_port" ).combobox();
+      });
+    </script>
 
   </body>
 </html>
