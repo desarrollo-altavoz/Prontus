@@ -5129,7 +5129,7 @@ sub get_arbol_mapa {
       # -----------------------------------------------------
       # subtemas
       $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM, SUBTEMAS_PORT, SUBTEMAS_NOM4VISTAS from SUBTEMAS where SUBTEMAS_ORDEN > 0 AND SUBTEMAS_IDTEMAS = '$temas_id' order by SUBTEMAS_ORDEN";
-      my ($mapa_st, $subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas);
+      my ($mapa_st, $mapa_st_total, $subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas);
       my ($salida_st) = &glib_dbi_02::ejecutar_sql($bd, $sql);
       $salida_st->bind_columns(undef, \($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas));
       while ($salida_st->fetch) {
@@ -5148,11 +5148,12 @@ sub get_arbol_mapa {
         $mapa_st =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
         $mapa_st =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
         $mapa_st =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
+        $mapa_st_total = $mapa_st_total . $mapa_st;
       };
       if($mapa_t =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
-        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st/s
+        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st_total/s
       } else {
-        $mapa_t = $mapa_t . $mapa_st;
+        $mapa_t = $mapa_t . $mapa_st_total;
       };
       $mapa_total_t = $mapa_total_t . $mapa_t;
       $salida_st->finish;
@@ -6051,7 +6052,7 @@ use HTTP::Response;
 sub get_http_content_length {
     my $url = $_[0];
     my ($ua, $req, $res);
-    
+
     $ua = new LWP::UserAgent;
     $ua->agent('Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3');
     $req = new HTTP::Request 'HEAD' => $url;
