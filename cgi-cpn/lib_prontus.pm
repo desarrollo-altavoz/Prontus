@@ -6047,6 +6047,24 @@ use HTTP::Response;
 }; # getHTML
 
 # ---------------------------------------------------------------
+# Obtiene el tamano del archivo segun el valor de la cabecera HTTP Content-length.
+sub get_http_content_length {
+    my $url = $_[0];
+    my ($ua, $req, $res);
+    
+    $ua = new LWP::UserAgent;
+    $ua->agent('Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3');
+    $req = new HTTP::Request 'HEAD' => $url;
+    $req->header('Accept' => 'text/html');
+    $res = $ua->request($req);
+    if ($res->is_success) {
+             my $headers = $res->headers;
+             return $headers->content_length;
+    };
+    return 0;
+}
+
+# ---------------------------------------------------------------
 sub add_generator_tag {
     my $buffer = shift;
     if ($buffer !~ /<meta name *= *["']Generator["']/i) {

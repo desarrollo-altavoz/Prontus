@@ -6618,4 +6618,25 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_regenera_taxport.cgi
 
+- Actualizaciones automáticas
+    [mejoras]
+        - Se calcula el espacio disponible en disco antes de realizar la actualización. En caso de que no se pueda calcular
+        o el espacio sea insuficiente, no se podrá realizar la actualización.
+    [files]
+        /cgi-cpn/Update.pm
+        /cgi-cpn/prontus_update_real.cgi
+        /cgi-cpn/lib_prontus.pm
+
+- Chequeo de Quota:
+    [mejoras]
+        - Se mejora el calculo del espacio disponible en disco para los casos en que no existe el comando 'quota'.
+          Los casos especiales deben seguir tratandose através del script_quota.
+    [files]
+        /cgi-cpn/lib_quota.pm
+
+- Editor de CFG GUI
+    [bugfix]
+        - Se agrega validación al guardar la configuración de Comentarios. No se verificaba si existia el directorio de sesiones.
+    [files]
+        /cgi-cpn/prontus_cfg_save.cgi
 

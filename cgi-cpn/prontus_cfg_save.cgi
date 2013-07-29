@@ -272,6 +272,7 @@ main: {
                         &validarPort($var_valida, $input_value) if ($FORM{'_cfg'} eq 'port');
                         &validarTax($var_valida, $input_value) if ($FORM{'_cfg'} eq 'tax');
                         &validarVar($var_valida, $input_value) if ($FORM{'_cfg'} eq 'var');
+                        &validarComent($var_valida, $input_value) if ($FORM{'_cfg'} eq 'coment');
 
                         if ($FORM{'_cfg'} eq 'var' && $var_valida eq 'UPLOADS_PERMITIDOS') {
                             # Quitar espacios.
@@ -525,6 +526,17 @@ sub validarArt {
         };
     };
 
+};
+
+sub validarComent {
+    my ($var) = shift;
+    my ($item) = shift;
+
+    if ($var eq 'PHP_SESSION_PATH') {
+        if (!-d $item) {
+            &glib_html_02::print_json_result(0, "El directorio de sesiones especificado [$item] no existe. Debes crearlo antes de continuar.", 'exit=1,ctype=1');
+        };
+    };
 };
 
 sub validarArtEliminacion {

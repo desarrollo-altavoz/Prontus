@@ -38,7 +38,6 @@ use prontus_varglb;
 # SUB-RUTINAS.
 #---------------------------------------------------------------#
 sub calcula_unix {
-
   my $bgbar = '';
   my $usado = '';
   my $quota_asig = '';
@@ -141,30 +140,61 @@ sub procesa_command_quota {
 # ------------------------------------------------------------------------------------- #
 sub procesa_quota_vps {
     
-    my ($usado, $quota_asig, $available);
+    my ($usado, $quota_asig, $disponible);
+    my ($usado_raiz, $disponible_raiz);
     
-    my $checkuser = `whoami`;
-    if($checkuser =~ /www-data/) {
-      
-        my $df = `df -T | grep -v tmpfs`;
-        if($df =~ /ext3\s+\d+\s+(\d+)\s+(\d+)\s+(\d+)%\s+\/var\/www/) {
-            $usado = $1;
-            $available = $2;
-            $quota_asig = $usado + $available;
-            
-        } elsif($df =~ /simfs\s+\d+\s+(\d+)\s+(\d+)\s+(\d+)%\s+\/\s/) {
-            $usado = $1;
-            $available = $2;
-            $quota_asig = $usado + $available;
-            
-        } else {
-            print STDERR "procesa_quota_vps[Bad df: $df]\n";
-        }
-        
-    } else {
-        print STDERR "procesa_quota_vps[Bad user: $checkuser]\n";
-    }
-    return ($usado, $quota_asig);    
+    my $df = `df -T | grep -v tmpfs`;
+
+    return ('','') if (!$df);
+
+    my @lineas_df = split(/\n/, $df); shift @lineas_df; # quitar cabecera.
+    my $document_root = $prontus_varglb::DIR_SERVER;
+
+    return ('', '') if (scalar @lineas_df == 0);
+    
+    while ($document_root =~ /^.+(\/.*?)$/sg) {
+        my $part = $1;
+        $document_root =~ s/$part//sg;
+
+        # Tratar de buscar el punto de montaje en base al document root.
+        # por ejemplo comienza con:
+        # /var/www/sitios/xxxx
+        # /var/www/sitios
+        # /var/www
+        # /var
+        # /
+        # hasta dar con alguno...
+        foreach my $linea (@lineas_df) {
+            if ($linea =~ /(\d+)\s+(\d+)\s+(\d+)%\s+(\/.*+)/) {
+                $usado = $1;
+                $disponible = $2;
+                my $montaje = $4;
+
+                # Los guardamos, en caso de que no haya match!, usar por defecto la particion raiz.
+                if ($montaje eq '/') {
+                    $usado_raiz = $usado;
+                    $disponible_raiz = $disponible;
+                };
+                
+                #~ print STDERR "montaje[$montaje] document_root[$document_root]\n";
+                if ($montaje eq $document_root) {
+                    print STDERR "match! document_root[$document_root] = montaje[$montaje]\n";
+                    $quota_asig = $usado + $disponible;
+                    last;
+                };
+            };
+        };
+
+        last if ($quota_asig);
+    };
+
+    if (!$quota_asig) {
+        print STDERR "Usando valores de la partición raiz\n";
+        $usado = $usado_raiz;
+        $quota_asig = $usado_raiz + $disponible_raiz;
+    };
+
+    return ($usado, $quota_asig);
 };
 
 # ------------------------------------------------------------------------------------- #
