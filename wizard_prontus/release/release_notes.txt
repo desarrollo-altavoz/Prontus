@@ -6499,6 +6499,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrije posicionamiento de la combo de ediciones, guardado en cookie, al usar multiedión
         - Se da de baja la combo portadas con búsqueda. No quedó 100% operativa y tenía bugs al usar multiedición
           Se evaluará en el corto plazo una forma más usable de buscar / filtrar portadas
+        - Bug al trabajar con la portada D&D no consideraba la edición (estaba fijo en edición base)
     [mejora]
         - Se agrega nueva feature: Mis búsquedas. Las caracteristicas son:
           - Al lado del link "Búsqueda avanzada", ahora hay un link: "Mis búsquedas"

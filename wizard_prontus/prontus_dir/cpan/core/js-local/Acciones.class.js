@@ -175,7 +175,11 @@ var Acciones = {
     openDragAndDrop: function() {
 
         var port = $('#cmb_port').val();
-        var url = Listartic.urlDragAndDrop + '?_edic=base&_port=' + port + '&_path_conf=' + path_conf;
+        var edic = $('#cmb_edic').val();
+        if(typeof edic === 'undefined' || edic === null) {
+            edic = 'base';
+        }
+        var url = Listartic.urlDragAndDrop + '?_edic=' + edic + '&_port=' + port + '&_path_conf=' + path_conf;
         Utiles.subWin(loc, 'portpreview', 1300, 640, 50, 50, 'scrollbars=1,resizable=1');
     },
 
