@@ -6470,6 +6470,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         No se especifican los archivos modificados porque son muchos
 
 - Prontus en General
+    [bugfixes]
+        - Se corrigen algunos links rotos, por ejemplo en el Contacto del header
     [cambios]
         - Se agrega la extensión csv a la lista de archivos permitidos para upload en los fids.
     [mejoras]
@@ -6603,6 +6605,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se colocaron los links a las portadas tagonómicas.
     [bugfix]
         - Se soluciona problema con script de generación de portadas tagonómicas introducido en la versión 11.2.59
+        - Se hace un check_dir de la carpeta: /<prontus_id>/site/tag/port/ (si no existe, arroja error)
     [files]
         /cgi-cpn/prontus_tags_admin.cgi
         /cgi-cpn/prontus_tags_ports.cgi
