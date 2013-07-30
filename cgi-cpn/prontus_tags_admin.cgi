@@ -399,9 +399,11 @@ sub generate_pagination_links {
   return $links;
 };
 
+# ---------------------------------------------------------------
 sub cache_dirs_tag  {
     my ($reldir_port_dst) = "$prontus_varglb::DIR_CONTENIDO/tag/port"; # /<prontus_dir>/site/tax/port
 
+    &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$reldir_port_dst");
     my @lisdir = &glib_fildir_02::lee_dir("$prontus_varglb::DIR_SERVER$reldir_port_dst");
     @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
 
@@ -421,6 +423,7 @@ sub cache_dirs_tag  {
     return %hash_fs;
 }
 
+# ---------------------------------------------------------------
 sub get_url_tagports {
     my ($id) = $_[0];
 
@@ -432,7 +435,7 @@ sub get_url_tagports {
         } else {
             next;
         };
-        
+
         my @lisdir_files = split(/;/, $HASH_FS_TAG{$reldir});
         foreach my $arch (@lisdir_files) {
             $urls .= "&raquo; <a href=\"$reldir/$arch\" target=\"_blank\">$nom_subdir/$1</a><br/>" if ($arch =~ /([^\/]+)_$id\_1\.\w+$/);
@@ -444,7 +447,7 @@ sub get_url_tagports {
 
     return $urls;
 
-    
+
 };
 
 # ----------------------------------------------------------------
