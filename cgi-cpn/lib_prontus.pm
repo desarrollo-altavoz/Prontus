@@ -5355,10 +5355,16 @@ sub get_nomtax_envista {
 # ---------------------------------------------------------------
 sub get_nom4vistas {
     my ($mv, $id_s, $id_t, $id_st) = @_;
+    my $nom_s = '';
+    my $nom_t = '';
+    my $nom_st = '';
 
     my $key = $id_s.'/'.$id_t.'/'.$id_st.'/'.$mv;
     if($prontus_varglb::cache_nom4vista{$key}) {
-        return $prontus_varglb::cache_nom4vista{$key};
+        $nom_s  = $prontus_varglb::cache_nom4vista{$key}{'seccion'};
+        $nom_t  = $prontus_varglb::cache_nom4vista{$key}{'tema'};
+        $nom_st = $prontus_varglb::cache_nom4vista{$key}{'subtema'};
+        return ($nom_s, $nom_t, $nom_st);
     }
 
     # Conectar a BD si es que no viene la conexion
@@ -5371,8 +5377,7 @@ sub get_nom4vistas {
         };
     };
 
-    my ($nom_s, $nom_t, $nom_st); # nombres en la vista dada
-
+    # nombres en la vista dada
     if (!$mv) {
         # Vista principal.
         if ($id_s) {
@@ -5386,7 +5391,9 @@ sub get_nom4vistas {
         if ($id_st) {
             $nom_st = &existe_registro("select SUBTEMAS_NOM from SUBTEMAS where SUBTEMAS_ID='$id_st'", $prontus_varglb::BD_CONN);
         };
-
+        $prontus_varglb::cache_nom4vista{$key}{'seccion'} = $nom_s;
+        $prontus_varglb::cache_nom4vista{$key}{'tema'}    = $nom_t;
+        $prontus_varglb::cache_nom4vista{$key}{'subtema'} = $nom_st;
         return ($nom_s, $nom_t, $nom_st);
     };
 
@@ -5411,10 +5418,11 @@ sub get_nom4vistas {
         };
     };
 
-    $prontus_varglb::cache_nom4vista{$key} = ($nom_s, $nom_t, $nom_st);
+    $prontus_varglb::cache_nom4vista{$key}{'seccion'} = $nom_s;
+    $prontus_varglb::cache_nom4vista{$key}{'tema'}    = $nom_t;
+    $prontus_varglb::cache_nom4vista{$key}{'subtema'} = $nom_st;
     return ($nom_s, $nom_t, $nom_st);
 };
-
 # ---------------------------------------------------------------
 sub escape_xml { # rotulos tax
   my $toencode = $_[0];
