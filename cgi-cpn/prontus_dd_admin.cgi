@@ -32,7 +32,6 @@ main: {
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'path_conf'} = &glib_cgi_04::param('_path_conf');
-    $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
     $FORM{'port'} = &glib_cgi_04::param('_port'); # portada principal, la que se está editando.
     $FORM{'port'} =~ s/[\/]//s;
 
@@ -43,9 +42,11 @@ main: {
     $FORM{'from_port_mod'} = &glib_cgi_04::param('_from_port_mod');
     $FORM{'accion'} = &glib_cgi_04::param('_accion');
     $FORM{'port_levels'} = &glib_cgi_04::param('_port_levels');
-    
+
     # Deduce path conf del referer, en caso de no ser suministrado.
-    $FORM{'path_conf'} = &get_path_conf() if ($FORM{'path_conf'} eq '');
+    if($FORM{'path_conf'} eq '') {
+        &glib_html_02::print_pag_result('Error', 'No se pudo localizar el archivo de Configuraci&oacute;n', 1, 'exit=1,ctype=1');
+    };
 
     # Ajusta path_conf para completar path y/o cambiar \ por /
     $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
@@ -69,11 +70,11 @@ main: {
     }
 
     &glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/cpan/procs/dd/port");
-    
+
     my $DST_SEC = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/site/edic/$FORM{'edic'}/port/dd_$FORM{'port'}";
     my $DST_TSEC = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/cpan/procs/dd/port/$FORM{'port'}";
     my $path_port = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP . "/edic/nroedic/port/$FORM{'port'}";
-    
+
     # Verificar si la plantilla es compatible con Drag & Drop. Solo la vista principal.
     my $chk_portada = &lib_dd::check_portada($path_port, $DST_SEC);
     if ($chk_portada ne '') {
@@ -87,7 +88,7 @@ main: {
     if ($FORM{'accion'} eq 'update' && $FORM{'area_mod'} ne '') {
         my $buffer = &actualizar_area_port($FORM{'port_mod'}, $FORM{'area_mod'});
         my $resp;
-    
+
         $resp->{'status'} = '2';
         $resp->{'html'} = $buffer;
         $resp->{'area'} = $FORM{'area_mod'}; # area modificada.
@@ -101,7 +102,7 @@ main: {
             $FORM{'from_port_mod'} =~ /(.*?)\.(.*?)/is;
             $resp->{'portname_from'} = $1;
         };
-        
+
         &print_json_result_hash($resp, "ctype=1,exit=1");
         exit;
     } else {
@@ -112,7 +113,7 @@ main: {
         my $plantilla_beg_body = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/port_dd/plt_beg_body.html";
         my $plantilla_end_body = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/port_dd/plt_end_body.html";
         my $plantilla_item_area = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/port_dd/plt_item_area.html";
-        
+
         my $pagina = &glib_fildir_02::read_file($plantilla);
         $pagina = &lib_prontus::set_coreplt_ppal($pagina);
         $pagina = &lib_dd::parse_common_vars($pagina); # Se parsean variables comunes
@@ -142,11 +143,11 @@ main: {
 
         # Cargar plantilla para items dentro del loop.
         my $buffer_item_area = &glib_fildir_02::read_file($plantilla_item_area);
-            
+
         # deducir nombre del xml en base al nombre de la plantilla.
         $FORM{'port'} =~ /(.*?)\.(.*?)$/i;
         my $port_xml_filename = "$1.xml";
-        
+
         # Encerrar loops y items en divs
         my ($newbuffer)  = &lib_dd::prepara_loops($plt_port_buffer, $plt_port_dd);
         $newbuffer = &lib_dd::parse_common_vars($newbuffer);
@@ -183,7 +184,7 @@ main: {
     if ($http_host eq '') {
         &glib_html_02::print_pag_result('Error', "No se pudo determinar el HTTP_HOST del sitio.", 1, 'exit=1,ctype=1');
     };
-    
+
     my $url_port_site = "http://$http_host/$prontus_varglb::PRONTUS_ID/site/edic/$FORM{'edic'}/port/dd_$FORM{'port'}";
     my ($http_content, $http_line) = &lib_prontus::get_url($url_port_site);
 
@@ -205,7 +206,7 @@ main: {
         print "Content-Type: text/html\n\n";
         print $http_content;
     };
-    
+
 };
 
 sub print_json_result_hash {
@@ -218,7 +219,7 @@ sub print_json_result_hash {
     $ctype = 1 if ($options =~ /(^|,) *ctype *= *1 *(,|$)/);
 
     #~ binmode(STDOUT, ":utf8");
-       
+
     print "Content-Type: text/html\n\n" if ($ctype);
     my $json = new JSON;
     # print $json->to_json($resp);
