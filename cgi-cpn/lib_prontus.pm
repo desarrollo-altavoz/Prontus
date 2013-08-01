@@ -3951,9 +3951,29 @@ sub replace_in_artic {
         my $striptext = &strip_text($valor_campo);
         $buffer =~ s/%%$nom_striptext%%/$striptext/isg;
 
+        # parse urlencode
+        my $nom_urlenctext = $nom_minitext . '.urlencode';
+        my $urlenctext = &urlencode_text($valor_campo);
+        $buffer =~ s/%%$nom_urlenctext%%/$urlenctext/isg;
+
+
     };
 
     return $buffer;
+};
+# -------------------------------------------------------------------------#
+sub urlencode_text {
+    my $toencode = shift;
+    $toencode =~ s/\r\n/ /sg;
+    $toencode =~ s/\n/ /sg;
+    $toencode =~ s/\r/ /sg;
+    $toencode =~ s/<.*?>/ /sg;
+    $toencode =~ s/ {2,}/ /sg;
+    $toencode =~ s/ $//sg;
+    $toencode =~ s/^ //sg;
+    $toencode =~ s/([^-A-Za-z0-9_.!~*'() ])/sprintf("%%%02X", ord($1))/eg;
+    $toencode =~ s/ /%20/sg;
+    return $toencode;
 };
 # -------------------------------------------------------------------------#
 sub strip_text {

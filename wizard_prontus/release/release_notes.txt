@@ -6481,6 +6481,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se hacen varios cambios y correcciones menores de optimización y gráfica
         - Se comienzan a crear archivos site/edic/base/home/index_<mv>.html, para apuntar a la portada HOME.
           En base a la variable: PORT_HOME
+        - Se agrega la nueva salida .urlencode para los campos Minitext
+          Esta salida, hace una codificación URL de contenido, para ser usado por ejemplo en Flash
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_varglb.pm
