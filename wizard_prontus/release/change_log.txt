@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.67 - 02/07/2013
+11.2.67 - 02/08/2013
 ====================================================================================================
 - notice: Se hace una mega limpieza de la interface, para mejorar la ligeramente performance del publicador.
 - bugfix: Se corrigen algunos links rotos, por ejemplo en el Contacto del header
