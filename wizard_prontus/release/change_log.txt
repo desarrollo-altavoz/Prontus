@@ -1,4 +1,39 @@
 ====================================================================================================
+11.2.67 - 02/07/2013
+====================================================================================================
+- notice: Se hace una mega limpieza de la interface, para mejorar la ligeramente performance del publicador.
+- bugfix: Se corrigen algunos links rotos, por ejemplo en el Contacto del header
+- bugfix: Se corrige comportamiento extraño en los nombre de las taxonomias en las vistas, en listados y procesos batch
+- changes: Se agrega la extensión csv a la lista de archivos permitidos para upload en los fids.
+- improvement: Se comienzan a crear archivos site/edic/base/home/index_<mv>.html, para apuntar a la portada HOME.
+- improvement: Se agrega la nueva salida .urlencode para los campos Minitext -> para usar como Flashvars
+- bugfix: Se corrije posicionamiento de la combo de ediciones en el Listado de Artículos (guardado en cookie), al usar multiedión
+- changes: Se da de baja la combo portadas con búsqueda. No quedó 100% operativa y tenía bugs al usar multiedición
+- bugfix: Bug al trabajar con la portada D&D no consideraba la edición (estaba fijo en edición base)
+- improvement: Se agrega nueva feature: Mis búsquedas
+- improvement: Se agrega macro reservada de FID para el Captcha del Prontus Form: _form_captcha.html
+- improvement: Se agrega la posibilidad de sobrescribir los plugins y los botones de un VTXT en un determinado FID.
+- improvement: En base a lo anterior, se crea la macro reservada para habilitar los tooltips: _vtxt_enable_tooltips.html
+- improvement: Se crea carpeta para colocar archivos de ejemplo para el Frontend: /<prontus_id>/cpan/core/js-local/frontend/
+- bugfix: Al guardar una sección, tema o subtema se estaba eliminando el caracter | (PIPE).
+- bugfix: Se soluciona problema que ocurría al enviar el formulario y volver a la página de inicio, aparecía error de que no se podía cargar el captcha.
+- changes: Al recuperar contraseña, se cambian los mensajes de ajax y de correo.
+- bugfix: En el mapa del sitio, en el loop de los subtemas, quedaba sólo el último. Bug introducido en la release anterior.
+- bugfix: En el Regenerador de Portadas, se cierra el STDOUT de la cgi de procesamiento, para que el script termine y no se caiga por timeout
+- bugfix: Problemas con la codificación del archivo de respaldo del Prontus Form
+- bugfix: En el Admin de Tags, se soluciona problema con script de generación de portadas tagonómicas introducido en la versión 11.2.59
+- bugfix: Se hace un check_dir de la carpeta: /<prontus_id>/site/tag/port/ (si no existe, arroja error)
+- improvement: Administrador de tags: Se colocaron los links a las portadas tagonómicas.
+- bugfix: Se iguala la validación de nombre de portada con la lib_prontus.pm.
+- bugfix: El link para volver, en el Admin de Portadas, apuntaba al Editor de Ediciones en vez de al Admin de Artículos
+- improvement: En el Regenerador de Taxport, se agrega chequeo de la lib_maxrunning, no puede haber mas de 1 instancia de ese proceso
+- improvement: Se mejora lógica del Regenerador de Taxport, para no lanzar tantos procesos de golpe
+- improvement: Actualizacion automática: Se calcula el espacio disponible en disco antes de realizar la actualización.
+- changes: En caso de que no se pueda calcular el espacio disponible, NO se podrá realizar la actualización.
+- improvement: Chequeo de Quota: Se mejora el calculo del espacio disponible en disco para los casos en que no existe el comando 'quota'.
+- bugfix: Se agrega validación al guardar la configuración de Comentarios. No se verificaba si existia el directorio de sesiones.
+
+====================================================================================================
 11.2.66 - 03/07/2013
 ====================================================================================================
 - bugfix: Se elimina debug al hacer purge. Esto hacía que llegaran mail al crons@altavoz.net
