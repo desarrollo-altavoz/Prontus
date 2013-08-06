@@ -72,11 +72,11 @@ sub calcula_unix {
   unless (($usado) && ($quota_asig)) {
     ($usado, $quota_asig) = &procesa_quota_vps();
   };
-  
+
   unless(($usado) && ($quota_asig)) {
     return '<b>Espacio en disco:</b> Informaci&oacute;n no disponible.';
   };
-  
+
   # 1.2 - CVI - Por que no puede ser mayor de 8 ???? Lo saco para que funcione
   # Valida que la quota asignada no tenga mas de 99999999Kb.
   #      if(length($quota_asig) > 8){
@@ -139,10 +139,10 @@ sub procesa_command_quota {
 
 # ------------------------------------------------------------------------------------- #
 sub procesa_quota_vps {
-    
+
     my ($usado, $quota_asig, $disponible);
     my ($usado_raiz, $disponible_raiz);
-    
+
     my $df = `df -T | grep -v tmpfs`;
 
     return ('','') if (!$df);
@@ -151,7 +151,7 @@ sub procesa_quota_vps {
     my $document_root = $prontus_varglb::DIR_SERVER;
 
     return ('', '') if (scalar @lineas_df == 0);
-    
+
     while ($document_root =~ /^.+(\/.*?)$/sg) {
         my $part = $1;
         $document_root =~ s/$part//sg;
@@ -165,7 +165,7 @@ sub procesa_quota_vps {
         # /
         # hasta dar con alguno...
         foreach my $linea (@lineas_df) {
-            if ($linea =~ /(\d+)\s+(\d+)\s+(\d+)%\s+(\/.*+)/) {
+            if ($linea =~ /(\d+)\s+(\d+)\s+(\d+)%\s+(\/.*?)/) {
                 $usado = $1;
                 $disponible = $2;
                 my $montaje = $4;
@@ -175,7 +175,7 @@ sub procesa_quota_vps {
                     $usado_raiz = $usado;
                     $disponible_raiz = $disponible;
                 };
-                
+
                 #~ print STDERR "montaje[$montaje] document_root[$document_root]\n";
                 if ($montaje eq $document_root) {
                     print STDERR "match! document_root[$document_root] = montaje[$montaje]\n";

@@ -1,4 +1,10 @@
 ====================================================================================================
+11.2.68 - 06/08/2013
+====================================================================================================
+- bugfix: Error en el chequeo de la quota (error critico que podria inutilizar el prontus)
+- bugfix: Al intentar cambiar los datos del Admin, en IE8 el colorbox quedaba en blanco
+
+====================================================================================================
 11.2.67 - 02/08/2013
 ====================================================================================================
 - notice: Se hace una mega limpieza de la interface, para mejorar la ligeramente performance del publicador.
