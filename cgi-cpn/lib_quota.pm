@@ -165,7 +165,7 @@ sub procesa_quota_vps {
         # /
         # hasta dar con alguno...
         foreach my $linea (@lineas_df) {
-            if ($linea =~ /(\d+)\s+(\d+)\s+(\d+)%\s+(\/.*?)/) {
+            if ($linea =~ /(\d+)\s+(\d+)\s+(\d+)%\s+(\/.*)/) {
                 $usado = $1;
                 $disponible = $2;
                 my $montaje = $4;
