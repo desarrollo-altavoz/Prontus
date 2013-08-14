@@ -69,6 +69,25 @@ my ($dir_contenido, $dir_artic, $dir_pag, $dir_temp, $dir_taxonomia, $num_relac_
   $CONTROLAR_ALTA_ARTICULOS = $controlar_alta_articulos;
 
 };
+
+# --------------------------------------------------------------------
+sub get_taxonomia {
+    # Obtiene seccion, tema, stema del articulo.
+    my ($id) = $_[0];
+    my ($base) = $_[1];
+    my ($secc, $tem, $stem);
+    my $sql = "select ART_IDSECC1, ART_IDTEMAS1, ART_IDSUBTEMAS1 from ART where ART_ID = '$id'";
+    my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($secc, $tem, $stem));
+    $salida->fetch;
+    $salida->finish;
+    if ($secc) {
+        $tem = '0' if ($tem eq '');
+        $stem = '0' if ($stem eq '');
+        return ($secc, $tem, $stem);
+    } else {
+        return ('-1','0','0');
+    };
+};
 # ---------------------------------------------------------------
 
 sub generar_relacionados {
@@ -76,7 +95,7 @@ sub generar_relacionados {
 
 
   # Procesa Plantillas que hayan en el dir.
-  my ($plantilla, $pagina, $loop, $plantilla, $lista, $limit, $k);
+  my ($plantilla, $pagina, $loop, $lista, $k);
   my ($ruta_dir) = $prontus_varglb::DIR_SERVER . $RELDIR_ARTIC_RELAC;
 
   $ruta_dir =~ s/\/taxonomia\/pags/\/taxonomia\/pags-$mv/ if ($mv);
@@ -287,7 +306,7 @@ sub generar_fila {
         }
 
         if (! ref $refhash_campos_xdata) {
-            %claves_adicionales = $artic_obj->get_xdata($buffer);
+            %claves_adicionales = $artic_obj->get_xdata();
         } else {
             %claves_adicionales = %$refhash_campos_xdata;
         }

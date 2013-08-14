@@ -95,9 +95,9 @@ sub procesa_artic {
                 } else {
                   $asset{'asset_search_foto'} = '';
                 };
-            }
+
             # Audios
-            elsif ($campos_xml{$nombre_campo} =~ /(ra|aac|aif|aiff|m4a|mid|midi|mp2|mp3|mpa|mpu|msv|ogg|wav|wave|wma)$/i) {
+            } elsif ($campos_xml{$nombre_campo} =~ /(ra|aac|aif|aiff|m4a|mid|midi|mp2|mp3|mpa|mpu|msv|ogg|wav|wave|wma)$/i) {
                 $asset{'asset_type'} = 'audio';
                 $nombre_campo =~ /^multimedia_(.*?)$/i;
                 my $nombre_corto = $1;
@@ -107,8 +107,8 @@ sub procesa_artic {
                   $asset{'asset_search_texto'} = '';
                 };
                 $asset{'asset_search_foto'} = '';
-            }
-            else {
+
+            } else {
                 next;
             };
 
@@ -183,7 +183,7 @@ sub genera_thumbnail_for_dam {
     print STDERR "generando thumb: $lafoto [$maxw, $maxh]\n";
     my ($binfoto, $anchofinal, $altofinal) = &lib_thumb::make_thumbnail($maxw, $maxh, $lafoto, 0);
     $lafoto =~ s/(\.\w+)$/-dam\1/;
-	
+
     &lib_thumb::write_image($lafoto, $binfoto);
     return;
 };

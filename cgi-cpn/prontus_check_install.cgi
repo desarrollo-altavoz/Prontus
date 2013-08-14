@@ -190,10 +190,10 @@ sub check_write {
   my $dirfecha = &glib_hrfec_02::get_date_pack4();
   my $ts = &glib_hrfec_02::get_dtime_pack4();
   my $reldir_pags = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dirfecha/pags";
-  my $reldir_img = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dirfecha/imag";
-  my $reldir_mmedia = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dirfecha/mmedia";
-  my $reldir_asocfile = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dirfecha/asocfile/$ts";
-  my $reldir_swf = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dirfecha/swf";
+  my $reldir_img = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dirfecha/imag";
+  my $reldir_mmedia = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dirfecha/mmedia";
+  my $reldir_asocfile = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dirfecha/asocfile/$ts";
+  my $reldir_swf = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dirfecha/swf";
   my $reldir_xml = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dirfecha/xml";
 
   &write_file_test($reldir_pags);

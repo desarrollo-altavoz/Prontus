@@ -6,10 +6,10 @@ var Dam = {
 
     tipoAsset: null,
     textoBuscador: '',
-    
+
     anchoPlayer: 440,
     altoPlayer: 350,
-            
+
     idDivVideo: '#video_asset',
     playerVideo: '/cpan/core/flash/player_video/playerVideo.swf',
 
@@ -22,15 +22,28 @@ var Dam = {
         });
 
         // Instala el plugin de Media
-        $.fn.media.defaults.flvPlayer = '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf';
-        $.fn.media.defaults.mp3Player = '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf';
-        $('.media').media({
-          width:220,
-          height:150
-        });
-        $('.media-audio').media({
-          width:280,
-          height:24
+        //~ $.fn.media.defaults.flvPlayer = '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf';
+        //$.fn.media.defaults.mp3Player = '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf';
+        //~ $('.media').media({
+          //~ width:220,
+          //~ height:150
+        //~ });
+        $('.media-audio').each(function() {
+            $(this).media({
+                src: '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf',
+                width: 280,
+                height: 24,
+                params: {
+                    allowScriptAccess: 'always',
+                    allowFullScreen: 'true',
+                    wmode: 'opaque'
+                    //quality: 'high'
+                },
+                flashvars: {
+                    //audio: $(this).attr('href')
+                    file: $(this).attr('href')
+                }
+            });
         });
 
         // Precarga la combo en imagenes, si no viene nada
@@ -52,16 +65,16 @@ var Dam = {
             ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
             $('.copiar').each(function() {
                 var clip = new ZeroClipboard.Client();
-    			clip.setHandCursor(true);
+                clip.setHandCursor(true);
 
                 var theId = $(this).attr('id');
                 var theId2 = $(this).children().attr('id');
                 var theUrl = $(this).next().attr('href');
                 clip.addEventListener('mouseDown', function (client, text) {
                     clip.setText(theUrl);
-    				Dam.showTooltipCopiar(client.domElement.offsetLeft, client.domElement.offsetTop);
-    				return true;
-    			});
+                    Dam.showTooltipCopiar(client.domElement.offsetLeft, client.domElement.offsetTop);
+                    return true;
+                });
                 clip.glue(theId2, theId, {position:'relative', left:'0', top:'0'});
                 this.clip = clip;
             });
@@ -142,11 +155,11 @@ var Dam = {
     },
     // -------------------------------------------------------------------------
     showPlayer: function(linkVideo, prontus) {
-        
+
         if(!jQuery.browser.flash) {
             $(Dam.idDivVideo).html('<video width="'+Dam.anchoPlayer+'" height="'+Dam.altoPlayer+'" controls="controls"></video>')
                 .find('video').append('<source src="'+linkVideo+'" type="video/mp4" />');
-                
+
         } else {
             $(Dam.idDivVideo).media({
                 width: Dam.anchoPlayer,

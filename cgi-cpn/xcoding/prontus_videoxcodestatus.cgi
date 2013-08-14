@@ -74,7 +74,7 @@ main: {
     my $destfile;
     $destfile = $FORM{'video'};
     $destfile =~ s/\.\w+$/\.mp4/;
-    
+
     $msg_err = "Parámetro [video] no es válido [$FORM{'video'}]" if ( ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"))&& ((!-f "$prontus_varglb::DIR_SERVER$destfile") || (!-s "$prontus_varglb::DIR_SERVER$destfile")));
     $msg_err = "Parámetro [prontus_id] no es válido" if ($FORM{'prontus_id'} !~ /^[\w\-]+$/);
     $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
@@ -128,10 +128,11 @@ sub testXCode {
 
     # Ve si el destino esta en el XML
     my $esta_en_xml = 0;
-    if ($destino =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
-        my $path = $1 .'/'. $2 .'/xml/'. $2 . $4 . '.xml';
-        my $filename = $3;
-        my $extension = $5;
+    print STDERR  "destino[$destino]\n";
+    if ($destino =~ /(.+)\/(.*?)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
+        my $path = $1. $prontus_varglb::DIR_ARTIC . '/'. $3 .'/xml/'. $3 . $5 . '.xml';
+        my $filename = $4;
+        my $extension = $6;
         print STDERR "[$path][$filename][$extension]\n";
         my $buffer = &glib_fildir_02::read_file($path);
         if ($buffer =~ /$filename\.mp4/s) {

@@ -35,6 +35,7 @@ use POSIX;
 use Net::DNS;
 use lib_maxrunning;
 use lib_prontus;
+use lib_artic;
 
 our %CLUSTERING_SERVER; # servers a los que se debe transmitir
 # 0:SOLO ERRORES | 1: ERRORES E INFORMACION BASICA | 2: TODO LO ANTERIOR Y ADEMAS DEBUG ESPECIFICO DE FTP
@@ -64,11 +65,12 @@ sub articUpdateCluster {
     my %multivistas = %$refHashMv;
 
     my $dirFecha = substr($ts, 0, 8);
-    my $relDirArtic = "/$prontusID/site/artic/$dirFecha";
-    my $dirArticXML = "$docRoot/$prontusID/site/artic/$dirFecha/xml";
+    my $relDirMmedia = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . "/$dirFecha";
+    my $relDirArtic = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$dirFecha";
+    #~ my $dirArticXML = "$docRoot/$prontusID/site/artic/$dirFecha/xml";
 
     # Cargar datos del xml del articulo
-    my $xmlArt = &lib_prontus::get_xml_data("$dirArticXML/$ts.xml");
+    my $xmlArt = &lib_prontus::get_xml_data("$docRoot$relDirArtic/xml/$ts.xml");
 
     # Carga campos de interes desde el xml del articulo
     my %camposArtXML = &lib_prontus::getCamposXml($xmlArt, '_SECCION1,_TEMA1,_SUBTEMA1');
@@ -88,13 +90,10 @@ sub articUpdateCluster {
     };
 
     # imag, swf, mmedia, asocfile, pags
-    &transmiteArchs($docRoot, "$relDirArtic/imag", $ts . '\.\w+$');
-    &transmiteArchs($docRoot, "$relDirArtic/swf", $ts . '\.\w+$');
-    &transmiteArchs($docRoot, "$relDirArtic/mmedia", $ts . '\.\w+$');
-
-    # Asocfiles
-    # /prontus_nots/site/artic/20080714/asocfile/20080714114420/imagen_gmail.gif
-    &transmiteArchs($docRoot, "$relDirArtic/asocfile/$ts", '[\w\-]+\.\w+$');
+    &transmiteArchs($docRoot, "$relDirMmedia/imag", $ts . '\.\w+$');
+    &transmiteArchs($docRoot, "$relDirMmedia/swf", $ts . '\.\w+$');
+    &transmiteArchs($docRoot, "$relDirMmedia/mmedia", $ts . '\.\w+$');
+    &transmiteArchs($docRoot, "$relDirMmedia/asocfile/$ts", '[\w\-]+\.\w+$');
 
     # Vista principal
     # relDirArtic: /prontus_nots/site/artic/20080714
@@ -182,22 +181,22 @@ sub transmiteArchs {
             # Forkea transmision de archivo a cada server
             ELFORK: {
                 $| = 1;
-            	  if ($pid = fork) {
-                		# Yo soy el papa.
+                  if ($pid = fork) {
+                        # Yo soy el papa.
                     push @pid,$pid; # Recuerda el pid para control futuro.
 
                 } elsif (defined $pid) { # $pid es 0, ya que es el hijo.
                     &writeFTPFile($docRoot, $relDir2Transfer, $k, $ipServer,
                                   $userServer, $passServer, $numServer, $CLUSTERING_SERVER{$numServer}{'connection'}, $CLUSTERING_SERVER{$numServer}{'offset'});
                     exit;
-            	  } elsif ($! =~ /no more process/) {
-              	  	# Recuperacion del error.
-              	  	sleep 5;
-              	  	redo ELFORK;
-            	  }else{
-              	    # Error irrecuperable.
-              	    die "No puedo forkiarme [$!]\n";
-            	  }; # if
+                  } elsif ($! =~ /no more process/) {
+                    # Recuperacion del error.
+                    sleep 5;
+                    redo ELFORK;
+                  }else{
+                    # Error irrecuperable.
+                    die "No puedo forkiarme [$!]\n";
+                  }; # if
             }; # ELFORK
         }; # foreach CLUSTERING_SERVER
 
@@ -228,6 +227,7 @@ sub writeFTPFile {
     # Realiza transmision del archivo
     my ($i) = 1;
     my ($error);
+    my ($reconectado);
 
     do {
         my $cwd_ok = $coneccionFTP->cwd($remote_dir);
@@ -286,13 +286,11 @@ sub writeFTPFile {
 
         $error = $coneccionFTP->put("$docRoot$localDir/$entry") || ($error = '');
 
-        my ($reconectado);
         # $error = 'mula' if ($entry =~ /FOTO_0420080702130349/); # debug para simular reintentos
         if ($error ne $entry) {
             print STDERR "\t* ERROR: [$error] $i ... reintentando envio...\n";
             # Intenta reestablecer la conexion con el servidor.
             $coneccionFTP->quit();
-            my ($ret);
             my ($ret, $filler) = &ftp_connect($ipServer, $userServer, $passServer, ''); # al reconectarse sigue usando el mismo ofset anterior
             if (ref $ret) { # coneccion y login ok
                 $coneccionFTP = $ret;

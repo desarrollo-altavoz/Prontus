@@ -59,7 +59,7 @@ sub make_thumbnail {
 
     my $proporcionmaxima; # Regla fija para mantener imagenes largas bajo control.
     my $ratio; # Razon de proporcionalidad para el resize.
-    my ($ancho,$alto,$tipo,$anchofinal,$altofinal,$offsetx,$offsety); # Ancho, alto y tipo (gif o jpg) de la foto.
+    my ($ancho,$alto,$tipo,$anchofinal,$altofinal); # Ancho, alto y tipo (gif o jpg) de la foto.
     my $imagen; # Objeto GD que contiene la imagen original.
     my $thumb;  # Objeto GD que contiene el thumbnail.
     my ($offsetx, $offsety, $anchocrop, $altocrop);
@@ -588,7 +588,7 @@ sub optimize_jpg_image {
     my $fh = File::Temp->new();
     my $fname = $fh->filename;
     Image::JpegTran::jpegtran($filename, $fname, copy => 'none', optimize => 1);
-    
+
     use File::Copy qw(move);
     #~ copy($filename, $filename.'-orig.jpg');
     move($fname, $filename);

@@ -169,10 +169,10 @@ sub checkStatus {
     };
 
     # Ve si el destino esta en el XML
-    if ($origen =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
-        my $path = $1 .'/'. $2 .'/xml/'. $2 . $4 . '.xml';
-        my $filename = $3;
-        my $extension = $5;
+    if ($origen =~ /(.+)\/(.*?)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
+        my $path = $1 . $prontus_varglb::DIR_ARTIC . '/'. $3 .'/xml/'. $3 . $5 . '.xml';
+        my $filename = $4;
+        my $extension = $6;
         #~ print STDERR "[$path][$filename][$extension]\n";
         my $buffer = &glib_fildir_02::read_file($path);
         if ($buffer =~ /$filename\.mp4/s) {

@@ -293,47 +293,7 @@ sub make_lista {
 
     return $filas;
 };
-# ---------------------------------------------------------------
-#sub get_url_taxports {
-## /<prontus_dir>/site/tax/port/(all|<fid>)[-<vista>]/taxport_<s>_<t>_<st>_<nropag>.<ext>
-    #my ($id, $entidad) = @_;
-    #my ($reldir_port_dst) = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_PTEMA"; # /<prontus_dir>/site/tax/port
 
-    #my @lisdir = &glib_fildir_02::lee_dir("$prontus_varglb::DIR_SERVER$reldir_port_dst");
-    #@lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
-
-
-    #my $urls;
-    #foreach my $subdir (@lisdir) {
-        #next if (!-d "$prontus_varglb::DIR_SERVER$reldir_port_dst/$subdir");
-        #my @lisdir_files = &glib_fildir_02::lee_dir("$prontus_varglb::DIR_SERVER$reldir_port_dst/$subdir");
-        #@lisdir_files = grep !/^\./, @lisdir_files;
-        #foreach my $arch (@lisdir_files) {
-            #next if (!-f "$prontus_varglb::DIR_SERVER$reldir_port_dst/$subdir/$arch");
-
-            #if ($entidad eq 'seccion') {
-                #$urls .= "&raquo; <a href=\"$reldir_port_dst/$subdir/$arch\" target=\"_blank\">$subdir/$1</a><br/>" if ($arch =~ /([^\/]+)_$id\_\_\_1\.\w+$/);
-            #} elsif ($entidad eq 'tema') {
-                #$urls .= "&raquo; <a href=\"$reldir_port_dst/$subdir/$arch\" target=\"_blank\">$subdir/$1</a><br/>" if ($arch =~ /([^\/]+)_[0-9]+\_$id\_\_1\.\w+$/);
-            #} elsif ($entidad eq 'subtema') {
-                #$urls .= "&raquo; <a href=\"$reldir_port_dst/$subdir/$arch\" target=\"_blank\">$subdir/$1</a><br/>" if ($arch =~ /([^\/]+)_[0-9]+\_[0-9]+\_$id\_1\.\w+$/);
-            #};
-        #};
-    #};
-
-    #$urls =~ s/<br\/>$//;
-    #if ($urls) {
-
-
-        #$urls = "<a href=\"#\" onclick=\" if (!\$('#tp_div$id$entidad').hasClass('visible$id$entidad')) {  \$('#tp_div$id$entidad').slideDown(); \$('#tp_div$id$entidad').addClass('visible$id$entidad'); } else { \$('#tp_div$id$entidad').slideUp(); \$('#tp_div$id$entidad').removeClass('visible$id$entidad'); }\" >"
-              #. "URLs taxon&oacute;micas</a>"
-              #. "<div id=\"tp_div$id$entidad\" class=\"oculto\">$urls</div>";
-    #};
-
-
-    #return $urls;
-
-#};
 # ---------------------------------------------------------------
 sub get_url_taxports {
 # /<prontus_dir>/site/tax/port/(all|<fid>)[-<vista>]/taxport_<s>_<t>_<st>_<nropag>.<ext>

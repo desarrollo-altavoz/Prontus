@@ -150,12 +150,12 @@ sub procesar_artic {
     # Modifica xml de Prontus.
     # Deduce ubicacion del xml del articulo.
     # /sites/prontus_lab/web/prontus_proto/site/artic/20100531/mmedia/multimedia_video120100531182139.avi
-    if ($origen =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
-        my $dirfecha = $2;
-        my $ts_articulo = $2 . $4;
-        my $path = $1 .'/'. $2 .'/xml/'. $ts_articulo . '.xml';
-        my $filename = $3;
-        my $extension = $5;
+    if ($origen =~ /(.+)\/(.*?)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
+        my $dirfecha = $3;
+        my $ts_articulo = $3 . $5;
+        my $path = $1 . $prontus_varglb::DIR_ARTIC . '/'. $3 .'/xml/'. $ts_articulo . '.xml';
+        my $filename = $4;
+        my $extension = $6;
         # print "[$path][$filename][$extension]\n";
         my $buffer = &glib_fildir_02::read_file($path);
         my %camposHash = &lib_prontus::getCamposXml($buffer, '_plt');

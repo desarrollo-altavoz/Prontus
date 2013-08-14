@@ -63,7 +63,7 @@ my $AMBIENTE_WEB;
 
 main : {
   my ($buffer, $root_web, $path_conf, $path_lista_prontus);
-    
+
   if ($ENV{'SERVER_NAME'} ne '') { # ambiente web
     &glib_cgi_04::new();
     $FORM{'prontus'} = &glib_cgi_04::param('prontus');
@@ -154,7 +154,8 @@ sub get_main_data {
 my($id, $cod, @campos);
 
 
-  $DDIR = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/%%DIR_FECHA%%';
+  my $DDIR = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/%%DIR_FECHA%%';
+  my $DIRMMEDIA = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/%%DIR_FECHA%%';
 
   # Directorio de Secciones existentes
   $DST_SEC = $prontus_varglb::DIR_SERVER .
@@ -175,17 +176,16 @@ my($id, $cod, @campos);
   $DST_PAG = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_PAG;
 
   # Path absoluto a Directorio destino de las imagenes.
-  $DST_IMG = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_IMAG;
+  $DST_IMG = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_IMAG;
 
   # Path absoluto a Directorio destino de las swf. # 8.0
-  $DST_SWF = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_SWF;
+  $DST_SWF = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_SWF;
 
   # Path absoluto a Directorio destino de los archivos windowsmedia. # 8.1
-  $DST_WMEDIA = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_MMEDIA;
+  $DST_WMEDIA = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_MMEDIA;
 
   # Path absoluto a Directorio destino de los archivos gericos asociados. # 1.2
-  $DST_ASOCFILE = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_ASOCFILE;
-
+  $DST_ASOCFILE = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_ASOCFILE;
 
   return 1;
 };
@@ -233,7 +233,7 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
       next if (!$procesar_port);
 
       $arch_seccion = "$pathdir_seccs_xml/$entry";
-      
+
       if ((-s $arch_seccion) and (! -d $arch_seccion)) {
         $text_seccion = &glib_fildir_02::read_file($arch_seccion);
         # $text_final = $text_seccion;
@@ -255,12 +255,12 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
 
         $entry = &get_nom_port($entry); # obtener nombre de la portada a re-escribir
         #~ print "entry[$entry]\n";
-        
+
         if ($prontus_varglb::MULTI_EDICION eq 'SI') {
             # solo para multi-edicion: si la edicion es la base, actualiza solo las portadas declaradas como BASE_PORTS
             next if (($EDIC eq 'base') && (! &is_base_port($entry)));
         };
-        
+
         if ($entry) {
 
           print "<br>Actualizando Portada [$entry]" if ($AMBIENTE_WEB);
@@ -324,7 +324,7 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
 sub get_nom_port {
 # Obtiene de la lista de tpls. de portadas la primera cuyo nombre sin extension coincida con el q viene por param.
   my $port_xml = $_[0];
-	my $dir_tpl_seccs = $DST_TSEC;
+  my $dir_tpl_seccs = $DST_TSEC;
 
   $port_xml =~ s/\.\w+$//;
   my ($entry);
