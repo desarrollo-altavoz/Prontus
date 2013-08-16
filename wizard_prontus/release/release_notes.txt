@@ -6669,3 +6669,28 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_quota.pm
 
+====================================================================================================
+11.2.69 - 16/08/2013 - CVI/JOR
+====================================================================================================
+
+- Global
+    [cambios]
+        - Se agrega la posibilidad de tener los archivos (imag, asocfile, multimedia, swf) en un directorio separado.
+          Con esto, por ejemplo, se puede montar por NFS un directorio, y tener los archivos en un servidor externo.
+          La ubicación de los archivos quedará en:
+            /<prontus_id>/site/mm/<fechac>/imag/
+            /<prontus_id>/site/mm/<fechac>/mmedia/
+            /<prontus_id>/site/mm/<fechac>/asocfile/<ts>/
+            /<prontus_id>/site/mm/<fechac>/swf/
+          Respetando la estructura ya existente de los archivos.
+          Para realizar el cambio, crear un archivo en:
+                /<prontus_id>/cpan/data/customcfg/mmedia.cfg
+          Y dentro colocar el siguiente texto:
+                EXTERNAL_MMEDIA = '1'
+          Esto sólo se puede hacer cuando se tienen acceso especial al servidor, ya que se debe editar un archivo dentro del cpan/data
+          Importante: Si se aplica esto, los nuevos archivos serán buscados en el directorio site/mm/... no en el directorio normal.
+          Vale decir, si el prontus ya existe, y se desea habilitar esto, se debe hacer un script o algo que copie/mueva
+          los archivos a la nueva ubicación.
+    [files]
+        No se especifican los archivos modificados porque son muchos
+

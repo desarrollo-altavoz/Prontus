@@ -262,7 +262,7 @@ sub make_lista {
         $filas .= &generar_fila(\%hash_data);
     };
     $salida->finish;
-    my $path_conf = '/' . $prontus_varglb::PRONTUS_ID . $prontus_varglb::DIR_CPAN . '/' . $prontus_varglb::PRONTUS_ID . '.cfg';
+    my $path_conf = $prontus_varglb::DIR_CPAN . '/' . $prontus_varglb::PRONTUS_ID . '.cfg';
     my $lnk_base = 'prontus_dam_search.cgi?path_conf=' . $path_conf
                  . '&amp;asset_search_type=' . $FORM{'asset_search_type'}
                  . '&amp;asset_search_wordkey=' . $FORM{'asset_search_wordkey'}
@@ -306,7 +306,7 @@ sub generar_fila {
 
         # Genera link para abrir FID
         my $tipo_ficha = $hash_data{'ASSET_ART_FID'};
-        my $path_conf = '/' . $prontus_varglb::PRONTUS_ID . $prontus_varglb::DIR_CPAN . '/' . $prontus_varglb::PRONTUS_ID . '.cfg';
+        my $path_conf = $prontus_varglb::DIR_CPAN . '/' . $prontus_varglb::PRONTUS_ID . '.cfg';
         my $link_fid = $prontus_varglb::SERVER_NAME . '/' . $prontus_varglb::DIR_CGI_CPAN
                      . '/prontus_art_ficha.' . $prontus_varglb::EXTENSION_CGI
                      . '?_file='. $hash_data{'ASSET_ART_FILE'}
