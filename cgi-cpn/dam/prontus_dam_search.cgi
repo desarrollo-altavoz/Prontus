@@ -219,6 +219,7 @@ sub make_lista {
         my $concatena = ($where)?'and':'where';
         $filtros .= $concatena . " ASSET_TYPE = \"$FORM{'asset_search_type'}\" ";
     };
+
     # Orden
     my $orderby = 'ASSET_SEARCH_WORDKEY ASC';
     if($FORM{'asset_search_orden'} =~ /(\w+)_(asc|desc)/) {
@@ -230,38 +231,61 @@ sub make_lista {
             $orderby = 'ASSET_ART_ID ' . $ord;
         } else {
             $orderby = 'ASSET_SEARCH_WORDKEY ' . $ord;
-        }
-    }
+        };
+    };
 
+    # Si es foto, aplicar group by al filtro... para que el conteo de resultados sea correcto.
+    if ($FORM{'asset_search_type'} eq 'foto') {
+        $filtros .= " GROUP BY ASSET_ART_ID";
+    };
 
     # Paginacion
     my $filasxpag = $dam_varglb::FILASXPAG;
     my ($tot_artics, $limit, $desde_nroreg, $page) = &activa_paginacion($filasxpag, $filtros, 'ASSET');
 
-    $sql = 'select ASSET_ART_ID, ASSET_FILE, ASSET_SEARCH_WORDKEY, ASSET_SEARCH_TEXTO, ASSET_SEARCH_FOTO, ASSET_TYPE, ASSET_ART_WFOTO,'
-         . ' ASSET_ART_HFOTO, ASSET_ART_FID, ASSET_ART_FILE, ART_IDSECC1, ART_IDTEMAS1, ART_IDSUBTEMAS1 from ASSET left join ART on ASSET_ART_ID = ART_ID ' . $filtros
-         . ' order by ' . $orderby . ' ' . $limit;
+    # Si el tipo es foto, se debe usar un query especial, donde el listado de fotos se agrupe.
+    # Por defecto, solo se mostrarán 4 fotos como máximo.
+    # * Nota: se me había ocurrido retornalas todas y dejarlas en divs ocultos pero el largo del resultado
+    # de mysql no puede exceder un cierto limite. Se puede aumentar, pero no es la idea.
+    if ($FORM{'asset_search_type'} eq 'foto') {
+        $sql = "SELECT ASSET_ART_ID, ART_IDSECC1, ART_IDTEMAS1, ART_IDSUBTEMAS1, ASSET_SEARCH_WORDKEY,
+                ASSET_ART_FID, ASSET_ART_FILE, 
+                SUBSTRING_INDEX(
+                    GROUP_CONCAT(ASSET_FILE,'|',ASSET_ART_WFOTO,'|',ASSET_ART_HFOTO,'|',ASSET_SEARCH_TEXTO,'|',ASSET_SEARCH_FOTO SEPARATOR '\t'),
+                    '\t', 4) as ASSET_LIST 
+                FROM ASSET LEFT JOIN ART ON (ASSET_ART_ID=ART_ID) " . $filtros . " order by " . $orderby . " " . $limit;
 
-    $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($hash_data{'ASSET_ART_ID'},
-                                                           $hash_data{'ASSET_FILE'},
-                                                           $hash_data{'ASSET_SEARCH_WORDKEY'},
-                                                           $hash_data{'ASSET_SEARCH_TEXTO'},
-                                                           $hash_data{'ASSET_SEARCH_FOTO'},
-                                                           $hash_data{'ASSET_TYPE'},
-                                                           $hash_data{'ASSET_ART_WFOTO'},
-                                                           $hash_data{'ASSET_ART_HFOTO'},
-                                                           $hash_data{'ASSET_ART_FID'},
-                                                           $hash_data{'ASSET_ART_FILE'},
-                                                           $hash_data{'ART_IDSECC1'},
-                                                           $hash_data{'ART_IDTEMAS1'},
-                                                           $hash_data{'ART_IDSUBTEMAS1'},
-                                                           ));
+        $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \(
+            $hash_data{'ASSET_ART_ID'}, $hash_data{'ART_IDSECC1'}, $hash_data{'ART_IDTEMAS1'},
+            $hash_data{'ART_IDSUBTEMAS1'}, $hash_data{'ASSET_SEARCH_WORDKEY'}, $hash_data{'ASSET_ART_FID'},
+            $hash_data{'ASSET_ART_FILE'}, $hash_data{'ASSET_LIST'}
+        ));
+
+    # Aca se utiliza la query antigua.
+    } elsif (($FORM{'asset_search_type'} eq 'video') || ($FORM{'asset_search_type'} eq 'audio')) {
+        $sql = 'select ASSET_ART_ID, ASSET_FILE, ASSET_SEARCH_WORDKEY, ASSET_SEARCH_TEXTO, ASSET_SEARCH_FOTO, ASSET_TYPE, ASSET_ART_WFOTO,'
+             . ' ASSET_ART_HFOTO, ASSET_ART_FID, ASSET_ART_FILE, ART_IDSECC1, ART_IDTEMAS1, ART_IDSUBTEMAS1 from ASSET left join ART on ASSET_ART_ID = ART_ID ' . $filtros
+             . ' order by ' . $orderby . ' ' . $limit;
+
+        $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \(
+            $hash_data{'ASSET_ART_ID'}, $hash_data{'ASSET_FILE'}, $hash_data{'ASSET_SEARCH_WORDKEY'},
+            $hash_data{'ASSET_SEARCH_TEXTO'}, $hash_data{'ASSET_SEARCH_FOTO'}, $hash_data{'ASSET_TYPE'},
+            $hash_data{'ASSET_ART_WFOTO'}, $hash_data{'ASSET_ART_HFOTO'}, $hash_data{'ASSET_ART_FID'},
+            $hash_data{'ASSET_ART_FILE'}, $hash_data{'ART_IDSECC1'}, $hash_data{'ART_IDTEMAS1'}, $hash_data{'ART_IDSUBTEMAS1'},
+        ));
+    } else {
+        return ('', '');
+    };
+
+
     my $nro_filas = 0;
     while ($salida->fetch) {
         $nro_filas++;
         $filas .= &generar_fila(\%hash_data);
     };
+
     $salida->finish;
+
     my $path_conf = '/' . $prontus_varglb::PRONTUS_ID . '/cpan/' . $prontus_varglb::PRONTUS_ID . '.cfg';
     my $lnk_base = 'prontus_dam_search.cgi?path_conf=' . $path_conf
                  . '&amp;asset_search_type=' . $FORM{'asset_search_type'}
@@ -282,11 +306,11 @@ sub generar_fila {
     $fila = $LOOP;
     if ($hash_data{'ASSET_ART_ID'}) {
         $fila =~ s/%%ASSET_ART_ID%%/$hash_data{'ASSET_ART_ID'}/g;
-        $fila =~ s/%%ASSET_FILE%%/$hash_data{'ASSET_FILE'}/g;
-        $fila =~ s/%%ASSET_TYPE%%/$hash_data{'ASSET_TYPE'}/g;
+        # $fila =~ s/%%ASSET_FILE%%/$hash_data{'ASSET_FILE'}/g;
+        # $fila =~ s/%%ASSET_TYPE%%/$hash_data{'ASSET_TYPE'}/g;
 
-        $fila =~ s/%%ASSET_SEARCH_TEXTO%%/$hash_data{'ASSET_SEARCH_TEXTO'}/g;
-        $fila =~ s/%%ASSET_SEARCH_FOTO%%/$hash_data{'ASSET_SEARCH_FOTO'}/g;
+        # $fila =~ s/%%ASSET_SEARCH_TEXTO%%/$hash_data{'ASSET_SEARCH_TEXTO'}/g;
+        # $fila =~ s/%%ASSET_SEARCH_FOTO%%/$hash_data{'ASSET_SEARCH_FOTO'}/g;
 
         # Extrae titular
         $hash_data{'ASSET_SEARCH_WORDKEY'} =~ /\|(.*)\|/;
@@ -325,77 +349,114 @@ sub generar_fila {
       	}
         $fila =~ s/%%LINK_ARTIC%%/$link_artic/g;
 
-        # contenido de asset
         my $asset = '';
         my $path_img = '';
         my $path_img_dam = '';
         my $path_asset = '';
         my $width_img = '';
-        if ($hash_data{'ASSET_TYPE'} eq 'foto') {
 
-            $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' .
-                    $dir_fecha . '/imag/' . $hash_data{'ASSET_FILE'};
-            my $path_img_dam = $path_img;
-            $path_img_dam =~ s/(\.\w+)$/-dam\1/;
-            if(-f $prontus_varglb::DIR_SERVER . $path_img_dam) {
-                $path_img = $path_img_dam;
-            }
-            my ($sizex, $sizey) = &lib_dam::get_proporcion_imagen($dam_varglb::FOTOS_WIDTH_MAX,
-                    $dam_varglb::FOTOS_HEIGHT_MAX, $hash_data{'ASSET_ART_WFOTO'},
-                    $hash_data{'ASSET_ART_HFOTO'});
-            my $imgsize = 'width="'.$sizex.'" height="'.$sizey.'" ';
-            $fila =~ s/%%IMG_SIZE%%/$imgsize/g;
-            $fila =~ s/%%ASSET_ART_WFOTO%%/$hash_data{'ASSET_ART_WFOTO'}/g;
-            $fila =~ s/%%ASSET_ART_HFOTO%%/$hash_data{'ASSET_ART_HFOTO'}/g;
-
-            # Extension de foto
-            if ($hash_data{'ASSET_FILE'} =~ /\.(\w+)$/) {
-                my $ext = $1;
-                $fila =~ s/%%EXT_FOTO%%/$ext/g;
+        if ($FORM{'asset_search_type'} eq 'foto') {
+            my @asset_list;
+            if ($hash_data{'ASSET_LIST'}) {
+                @asset_list = split(/\t/, $hash_data{'ASSET_LIST'});
             };
 
-        } elsif (($hash_data{'ASSET_TYPE'} eq 'video') || ($hash_data{'ASSET_TYPE'} eq 'audio')){
+            my $asset_count = (scalar @asset_list);
+            my $holder_class = 'tip' . $asset_count;
+            my $foto_filas;
 
-            $path_asset = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha
-                          . '/mmedia/' . $hash_data{'ASSET_FILE'};
+            $fila =~ /<!--foto_loop-->(.*?)<!--\/foto_loop-->/isg;
+            my $loop_foto = $1;
+            my $counter = 0;
+            my $ultima_foto;
 
-            if($hash_data{'ASSET_SEARCH_FOTO'}) {
-                my $imgsize = 'width="'.$dam_varglb::FOTOS_WIDTH_MAX.'" ';
-                $fila =~ s/%%IMG_SIZE%%/$imgsize/g;
-                $path_img = $hash_data{'ASSET_SEARCH_FOTO'};
+            foreach my $values_string (@asset_list) {
+                my $loop_foto_tmp = $loop_foto;
+                my ($asset_file, $asset_width, $asset_height, $asset_search_texto, $asset_search_foto) = split(/\|/, $values_string);
+                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha . '/imag/' . $asset_file;
+                my $path_img_dam = $path_img;
+                $path_img_dam =~ s/(\.\w+)$/\.dam\1/;
 
+                # # Si no existe la foto para el dam, se crea.
+                # if(!-f $prontus_varglb::DIR_SERVER . $path_img_dam) {
+                #     my $lafoto = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/site/artic/' . $dir_fecha . '/imag/' . $asset_file;
+                #     &lib_dam::genera_thumbnail_for_dam($lafoto);
+                #     if (!-f $prontus_varglb::DIR_SERVER . $path_img_dam) {
+                #         # Si no se crea, quiere decir que la foto es mas chica de lo esperado.
+                #         # Se debe utilizarla misma.
+                #         $path_img_dam = $path_img;
+                #     };
+                # };
+
+                $ultima_foto = $path_img;
+                $loop_foto_tmp =~ s/%%FOTO_SRC%%/$path_img/g;
+                $loop_foto_tmp =~ s/%%HOLDER_CLASS%%/$holder_class/g;
+                $foto_filas .= $loop_foto_tmp;
+                $counter++;
+            };
+
+            $fila =~ s/<!--foto_loop-->.*?<!--\/foto_loop-->/$foto_filas/sg;
+            $fila =~ s/%%_TS%%/$hash_data{'ASSET_ART_ID'}/g;
+
+            # Si hay una solo foto, se debe quitar el icono de mostrar todas y mostrar el icono de copiar la url.
+            if ($asset_count == 1) {
+                $fila =~ s/%%PATH_ASSET%%/$ultima_foto/sg;
+                $fila =~ s/<!--ver_todas-->.*?<!--\/ver_todas-->//sg;
             } else {
-                my $path_foto = $path_asset;
-                $path_foto =~ s/(\.\w+)$/.jpg/;
-                if(-f ($prontus_varglb::DIR_SERVER . $path_foto)) {
+                # Si hay mas de una, el copiar se hará dentro del colorbox.
+                $fila =~ s/<!--link_copiar-->.*?<!--\/link_copiar-->//sg;
+            };
+
+        } elsif (($FORM{'asset_search_type'} eq 'video') || ($FORM{'asset_search_type'} eq 'audio')) {
+                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha . '/imag/' . $hash_data{'ASSET_FILE'};
+                $path_asset = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha
+                              . '/mmedia/' . $hash_data{'ASSET_FILE'};
+
+                $path_img_dam = $path_img;
+                $path_img_dam =~ s/(\.\w+)$/-dam\1/;
+
+                if(-f $prontus_varglb::DIR_SERVER . $path_img_dam) {
+                    $path_img = $path_img_dam;
+                };
+
+                if($hash_data{'ASSET_SEARCH_FOTO'}) {
                     my $imgsize = 'width="'.$dam_varglb::FOTOS_WIDTH_MAX.'" ';
                     $fila =~ s/%%IMG_SIZE%%/$imgsize/g;
-                    $path_img = $path_foto;
+                    $path_img = $hash_data{'ASSET_SEARCH_FOTO'};
+
                 } else {
-                    $fila =~ s/<!--if_image-->.*?<!--\/if_image-->//sg;
+                    my $path_foto = $path_asset;
+                    $path_foto =~ s/(\.\w+)$/.jpg/;
+                    if(-f ($prontus_varglb::DIR_SERVER . $path_foto)) {
+                        my $imgsize = 'width="'.$dam_varglb::FOTOS_WIDTH_MAX.'" ';
+                        $fila =~ s/%%IMG_SIZE%%/$imgsize/g;
+                        $path_img = $path_foto;
+                    } else {
+                        $fila =~ s/<!--if_image-->.*?<!--\/if_image-->//sg;
+                    };
                 };
-            };
-            $fila =~ s/<!--tam_foto-->.*?<!--\/tam_foto-->//sg;
+                $fila =~ s/<!--tam_foto-->.*?<!--\/tam_foto-->//sg;
+
+                $path_img_dam = $path_img unless($path_img_dam);
+                $fila =~ s/%%PATH_IMG%%/$path_img/g;
+                $fila =~ s/%%PATH_IMG_THUMB%%/$path_img_dam/g;
+                $fila =~ s/%%PATH_ASSET%%/$path_asset/g;
+                $fila =~ s/%%WIDTH_IMG%%/$width_img/g;
+
 
         } else {
             $fila =~ s/<!--tam_foto-->.*?<!--\/tam_foto-->//sg;
-
         };
-        $path_img_dam = $path_img unless($path_img_dam);
-        $fila =~ s/%%PATH_IMG%%/$path_img/g;
-        $fila =~ s/%%PATH_IMG_THUMB%%/$path_img_dam/g;
-        $fila =~ s/%%PATH_ASSET%%/$path_asset/g;
-        $fila =~ s/%%WIDTH_IMG%%/$width_img/g;
-        $LOOP_COUNTER++;
-        $fila =~ s/%%LOOP_COUNTER%%/$LOOP_COUNTER/g;
 
     } else {
         # Armar la fila sin datos.
         $fila =~ s/%%\w+?%%/&nbsp;/ig;
     };
 
-    return $fila;
+    $LOOP_COUNTER++;
+    $fila =~ s/%%LOOP_COUNTER%%/$LOOP_COUNTER/g;
 
+    return $fila;
 };
 
 # ---------------------------------------------------------------

@@ -46,6 +46,7 @@
 BEGIN {
     use FindBin '$Bin';
     my $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
@@ -61,81 +62,148 @@ use lib_prontus;
 use glib_cgi_04;
 use strict;
 use FindBin '$Bin';
+use lib_xcoding;
 
 my %FORM;        # Contenido del formulario de invocacion.
+my $ARTIC_dirfecha;
+my $ARTIC_ts_articulo;
+my $ARTIC_path_xml;
+my $ARTIC_filename;
+my $ARTIC_extension;
 
-my $RES;
+main: {
+  # Para facilitar el uso mediante AJAX.
+  print "Content-type: text/plain\n\n";
 
-# Para facilitar el uso mediante AJAX.
-print "Content-type: text/plain\n\n";
+  &glib_cgi_04::new();
+  &glib_cgi_04::set_formvar('video', \%FORM);
+  &glib_cgi_04::set_formvar('t1', \%FORM);
+  &glib_cgi_04::set_formvar('t2', \%FORM);
+  &glib_cgi_04::set_formvar('prontus_id', \%FORM);
 
-&glib_cgi_04::new();
-&glib_cgi_04::set_formvar('video', \%FORM);
-&glib_cgi_04::set_formvar('t1', \%FORM);
-&glib_cgi_04::set_formvar('t2', \%FORM);
-&glib_cgi_04::set_formvar('prontus_id', \%FORM);
+  # Path conf y load config de prontus
+  my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
+  $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
+  &lib_prontus::load_config($path_conf);  # Prontus 6.0
+  $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
-# Path conf y load config de prontus
-my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
-$path_conf = &lib_prontus::ajusta_pathconf($path_conf);
-&lib_prontus::load_config($path_conf);  # Prontus 6.0
-$path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
-
-$RES = &cutVideo();
-
-print $RES;
-
-exit;
-
-# -------------------------------------------------------------------#
-# Inicia la transcodificacion.
-sub cutVideo {
-  my ($cmd,$res,$destino);
-  my $video = $FORM{'video'};
-  my $tiempo1 = $FORM{'t1'};
-  my $tiempo2 = $FORM{'t2'};
-  my $prontus_id = $FORM{'prontus_id'};
-  if ($video =~ /^\//) {
-    $video = $prontus_varglb::DIR_SERVER . $video;
-  }else{
-    $video = $prontus_varglb::DIR_SERVER .'/'. $video;
+  if ($FORM{'video'} =~ /^\//) {
+    $FORM{'video'} = $prontus_varglb::DIR_SERVER . $FORM{'video'};
+  } else {
+    $FORM{'video'} = $prontus_varglb::DIR_SERVER .'/'. $FORM{'video'};
   };
 
-  $tiempo1 =~ s/[^0-9\.]//g;
 
-  $tiempo2 =~ s/[^0-9\.]//g;
+  $FORM{'t1'} =~ s/[^0-9\.]//g;
+  $FORM{'t2'} =~ s/[^0-9\.]//g;
+
+  if (!&load_artic_info()) {
+    print STDERR "No se obtener la información del artículo asociado al video: $FORM{'video'}\n";
+    return "No se obtener la información del artículo asociado al video.";
+  };
+
+  $FORM{'video'} =~ /\/mmedia\/(multimedia_video\d+)\d{14}\.(\w+)$/i;
+  my $marca = $1;
 
   # print $tiempo ."\n";
-  $destino = $video;
+  my $destino = $FORM{'video'};
   $destino =~ s/(.+)\.(\w+)/$1\.cut\.$2/;
   unlink $destino;
 
-  # $cmd = "ffmpeg -vcodec copy -acodec copy -t $tiempo -i $video $destino";
-  my $duracion = $tiempo2 - $tiempo1;
-  $cmd = "$prontus_varglb::DIR_FFMPEG/ffmpeg -ss $tiempo1 -t $duracion -i $video -y -vcodec copy -acodec copy $destino";
-  print STDERR "******** NUEVO VIDEO CUT\n$cmd \n";
-  # print "$cmd \n";
-  # return 'OK';
+  my $res = &cortar_video($FORM{'video'}, $destino, $FORM{'t1'}, $FORM{'t2'});
 
-  $res = `$cmd 2>&1`;
-  print STDERR "result from ffmpeg realizando video cut\nres[$res][$?][$!]\n";
-  my $msg_err_usr = 'Error al realizar corte del video, el archivo resultante no pudo ser generado. Los detalles fueron agregados al error log interno de Prontus.';
+  if ($res eq 'OK') {
+    # Cortar los videos alternativos si es que existen ...
+    my $subres = &cortar_versiones_video($marca, $FORM{'video'});
+    $res = $subres if ($subres);
+  };
 
-  #$cmd = "$prontus_varglb::DIR_SERVER/cgi-cpn/xcoding/qtfaststart.py $destino";
-  $cmd = "$Bin/qtfaststart.cgi $destino";
+  print $res;
+  exit;
+};
+
+sub cortar_video  {
+  my $origen = $_[0];
+  my $destino = $_[1];
+  my $t1 = $_[2];
+  my $t2 = $_[3];
+  my $source = $_[4];
+  my $duracion = $t2 - $t1;
+  my ($cmd, $res);
+
+  if ($source) {
+    $origen = $source;
+  };
+
+  $cmd = "$prontus_varglb::DIR_FFMPEG/ffmpeg -ss $t1 -t $duracion -i $origen -y -vcodec copy -acodec copy $destino";
+  print STDERR "Cortando video cmd[$cmd]...\n";
   $res = qx/$cmd 2>&1/;
-  # print STDERR "\n\n$res"; # para debug
+  print STDERR "cmd result: [$res][$?][$!]\n";
+  return "Falló corte de video." if ($? != 0);
+
+  $cmd = "$Bin/qtfaststart.cgi $destino";
+  print STDERR "Ajustando video cmd[$cmd]...\n";
+  $res = qx/$cmd 2>&1/;
   print STDERR ("Falló Ajuste de Mp4 [$!][$res].") if ($? != 0);
+  return "Falló Ajuste de Mp4" if ($? != 0);
   # Elimina el archivo de origen si es que el destino se genero ok
 
   if (-s $destino > 0) {
-    unlink $video;
-    rename $destino,$video;
+    unlink $origen;
+    rename $destino ,$origen;
     return 'OK';
-  }else{
+  } else {
+    my $msg_err_usr = 'Error al realizar corte del video, el archivo resultante no pudo ser generado. Los detalles fueron agregados al error log interno de Prontus.';
     print STDERR "$msg_err_usr\nError: el archivo resultante [$destino] no pudo ser generado por ffmpeg\n";
     return $msg_err_usr;
   };
-}; # cutVideo
 
+};
 
+# ---------------------------------------------------------------
+sub cortar_versiones_video {
+    my $marca = $_[0];
+    my $origen = $_[1];
+
+    print STDERR "Creando versiones [$marca]...\n";
+    my %formatos = &lib_xcoding::get_formatos($marca);
+    foreach my $key (keys(%formatos)) {
+        # print STDERR "key[$key] formato[$formatos{$key}]\n";
+        my $flags = $formatos{$key};
+        $key =~ /(.*?)\.(.*?)$/i;
+        my $code = lc $2;
+        $key =~ s/\./$ARTIC_ts_articulo/sg;
+        $key = lc $key;
+        print STDERR "version[$key]\n";      
+        my $new_origen = $origen;
+        $new_origen =~ s/\/multimedia_video\d+\d{14}\.(\w+)$/\/$key\.mp4/is;
+        next if (!-f $new_origen);
+        my $new_destino = $origen;
+        $new_destino =~ s/(.+)\.(\w+)/$1\.$code\.cut\.$2/;
+        # print STDERR "new_destino[$new_destino]\n";
+
+        if (-f $new_destino) {
+            unlink $new_destino;
+        };
+
+        my $ret = &cortar_video($new_origen, $new_destino, $FORM{'t1'}, $FORM{'t2'});
+        if ($ret ne 'OK') {
+          # si hay error, hasta aqui nomas llegamos.
+          return $ret;
+        };
+    };
+};
+
+sub load_artic_info {
+    # Deduce ubicacion del xml del articulo.
+    if ($FORM{'video'} =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
+        $ARTIC_dirfecha = $2;
+        $ARTIC_ts_articulo = $2 . $4;
+        $ARTIC_path_xml = $1 .'/'. $2 .'/xml/'. $ARTIC_ts_articulo . '.xml';
+        $ARTIC_filename = $3;
+        $ARTIC_extension = $5;
+        return 1;
+    } else {
+        return 0;
+    };
+};

@@ -37,12 +37,14 @@
 #
 # ---------------------------------------------------------------
 
-# 1.0 - 01/06/2010 - Primera version.
+# 1.0 - 01/06/2010 - ??? - Primera version.
+# 1.1 - 13/08/2013 - JOR - Cambia respuesta a formato json.
 
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
     my $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
@@ -92,50 +94,45 @@ main: {
         &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
     };
 
+    my ($status, $msg) = &xcode_status();
 
-    $RES = &testXCode();
-
-    # Falta convertir JS para que recepcione json.
-    # &glib_html_02::print_json_result($status, $msg, 'exit=1,ctype=1');
-
-    # Para facilitar el uso mediante AJAX.
-    print "Content-type: text/plain\n\n";
-    print $RES;
-
-    exit;
+    &glib_html_02::print_json_result($status, $msg, 'exit=1,ctype=1');
 };
 
 # -------------------------------------------------------------------#
-# Inicia la transcodificacion.
-sub testXCode {
+# Verifica el estado de la transcodificacion.
+sub xcode_status {
     my ($cmd,$destino);
     my $origen = $FORM{'video'};
+
     if ($origen =~ /^\//) {
         $origen = $prontus_varglb::DIR_SERVER . $origen;
     } else {
         $origen = $prontus_varglb::DIR_SERVER .'/'. $origen;
     };
+
     # Verifica si el transcoding esta en ejecucion.
-    # $res = qx/ps auxww |grep ffmpeg|grep $origen|grep -v grep/;
     my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen'|grep -v grep/;
-    # print "Execution test = [$res]\n";
+
     if ($res ne '') {
-        return 'Busy';
+        return (1, 'busy');
     };
+
     # Forma el nombre de la pelicula destino sustituyendo la extension.
     $destino = $origen;
     $destino =~ s/\.\w+$/\.mp4/;
 
     # Ve si el destino esta en el XML
     my $esta_en_xml = 0;
+    my $ts;
     if ($destino =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
         my $path = $1 .'/'. $2 .'/xml/'. $2 . $4 . '.xml';
         my $filename = $3;
         my $extension = $5;
+        $ts = $2 . $4;
         print STDERR "[$path][$filename][$extension]\n";
         my $buffer = &glib_fildir_02::read_file($path);
         if ($buffer =~ /$filename\.mp4/s) {
-            # print "[$buffer]\n";
             $esta_en_xml = 1;
         };
     };
@@ -143,10 +140,20 @@ sub testXCode {
     print STDERR  "esta_en_xml[$esta_en_xml]\n";
 
     if ((-s $destino > 0) && ($esta_en_xml)) {
-        return 'Ready';
-    }else{
-        return 'None';
+        my $file = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/xcoding_status_$ts.txt";
+        if (-f $file) {
+            my $buffer = &glib_fildir_02::read_file($file);
+            if ($buffer ne '') {
+                print STDERR "error[$buffer]\n";
+                unlink $file;
+                return (0, $buffer);
+            };
+            unlink $file;
+        };
+        
+        return (1, 'ready');
+    } else {
+        # Si no esta el archivo en disco ni en el xml, se gatillará de nuevo la transcodificación.
+        return (1, 'none');
     };
-}; # testXCode
-
-
+};

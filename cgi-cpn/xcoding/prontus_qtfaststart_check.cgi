@@ -69,6 +69,7 @@
 BEGIN {
     use FindBin '$Bin';
     my $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
@@ -84,6 +85,7 @@ use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
+use lib_xcoding;
 
 my @INDICES;
 my %FORM;        # Contenido del formulario de invocacion.
@@ -132,11 +134,43 @@ main: {
     my $result = &checkMp4($infile);
     if ($result) {
         print STDERR "[$infile] no necesita correccion\n";
-        &glib_html_02::print_json_result(1, 'OK', 'exit=1,ctype=1');
+        # Revisar si existen formatos adicionales por transcodificar.
+        $infile =~ /^(\/.*?\/mmedia\/)(multimedia_video\d+)(\d{14})\.(\w+)$/i;
+        my $path = $1;
+        my $marca = $2;
+        my $ts = $3;
+        my $ext = $4;
+        my %formatos = &lib_xcoding::get_formatos($marca);
+        my $pendiente_xcoding = 0;
+        foreach my $key (keys(%formatos)) {
+            $key =~ s/\./$ts/sg;
+            $key = lc $key;
+            my $file = "$path$key.$ext";
+            if (!-f $file) {
+                $pendiente_xcoding++;
+            } else {
+                # Si existe, ver si necesita corrección.
+                my $check_result = &checkMp4($file);
+                if ($check_result) {
+                    print STDERR "[$file] no necesita correccion\n";
+                } else {
+                    print STDERR "[$file] necesita correccion\n";
+                    &startFix($file);
+                };
+            };
+        };
+
+        if ($pendiente_xcoding > 0) {
+            &glib_html_02::print_json_result(1, 'XCODE', 'exit=1,ctype=1');
+        } else {
+            &glib_html_02::print_json_result(1, 'OK', 'exit=1,ctype=1');
+        };
+
     } else {
         print STDERR "[$infile] necesita correccion\n";
         &startFix($infile);
-    }
+    };
+
 }
 # -------------------------------------------------------------------#
 # Inicia qtfaststart.cgi.

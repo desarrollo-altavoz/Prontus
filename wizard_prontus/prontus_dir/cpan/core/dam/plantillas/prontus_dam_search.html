@@ -15,6 +15,7 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/media/swfobject.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/jquery.jqplugin.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/zeroclipboard/ZeroClipboard.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/slimscroll/jquery.slimscroll.min.js"></script>
   </head>
   <body class="bodysite">
     <div id="main">
@@ -77,16 +78,25 @@
                     %%LOOP%%
                     <!--foto-->
                     <div class="item-multimedia aleft">
-                      <div class="foto-preview"><a href="%%PATH_IMG%%" target="_blank" class="colorbox">
-                        <img src="%%PATH_IMG%%" %%IMG_SIZE%% border="0" alt="%%ASSET_TITULAR%%" title="%%ASSET_TITULAR%%" /></a></div>
-                      <div class="aleft dimen"><!--tam_foto-->[%%ASSET_ART_WFOTO%% X %%ASSET_ART_HFOTO%% - %%EXT_FOTO%%]<!--/tam_foto--></div>
+                      <div class="foto-list">
+                        <a href="prontus_dam_asset_list.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&ts=%%_TS%%&type=foto" class="ver_todas colorbox_asset" >
+                          <!--foto_loop-->
+                          <div class="holder %%HOLDER_CLASS%%" style="background: url('%%FOTO_SRC%%');"></div>
+                          <!--/foto_loop-->
+                        </a>
+                      </div>
                       <div class="aleft titu"><a href="%%LINK_ARTIC%%" target="_blank" alt="%%ASSET_TITULAR%%" title="%%ASSET_TITULAR%%">%%ASSET_TITULAR_SHORT%%</a></div>
                       <div class="aright icons">
                         <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar Artículo" title="Editar Artículo" class="cambia-boton" /></a>
+                        <!--ver_todas-->
+                        <a href="prontus_dam_asset_list.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&ts=%%_TS%%&type=foto" class="aright ver_todas colorbox_asset" ><img src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png" width="18" height="18" alt="Mostrar todas" title="Mostrar todas" class="cambia-boton" /></a>
+                        <!--/ver_todas-->
+                        <!--link_copiar-->
                         <div class="copiar" id="asset_ext%%LOOP_COUNTER%%">
                           <div id="asset_int%%LOOP_COUNTER%%" class="copiar-url"></div>
                         </div>
-                        <a href="%%PATH_IMG%%" style="display:none; position:absolute;"></a>
+                        <a href="%%PATH_ASSET%%" style="display:none; position:absolute;"></a>
+                        <!--/link_copiar-->
                       </div>
                     </div>
                     <!--/foto-->

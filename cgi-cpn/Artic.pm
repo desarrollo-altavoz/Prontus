@@ -488,7 +488,7 @@ sub _guarda_recursos {
                     $nom_sin_ext =~ s/\.\w*$//;
 
                     # Borra todos los relacionados
-                    my $res = unlink glob("$dst_dir/$nom_sin_ext" . '.*');
+                    my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
 
                     $nom_arch = ''; # para no grabar la entrada en el xml
                 } else {
@@ -1601,6 +1601,25 @@ sub generar_vista_art {
         # Agrega el TS para los condicionales
         $claves_adicionales{_ts} = $this->{ts};
 
+        # Cargar versiones alternativas de multimedia_video
+        my @multimedia_video = grep { /multimedia_video.*?/ } keys %campos_xml;
+        foreach my $video (@multimedia_video) {
+            my $path = "$this->{'dst_multimedia'}/$campos_xml{$video}";
+            # Ver si existen versiones para eso..
+            my $path_search = $path;
+            $path_search =~ s/(\.\w+)$/*$1/is;
+            my @files_multimedia = glob("$path_search");
+            foreach my $mediafile (@files_multimedia) {
+                next if ($path eq $mediafile);
+                $mediafile = &lib_prontus::remove_front_string($mediafile, $this->{document_root});
+                $mediafile =~ /\/mmedia\/($video\d{14}(.*?)\.\w+)$/;
+                my $nom_campo = "$video.$2";
+                my $valor_campo = $1;
+                # print STDERR "nom_campo[$nom_campo] = valor_campo[$valor_campo]\n";
+                $claves_adicionales{$nom_campo} = $valor_campo;
+            };
+        };
+
         # Procesar IFs y NIFs
         $buffer = &lib_prontus::procesa_condicional($buffer, \%campos_xml, \%claves_adicionales);
 
@@ -1744,7 +1763,6 @@ sub parse_artic_data {
             $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
         };
     };
-
 
 
     # Parseos especiales para fechas y horas

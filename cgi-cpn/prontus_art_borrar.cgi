@@ -299,7 +299,7 @@ sub borrar_artic_files {
     my $dir_fecha = shift;
 
     $dir_aux =~ s/%%DIR_FECHA%%/$dir_fecha/is;
-    @files2delete = glob($dir_aux . '/*' . $ts . '.*');
+    @files2delete = glob($dir_aux . '/*' . $ts . '*.*');
     unlink @files2delete;
 };
 

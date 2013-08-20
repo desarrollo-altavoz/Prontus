@@ -51,8 +51,9 @@ sub procesa_artic {
     };
 
     # Recupera datos base de asset para insercion
-    my (%asset, $titular, $nombre_campo);
+    my (%asset, $titular, $nombre_campo, $fechap);
     $titular = $artic_obj->{'xml_content'}->{'_txt_titular'};
+    $fechap = $artic_obj->{'xml_content'}->{'_fechap'};
     $titular =~ s/\|/ /sg;
     $asset{'asset_search_wordkey'} = '|' . $titular . '|' . $campos_xml{'keywords'};
     $asset{'asset_art_id'} = $ts_artic;
@@ -73,7 +74,9 @@ sub procesa_artic {
             if (($asset{'asset_file'} ne '') && ($asset{'asset_art_wfoto'} ne '') && ($asset{'asset_art_hfoto'} ne '')) {
                 &guarda_asset(\%asset, \$base);
                 # TODO: Generar un thumbnail de la foto, si es que es mas grande
-                # my $lafoto = $dir_server . '/'.$prontus_id.'/site/artic/'.$fechap.'/imag/'.$asset{'asset_file'};
+                # Se genera thumb de la foto, para usarse en el dam_search, ya que ahora se agrupan los articulos
+                # y por cada uno se puede mostrar mas de una foto y mostrando la foto original, la pagina carga muy lento.
+                # my $lafoto = $dir_server . '/' . $prontus_id . '/site/artic/' . $fechap . '/imag/' . $asset{'asset_file'};
                 # &lib_dam::genera_thumbnail_for_dam($lafoto);
             };
         }
@@ -180,9 +183,9 @@ sub genera_thumbnail_for_dam {
     my ($lafoto) = @_;
     my ($maxw, $maxh) = ($dam_varglb::FOTOS_WIDTH_MAX, $dam_varglb::FOTOS_HEIGHT_MAX);
 
-    print STDERR "generando thumb: $lafoto [$maxw, $maxh]\n";
+    # print STDERR "generando thumb: $lafoto [$maxw, $maxh]\n";
     my ($binfoto, $anchofinal, $altofinal) = &lib_thumb::make_thumbnail($maxw, $maxh, $lafoto, 0);
-    $lafoto =~ s/(\.\w+)$/-dam\1/;
+    $lafoto =~ s/(\.\w+)$/\.dam\1/;
 	
     &lib_thumb::write_image($lafoto, $binfoto);
     return;

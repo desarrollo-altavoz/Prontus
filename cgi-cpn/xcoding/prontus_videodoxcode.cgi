@@ -45,236 +45,217 @@
 # 1.3 - 19/10/2012 - EAG - Se corrige bug en el comando de transcodificación
 # 1.4 - 26/10/2012 - EAG - Se transcodifica cualquier audio excepto AAC.
 # 1.5 - 05/03/2013 - EAG - Se agrega variable prontus para parametros de transcodificación.
+# 1.6 - 13/08/2013 - JOR - Cambia main, estaba mal implementado.
+#                        - Agrega logeo de STDERR, ya que ahora este script corre en background.   
+#                        - Ordena codigo.
+#                        - Cambia algunas funciones a lib_xcoding.
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
     my $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
+
 use lib_stdlog;
-# &lib_stdlog::set_stdlog($0, 51200); # se comenta porque impide que el proceso ppal capture el error de vuelta
+&lib_stdlog::set_stdlog($0, 51200);
+
 use lib_prontus;
 use prontus_varglb; &prontus_varglb::init();
 use glib_fildir_02;
 use glib_hrfec_02;
-
+use lib_xcoding;
 use strict;
-use FindBin '$Bin';
+use Artic;
 
-# Para que suelte el stream del server.
-close STDOUT;
-
-&main();
-exit;
+my $ORIGEN = $ARGV[0];
+my $PRONTUS_ID = $ARGV[1];
+my $GENERAR_VERSIONES = $ARGV[2];
+my $ARTIC_dirfecha;
+my $ARTIC_ts_articulo;
+my $ARTIC_path_xml;
+my $ARTIC_filename;
+my $ARTIC_extension;
 
 # ---------------------------------------------------------------
-sub main {
-    my $origen = $ARGV[0];
-    my $prontus_id = $ARGV[1];
-    &die_stdout("DoXCode: Primer parámetro 'origen' no es válido") if ((!-f "$origen") || (!-s "$origen"));
-    &die_stdout("DoXCode: Segundo parámetro 'prontus_id' no es válido") if ($prontus_id !~ /^[\w\-]+$/);
-    &die_stdout("DoXCode: Segundo Parámetro ARGV[1] -> 'prontus_id' no es válido") if (!-d "$prontus_varglb::DIR_SERVER/$prontus_id");
+main: {
+    &die_stderr("El parámetro 'origen' no es válido.", "", 1) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
+    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if ($PRONTUS_ID !~ /^[\w\-]+$/);
+    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
 
-    my $cmd;
-    my $res;
+    $GENERAR_VERSIONES = 0 if (!$GENERAR_VERSIONES);
+    my ($cmd, $res);
 
-    # No transcodifica peliculas que ya son mp4.
-    # Sin embargo, se aplica la correccion de los headers y offset, moviendolo al comienzo
-    if ($origen =~ /\.mp4$/i) {
-        print STDERR "\n\nNo transcodifican peliculas que ya son mp4\n"; # para debug
-        print STDERR "Moviendo las cabeceras al comienzo\n"; # para debug
-
-        $cmd = "$Bin/qtfaststart.cgi $origen";
-        $res = qx/$cmd 2>&1/;
-
-        # print STDERR "\n\n$res"; # para debug
-        &die_stdout("Falló Ajuste de Mp4 [$!][$res].") if ($? != 0);
-        &die_stdout("\nProceso terminado OK\n");
+    if (!&load_artic_info()) {
+        &die_stderr("No se obtener la información del artículo asociado al video.", "", 1);
     };
 
+    $ORIGEN =~ /\/mmedia\/(multimedia_video\d+)\d{14}\.(\w+)$/i;
+    my $marca = $1;
+
     # Path conf y load config de prontus
-    my $path_conf = "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id.cfg";
+    my $path_conf = "$prontus_varglb::DIR_SERVER/$PRONTUS_ID/cpan/$PRONTUS_ID.cfg";
     $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
-    # Verifica que no haya otro transcoding identico en ejecucion.
-    # my $res = qx/ps auxww |grep ffmpeg|grep $origen|grep -v grep/;
-    # my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen'|grep -v grep|grep -v $0/;
-    # print STDERR "Execution test = [$res]\n";
-    # &die_stdout("Hay otro transcoding identico en ejecucion") if ($res ne '');
+    if ($GENERAR_VERSIONES) {
+        &crear_versiones_video($marca, $ORIGEN);
+        exit;
+    };
 
-    # Forma el nombre de la pelicula destino sustituyendo la extension.
-    my $destino = $origen;
+
+    # No transcodifica peliculas que ya son mp4.
+    # Sin embargo, se aplica la correccion de los headers y offset, moviendolo al comienzo
+    if ($ORIGEN =~ /\.mp4$/i) {
+        print STDERR "* No transcodifican peliculas que ya son mp4.\n";
+        print STDERR "* Moviendo las cabeceras al comienzo.\n";
+
+        $cmd = "$Bin/qtfaststart.cgi $ORIGEN";
+        $res = qx/$cmd 2>&1/;
+
+        &die_stderr("Falló Ajuste de Mp4.", "[$!][$res]", 1) if ($? != 0);
+        &die_stderr("El video no necesita conversión.\n", "", 0);
+    };
+
+    # Forma el nombre de la pelicula destino sustituyendo la extension... lo borra si existe.
+    my $destino = $ORIGEN;
     $destino =~ s/\.\w+$/\.mp4/;
-    unlink $destino;
-    # $cmd = "ffmpeg -i $origen -r 25 -s $ancho" . 'x' . "$alto -f mp4 $destino";
-    # $cmd = "ffmpeg -i $origen -y -vcodec libx264 -vpre hq -vpre ipod640 -b 700000 -acodec libfaac -ab 128k -f mp4 $destino";
-    $cmd = &get_cmd_ffmpeg($origen, $destino);
+    if (-f $destino) {
+        unlink $destino;
+    };
 
-    print STDERR "\n\n\n*************** NUEVO TRANSCODING:\n$cmd\n\n"; # para debug
+    &do_xcode($ORIGEN, $destino);
 
-    #~ print STDERR "\nProceso terminado FAIL\n";
-    #~ exit 1;
+    # Crear versiones adicionales del video.
+    &crear_versiones_video($marca, $destino);
+
+    # Actualizar articulo.
+    &actualizar_articulo($marca);
+};
+
+# ---------------------------------------------------------------
+sub crear_versiones_video {
+    my $marca = $_[0];
+    my $origen = $_[1];
+
+    print STDERR "Creando versiones [$marca]...\n";
+    my %formatos = &lib_xcoding::get_formatos($marca);
+    foreach my $key (keys(%formatos)) {
+        print STDERR "key[$key] formato[$formatos{$key}]\n";
+        my $flags = $formatos{$key};
+        $key =~ s/\./$ARTIC_ts_articulo/sg;
+        $key = lc $key;
+        my $new_destino = $origen;
+        $new_destino =~ s/\/multimedia_video\d+\d{14}\.(\w+)$/\/$key\.mp4/is;
+        print STDERR "new_destino[$new_destino]\n";
+
+        if (-f $new_destino) {
+            unlink $new_destino;
+        };
+
+        &do_xcode($origen, $new_destino, $flags, 1);
+    };
+};
+
+# ---------------------------------------------------------------
+sub actualizar_articulo {
+    my $marca = $_[0];
+
+    my $artic_obj = Artic->new(
+                'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                'public_server_name'=> $prontus_varglb::PUBLIC_SERVER_NAME,
+                'cpan_server_name'  => $prontus_varglb::IP_SERVER,
+                'document_root'     => $prontus_varglb::DIR_SERVER,
+                'ts'                => $ARTIC_ts_articulo,
+                'campos'=>{}) || return "Error inicializando objeto articulo: $Artic::ERR TS[$ARTIC_ts_articulo]";
+
+    my %campos_xml = $artic_obj->get_xml_content();
+    $campos_xml{$marca} = "$ARTIC_filename.mp4";
+    $artic_obj->{campos} = \%campos_xml;
+    $artic_obj->generar_xml_artic();
+
+    # Generar vista (a partir del xml)
+    $artic_obj->generar_vista_art('', '', $prontus_varglb::PRONTUS_KEY) || return $Artic::ERR;
+
+    # Generar vistas secundarias
+    foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+        $artic_obj->generar_vista_art($mv, '', $prontus_varglb::PRONTUS_KEY) || return $Artic::ERR;
+    };
+
+    # Actualizar el DAM
+    my $ext = &lib_prontus::get_file_extension($campos_xml{'_plt'});
+    my $fullpath_artic = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/site/artic/$ARTIC_dirfecha/pags/$ARTIC_ts_articulo.$ext";
+    use FindBin '$Bin';
+    my $rutaScript = $Bin;
+    $rutaScript =~ s/\/[^\/]+$//;
+    my $cmd = "$rutaScript/dam/prontus_dam_ppart_save.cgi $fullpath_artic $prontus_varglb::PUBLIC_SERVER_NAME &";
+    print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+    system $cmd;
+
+    return '';
+};
+
+sub load_artic_info {
+    # Deduce ubicacion del xml del articulo.
+    if ($ORIGEN =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
+        $ARTIC_dirfecha = $2;
+        $ARTIC_ts_articulo = $2 . $4;
+        $ARTIC_path_xml = $1 .'/'. $2 .'/xml/'. $ARTIC_ts_articulo . '.xml';
+        $ARTIC_filename = $3;
+        $ARTIC_extension = $5;
+        return 1;
+    } else {
+        return 0;
+    };
+};
+
+# ---------------------------------------------------------------
+sub die_stderr {
+    my $msg = $_[0];
+    my $detalle = $_[1];
+    my $write = $_[2];
+    &write_status($msg) if ($write);
+    print STDERR "[ERROR] $msg - $detalle";
+    exit 1;
+};
+
+# ---------------------------------------------------------------
+sub write_status {
+    my $msg = $_[0];
+    $msg =~ s/\n//sg;
+    my $file = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/xcoding_status_$ARTIC_ts_articulo.txt";
+
+    &glib_fildir_02::write_file($file, $msg);
+};
+
+sub do_xcode {
+    my $origen = $_[0];
+    my $destino = $_[1];
+    my $flags = $_[2];
+    my $no_borr_origen = $_[3];
+
+    my ($cmd, $res);
+    $cmd = &lib_xcoding::get_cmd_ffmpeg($origen, $destino, $flags);
+
+    print STDERR "* Transcodificacion [$cmd]\n";
 
     # Ejecuta la transcodificacion redirigiendo stderr to stdout.
     # Por ahora no se analiza la salida del ffmpeg. La redireccion del stderr al stdout es porque ffmpeg imprime su salida al stderr en vez de al stdout
     $res = qx/$cmd 2>&1/;
-    # print STDERR "\n\n$res"; # para debug
-    &die_stdout("Falló transcodificación [$!][$res].") if ($? != 0);
 
-    # my $ret_chmod = chmod 0755, "$Bin/qtfaststart.pl";
-    # $cmd = "$prontus_varglb::DIR_SERVER/cgi-cpn/xcoding/qtfaststart.py $destino";
+    &die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
+
     $cmd = "$Bin/qtfaststart.cgi $destino";
-
     $res = qx/$cmd 2>&1/;
-    # print STDERR "\n\n$res"; # para debug
-    &die_stdout("Falló Ajuste de Mp4 [$!][$res].") if ($? != 0);
-    # Elimina el archivo de origen si es que el destino se genero ok
-    if (-s $destino) {
-        print STDERR "\nProceso terminado OK\n";
-        my $ret_reparseo = &procesar_artic($origen);
-        print STDERR "\nError al reparsear art: $ret_reparseo\n" if ($ret_reparseo);
 
+    &die_stderr("Falló Ajuste de Mp4", "[$!][$res].", 1) if ($? != 0);
+
+    if (-f $destino) {
+        unlink $ORIGEN if (!$no_borr_origen);
     } else {
-        print STDERR "\nProceso terminado FAIL\n";
-    };
-};
-# ---------------------------------------------------------------
-sub procesar_artic {
-
-    my $origen = shift;
-
-    unlink $origen;
-    # Modifica xml de Prontus.
-    # Deduce ubicacion del xml del articulo.
-    # /sites/prontus_lab/web/prontus_proto/site/artic/20100531/mmedia/multimedia_video120100531182139.avi
-    if ($origen =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
-        my $dirfecha = $2;
-        my $ts_articulo = $2 . $4;
-        my $path = $1 .'/'. $2 .'/xml/'. $ts_articulo . '.xml';
-        my $filename = $3;
-        my $extension = $5;
-        # print "[$path][$filename][$extension]\n";
-        my $buffer = &glib_fildir_02::read_file($path);
-        my %camposHash = &lib_prontus::getCamposXml($buffer, '_plt');
-        my $plt = $camposHash{'_plt'};
-
-        # print STDERR "\n\n\nbuffer antes[$buffer]\n";
-        if ($buffer =~ s/$filename\.$extension/$filename\.mp4/s) {
-            # print STDERR "\n\n\nbuffer despues[$buffer]\n";
-            &glib_fildir_02::write_file($path, $buffer);
-        };
-
-        my $artic_obj = Artic->new(
-                    'prontus_id'        => $prontus_varglb::PRONTUS_ID,
-                    'public_server_name'=> $prontus_varglb::PUBLIC_SERVER_NAME,
-                    'cpan_server_name'  => $prontus_varglb::IP_SERVER,
-                    'document_root'     => $prontus_varglb::DIR_SERVER,
-                    'ts'                => $ts_articulo,
-                    'campos'=>{}) || return "Error inicializando objeto articulo: $Artic::ERR TS[$ts_articulo]";
-
-        # Generar vista (a partir del xml)
-        $artic_obj->generar_vista_art('', '', $prontus_varglb::PRONTUS_KEY) || return $Artic::ERR;
-
-        # Generar vistas secundarias
-        foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
-            $artic_obj->generar_vista_art($mv, '', $prontus_varglb::PRONTUS_KEY) || return $Artic::ERR;
-        };
-
-        # Actualizar el DAM
-        my $ext = &lib_prontus::get_file_extension($plt);
-        my $fullpath_artic = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/site/artic/$dirfecha/pags/$ts_articulo.$ext";
-        use FindBin '$Bin';
-        my $rutaScript = $Bin;
-        $rutaScript =~ s/\/[^\/]+$//;
-        my $cmd = "$rutaScript/dam/prontus_dam_ppart_save.cgi $fullpath_artic $prontus_varglb::PUBLIC_SERVER_NAME &";
-        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
-        system $cmd;
-
-    } else {
-        return "Nombre de archivo no valido: origen[$origen]";
-    }
-    return '';
-};
-
-# ---------------------------------------------------------------
-sub get_cmd_ffmpeg {
-    my $origen = shift;
-    my $destino = shift;
-    my @info =`$prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen 2>&1`; # instantaneo
-    my ($width, $height);
-
-    my $videoFlags = $prontus_varglb::FFMPEG_PARAMS;
-    if ($videoFlags eq '' ) {
-        $videoFlags = "-flags +loop -cmp +chroma -partitions +parti8x8+parti4x4+partp8x8+partb8x8 -me_method umh -subq 8 -me_range 16 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 2 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -directpred 3 -trellis 1 -coder 0 -bf 0 -refs 1 -flags2 -wpred-dct8x8+mbtree -level 30 -maxrate 10000000 -bufsize 10000000 -wpredp 0 -g 25 -b 600000"; #configuracion de compresion, para no utilizar presets ffmpeg
-    }
-
-    my ($h264, $baseline,$vcodec,$acodec,$ext);
-    print STDERR "$origen \n";
-    if ($origen =~ /.+\/\d{8}\/mmedia\/multimedia_video.+?\d{6}\.(\w+)$/) {
-        $ext = $1;
-        print STDERR "$ext\n";
-    }
-
-    foreach (@info) {
-        # Video: h264 (Baseline), yuv420p, 1920x1080, 20745 kb/s, 29.97 fps, 29.97 tbr, 600 tbn, 1200 tbc
-        if ($_ =~ m/(Video): ([^,]+), (\S+), ([0-9]+)x([0-9]+).+/) {
-            if ($1 eq 'Video') {
-                print STDERR "Video: [$1] [$2] [$3] [$4] [$5]\n";
-                $vcodec = $2;
-                $width = $4;
-                $height = $5;
-            }
-        }
-        # Audio: aac, 44100 Hz, mono, s16, 62 kb/s
-        if ($_ =~ m/(Audio): ([^,]+), ([^,]+), ([^,]+), ([^,]+),.+/) {
-            if ($1 eq 'Audio') {
-                print STDERR "Audio: [$1] [$2] [$3] [$4] [$5]\n";
-                $acodec = $2;
-            }
-        }
+        &die_stderr("El archivo de destino no se genero correctamente.", "", 1);
     };
 
-    my $pathnice = &lib_prontus::get_path_nice();
-
-    # si el codec de video es h264 y el perfil es baseline,
-    #if ( ($acodec =~ /aac/i || $acodec  =~ /mp3/i) && $vcodec =~ /h264/i && $vcodec =~ /baseline/i) {
-    if ($width > 640 || ($width %2 != 0) || ($height %2 != 0) ) {
-        my $ancho = $width;
-        my $alto = $height;
-        if ($ancho > 640) {
-            $ancho = 640;
-            $alto = int (640*$height/$width);
-            if ($alto %2 != 0){
-                $alto +=1;
-            }
-        } else {
-            if ($ancho %2 != 0) {
-                $ancho += 1;
-            }
-            if ($alto%2 != 0) {
-                $alto += 1;
-            }
-        }
-        print STDERR "ancho[$ancho], alto[$alto]\n";
-        if ($acodec =~ /aac/i) {
-            return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -s $ancho" . 'x' . "$alto -vcodec libx264 $videoFlags -acodec copy -f mp4 $destino";
-        } else {
-            return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -s $ancho" . 'x' . "$alto -vcodec libx264 $videoFlags -acodec libfaac -ar 44100 -ab 128k -f mp4 $destino";
-        }
-    } elsif ($acodec =~ /aac/i && $vcodec =~ /h264/i && $vcodec =~ /baseline/i) {
-        return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -vcodec copy -acodec copy -f mp4 $destino";
-    } elsif ($acodec =~ /aac/i) {
-        return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -vcodec libx264 $videoFlags -acodec copy -f mp4 $destino";
-    } else {
-        return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -vcodec libx264 $videoFlags -acodec libfaac -ar 44100 -ab 128k -f mp4 $destino";
-    };
-};
-# ---------------------------------------------------------------
-sub die_stdout {
-    my $msg = shift;
-    print STDERR "[ERROR] $msg";
-    exit 1;
 };

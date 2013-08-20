@@ -21,6 +21,9 @@ var Dam = {
           maxHeight: '90%'
         });
 
+        Dam.instalaColorboxFotos();
+        Dam.instalaHoverFotoList();
+
         // Instala el plugin de Media
         $.fn.media.defaults.flvPlayer = '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf';
         $.fn.media.defaults.mp3Player = '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf';
@@ -49,22 +52,7 @@ var Dam = {
                 $(this).remove();
             });
         } else {
-            ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
-            $('.copiar').each(function() {
-                var clip = new ZeroClipboard.Client();
-    			clip.setHandCursor(true);
-
-                var theId = $(this).attr('id');
-                var theId2 = $(this).children().attr('id');
-                var theUrl = $(this).next().attr('href');
-                clip.addEventListener('mouseDown', function (client, text) {
-                    clip.setText(theUrl);
-    				Dam.showTooltipCopiar(client.domElement.offsetLeft, client.domElement.offsetTop);
-    				return true;
-    			});
-                clip.glue(theId2, theId, {position:'relative', left:'0', top:'0'});
-                this.clip = clip;
-            });
+            Dam.instalaZeroClipboard();
         }
         // Para centrar verticalmente:
         $('.dam .item-multimedia .foto-preview').each(function() {
@@ -167,5 +155,89 @@ var Dam = {
                 }
             });
         }
+    },
+
+    instalaZeroClipboard: function() {
+        ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
+        $('.copiar').each(function() {
+            var clip = new ZeroClipboard.Client();
+            clip.setHandCursor(true);
+
+            var theId = $(this).attr('id');
+            var theId2 = $(this).children().attr('id');
+            var theUrl = $(this).next().attr('href');
+            clip.addEventListener('mouseDown', function (client, text) {
+                clip.setText(theUrl);
+                Dam.showTooltipCopiar(client.domElement.offsetLeft, client.domElement.offsetTop);
+                return true;
+            });
+            clip.glue(theId2, theId, {position:'relative', left:'0', top:'0'});
+            this.clip = clip;
+        });
+    },
+
+    instalaColorboxFotos: function() {
+        $('.colorbox_asset').colorbox({
+            maxWidth: '95%',
+            maxHeight: '90%',
+            onComplete: function () {
+                Dam.instalaThumbNav();
+            }
+        });
+    },
+
+    instalaHoverFotoList: function() {
+        $('.foto-list').hover( 
+            function () {
+                $(this).addClass('bg');
+            },
+            function () {
+                $(this).removeClass('bg');
+            }
+        );
+    },
+
+    instalaThumbNav: function() {
+        $('#asset_thumb_nav .scroll').slimScroll({
+            height: '485px'
+        });
+
+        $('#asset_thumb_nav .thumb').click(function () {
+            $('#asset_thumb_nav .thumb').find('div.active').remove();
+            var src = $(this).css("background-image");
+            src = src.replace('url(','').replace(')','');
+            src = src.replace(/"/g, '');
+            src = src.replace(/'/g, '');
+            var w = $(this).attr("data-w");
+            var h = $(this).attr("data-h");
+            var w_orig = $(this).attr("data-w-orig");
+            var h_orig = $(this).attr("data-h-orig");
+            var num = $(this).index() + 1;
+
+            $(this).append('<div class="active">#' + num + '</div>');
+
+            $('#asset_viewer .item').html('<img src="' + src + '" width="' + w + '" height="' + h + '" />');
+            $('#asset_viewer .toolbar #num').html("&raquo; Foto #" + num + ' (' + w_orig + 'x' + h_orig + ')');
+            src = src.replace(/^(https?:\/\/.*?\/)/, '/'); // Dejar ruta relativa.
+
+            ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
+            var clip = new ZeroClipboard.Client();
+            clip.setHandCursor(true);
+
+            clip.addEventListener('mouseDown', function (client, text) {
+                clip.setText(src);
+                $('.toolbar .dam-tooltip').fadeIn('fast', function () {
+                    var obj = $(this);
+                    setTimeout(function () {
+                        $(obj).fadeOut('fast');
+                    }, 500);
+                });
+                return true;
+            });
+
+            clip.glue("asset_list_int_cb", "asset_list_ext_cb", {position:'absolute', left:'0', top:'0', width: '18px', height: '18px'});
+        });
+
+        $('#asset_thumb_nav .thumb:eq(0)').click();
     }
 };
