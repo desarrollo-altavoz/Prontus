@@ -204,9 +204,8 @@ sub generar_relacionados_tagging {
     };
 
 };
-
 # ---------------------------------------------------------------
-sub do_save() {
+sub do_save {
 # Actualiza registro de bd en base a info que carga del xml
     my $base = shift;
     my $is_new = shift; # 1 | 0

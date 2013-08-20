@@ -193,12 +193,16 @@ sub _set_dirs {
     $this->{dst_base} = $this->{document_root}
                           . "/$this->{prontus_id}"
                           . "/site/artic/$this->{fechac}";
+    $this->{dst_base_mm} = $this->{document_root}
+                          . "/$this->{prontus_id}"
+                          . "/site$prontus_varglb::DIR_EXMEDIA/$this->{fechac}";
+
     $this->{dst_xml}        = "$this->{dst_base}/xml";
     $this->{dst_pags}       = "$this->{dst_base}/pags";
-    $this->{dst_asocfile}   = "$this->{dst_base}/asocfile/$this->{ts}";
-    $this->{dst_foto}       = "$this->{dst_base}/imag";
-    $this->{dst_swf}        = "$this->{dst_base}/swf";
-    $this->{dst_multimedia} = "$this->{dst_base}/mmedia";
+    $this->{dst_asocfile}   = "$this->{dst_base_mm}/asocfile/$this->{ts}";
+    $this->{dst_foto}       = "$this->{dst_base_mm}/imag";
+    $this->{dst_swf}        = "$this->{dst_base_mm}/swf";
+    $this->{dst_multimedia} = "$this->{dst_base_mm}/mmedia";
 
     $this->{pathdir_plt} = $this->{document_root}
                           . "/$this->{prontus_id}"
@@ -938,18 +942,20 @@ sub _guarda_fotos_posting {
     my $prontus_id = $this->{prontus_id};
     return unless($ts =~ /(\d{8})\d{6}/);
     my $fechac = $1;
-    my $path_foto = "/$prontus_id/site/artic/$fechac/imag/$nom_foto";
+
+    my $full_path_foto = $this->{dst_foto} . "/$nom_foto";
+    my $path_foto = &lib_prontus::remove_front_string($full_path_foto, $this->{document_root});
 
     # Se comprueba que la foto realmente exista
-    if (! -f "$document_root$path_foto") {
-        print STDERR "\t$document_root$path_foto no existe\n";
+    if (! -f $full_path_foto) {
+        print STDERR "\t$full_path_foto no existe\n";
         return;
     };
 
     # Obtiene dimensiones actuales de la foto
-    my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$document_root$path_foto");
+    my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img($full_path_foto);
     unless($foto_dimx && $foto_dimy) {
-        print STDERR "\tError dev_tam_img $document_root$path_foto: $msg\n";
+        print STDERR "\tError dev_tam_img $full_path_foto: $msg\n";
         return;
     }
 
@@ -1110,7 +1116,9 @@ sub _add_foto_filesystem {
 
     return unless($ts =~ /(\d{8})\d{6}/);
     my $fechac = $1;
-    my $new_path_foto = "/$prontus_id/site/artic/$fechac/imag/";
+    my $new_full_path_foto = $this->{dir_foto};
+    my $new_path_foto = &lib_prontus::remove_front_string($new_full_path_foto, $this->{document_root});
+
     my $nom_foto = $this->_get_nom_foto($new_path_foto, '');
     my $foto_ext = &lib_prontus::get_file_extension($path_foto);
 
@@ -1165,13 +1173,15 @@ sub _genera_fotofija {
     my $prontus_id = $this->{prontus_id};
 
     $cuadrar = '' unless($cuadrar eq 'si');
-    my $path_foto = "/$this->{prontus_id}/site/artic/$this->{fechac}/imag/$nom_foto";
+
+    my $full_path_foto = $this->{dst_foto} . "/$nom_foto";
+    my $path_foto = &lib_prontus::remove_front_string($full_path_foto, $this->{document_root});
 
     # Se revisa que la foto exista
-    return "La foto no existe $nom_foto: $document_root$path_foto" unless(-f "$document_root$path_foto");
+    return "La foto no existe $nom_foto: $full_path_foto" unless(-f "$full_path_foto");
 
     # Obtiene dimensiones actuales de la foto
-    my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$document_root$path_foto");
+    my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$full_path_foto");
     return $msg if($msg);
 
     # Solo procede si viene ancho o alto
@@ -1214,98 +1224,6 @@ sub get_xml_content {
 };
 
 # ---------------------------------------------------------------
-#sub tagsCounting {
-## Inserta o actualiza contador de tags en BD.
-## Se invoca al momento de guardar un articulo.
-#
-#    my ($this, $base, $tags_old, $is_new) = @_;
-#
-#    my $motor_bd = &lib_prontus::get_motor_from_bdhandler($base);
-#    my %campos = $this->get_xml_content();
-#    my @tags = split(/ *, */, $campos{'_tags'});
-#
-#    # Deja los 'tags old' como keys de un hash
-#    my %tags_old_hash;
-#    my @aux = split(/ *, */, $tags_old);
-#    foreach my $k (@aux) {
-#        $tags_old_hash{$k} = 1;
-#    };
-#
-#    if ($is_new && $campos{'_tags'}) {
-#        foreach my $tag (@tags) {
-#
-#            my $sql = "select TAGS_ID from TAGS where TAGS_TAG = \"$tag\"";
-#            my $tags_id = &lib_prontus::existe_registro($sql, $base);
-#            if ($tags_id) {
-#                $sql = "update TAGS set TAGS_COUNT = (TAGS_COUNT + 1) where TAGS_ID = \"$tags_id\" ";
-#            } else {
-#                $sql = "insert into TAGS values(NULL, \"$tag\", 1) ";
-#            };
-#            my $res = $base->do($sql);
-#            if (!$res) {
-#                $Artic::ERR = "Error actualizando tabla de Tags, ts[$this->{ts}]\n";
-#                cluck $Artic::ERR . "sql[$sql][$!]";
-#                return 0;
-#            };
-#        }
-#    # si es edicion y vienen tags
-#    } elsif (!$is_new && $campos{'_tags'}) {
-#        # hay que contabilizarlos solo si no existian ya de antes
-#
-#        foreach my $tag (@tags) {
-#            # si ya existia de antes, lo salta
-#            next if (exists $tags_old_hash{$tag});
-#
-#            my $sql = "select TAGS_ID from TAGS where TAGS_TAG = \"$tag\"";
-#            my $tags_id = &lib_prontus::existe_registro($sql, $base);
-#            if ($tags_id) {
-#                $sql = "update TAGS set TAGS_COUNT = (TAGS_COUNT + 1) where TAGS_ID = \"$tags_id\" ";
-#            } else {
-#                $sql = "insert into TAGS values(NULL, \"$tag\", 1) ";
-#            };
-#            my $res = $base->do($sql);
-#            if (!$res) {
-#                $Artic::ERR = "Error actualizando tabla de Tags, ts[$this->{ts}]\n";
-#                cluck $Artic::ERR . "sql[$sql][$!]";
-#                return 0;
-#            };
-#        };
-#
-#    };
-#
-#    # solo caso editar: si existian antes y ahora no, hay que decrementarlos
-#    if (!$is_new && $tags_old) {
-#        # traspasa los nuevos a un hash pa usarlos mas facilmente
-#        my %tags_new_hash;
-#        foreach my $k (@tags) {
-#            $tags_new_hash{$k} = 1;
-#        };
-#        # recorre los antiguos, viendo si aun estan
-#        foreach my $tag (keys %tags_old_hash) {
-#
-#            # si no existe en los nuevos, lo decrementa
-#            if (!exists $tags_new_hash{$tag}) {
-#
-#                my $sql = "select TAGS_ID from TAGS where TAGS_TAG = \"$tag\"";
-#                my $tags_id = &lib_prontus::existe_registro($sql, $base);
-#                if ($tags_id) {
-#                    $sql = "update TAGS set TAGS_COUNT = (TAGS_COUNT - 1) where TAGS_ID = \"$tags_id\" ";
-#                };
-#                my $res = $base->do($sql);
-#                if (!$res) {
-#                    $Artic::ERR = "Error actualizando tabla de Tags, ts[$this->{ts}]\n";
-#                    cluck $Artic::ERR . "sql[$sql][$!]";
-#                    return 0;
-#                };
-#            };
-#        };
-#    };
-#
-#    return 1;
-#
-#};
-
-# ---------------------------------------------------------------
 sub tags2bd {
 # puebla nub de art con tags
 # Se invoca al momento de guardar un articulo.
@@ -1338,8 +1256,179 @@ sub tags2bd {
 
     return 1;
 };
+# ---------------------------------------------------------------
+sub borra_artic {
+
+    my ($this, $base) = @_;
+
+    my $ts = $this->{ts};
+    my $dir_fecha = $this->{fechac};
+
+    #~ my $ddir = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/%%DIR_FECHA%%';
+    my $dirpag      = $this->{dst_pags};
+    my $dirimg      = $this->{dst_foto};
+    my $dirasocfile =  $this->{dst_asocfile};
+    my $dirswf      = $this->{dst_swf};
+    my $dirmmedia   = $this->{dst_multimedia};
+
+    # Borra paginas generadas
+    my @files2delete = glob("$dirpag/$ts" . '.*');
+    foreach my $file2delete (@files2delete) {
+        unlink $file2delete;
+        &lib_prontus::purge_cache($file2delete);
+    };
+
+    # Borra paginas de multivistas
+    my $mv;
+    foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+        my $dir_art_mv = $dirpag;
+        no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
+        $dir_art_mv =~ s/(\d{8})\/pags/\1\/pags-$mv/;
+        my @files2delete_mv = glob("$dir_art_mv/$ts" . '.*');
+        foreach my $file2delete (@files2delete_mv) {
+            unlink $file2delete;
+            &lib_prontus::purge_cache($file2delete);
+        };
+    };
+
+    my $path_artic_xml = $this->{dst_xml} . "/$ts.xml";
+
+    # Antes de eliminarlo, lee articulo xml para luego poder determinar cuales son sus asocfiles
+    # y sus tags
+    my $buffer_artic = &glib_fildir_02::read_file($path_artic_xml);
+
+    unlink $path_artic_xml;          # Borra xml
+
+    # Borra imagenes
+    $this->borrar_artic_files($dirimg);
+
+    # Borra multimedia.
+    $this->borrar_artic_files($dirmmedia);
+
+    # Borra swf
+    $this->borrar_artic_files($dirswf);
+
+    # Borra arch. asociados. # 1.2
+    &glib_fildir_02::borra_dir($dirasocfile);
+
+    # Desasocia tags al artic y los regenera
+    my $sql_deltag = "delete from TAGSART where TAGSART_IDART='$ts'";
+    $base->do($sql_deltag);
+    if ($buffer_artic =~ /<_tags>(.+?)<\/_tags>/is) {
+        my $tags_data = $1;
+        &lib_artic::generar_relacionados_tagging($base, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO", $tags_data);
+    };
+
+    # Borra relacionados manual
+    &lib_tax::borrar_relacionados_manualtax($dirpag, $ts);
+
+    # Obtiene taxonomia antes de eliminar
+    my %hashtemp;
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        for(my $i = 1; $i <= $prontus_varglb::TAXONOMIA_NIVELES; $i++) {
+            my ($secc, $tem, $stem) = &lib_tax::get_taxonomia($ts, $base);
+            $hashtemp{$i} = "$secc/$tem/$stem";
+        };
+    };
+
+    # Elimina el archivo de la Base de Datos
+    my $resp = $this->art_delete_bd($base);
+    if(! $resp) {
+        $base->disconnect;
+        return $Artic::ERR;
+    };
+
+    # Regenera relacionados
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO, $prontus_varglb::DIR_ARTIC, $prontus_varglb::DIR_PAG, $prontus_varglb::DIR_TEMP, $prontus_varglb::DIR_TAXONOMIA, $prontus_varglb::DIR_CONTENIDO, $prontus_varglb::NUM_RELAC_DEFAULT, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS);
+        for(my $i = 1; $i <= $prontus_varglb::TAXONOMIA_NIVELES; $i++) {
+            my $taxonomia = $hashtemp{$i};
+            my ($secc, $tem, $stem) = split /\//, $taxonomia;
+            &lib_tax::generar_relacionados($secc, $tem, $stem, $base);
+            # Ahora parsea art relacionados para MVs
+            foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+
+                print STDERR "generar_relacionados [$secc, $tem, $stem]\n";
+                &lib_tax::generar_relacionados($secc, $tem, $stem, $base, $mv);
+            };
+        };
+    };
+
+    $base->disconnect;
+
+    # Borra cache listas de articulo
+    &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
+
+    use FindBin '$Bin';
+    my $rutaScript = $Bin;
+    my $cmd;
+
+    # regenera taxports
+    my $fid;
+    if ($buffer_artic =~ /<_fid>(.+?)<\/_fid>/is) {
+      $fid = $1;
+    };
+
+    for(my $i = 1; $i <= $prontus_varglb::TAXONOMIA_NIVELES; $i++) {
+
+        my $taxonomia = $hashtemp{$i};
+        my ($secc, $tem, $stem) = split /\//, $taxonomia;
+
+        $secc = '0' if ($secc < 0); # para evitar el -1, ver dps por que get_taxonomia devuelve -1
+        my $param_especif = $fid
+                                  . '/' . $secc
+                                  . '/' . $tem
+                                  . '/' . $stem;
+
+        # Regenera las portadas taxonomicas
+        $cmd = "$rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+
+        # Regenera las salidas List
+        $cmd = "$rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    };
+
+    # Regenera la tabla del DAM
+    $cmd = "$rutaScript/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME &";
+    print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+    system $cmd;
+
+    return '';
+};
 
 
+# --------------------------------------------------------------------#
+sub borrar_artic_files {
+    my $this = shift;
+    my $dir_aux = shift;
+
+    my $ts = $this->{ts};
+    my $dir_fecha = $this->{fechac};
+
+    $dir_aux =~ s/%%DIR_FECHA%%/$dir_fecha/is;
+    my @files2delete = glob($dir_aux . '/*' . $ts . '.*');
+    unlink @files2delete;
+};
+
+# ---------------------------------------------------------------
+sub art_delete_bd {
+
+    my ($this, $base) = @_;
+    my $ts = $this->{ts};
+    # Elimina
+    my $sql = "delete from ART where ART_ID = '$ts'";
+    my $res = $base->do($sql);
+    # print STDERR "$sql\n";
+    if (!$res) {
+        $Artic::ERR = "Error actualizando tabla de artículos, ts[$this->{ts}] Cod[$DBI::err]\n";
+        cluck $Artic::ERR . "sql[$sql][$!][$DBI::errstr]";
+        return 0;
+    };
+    return 1;
+};
 # ---------------------------------------------------------------
 sub art_update_bd {
 # Actualiza art. en base de datos prontus a partir de info del xml
@@ -1808,7 +1897,7 @@ sub get_xdata {
 #               <nom_marcaN>.txt
 
     my ($this) = shift;
-    my ($buffer) = shift;
+
     my (%xdata, $nom_marca, $valor_marca);
     my %globalxdata;
 
@@ -1926,7 +2015,8 @@ sub _parsing_fotos {
     $buffer =~ s/%%$nom_campo%%/$val_campo/isg;
     #~ $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
 
-    my $este_prontus = "/$this->{prontus_id}/site/artic";
+    my $este_prontus = &lib_prontus::remove_front_string($this->{dst_foto}, $this->{document_root});
+
     if ($val_campo =~ /$este_prontus/i) { # val_campo es del tipo: /prontus_dev/site/artic/20060410/imag/FOTO_0120060410165548.jpg
         my $ts = $this->{ts};
         # parseo ademas las dimensiones de la foto en el articulo

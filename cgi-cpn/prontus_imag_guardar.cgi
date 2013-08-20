@@ -128,7 +128,7 @@ main: {
 
     # Determinar si la imagen es la original o una tmp y segun eso determinar el path de la imagen de trabajo
     my $relpath_img_dst;
-    if ($FORM{'image_path'} =~ /^\/$prontus_id\/site\/artic\/[0-9]{8}\/imag\/foto_([0-9]+)\.(\w+)$/) {
+    if ($FORM{'image_path'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\.(\w+)$/) {
 
         my $random = &glib_str_02::random_string(12);
         my $ts = $1;

@@ -166,6 +166,8 @@ sub init { # Prontus 6.0
   $DIR_RMEDIA = '/rmedia';   # 1.1 # Dir. donde se almacenaran los archivos de real media incluidos en las paginas publicadas.
   $DIR_ASOCFILE = '/asocfile';   # 1.2 # Dir. donde se almacenaran los archivos genericos asociados en las paginas publicadas.
 
+  $DIR_EXMEDIA = '/artic';  # Para cuando se configuran los multimedia en una carpeta aparte
+
   $DIR_FSET_PAG = '/fset';   # Dir. donde se almacenaran los framesets apuntando al indice y a la pagina, cuando se trate de Menu de subtitulos en pag aparte.
 
   # Directorios correspondientes a los templates, relativos al publicador
@@ -253,19 +255,16 @@ sub init { # Prontus 6.0
   # con colspan > 1, respectivamente.
 
 
+  #~ 13/08/2013 - CVI - Se comenta esto porque tiene toda la pinta de ser codigo basura
   # 8.1
-  $WMEDIA_LINK = '<img src="%%path%%/wmedia.gif" border="0" alt="Reproducir">'; # Cod. html que se linkeara con el arch. windows media en el Articulo. (En la portada, esto se pone en el template.)
-
+  #~ $WMEDIA_LINK = '<img src="%%path%%/wmedia.gif" border="0" alt="Reproducir">'; # Cod. html que se linkeara con el arch. windows media en el Articulo. (En la portada, esto se pone en el template.)
   # 1.1
-  $RMEDIA_LINK = '<img src="%%path%%/rmedia.gif" border="0" alt="Reproducir">'; # Cod. html que se linkeara con el arch. realmedia en el Articulo. (En la portada, esto se pone en el template.)
-
+  #~ $RMEDIA_LINK = '<img src="%%path%%/rmedia.gif" border="0" alt="Reproducir">'; # Cod. html que se linkeara con el arch. realmedia en el Articulo. (En la portada, esto se pone en el template.)
   # 1.2
-  $ASOCFILE_LINK = '<img src="%%path%%/afile.gif" border="0" alt="Ver / Bajar Archivo">'; # Cod. html que se linkeara con el arch. asociado en el Articulo. (En la portada, esto se pone en el template.)
-
+  #~ $ASOCFILE_LINK = '<img src="%%path%%/afile.gif" border="0" alt="Ver / Bajar Archivo">'; # Cod. html que se linkeara con el arch. asociado en el Articulo. (En la portada, esto se pone en el template.)
   # 1.3
   # $LINK_MAS = '<img src="%%path%%/mas.gif" border="0" alt="Más información...">'; # Cod. html que se linkeara con el link 'mas' que va al detalle del articulo.
-  $LINK_MAS = ''; # Cod. html que se linkeara con el link 'mas' que va al detalle del articulo.
-
+  #~ $LINK_MAS = ''; # Cod. html que se linkeara con el link 'mas' que va al detalle del articulo.
   # Las marcas %%path%% se reemplazan al momento de cargar el cfg del prontus.
 
 

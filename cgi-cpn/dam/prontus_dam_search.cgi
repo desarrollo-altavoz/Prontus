@@ -285,8 +285,7 @@ sub make_lista {
     };
 
     $salida->finish;
-
-    my $path_conf = '/' . $prontus_varglb::PRONTUS_ID . '/cpan/' . $prontus_varglb::PRONTUS_ID . '.cfg';
+    my $path_conf = $prontus_varglb::DIR_CPAN . '/' . $prontus_varglb::PRONTUS_ID . '.cfg';
     my $lnk_base = 'prontus_dam_search.cgi?path_conf=' . $path_conf
                  . '&amp;asset_search_type=' . $FORM{'asset_search_type'}
                  . '&amp;asset_search_wordkey=' . $FORM{'asset_search_wordkey'}
@@ -330,7 +329,7 @@ sub generar_fila {
 
         # Genera link para abrir FID
         my $tipo_ficha = $hash_data{'ASSET_ART_FID'};
-        my $path_conf = '/' . $prontus_varglb::PRONTUS_ID . '/cpan/' . $prontus_varglb::PRONTUS_ID . '.cfg';
+        my $path_conf = $prontus_varglb::DIR_CPAN . '/' . $prontus_varglb::PRONTUS_ID . '.cfg';
         my $link_fid = $prontus_varglb::SERVER_NAME . '/' . $prontus_varglb::DIR_CGI_CPAN
                      . '/prontus_art_ficha.' . $prontus_varglb::EXTENSION_CGI
                      . '?_file='. $hash_data{'ASSET_ART_FILE'}
@@ -340,7 +339,7 @@ sub generar_fila {
         $fila =~ s/%%LINK_FID%%/$link_fid/g;
 
         # Genera link para el artículo
-        my $link_artic = '/'.$prontus_varglb::PRONTUS_ID.'/site/artic/'.$dir_fecha.'/pags/'.$hash_data{'ASSET_ART_FILE'};
+        my $link_artic = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC.'/'.$dir_fecha.$prontus_varglb::DIR_PAG.'/'.$hash_data{'ASSET_ART_FILE'};
         # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de multimedia
       	if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
       	  $link_artic = &lib_prontus::parse_filef('%%_FILEURL%%', $titular,
@@ -349,6 +348,7 @@ sub generar_fila {
       	}
         $fila =~ s/%%LINK_ARTIC%%/$link_artic/g;
 
+        # contenido de asset
         my $asset = '';
         my $path_img = '';
         my $path_img_dam = '';
@@ -446,6 +446,7 @@ sub generar_fila {
 
         } else {
             $fila =~ s/<!--tam_foto-->.*?<!--\/tam_foto-->//sg;
+
         };
 
     } else {
@@ -457,6 +458,7 @@ sub generar_fila {
     $fila =~ s/%%LOOP_COUNTER%%/$LOOP_COUNTER/g;
 
     return $fila;
+
 };
 
 # ---------------------------------------------------------------

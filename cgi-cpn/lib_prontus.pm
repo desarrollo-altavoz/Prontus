@@ -924,12 +924,6 @@ sub check_fotos_from_ts {
         my $num = $1;
         my $buff = $2;
         if($buff =~ /<_nomfoto_$num>(.+?)<\/_nomfoto_$num>/) {
-            my $foto = $1;
-            my $fulldir_fotos = $this->{dst_pags};
-            # warn "fulldir_vista1[$fulldir_vista]";
-            no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-            $fulldir_fotos =~ s/(\/site\/artic\/\d{8}\/)pags/\1imag/;
-            # warn "se encontro foto [$fulldir_fotos$foto]";
             return 1;
         }
     }
@@ -955,11 +949,6 @@ sub check_artic_pub {
             }
             $ediciones = $ediciones . $portadas . '</ul><br/>';
         }
-
-#        foreach my $clave (@ports) {
-#            $portadas =
-#        }
-        #~ warn('Ediciones: '.$ediciones);
         return $ediciones;
     }
     return '';
@@ -1600,6 +1589,21 @@ sub load_config {
   $prontus_varglb::TAXPORT_MAXARTICS = $taxport_maxartics;
   $prontus_varglb::TAXPORT_MAXARTICS = $prontus_varglb::TAXPORT_MAXARTICS_SECURITY if ($prontus_varglb::TAXPORT_MAXARTICS > $prontus_varglb::TAXPORT_MAXARTICS_SECURITY);
 
+
+  my $taxport_tipo_pag = '0'; # valor por defecto.
+  if ($buffer =~ m/\s*TAXPORT_TIPO_PAGINACION\s*=\s*("|')(0|1)("|')/) {
+    $taxport_tipo_pag = $2;
+  };
+  $prontus_varglb::TAXPORT_TIPO_PAGINACION = $taxport_tipo_pag;
+
+
+  my $taxport_PAGCORTA_MAXPAGS = '5'; # valor por defecto.
+  if ($buffer =~ m/\s*TAXPORT_PAGCORTA_MAXPAGS\s*=\s*("|')([0-9]+?)("|')/) {
+    $taxport_PAGCORTA_MAXPAGS = $2;
+  };
+  $prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS = $taxport_PAGCORTA_MAXPAGS;
+
+
   my ($tax_niv, $control_alta);
   if ($buffer =~ m/\s*TAXONOMIA_NIVELES\s*=\s*("|')([0-3])("|')/) {
    $tax_niv = $2;
@@ -2131,12 +2135,12 @@ sub load_config {
 
   $prontus_varglb::ORDEN_LISTA_ARTICULOS = $orden_lista_articulos;     # 8.0
 
-  my $path = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/imag";
-
-  $prontus_varglb::WMEDIA_LINK =~ s/%%path%%/$path/; # 8.1
-  $prontus_varglb::RMEDIA_LINK =~ s/%%path%%/$path/;
-  $prontus_varglb::ASOCFILE_LINK =~ s/%%path%%/$path/;
-  $prontus_varglb::LINK_MAS =~ s/%%path%%/$path/;
+  #~ 13/08/2013 - CVI - Se comenta esto porque tiene toda la pinta de ser codigo basura
+  #~ my $path = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/imag";
+  #~ $prontus_varglb::WMEDIA_LINK =~ s/%%path%%/$path/; # 8.1
+  #~ $prontus_varglb::RMEDIA_LINK =~ s/%%path%%/$path/;
+  #~ $prontus_varglb::ASOCFILE_LINK =~ s/%%path%%/$path/;
+  #~ $prontus_varglb::LINK_MAS =~ s/%%path%%/$path/;
 
   $prontus_varglb::FECHA_HOY = &glib_hrfec_02::get_date_pack4();
 
@@ -2160,7 +2164,20 @@ sub load_config {
 
   &check_dirs();
 
-
+  #~ Para configurar la externalizacion de la multimedia
+  my $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/mmedia.cfg");
+  if($customcfg) {
+    if ($customcfg =~ m/\s*EXTERNAL_MMEDIA\s*=\s*("|')1("|')/) {
+      $prontus_varglb::EXTERNAL_MMEDIA = 1;
+      $prontus_varglb::DIR_EXMEDIA = '/mm';
+    } else {
+      $prontus_varglb::EXTERNAL_MMEDIA = 0;
+      $prontus_varglb::DIR_EXMEDIA = '/artic';
+    };
+  } else {
+    $prontus_varglb::EXTERNAL_MMEDIA = 0;
+    $prontus_varglb::DIR_EXMEDIA = '/artic';
+  };
 }
 
 # -------------------------------------------------------------------------#

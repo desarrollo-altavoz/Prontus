@@ -112,6 +112,32 @@
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TAXPORT_TIPO_PAGINACION<br>
+                                            <span class="ayuda">Especifica el tipo de paginación para las portadas taxonómicas.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="TAXPORT_TIPO_PAGINACION" id="TAXPORT_TIPO_PAGINACION_V0" value="0"%%TAXPORT_TIPO_PAGINACION_V0%%> <label for="TAXPORT_TIPO_PAGINACION_V0">Paginación tradicional</label>
+                                            <br>
+                                            <span class="help">La misma que se usa desde el inicio de Prontus. El total de páginas es desplegado en pantalla.</span>
+                                            <br>
+                                            <br>
+                                            <input type="radio" name="TAXPORT_TIPO_PAGINACION" id="TAXPORT_TIPO_PAGINACION_V1" value="1"%%TAXPORT_TIPO_PAGINACION_V1%%> <label for="TAXPORT_TIPO_PAGINACION_V1">Paginación corta</label>
+                                            <br>
+                                            <span class="help">También conocida como estilo Google, ya que fue popularizada por este buscador. Se muestran sólo X páginas hacia adelante y atrás. Habrá siempre un link a la primera y última página</span>
+                                            <br>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            TAXPORT_PAGCORTA_MAXPAGS<br>
+                                            <span class="ayuda">Sólo válido si se especifica la paginación corta. Indica la cantidad de páginas máximas que se mostrarán hacia adelante y hacia atrás. Este valor incluye la primera y última páginas</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="TAXPORT_PAGCORTA_MAXPAGS" value="%%TAXPORT_PAGCORTA_MAXPAGS%%" class="fieldform" maxlength="4" style="width: 30px"/>
+                                        </td>
+                                    </tr>
                                 </table>
                             </form>
                             <div class="botones">

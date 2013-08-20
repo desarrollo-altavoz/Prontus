@@ -78,7 +78,7 @@ main:{
         $prontus_varglb::DIR_CORE = '/wizard_prontus/core'; # solo para efectos de la plantilla de mensaje
         &glib_html_02::print_pag_result('Error', 'Directorio no válido', 0, "exit=1, ctype=0");
     };
-    
+
     my ($msgerr, $prontus_id, $extension) = &get_model_data();
     if ($msgerr) {
         $prontus_varglb::DIR_CORE = '/wizard_prontus/core'; # solo para efectos de la plantilla de mensaje
@@ -163,7 +163,7 @@ sub get_model_data {
 };
 # ---------------------------------------------------------------
 sub make_lista {
-    
+
     my ($dir_desde) = $_[0];
     my ($theloop) = $_[1];
     my (@entries, $entry, $local_loop, $filas);
@@ -209,7 +209,7 @@ sub make_lista {
             $filas .= $local_loop;
             if (-d "$dir_desde/$entry") {
                 my $lp = $theloop;
-                $lp =~ s/<td>/<td><img src="\/wizard_prontus\/core\/imag\/blank.gif" width="20" height="22" border="0">/;
+                $lp =~ s/<td>/<td><img src="\/wizard_prontus\/core\/imag\/blank.gif" width="20" height="22" border="0" alt="blank">/;
                 # se comenta para que no muestre el arbol extendido
                 # $filas .= &make_lista("$dir_desde/$entry", $lp);
             };

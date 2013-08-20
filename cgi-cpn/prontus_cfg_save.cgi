@@ -139,6 +139,8 @@ main: {
     #~ $hash_defaultvars{'tax'}{'TAXPORT_REFRESH'} = 'TAXPORT_REFRESH;(SI|NO);NO;U';
     $hash_defaultvars{'tax'}{'TAXPORT_MAXARTICS'} = 'TAXPORT_MAXARTICS;^(\d+)$;500;U';
     $hash_defaultvars{'tax'}{'TAXPORT_ORDEN'} = 'TAXPORT_ORDEN;^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$;PUBLICACION(DESC);U';
+    $hash_defaultvars{'tax'}{'TAXPORT_TIPO_PAGINACION'} = 'TAXPORT_TIPO_PAGINACION;(0|1);0;U';
+    $hash_defaultvars{'tax'}{'TAXPORT_PAGCORTA_MAXPAGS'} = 'TAXPORT_PAGCORTA_MAXPAGS;^(\d+)$;10;U';
 
     # -tag.cfg
     $hash_defaultvars{'tag'}{'TAGPORT_ARTXPAG'} = 'TAGPORT_ARTXPAG;^(\d+)$;20;U';
@@ -181,15 +183,14 @@ main: {
     $hash_defaultvars{'buscador'}{'TEXTVARS'} = 'TEXTVARS;(\w+);_TXT_bajada VTXT_CUERPO;U';
     $hash_defaultvars{'buscador'}{'RESPERPAG'} = 'RESPERPAG;^(\d+)$;50;U';
     $hash_defaultvars{'buscador'}{'MAXPAGS'} = 'MAXPAGS;^(\d+)$;20;U';
+    $hash_defaultvars{'buscador'}{'SEARCH_TIPO_PAGINACION'} = 'SEARCH_TIPO_PAGINACION;(0|1);0;U';
+    $hash_defaultvars{'buscador'}{'SEARCH_PAGCORTA_MAXPAGS'} = 'SEARCH_PAGCORTA_MAXPAGS;^(\d+)$;5;U';
     $hash_defaultvars{'buscador'}{'PRONTUS_VER'} = 'PRONTUS_VER;^(\d+)$;10;U';
     $hash_defaultvars{'buscador'}{'SEARCH_MAXEXEC'} = 'SEARCH_MAXEXEC;^(\d+)$;5;U';
-
     $hash_defaultvars{'buscador'}{'USEFRIENDLYURLS'} = 'USEFRIENDLYURLS;(1|0);0;U';
-
     $hash_defaultvars{'buscador'}{'META1'} = 'META2;(\w+);;U';
     $hash_defaultvars{'buscador'}{'META2'} = 'META2;(\w+);;U';
     $hash_defaultvars{'buscador'}{'META3'} = 'META3;(\w+);;U';
-
     $hash_defaultvars{'buscador'}{'METADATA1'} = 'METADATA1;(\w+);;U';
     $hash_defaultvars{'buscador'}{'METADATA2'} = 'METADATA2;(\w+);;U';
     $hash_defaultvars{'buscador'}{'METADATA3'} = 'METADATA3;(\w+);;U';

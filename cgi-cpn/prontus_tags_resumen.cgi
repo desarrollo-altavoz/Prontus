@@ -265,9 +265,9 @@ sub make_lista {
     my $link = '/'.$prontus_varglb::PRONTUS_ID.'/site/artic/'.$fechac.'/pags/'.$tags_ts.'.'.$tags_ext;
     # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
     # JOR - 23/07/2012 - Agrega seccion, tema y subtema para nuevo tipo de friendly.
-  	if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-  	  $link = &lib_prontus::parse_filef('%%_FILEURL%%', $tags_tit, $tags_ts, $prontus_varglb::PRONTUS_ID, $link, $nom_seccion1, $nom_tema1, $nom_subtema1);
-  	}
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+      $link = &lib_prontus::parse_filef('%%_FILEURL%%', $tags_tit, $tags_ts, $prontus_varglb::PRONTUS_ID, $link, $nom_seccion1, $nom_tema1, $nom_subtema1);
+    }
     $loop_tmp =~ s/%%_tag_link%%/$link/ig;
     $loop_tot .= $loop_tmp;
   }

@@ -125,7 +125,7 @@
 .admin-tags .paginas {margin-bottom:5px;}
 
 #buscador-tags {margin-top:10px; padding-left:6px;}
-#buscador-tags .buscador {width:345px; float:none; margin:0 15px 0 0;}
+#buscador-tags .buscador {float:none; margin:0 15px 0 0;}
 #buscador-tags .buscador td {height:29px;}
 /** #buscador-tags .buscador td.titulo {width:100px; text-align:left; font-size:13px; font-weight:bold; color:#666666;} */
 #buscador-tags .buscador td.bg-campo {width:185px; background:url(../imag/auxi/buscador_back.gif) no-repeat left top;}

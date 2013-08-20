@@ -199,12 +199,13 @@ sub actualizar_articulo {
 
 sub load_artic_info {
     # Deduce ubicacion del xml del articulo.
-    if ($ORIGEN =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
-        $ARTIC_dirfecha = $2;
-        $ARTIC_ts_articulo = $2 . $4;
-        $ARTIC_path_xml = $1 .'/'. $2 .'/xml/'. $ARTIC_ts_articulo . '.xml';
-        $ARTIC_filename = $3;
-        $ARTIC_extension = $5;
+    if ($ORIGEN =~ /(.+)\/(.*?)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
+        $ARTIC_dirfecha = $3;
+        $ARTIC_ts_articulo = $3 . $5;
+        $ARTIC_path_xml = $1 . $prontus_varglb::DIR_ARTIC . '/'. $3 .'/xml/'. $ARTIC_ts_articulo . '.xml';
+        $ARTIC_filename = $4;
+        $ARTIC_extension = $6;
+
         return 1;
     } else {
         return 0;

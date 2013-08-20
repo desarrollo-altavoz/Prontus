@@ -6669,3 +6669,65 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_quota.pm
 
+====================================================================================================
+11.2.69 - 16/08/2013 - CVI/JOR
+====================================================================================================
+
+- Global
+    [cambios]
+        - Se agrega la posibilidad de tener los archivos (imag, asocfile, multimedia, swf) en un directorio separado.
+          Con esto, por ejemplo, se puede montar por NFS un directorio, y tener los archivos en un servidor externo.
+          La ubicación de los archivos quedará en:
+            /<prontus_id>/site/mm/<fechac>/imag/
+            /<prontus_id>/site/mm/<fechac>/mmedia/
+            /<prontus_id>/site/mm/<fechac>/asocfile/<ts>/
+            /<prontus_id>/site/mm/<fechac>/swf/
+          Respetando la estructura ya existente de los archivos.
+          Para realizar el cambio, crear un archivo en:
+                /<prontus_id>/cpan/data/customcfg/mmedia.cfg
+          Y dentro colocar el siguiente texto:
+                EXTERNAL_MMEDIA = '1'
+          Esto sólo se puede hacer cuando se tienen acceso especial al servidor, ya que se debe editar un archivo dentro del cpan/data
+          Importante: Si se aplica esto, los nuevos archivos serán buscados en el directorio site/mm/... no en el directorio normal.
+          Vale decir, si el prontus ya existe, y se desea habilitar esto, se debe hacer un script o algo que copie/mueva
+          los archivos a la nueva ubicación.
+    [files]
+        No se especifican los archivos modificados porque son muchos
+
+- Portadas Taxonómicas
+    [mejoras]
+        - Se agrega la opción de cambiar el tipo de paginación a una paginación estilo google, con X paginas hacia
+          adelante y hacia atrás, más un link a la primera y última página.
+          Al cambiar la paginación se deben regenerar las portadas taxonómicas, ya que éstas están escritas en disco.
+          Ejemplo:
+                1 ... 5  6  7  (8)  9  10  11 ... 20
+        - Producto de lo anterior se generan 2 nuevas variables:
+            TAXPORT_TIPO_PAGINACION: Indica el tipo de paginación puede ser 0 (paginación antigua) o 1 (nueva paginación o Paginación Corta)
+            TAXPORT_PAGCORTA_MAXPAGS: Indica el número paǵina máximas para cada lado (en el ejemplo anterior, tenía valor 4). Valor por defecto: 5.
+    [files]
+        /cgi-bin/prontus_search.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_search.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_categ.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_search.html
+
+- Buscador
+    [mejoras]
+        - Se agrega la opción de cambiar el tipo de paginación a una paginación estilo google, con X paginas hacia
+          adelante y hacia atrás, más un link a la primera y última página.
+          Ejemplo:
+                1 ... 5  6  7  (8)  9  10  11 ... 20
+        - Producto de lo anterior se generan 2 nuevas variables:
+            SEARCH_TIPO_PAGINACION: Indica el tipo de paginación puede ser 0 (paginación antigua) o 1 (nueva paginación)
+            SEARCH_PAGCORTA_MAXPAGS: Indica el número paǵina máximas para cada lado (en el ejemplo anterior, tenía valor 4). Valor por defecto: 5.
+    [files]
+        /cgi-bin/prontus_search.cgi
+        /cgi-cpn/lib_search.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_search.html
+

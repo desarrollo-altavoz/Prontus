@@ -203,11 +203,15 @@ BEGIN {
   $SCRIPTROOT = $0;
   $SCRIPTROOT =~ s/[^\/]+$//g;
   unshift(@INC,$SCRIPTROOT); # Para dejar disponibles las librerias.
-  my $pesoscero = $0;
-  $pesoscero =~ s/(\w+\.cgi)$/prontus_temp\/\1/;
+  #~ my $pesoscero = $0;
+  #~ $pesoscero =~ s/(\w+\.cgi)$/prontus_temp\/\1/;
   # open (STDERR, ">$pesoscero.error.log");
 
 };
+
+# Captura STDERR
+#~ use lib_stdlog;
+#~ &lib_stdlog::set_stdlog($0, 51200);
 
 use strict;
 use File::Copy;
@@ -642,7 +646,7 @@ sub simpleSpider {
       # Califica si el link esta en un nivel inferior al original.
       if ($lnk =~ /^$scope/) {
         if ($LINKS{$lnk} eq '') {
-        	$lnk =~ s/(\w)\/\//$1/g; # Elimina doble / para evitar doble indexacion.
+          $lnk =~ s/(\w)\/\//$1/g; # Elimina doble / para evitar doble indexacion.
           # &simpleSpider($lnk,$scope);
           if ($LINKS{$lnk} eq '') {
             # Solo recuerda links no indexados.
@@ -910,11 +914,15 @@ sub indexa {
   # 1.9 Busca archivos de data de este articulo que haya que indexar.
   # site/artic/20070402/asocfile/20070402165132
   # $archivo,$ts,$extension,$daypath
-  @files = &lib_search::lee_dir("$daypath/asocfile/$ts");
+
+  my $dir_mmedia = &getMmediaDir();
+  my $daypathm = $daypath;
+  $daypathm =~ s/\/artic\//$dir_mmedia\//;
+  @files = &lib_search::lee_dir("$daypathm/asocfile/$ts");
   foreach $file (@files) {
     foreach $ext (keys %FILEFILTER) {
       if ($file =~ /\.$ext$/i) {
-        push @data2index,"$daypath/asocfile/$ts/$file";
+        push @data2index,"$daypathm/asocfile/$ts/$file";
       };
     };
   };
@@ -1463,3 +1471,21 @@ sub getHTML {
   return ($titular,$descripcion,$fechap,$texto,$robots,$buffer);
 }; # getHTML.
 
+# ---------------------------------------------------------------
+# Lee y retorna la pagina web pasada como parametro.
+sub getMmediaDir {
+  #~ Para configurar la externalizacion de la multimedia
+  my($buffer);
+  my $archivo = "$ROOTDIR$PRONTUS/cpan/data/customcfg/mmedia.cfg";
+  if (-f $archivo) {
+    open (ARCHIVO,"<$archivo")
+      || die "Fail Open file $archivo \n $!\n";
+    binmode ARCHIVO;
+    read ARCHIVO, $buffer, -s $archivo;
+    close ARCHIVO;
+    if ($buffer =~ m/\s*EXTERNAL_MMEDIA\s*=\s*("|')1("|')/) {
+      return '/mm';
+    }
+  };
+  return '/artic';
+};

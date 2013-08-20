@@ -204,7 +204,7 @@ BEGIN {
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.15
   use vars qw($DIR_CGI_CPAN $DIR_CGI_PUBLIC); # para que queden disponibles como vars. globales
   require 'dir_cgi.pm';
-  
+
   my ($ROOTDIR) = '';  # 1.12 desde el web
   if ($ENV{'DOCUMENT_ROOT'} ne '') {
     $ROOTDIR = $ENV{'DOCUMENT_ROOT'};
@@ -213,6 +213,8 @@ BEGIN {
   };
   $ROOTDIR .= '/' . $DIR_CGI_CPAN;
   unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
+
+  unshift(@INC,'/var/www/prontus_development/cgi-cpn'); # Para dejar disponibles las librerias
 };
 
 # ---------------------------------------------------------------
@@ -476,22 +478,11 @@ sub parsea_plantilla2 {
   my $paginastotales = int( 1 + ($RESULTADOSTOTALES - 1) / $search_resxpag);
   my $yeswords;
 
-  if ($TURBOMODE == 1) {
-    $yeswords = $#YESWORDS + 1;
-  }else{
-    $yeswords = $MAXWORDS;
-  };
-
-  if ( $paginastotales > $FORM{'search_maxpags'}) { $paginastotales = $FORM{'search_maxpags'}; };
-  if ($max > $RESULTADOSTOTALES) { $max = $RESULTADOSTOTALES; };
-  for($i=1;$i<=$paginastotales;$i++) {
-    if ($i != $search_pag) {
-      # 1.13 $pags .= '| <a href="/cgi-bin/prontus_search.cgi?search_prontus=' . $FORM{'search_prontus'}
-      $pags .= '<a href="' . $scriptname . '?search_prontus=' . $FORM{'search_prontus'}
+  my $moldelink = $scriptname . '?search_prontus=' . $FORM{'search_prontus'}
             . '&amp;search_idx=' . $FORM{'search_idx'}
             . '&amp;search_tmp=' . $FORM{'search_tmp'}
             . '&amp;search_form=' . $FORM{'search_form'}
-            . '&amp;search_pag=' . $i
+            . '&amp;search_pag=%%pagina%%'
             . '&amp;search_resxpag=' . $FORM{'search_resxpag'}
             . '&amp;search_maxpags=' . $FORM{'search_maxpags'}
             . '&amp;search_orden=' . $FORM{'search_orden'}
@@ -506,12 +497,59 @@ sub parsea_plantilla2 {
             . '&amp;search_texto=' . &lib_search::escapehtml($FORM{'search_texto'})
             . '&amp;search_modo=' . $FORM{'search_modo'}
             . '&amp;search_comodines=' . $FORM{'search_comodines'}
-            . '&amp;vista=' . &lib_search::escapehtml($FORM{'vista'})
-            . '">' . $i . '</a> '; # 1.7 1.26
+            . '&amp;vista=' . &lib_search::escapehtml($FORM{'vista'});
+
+  if ($TURBOMODE == 1) {
+    $yeswords = $#YESWORDS + 1;
+  }else{
+    $yeswords = $MAXWORDS;
+  };
+
+  my ($ini, $fin, $nextlink, $prevlink);
+  my $pagcorta_maxpags = $CFG{'SEARCH_PAGCORTA_MAXPAGS'};
+  if($CFG{'SEARCH_TIPO_PAGINACION'} eq '1') {
+
+    # Se procesan las paginas hacia abajo
+    $ini = ($search_pag - $pagcorta_maxpags);
+    if($ini le 1) {
+      $ini = 1;
+    } else {
+      $ini = $ini + 1;
+      my $link = $moldelink;
+      $link =~ s/%%pagina%%/1/;
+      $prevlink =  '<a href="' . $link . '">1</a>  ... ';
+    };
+
+    # Se procesan las páginas hacia arriba
+    $fin = ($search_pag + $pagcorta_maxpags);
+    if($fin >= $paginastotales) {
+      $fin = $paginastotales;
+    } else {
+      $fin = $fin - 1;
+      my $link = $moldelink;
+      $link =~ s/%%pagina%%/$paginastotales/;
+      $nextlink =  ' ... <a href="' . $link . '">' . $paginastotales . '</a>';
+    };
+
+  } else {
+    $ini = 1;
+    $fin = $paginastotales;
+  }
+
+  if ( $paginastotales > $FORM{'search_maxpags'}) { $paginastotales = $FORM{'search_maxpags'}; };
+  if ($max > $RESULTADOSTOTALES) { $max = $RESULTADOSTOTALES; };
+  for(my $i = $ini; $i <= $fin; $i++) {
+    if ($i != $search_pag) {
+      # 1.13 $pags .= '| <a href="/cgi-bin/prontus_search.cgi?search_prontus=' . $FORM{'search_prontus'}
+      my $link = $moldelink;
+      $link =~ s/%%pagina%%/$i/;
+      $pags .=  '<a href="' . $link . '">' . $i . '</a> '; # 1.7 1.26
+
     }else{
-      $pags .= "<span class='pag_actual'> $i </span>";
+      $pags .= "<span class='pag_actual'>$i</span> ";
     };
   };
+  $pags = $prevlink . $pags . $nextlink;
 
   my $plantilla = $PLANTILLA;
   if ($plantilla =~ /<!--separador-->/si) {
@@ -1251,24 +1289,24 @@ sub getFormData {
     $FORMfechaini = &lib_search::fecha2iso($FORM{'search_fechaini'});
     # CVI - Para limpiar/formatear la fecha
     if($FORMfechaini eq '') {
-		$FORM{'search_fechaini'} = '';
-	} else {
-		$FORM{'search_fechaini'} = &lib_search::iso2fechacorta($FORMfechaini);  
-	}
+    $FORM{'search_fechaini'} = '';
+  } else {
+    $FORM{'search_fechaini'} = &lib_search::iso2fechacorta($FORMfechaini);
+  }
   };
   if ($FORM{'search_fechafin'} ne '') {
     $FORMfechafin = &lib_search::fecha2iso($FORM{'search_fechafin'});
     # CVI - Para limpiar/formatear la fecha
     if($FORMfechaini eq '') {
-		$FORM{'search_fechafin'} = '';
-	} else {
-		$FORM{'search_fechafin'} = &lib_search::iso2fechacorta($FORMfechafin);  
-	}
+    $FORM{'search_fechafin'} = '';
+  } else {
+    $FORM{'search_fechafin'} = &lib_search::iso2fechacorta($FORMfechafin);
+  }
   };
-  
+
   # CVI - se limpian las variables restantes
   $FORM{'search_comodines'} =~ s/[^\w]//sg;
   if ($FORM{'search_comodines'} ne 'yes')    { $FORM{'search_comodines'} = 'no'; };
-  
+
   # print "<p>FILTROACTIVO = $FILTROACTIVO $FORMfechaini $FORMfechafin"; # debug
 }; # getFormData

@@ -125,10 +125,11 @@ sub xcode_status {
     # Ve si el destino esta en el XML
     my $esta_en_xml = 0;
     my $ts;
-    if ($destino =~ /(.+)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
-        my $path = $1 .'/'. $2 .'/xml/'. $2 . $4 . '.xml';
-        my $filename = $3;
-        my $extension = $5;
+    print STDERR  "destino[$destino]\n";
+    if ($destino =~ /(.+)\/(.*?)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
+        my $path = $1. $prontus_varglb::DIR_ARTIC . '/'. $3 .'/xml/'. $3 . $5 . '.xml';
+        my $filename = $4;
+        my $extension = $6;
         $ts = $2 . $4;
         print STDERR "[$path][$filename][$extension]\n";
         my $buffer = &glib_fildir_02::read_file($path);

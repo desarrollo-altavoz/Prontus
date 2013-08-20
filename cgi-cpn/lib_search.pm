@@ -204,6 +204,10 @@ sub get_config {
       if ($name ne '') { $pairs{$name} = $value; };
     };
   };
+
+  $pairs{'SEARCH_TIPO_PAGINACION'} = 0 unless($pairs{'SEARCH_TIPO_PAGINACION'});
+  $pairs{'SEARCH_PAGCORTA_MAXPAGS'} = 5 unless($pairs{'SEARCH_PAGCORTA_MAXPAGS'});
+
   return %pairs;
 }; # get_config
 
