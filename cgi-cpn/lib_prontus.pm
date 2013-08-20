@@ -1589,6 +1589,21 @@ sub load_config {
   $prontus_varglb::TAXPORT_MAXARTICS = $taxport_maxartics;
   $prontus_varglb::TAXPORT_MAXARTICS = $prontus_varglb::TAXPORT_MAXARTICS_SECURITY if ($prontus_varglb::TAXPORT_MAXARTICS > $prontus_varglb::TAXPORT_MAXARTICS_SECURITY);
 
+
+  my $taxport_tipo_pag = '0'; # valor por defecto.
+  if ($buffer =~ m/\s*TAXPORT_TIPO_PAGINACION\s*=\s*("|')(0|1)("|')/) {
+    $taxport_tipo_pag = $2;
+  };
+  $prontus_varglb::TAXPORT_TIPO_PAGINACION = $taxport_tipo_pag;
+
+
+  my $taxport_PAGCORTA_MAXPAGS = '5'; # valor por defecto.
+  if ($buffer =~ m/\s*TAXPORT_PAGCORTA_MAXPAGS\s*=\s*("|')([0-9]+?)("|')/) {
+    $taxport_PAGCORTA_MAXPAGS = $2;
+  };
+  $prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS = $taxport_PAGCORTA_MAXPAGS;
+
+
   my ($tax_niv, $control_alta);
   if ($buffer =~ m/\s*TAXONOMIA_NIVELES\s*=\s*("|')([0-3])("|')/) {
    $tax_niv = $2;

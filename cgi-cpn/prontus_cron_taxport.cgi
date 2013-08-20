@@ -1078,34 +1078,103 @@ sub incluir_nrosdepag {
     my ($tpl_nropag) = '<a href="%%lnk%%">%%cnro_pag%%</a>';
     my ($tpl_nropag2) = '<span class="actual">%%cnro_pag%%</span>';
 
-    my $cnro_pag = 0;
+    #~ my $cnro_pag = 0;
     my $html_nros_pag = '';
     my $i;
 
-    for ($i=0;$i<$tot_artics;$i++) {
-        if (((($i % $FILASXPAG) == 0) && ($i >= $FILASXPAG)) || ($i == 0)) {
-            $cnro_pag++;
-            my $tpl_nropag_aux;
-            if ($cnro_pag == $nro_pag) {
-                $tpl_nropag_aux = $tpl_nropag2;
-            }else{
-                $tpl_nropag_aux = $tpl_nropag;
-            };
+    use POSIX qw(ceil);
+    my $nro_paginas_totales = POSIX::ceil($tot_artics / $FILASXPAG);
 
-            # my $lnk = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;tema=$temas_id&amp;subtema=$subtemas_id&amp;nropag=$cnro_pag&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv"; # rotulos tax
+    my ($ini, $fin, $nextlink, $prevlink);
+    if($prontus_varglb::TAXPORT_TIPO_PAGINACION eq '1') {
 
+        # Se procesan las paginas hacia abajo
+        $ini = ($nro_pag - $prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS);
+        if($ini le 1) {
+            $ini = 1;
+        } else {
+            $ini = $ini + 1;
             my $lnk = "$reldir_port_dst/$nombase" . '_'
-            . $secc_id
-            . '_' . $temas_id
-            . '_' . $subtemas_id
-            . '_' . $cnro_pag
-            . $extension;
-
+                . $secc_id
+                . '_' . $temas_id
+                . '_' . $subtemas_id
+                . '_' . 1
+                . $extension;
+            my $pag = '1';
+            my $tpl_nropag_aux = $tpl_nropag;
             $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
-            $tpl_nropag_aux =~ s/%%cnro_pag%%/$cnro_pag/;
-            $html_nros_pag .= "$tpl_nropag_aux\n";
+            $tpl_nropag_aux =~ s/%%cnro_pag%%/$pag/;
+            $prevlink =  $tpl_nropag_aux . ' ... ';
         };
+
+        # Se procesan las páginas hacia arriba
+        $fin = ($nro_pag + $prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS);
+        if($fin >= $nro_paginas_totales) {
+            $fin = $nro_paginas_totales;
+        } else {
+            $fin = $fin - 1;
+            my $lnk = "$reldir_port_dst/$nombase" . '_'
+                . $secc_id
+                . '_' . $temas_id
+                . '_' . $subtemas_id
+                . '_' . $nro_paginas_totales
+                . $extension;
+            my $pag = $nro_paginas_totales;
+            my $tpl_nropag_aux = $tpl_nropag;
+            $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
+            $tpl_nropag_aux =~ s/%%cnro_pag%%/$pag/;
+            $nextlink =  ' ... ' . $tpl_nropag_aux;
+        };
+
+    } else {
+        $ini = 1;
+        $fin = $nro_paginas_totales;
+    }
+
+    for (my $pag = $ini; $pag <= $fin; $pag++) {
+        my $tpl_nropag_aux;
+        if ($pag eq $nro_pag) {
+            $tpl_nropag_aux = $tpl_nropag2;
+        }else{
+            $tpl_nropag_aux = $tpl_nropag;
+        };
+        my $lnk = "$reldir_port_dst/$nombase" . '_'
+                . $secc_id
+                . '_' . $temas_id
+                . '_' . $subtemas_id
+                . '_' . $pag
+                . $extension;
+
+        $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
+        $tpl_nropag_aux =~ s/%%cnro_pag%%/$pag/;
+        $html_nros_pag .= "$tpl_nropag_aux\n";
     };
+    $html_nros_pag = $prevlink . $html_nros_pag . $nextlink;
+
+    #~ for ($i=0;$i<$tot_artics;$i++) {
+        #~ if (((($i % $FILASXPAG) == 0) && ($i >= $FILASXPAG)) || ($i == 0)) {
+            #~ $cnro_pag++;
+            #~ my $tpl_nropag_aux;
+            #~ if ($cnro_pag == $nro_pag) {
+                #~ $tpl_nropag_aux = $tpl_nropag2;
+            #~ }else{
+                #~ $tpl_nropag_aux = $tpl_nropag;
+            #~ };
+#~
+            #~ # my $lnk = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;tema=$temas_id&amp;subtema=$subtemas_id&amp;nropag=$cnro_pag&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv"; # rotulos tax
+#~
+            #~ my $lnk = "$reldir_port_dst/$nombase" . '_'
+            #~ . $secc_id
+            #~ . '_' . $temas_id
+            #~ . '_' . $subtemas_id
+            #~ . '_' . $cnro_pag
+            #~ . $extension;
+#~
+            #~ $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
+            #~ $tpl_nropag_aux =~ s/%%cnro_pag%%/$cnro_pag/;
+            #~ $html_nros_pag .= "$tpl_nropag_aux\n";
+        #~ };
+    #~ };
 
     if ($html_nros_pag ne '') {
         $pagina =~ s/%%_HTML_NROS_PAG%%/ $html_nros_pag /ig;

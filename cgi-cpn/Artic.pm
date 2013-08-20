@@ -1282,6 +1282,7 @@ sub borra_artic {
     my $mv;
     foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
         my $dir_art_mv = $dirpag;
+        no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
         $dir_art_mv =~ s/(\d{8})\/pags/\1\/pags-$mv/;
         my @files2delete_mv = glob("$dir_art_mv/$ts" . '.*');
         foreach my $file2delete (@files2delete_mv) {

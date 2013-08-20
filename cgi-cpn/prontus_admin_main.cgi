@@ -771,6 +771,16 @@ sub parseaVars {
         $pagina =~ s/%%TAXPORT_ORDEN_ASC%%//ig;
     };
 
+    if ($prontus_varglb::TAXPORT_TIPO_PAGINACION eq '0') {
+        $pagina =~ s/%%TAXPORT_TIPO_PAGINACION_V0%%/ checked="checked"/ig;
+        $pagina =~ s/%%TAXPORT_TIPO_PAGINACION_V1%%//ig;
+    } else {
+        $pagina =~ s/%%TAXPORT_TIPO_PAGINACION_V0%%//ig;
+        $pagina =~ s/%%TAXPORT_TIPO_PAGINACION_V1%%/ checked="checked"/ig;
+    };
+
+    $pagina =~ s/%%TAXPORT_PAGCORTA_MAXPAGS%%/$prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS/ig;
+
     #~ if ($prontus_varglb::TAXPORT_REFRESH eq 'SI') {
         #~ $pagina =~ s/%%TAXPORT_REFRESH_SI%%/ checked="checked"/ig;
         #~ $pagina =~ s/%%TAXPORT_REFRESH_NO%%//ig;
@@ -1223,6 +1233,16 @@ sub parseaVars {
     $pagina =~ s/%%TEXTVARS%%/$cfg_buscador{'TEXTVARS'}/ig;
     $pagina =~ s/%%RESPERPAG%%/$cfg_buscador{'RESPERPAG'}/ig;
     $pagina =~ s/%%MAXPAGS%%/$cfg_buscador{'MAXPAGS'}/ig;
+
+    if ($cfg_buscador{'SEARCH_TIPO_PAGINACION'} eq '0') {
+        $pagina =~ s/%%SEARCH_TIPO_PAGINACION_V0%%/ checked="checked"/ig;
+        $pagina =~ s/%%SEARCH_TIPO_PAGINACION_V1%%//ig;
+    } else {
+        $pagina =~ s/%%SEARCH_TIPO_PAGINACION_V0%%//ig;
+        $pagina =~ s/%%SEARCH_TIPO_PAGINACION_V1%%/ checked="checked"/ig;
+    };
+    $pagina =~ s/%%SEARCH_PAGCORTA_MAXPAGS%%/$cfg_buscador{'SEARCH_PAGCORTA_MAXPAGS'}/ig;
+
     $pagina =~ s/%%SEARCH_MAXEXEC%%/$cfg_buscador{'SEARCH_MAXEXEC'}/ig;
     $pagina =~ s/%%SEARCH_MAXEXEC%%/$cfg_buscador{'SEARCH_MAXEXEC'}/ig;
 
