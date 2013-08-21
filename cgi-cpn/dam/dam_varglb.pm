@@ -29,6 +29,7 @@ $FILASXPAG = 16;
 
 $DIR_TMPL = '/cpan/core/dam/plantillas/';
 $TMPL_SEARCH = 'prontus_dam_search.html';
+$TMPL_ASSET_LIST = 'prontus_dam_asset_list.html';
 
 @TIPOS = ('foto', 'video', 'audio');
 

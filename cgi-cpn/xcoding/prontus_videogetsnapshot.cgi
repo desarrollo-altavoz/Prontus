@@ -48,6 +48,7 @@
 BEGIN {
     use FindBin '$Bin';
     my $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
@@ -63,12 +64,11 @@ use glib_cgi_04;
 use lib_prontus;
 use glib_html_02;
 use strict;
+use lib_xcoding;
 
 my %FORM;        # Contenido del formulario de invocacion.
-my $RES;
 
 main: {
-
     &glib_cgi_04::new();
     &glib_cgi_04::set_formvar('video', \%FORM);
     &glib_cgi_04::set_formvar('t', \%FORM);
@@ -94,47 +94,76 @@ main: {
         &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
     };
 
-    $RES = &getSnapshot();
+    my $res = &do_snapshots();
 
     # Falta convertir JS para que recepcione json.
     # &glib_html_02::print_json_result($status, $msg, 'exit=1,ctype=1');
 
     # Para facilitar el uso mediante AJAX.
     print "Content-type: text/plain\n\n";
-    print $RES;
+    print $res;
 
     exit;
 };
 
 # -------------------------------------------------------------------#
 # Inicia la transcodificacion.
-sub getSnapshot {
-  my ($cmd,$res,$destino);
+sub do_snapshots {
+  my $res;
   my $video = $FORM{'video'};
   my $tiempo = $FORM{'t'};
   my $prontus_id = $FORM{'prontus_id'};
 
   if ($video =~ /^\//) {
     $video = $prontus_varglb::DIR_SERVER . $video;
-  }else{
+  } else {
     $video = $prontus_varglb::DIR_SERVER .'/'. $video;
   };
+
+  $res = &make_snapshot($video, $tiempo, $prontus_id);
+
+  return $res if ($res ne 'OK');
+
+  my $path_search = $video;
+  $path_search =~ s/(\.\w+)$/*$1/is;
+  my @files_multimedia = glob("$path_search");
+  foreach my $mediafile (@files_multimedia) {
+      next if ($video eq $mediafile);
+      my $resp = &make_snapshot($mediafile, $tiempo, $prontus_id, 1);
+      return $resp if ($res ne 'OK');
+  };
+
+  return 'OK';
+
+}; # getSnapshot
+
+
+sub make_snapshot {
+  my $video = $_[0];
+  my $tiempo = $_[1];
+  my $prontus_id = $_[2];
+  my $no_copy = $_[3];
+  my ($cmd, $res);
+  my $destino = $video;
+
   $tiempo =~ s/\,/\./;
   $tiempo =~ s/[^0-9\.]//g;
-  # print $tiempo ."\n";
-  $destino = $video;
+
   $destino =~ s/(.+)\.\w+/$1\.jpg/;
   $cmd = "$prontus_varglb::DIR_FFMPEG/ffmpeg -ss $tiempo -i $video -y -vframes 1 -f image2 $destino";
-  print STDERR "******** NUEVO SNAPSHOT\n$cmd \n";
+  print STDERR "Snapshot cmd[$cmd]\n";
   $res = `$cmd 2>&1`;
-  print STDERR "result from ffmpeg sacando snapshot\nres[$res][$?][$!]\n";
+
   my $msg_err_usr = 'Error al generar Snapshot, no se pudo generar la imagen. Los detalles fueron agregados al error log interno de Prontus.';
+
   if (-f $destino) {
     my $nom_img;
     if ($destino =~ /\/([^\/]+\.jpg)$/) {
         $nom_img = $1;
-        print STDERR "copy[$destino][$prontus_varglb::DIR_SERVER/$prontus_id/cpan/procs/imgedit/$nom_img] \n";
-        &File::Copy::copy($destino, "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/procs/imgedit/$nom_img");
+        if (!$no_copy) {
+          print STDERR "copy[$destino][$prontus_varglb::DIR_SERVER/$prontus_id/cpan/procs/imgedit/$nom_img] \n";
+          &File::Copy::copy($destino, "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/procs/imgedit/$nom_img");
+        };
         return 'OK';
     } else {
         print STDERR "$msg_err_usr\nError: la imagen resultante de ffmpeg [$destino] no es .jpg\n";
@@ -144,8 +173,4 @@ sub getSnapshot {
       print STDERR "$msg_err_usr\nError: la imagen resultante [$destino] no pudo ser generada por ffmpeg\n";
       return $msg_err_usr;
   };
-
-}; # getSnapshot
-
-
-
+};

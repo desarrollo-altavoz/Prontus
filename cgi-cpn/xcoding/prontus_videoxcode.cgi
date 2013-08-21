@@ -41,14 +41,16 @@
 #
 # ---------------------------------------------------------------
 
-# 1.0.0 - 31/05/2010 - Primera version.
-# 1.1.0 - 07/09/2012 - Se pone un limite de tamaño de origen a 50MB para transcodificar.
-# 1.1.1 - 07/09/2012 - Limite de tamaño de origen para transcodificar se hace configurable.
+# 1.0.0 - 31/05/2010 - ??? - Primera version.
+# 1.1.0 - 07/09/2012 - ??? - Se pone un limite de tamaño de origen a 50MB para transcodificar.
+# 1.1.1 - 07/09/2012 - ??? - Limite de tamaño de origen para transcodificar se hace configurable.
+# 1.2.0 - 13/08/2013 - JOR - La ejecucion del script que hace la transcodificacion se hace en segundo plano.
 
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
     my $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
@@ -64,7 +66,7 @@ use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
 use strict;
-
+use lib_lock;
 
 my %FORM;        # Contenido del formulario de invocacion.
 
@@ -73,6 +75,8 @@ main: {
     &glib_cgi_04::new();
     &glib_cgi_04::set_formvar('video', \%FORM);
     &glib_cgi_04::set_formvar('prontus_id', \%FORM);
+    &glib_cgi_04::set_formvar('generar_versiones', \%FORM);
+
 
     # Valida datos de entrada
     my $msg_err;
@@ -99,16 +103,26 @@ main: {
         &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
     };
 
+
     # Startea transcodificacion y devuelve respuesta json
-    my ($status, $msg) = &startXCode();
+    my ($status, $msg) = &start_xcode();
     &glib_html_02::print_json_result($status, $msg, 'exit=1,ctype=1');
 };
 
 # -------------------------------------------------------------------#
 # Inicia la transcodificacion.
-sub startXCode {
-
+sub start_xcode {
+    my $prontus_id = $FORM{'prontus_id'};
     my $origen = "$prontus_varglb::DIR_SERVER$FORM{'video'}";
+    # use FindBin '$Bin';
+    my $pathnice = &lib_prontus::get_path_nice();
+    my $cmd = "$pathnice /usr/bin/perl $Bin/prontus_videodoxcode.cgi $origen $prontus_id";
+
+    if ($FORM{'generar_versiones'} eq '1') {
+        print STDERR "gatillando[$cmd 1] generar versiones.\n";
+        system("$cmd 1 >/dev/null 2>&1 &");
+        return (1, 'Transcodificación en proceso...');
+    };
 
     # No transcodifica peliculas que ya son mp4.
     if ($origen =~ /\.mp4$/i) {
@@ -117,35 +131,20 @@ sub startXCode {
 
     # Verifica que no haya otro transcoding identico en ejecucion.
     # my $res = qx/ps auxww |grep ffmpeg|grep $origen|grep -v grep/;
-    my $prontus_id = $FORM{'prontus_id'};
     my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep/;
 
-    print STDERR "Execution test = [$res][ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep]\n";
+    # print STDERR "Execution test = [$res][ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep]\n";
+
     if ($res ne '') {
         return (0, 'Error: Se detectó un proceso activo de transcodificación para el video indicado.');
     };
-    use FindBin '$Bin';
-    my $pathnice = &lib_prontus::get_path_nice();
-    my $cmd = "$pathnice /usr/bin/perl $Bin/prontus_videodoxcode.cgi $origen $prontus_id";
+
+
     # Gatilla la transcodificacion en background.
-    # print "$cmd \n";
-    # $res = `$cmd 2>&1 &`;
-    print STDERR "gatillando[$cmd]\n";
-    $res = `$cmd 2>&1 &`; # devuelve a $res todo lo que se tirte a STDOUT o a STDERR
-    sleep(3);
-    print STDERR "result from doxcode\nres[$res][$?][$!]\n"; # LOGUEA TODO LO RESPONDIDO
-    if ($res eq '') {
-        if ($? != 0) {
-            return (0, "Error: Falló la ejecución del proceso de transcodificación. Los detalles fueron agregados al error log interno de Prontus.");
-            print STDERR "error al transcodificar[$?][$!]\n";
-        };
-        return (1, '');
-    } else {
-        # si $res trae algo, solo considera que es error si trae el token [ERROR] o si se cayo el script invocado, en cuyo caso setea $?,  ya que lo demas es debug
-        if (($res =~ /\[ERROR\]/) || ($? != 0)) {
-            $res =~ s/[\r\n]/ /sg;
-            return (0, "Error: Falló la ejecución del proceso de transcodificación. Los detalles fueron agregados al error log interno de Prontus.");
-        };
-        return (1, '');
-    };
-}; # startXCode
+
+    print STDERR "gatillando[$cmd 0]\n";
+    system("$cmd 0 >/dev/null 2>&1 &");
+
+    return (1, 'Transcodificación en proceso...');
+};
+

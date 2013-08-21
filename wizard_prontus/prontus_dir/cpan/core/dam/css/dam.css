@@ -13,3 +13,41 @@ body {margin:0; padding:0; border:0; font-family:Verdana,Tahoma,Arial,Helvetica,
 
 .buscador .filtros {margin:3px 0px 4px 5px; clear:both;}
 .buscador .filtros a {color: #333333; font-size:11px;}
+.dam a.ver_todas {margin-right: 2px;}
+.dam .foto-list {height: 140px; margin-bottom: 3px; background: #e6e6e6;}
+.dam .foto-list.bg {box-shadow: 0px 0px 1px;}
+.dam .foto-list .holder {float: left;text-align: center;/*border: 2px solid #e6e6e6;*/ position:relative; background: #FFFFFF; background-position: center; background-repeat: no-repeat; background-size: cover !important; }
+.dam .foto-list .holder img {position: absolute; top: 0; bottom: 0; right: 0; left: 0; margin: auto;}
+.dam .foto-list .holder.tip1 {height: 130px;width: 200px; margin: 5px;}
+.dam .foto-list .holder.tip2 {height: 63px;width: 200px; margin: 4px;}
+.dam .foto-list .holder.tip3 {height: 63px;width: 98px; margin: 3px;}
+.dam .foto-list .holder.tip3:last-child {height: 63px;width: 200px;}
+.dam .foto-list .holder.tip4 {height: 63px;width: 98px; margin: 3px;}
+.dam .foto-list a {display: inline-block;}
+
+/* asset list */
+#asset_thumb_nav { width: 120px; height: 485px; float:left; background-color: #e6e6e6; margin-right: 5px;}
+#asset_thumb_nav .scroll { overflow: auto; width: 120px; height: 485px;float: left;}
+#asset_thumb_nav .scroll .thumb { position: relative; width: 100px; height: 64px; background-position: center; background-repeat: no-repeat; background-size: cover !important; margin-top: 5px; margin-left: 9px; cursor: pointer; border: 1px solid #e6e6e6;}
+#asset_thumb_nav .scroll .thumb .active {position: absolute; width: 100%; height: 64px; background: #333333; opacity: 0.8; border: 1px solid black; color: #fff; font-weight: bold; padding-top: 20px; }
+#asset_viewer {width: 650px; height: 495px; float: left;}
+#asset_viewer .item {position: relative; width: 630px; height: 450px; background-color: #e6e6e6; display: table-cell; vertical-align: middle; padding: 7px;}
+#asset_viewer .toolbar {height: 30px; margin-top: 5px;}
+#asset_viewer .toolbar #num {float: left; font-size: 15px; text-align: left; color: #333333;}
+
+/* /asset list */
+
+/* copiar url */
+
+#asset_viewer .toolbar .div-copiar-url {float: right; margin-right: 6px; width: 18px; height: 18px;}
+#asset_viewer .toolbar .div-copiar-url .copiar-url {width:18px; height:18px; position: absolute; cursor:pointer; background:url(../../imag/boto/copylink2_of.png) no-repeat left top;}
+#asset_viewer .toolbar .div-copiar-url .hover {background:url(../../imag/boto/copylink2_on.png) no-repeat left top;}
+#asset_viewer .toolbar .div-copiar-url #asset_list_ext_cb {width: 18px; height: 18px; position: relative;}
+
+#asset_list_paginacion {width: 650px; height: 19px;}
+#asset_list_paginacion #nextBtn { float: right; width: 100px; height: 18px;}
+#asset_list_paginacion #prevBtn { float: left; width: 100px; height: 18px;}
+
+#asset_list #tooltip-copiar {margin-top: 75%;}
+
+#asset_viewer .toolbar .dam-tooltip {background-image:url('../../imag/auxi/copiar-url.png'); display:none; position:absolute; width:136px; height:21px; right: 30px;}

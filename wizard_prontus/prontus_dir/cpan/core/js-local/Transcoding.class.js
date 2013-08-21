@@ -88,6 +88,9 @@ var Transcoding, Msg, Flash;
                                 setTimeout(function () {
                                     Transcoding.loadFlash();
                                 }, 250);
+                            } else if (data.msg == 'XCODE') {
+                                Msg.setStatusMessage('Generando versiones del video.');
+                                Transcoding.procesarVideo(1);
                             } else {
                                 Msg.setAlertMessage('Se ha producido un error:<br/> Respuesta no válida');
                             }
@@ -109,27 +112,35 @@ var Transcoding, Msg, Flash;
             $.ajax({
                 url: Transcoding.dirCgi + Transcoding.cgiStatus,
                 type: "post",
-                dataType: 'text',
+                dataType: 'json',
                 data: {video: Transcoding.linkVideo, prontus_id: Admin.prontus_id},
-                success: function (msg) {
-                    if (msg == 'None') {
-                        Msg.setStatusMessage('El video está siendo procesado');
-                        Transcoding.procesarVideo();
-                    } else if (msg == 'Busy') {
-                        Transcoding.transcoding = true;
-                        Msg.setStatusMessage('El video está siendo procesado');
-                        setTimeout(function () {
-                            Transcoding.checkStatus();
-                        }, Transcoding.timeStatus);
+                success: function (data) {
+                    if (typeof data !== 'undefined' && typeof data.status !== 'undefined') {
+                        if (data.status == '1') {
+                            if (data.msg == 'none') {
+                                Msg.setStatusMessage('El video está siendo procesado');
+                                Transcoding.procesarVideo();
+                            } else if (data.msg == 'busy') {
+                                Transcoding.transcoding = true;
+                                Msg.setStatusMessage('El video está siendo procesado');
+                                setTimeout(function () {
+                                    Transcoding.checkStatus();
+                                }, Transcoding.timeStatus);
 
-                    } else if (msg == 'Ready') {
-                        Transcoding.transcoding = false;
-                        Msg.setInfoMessage('El video ya fue convertido.');
-                        setTimeout(function () {
-                            Transcoding.loadFlash();
-                        }, 250);
-
-
+                            } else if (data.msg == 'ready') {
+                                Transcoding.transcoding = false;
+                                Msg.setInfoMessage('El video ya fue convertido.');
+                                setTimeout(function () {
+                                    Transcoding.loadFlash();
+                                }, 250);
+                            }
+                        } else {
+                            if (data.msg != '') {
+                                Msg.setAlertMessage('Se ha producido un error al recuperar el Status:<br/> ' + data.msg);
+                            } else {
+                                Msg.setAlertMessage('Se ha producido un error al recuperar el Status:<br/> Respuesta no válida');
+                            }
+                        }
                     } else {
                         Msg.setAlertMessage('Se ha producido un error al recuperar el Status:<br/> Respuesta no válida');
                     }
@@ -140,12 +151,22 @@ var Transcoding, Msg, Flash;
             });
         },
         // -------------------------------------------------------------------------
-        procesarVideo: function () {
+        procesarVideo: function (generar_versiones) {
+            var opciones = {
+                video: Transcoding.linkVideo, 
+                prontus_id: Admin.prontus_id,
+                generar_versiones: 0,
+            };
+
+            if (typeof generar_versiones != 'undefined') {
+                opciones.generar_versiones = 1;
+            }
+
             $.ajax({
                 url: Transcoding.dirCgi + Transcoding.cgiCode,
                 type: "post",
                 dataType: 'json',
-                data: {video: Transcoding.linkVideo, prontus_id: Admin.prontus_id},
+                data: opciones,
                 success: function (resp) {
                     if (typeof resp !== 'undefined' && typeof resp.status !== 'undefined') {
                         if (resp.status == '1') {
