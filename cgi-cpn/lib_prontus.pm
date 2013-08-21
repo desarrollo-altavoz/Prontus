@@ -3988,8 +3988,12 @@ sub urlencode_text {
     $toencode =~ s/ {2,}/ /sg;
     $toencode =~ s/ $//sg;
     $toencode =~ s/^ //sg;
-    $toencode =~ s/([^-A-Za-z0-9_.!~*'() ])/sprintf("%%%02X", ord($1))/eg;
-    $toencode =~ s/ /%20/sg;
+    #~ $toencode =~ s/([^\-A-Za-z0-9_.!~*() ])/sprintf("%%%02X", ord($1))/eg;
+    #~ $toencode =~ s/ /%20/sg;
+    use URI::Escape;
+    $toencode = uri_escape($toencode);
+    $toencode =~ s/'/%27/g;
+    $toencode =~ s/"/%22/g;
     return $toencode;
 };
 # -------------------------------------------------------------------------#
