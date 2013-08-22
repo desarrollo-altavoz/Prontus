@@ -189,7 +189,7 @@ sub procesa_quota_vps {
     };
 
     if (!$quota_asig) {
-        print STDERR "Usando valores de la partición raiz\n";
+        print STDERR "[lib_quota] Usando valores de la particion raiz\n";
         $usado = $usado_raiz;
         $quota_asig = $usado_raiz + $disponible_raiz;
     };
