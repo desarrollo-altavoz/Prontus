@@ -1691,21 +1691,21 @@ sub generar_vista_art {
         $claves_adicionales{_ts} = $this->{ts};
 
         # Cargar versiones alternativas de multimedia_video
-        my @multimedia_video = grep { /multimedia_video.*?/ } keys %campos_xml;
+        my @multimedia_video = grep { /multimedia_video.*?/ } keys %campos_xml; # saber que campos multimedia_video existen.
         foreach my $video (@multimedia_video) {
             my $path = "$this->{'dst_multimedia'}/$campos_xml{$video}";
-            # Ver si existen versiones para eso..
-            my $path_search = $path;
-            $path_search =~ s/(\.\w+)$/*$1/is;
-            my @files_multimedia = glob("$path_search");
-            foreach my $mediafile (@files_multimedia) {
-                next if ($path eq $mediafile);
-                $mediafile = &lib_prontus::remove_front_string($mediafile, $this->{document_root});
-                $mediafile =~ /\/mmedia\/($video\d{14}(.*?)\.\w+)$/;
-                my $nom_campo = "$video.$2";
-                my $valor_campo = $1;
-                # print STDERR "nom_campo[$nom_campo] = valor_campo[$valor_campo]\n";
-                $claves_adicionales{$nom_campo} = $valor_campo;
+            while ($buffer =~ /%%$video\.(.*?)%%/isg) {
+                my $version = "$1";
+                # Revisar si existe el archivo en disco.
+                $path =~ /\/($video.*?)(\.\w+)$/is;
+                my $file_version = "$1$version$2";
+                if (-f "$this->{'dst_multimedia'}/$file_version") {
+                    $claves_adicionales{"$video.$version"} = $file_version;
+                } else {
+                    $claves_adicionales{"$video.$version"} = $campos_xml{$video}; # si no existe, poner el video original.
+                };
+
+                # print STDERR "file_version[$file_version]\n";
             };
         };
 
