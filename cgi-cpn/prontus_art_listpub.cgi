@@ -159,7 +159,7 @@ main: {
     $buffer =~ s/%%_path_conf%%/$FORM{'_path_conf'}/g;
 
     $buffer = &port_dd_check_compatible($buffer);
-    
+
     # Indicador de si hay alguien mas editando la portada
     my $id_session = &get_sess_id();
     my $nom_recurso_concurrency = &get_nom_recurso_concurrency();
@@ -200,7 +200,7 @@ main: {
         $open_fid_in_pop = 'open_in_pop';
     }
     $buffer =~ s/%%_class_open_fid%%/$open_fid_in_pop/ig;
-    
+
     my $portada_hdd = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/site/edic/$FORM{'_edic'}/port/$FORM{'_port'}";
     print STDERR "portada: $portada_hdd\n";
     if(-f $portada_hdd) {
@@ -210,35 +210,35 @@ main: {
         $buffer =~ s/%%_localmodtime%%/$modtime/ig;
         print STDERR "localmodtime: $modtime\n\n";
         #~ print STDERR "buffer: $buffer\n\n";
-        
+
         #~ eval "require POSIX;";  my $no_hay_libreria = $@;
         #~ unless($no_hay_libreria) {
-        #~ 
+        #~
             #~ use POSIX qw/strftime/;
-            #~ 
+            #~
             #~ my $moddate = strftime("%d/%m/%Y", );
             #~ my $modhour = strftime("%d/%m/%Y", localtime $modtime);
             #~ print STDERR "modtime: \n";
             #~ print STDERR "modtime: $modhuman\n";
-            #~ 
+            #~
             #~ my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
             #~ my $today = &glib_hrfec_02::fecha_human();
-            #~ 
-            #~ h	Formato de 12 horas de una hora con ceros iniciales	01 hasta 12
-#~ H	Formato de 24 horas de una hora con ceros iniciales	00 hasta 23
-#~ i	Minutos, con ceros iniciales	00 hasta 59
+            #~
+            #~ h    Formato de 12 horas de una hora con ceros iniciales 01 hasta 12
+#~ H    Formato de 24 horas de una hora con ceros iniciales 00 hasta 23
+#~ i    Minutos, con ceros iniciales    00 hasta 59
 #~ s
-#~ 
+#~
 #~ <input type="hidden" name="_fecha_mod" value="%%_fecha_mod%%" />
 #~ <input type="hidden" name="_hora_mod" value="%%_hora_mod%%" />
-#~ 
-                        #~ 
+#~
+                        #~
             #~ my ($)
         #~ }
     }
-    
+
     $buffer =~ s/%%.*?%%//ig;
-    
+
     #~ %%_fechahora_pub%%
 
 
@@ -546,7 +546,7 @@ sub get_artic_parsed {
         $loop_art_tpl =~ s/%%_vobo_st_img%%/nopub/g;
     };
 
-    
+
     $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo/g;
     $loop_art_tpl =~ s/%%_voboboto_class_name%%/voboboto/g;
     $loop_art_tpl =~ s/%%_vobo%%/$st_vb/g;
@@ -600,9 +600,9 @@ sub get_artic_parsed {
     }
 
     # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
-  	if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-  	  $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'});
-  	}
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+      $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'});
+    }
     $loop_art_tpl =~ s/%%_file%%/$marca_file/g;
     $loop_art_tpl =~ s/%%_autoinc%%/$art_autoinc/g;
     $loop_art_tpl =~ s/%%_titular%%/$titulo/g;

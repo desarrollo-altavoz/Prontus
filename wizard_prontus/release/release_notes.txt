@@ -6694,6 +6694,25 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         No se especifican los archivos modificados porque son muchos
 
+- Prontus en General
+    [bugfix]
+        - Se corrige la salida ".urlencode" de los campos de texto. Se comienza a usar URI::Escape en
+          vez de hacer la codificación por código. Ahora con soporte para URL Encode de utf-8
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Listado de Articulos
+    [bugfix]
+        - Se corrige error al posicionar la combo de portadas y ediciones, cuando hay mutiedicion
+          y la variable: EDICBASE_INI_SELECTED estaba en SI.
+    [files]
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-cpn/prontus_art_newadmin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/LoadDiv.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/menu_head1.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+
 - Portadas Taxonómicas
     [mejoras]
         - Se agrega la opción de cambiar el tipo de paginación a una paginación estilo google, con X paginas hacia
@@ -6731,41 +6750,34 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cfg_save.cgi
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_search.html
 
-- Prontus en General
-    [bugfix]
-        - Se corrige la salida ".urlencode" de los campos de texto. Se comienza a usar URI::Escape en
-          vez de hacer la codificación por código. Ahora con soporte para URL Encode de utf-8
-    [files]
-        /cgi-cpn/lib_prontus.pm
-
 - DAM
-  [mejoras]
-    - Se agrupan las fotos por artículo. Ya no se muestran las fotos sueltas.
-    - Se agrega visor con miniaturas.
-  [files]
-    /cgi-cpn/dam/dam_varglb.pm
-    /cgi-cpn/dam/lib_dam.pm
-    /cgi-cpn/dam/prontus_dam_search.cgi
-    /cgi-cpn/dam/prontus_dam_asset_list.cgi
-    /wizard_prontus/prontus_dir/cpan/core/dam/css/dam.css
-    /wizard_prontus/prontus_dir/cpan/core/dam/js-local/Dam.class.js
-    /wizard_prontus/prontus_dir/cpan/core/dam/plantillas/prontus_dam_search.html
-    /wizard_prontus/prontus_dir/cpan/core/dam/plantillas/prontus_dam_asset_list.html
-    /wizard_prontus/prontus_dir/cpan/core/imag/boto/ver_todas_of.png
-    /wizard_prontus/prontus_dir/cpan/core/imag/boto/ver_todas_on.png
-    /wizard_prontus/prontus_dir/cpan/core/js-local/slimscroll/
+    [mejoras]
+        - Se agrupan las fotos por artículo. Ya no se muestran las fotos sueltas.
+        - Se agrega visor con miniaturas.
+    [files]
+        /cgi-cpn/dam/dam_varglb.pm
+        /cgi-cpn/dam/lib_dam.pm
+        /cgi-cpn/dam/prontus_dam_search.cgi
+        /cgi-cpn/dam/prontus_dam_asset_list.cgi
+        /wizard_prontus/prontus_dir/cpan/core/dam/css/dam.css
+        /wizard_prontus/prontus_dir/cpan/core/dam/js-local/Dam.class.js
+        /wizard_prontus/prontus_dir/cpan/core/dam/plantillas/prontus_dam_search.html
+        /wizard_prontus/prontus_dir/cpan/core/dam/plantillas/prontus_dam_asset_list.html
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/ver_todas_of.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/ver_todas_on.png
+        /wizard_prontus/prontus_dir/cpan/core/js-local/slimscroll/
 
 - Transcodificación
-  [cambio]
-    - Se podrán generar versiones alternativas de un video solo si existe el archivo de configuración
-      correspondiente.
-  [files]
-    /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
-    /cgi-cpn/xcoding/prontus_videocut.cgi
-    /cgi-cpn/xcoding/prontus_videodoxcode.cgi
-    /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
-    /cgi-cpn/xcoding/prontus_videoxcode.cgi
-    /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
-    /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
-    /cgi-cpn/xcoding/lib_xcoding.pm
-    /cgi-cpn/Artic.pm
+    [cambio]
+        - Se podrán generar versiones alternativas de un video solo si existe el archivo de configuración
+          correspondiente.
+    [files]
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videocut.cgi
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/Artic.pm

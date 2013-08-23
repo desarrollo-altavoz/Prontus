@@ -159,6 +159,9 @@ main: {
     #~ Se parsean la seccion de Mis Busquedas
     $buffer = &lib_search::parsea_mis_busquedas($buffer, $prontus_varglb::USERS_ID);
 
+    #~ Parsea un par de variables del CFG
+    $buffer =~ s/%%_edicbase_ini_selected%%/$prontus_varglb::EDICBASE_INI_SELECTED/ig;
+
     print "Content-type: text/html\n\n";
     print $buffer;
 }; # main
@@ -552,7 +555,7 @@ sub get_edic {
 sub get_html_ediciones {
     my $dir_edics = shift;
     # Generar cod. html correspondiente a la combo de ediciones
-    my $html_ediciones = &lib_prontus::generar_popupdirs_from_dir($dir_edics, 'cmb_edic', $FORM{'_edic'}, 1, '', '', 'onchange="Listartic.cambiaEdicion()"', $prontus_varglb::NRO_EDICS_WORK, 'STRDESC');
+    my $html_ediciones = &lib_prontus::generar_popupdirs_from_dir($dir_edics, 'cmb_edic', $FORM{'_edic'}, 1, '', '', '', $prontus_varglb::NRO_EDICS_WORK, 'STRDESC');
     my $qty_base_ports = @prontus_varglb::BASE_PORTS;
     # warn "qty_base_ports[$qty_base_ports]";
     if (($qty_base_ports <= 0) && ($prontus_varglb::MULTI_EDICION eq 'SI')) {

@@ -41,9 +41,12 @@ var LoadDiv = {
                 SubmitForm.handleError(LoadDiv.urlPub, XMLHttpRequest, textStatus, errorThrown);
             },
             success: function(resp, textStatus) {
-
-                $('#cmb_edic option[value="'+opts._edic+'"]').attr('selected', 'selected').change();
-                $('#cmb_port option[value="'+opts._port+'"]').attr('selected', 'selected').change();
+                if($('#cmb_edic').val() != opts._edic) {
+                    $('#cmb_edic option[value="'+opts._edic+'"]').attr('selected', 'selected').change();
+                    $('#cmb_port option[value="'+opts._port+'"]').attr('selected', 'selected').change();
+                } else if($('#cmb_port').val() != opts._port) {
+                    $('#cmb_port option[value="'+opts._port+'"]').attr('selected', 'selected').change();
+                };
                 $('#nomPortada').text(opts.nom_port);
                 $('#filePortada').text(opts._port);
 

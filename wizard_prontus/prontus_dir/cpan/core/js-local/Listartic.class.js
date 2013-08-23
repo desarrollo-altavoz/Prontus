@@ -45,18 +45,18 @@ var Listartic = {
     msgChangePortConfirm: 'La portada ha sido modificada. ¿Está seguro que desea refrescar el listado de artículos publicados?',
     modPort: false,
 
-    init: function() {
+    init: function () {
 
         Listartic.prontus_id = Admin.prontus_id;
         Listartic.path_conf = Admin.path_conf;
         //Admin.prontus_id = prontus;
 
         // Maneja los botones que Manejan los Folds de todas las áreas
-        $('#colapsar-todo .right').click(function() {
+        $('#colapsar-todo .right').click(function () {
             $('.rotulo .flecha span').removeClass('opened').addClass('closed');
             $(Listartic.idUlPub + ':visible').slideUp(Listartic.animationSlideSpeed);
         });
-        $('#colapsar-todo .down').click(function() {
+        $('#colapsar-todo .down').click(function () {
             $('.rotulo .flecha span').removeClass('closed').addClass('opened');
             $(Listartic.idUlPub + ':hidden').slideDown(Listartic.animationSlideSpeed);
         });
@@ -74,14 +74,10 @@ var Listartic = {
         // Guarda las portadas totales y carga inicialmente
         Listartic.mostrarEdiciones();
         Listartic.backupTotalPorts();
-        Listartic.cargaComboPortadas();
 
         // Carga el estado actual
         Listartic.cargaEstado();
-        Listartic.cambiaLinkPort();
-
-        // Instala los Listados
-        Acciones.refrescarListados();
+        Listartic.instalaComboHandlers();
 
         // Para reportarse en el server
         Listartic.pingRecurso();
@@ -94,8 +90,8 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    instalaReceiveAreas: function() {
-        $('#cont-pub .rotulo .rotulo-interno').live('click', function() {
+    instalaReceiveAreas: function () {
+        $('#cont-pub .rotulo .rotulo-interno').live('click', function () {
             var area = $(this).parent().next().attr('id');
             if(area.length <= 5) {
                 return;
@@ -115,30 +111,30 @@ var Listartic = {
         });
     },
     // -------------------------------------------------------------------------
-    instalaAgrandaFila: function() {
+    instalaAgrandaFila: function () {
 
-        $('ul.area-list li .agranda_fila .down').live('click', function() {
+        $('ul.area-list li .agranda_fila .down').live('click', function () {
             Listartic.closeFila($(this).parents('li'));
         });
 
-        $('ul.area-list li .agranda_fila .right').live('click', function() {
+        $('ul.area-list li .agranda_fila .right').live('click', function () {
             Listartic.openFila($(this).parents('li'));
         });
 
-        $('.links-utiles .agranda-fila-all .right').live('click', function() {
-            $(this).parents('.col470').find('.area-list li').each(function() {
+        $('.links-utiles .agranda-fila-all .right').live('click', function () {
+            $(this).parents('.col470').find('.area-list li').each(function () {
                 Listartic.closeFila(this, true);
             });
         });
 
-        $('.links-utiles .agranda-fila-all .down').live('click', function() {
-            $(this).parents('.col470').find('.area-list li').each(function() {
+        $('.links-utiles .agranda-fila-all .down').live('click', function () {
+            $(this).parents('.col470').find('.area-list li').each(function () {
                 Listartic.openFila(this, true);
             });
         });
     },
     // -------------------------------------------------------------------------
-    openFila: function(objList, anulaEfecto) {
+    openFila: function (objList, anulaEfecto) {
         if(! $(objList).is(':visible')) {
             return;
         }
@@ -158,7 +154,7 @@ var Listartic = {
         $(objList).find('.titulo').find('.botones').hide();
     },
     // -------------------------------------------------------------------------
-    closeFila: function(objList, anulaEfecto) {
+    closeFila: function (objList, anulaEfecto) {
         if(! $(objList).is(':visible')) {
             return;
         }
@@ -174,10 +170,10 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    instalaPublicar: function() {
+    instalaPublicar: function () {
 
         // Para el handler del boton despublicar
-        $('.area-list .flecha_publicar').live('click', function() {
+        $('.area-list .flecha_publicar').live('click', function () {
             var theLi = $(this).parents('.fila1').parent();
             var titlepub = theLi.attr('title');
             if($(Listartic.idUlPub + ' li[title="'+titlepub+'"]').size() >= 1) {
@@ -197,11 +193,23 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    instalaDespublicar: function() {
+    instalaComboHandlers: function () {
+
+        $('#cmb_edic').bind('change', function () {
+            Listartic.cambiaEdicion();
+        });
+
+        $('#cmb_port').bind('change', function () {
+            Listartic.cambiaPortada();
+        });
+    },
+
+    // -------------------------------------------------------------------------
+    instalaDespublicar: function () {
 
         // Para el handler del boton despublicar
-        $('.area-list .flecha_mover').live('click', function() {
-            $(this).parents('.fila1').parent().fadeOut('slow', function() {
+        $('.area-list .flecha_mover').live('click', function () {
+            $(this).parents('.fila1').parent().fadeOut('slow', function () {
                 var titlenopub = $(this).attr('title');
                 $(Listartic.idUlNoPub + ' li[title="'+titlenopub+'"]').fadeOut().remove();
                 $(this).prependTo(Listartic.idUlNoPub).fadeIn().addClass('moved');
@@ -216,10 +224,10 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    instalaHandlerAreas: function() {
+    instalaHandlerAreas: function () {
 
         // Para manejar los Fold de las áreas
-        $('.rotulo .flecha span').live('click', function() {
+        $('.rotulo .flecha span').live('click', function () {
             if($(this).hasClass('opened')) {
                 $(this).removeClass('opened').addClass('closed').attr('title', 'Expandir');
                 $(this).parent().parent().next().slideUp(Listartic.animationSlideSpeed);
@@ -232,7 +240,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    instalaTooltipPublic: function() {
+    instalaTooltipPublic: function () {
 
         $(document).tooltip({
             position: {
@@ -242,21 +250,21 @@ var Listartic = {
             show: {effect: "fadeIn", duration: 200 },
             hide: {effect: "hide" },
             items: ".iconos img.artic_pub",
-            content: function() {
+            content: function () {
                 return $(this).parent().find('.tooltip-ini').html();
             }
         });
     },
 
     // -------------------------------------------------------------------------
-    instalaDragAndDrop: function(selector) {
+    instalaDragAndDrop: function (selector) {
         $(selector).sortable({
             cancel: '.disabled, ._artic_sin_file, .editable_list0',
             connectWith: '.area-list',
             dropOnEmpty: true,
             handle: '.mover .handler',
             opacity: 0.75,
-            update: function(event, ui) {
+            update: function (event, ui) {
                 $(ui.item).addClass('moved');
                 Listartic.procesarListado(selector, 'li');
                 if(selector == Listartic.idUlPub) {
@@ -265,7 +273,7 @@ var Listartic = {
                     Listartic.instalaPortModProtector();
                 }
             },
-            receive: function(event, ui) {
+            receive: function (event, ui) {
                 if($(ui.item).parents('#cont-pub').size() >= 1) {
                     LoadDiv.refrescaListadoNoPub();
                     Listartic.habilitarVoBo(ui.item);
@@ -280,20 +288,20 @@ var Listartic = {
                 }
 
             },
-            stop: function(event, ui) {
+            stop: function (event, ui) {
                 Listartic.draging = false;
             },
-            start: function(event, ui) {
+            start: function (event, ui) {
                 Listartic.draging = true;
             }
         });
     },
 
     // -------------------------------------------------------------------------
-    instalaPortModProtector: function(flag) {
+    instalaPortModProtector: function (flag) {
         if(typeof flag === 'undefined' || flag === true) {
             Listartic.modPort = true;
-            window.onbeforeunload = function() {
+            window.onbeforeunload = function () {
                 return Listartic.msgChangePortBeforeUnload;
             };
         } else {
@@ -303,13 +311,13 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    procesarListado: function(listado, elementos) {
-        $(listado).each(function() {
+    procesarListado: function (listado, elementos) {
+        $(listado).each(function () {
             var theId = $(this).attr('id');
             var patt = /^(area-)(\d+)$/gi;
             var res = theId.match(patt);
             if(res === null) {
-                $(Listartic.idUlPub).find('li').each(function(orden) {
+                $(Listartic.idUlPub).find('li').each(function (orden) {
                     if(!$(this).parent().hasClass('area-list')) {
                         return;
                     }
@@ -321,7 +329,7 @@ var Listartic = {
             } else {
                 var arr = res[0].split('-');
                 var area = arr[1];
-                $(this).find(elementos).each(function(orden) {
+                $(this).find(elementos).each(function (orden) {
                     if(!$(this).parent().hasClass('area-list')) {
                         return;
                     }
@@ -351,9 +359,9 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    procesarCorruptos: function(listado, elementos) {
-        $(listado).each(function() {
-            $(this).find(elementos + '._artic_sin_file').each(function() {
+    procesarCorruptos: function (listado, elementos) {
+        $(listado).each(function () {
+            $(this).find(elementos + '._artic_sin_file').each(function () {
                 // Se ocultan los datos que no se necesitan
                 $(this).find('.status').remove();
                 $(this).find('.datos').html('');
@@ -372,18 +380,18 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    limpiarControles: function() {
+    limpiarControles: function () {
         $(Listartic.idUlNoPub + ' .item-content ' + Listartic.controlClass).remove();
     },
 
     // -------------------------------------------------------------------------
-    intercalaGris: function(idListado) {
+    intercalaGris: function (idListado) {
         $(idListado + ' .fila1').removeClass('gris');
         $(idListado + ' li .fila1:odd').addClass('gris');
     },
 
     // -------------------------------------------------------------------------
-    generaControles: function(theTS, area, orden) {
+    generaControles: function (theTS, area, orden) {
         var str = '<input type="hidden" name="_area_'+theTS+'" value="'+area+'" class="area" />' +
                 '<input type="hidden" name="_vb_'+theTS+'" value="1" class="vobo" />' +
                 '<input type="hidden" name="_orden_'+theTS+'" value="'+orden+'" class="orden" />' + "\n";
@@ -391,7 +399,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    mostrarEdiciones: function() {
+    mostrarEdiciones: function () {
         if($('#_multi_edicion').val() == 'SI') {
             $('#div_cmb_edic').show();
         } else {
@@ -400,12 +408,12 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    backupTotalPorts: function() {
+    backupTotalPorts: function () {
 
         if($('#_multi_edicion').val() == 'SI') {
             var values = [];
             var labels = [];
-            $('#cmb_port option').each(function(idx) {
+            $('#cmb_port option').each(function (idx) {
                 values[idx] = $(this).val();
                 labels[idx] = $(this).text();
             });
@@ -415,7 +423,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    cargaComboPortadas: function() {
+    cargaComboPortadas: function () {
 
         if($('#_multi_edicion').val() != 'SI') {
             $('#total_ports').html('Nº de Portadas: ' + $('#cmb_port option').size());
@@ -428,8 +436,9 @@ var Listartic = {
         }
 
         var value_ini_selected = Listartic.restauraPorts();
+        //alert(value_ini_selected);
 
-        $('#cmb_port option').each(function() {
+        $('#cmb_port option').each(function () {
 
             var len = (arr_base_ports.length-1);
             var found;
@@ -462,10 +471,11 @@ var Listartic = {
         });
         $('#cmb_port option[value="'+value_ini_selected+'"]').attr('selected', 'selected');
         $('#total_ports').html('Nº de Portadas: ' + $('#cmb_port option').size());
+
     },
 
     // -------------------------------------------------------------------------
-    restauraPorts: function() {
+    restauraPorts: function () {
         // Borra la combo y la carga con el total de portadas
         var value_selected = $('#cmb_port option:selected').val();
         var len = Listartic.TOTAL_PORTS_values.length;
@@ -481,17 +491,32 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    cargaEstado: function() {
+    cargaEstado: function () {
 
-        var edicion = Cookies.readCookie('edic');
-        if(edicion !== null && edicion !== '' && $('#div_cmb_edic').is(':visible')) {
-            $('#cmb_edic option[value="'+edicion+'"]').attr('selected', 'selected');
+        //Listartic.modPort = true;
+        //Listartic.cargandoPub = true;
+
+        //$('#cmb_port').html('');
+        if($('#_multi_edicion').val() == 'SI') {
+            if($('#_edicbase_ini_selected').val() == 'SI') {
+                if($('#div_cmb_edic').is(':visible')) {
+                    $('#cmb_edic option[value="base"]').attr('selected', 'selected');
+                }
+            } else {
+                var edicion = Cookies.readCookie('edic');
+                if(edicion !== null && edicion !== '' && $('#div_cmb_edic').is(':visible')) {
+                    $('#cmb_edic option[value="'+edicion+'"]').attr('selected', 'selected');
+                    //~ $('#cmb_edic option[value="'+edicion+'"]').trigger('change');
+                }
+            }
         }
-
+        Listartic.cargaComboPortadas();
         var portada = Cookies.readCookie('port');
         if(portada !== null && portada !== '') {
             $('#cmb_port option[value="'+portada+'"]').attr('selected', 'selected');
         }
+
+        //Listartic.cargandoPub = false;
 
         var items = Cookies.readCookie('itemsPerPage');
         if(items !== null && items != Listartic.itemsPerPage) {
@@ -508,10 +533,14 @@ var Listartic = {
             $(obj).addClass('selected');
             Listartic.ordenLista = orden;
         }
+
+        // Instala los Listados
+        Listartic.cambiaLinkPort();
+        Acciones.refrescarListados();
     },
 
     // -------------------------------------------------------------------------
-    guardaEstado: function() {
+    guardaEstado: function () {
 
         var portada = $('#cmb_port').val();
         Cookies.createCookie('port', portada, 365);
@@ -525,7 +554,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    cambiaPortada: function() {
+    cambiaPortada: function () {
         if(Listartic.cargandoPub === false) {
             $('#main').find('.lockscreen').remove();
             $('#lock_recurso').remove();
@@ -544,7 +573,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    cambiaEdicion: function() {
+    cambiaEdicion: function () {
 
         // Se carga la combo de portadas
         Listartic.cargaComboPortadas();
@@ -562,7 +591,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    cambiaLinkPort: function() {
+    cambiaLinkPort: function () {
         var edic = $('#cmb_edic').val();
         var port = $('#cmb_port').val();
         if(edic === '') {
@@ -573,7 +602,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    cambiarArticPerPage: function(obj) {
+    cambiarArticPerPage: function (obj) {
 
         // Se verifica el candado
         if(Listartic.cargandoNoPub === true) {
@@ -602,7 +631,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    cambiarOrdenTipo: function(obj, tipo) {
+    cambiarOrdenTipo: function (obj, tipo) {
 
         // Se verifica el candado
         if(Listartic.cargandoNoPub === true) {
@@ -630,7 +659,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    showPort: function() {
+    showPort: function () {
         var edic = $('#cmb_edic').val();
         var port = $('#cmb_port').val();
         if(edic === '') {
@@ -641,7 +670,7 @@ var Listartic = {
 
     // -------------------------------------------------------------------------
     // Hace un ping al servidor para indicar
-    pingRecurso: function() {
+    pingRecurso: function () {
         var edic = $('#cmb_edic').val();
         var port = $('#cmb_port').val();
         if(edic === '') {
@@ -652,7 +681,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    firstpag: function(_rec_ini) {
+    firstpag: function (_rec_ini) {
         if(Listartic.cargandoNoPub === false) {
             Listartic.cargandoNoPub = true;
             BuscadorFields._rec_ini = _rec_ini;
@@ -661,7 +690,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    prevpag: function(_rec_ini) {
+    prevpag: function (_rec_ini) {
         if(Listartic.cargandoNoPub === false) {
             Listartic.cargandoNoPub = true;
             BuscadorFields._rec_ini = _rec_ini;
@@ -670,7 +699,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    nextpag: function(_rec_ini) {
+    nextpag: function (_rec_ini) {
         if(Listartic.cargandoNoPub === false) {
             Listartic.cargandoNoPub = true;
             BuscadorFields._rec_ini = _rec_ini;
@@ -679,7 +708,7 @@ var Listartic = {
     },
 
     // -------------------------------------------------------------------------
-    ultpag: function(_rec_ini) {
+    ultpag: function (_rec_ini) {
         if(Listartic.cargandoNoPub === false) {
             Listartic.cargandoNoPub = true;
             BuscadorFields._rec_ini = _rec_ini;
@@ -741,9 +770,9 @@ var Listartic = {
         $(item).find('.vobo_disabled').removeClass('vobo_disabled').addClass('vobo').show();
     },
 
-    updateLastMod: function() {
+    updateLastMod: function () {
 
-        setInterval(function() {
+        setInterval(function () {
 
             var mod = $('#_localmodtime').val();
             if(mod) {
