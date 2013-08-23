@@ -6780,6 +6780,29 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [cambio]
         - Se podrán generar versiones alternativas de un video solo si existe el archivo de configuración
           correspondiente.
+          El archivo de configuración se debe ubicar en /<prontus_id>/cpan/data/xcoding/formatos.cfg
+          El formato debe ser el siguiente MULTIMEDIA_VIDEO<num>.<version> = 'parametros', por ejemplo:
+
+          MULTIMEDIA_VIDEO1.B = '-y -s 416x312 -vcodec libx264 -flags +loop -cmp +chroma -partitions +parti8x8+parti4x4+partp8x8+partb8x8 -me_method umh -subq 8 -me_range 16 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 2 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -directpred 3 -trellis 1 -coder 0 -bf 0 -refs 1 -flags2 -wpred-dct8x8+mbtree -level 31 -maxrate 200000 -bufsize 1000000 -wpredp 0 -g 25 -b 200000 -acodec libfaac -ar 44100 -ab 48k -f mp4'
+
+          Los parámetros varían según lo que se necesite, pero en este ejemplo se genera un video con dimensión 416x312.
+
+          Para incluir las versiones de los videos en las plantillas se debe utilizar la marca del video, agrengandole como sufijo la versión. Por ejemplo, para %%multimedia_video1%% sería:
+
+          %%multimedia_video1.b%%
+
+          Si no existe un video para es versión, se utilizará el original.
+
+          Los archivos resultantes son almacenados en el mismo directorio, /<fechadir>/mmedia pero con la versión como sufijo:
+            /<fechadir>/mmedia/multimedia_video120130820175254.mp4
+            /<fechadir>/mmedia/multimedia_video120130820175254b.mp4
+
+          Observaciones:
+            - Al eliminar el video, se eliminan todas las versiones.
+            - Al cortar un video, se cortan todas las versiones.
+            - Para los videos antiguos, al iniciar el fid se gatilla la transcodificación y se crean las versiones
+            en caso de existir.
+
     [files]
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
         /cgi-cpn/xcoding/prontus_videocut.cgi
