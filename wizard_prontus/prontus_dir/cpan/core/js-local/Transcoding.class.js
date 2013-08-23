@@ -91,6 +91,8 @@ var Transcoding, Msg, Flash;
                             } else if (data.msg == 'XCODE') {
                                 Msg.setStatusMessage('Generando versiones del video.');
                                 Transcoding.procesarVideo(1);
+                            } else if (data.msg == 'Xcoding') {
+                                Transcoding.checkStatus();
                             } else {
                                 Msg.setAlertMessage('Se ha producido un error:<br/> Respuesta no válida');
                             }
