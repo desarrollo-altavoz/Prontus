@@ -196,9 +196,19 @@ sub startFix{
 # Verifica si se esta corrigiendo el archivo mp4
 sub checkStatus {
     my ($origen) = @_;
+
+    # Verifica si el transcoding esta en ejecucion.
+    my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen'|grep -v grep/;
+
+    if ($res ne '') {
+        print STDERR "xcoding en ejecucion\n";
+        &glib_html_02::print_json_result(1, "Xcoding", 'exit=1,ctype=1');
+    };
+
     my $res = qx/ps auxww |grep 'qtfaststart.cgi $origen'|grep -v grep/;
     #print STDERR "Execution test = [$res][ps auxww |grep 'qtfaststart.cgi $origen'|grep -v grep]\n";
     if ($res ne '') {
+        print STDERR "qtfaststart en ejecucion\n";
         &glib_html_02::print_json_result(1, "Busy", 'exit=1,ctype=1');
     };
 
