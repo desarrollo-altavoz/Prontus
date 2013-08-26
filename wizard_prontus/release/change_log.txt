@@ -1,4 +1,19 @@
 ====================================================================================================
+11.2.69 - 26/08/2013
+====================================================================================================
+- notice: Se agrega la posibilidad de tener los archivos (imag, asocfile, multimedia, swf) en un directorio separado.
+- notice: Producto de lo anterior, se crea un script que copia la multimedia hacia la nueva ubicación.
+- bugfix: Se corrige la salida ".urlencode" de los campos de texto.
+- bugfix: Error al posicionar la combo de portadas y ediciones, cuando hay mutiedicion y la variable EDICBASE_INI_SELECTED estaba en SI.
+- improvement: Portadas Taxonómicas: Se agrega la opción de cambiar el tipo de paginación. Más información en el manual de desarrollo
+- improvement: Producto de lo anterior se generan 2 nuevas variables: TAXPORT_TIPO_PAGINACION y TAXPORT_PAGCORTA_MAXPAGS
+- improvement: Buscador: Se agrega la opción de cambiar el tipo de paginación. Más información en el manual de desarrollo
+- improvement: Producto de lo anterior se generan 2 nuevas variables: SEARCH_TIPO_PAGINACION y SEARCH_PAGCORTA_MAXPAGS
+- changes: Multimedia: Se agrupan las fotos por artículo. Ya no se muestran las fotos sueltas.
+- changes: Se agrega visor con miniaturas. A futuro tendremos nuevos cambios
+- improvement: Se podrán generar versiones alternativas de un video. Más información en el manual de desarrollo
+
+====================================================================================================
 11.2.68 - 06/08/2013
 ====================================================================================================
 - bugfix: Error en el chequeo de la quota (error critico que podria inutilizar el prontus)
