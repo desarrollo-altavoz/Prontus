@@ -249,10 +249,10 @@ sub make_lista {
     # de mysql no puede exceder un cierto limite. Se puede aumentar, pero no es la idea.
     if ($FORM{'asset_search_type'} eq 'foto') {
         $sql = "SELECT ASSET_ART_ID, ART_IDSECC1, ART_IDTEMAS1, ART_IDSUBTEMAS1, ASSET_SEARCH_WORDKEY,
-                ASSET_ART_FID, ASSET_ART_FILE, 
+                ASSET_ART_FID, ASSET_ART_FILE,
                 SUBSTRING_INDEX(
                     GROUP_CONCAT(ASSET_FILE,'|',ASSET_ART_WFOTO,'|',ASSET_ART_HFOTO,'|',ASSET_SEARCH_TEXTO,'|',ASSET_SEARCH_FOTO SEPARATOR '\t'),
-                    '\t', 4) as ASSET_LIST 
+                    '\t', 4) as ASSET_LIST
                 FROM ASSET LEFT JOIN ART ON (ASSET_ART_ID=ART_ID) " . $filtros . " order by " . $orderby . " " . $limit;
 
         $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \(
@@ -341,11 +341,11 @@ sub generar_fila {
         # Genera link para el artículo
         my $link_artic = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC.'/'.$dir_fecha.$prontus_varglb::DIR_PAG.'/'.$hash_data{'ASSET_ART_FILE'};
         # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de multimedia
-      	if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-      	  $link_artic = &lib_prontus::parse_filef('%%_FILEURL%%', $titular,
-      	        $hash_data{'ASSET_ART_ID'}, $prontus_varglb::PRONTUS_ID, $link_artic,
+        if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+          $link_artic = &lib_prontus::parse_filef('%%_FILEURL%%', $titular,
+                $hash_data{'ASSET_ART_ID'}, $prontus_varglb::PRONTUS_ID, $link_artic,
                 $TABLA_SECC{$hash_data{'ART_IDSECC1'}},$TABLA_TEMAS{$hash_data{'ART_IDTEMAS1'}},$TABLA_SUBTEMAS{$hash_data{'ART_IDSUBTEMAS1'}});
-      	}
+        }
         $fila =~ s/%%LINK_ARTIC%%/$link_artic/g;
 
         # contenido de asset
@@ -373,7 +373,7 @@ sub generar_fila {
             foreach my $values_string (@asset_list) {
                 my $loop_foto_tmp = $loop_foto;
                 my ($asset_file, $asset_width, $asset_height, $asset_search_texto, $asset_search_foto) = split(/\|/, $values_string);
-                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha . '/imag/' . $asset_file;
+                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/' . $dir_fecha . '/imag/' . $asset_file;
                 my $path_img_dam = $path_img;
                 $path_img_dam =~ s/(\.\w+)$/\.dam\1/;
 
@@ -408,8 +408,8 @@ sub generar_fila {
             };
 
         } elsif (($FORM{'asset_search_type'} eq 'video') || ($FORM{'asset_search_type'} eq 'audio')) {
-                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha . '/imag/' . $hash_data{'ASSET_FILE'};
-                $path_asset = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha
+                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/' . $dir_fecha . '/imag/' . $hash_data{'ASSET_FILE'};
+                $path_asset = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/' . $dir_fecha
                               . '/mmedia/' . $hash_data{'ASSET_FILE'};
 
                 $path_img_dam = $path_img;
