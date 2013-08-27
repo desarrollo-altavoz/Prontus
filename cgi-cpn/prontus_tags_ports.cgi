@@ -119,7 +119,7 @@ my $DIR_TAGPORT = '/tag/port';
 
 # Carga variables de configuracion de prontus.
 my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
-&lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
+&lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
 my ($RELDIR_ARTIC) = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/%%DIRFECHA%%$prontus_varglb::DIR_PAG";
 my ($RELDIR_PORT_DST) = "$prontus_varglb::DIR_CONTENIDO$DIR_TAGPORT";

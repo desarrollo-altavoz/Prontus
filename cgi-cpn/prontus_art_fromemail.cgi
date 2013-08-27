@@ -112,7 +112,7 @@ sub main {
 
     # Carga variables de configuracion de prontus.
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
-    &lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
+    &lib_prontus::load_config( &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
     my ($msg_pop, $pop3) = &conectar_pop($FORM{'casilla_popserver'}, $FORM{'casilla_user'}, $FORM{'casilla_pass'});
     die "Error al conectar pop[$msg_pop]\n" if ($msg_pop);

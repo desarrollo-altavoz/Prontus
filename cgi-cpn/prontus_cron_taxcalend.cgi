@@ -124,7 +124,7 @@ my $AAAAMM = $ARGV[1];
 
 # Carga variables de configuracion de prontus.
 my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($PRONTUS_ID);
-&lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
+&lib_prontus::load_config(  &lib_prontus::ajusta_pathconf($relpath_conf) );
 
 
 # CALENDARIOS
@@ -587,74 +587,74 @@ sub get_semanas {
 };
 # ---------------------------------------------------------------
 sub perpetual_calendar {
-	# This perpetual calendar routine provides accurate day/date
-	# correspondences for dates from 1601 to 2899 A.D.  It is based on
-	# the Gregorian calendar, so be aware that early correspondences
-	# may not always be historically accurate.  The Gregorian calendar
-	# was adopted by the Italian states, Portugal and Spain in 1582,
-	# and by the Catholic German states in 1583.  However, it was not
-	# adopted by the Protestant German states until 1699, by England
-	# and its colonies until 1752, by Sweden until 1753, by Japan
-	# until 1873, by China until 1912, by the Soviet Union until 1918,
-	# and by Greece until 1923.
-	my ($perp_mon,$perp_day,$perp_year) = @_;
-	my %day_counts =
-	  (1,0,2,31,3,59,4,90,5,120,6,151,7,181,
-	  8,212,9,243,10,273,11,304,12,334);
-	my $perp_days = (($perp_year-1601)*365)+(int(($perp_year-1601)/4));
-	$perp_days += $day_counts{$perp_mon};
-	$perp_days += $perp_day;
-	my $perp_sofar = $day_counts{$perp_mon};
-	$perp_sofar += $perp_day;
-	my $perp_togo = 365-$perp_sofar;
-	if (int(($perp_year-1600)/4) eq (($perp_year-1600)/4)) {
-		$perp_togo++;
-		if ($perp_mon > 2) {
-			$perp_days++;
-			$perp_sofar++;
-			$perp_togo -= 1;
-		};
-	};
-	my $key;
-	foreach $key (1700,1800,1900,2100,2200,2300,2500,2600,2700) {
-		if ((($perp_year == $key) && ($perp_mon > 2))
-		  || ($perp_year > $key)) {
-			$perp_days -= 1;
-		};
-	};
+    # This perpetual calendar routine provides accurate day/date
+    # correspondences for dates from 1601 to 2899 A.D.  It is based on
+    # the Gregorian calendar, so be aware that early correspondences
+    # may not always be historically accurate.  The Gregorian calendar
+    # was adopted by the Italian states, Portugal and Spain in 1582,
+    # and by the Catholic German states in 1583.  However, it was not
+    # adopted by the Protestant German states until 1699, by England
+    # and its colonies until 1752, by Sweden until 1753, by Japan
+    # until 1873, by China until 1912, by the Soviet Union until 1918,
+    # and by Greece until 1923.
+    my ($perp_mon,$perp_day,$perp_year) = @_;
+    my %day_counts =
+      (1,0,2,31,3,59,4,90,5,120,6,151,7,181,
+      8,212,9,243,10,273,11,304,12,334);
+    my $perp_days = (($perp_year-1601)*365)+(int(($perp_year-1601)/4));
+    $perp_days += $day_counts{$perp_mon};
+    $perp_days += $perp_day;
+    my $perp_sofar = $day_counts{$perp_mon};
+    $perp_sofar += $perp_day;
+    my $perp_togo = 365-$perp_sofar;
+    if (int(($perp_year-1600)/4) eq (($perp_year-1600)/4)) {
+        $perp_togo++;
+        if ($perp_mon > 2) {
+            $perp_days++;
+            $perp_sofar++;
+            $perp_togo -= 1;
+        };
+    };
+    my $key;
+    foreach $key (1700,1800,1900,2100,2200,2300,2500,2600,2700) {
+        if ((($perp_year == $key) && ($perp_mon > 2))
+          || ($perp_year > $key)) {
+            $perp_days -= 1;
+        };
+    };
 
-	my $perp_dow = $perp_days - (int($perp_days/7)*7);
-	if ($perp_dow == 7) { $perp_dow = 0; }
-#	if ($vars{monsunweek} eq "Yes") {
-#		$perp_dow -= 1;
-#		if ($perp_dow == -1) { $perp_dow = 6; };
-#	};
-	$PERP_EOM = 31;
-	if (($perp_mon == 4) || ($perp_mon == 6)
-	  || ($perp_mon == 9) || ($perp_mon == 11)) {
-		$PERP_EOM = 30;
-	};
-	if (($perp_mon == 2)) {
-		$PERP_EOM = 28;
-	};
-	if ((int(($perp_year-1600)/4) eq (($perp_year-1600)/4))
-	  && ($perp_mon == 2)) {
-		$PERP_EOM = 29;
-	};
-	foreach $key (1700,1800,1900,2100,2200,2300,2500,2600,2700) {
-		if ($perp_year == $key) {
-			if ($perp_mon == 1) {
-				$perp_togo -= 1;
-			}
-			elsif ($perp_mon == 2) {
-				$perp_togo -= 1;
-				$PERP_EOM = 28;
-			}
-			else {
-				$perp_sofar -= 1;
-			};
-		};
-	};
+    my $perp_dow = $perp_days - (int($perp_days/7)*7);
+    if ($perp_dow == 7) { $perp_dow = 0; }
+#   if ($vars{monsunweek} eq "Yes") {
+#       $perp_dow -= 1;
+#       if ($perp_dow == -1) { $perp_dow = 6; };
+#   };
+    $PERP_EOM = 31;
+    if (($perp_mon == 4) || ($perp_mon == 6)
+      || ($perp_mon == 9) || ($perp_mon == 11)) {
+        $PERP_EOM = 30;
+    };
+    if (($perp_mon == 2)) {
+        $PERP_EOM = 28;
+    };
+    if ((int(($perp_year-1600)/4) eq (($perp_year-1600)/4))
+      && ($perp_mon == 2)) {
+        $PERP_EOM = 29;
+    };
+    foreach $key (1700,1800,1900,2100,2200,2300,2500,2600,2700) {
+        if ($perp_year == $key) {
+            if ($perp_mon == 1) {
+                $perp_togo -= 1;
+            }
+            elsif ($perp_mon == 2) {
+                $perp_togo -= 1;
+                $PERP_EOM = 28;
+            }
+            else {
+                $perp_sofar -= 1;
+            };
+        };
+    };
 };
 
 

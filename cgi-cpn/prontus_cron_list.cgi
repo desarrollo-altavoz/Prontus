@@ -109,7 +109,7 @@ $FORM{'params_especif'} = $ARGV[1]; # optativo: fid/s/t/st para generar solo par
 
 # Carga variables de configuracion de prontus.
 my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
-&lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
+&lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
 my ($RELDIR_ARTIC) = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/%%DIRFECHA%%$prontus_varglb::DIR_PAG";
 my ($RELDIR_LIST_DST) = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_LIST";

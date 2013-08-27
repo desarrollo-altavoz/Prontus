@@ -111,9 +111,8 @@ sub valida_param {
 
 
   # Carga variables de configuracion.
-  my $path_conf = &get_path_conf();
-
-  &lib_prontus::load_config($path_conf);
+  my $path_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
+  &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($path_conf) );
 
 };
 # ---------------------------------------------------------------

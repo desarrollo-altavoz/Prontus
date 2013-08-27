@@ -86,7 +86,7 @@ if ( (! -d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} 
 
 # Carga variables de configuracion de prontus.
 my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
-&lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
+&lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
 my %LEVELS2TRIGGER;
 my %FIDS2PROCESS;

@@ -129,7 +129,7 @@ $FORM{'params_especif'} = $ARGV[1]; # optativo: fid/s/t/st para generar solo par
 
 # Carga variables de configuracion de prontus.
 my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
-&lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
+&lib_prontus::load_config(  &lib_prontus::ajusta_pathconf($relpath_conf) );
 
 #~ print STDERR "[$$] param0: $ARGV[0], param1: $ARGV[1]\n";
 

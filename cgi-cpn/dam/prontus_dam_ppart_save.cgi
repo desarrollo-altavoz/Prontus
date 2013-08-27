@@ -78,7 +78,8 @@ main:{
     };
 
     # Carga variables de configuracion.
-    &lib_prontus::load_config($dir_server . &lib_prontus::get_relpathconf_by_prontus_id( $prontus_id ));
+    my $path_conf = &lib_prontus::get_relpathconf_by_prontus_id($prontus_id);
+    &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($path_conf) );
 
     # Inicia conexion a BD
     my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();

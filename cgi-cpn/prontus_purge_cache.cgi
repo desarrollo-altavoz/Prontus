@@ -35,7 +35,7 @@ main: {
 
     # Carga variables de configuracion de prontus.
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus_id'});
-    &lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
+    &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
     if (-f $FORM{'file'}) {
         my $espera_segs = 5;
