@@ -6823,3 +6823,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [cambios]
         - Se homologa carga de CFG en algunas cgis
     [files]
+        /cgi-cpn/dam/prontus_dam_ppart_save.cgi
+        /cgi-cpn/prontus_art_fromemail.cgi
+        /cgi-cpn/prontus_cron_fechas.cgi
+        /cgi-cpn/prontus_cron_list.cgi
+        /cgi-cpn/prontus_cron_taxcalend.cgi
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_purge_cache.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_tags_ports.cgi

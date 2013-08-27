@@ -2261,7 +2261,7 @@ sub get_sept_dig {
 
 # -------------------------------------------------------------------------#
 sub write_log {
-  my ($accion, $objeto, $path) = @_;
+  my ($accion, $objeto, $path, $contexto) = @_;
   my ($linea, $fecha, $hora, $buf, $nom_file, $usr);
   $prontus_varglb::DIR_LOG =~ s/\\/\//g;
 
@@ -2280,7 +2280,11 @@ sub write_log {
       $usr = $prontus_varglb::USERS_USR;
     }
     else {
-      $usr = 'Proceso Control Fecha';
+      if($contexto) {
+        $usr = $contexto;
+      } else {
+        $usr = 'System Script';
+      };
     };
 
     if ($accion !~ /login/i) {

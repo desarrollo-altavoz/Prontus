@@ -115,12 +115,6 @@ sub valida_param {
   &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($path_conf) );
 
 };
-# ---------------------------------------------------------------
-sub get_path_conf {
-
-  return "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}/cpan/$FORM{'prontus'}.cfg";
-
-};
 
 # ---------------------------------------------------------------
 sub check_prontus {
@@ -287,7 +281,7 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
                                      $ts_preview, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS, $users_perfil);
           };
 
-          &lib_prontus::write_log('Actualizar', 'Portada', "$DST_SEC/$entry");
+          &lib_prontus::write_log('Actualizar', 'Portada', "$DST_SEC/$entry", 'Control Fecha');
         }
         else {
           if($arch_seccion =~ /^(.*?)\/([^\/]+)$/) {
