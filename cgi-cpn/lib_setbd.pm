@@ -248,6 +248,7 @@ sub crear_tabla_coment {
                 COMENT_TEXTO      text not null default '',
                 COMENT_NICK       varchar(80) not null default '',
                 COMENT_STATUS     int(1) not null default 0,
+                COMENT_EMAIL      varchar(100) not null default '',
                 primary key (COMENT_ID),
                 KEY COMENT_OBJTIPO (COMENT_OBJTIPO),
                 KEY COMENT_OBJTIPO_ID (COMENT_OBJTIPO, COMENT_OBJID),

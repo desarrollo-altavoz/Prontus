@@ -6816,7 +6816,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.70 - 26/08/2013 - CVI
+11.2.70 - 02/09/2013 - CVI
 ====================================================================================================
 
 - Prontus en General
@@ -6832,3 +6832,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_purge_cache.cgi
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_tags_ports.cgi
+
+- Base de Datos
+    [cambios]
+        - Al crear las tablas de prontus, en la tabla coment se agrega la columna COMENT_EMAIL
+          Antes de agregaba esa columna al ingresar al admin de comentarios.
+    [files]
+        /cgi-cpn/lib_setbd.pm
