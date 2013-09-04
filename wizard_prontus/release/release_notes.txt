@@ -6839,3 +6839,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Antes de agregaba esa columna al ingresar al admin de comentarios.
     [files]
         /cgi-cpn/lib_setbd.pm
+
+- Captcha
+    [cambios]
+        - Se sube el valor de máximas instancias corriendo para ambas cgis que entregan captcha.
+          El valor anterior era de 4. Ahora se deja en 50.
+    [files]
+        /cgi-bin/prontus_captcha.cgi
+        /cgi-bin/prontus_getcaptcha.cgi
+
+
