@@ -6833,6 +6833,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_tags_ports.cgi
 
+- Respuestas Ajax
+    [bugfix]
+        - Se corrige error al usar la JSON version 1. Se debe actualizar si se usa esta versión.
+    [files]
+        /cgi-cpn/glib_html_02.pm
+        /cgi-cpn/lib_search.pm
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-cpn/prontus_form_download.cgi
+        /cgi-cpn/prontus_form_list.cgi
+
 - Base de Datos
     [cambios]
         - Al crear las tablas de prontus, en la tabla coment se agrega la columna COMENT_EMAIL
