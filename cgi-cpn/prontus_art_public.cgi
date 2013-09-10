@@ -144,7 +144,7 @@ main: {
     };
 
     # Area y orden
-    &captura_area_orden();
+    my $totartics = &captura_area_orden();
 
 
     if ($FORM{'_accion'} eq 'preview') {
@@ -202,7 +202,7 @@ main: {
 
         &exec_postproceso();
 
-        &lib_prontus::write_log('Actualizar', 'Portada', "$DST_SEC/$FORM{'_port'}");
+        &lib_prontus::write_log('Actualizar', 'Portada', "$DST_SEC/$FORM{'_port'} (Articulos: $totartics)");
 
         use FindBin '$Bin';
         &call_clustering("$DST_SEC/$FORM{'_port'}", $Bin);
@@ -256,6 +256,7 @@ sub captura_area_orden {
     # Recopila areas, prioridades e identificadores de articulos a insertar
     # en la portada (AREA_id,PRIO_id). id es el nombre del archivo del articulo con extension y sin path.
     my @campos = &glib_cgi_04::param();
+    my $totartics = 0;
     foreach my $cod (@campos) {
         if ($cod =~ m/^_area_(\d{14})/) {
             my $ts = $1;
@@ -277,8 +278,11 @@ sub captura_area_orden {
                 $lib_prontus::AREA{$ts} = '';
                 $lib_prontus::PRIO{$ts} = '';
             };
+
+            $totartics++ if($lib_prontus::AREA{$ts});
         };
     };
+    return $totartics;
 };
 
 # ---------------------------------------------------------------
@@ -311,7 +315,7 @@ sub exec_postproceso {
     foreach my $pp (@postProcesos) {
         # para que sea un script valido debe ubicarse en el mismo dir. de cgi del prontus o a lo mas un nivel hacia arriba.
         if ( ($pp =~ /^\w/) or ($pp =~ /^\.\.(\/|\\)\w/) ) {
-            
+
             my $cmd = "$rutaScript/$pp $DST_SEC/$FORM{'_port'} $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
             print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
             system $cmd;

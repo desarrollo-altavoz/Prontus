@@ -6823,6 +6823,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfix]
         - Se corrige error al usar el método _add_foto_filesystem del objeto Artic.pm
         - Bug al guardar las búsquedas. Si se refrescaba el listado, se guardaba la misma busqueda muchas veces
+    [mejoras]
+        - Al momento de guardar una portada, se indica en el log el numero de artículos que se escribieron.
+          Con esto se puede revisar si un usuario publicó la portada vacía.
     [cambios]
         - Se homologa carga de CFG en algunas cgis
     [files]
