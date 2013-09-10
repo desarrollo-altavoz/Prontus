@@ -80,14 +80,21 @@ var Acciones = {
     // -------------------------------------------------------------------------
     guardarPort: function() {
 
+        // Si se está guardando no se hace nada
         if(Listartic.saving === true) {
-            //alert('se está guardando...');
             return;
         }
+        // Si se está en modo carga, no se guarda
         if(Listartic.cargandoPub === true) {
             alert('Por favor, antes de guardar, espere hasta que la carga termine');
             return;
         }
+        // La carga de la portada no se realizó como la gente
+        if($('#_load_ok').size() < 1) {
+            alert('La portada no cargó correctamente. Por favor, refresque el listado antes de guardar');
+            return;
+        }
+
 
         Listartic.saving = true;
 
