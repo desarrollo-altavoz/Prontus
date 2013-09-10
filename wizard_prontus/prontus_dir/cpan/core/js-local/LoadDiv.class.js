@@ -96,6 +96,8 @@ var LoadDiv = {
                 SubmitForm.handleError(LoadDiv.urlNoPub, XMLHttpRequest, textStatus, errorThrown);
             },
             success: function(resp, textStatus) {
+                // Se resetea el guardado de la busqueda
+                BuscadorFields.save_search = 'no';
                 $(Listartic.idDivNoPub).hide().html(resp).fadeIn(100);
                 Listartic.instalaDragAndDrop(Listartic.idUlNoPub);
                 Listartic.procesarListado(Listartic.idUlNoPub, 'li');
