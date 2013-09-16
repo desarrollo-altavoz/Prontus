@@ -72,7 +72,7 @@ my (@Lst_ARTASOC, @Lst_PORTASOC);
 
 main: {
     my ($lnk);
-    
+
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
@@ -107,10 +107,10 @@ main: {
 
 
     my $msg = &datos_validos();
-    
+
     utf8::decode($msg);
     &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1') if ($msg);
-    
+
     # Abrir dbm files
     if (&lib_prontus::open_dbm_files() ne 'ok') {
         &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuario', 'exit=1,ctype=1');
@@ -120,6 +120,11 @@ main: {
     &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1') if ($msg);
 
     &lib_prontus::close_dbm_files();
+
+
+    # Borra cache de lista de articulos
+    &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
+
 
     # cambio de clave admin
     if (($FORM{'USERS_ID'} eq '1') && ($FORM{'PSW1'})) {
@@ -277,7 +282,7 @@ sub datos_validos {
         if (!$FORM{'PSW1'}) {
             return 'Por favor ingrese la contraseña para el usuario';
         };
-        
+
         if (!$FORM{'PSW2'}) {
             return 'Por favor ingrese confirmación de contraseña';
         };

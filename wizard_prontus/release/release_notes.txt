@@ -6883,4 +6883,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_captcha.cgi
         /cgi-bin/prontus_getcaptcha.cgi
 
+- Usuarios
+    [bugfix]
+        - Al cambiar los datos de los usuarios, se limpia el caché del listado de artículos
+    [files]
+        /cgi-cpn/prontus_usr_sbmit.cgi
+
+
+
 
