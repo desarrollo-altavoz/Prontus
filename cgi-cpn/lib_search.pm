@@ -628,7 +628,8 @@ sub get_listado_mis_busquedas {
       my $strjson = &glib_fildir_02::read_file("$dir/$file");
       my $hashtemp;
       if($JSON::VERSION =~ /^1\./) {
-        $hashtemp = jsonToObj($strjson);
+        my $json = new JSON;
+        $hashtemp = $json->jsonToObj($strjson);
       } else {
         $hashtemp = &JSON::from_json($strjson);
       }

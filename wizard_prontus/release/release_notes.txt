@@ -6816,13 +6816,73 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.70 - 26/08/2013 - CVI/JOR
+11.2.70 - 02/09/2013 - CVI/JOR
 ====================================================================================================
 
 - Prontus en General
+    [bugfix]
+        - Se corrige error al usar el método _add_foto_filesystem del objeto Artic.pm
     [cambios]
         - Se homologa carga de CFG en algunas cgis
     [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/dam/prontus_dam_ppart_save.cgi
+        /cgi-cpn/prontus_art_fromemail.cgi
+        /cgi-cpn/prontus_cron_fechas.cgi
+        /cgi-cpn/prontus_cron_list.cgi
+        /cgi-cpn/prontus_cron_taxcalend.cgi
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_purge_cache.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_tags_ports.cgi
+
+- Listado de Articulos
+    [bugfix]
+        - Bug al guardar las búsquedas. Si se refrescaba el listado, se guardaba la misma busqueda muchas veces
+    [mejoras]
+        - Al momento de guardar una portada, se indica en el log el numero de artículos que se escribieron.
+          Con esto se puede revisar si un usuario publicó la portada vacía
+        - En el listado de artículos publicados, se agrega mecanismo de seguridad que no permite guardar el listado
+          si éste no cargó correctamente. (se agrega un input al final del html si no existe, entonces el listado cargó mal)
+    [files]
+        /cgi-cpn/prontus_art_public.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/LoadDiv.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
+
+- Parseo de Marcas
+    [bugfix]
+        - Se corrige bug al parsear marcas que estaban pegadas. Este bug viene de mucho tiempo atrás.
+          se daba bajo condiciones muy especiales, por lo que era muy difícil de identificar.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+
+- Respuestas Ajax
+    [bugfix]
+        - Se corrige error al usar la JSON version 1. Se debe actualizar si se usa esta versión.
+    [files]
+        /cgi-cpn/glib_html_02.pm
+        /cgi-cpn/lib_search.pm
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-cpn/prontus_form_download.cgi
+        /cgi-cpn/prontus_form_list.cgi
+
+- Base de Datos
+    [cambios]
+        - Al crear las tablas de prontus, en la tabla coment se agrega la columna COMENT_EMAIL
+          Antes de agregaba esa columna al ingresar al admin de comentarios.
+    [files]
+        /cgi-cpn/lib_setbd.pm
+
+- Captcha
+    [cambios]
+        - Se sube el valor de máximas instancias corriendo para ambas cgis que entregan captcha.
+          El valor anterior era de 4. Ahora se deja en 50.
+    [files]
+        /cgi-bin/prontus_captcha.cgi
+        /cgi-bin/prontus_getcaptcha.cgi
+
 
 - Artículos
     [cambio]

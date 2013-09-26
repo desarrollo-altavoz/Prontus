@@ -1118,17 +1118,17 @@ sub _add_foto_filesystem {
 
     return unless($ts =~ /(\d{8})\d{6}/);
     my $fechac = $1;
-    my $new_full_path_foto = $this->{dir_foto};
+    my $new_full_path_foto = $this->{dst_foto};
     my $new_path_foto = &lib_prontus::remove_front_string($new_full_path_foto, $this->{document_root});
 
     my $nom_foto = $this->_get_nom_foto($new_path_foto, '');
     my $foto_ext = &lib_prontus::get_file_extension($path_foto);
 
 #    print "copiando... $document_root$path_foto  -->  $document_root$new_path_foto$nom_foto.$foto_ext";
-    &File::Copy::copy("$document_root$path_foto", "$document_root$new_path_foto$nom_foto.$foto_ext");
+    &File::Copy::copy("$document_root$path_foto", "$document_root$new_path_foto/$nom_foto.$foto_ext");
 
     # Obtiene dimensiones actuales de la foto
-    my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$document_root$new_path_foto$nom_foto.$foto_ext");
+    my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$document_root$new_path_foto/$nom_foto.$foto_ext");
     unless($foto_dimx && $foto_dimy) {
         print STDERR "\tError dev_tam_img: $msg\n";
         return;

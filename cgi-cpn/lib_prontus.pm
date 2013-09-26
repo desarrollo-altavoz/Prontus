@@ -2264,7 +2264,7 @@ sub get_sept_dig {
 
 # -------------------------------------------------------------------------#
 sub write_log {
-  my ($accion, $objeto, $path) = @_;
+  my ($accion, $objeto, $path, $contexto) = @_;
   my ($linea, $fecha, $hora, $buf, $nom_file, $usr);
   $prontus_varglb::DIR_LOG =~ s/\\/\//g;
 
@@ -2283,7 +2283,11 @@ sub write_log {
       $usr = $prontus_varglb::USERS_USR;
     }
     else {
-      $usr = 'Proceso Control Fecha';
+      if($contexto) {
+        $usr = $contexto;
+      } else {
+        $usr = 'System Script';
+      };
     };
 
     if ($accion !~ /login/i) {
@@ -2947,7 +2951,7 @@ sub procesa_condicional {
         };
         undef $vars_adicionales;
     };
-
+    #~ warn "------ procesa_condicional ------\n";
     # Almacena las claves, pero solo las cque tengan if/nif en la plantilla
     my (%claves);
     while ($buffer =~ /%%(IF|NIF)\(([^\)]+?)\)%%/ig) {
@@ -2957,7 +2961,7 @@ sub procesa_condicional {
         if ($$vars_common{$nom_campo} ne '') {
             $claves{$clave} = $$vars_common{$nom_campo};
         };
-        # warn "clave[$clave] y value[$$vars_common{$clave}]";
+        #~ warn "clave[$clave] y value[$$vars_common{$clave}]";
     };
     undef $vars_common;
 
@@ -3303,16 +3307,16 @@ sub parser_condicional {
 
     # traduce a mayusculas todos los if y nif del buffer
     $sentencia = uc $sentencia;
-    $buffer =~ s/\%\%$sentencia\(/\%\%$sentencia\(/ig;
-    $buffer =~ s/\%\%\/$sentencia\%\%/\%\%\/$sentencia\%\%/ig;
+    $buffer =~ s/%%$sentencia\(/%%$sentencia\(/ig;
+    $buffer =~ s/%%\/$sentencia%%/%%\/$sentencia%%/ig;
 
     # Cuenta condicionales
     # while ($buffer =~ /\%\%$sentencia\(/g) {
     # 07/10/2011 - CVI - Se mejora deteccion de cierres = aperturas
-    while ($buffer =~ /\%\%$sentencia\([^\)]+\)%%/g) {
+    while ($buffer =~ /%%$sentencia\([^\)]+\)%%/g) {
         $cont_condicionales_begin++;
     };
-    while ($buffer =~ /\%\%\/$sentencia\%\%/g) {
+    while ($buffer =~ /%%\/$sentencia%%/g) {
         $cont_condicionales_end++;
     };
 
@@ -3379,7 +3383,7 @@ sub parser_condicional {
             my $aux2 = substr $buffer, $fin + length $marca_fin;
             # print STDERR "$inicio $fin $elif\n"; # debug
             # Rescata la variable por la que se ha preguntado.
-            if ($elif =~ /%%$sentencia\(([^\)]+?)\)%%(.+?)%%\/$sentencia%%/s) {
+            if ($elif =~ /%%$sentencia\(([^\)]+?)\)%%(.*?)%%\/$sentencia%%/s) {
                 my $var = lc $1;  # Variable de control.
                 my $contenido = $2; # Contenido del IF
 

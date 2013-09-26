@@ -113,7 +113,8 @@ main: {
         my $jsonorder = &glib_fildir_02::read_file("$ROOT$DIRFORM/$ORDERFILE");
         my $orderhashref;
         if($JSON::VERSION =~ /^1\./) {
-            $orderhashref = jsonToObj($jsonorder);
+            my $json = new JSON;
+            $orderhashref = $json->jsonToObj($jsonorder);
         } else {
             $orderhashref = &JSON::from_json($jsonorder);
         }
@@ -149,7 +150,8 @@ main: {
             my $json = &glib_fildir_02::read_file("$ROOT$DIRFORM/$file");
             my $jsonhashref;
             if($JSON::VERSION =~ /^1\./) {
-                $jsonhashref = jsonToObj($json);
+                my $json = new JSON;
+                $jsonhashref = $json->jsonToObj($json);
             } else {
                 $jsonhashref = &JSON::from_json($json);
             }

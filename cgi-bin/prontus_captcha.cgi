@@ -48,6 +48,9 @@ BEGIN {
   unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
 };
 
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
+
 use lib_ipcheck;
 use glib_html_02;
 use lib_captcha;
@@ -70,17 +73,17 @@ main: {
     };
 
     # Soporta un maximo de n copias corriendo.
-    if (&lib_maxrunning::maxExcedido(4)) {
-        print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error","908-Servidor ocupado.");
+    if (&lib_maxrunning::maxExcedido(50)) {
+        print "Content-type: image/jpeg\n\n";
+        print STDERR "Servidor ocupado, muchas instancias de la CGI\n";
         exit;
     };
 
     # Tipo de captcha
     my $captcha_type = &glib_cgi_04::param('_type');
     if ($captcha_type !~ /^(form|posting|enviar)$/) {
-        print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error","907-Request not valid.");
+        print "Content-type: image/jpeg\n\n";
+        print STDERR "Request invalido, el tipo de captcha no corresponde: captcha_type[$captcha_type]\n";
         exit;
     };
 
@@ -91,8 +94,8 @@ main: {
     my $bloqueoip_interval = 60;
     my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $user_ip, $maxrequest_por_ip, $bloqueoip_interval);
     if ($bloquear_ip) {
-        print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error","907-Request inhabilitado.");
+        print "Content-type: image/jpeg\n\n";
+        print STDERR "Request inhabilitado, la IP ha sido bloqueada: dir_ip_control[$dir_ip_control], user_ip[$user_ip]\n";
         exit;
     };
 
@@ -104,8 +107,8 @@ main: {
         &lib_captcha::print_img($img_captcha);
     } else {
         print "Content-type: image/jpeg\n\n";
-        print '';
         print STDERR "No se pudo setear captcha type=$captcha_type - ERRCODE[$lib_captcha::ERRCODE][$lib_captcha::ERRGLOSA{$lib_captcha::ERRCODE}]\n";
+        exit;
     };
 };
 # -------------------------------END SCRIPT----------------------

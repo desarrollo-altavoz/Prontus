@@ -276,7 +276,8 @@ sub print_json_result {
     $resp->{'msg'} = $msg;
     print "Content-Type: text/html\n\n" if ($ctype);
     if($JSON::VERSION =~ /^1\./) {
-        print objToJson($resp);
+        my $json = new JSON;
+        print $json->objToJson($resp);
     } else {
         print &JSON::to_json($resp);
     }
@@ -299,7 +300,8 @@ sub print_json_result_hash {
 
     print "Content-Type: text/html\n\n" if ($ctype);
     if($JSON::VERSION =~ /^1\./) {
-        print objToJson($hash);
+        my $json = new JSON;
+        print $json->objToJson($hash);
     } else {
         print &JSON::to_json($hash);
     }

@@ -808,7 +808,8 @@ sub guarda_busqueda {
     my $texto = '';
     #~ binmode(STDOUT, ":utf8");
     if($JSON::VERSION =~ /^1\./) {
-        $texto = objToJson(\%search_real);
+        my $json = new JSON;
+        $texto = $json->objToJson(\%search_real);
     } else {
         $texto = &JSON::to_json(\%search_real);
     }
