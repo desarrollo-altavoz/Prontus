@@ -40,12 +40,22 @@ var Cfgedit = {
                     if (!$(this).is(':disabled')) {
                         var id = ($(this).attr("name")).replace(/nombrefid_/, '');
                         var plantillas = '';
+                        var plantillas_paralelas = '';
+
                         $('select[name="plantillasfid_' + id + '"] option:selected').each(function () {
                             plantillas += $(this).val() + ';';
                         });
+
+                        $('select[name="plantillasfid_pla_' + id + '"] option:selected').each(function () {
+                            plantillas_paralelas += $(this).val() + ';';
+                        });
+
+
                         plantillas = plantillas.substring(0, plantillas.length - 1);
+                        plantillas_paralelas = plantillas_paralelas.substring(0, plantillas_paralelas.length - 1);
+
                         if ($('[name="archivofid_' + id + '"]').val() !== '') { 
-                            form_plts += $('[name="archivofid_' + id + '"]').val() + ':' + $(this).val() + '(' + plantillas + ')|';
+                            form_plts += $('[name="archivofid_' + id + '"]').val() + ':' + $(this).val() + '(' + plantillas + ')(' + plantillas_paralelas + ')|';
                         }
                     }
                 });

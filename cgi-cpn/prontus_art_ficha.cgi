@@ -78,8 +78,8 @@
 # Prontus 6.0 - 29/10/2001 - Revision/modificaciones para Prontus 6.0
 
 # 7.0 - 20/12/2001 - Extensiones p7 :
-#   . "- Agrega marca a la portada para que inserte los men˙s de p·ginas con subtÌtulos.<br>"
-#     . "- PerfilaciÛn de periodistas en lista de artÌculos para permitir artÌculos personales<br>"
+#   . "- Agrega marca a la portada para que inserte los men√∫s de p√°ginas con subt√≠tulos.<br>"
+#     . "- Perfilaci√≥n de periodistas en lista de art√≠culos para permitir art√≠culos personales<br>"
 #     . "- Capacidad para borrar fotos, asocfile y realmedia<br>"
 #     . "- Linkeo de URLs https<br>"
 # Prontus 8.0 - 01/08/2002 - YCH. Ver Extensiones y correcciones en /release_prontus80.txt
@@ -150,7 +150,7 @@ $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
 &lib_prontus::load_config($FORM{'_path_conf'});  # Prontus 6.0
 $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
-# Se lee el titular que habÌa antes, para no perderlo
+# Se lee el titular que hab√≠a antes, para no perderlo
 $FORM{'_txt_titular'} = &lib_prontus::get_codetext_value(&glib_cgi_04::param('_txt_titular'));
 
 # Control de usuarios obligatorio chequeando la cookie contra el dbm.
@@ -194,7 +194,7 @@ if ($FORM{'_file'} eq '') {
 
     # Validar tipo de articulo.
     if (!-f $PATH_FICHA) {
-        &glib_html_02::print_pag_result('Error','Tipo de artÌculo no v·lido o indeterminado.',1,'exit=1,ctype=0');
+        &glib_html_02::print_pag_result('Error','Tipo de art√≠culo no v√°lido o indeterminado.',1,'exit=1,ctype=0');
     };
 
 
@@ -256,6 +256,9 @@ if ($FORM{'_file'} eq '') {
     # reemplazar nombre del prontus
     $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
 
+    # pagspar
+    $pagina =~ s/<!--list_pagspar-->.*?<!--\/list_pagspar-->//isg;
+
     # Alta control
     if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
 
@@ -312,7 +315,7 @@ if ($FORM{'_file'} eq '') {
 
     # Validar tipo de articulo.
     if (!-f $PATH_FICHA) {
-        &glib_html_02::print_pag_result('Error','Tipo de artÌculo no v·lido o indeterminado.',1,'exit=1,ctype=0');
+        &glib_html_02::print_pag_result('Error','Tipo de art√≠culo no v√°lido o indeterminado.',1,'exit=1,ctype=0');
     };
 
     $pagina = &cargar_campos($dir_tpl_pags);
@@ -933,7 +936,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
 
 
-  # se lee plantilla para banco de im·genes
+  # se lee plantilla para banco de im√°genes
   my $tplBancoImg = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/fid/macro_banco_imagenes.html";
   my $tplBancoImg2 = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/fid/macro_banco_imagenes_noimg.html";
   my $moldeBancoImg = &glib_fildir_02::read_file($tplBancoImg);
@@ -1103,7 +1106,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         # my ($reemp) = "<img src=\"$prontus_varglb::DIR_CORE/imag/cpan/reemp_of.gif\" style=\"border:0\;width:16\;heigth:16\;\" alt=\"Reemplazar por nueva imagen\" />";
         #~ $relpath_foto = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_IMAG . "/$nom_foto";
 
-        # JOR - 02/03/2011 - Agrega par·metro al azar para evitar cache del browser.
+        # JOR - 02/03/2011 - Agrega par√°metro al azar para evitar cache del browser.
         # $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/$nom_foto" . "?" . rand(1000);
         # CVI - 10/03/2011 - Se cambia sistema para evitar cache del browser, aplicando el random al nombre de la foto
         $relpath_foto = $relbase_path_mm . $prontus_varglb::DIR_IMAG . "/" . $nom_foto;
@@ -1114,7 +1117,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg =~ s/%%relpath_foto%%/$relpath_foto/ig;
 
-        # Para los campos hidden de las fotos que no se desplegar·n
+        # Para los campos hidden de las fotos que no se desplegar√°n
         my $bufferBancoImg2 = $moldeBancoImg2;
         $bufferBancoImg2 =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg2 =~ s/%%nom_foto%%/$nom_foto/ig;
@@ -1157,7 +1160,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
 #        # ---- 1.4 Imprime advertencia en rojo en caso de que el peso de la foto exceda el limite establecido.
 #        # El limite se establece por c/foto en el formulario, de la forma <!--FOTO1_MAXBYTES=1500-->.
-#        my $alertPesoMax = '<br/><span color="#CC0000">°Advertencia! Peso de imagen excede lÌmite permitido</span>';
+#        my $alertPesoMax = '<br/><span color="#CC0000">¬°Advertencia! Peso de imagen excede l√≠mite permitido</span>';
 #        my $maxbytes = 0;
 #        if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
 #          $maxbytes = $1;
@@ -1304,7 +1307,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
         $maxbytes = $1;
         if ($bytes_swf > $maxbytes) {
-          $valor_campo .=   '<br/><span color="#CC0000">°Advertencia! Peso de archivo swf excede lÌmite permitido</span>';
+          $valor_campo .=   '<br/><span color="#CC0000">¬°Advertencia! Peso de archivo swf excede l√≠mite permitido</span>';
         };
       };
       # ----------
@@ -1403,6 +1406,20 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   $pag =~ s/%%_SIZE_HTML%%/$size_html/isg;
   $pag =~ s/%%_SIZE_TOTAL%%/$size_total/isg;
 
+  # pagspar
+  my $fullpath_pagspar = $relpath_artic;
+  $fullpath_pagspar =~ s/^(.*?)\/pags\/(\d{14})\.(\w+)$/\1\/pagspar\/\2_\*\.\3/isg;
+  my @pagspar = glob("$prontus_varglb::DIR_SERVER$fullpath_pagspar");
+  if (scalar @pagspar) {
+    my $list_pagspar;
+    foreach my $file (@pagspar) {
+        $file =~ s/^$prontus_varglb::DIR_SERVER//isg;
+        $list_pagspar .= "$file\n";
+    };
+    $pag =~ s/%%_pagspar%%/$list_pagspar/isg;
+  } else {
+    $pag =~ s/<!--list_pagspar-->.*?<!--\/list_pagspar-->//isg;
+  };
 
   print STDERR "$titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic\n";
   my $fileurl = &lib_prontus::parse_filef('%%_fileurl%%', $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1);
@@ -1799,7 +1816,7 @@ sub carga_buffer_fid {
 
 # -------------------------------------------------------------------------
 sub add_macros_fid {
-  # Incluye en el tpl las macros seÒaladas en el con la marca
+  # Incluye en el tpl las macros se√±aladas en el con la marca
   # %%MACRO(<nomfilemacro>)%%
   # <nomfilemacro> : Nombre del archivo de la macro (con extension y sin path), ubicado dentro del dir macros
 
@@ -1839,7 +1856,7 @@ sub add_macros_fid {
     $profundidad++;
 
     if ($profundidad > 10) {
-      $buffer_macro = '<b>[Error: Se alcanzÛ el nivel m·ximo de anidamiento de macros (max=10)]</b>';
+      $buffer_macro = '<b>[Error: Se alcanz√≥ el nivel m√°ximo de anidamiento de macros (max=10)]</b>';
       $textpag =~ s/%%MACRO\($nomfile\)%%/$buffer_macro/is;
       $profundidad = 0;
       next;

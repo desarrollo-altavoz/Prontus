@@ -50,11 +50,24 @@
                                                         %%archivofid%%
                                                     </td>
                                                     <td valign="top">
+                                                        <strong>Artículo:</strong>
+                                                        <br/>
                                                         <select name="plantillasfid_%%num%%" style="width: 150px;"%%multiple%%>
                                                             %%plantillasfid%%
                                                         </select>
                                                         <div style="float: right; margin-top: 5px;">
                                                             <img src="/%%_prontus_id%%/cpan/core/imag/boto/%%multiple_img%%.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_%%num%%');"/>
+                                                        </div>
+                                                        <br/>
+                                                        <br/>
+                                                        <strong>Paralelas:</strong>
+                                                        <br/>
+                                                        <select name="plantillasfid_pla_%%num%%" style="width: 150px;"%%multiple_pla%%>
+                                                            <option value="">- Ninguna -</option>
+                                                            %%plantillasfid_pla%%
+                                                        </select>
+                                                        <div style="float: right; margin-top: 5px;">
+                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/%%multiple_img%%.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_pla_%%num%%');"/>
                                                         </div>
                                                     </td>
                                                     <td align="center" valign="top">
