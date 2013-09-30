@@ -1265,12 +1265,15 @@ sub load_config {
   };
 
 
-  while ($buffer =~ m/\s*FORM\_PLTS\s*=\s*("|')(.+?:.+)\((.+?)\)("|')/g) {
+  while ($buffer =~ m/\s*FORM\_PLTS\s*=\s*("|')((.+?):.+?)(\((.+?)\))(\((.*?)\))?("|')/g) {
      $clave = $2;
-     $valor = $3;
+     my $fid = $3;
+     $valor = $5;
+     my $plt_paralelas = $7;
+     
      $prontus_varglb::FORM_PLTS{$clave} = $valor;
      $prontus_varglb::FID_DEFAULT = $clave if (!$prontus_varglb::FID_DEFAULT);
-
+     $prontus_varglb::FORM_PLTS_PARALELAS{$fid} = $plt_paralelas;
   };
 
   # PORT_PLTS = 'inicio.html(vacante para portadas intercambiables, aca antes iba las spare, deprecatear eso)(plantillas paralelas)(portada para preview)'

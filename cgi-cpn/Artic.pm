@@ -199,6 +199,7 @@ sub _set_dirs {
 
     $this->{dst_xml}        = "$this->{dst_base}/xml";
     $this->{dst_pags}       = "$this->{dst_base}/pags";
+    $this->{dst_pagspar}    = "$this->{dst_base}/pagspar";
     $this->{dst_asocfile}   = "$this->{dst_base_mm}/asocfile/$this->{ts}";
     $this->{dst_foto}       = "$this->{dst_base_mm}/imag";
     $this->{dst_swf}        = "$this->{dst_base_mm}/swf";
@@ -231,6 +232,7 @@ sub _check_artic_dirs {
     my ($this) = shift;
     &glib_fildir_02::check_dir($this->{dst_xml})        || return 0;
     &glib_fildir_02::check_dir($this->{dst_pags})       || return 0;
+    &glib_fildir_02::check_dir($this->{dst_pagspar})    || return 0;
     &glib_fildir_02::check_dir($this->{dst_asocfile})   || return 0;
     &glib_fildir_02::check_dir($this->{dst_foto})       || return 0;
     &glib_fildir_02::check_dir($this->{dst_swf})        || return 0;
@@ -1266,13 +1268,21 @@ sub borra_artic {
 
     #~ my $ddir = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/%%DIR_FECHA%%';
     my $dirpag      = $this->{dst_pags};
+    my $dirpagpar   = $this->{dst_pagspar};
     my $dirimg      = $this->{dst_foto};
-    my $dirasocfile =  $this->{dst_asocfile};
+    my $dirasocfile = $this->{dst_asocfile};
     my $dirswf      = $this->{dst_swf};
     my $dirmmedia   = $this->{dst_multimedia};
 
     # Borra paginas generadas
     my @files2delete = glob("$dirpag/$ts" . '.*');
+    foreach my $file2delete (@files2delete) {
+        unlink $file2delete;
+        &lib_prontus::purge_cache($file2delete);
+    };
+
+    # Borrar paginas paralelas
+    @files2delete = glob("$dirpagpar/$ts*" . '.*');
     foreach my $file2delete (@files2delete) {
         unlink $file2delete;
         &lib_prontus::purge_cache($file2delete);
@@ -1285,6 +1295,15 @@ sub borra_artic {
         no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
         $dir_art_mv =~ s/(\d{8})\/pags/\1\/pags-$mv/;
         my @files2delete_mv = glob("$dir_art_mv/$ts" . '.*');
+        foreach my $file2delete (@files2delete_mv) {
+            unlink $file2delete;
+            &lib_prontus::purge_cache($file2delete);
+        };
+
+        # Paginas paralelas
+        $dir_art_mv = $dirpagpar;
+        $dir_art_mv =~ s/(\d{8})\/pagspar/\1\/pagspar-$mv/;
+        @files2delete_mv = glob("$dir_art_mv/$ts*" . '.*');
         foreach my $file2delete (@files2delete_mv) {
             unlink $file2delete;
             &lib_prontus::purge_cache($file2delete);
@@ -1663,6 +1682,8 @@ sub generar_vista_art {
     my ($mv) = shift;
     my ($stamp_demo) = shift;
     my ($prontus_key) = shift;
+    my ($plt) = shift;
+    my ($is_paralela) = shift;
 
     # Carga campos
     my %campos_xml = $this->get_xml_content();
@@ -1672,13 +1693,30 @@ sub generar_vista_art {
     $nom_tema1 = $campos_xml{'_nom_tema1'};
     $nom_subtema1 = $campos_xml{'_nom_subtema1'};
 
-    # Carga plantilla
-    my ($fullpath_plt) = "$this->{pathdir_plt_pags}/$campos_xml{'_plt'}";
-    my ($pathdir_plt_macros) = $this->{pathdir_plt_macros};
-    my $buffer = &lib_prontus::carga_buffer_plt($fullpath_plt, $pathdir_plt_macros, $mv);
+    $plt = $campos_xml{'_plt'} if (!$plt);
 
     # Path completo al articulo a generar
-    my $fullpath_vista = $this->get_fullpath_artic($mv, $campos_xml{'_plt'});
+    my $fullpath_vista = $this->get_fullpath_artic($mv, $plt);
+
+    # Si es una plantilla paralela la ruta de destino es otra.
+    # pagspar y pagspar-<mv>
+    # El nombre del archivo es <ts>_<nombre_plantilla>.<extension>
+    if ($is_paralela) {
+        $plt =~ /(.*?)\.(\w+)$/;
+        my $nom_plt = $1;
+        my $ext_plt = $2;
+        my $pagspar_dir = $this->{dst_pagspar};
+
+        $fullpath_vista =~ s/\/pags(-.+)?\/($this->{ts})\.(\w+)$/\/pagspar$1\/$2\_$nom_plt.$ext_plt/;
+        $pagspar_dir = "$pagspar_dir-$mv" if ($mv);
+        &glib_fildir_02::check_dir($pagspar_dir);
+    };
+
+    # Carga plantilla
+    my ($fullpath_plt) = "$this->{pathdir_plt_pags}/$plt";
+    my ($pathdir_plt_macros) = $this->{pathdir_plt_macros};
+
+    my $buffer = &lib_prontus::carga_buffer_plt($fullpath_plt, $pathdir_plt_macros, $mv);
 
     if ($buffer) {
 
@@ -1695,7 +1733,7 @@ sub generar_vista_art {
         foreach my $video (@multimedia_video) {
             my $path = "$this->{'dst_multimedia'}/$campos_xml{$video}";
             while ($buffer =~ /%%$video\.(.*?)%%/isg) {
-                my $version = "$1";
+                my $version = $1;
                 # Revisar si existe el archivo en disco.
                 $path =~ /\/($video.*?)(\.\w+)$/is;
                 my $file_version = "$1$version$2";

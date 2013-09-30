@@ -6816,7 +6816,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.70 - 02/09/2013 - CVI
+11.2.70 - 02/09/2013 - CVI/JOR
 ====================================================================================================
 
 - Prontus en General
@@ -6934,3 +6934,49 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 
+- Artículos
+    [cambio]
+        - Se agrega la opción de generar artículos con salidas paralelas utilizando plantillas definidas 
+        en el EDITOR DE CFG GUI.
+        Las plantillas de definen en el archivo de configuración <prontus_id->-art.cfg, queadando
+        la linea de configuración de esta forma:
+        FORM_PLTS = '<fid>:<nombre>(<plantillas_articulo>)(<plantillas_paralelas>)'
+        por ejemplo:
+        FORM_PLTS = 'fid_banner:Banner(banner1.html;banner2.html)(banner_ssi.html;banner_php.html)'
+
+        Los archivos generados se almacenan en:
+        /<prontus_id>/site/artic/<fechadir>/pagspar-<mv>/<ts>_<nombre_plantilla>.<extension>
+        por ejemplo:
+        /<prontus_id>/site/artic/20130912/pagspar/20130912094253_banner_ssi.html
+        /<prontus_id>/site/artic/20130912/pagspar-movil/20130912094253_banner_ssi.html
+        - Se agrega a la información del articulo el listado de salidas paralelas.
+
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_art.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
+
+- Buscador Prontus
+    [cambio]
+        - Se disponibiliza CGI para búsqueda con tips. Los resultados se entregan en formato JSON, con un 
+          límite de 5 tips. Para el listado de palabras se utilizará el índice del buscador.
+          Ejemplo de query:
+          => http://<dominio>/cgi-bin/prontus_search_tips.cgi?search_prontus=prontus_develop&search_texto=p
+          resultado:
+          => ["p","pablo","pacientes","pacto","prontus","prueba"]
+          En el resultado se incluye la palabra consultada, en este caso "p".
+
+          El query puede contener una frase, pero solo entregará
+          los tips para la última palabra, por ejemplo buscando la frase "partido chileno en"
+          => http://<dominio>/cgi-bin/prontus_search_tips.cgi?search_prontus=prontus_develop&search_texto=partido%20chileno%20en
+          resultado:
+          => ["partido chileno en","partido chileno encabeza","partido chileno encamina","partido chileno encanta","partido chileno encarna"]
+
+    [files]
+        /cgi-bin/prontus_search_tips.cgi

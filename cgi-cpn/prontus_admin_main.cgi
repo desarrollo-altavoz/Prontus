@@ -258,10 +258,11 @@ sub parseaVars {
     # -------------------------------------------------------------------------------
     # -art.cfg
 
-    # Lee directorio de plantillas.
+    # Lee directorio de plantillas de artículo.
     my $dir_plt = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/plantillas/artic/fecha/pags/';
     &glib_fildir_02::check_dir($dir_plt);
     my @plts_listado = &glib_fildir_02::lee_dir($dir_plt);
+
 
     $buffer = '';
     $pagina =~ /<!--loop_fid_item-->(.*?)<!--\/loop_fid_item-->/s;
@@ -294,11 +295,13 @@ sub parseaVars {
         $fids_utilizados{$fid_info[0].'.html'} = 1;
 
         my $options_select = "";
+        my %options_selected;
         my $num_options_selected = 0;
         foreach my $plt_file (sort @plts_listado) {
             if ($plt_file =~ /(.*?)\.(.*?)/ && $plt_file ne '.' && $plt_file ne '..' && $plt_file !~ /^\./) {
                 if ($prontus_varglb::FORM_PLTS{$fid} =~ /(^|;)$plt_file(;|$)/) {
                     $options_select .= '<option value="' . $plt_file . '" selected="selected">' . $plt_file . '</option>';
+                    $options_selected{$plt_file} = 1;
                     $num_options_selected++;
                 } else {
                     $options_select .= '<option value="' . $plt_file . '">' . $plt_file . '</option>';
@@ -315,6 +318,31 @@ sub parseaVars {
         }
 
         $temp =~ s/%%plantillasfid%%/$options_select/isg;
+
+        # Paralelas.
+        $options_select = "";
+        $num_options_selected = 0;
+        foreach my $plt_file (sort @plts_listado) {
+            if ($plt_file =~ /(.*?)\.(.*?)/ && $plt_file ne '.' && $plt_file ne '..' && $plt_file !~ /^\./) {
+                next if ($options_selected{$plt_file});
+                if ($prontus_varglb::FORM_PLTS_PARALELAS{$fid_info[0]} =~ /(^|;)$plt_file(;|$)/) {
+                    $options_select .= '<option value="' . $plt_file . '" selected="selected">' . $plt_file . '</option>';
+                    $num_options_selected++;
+                } else {
+                    $options_select .= '<option value="' . $plt_file . '">' . $plt_file . '</option>';
+                };
+            };
+        };
+
+        if ($num_options_selected gt 1) {
+            $temp =~ s/%%multiple_pla%%/ multiple="multiple"/isg;
+            $temp =~ s/%%multiple_pla__img%%/men_of/isg;
+        } else {
+            $temp =~ s/%%multiple_pla%%//isg;
+            $temp =~ s/%%multiple_pla_img%%/mas_of/isg;
+        }
+
+        $temp =~ s/%%plantillasfid_pla%%/$options_select/isg;
 
         $buffer = $buffer . $temp;
         $cont++;

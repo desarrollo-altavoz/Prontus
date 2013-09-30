@@ -495,12 +495,13 @@ sub validarArt {
     my ($item) = shift;
 
     # validar existencia de fids y plantillas.
-    $item =~ /(.+?):(.+)\((.+?)\)/;
-    my $fid = $1;
-    my $nom = $2;
+    $item =~ /(.+?:.+?)(\((.+?)\))(\((.*?)\))?/;
+    my $fid_info = $1;
     my $plts = $3;
+    my $plts_paralelas = $5;
+    my ($fid, $nom) = split(/:/, $fid_info);
 
-    print STDERR "$fid, $nom, $plts\n";
+    # print STDERR "$fid, $nom, $plts, $plts_paralelas\n";
 
     my $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
     if (! -f $dir_fid . $fid . '.html') {
