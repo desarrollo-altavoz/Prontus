@@ -1547,11 +1547,29 @@ sub add_vtxt {
 
   $include4vtxt = &glib_fildir_02::read_file($include4vtxt);
 
+  #~ Lee la plantilla del artículo para distintas tareas
+  my $path_tpl = $prontus_varglb::DIR_SERVER .
+             $prontus_varglb::DIR_TEMP .
+             $prontus_varglb::DIR_ARTIC .
+             $prontus_varglb::DIR_FECHA .
+             $prontus_varglb::DIR_PAG . "/$tpl_artic";
+  my $buffer = &glib_fildir_02::read_file($path_tpl);
+  my ($crlf) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
+  $buffer =~ s/$crlf/\x0a/sg;
+  $buffer =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg; # a pedido del publico
 
-  my $path_css_artic = &get_css_artic($tpl_artic);
-
-
+  #~ Carga los css desde la plantilla del artículo
+  my $include_css = $prontus_varglb::DIR_CORE . "/vtxt/editor/plugins/insert/css/content.css";
+  my $path_css_artic = &get_css_artic($buffer);
+  if($path_css_artic) {
+    $path_css_artic = "$include_css,$path_css_artic";
+  } else {
+    $path_css_artic = "$include_css";
+  }
   $include4vtxt =~ s/%%_PATH_CSS_ARTIC%%/$path_css_artic/isg;
+
+  my $data_include_type = &get_include_artic($path_tpl, $buffer);
+  $include4vtxt =~ s/%%_data_include_type%%/$data_include_type/isg;
 
 
   if ($prontus_varglb::VTXT_PASTE_NEWLINES_AS_P eq 'SI') {
@@ -1688,19 +1706,10 @@ sub get_custom_estilos {
 # -------------------------------------------------------------------------#
 sub get_css_artic {
   # Obtiene CSSs del articulo separados por coma para incluirlos en el vtxt
-  my $tpl_artic = $_[0];
+  my $path_tpl = shift;
+  my $buffer = shift;
+
   my $paths;
-  my $path_tpl = $prontus_varglb::DIR_SERVER .
-             $prontus_varglb::DIR_TEMP .
-             $prontus_varglb::DIR_ARTIC .
-             $prontus_varglb::DIR_FECHA .
-             $prontus_varglb::DIR_PAG . "/$tpl_artic";
-
-  my $buf = &glib_fildir_02::read_file($path_tpl);
-  my ($crlf) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
-  $buf =~ s/$crlf/\x0a/sg;
-  $buf =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg; # a pedido del publico
-
 
   my ($elcss,$ellink);
   while ($buf =~ /(<link [^>]*?href="([^>]+?)"[^>]*?>)/isg) {
@@ -1714,6 +1723,20 @@ sub get_css_artic {
   $paths =~ s/\,$//;
   return $paths;
 };
+# -------------------------------------------------------------------------#
+sub get_include_artic {
+  my $buffer = shift;
+
+  if($buffer =~ /<\?php\s/) {
+    return 'php';
+
+  } elsif($buffer =~ /<!--\#/) {
+    return 'ssi';
+
+  } else {
+    return 'php';
+  };
+}
 # -------------------------------------------------------------------------#
 sub relative2abs {
   # Transforma un link relativo a absoluto respecto de la raiz del webserver

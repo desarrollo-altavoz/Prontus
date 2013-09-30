@@ -3926,9 +3926,10 @@ sub replace_in_artic {
     my $valor_campo = shift;
     my $nom_campo = shift;
     my $buffer = shift;
+    my $noescape = shift;
     # print STDERR "nom_campo[$nom_campo] - valor_campo[$valor_campo]\n";
 
-    $valor_campo =~ s/< *\?/< &#63;/g; # elimina secuencias <?
+    $valor_campo =~ s/< *\?/< &#63;/g unless($noescape); # elimina secuencias <?
     $valor_campo =~ s/%%/&#37;&#37;/sg; # para poder poner nombres de marcas
 
     # Cambia rets carro por <p>

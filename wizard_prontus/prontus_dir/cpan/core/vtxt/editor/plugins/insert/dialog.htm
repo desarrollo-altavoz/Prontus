@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{#insert_dlg.title}</title>
+    <script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+    <script type="text/javascript" src="../../utils/mctabs.js"></script>
+    <script type="text/javascript" src="js/dialog.js"></script>
+    <script type="text/javascript" src="../../../../js-local/Admin.class.js"></script>
+    <link href="css/insert.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="contenedor">
+
+    <form onsubmit="InsertDialog.insert('html');return false;" action="#">
+        <input type="hidden" name="tipo_insert" id="tipo_insert" value="html" />
+
+        <div class="tabs" role="presentation">
+            <ul id="tabs">
+                <li id="html_tab" class="current" aria-controls="html_panel"><span><a href="javascript:InsertDialog.displayTab('html_tab','html_panel');" onmousedown="return false;">{#insert_dlg.tab_html}</a></span></li>
+                <li id="js_tab" aria-controls="js_panel"><span><a href="javascript:InsertDialog.displayTab('js_tab','js_panel');" onmousedown="return false;">{#insert_dlg.tab_js}</a></span></li>
+            </ul>
+        </div>
+        <div class="panel_wrapper">
+
+            <div id="html_panel" class="panel current">
+
+                <p>{#insert_dlg.html_desc1}</p>
+                <p>{#insert_dlg.html_desc2}</p>
+
+                <table class="tabla-principal">
+                <tr>
+                    <td class="label">
+                        <label for="insert_html_type">{#insert_dlg.html_type}</label>:
+                    </td>
+                    <td>
+                        <select id="insert_html_type" name="insert_html_type">
+                            <option value=""></option>
+                            <option value="php">{#insert_dlg.html_type_php}</option>
+                            <option value="ssi">{#insert_dlg.html_type_ssi}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="insert_file">{#insert_dlg.html_file}</label>:
+                    </td>
+                    <td>
+                        <input id="insert_file" name="insert_file" type="text" class="text" />
+                    </td>
+                </tr>
+                </table>
+
+            </div>
+            <div id="js_panel" class="panel">
+
+                <p>{#insert_dlg.js_desc1}</p>
+                <p>{#insert_dlg.js_desc2}</p>
+
+                <table class="tabla-principal">
+                <tr>
+                    <td class="label"><label for="insert_js_type">{#insert_dlg.js_type}:</label></td>
+                    <td>
+                        <select id="insert_js_type" name="insert_js_type" onchange="InsertDialog.updateJsType();">
+                            <option value="code">{#insert_dlg.js_type_code}</option>
+                            <option value="file">{#insert_dlg.js_type_file}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="tr_tab_code">
+                            <table class="tabla-principal">
+                            <tr>
+                                <td class="label"><label for="insert_js_code">{#insert_dlg.js_code}:</label></td>
+                                <td><textarea id="insert_js_code" name="insert_js_code" rows="7" cols="40"></textarea></td>
+                            </tr>
+                            </table>
+                        </div>
+
+                        <div  id="tr_tab_file" style="display:none;">
+                            <table class="tabla-principal">
+                            <tr>
+                                <td class="label"><label for="insert_js_file">{#insert_dlg.js_file}:</label></td>
+                                <td><input id="insert_js_file" name="insert_file" type="text" class="text" /></td>
+                            </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                </table>
+
+            </div>
+            <p class="help"><b>{#insert_dlg.insert_important}</b> {#insert_dlg.insert_desc}</p>
+        </div>
+
+        <div class="mceActionPanel">
+            <input type="button" id="insert" name="insert" value="{#insert}" onclick="InsertDialog.insert();" />
+            <input type="button" id="cancel" name="cancel" value="{#cancel}" onclick="tinyMCEPopup.close();" />
+        </div>
+    </form>
+</div>
+</body>
+</html>

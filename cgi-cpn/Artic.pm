@@ -22,7 +22,7 @@ use glib_fildir_02;
 use glib_str_02;
 use glib_hrfec_02;
 use File::Copy;
-
+use URI::Escape;
 
 # use diagnostics;
 
@@ -2142,9 +2142,71 @@ sub _parsing_vtxt {
         };
     };
 
+    # Para que no me escapee el PHP
+    $vtxt_aux_consubtit =~ s/< *\?/< &#63;/g; # elimina secuencias <?
 
+    # Para el nuevo plugin Insert
+    my $safe_counter = 0;
+    while($vtxt_aux_consubtit =~ /(<prontus:insert(.*?)>.*?<\/prontus:insert>)/is) {
 
-    $buffer = &lib_prontus::replace_in_artic($vtxt_aux_consubtit, $nom_campo, $buffer);
+        my $code = $1;
+        my $attrs = $2;
+
+        $safe_counter++;
+        if($safe_counter > 5) {
+            print STDERR "[vtxt] Salida de seguridad <prontus:insert>\n";
+            $vtxt_aux_consubtit =~ s/<prontus:insert(.*?)>.*?<\/prontus:insert>//isg;
+            last;
+        }
+#~ <prontus:insert type="js" code="var%20myvar%20%3D%20'Hello'%3B%0D%0Aalert(myvar)%3B">Código Javascript</prontus:insert>
+#~ <prontus:insert type="js" code="var%20myvar%20%3D%20'Hello'%3B%0D%0Aalert(myvar)%3B">Código Javascript</prontus:insert>
+
+        my $newnode = '';
+        if($attrs =~ / type="(php|ssi)"/) {
+            my $tipo = $1;
+            if($attrs =~ / src="(.*?)"/) {
+                my $file = $1;
+
+                if($file =~ /^\// && $file !~ /\/..\//) {
+                    if(! -f "$this->{document_root}$file") {
+                        $newnode = "Archivo No Existe [$this->{document_root}$file]";
+                    } else {
+                        if($tipo eq 'ssi') {
+                            $newnode = '<!--#include file="'.$file.'" -->';
+                        } else {
+                            $newnode = '<?php include($_SERVER["DOCUMENT_ROOT"] . "'.$file.'"); ?>';
+                        }
+                    }
+                }
+            }
+        } elsif($attrs =~ / type="js"/) {
+            if($attrs =~ / src="(.*?)"/) {
+                my $file = $1;
+                if($file =~ /^\// && $file !~ /\/..\//) {
+                    if(-f "$this->{document_root}$file") {
+                        $newnode = '<script src="'.$file.'" type="text/javascript"></script>';
+                    } else {
+                        $newnode = "Archivo No Existe [$this->{document_root}$file]";
+                    }
+                } elsif($file =~ /^https?:\/\//) {
+                    $newnode = '<script src="'.$file.'" type="text/javascript"></script>';
+                }
+            } elsif($attrs =~ / code="(.*?)"/) {
+                my $jscode = $1;
+                $jscode = uri_unescape($jscode);
+                $newnode = '<script type="text/javascript">'."\n".$jscode."\n".'</script>';
+            }
+        }
+        $code = quotemeta $code;
+        $vtxt_aux_consubtit =~ s/$code/$newnode/is;
+
+        print STDERR "\n\n\n";
+    }
+
+    # Se le indica que no se deben escapear los PHP
+    my $noescape = 1;
+    $buffer = &lib_prontus::replace_in_artic($vtxt_aux_consubtit, $nom_campo, $buffer, $noescape);
+
     return $buffer;
     # return ($vtxt_aux_consubtit, $curr_nrotit, %hash_subtits);
 };
