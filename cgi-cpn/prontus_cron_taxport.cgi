@@ -265,8 +265,8 @@ sub renovar_semaforos {
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
 
             # Tema.
-            my $id_level = $secc_id . '_' . $temas_id . '__' . $fid;
-            my @files2delete = glob("$dir_semaf/$id_level" . '.*');
+            $id_level = $secc_id . '_' . $temas_id . '__' . $fid;
+            @files2delete = glob("$dir_semaf/$id_level" . '.*');
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
@@ -308,8 +308,8 @@ sub renovar_semaforos {
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
 
             # Tema.
-            my $id_level = $secc_id . '_' . $temas_id . '__' . $fid;
-            my @files2delete = glob("$dir_semaf/$id_level" . '.*');
+            $id_level = $secc_id . '_' . $temas_id . '__' . $fid;
+            @files2delete = glob("$dir_semaf/$id_level" . '.*');
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
@@ -319,8 +319,8 @@ sub renovar_semaforos {
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
 
             # Subtema.
-            my $id_level = $secc_id . '_' . $temas_id . '_' . $subtemas_id . '_' . $fid;
-            my @files2delete = glob("$dir_semaf/$id_level" . '.*');
+            $id_level = $secc_id . '_' . $temas_id . '_' . $subtemas_id . '_' . $fid;
+            @files2delete = glob("$dir_semaf/$id_level" . '.*');
             foreach my $file2delete (@files2delete) {
                 if ($file2delete !~ /\.$pid_propio$/) {
                     unlink $file2delete;
@@ -385,8 +385,8 @@ sub renovar_semaforos {
 
         }; # end no hay seccion.
 
-        my $id_level = '___' . $fid;
-        my @files2delete = glob("$dir_semaf/$id_level" . '.*');
+        $id_level = '___' . $fid;
+        @files2delete = glob("$dir_semaf/$id_level" . '.*');
         foreach my $file2delete (@files2delete) {
             if ($file2delete !~ /\.$pid_propio$/) {
                 unlink $file2delete;
@@ -438,87 +438,97 @@ sub generar_taxports {
 
     my $pid_padre = $$;
 
-    my $pid = fork();
-    if ($pid) {
-        push(@childs, $pid);
-    } elsif ($pid == 0) {
-        &generar_taxports_thislevel('', '', '', '', \%fids2process, $base, $pid_padre); # todas
-        exit 0;
-    } else {
-        print STDERR "No se pudo hacer el fork general: $!\n";
-    };
+    # si se invoca sin fid, considera el filtro sin fid
+    $fids2process{''} = 1 if ($FORM{'fid_especif'} eq '');
+
+    # para uso normal desde el fid, en donde se invoca siempre con fid. Entonces si viene una tax definida, genera para esa tax con el fid, pero tb. para la tax sin fid especifico
+    $fids2process{''} = 1 if ($FORM{'seccion_especif'});
+
+
+    foreach my $fid (keys %fids2process) {
+
+        my $pid = fork();
+        if ($pid) {
+            push(@childs, $pid);
+        } elsif ($pid == 0) {
+            &generar_taxports_thislevel('', '', '', '', $fid, $base, $pid_padre); # todas
+            exit 0;
+        } else {
+            print STDERR "No se pudo hacer el fork general: $!\n";
+        };
 
 
 
-    if (($FORM{'seccion_especif'}) || ($FORM{'params_especif'} eq '')) {
+        if (($FORM{'seccion_especif'}) || ($FORM{'params_especif'} eq '')) {
 
-        # secc
-        my ($secc_id, $secc_nom, $secc_port, $secc_nom4vistas);
-        my $pid;
-        my (@pid) = (); # PIDs de los procesos hijos.
-        foreach $secc_id (keys %TABLA_SECC) {
+            # secc
+            my ($secc_id, $secc_nom, $secc_port, $secc_nom4vistas);
+            my $pid;
+            my (@pid) = (); # PIDs de los procesos hijos.
+            foreach $secc_id (keys %TABLA_SECC) {
 
-            ($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
-            if ($FORM{'seccion_especif'}) {
-                next if ($FORM{'seccion_especif'} != $secc_id);
-            };
-
-            if ($FORM{'seccion_especif'}) {
-
-                my $pid = fork();
-                if ($pid) {
-                    push(@childs, $pid);
-                } elsif ($pid == 0) {
-                    &generar_taxports_thislevel($secc_id, '', '', $secc_port, \%fids2process, $base, $pid_padre);
-                    exit 0;
-                } else {
-                    print STDERR "No se pudo hacer el fork de seccion: $!\n";
-                };
-            }
-
-            my ($temas_id, $temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas);
-            foreach $temas_id (keys %TABLA_TEM) {
-                ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
-                next if ($temas_idparent != $secc_id);
-                if ($FORM{'tema_especif'}) {
-                    next if ($FORM{'tema_especif'} != $temas_id);
+                ($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
+                if ($FORM{'seccion_especif'}) {
+                    next if ($FORM{'seccion_especif'} != $secc_id);
                 };
 
-                if ($FORM{'tema_especif'}) {
+                if ($FORM{'seccion_especif'}) {
+
                     my $pid = fork();
                     if ($pid) {
                         push(@childs, $pid);
                     } elsif ($pid == 0) {
-                        &generar_taxports_thislevel($secc_id, $temas_id, '', $temas_port, \%fids2process, $base, $pid_padre);
+                        &generar_taxports_thislevel($secc_id, '', '', $secc_port, $fid, $base, $pid_padre);
                         exit 0;
                     } else {
-                        print STDERR "No se pudo hacer el fork de tema: $!\n";
+                        print STDERR "No se pudo hacer el fork de seccion: $!\n";
                     };
-                };
+                }
 
-                # subtemas
-                my ($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas);
-                foreach $subtemas_id (keys %TABLA_STEM) {
-                    ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
-                    next if ($subtemas_idparent != $temas_id);
-                    if ($FORM{'subtema_especif'}) {
-                        next if ($FORM{'subtema_especif'} != $subtemas_id);
+                my ($temas_id, $temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas);
+                foreach $temas_id (keys %TABLA_TEM) {
+                    ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
+                    next if ($temas_idparent != $secc_id);
+                    if ($FORM{'tema_especif'}) {
+                        next if ($FORM{'tema_especif'} != $temas_id);
                     };
-                    if ($FORM{'subtema_especif'}) {
+
+                    if ($FORM{'tema_especif'}) {
                         my $pid = fork();
                         if ($pid) {
                             push(@childs, $pid);
                         } elsif ($pid == 0) {
-                            &generar_taxports_thislevel($secc_id, $temas_id, $subtemas_id, $subtemas_port, \%fids2process, $base, $pid_padre);
+                            &generar_taxports_thislevel($secc_id, $temas_id, '', $temas_port, $fid, $base, $pid_padre);
                             exit 0;
                         } else {
-                            print STDERR "No se pudo hacer el fork de subtema: $!\n";
+                            print STDERR "No se pudo hacer el fork de tema: $!\n";
                         };
-                    }
-                };
+                    };
 
-            }; # foreach temas
-        }; # foreach seccs
+                    # subtemas
+                    my ($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas);
+                    foreach $subtemas_id (keys %TABLA_STEM) {
+                        ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
+                        next if ($subtemas_idparent != $temas_id);
+                        if ($FORM{'subtema_especif'}) {
+                            next if ($FORM{'subtema_especif'} != $subtemas_id);
+                        };
+                        if ($FORM{'subtema_especif'}) {
+                            my $pid = fork();
+                            if ($pid) {
+                                push(@childs, $pid);
+                            } elsif ($pid == 0) {
+                                &generar_taxports_thislevel($secc_id, $temas_id, $subtemas_id, $subtemas_port, $fid, $base, $pid_padre);
+                                exit 0;
+                            } else {
+                                print STDERR "No se pudo hacer el fork de subtema: $!\n";
+                            };
+                        }
+                    };
+
+                }; # foreach temas
+            }; # foreach seccs
+        };
     };
 
     foreach (@childs) {
@@ -552,131 +562,123 @@ sub generar_taxports_thislevel {
 # a este nivel taxonomico, para todas las vistas declaradas y fids.
 
 
-    my ($secc_id, $temas_id, $subtemas_id, $tax_fixedurl, $ref_hash, $base, $pid_padre) = @_;
-
-    my %fids2process = %$ref_hash;
-    # si se invoca sin fid, considera el filtro sin fid
-    $fids2process{''} = 1 if ($FORM{'fid_especif'} eq '');
-
-    # para uso normal desde el fid, en donde se invoca siempre con fid. Entonces si viene una tax definida, genera para esa tax con el fid, pero tb. para la tax sin fid especifico
-    $fids2process{''} = 1 if ($FORM{'seccion_especif'});
+    my ($secc_id, $temas_id, $subtemas_id, $tax_fixedurl, $fid, $base, $pid_padre) = @_;
 
     my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/taxport_smf";
     &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
     #~ my $pid_propio = $$;
 
-    foreach my $fid (keys %fids2process) {
-        my $id_level = $secc_id . '_' . $temas_id . '_' . $subtemas_id . '_' . $fid;
-        if (! -f "$dir_semaf/$id_level.$pid_padre") {
-            print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] hasta aca no mas llegamos!\n";
-            next;
+    my $id_level = $secc_id . '_' . $temas_id . '_' . $subtemas_id . '_' . $fid;
+    if (! -f "$dir_semaf/$id_level.$pid_padre") {
+        print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] hasta aca no mas llegamos!\n";
+        next;
+    };
+
+    # Reconectar por si las moscas
+    if (! ref($base)) {
+        $base = &conecta_db();
+    }
+
+    my $filtros = &genera_filtros_taxports($secc_id, $temas_id, $subtemas_id, $fid, $CURR_DTIME);
+    my $tot_artics = &get_tot_artics($filtros, $base);
+    print STDERR "[$pid_padre][$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
+    my ($secc_nom, $filler) = split (/\t\t/, $TABLA_SECC{$secc_id});
+
+    my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
+    . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
+    . "%%FILTRO%% order by $prontus_varglb::TAXPORT_ORDEN LIMIT 0, $prontus_varglb::TAXPORT_MAXARTICS";
+
+    if ($filtros ne '') {
+        $sql =~ s/%%FILTRO%%/ where $filtros /;
+    }
+    else {
+        $sql =~ s/%%FILTRO%%/$filtros/;
+    };
+
+    my $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
+    my $nro_filas = 0;
+    my $nro_pag = 0;
+    my %filas;
+
+    my $arrayref = $salida->fetchall_arrayref;
+    $salida->finish;
+    $base->disconnect;
+
+    foreach my $row (@{$arrayref}) {
+        my $art_id = $row->[0];
+        my $art_fecha = $row->[1];
+        my $art_horap = $row->[2];
+        my $art_titu = $row->[3];
+        my $art_dirfecha = $row->[4];
+        my $art_extension = $row->[5];
+        my $art_tipoficha = $row->[6];
+        my $art_idtemas1 = $row->[7];
+        my $art_baja = $row->[8];
+
+        $nro_filas++;
+        my $nro_pag_to_write = $nro_pag + 1;
+        # print STDERR "\tpag[$nro_pag_to_write] row[$nro_filas]";
+        # sleep (1) if ($nro_filas > 98);
+
+        # parsea esta fila en todas las multivistas
+        my ($tem, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$art_idtemas1});
+        my $mv;
+        my %vistas; # incluye las mv y la normal
+        %vistas = %prontus_varglb::MULTIVISTAS;
+        $vistas{''} = 1; # vista default
+        foreach $mv (keys %vistas) {
+            foreach my $nombase_plt (keys %NOMBASE_PLTS) {
+
+                # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
+                my $loop_plt = &get_loop_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
+                next if (!$loop_plt);
+                my $fila_content;
+                my ($auxref, $auxref2);
+
+                # En estos casos sólo es válida la primera página
+                my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
+                if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 0) {
+                    next;
+                };
+
+                ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pag_to_write);
+
+                $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
+                $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
+
+
+                $filas{"$mv|$nombase_plt"} .= $fila_content;
+
+                if ($nro_pag > 0) {
+                    # Se deja en medio segundo
+                    usleep(500000);
+                };
+            };
         };
-        my $base = &conecta_db();
 
-        my $filtros = &genera_filtros_taxports($secc_id, $temas_id, $subtemas_id, $fid, $CURR_DTIME);
-        my $tot_artics = &get_tot_artics($filtros, $base);
-        print STDERR "[$pid_padre][$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
-        my ($secc_nom, $filler) = split (/\t\t/, $TABLA_SECC{$secc_id});
+        # escribir la pag actual y cambiar a la pagina siguiente
+        if ($nro_filas >= $FILASXPAG) {
 
-        my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
-        . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
-        . "%%FILTRO%% order by $prontus_varglb::TAXPORT_ORDEN LIMIT 0, $prontus_varglb::TAXPORT_MAXARTICS";
+            $nro_pag++; # avanza pag
+            &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas);
+            $nro_filas = 0; # resetea conta de filas para empezar del ppio en la pagina que viene.
+            %filas = ();
 
-        if ($filtros ne '') {
-            $sql =~ s/%%FILTRO%%/ where $filtros /;
-        }
-        else {
-            $sql =~ s/%%FILTRO%%/$filtros/;
-        };
-
-        my $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
-        my $nro_filas = 0;
-        my $nro_pag = 0;
-        my %filas;
-
-        my $arrayref = $salida->fetchall_arrayref;
-        $salida->finish;
-        $base->disconnect;
-
-        foreach my $row (@{$arrayref}) {
-            my $art_id = $row->[0];
-            my $art_fecha = $row->[1];
-            my $art_horap = $row->[2];
-            my $art_titu = $row->[3];
-            my $art_dirfecha = $row->[4];
-            my $art_extension = $row->[5];
-            my $art_tipoficha = $row->[6];
-            my $art_idtemas1 = $row->[7];
-            my $art_baja = $row->[8];
-
-            $nro_filas++;
-            my $nro_pag_to_write;
-            if (-f "$dir_semaf/$id_level.$pid_padre") {
-                $nro_pag_to_write = $nro_pag + 1;
-                # print STDERR "\r                   pag[$nro_pag_to_write] row[$nro_filas]";
-                # sleep (1) if ($nro_filas > 98);
-            } else {
+            if (! -f "$dir_semaf/$id_level.$pid_padre") {
                 # print STDERR "\n[$$] FETCHING: hasta aca no mas llegamos!\n";
                 return;
             };
-
-
-            # parsea esta fila en todas las multivistas
-            my ($tem, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$art_idtemas1});
-            my $mv;
-            my %vistas; # incluye las mv y la normal
-            %vistas = %prontus_varglb::MULTIVISTAS;
-            $vistas{''} = 1; # vista default
-            foreach $mv (keys %vistas) {
-                foreach my $nombase_plt (keys %NOMBASE_PLTS) {
-
-                    # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
-                    my $loop_plt = &get_loop_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
-                    next if (!$loop_plt);
-                    my $fila_content;
-                    my ($auxref, $auxref2);
-
-                    # En estos casos sólo es válida la primera página
-                    my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
-                    if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 0) {
-                        next;
-                    };
-
-                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pag_to_write);
-
-                    $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
-                    $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
-
-
-                    $filas{"$mv|$nombase_plt"} .= $fila_content;
-
-                    if ($nro_pag > 0) {
-                        # Se baja al minimo
-                        usleep(5000);
-                    };
-                };
-            };
-
-            # escribir la pag actual y cambiar a la pagina siguiente
-            if ($nro_filas >= $FILASXPAG) {
-
-                $nro_pag++; # avanza pag
-                &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas);
-                $nro_filas = 0; # resetea conta de filas para empezar del ppio en la pagina que viene.
-                %filas = ();
-            };
-        };
-
-
-        $nro_pag++; # avanza pag
-        &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas);
-
-        if (-f "$dir_semaf/$id_level.$pid_padre") {
-            unlink "$dir_semaf/$id_level.$pid_padre";
-            print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
         };
     };
 
+
+    $nro_pag++; # avanza pag
+    &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas);
+
+    if (-f "$dir_semaf/$id_level.$pid_padre") {
+        unlink "$dir_semaf/$id_level.$pid_padre";
+        print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
+    };
 };
 # ---------------------------------------------------------------
 sub get_loop_plt {
@@ -900,7 +902,7 @@ sub write_pag {
 
             ($pagina, $MSGS{"$mv|$nombase_plt"}) = &carga_mensajes($pagina); # 1.8
             $pagina =~ s/%%_totartics%%/$tot_artics/ig;
-            my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
+            $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
             # warn "$key_hash lista[$lista]";
             my $reldir_port_dst = &obtieneRelDirDestino($fid, $mv);
             my ($nombase, $extension) = &lib_prontus::split_nom_y_extension($nombase_plt);
