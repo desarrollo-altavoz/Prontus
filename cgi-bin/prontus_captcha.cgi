@@ -73,7 +73,7 @@ main: {
     };
 
     # Soporta un maximo de n copias corriendo.
-    if (&lib_maxrunning::maxExcedido(50)) {
+    if (&lib_maxrunning::maxExcedido(200)) {
         print "Content-type: image/jpeg\n\n";
         print STDERR "Servidor ocupado, muchas instancias de la CGI\n";
         exit;

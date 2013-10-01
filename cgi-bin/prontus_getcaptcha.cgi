@@ -37,7 +37,7 @@ main: {
     &glib_cgi_04::new();
 
     # Soporta un maximo de n copias corriendo.
-    if (&lib_maxrunning::maxExcedido(50)) {
+    if (&lib_maxrunning::maxExcedido(200)) {
         &lib_captcha2::print_response('', '', '', $lib_captcha2::ERR_MSGS{'MSG_CAPTCHA_BUSY'});
     };
 
