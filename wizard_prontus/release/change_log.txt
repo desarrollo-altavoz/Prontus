@@ -1,4 +1,22 @@
 ====================================================================================================
+11.2.70 - 01/10/2013
+====================================================================================================
+- notice: Se crea nuevo plugin llamado: Insert encargado de hacer 4 tipos de "insert": PHP, SSI, Archivo JS y Código JS
+- bugfix: Se corrige error al usar el método _add_foto_filesystem del objeto Artic.pm
+- changes: Se homologa carga de CFGs en algunas cgis
+- bugfix: Bug al guardar Mis Búsquedas. Si se refrescaba el listado, se guardaba la misma busqueda muchas veces
+- improvement: Al momento de guardar una portada, se indica en el log el numero de artículos que se escribieron.
+- improvement: Se agrega mecanismo de seguridad que no permite guardar el listado de artículos publicados si éste no cargó correctamente
+- bugfix: Se corrige bug al parsear marcas que estaban pegadas. Este bug viene de mucho tiempo atrás.
+- bugfix: Se corrige error al usar la JSON version 1. Se debe actualizar si se usa esta versión.
+- improvement: Al crear las tablas de prontus, en la tabla coment se agrega la columna COMENT_EMAIL
+- changes: Se sube el valor de máximas instancias corriendo para las cgis que entregan captcha. Ahora se deja en 200.
+- bugfix: Al cambiar los datos de los usuarios, se limpia el caché del listado de artículos
+- improvement: Se agrega la opción de generar artículos con salidas paralelas
+- improvement: Se agrega a la información del articulo el listado de salidas paralelas.
+- improvement: Se disponibiliza CGI para búsqueda con tips.
+
+====================================================================================================
 11.2.69 - 26/08/2013
 ====================================================================================================
 - notice: Se agrega la posibilidad de tener los archivos (imag, asocfile, multimedia, swf) en un directorio separado.
