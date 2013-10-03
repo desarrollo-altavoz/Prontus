@@ -214,7 +214,6 @@ BEGIN {
   $ROOTDIR .= '/' . $DIR_CGI_CPAN;
   unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
 
-  unshift(@INC,'/var/www/prontus_development/cgi-cpn'); # Para dejar disponibles las librerias
 };
 
 # ---------------------------------------------------------------
@@ -230,6 +229,7 @@ use prontus_varglb; &prontus_varglb::init();
 
 # Para mostrar de inmediato la pagina de resultados.
 $|=1;
+
 # 1.10 Una sola \n porque despues normalmente viene un header location.
 print "Content-type: text/html\n";
 
@@ -321,15 +321,8 @@ if(($FORM{'search_maxpags'} eq '') || ($FORM{'search_maxpags'} > $CFG{'MAXPAGS'}
   $FORM{'search_maxpags'} = $CFG{'MAXPAGS'};
 };
 
-# Cargar variables de configuración necesarias para friendly url desde archivo -var
-my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
-if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FRIENDLY_URLS = $2;
-};
-
-if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
-};
+# Cargar variables de configuración
+&carga_variables_prontus();
 
 # Parsea y muestra primera parte de la pagina de resultados.
 # 1.10 $PLANTILLA = &leeplantilla($PRONTUS_DIR,$FORM{'search_tmp'}); # Directorio de trabajo.
@@ -338,6 +331,7 @@ $PLANTILLA = &lib_search::lee_archivo($TMP_DIR .'/'. $FORM{'search_tmp'});
 
 &inicializaMensajes(); # 1.8 Carga arreglo de stop words (@NOBUSCAR) y hash de mensajes (%MSGS).
 $RESULTADO = &parsea_plantilla1(); # 1.10
+
 # 1.10 Deduce la extension de la plantilla.
 if ($FORM{'search_tmp'} =~ /\.([\w]+)$/) {
   $EXT = $1;
@@ -455,6 +449,7 @@ sub parsea_plantilla1 {
   };
   # 1.21 Parsea nombre de la CGI.
   $plantilla =~ s/%%scriptname%%/$scriptname/sg; # 1.21
+
   # Elimina tags sin parsear.
   $plantilla =~ s/%%[^%]+%%//sg;
   return $plantilla;
@@ -552,6 +547,10 @@ sub parsea_plantilla2 {
   $pags = $prevlink . $pags . $nextlink;
 
   my $plantilla = $PLANTILLA;
+
+  # Se parsean algunas marcas
+  $plantilla = &parsea_marcas_prontus($plantilla);
+
   if ($plantilla =~ /<!--separador-->/si) {
     $plantilla = $'; # '
   };
@@ -676,6 +675,18 @@ sub parsea_plantilla2 {
   return $plantilla;
   # print "debug: fin plantilla<br>\n";
 }; # parsea_plantilla2
+
+# -------------------------------------------------------------------------#
+sub parsea_marcas_prontus {
+
+  my $plantilla = shift;
+
+  # Parsea el nombre del prontus
+  $plantilla =~ s/%%_prontus_id%%/$PRONTUS/isg; # 1.21
+  print STDERR "search_prontus[$PRONTUS]\n";
+
+  return $plantilla;
+}
 
 # -------------------------------------------------------------------------#
 # Lee y administra el cache de las plantillas del buscador.
@@ -1215,6 +1226,21 @@ sub matchSequence() {
     return 0;
   };
 }; # matchSequence
+
+sub carga_variables_prontus {
+
+  my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
+
+  # Cargar variables de configuración necesarias para friendly url desde archivo -var
+  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::FRIENDLY_URLS = $2;
+  };
+
+  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
+  };
+
+};
 
 # -------------------------------------------------------------------#
 # Rescata y valida las variables del chorro.

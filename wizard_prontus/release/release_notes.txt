@@ -6988,3 +6988,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Se comienzan a escribir las salidas por fid, mucho mas rapido
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
+
+- Buscador
+    [mejoras]
+        - Se comienza a parsear la marca: %%_prontus_id%%
+        - Se elimina referencia en duro a /var/www/prontus_development/
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+
