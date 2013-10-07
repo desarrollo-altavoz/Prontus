@@ -70,11 +70,18 @@ var Dam = {
         // Para centrar verticalmente:
         $('.dam .item-multimedia .foto-preview').each(function() {
             var altodiv = $(this).height();
-            var altoimg = $(this).find('img').height();
-            if(altoimg < altodiv) {
-                var padding = Math.floor((altodiv - altoimg) / 2);
-                $(this).find('a').css({'margin-top':padding, 'display':'block'});
-            }
+            var img_obj = $(this).find('img');
+            
+            // Esperar que cargue la imagen.
+            $(img_obj).load(function () {
+                var altoimg = $(this).height();
+                /*var altoimg = $(this).find('img').height();*/
+                /*console.log("altodiv: " + altodiv + " altoimg: " + altoimg);*/
+                if(altoimg < altodiv) {
+                    var padding = Math.floor((altodiv - altoimg) / 2);
+                    $(this).find('a').css({'margin-top':padding, 'display':'block'});
+                }
+            });
         });
 
         // Para el buscador de assets
