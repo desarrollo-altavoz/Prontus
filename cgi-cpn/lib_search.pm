@@ -207,6 +207,10 @@ sub get_config {
 
   $pairs{'SEARCH_TIPO_PAGINACION'} = 0 unless($pairs{'SEARCH_TIPO_PAGINACION'});
   $pairs{'SEARCH_PAGCORTA_MAXPAGS'} = 5 unless($pairs{'SEARCH_PAGCORTA_MAXPAGS'});
+  $pairs{'SEARCHTIPS_MAXRESULT'} = 5 unless($pairs{'SEARCHTIPS_MAXRESULT'});
+  $pairs{'SEARCHTIPS_MINLEN'} = 1 unless($pairs{'SEARCHTIPS_MINLEN'});
+  $pairs{'SEARCHTIPS_DURACION_CACHE'} = 300 unless($pairs{'SEARCHTIPS_DURACION_CACHE'});
+  $pairs{'SEARCHTIPS_MAXREQUESTXIP'} = 500 unless($pairs{'SEARCHTIPS_MAXREQUESTXIP'});
 
   return %pairs;
 }; # get_config

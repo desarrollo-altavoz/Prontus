@@ -201,6 +201,10 @@ main: {
     $hash_defaultvars{'buscador'}{'METADATA8'} = 'METADATA8;(\w+);;U';
     $hash_defaultvars{'buscador'}{'METADATA9'} = 'METADATA9;(\w+);;U';
     $hash_defaultvars{'buscador'}{'METADATA10'} = 'METADATA10;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'SEARCHTIPS_MAXRESULT'} = 'SEARCHTIPS_MAXRESULT;(\d+);5;U';
+    $hash_defaultvars{'buscador'}{'SEARCHTIPS_MINLEN'} = 'SEARCHTIPS_MINLEN;(\d+);1;U';
+    $hash_defaultvars{'buscador'}{'SEARCHTIPS_DURACION_CACHE'} = 'SEARCHTIPS_DURACION_CACHE;(\d+);300;U';
+    $hash_defaultvars{'buscador'}{'SEARCHTIPS_MAXREQUESTXIP'} = 'SEARCHTIPS_MAXREQUESTXIP;(\d+);500;U';
 
     # Verificar tipo de CFG.
     $FORM{'_cfg'} = &glib_cgi_04::param('_cfg');

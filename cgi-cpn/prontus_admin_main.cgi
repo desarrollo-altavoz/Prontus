@@ -1219,6 +1219,11 @@ sub parseaVars {
     $pagina =~ s/%%RATIO%%/$cfg_buscador{'RATIO'}/ig;
     $pagina =~ s/%%MINTEXT%%/$cfg_buscador{'MINTEXT'}/ig;
     $pagina =~ s/%%TITLEVAR%%/$cfg_buscador{'TITLEVAR'}/ig;
+    
+    $pagina =~ s/%%SEARCHTIPS_MAXRESULT%%/$cfg_buscador{'SEARCHTIPS_MAXRESULT'}/ig;
+    $pagina =~ s/%%SEARCHTIPS_MINLEN%%/$cfg_buscador{'SEARCHTIPS_MINLEN'}/ig;
+    $pagina =~ s/%%SEARCHTIPS_DURACION_CACHE%%/$cfg_buscador{'SEARCHTIPS_DURACION_CACHE'}/ig;
+    $pagina =~ s/%%SEARCHTIPS_MAXREQUESTXIP%%/$cfg_buscador{'SEARCHTIPS_MAXREQUESTXIP'}/ig;
 
     $pagina =~ s/%%META1%%/$cfg_buscador{'META1'}/ig;
     $pagina =~ s/%%META2%%/$cfg_buscador{'META2'}/ig;

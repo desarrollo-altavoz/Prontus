@@ -29,11 +29,7 @@ use prontus_varglb; &prontus_varglb::init();
 use glib_cgi_04;
 use glib_fildir_02;
 
-my $MIN_LEN = 1;
-my $LIMIT_TIPS = 5; # 5 resultados + palabra de consulta.
-my $DURACION_CACHE = 600; # segs.
-my %FORM;
-my %TIPS;
+my (%FORM, %TIPS, %CFG);
 
 main: {
 	&glib_cgi_04::new();
@@ -46,19 +42,8 @@ main: {
         exit;
     };
 
-    # Validacion y gestion de ip bloqueada
-    my $dir_ip_control = "ip_control_captcha_prontus"; # dentro del prontus_temp
-    my $user_ip = $ENV{'REMOTE_ADDR'};
-    my $maxrequest_por_ip = 500;
-    my $bloqueoip_interval = 60;
-    my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $user_ip, $maxrequest_por_ip, $bloqueoip_interval);
-    if ($bloquear_ip) {
-        print "[]";
-        exit;
-    };
-
-	$FORM{"search_prontus"} = &glib_cgi_04::param("search_prontus");
-	$FORM{"search_texto"} = lc &glib_cgi_04::param("search_texto");
+  	$FORM{"search_prontus"} = &glib_cgi_04::param("search_prontus");
+  	$FORM{"search_texto"} = lc &glib_cgi_04::param("search_texto");
 
   	$FORM{"search_texto"} = &lib_search::notildesUtf8($FORM{"search_texto"});
   	$FORM{"search_texto"} = lc $FORM{"search_texto"};
@@ -72,11 +57,24 @@ main: {
     exit if (!-d $path_to_prontus);
     exit if (!-f "$path_to_prontus/cpan/$FORM{'search_prontus'}-id.cfg");
 
-  	my $dir_search_tips_cache = "$path_to_prontus/cpan/data/cache/search_tips";
-	my $dir_search = "$path_to_prontus/cpan/data/search/$FORM{'search_prontus'}";
-	my @words_idx_files = glob("$dir_search/*/words.idx");
+    %CFG = &lib_search::get_config("$path_to_prontus/cpan/buscador_prontus.cfg");
 
-	&glib_fildir_02::check_dir($dir_search_tips_cache);
+    # Validacion y gestion de ip bloqueada
+    my $dir_ip_control = "ip_control_captcha_prontus"; # dentro del prontus_temp
+    my $user_ip = $ENV{'REMOTE_ADDR'};
+    my $maxrequest_por_ip = $CFG{'SEARCHTIPS_MAXREQUESTXIP'}; # numero maximo de peticiones por IP.
+    my $bloqueoip_interval = 60;
+    my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $user_ip, $maxrequest_por_ip, $bloqueoip_interval);
+    if ($bloquear_ip) {
+        print "[]";
+        exit;
+    };
+
+  	my $dir_search_tips_cache = "$path_to_prontus/cpan/data/cache/search_tips";
+    my $dir_search = "$path_to_prontus/cpan/data/search/$FORM{'search_prontus'}";
+    my @words_idx_files = glob("$dir_search/*/words.idx");
+
+    &glib_fildir_02::check_dir($dir_search_tips_cache);
 
     my @search_texto_array = split(" ", $FORM{"search_texto"});
     my ($search_texto, $search_result_prefix);
@@ -91,7 +89,7 @@ main: {
     # print "search_texto_first[$search_texto_first] search_texto_last[$search_texto_last]\n";
     # print "search_texto[$search_texto]\n";
 
-	if ((length $search_texto) < $MIN_LEN) {
+	if ((length $search_texto) < $CFG{'SEARCHTIPS_MINLEN'}) {
 		print "[\"$FORM{'search_texto'}\"]";
 		exit;
 	};
@@ -149,7 +147,7 @@ sub search {
   		$TIPS{$word} = $idx if (!$TIPS{$word});
   	};
 
-  	return if ((keys %TIPS) >= $LIMIT_TIPS);
+  	return if ((keys %TIPS) >= $CFG{'SEARCHTIPS_MAXRESULT'});
   };
 
 };
@@ -175,7 +173,7 @@ sub buscar_cache {
 	my $file = "$dir_search_tips_cache/$first_letter/$key.txt";
 	if (-f $file) {
 		my $mtime = (stat($file))[9];
-		if ((time - $mtime) > $DURACION_CACHE) {
+		if ((time - $mtime) > $CFG{'SEARCHTIPS_DURACION_CACHE'}) {
 			unlink $file;
 		} else {
 			my $buffer = &glib_fildir_02::read_file($file);
@@ -193,7 +191,7 @@ sub garbage_collector {
         my @archivos = glob("$dir/*.txt");
         foreach my $archivo (@archivos) {
             my $mtime = (stat($archivo))[9];
-            if ((time - $mtime) > $DURACION_CACHE) {
+            if ((time - $mtime) > $CFG{'SEARCHTIPS_DURACION_CACHE'}) {
                 unlink $archivo;
             };
         };
