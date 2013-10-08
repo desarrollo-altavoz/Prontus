@@ -122,6 +122,7 @@ if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '')
 };
 $FORM{'prontus'} = $ARGV[0];
 $FORM{'params_especif'} = $ARGV[1]; # optativo: fid/s/t/st para generar solo para esa taxonomia y fid
+$FORM{'params_ts'} = $ARGV[2]; # optativo: <ts> en formato: 20131008125012
 
 ($FORM{'fid_especif'}, $FORM{'seccion_especif'}, $FORM{'tema_especif'}, $FORM{'subtema_especif'}) = split (/\//, $FORM{'params_especif'});
 
@@ -434,8 +435,10 @@ sub generar_taxports {
 
     # Escribe los semaforos de los id levels q va a utilizar (en realidad solo cambia el fid)
     # y borra los escritos por otros procesos para este mismo level, para provocar q aborten
-    &renovar_semaforos($FORM{'seccion_especif'}, $FORM{'tema_especif'}, $FORM{'subtema_especif'}, \%fids2process);
-
+    # CVI - 08/10/2013 - Si viene el parametro del TS no se renuevan los semáforos
+    unless($FORM{'params_ts'}) {
+        &renovar_semaforos($FORM{'seccion_especif'}, $FORM{'tema_especif'}, $FORM{'subtema_especif'}, \%fids2process);
+    };
     my $pid_padre = $$;
 
     # si se invoca sin fid, considera el filtro sin fid
@@ -569,9 +572,11 @@ sub generar_taxports_thislevel {
     #~ my $pid_propio = $$;
 
     my $id_level = $secc_id . '_' . $temas_id . '_' . $subtemas_id . '_' . $fid;
-    if (! -f "$dir_semaf/$id_level.$pid_padre") {
-        print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] hasta aca no mas llegamos!\n";
-        next;
+    unless($FORM{'params_ts'}) {
+        if (! -f "$dir_semaf/$id_level.$pid_padre") {
+            print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] hasta aca no mas llegamos!\n";
+            next;
+        };
     };
 
     # Reconectar por si las moscas
@@ -598,12 +603,40 @@ sub generar_taxports_thislevel {
     my $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
     my $nro_filas = 0;
     my $nro_pag = 0;
+    my $nro_pag_to_write = $nro_pag + 1;
     my %filas;
 
     my $arrayref = $salida->fetchall_arrayref;
     $salida->finish;
     $base->disconnect;
 
+    # Si viene el dichoso parametro que nos indica el articulo modificado,
+    # buscamos en que página está, para generar solo esa pagina
+    my $justthispage = 0;
+    if($FORM{'params_ts'}) {
+        my $page = 1;
+        my $nro_filas = 0;
+        foreach my $row (@{$arrayref}) {
+            my $art_id = $row->[0];
+            $nro_filas++;
+            if($art_id eq $FORM{'params_ts'}) {
+                $justthispage = $page;
+                last;
+            }
+            if ($nro_filas >= $FILASXPAG) {
+                $page++;
+                $nro_filas = 0;
+            }
+        }
+
+        # TS muy antiguo, no se genera esta página
+        if($justthispage == 0) {
+            return;
+        } else {
+            print STDERR "[$pid_padre][$$] Solo se ejecutara la pagina [$justthispage]\n";
+        }
+    }
+    my $doprocess = 1;
     foreach my $row (@{$arrayref}) {
         my $art_id = $row->[0];
         my $art_fecha = $row->[1];
@@ -616,42 +649,52 @@ sub generar_taxports_thislevel {
         my $art_baja = $row->[8];
 
         $nro_filas++;
-        my $nro_pag_to_write = $nro_pag + 1;
+
         # print STDERR "\tpag[$nro_pag_to_write] row[$nro_filas]";
         # sleep (1) if ($nro_filas > 98);
 
-        # parsea esta fila en todas las multivistas
-        my ($tem, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$art_idtemas1});
-        my $mv;
-        my %vistas; # incluye las mv y la normal
-        %vistas = %prontus_varglb::MULTIVISTAS;
-        $vistas{''} = 1; # vista default
-        foreach $mv (keys %vistas) {
-            foreach my $nombase_plt (keys %NOMBASE_PLTS) {
+        # Si viene el TS, solo se debe regenerar la página indicada por: $justthispage
+        if($FORM{'params_ts'}) {
+            if($justthispage eq $nro_pag_to_write) {
+                $doprocess = 1;
+            } else {
+                $doprocess = 0;
+            }
+        };
 
-                # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
-                my $loop_plt = &get_loop_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
-                next if (!$loop_plt);
-                my $fila_content;
-                my ($auxref, $auxref2);
+        if($doprocess) {
+            # parsea esta fila en todas las multivistas
+            my ($tem, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$art_idtemas1});
+            my $mv;
+            my %vistas; # incluye las mv y la normal
+            %vistas = %prontus_varglb::MULTIVISTAS;
+            $vistas{''} = 1; # vista default
+            foreach $mv (keys %vistas) {
+                foreach my $nombase_plt (keys %NOMBASE_PLTS) {
 
-                # En estos casos sólo es válida la primera página
-                my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
-                if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 0) {
-                    next;
-                };
+                    # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
+                    my $loop_plt = &get_loop_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
+                    next if (!$loop_plt);
+                    my $fila_content;
+                    my ($auxref, $auxref2);
 
-                ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pag_to_write);
+                    # En estos casos sólo es válida la primera página
+                    my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
+                    if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 0) {
+                        next;
+                    };
 
-                $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
-                $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
+                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pag_to_write);
 
+                    $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
+                    $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
 
-                $filas{"$mv|$nombase_plt"} .= $fila_content;
+                    $filas{"$mv|$nombase_plt"} .= $fila_content;
 
-                if ($nro_pag > 0) {
-                    # Se deja en medio segundo
-                    usleep(500000);
+                    if ($nro_pag > 0) {
+                        # Se deja en medio segundo
+                        usleep(5000);
+                    };
                 };
             };
         };
@@ -660,10 +703,17 @@ sub generar_taxports_thislevel {
         if ($nro_filas >= $FILASXPAG) {
 
             $nro_pag++; # avanza pag
-            &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas);
+            $nro_pag_to_write = $nro_pag + 1;
+            &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas, $pid_padre);
             $nro_filas = 0; # resetea conta de filas para empezar del ppio en la pagina que viene.
             %filas = ();
 
+            # Luego de escribir "La Página" nos retiramos
+            if($FORM{'params_ts'}) {
+                return;
+            };
+
+            # Revisamos el semáforo para saber si aun debemos procesar
             if (! -f "$dir_semaf/$id_level.$pid_padre") {
                 # print STDERR "\n[$$] FETCHING: hasta aca no mas llegamos!\n";
                 return;
@@ -673,13 +723,17 @@ sub generar_taxports_thislevel {
 
 
     $nro_pag++; # avanza pag
-    &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas);
+    &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas, $pid_padre);
 
-    if (-f "$dir_semaf/$id_level.$pid_padre") {
-        unlink "$dir_semaf/$id_level.$pid_padre";
-        print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
+    # Los semaforos solo funcionan en modo "NO-TS"
+    if($FORM{'params_ts'}) {
+        if (-f "$dir_semaf/$id_level.$pid_padre") {
+            unlink "$dir_semaf/$id_level.$pid_padre";
+            print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
+        };
     };
 };
+
 # ---------------------------------------------------------------
 sub get_loop_plt {
 # Obtiene buffer del loop del tpl de la portada tipo tema, de acuerdo a s, t y st + fid y mv.
@@ -874,7 +928,7 @@ sub obtienePltPorTax {
 # ---------------------------------------------------------------
 sub write_pag {
 
-    my ($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, $filas_hashref) = @_;
+    my ($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, $filas_hashref, $pid_padre) = @_;
     my %filas = %$filas_hashref;
 
 #    $secc_id = '' if ($secc_id == 0);
@@ -957,7 +1011,7 @@ sub write_pag {
             #~ };
 
             #~ my $delta_t = time - $ini_t;
-            #~ print STDERR "\tescribiendo[$delta_t][$k]\n"; # debug
+            #~ print STDERR "\t[$pid_padre][$$] Escribiendo [$k]\n"; # debug
             $COUNTER_TOTAL_PAGS++;
 
             &glib_fildir_02::write_file($k, $pagina);
@@ -1253,6 +1307,10 @@ sub valida_param {
             $FORM{'subtema_especif'} = 0;
         };
 
+    };
+
+    if ($FORM{'params_ts'}) {
+        $FORM{'params_ts'} = '' if($FORM{'params_ts'} !~ /\d{14}/);
     };
 
 
