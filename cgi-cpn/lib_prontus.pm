@@ -962,6 +962,22 @@ sub load_artic_pubs {
     my (@ediciones) = &lib_prontus::get_edics4update();
     my %hash_artics;
 
+    my $pathdir_json = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/data/cache';
+    &glib_fildir_02::check_dir($pathdir_json);
+    my $path_json = "$pathdir_json/json_artics_in_ports.json";
+
+    if(-f $path_json) {
+        my $json_artics = &glib_fildir_02::read_file($path_json);
+        my $ref_hash_artics;
+        if($JSON::VERSION =~ /^1\./) {
+            my $json = new JSON;
+            $ref_hash_artics = $json->jsonToObj($json_artics);
+        } else {
+            $ref_hash_artics = &JSON::from_json($json_artics);
+        }
+        return %$ref_hash_artics;
+    };
+
     # Solo si la edicion es base, se guardan sólo las portadas base
     my %ports_base;
     if($prontus_varglb::MULTI_EDICION eq 'SI') {
@@ -1018,6 +1034,17 @@ sub load_artic_pubs {
 
         };
     };
+
+    my $ref_hash_artics = \%hash_artics;
+    my $json_artics;
+    if($JSON::VERSION =~ /^1\./) {
+        my $json = new JSON;
+        $json_artics = $json->objToJson($ref_hash_artics);
+    } else {
+        $json_artics = &JSON::to_json($ref_hash_artics);
+    }
+    &glib_fildir_02::check_dir($pathdir_json);
+    &glib_fildir_02::write_file($path_json, $json_artics);
 
     return %hash_artics;
 };
@@ -1270,7 +1297,7 @@ sub load_config {
      my $fid = $3;
      $valor = $5;
      my $plt_paralelas = $7;
-     
+
      $prontus_varglb::FORM_PLTS{$clave} = $valor;
      $prontus_varglb::FID_DEFAULT = $clave if (!$prontus_varglb::FID_DEFAULT);
      $prontus_varglb::FORM_PLTS_PARALELAS{$fid} = $plt_paralelas;
