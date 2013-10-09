@@ -6996,5 +6996,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - DAM
     [bugfixes]
       - Se soluciona problema con posición de imagen de preview en videos.
+      - Se mejora la visualización de las imágenes (colorbox)
+          - Se indica tamaño en pixels de las fotos.
+          - Se muestra el tamaño de la foto, en kilobytes.
+          - Se indica el número de imágenes.
+          - Se homologa el ícono de lupa con el diseño de los otros íconos.
+          - Se agrega el titular del artículo.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/dam/js-local/Dam.class.js
+        /cgi-cpn/dam/prontus_dam_asset_list.cgi
+        /wizard_prontus/prontus_dir/cpan/core/dam/css/dam.css
+        /wizard_prontus/prontus_dir/cpan/core/dam/plantillas/prontus_dam_asset_list.html
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/lu2_of.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/lu2_on.png
+

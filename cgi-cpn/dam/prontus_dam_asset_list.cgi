@@ -124,21 +124,26 @@ sub make_lista {
         my $loop;
         my $filas;
         my $dir_fecha;
+        my $art_titu;
         $FORM{'ts'} =~ /(\d{8})/;
         $dir_fecha = $1;
 
         $pagina =~ /%%LOOP%%(.*?)%%\/LOOP%%/is;
         $loop = $1;
 
-        $sql = "SELECT ASSET_FILE, ASSET_ART_WFOTO, ASSET_ART_HFOTO FROM ASSET WHERE ASSET_TYPE = '$FORM{'type'}' AND ASSET_ART_ID = '$FORM{'ts'}' ORDER BY ASSET_FILE";
-        $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($asset_file, $asset_art_fotow, $asset_art_fotoh));
-        my $loop_counter = 1;
+        $sql = "SELECT ART_TITU, ASSET_FILE, ASSET_ART_WFOTO, ASSET_ART_HFOTO FROM ASSET LEFT JOIN ART ON (ART_ID=ASSET_ART_ID) WHERE ASSET_TYPE = '$FORM{'type'}' AND ASSET_ART_ID = '$FORM{'ts'}' ORDER BY ASSET_FILE";
+        $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($art_titu, $asset_file, $asset_art_fotow, $asset_art_fotoh));
+        my $loop_counter = 0;
         while ($salida->fetch) {
                 my $loop_tmp = $loop;
                 my $lafoto = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/' . $dir_fecha . '/imag/' . $asset_file;
 
-            my ($sizex, $sizey) = &lib_dam::get_proporcion_imagen(610,450, $asset_art_fotow, $asset_art_fotoh);
+                my ($sizex, $sizey) = &lib_dam::get_proporcion_imagen(610,450, $asset_art_fotow, $asset_art_fotoh);
 
+                my $size_disk = -s $prontus_varglb::DIR_SERVER . $lafoto;
+                $size_disk = &lib_prontus::bytes2kb($size_disk);
+
+                $loop_tmp =~ s/%%SIZEKB%%/$size_disk/isg;
                 $loop_tmp =~ s/%%FOTO%%/$lafoto/isg;
                 $loop_tmp =~ s/%%WFOTO%%/$sizex/isg;
                 $loop_tmp =~ s/%%HFOTO%%/$sizey/isg;
@@ -156,6 +161,8 @@ sub make_lista {
         $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
         $pagina =~ s/%%_TS%%/$FORM{'ts'}/isg;
         $pagina =~ s/%%LOOP%%.*?%%\/LOOP%%/$filas/isg;
+        $pagina =~ s/%%_TOT_ASSET%%/$loop_counter/isg;
+        $pagina =~ s/%%_titular%%/$art_titu/isg;
 
         return $pagina;
 };

@@ -71,7 +71,7 @@ var Dam = {
         $('.dam .item-multimedia .foto-preview').each(function() {
             var altodiv = $(this).height();
             var img_obj = $(this).find('img');
-            
+
             // Esperar que cargue la imagen.
             $(img_obj).load(function () {
                 var altoimg = $(this).height();
@@ -199,7 +199,7 @@ var Dam = {
     instalaColorboxFotos: function() {
         $('.colorbox_asset').colorbox({
             maxWidth: '95%',
-            maxHeight: '90%',
+            maxHeight: '95%',
             onComplete: function () {
                 Dam.instalaThumbNav();
             }
@@ -222,23 +222,27 @@ var Dam = {
             height: '485px'
         });
 
+        var tot_asset = $('#asset_thumb_nav').data('tot-asset');
+
         $('#asset_thumb_nav .thumb').click(function () {
             $('#asset_thumb_nav .thumb').find('div.active').remove();
             var src = $(this).css("background-image");
             src = src.replace('url(','').replace(')','');
             src = src.replace(/"/g, '');
             src = src.replace(/'/g, '');
-            var w = $(this).attr("data-w");
-            var h = $(this).attr("data-h");
-            var w_orig = $(this).attr("data-w-orig");
-            var h_orig = $(this).attr("data-h-orig");
+            var w = $(this).data("w");
+            var h = $(this).data("h");
+            var w_orig = $(this).data("w-orig");
+            var h_orig = $(this).data("h-orig");
+            var sizekb = $(this).data("sizekb");
             var num = $(this).index() + 1;
 
             $(this).append('<div class="active">#' + num + '</div>');
 
-            $('#asset_viewer .item').html('<img src="' + src + '" width="' + w + '" height="' + h + '" />');
-            $('#asset_viewer .toolbar #num').html("&raquo; Foto #" + num + ' (' + w_orig + 'x' + h_orig + ')');
+            $('#asset_viewer #image_holder').html('<img src="' + src + '" width="' + w + '" height="' + h + '" data-thumb-index="' + $(this).index() + '"/>');
+            $('#asset_viewer .toolbar #caption').html('(' + w_orig + 'x' + h_orig + 'px, ' + sizekb + ')');
             src = src.replace(/^(https?:\/\/.*?\/)/, '/'); // Dejar ruta relativa.
+            $('#current_item').text(num)
 
             ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
             var clip = new ZeroClipboard.Client();
