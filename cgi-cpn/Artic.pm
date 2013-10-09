@@ -1388,6 +1388,9 @@ sub borra_artic {
       $fid = $1;
     };
 
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if($pathnice);
+
     for(my $i = 1; $i <= $prontus_varglb::TAXONOMIA_NIVELES; $i++) {
 
         my $taxonomia = $hashtemp{$i};
@@ -1400,18 +1403,18 @@ sub borra_artic {
                                   . '/' . $stem;
 
         # Regenera las portadas taxonomicas
-        $cmd = "$rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
+        $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
 
         # Regenera las salidas List
-        $cmd = "$rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
+        $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
     };
 
     # Regenera la tabla del DAM
-    $cmd = "$rutaScript/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME &";
+    $cmd = "$pathnice $rutaScript/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 

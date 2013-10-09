@@ -6977,10 +6977,34 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_search_tips.cgi
 
 ====================================================================================================
-11.2.71 - 07/10/2013 - JOR
+11.2.71 - 09/10/2013 - CVI/JOR
 ====================================================================================================
 
+- Listado de Artículos
+    [mejoras]
+        - Al buscar si los artículos están publicados en una portada, esa Hash, se guarda como JSON, para tener a mano esa info.
+          Dicho JSON se guarda en: /<prontus_id>/cpan/data/chache/json_artics_in_ports.json
+          Al quedar en dicha carpeta, se borran al igual que el caché de los listados
+    [files]
+        /cgi-cpn/prontus_art_sbmit.cgi
+
+- Taxport
+    [mejoras]
+        - Se acelera escritura de la primera página de todas las salidas, generando más FORK
+          Se comienzan a escribir las salidas por fid, mucho mas rapido
+        - Al momento de guardar, se revisa que datos cambiaron para ver si amerita regenerar todo o solo 1 pagina
+          En base a esto, la prontus_cron_taxport.cgi recibe un 3er parámetro (TS) si este parametro viene
+          sólo escribirá la página que tenga dicho TS. En este modo, no se trabjará con semáforos, ya que
+          se escribirá directamente la página comprometida.
+        -
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi
+
 - Buscador Prontus
+    [mejoras]
+        - Se comienza a parsear la marca: %%_prontus_id%%
+        - Se elimina referencia en duro a /var/www/prontus_development/
     [cambio]
         - Se agregan variables de configuración.
             - SEARCHTIPS_MAXRESULT: Máximo de resultados que entregará la cgi de búsqueda de tips. (default 5)
@@ -6988,11 +7012,19 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             - SEARCHTIPS_DURACION_CACHE: Número de segundos que durará el cache de búsquedas de tips. (default 300)
             - SEARCHTIPS_MAXREQUESTXIP: Máximo de peticiones por IP a la cgi de búsqueda de tips. (default 500)
     [files]
+        /cgi-bin/prontus_search.cgi
         /cgi-bin/prontus_search_tips.cgi
         /cgi-cpn/lib_search.pm
         /cgi-cpn/prontus_admin_main.cgi
         /cgi-cpn/prontus_cfg_save.cgi
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_search.html
+
+- Guardar Artículos
+    [mejoras]
+        - Se aplica nice al ejecutar las cgis del DAM y Tagport
+    [files]
+        /cgi-cpn/prontus_art_sbmit.cgi
+
 - DAM
     [bugfixes]
       - Se soluciona problema con posición de imagen de preview en videos.
@@ -7010,3 +7042,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/imag/boto/lu2_of.png
         /wizard_prontus/prontus_dir/cpan/core/imag/boto/lu2_on.png
 
+- Borrar Artículos
+    [mejoras]
+        - Al borrar artículos los script de taxport, dam y tagport se corren con nice
+    [files]
+        /cgi-cpn/Artic.pm
