@@ -7027,13 +7027,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - DAM
     [bugfixes]
-      - Se soluciona problema con posición de imagen de preview en videos.
-      - Se mejora la visualización de las imágenes (colorbox)
-          - Se indica tamaño en pixels de las fotos.
-          - Se muestra el tamaño de la foto, en kilobytes.
-          - Se indica el número de imágenes.
-          - Se homologa el ícono de lupa con el diseño de los otros íconos.
-          - Se agrega el titular del artículo.
+        - Se soluciona problema con posición de imagen de preview en videos.
+        - Se mejora la visualización de las imágenes (colorbox)
+            - Se indica tamaño en pixels de las fotos.
+            - Se muestra el tamaño de la foto, en kilobytes.
+            - Se indica el número de imágenes.
+            - Se homologa el ícono de lupa con el diseño de los otros íconos.
+            - Se agrega el titular del artículo.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/dam/js-local/Dam.class.js
         /cgi-cpn/dam/prontus_dam_asset_list.cgi
@@ -7047,3 +7047,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Al borrar artículos los script de taxport, dam y tagport se corren con nice
     [files]
         /cgi-cpn/Artic.pm
+
+- VTXT
+    [bugfixes]
+        - Se corrigen textos en el nuevo plugin Insert
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/langs/es_dlg.js
+
+
