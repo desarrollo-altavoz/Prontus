@@ -582,7 +582,7 @@ sub parsea_plantilla2 {
       $ts =  $2;
       if ($CFG{'USEFRIENDLYURLS'} == 1) {
         #~ $lnk = &lib_search::friendlyUrl($prontus_id,$ts,$tit,$ext); # deprecated.
-        $lnk = &lib_prontus::parse_filef('%%_FILEURL%%', $tit, $ts, $PRONTUS, $file, $sec, $tem, $sub);
+        $lnk = &lib_prontus::parse_filef('%%_FILEURL%%', $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
       };
     };
     $fec = $fechap;
