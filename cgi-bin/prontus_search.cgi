@@ -662,6 +662,9 @@ sub parsea_plantilla2 {
     $msgsn = $msg;
     $plantilla =~ s/<!--pags-->(.+?)<!--\/pags-->//is;
   };
+  # 21/10/2013 - CVI - Se agrega marca %%search_total%%
+  $plantilla =~ s/%%search_total%%/$RESULTADOSTOTALES/is;
+
   if ($paginastotales < 2) { $plantilla =~ s/<!--pags-->(.+?)<!--\/pags-->//is; };
   if ($MSG ne '') { $msg = $MSG; };
   $plantilla =~ s/%%msg%%/$msg/is;
