@@ -54,8 +54,10 @@ my $CHUNK_SIZE = 8192;
 
 my @INDICES;
 my @STCOs;
+my $FILE;
 main: {
     my $infile = $ARGV[0];
+    $FILE = $infile;
     # my $infile = '/var/www/prontus_development/web/cgi-cpn/xcoding/multimedia_video120111130160451_a.mp4';
     if($infile eq '' || !(-f $infile)) {
         die('Debe especificar el archivo a procesar');
@@ -116,6 +118,10 @@ sub get_index {
         if($atom_size == 0){
             last;
         }
+        if (!(-s $FILE)) {
+            warn("Archivo eliminado durante ejecucion: $FILE");
+            exit;
+        }
         seek $datastream, ($atom_pos + $atom_size), 0;
     }
 
@@ -133,6 +139,10 @@ sub find_atoms {
     my ($size, $datastream) = @_;
     my $stop = tell($datastream) + $size;
     while (tell($datastream) < $stop) {
+        if (!(-s $FILE)) {
+            warn("Archivo eliminado durante ejecucion: $FILE");
+            exit;
+        }
         my ($atom_size, $atom_type) = &read_atom($datastream);
         my $atom_pos = tell($datastream) - 8;
 
