@@ -6989,6 +6989,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_art_sbmit.cgi
 
+- FID
+    [bugfix]
+        - Bug en el banco de imagenes al usar Directorio Externo de Multimedia
+    [files]
+        /cgi-cpn/prontus_art_banco.cgi
+
 - Taxport
     [mejoras]
         - Se acelera escritura de la primera página de todas las salidas, generando más FORK
@@ -7003,6 +7009,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_art_sbmit.cgi
 
 - Buscador Prontus
+    [bugfix]
+        - Se soluciona problema con friendly url en resultados de busqueda en otros índices.
     [mejoras]
         - Se agrega marca: %%search_total%% con el total de resultados
         - Se comienza a parsear la marca: %%_prontus_id%%
@@ -7013,8 +7021,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             - SEARCHTIPS_MINLEN: Largo mínimo que debe tener la palabra para que la cgi de búsqueda de tips entregue resultados. (default 1)
             - SEARCHTIPS_DURACION_CACHE: Número de segundos que durará el cache de búsquedas de tips. (default 300)
             - SEARCHTIPS_MAXREQUESTXIP: Máximo de peticiones por IP a la cgi de búsqueda de tips. (default 500)
-    [bugfix]
-        - Se soluciona problema con friendly url en resultados de busqueda en otros índices.
     [files]
         /cgi-bin/prontus_search.cgi
         /cgi-bin/prontus_search_tips.cgi
