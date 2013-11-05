@@ -1577,7 +1577,7 @@ sub add_vtxt {
 
   #~ Carga los css desde la plantilla del artículo
   my $include_css = $prontus_varglb::DIR_CORE . "/vtxt/editor/plugins/insert/css/content.css";
-  my $path_css_artic = &get_css_artic($buffer);
+  my $path_css_artic = &get_css_artic($path_tpl, $buffer);
   if($path_css_artic) {
     $path_css_artic = "$include_css,$path_css_artic";
   } else {
@@ -1729,7 +1729,7 @@ sub get_css_artic {
   my $paths;
 
   my ($elcss,$ellink);
-  while ($buf =~ /(<link [^>]*?href="([^>]+?)"[^>]*?>)/isg) {
+  while ($buffer =~ /(<link [^>]*?href="([^>]+?)"[^>]*?>)/isg) {
     $ellink = $1;
     $elcss = $2;
     next unless($ellink =~ /type="text\/css"/i);
