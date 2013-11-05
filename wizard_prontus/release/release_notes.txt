@@ -6995,6 +6995,36 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_art_sbmit.cgi
 
+- Artículos
+    [mejoras]
+        - Se habilitan LOOPS dentro de los artículos para generar marcas recursivas.
+          Ejemplo de implementacion:
+            %%_loop_artic(1,5)%%
+                %%IF(fotofija_port##i##_thumb)%%
+                    <li><a href="%%fotofija_port##i##_foto%%"><img src="%%fotofija_port##i##_thumb%%" width="%%fotofija_port##i##_thumb%%"></a></li>
+                %%/IF%%
+            %%/_loop_artic%%
+          El primer parámetro del _loop_artic es el inicio y el segundo es el FIN.
+          Se hará un reemplazo de ##i## por el contador de loop. Por lo tanto, el codigo anterior arroja:
+                %%IF(fotofija_port1_thumb)%%
+                    <li><a href="%%fotofija_port1_foto%%"><img src="%%fotofija_port1_thumb%%" width="%%fotofija_port1_thumb%%"></a></li>
+                %%/IF%%
+                %%IF(fotofija_port2_thumb)%%
+                    <li><a href="%%fotofija_port2_foto%%"><img src="%%fotofija_port2_thumb%%" width="%%fotofija_port2_thumb%%"></a></li>
+                %%/IF%%
+                %%IF(fotofija_port3_thumb)%%
+                    <li><a href="%%fotofija_port3_foto%%"><img src="%%fotofija_port3_thumb%%" width="%%fotofija_port3_thumb%%"></a></li>
+                %%/IF%%
+                %%IF(fotofija_port4_thumb)%%
+                    <li><a href="%%fotofija_port4_foto%%"><img src="%%fotofija_port4_thumb%%" width="%%fotofija_port4_thumb%%"></a></li>
+                %%/IF%%
+                %%IF(fotofija_port5_thumb)%%
+                    <li><a href="%%fotofija_port5_foto%%"><img src="%%fotofija_port5_thumb%%" width="%%fotofija_port5_thumb%%"></a></li>
+                %%/IF%%
+          Esto, luego se parsea de manera normal como marcas Prontus
+    [files]
+        /cgi-cpn/Artic.pm
+
 - FID
     [bugfix]
         - Bug en el banco de imagenes al usar Directorio Externo de Multimedia

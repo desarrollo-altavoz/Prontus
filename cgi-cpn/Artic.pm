@@ -1723,6 +1723,24 @@ sub generar_vista_art {
 
     if ($buffer) {
 
+        # Primero que todo se parsean los loops de de Articulo
+        while($buffer =~ /%%_loop_artic\((\d+),(\d+)\)%%(.*?)%%\/_loop_artic%%/is) {
+            my $inicio = $1;
+            my $fin = $2;
+            my $loop = $3;
+            print STDERR "_loop_artic($inicio,$fin)\n";
+            print STDERR "loop[$loop]\n";
+            my $totloop;
+            for(my $i = $inicio; $i <= $fin; $i++) {
+                print STDERR "for($i)\n";
+                my $looptemp = $loop;
+                $looptemp =~ s/##i##/$i/isg;
+                $totloop = $totloop . $looptemp;
+            }
+            print STDERR "totloop[$totloop]\n";
+            $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
+        }
+
         my %claves_adicionales; # que no estan en el xml del artic
 
         # Recupera marcas externas (desde /xdata)
