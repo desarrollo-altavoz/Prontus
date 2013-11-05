@@ -754,7 +754,8 @@ sub busca_articulos {
 
   # Ordena al reves para busqueda cronologica (los mas antiguos quedan al final del archivo de articulos).
   @days = sort {$b cmp $a} (&lib_search::lee_dir($eldir));
-
+  my $prontusid = $PRONTUS;
+  $prontusid=~ s/^\///;
   foreach $day (@days) {
     next if ( $day !~ /^\d{8}$/); # 20050612
     next if ( $day !~ /^$ANO/);   # Solo considera dias del ano en curso.
@@ -785,7 +786,7 @@ sub busca_articulos {
           };
           # Indexa el archivo. Solo indexa si el archivo existe
           if($extension) {
-            &indexa("$fullpath/$file",$ts,$extension,"$eldir/$day"); # 1.9
+            &indexa("$fullpath/$file",$ts,$extension,"$eldir/$day", $prontusid); # 1.9
           };
         };
       };
@@ -905,7 +906,7 @@ sub indexa_raw {
 # ------------------------------------------------------------------------#
 # Busca palabras dentro del archivo y las mete en los indices correspondientes.
 sub indexa {
-  my ($archivo,$ts,$extension,$daypath) = @_; # 1.9 $daypath = "$eldir/$day" (site/artic/20070402)
+  my ($archivo,$ts,$extension,$daypath, $prontus) = @_; # 1.9 $daypath = "$eldir/$day" (site/artic/20070402)
   my (@palabras,%ocurrencias,%ubicaciones,$palabra,$indice,$indicef,$filepath,$dir,$buffer);
   my (@files,$file,$ext,@data2index,$ipalabra); # 1.19
   my($titular,$meta1,$meta2,$meta3,$descripcion,$fechap,$texto,$seccion,$tema,$subtema);
@@ -928,7 +929,7 @@ sub indexa {
   };
 
   $buffer = &lib_search::lee_archivo($archivo); # 1.9
-  ($titular,$meta1,$meta2,$meta3,$descripcion,$fechap,$texto,$seccion,$tema,$subtema,@data) = &get_contents($buffer);
+  ($titular,$meta1,$meta2,$meta3,$descripcion,$fechap,$texto,$seccion,$tema,$subtema,@data) = &get_contents($buffer, $prontus);
   # print "$archivo = $titular,$descripcion,$fechap,$texto,$seccion,$tema,$subtema\n"; # debug
   while ($titular ne '') { # 1.9
     # No hace nada si el texto no es significativo.
@@ -1143,7 +1144,8 @@ sub get_contents_raw {
 # ---------------------------------------------------------------
 # Obtiene el contenido de interes de la pagina recien leida.
 sub get_contents {
-  my($buffer) = $_[0];
+  my($buffer) = shift;
+  my($prontus) = shift;
   my($titular,$meta1,$meta2,$meta3,$descripcion,$fechap,$texto,$seccion,$tema,$subtema); # 1.7 Variables de respuesta.
   my(@metadata, @metadata_var);
   my($var,$tipoficha,$k);
@@ -1236,6 +1238,10 @@ sub get_contents {
   for($k=0;$k<10;$k++) {
     my $mdata = $metadata_var[$k];
     next unless($mdata);
+    if($mdata eq '_prontus_id') {
+      $metadata[$k] = $prontus;
+      next;
+    }
     if ($buffer =~ /<$mdata>\s*<!\[CDATA\[(.*?)\]\]>\s*<\/$mdata>/is) {
       $metadata[$k] = $1;
     }elsif ($buffer =~ /<$mdata>.*?<!\[CDATA\[(.*?)\]\]>(.*?)<\/$mdata>/is) {
