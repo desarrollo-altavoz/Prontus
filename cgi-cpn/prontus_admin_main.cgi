@@ -1155,6 +1155,37 @@ sub parseaVars {
     my $dir_cpan = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan';
     my %cfg_buscador = &lib_search::get_config("$dir_cpan/buscador_prontus.cfg");
 
+    $buffer = '';
+    $pagina =~ /<!--loop_prontus_dir-->(.*?)<!--\/loop_prontus_dir-->/s;
+    $loop = $1;
+    foreach my $variable (keys %cfg_buscador) {
+        next unless($variable =~ /^PRONTUS_DIR_(\d+)$/);
+        my $cont = $1;
+        my $valor = $cfg_buscador{$variable};
+        $temp = $loop;
+        $temp =~ s/%%prontusdir_valor%%/$valor/isg;
+        $temp =~ s/%%num%%/$cont/isg;
+        $buffer = $buffer . $temp;
+        $cont++;
+    };
+    $pagina =~ s/<!--loop_prontus_dir-->.*?<!--\/loop_prontus_dir-->/$buffer/sig;
+
+
+    $buffer = '';
+    $pagina =~ /<!--loop_rawdir-->(.*?)<!--\/loop_rawdir-->/s;
+    $loop = $1;
+    foreach my $variable (keys %cfg_buscador) {
+        next unless($variable =~ /^RAW_DIR_(\d+)$/);
+        my $cont = $1;
+        my $valor = $cfg_buscador{$variable};
+        $temp = $loop;
+        $temp =~ s/%%rawdir_valor%%/$valor/isg;
+        $temp =~ s/%%num%%/$cont/isg;
+        $buffer = $buffer . $temp;
+        $cont++;
+    };
+    $pagina =~ s/<!--loop_rawdir-->.*?<!--\/loop_rawdir-->/$buffer/sig;
+
 
     $buffer = '';
     $pagina =~ /<!--loop_rawfiletypes-->(.*?)<!--\/loop_rawfiletypes-->/s;
@@ -1168,10 +1199,9 @@ sub parseaVars {
         $buffer = $buffer . $temp;
         $cont++;
     };
-
     $pagina =~ s/<!--loop_rawfiletypes-->.*?<!--\/loop_rawfiletypes-->/$buffer/sig;
-
     $pagina =~ s/%%RAW_FILETYPES%%/$cfg_buscador{'RAW_FILETYPES'}/ig;
+
 
     $buffer = '';
     $pagina =~ /<!--loop_urlfiletypes-->(.*?)<!--\/loop_urlfiletypes-->/s;
@@ -1219,7 +1249,7 @@ sub parseaVars {
     $pagina =~ s/%%RATIO%%/$cfg_buscador{'RATIO'}/ig;
     $pagina =~ s/%%MINTEXT%%/$cfg_buscador{'MINTEXT'}/ig;
     $pagina =~ s/%%TITLEVAR%%/$cfg_buscador{'TITLEVAR'}/ig;
-    
+
     $pagina =~ s/%%SEARCHTIPS_MAXRESULT%%/$cfg_buscador{'SEARCHTIPS_MAXRESULT'}/ig;
     $pagina =~ s/%%SEARCHTIPS_MINLEN%%/$cfg_buscador{'SEARCHTIPS_MINLEN'}/ig;
     $pagina =~ s/%%SEARCHTIPS_DURACION_CACHE%%/$cfg_buscador{'SEARCHTIPS_DURACION_CACHE'}/ig;

@@ -14,12 +14,12 @@ var Cfgedit = {
                     if (typeof json.msg !== 'undefined') {
                         alert(json.msg);
                     }
-                        
+
                     if (json.status === 1) {
                         var default_tab = $('form[name="frmCFG-' + cfg.toUpperCase() + '"]').find('input[name="_tab"]').val();
                         window.location.href = 'prontus_admin_main.cgi?_path_conf=/' + Admin.prontus_id + '/cpan/' +  Admin.prontus_id + '.cfg&tab=' + default_tab;
                     }
-                    
+
                     $('form[name="frmCFG-' + cfg.toUpperCase() + '"]').parent().find('.botones').show();
                     $('form[name="frmCFG-' + cfg.toUpperCase() + '"]').parent().find('#ajax-loading').hide();
                 },
@@ -35,7 +35,7 @@ var Cfgedit = {
             if (cfg === 'art') {
                 // Armar input.
                  var form_plts = '';
-                 
+
                 $('input[name^="nombrefid_"]').each(function () {
                     if (!$(this).is(':disabled')) {
                         var id = ($(this).attr("name")).replace(/nombrefid_/, '');
@@ -54,14 +54,14 @@ var Cfgedit = {
                         plantillas = plantillas.substring(0, plantillas.length - 1);
                         plantillas_paralelas = plantillas_paralelas.substring(0, plantillas_paralelas.length - 1);
 
-                        if ($('[name="archivofid_' + id + '"]').val() !== '') { 
+                        if ($('[name="archivofid_' + id + '"]').val() !== '') {
                             form_plts += $('[name="archivofid_' + id + '"]').val() + ':' + $(this).val() + '(' + plantillas + ')(' + plantillas_paralelas + ')|';
                         }
                     }
                 });
 
                 form_plts = form_plts.substring(0, form_plts.length - 1);
-                        
+
                 $('input[name="FORM_PLTS"]').val(form_plts);
 
             } else if (cfg === 'port') {
@@ -92,7 +92,7 @@ var Cfgedit = {
                         nom_port = nom_port.replace(/\}/g, '&#125;');
                         nom_port = nom_port.replace(/,/g, '&#44;');
                         nom_port = nom_port.replace(/\//g, '&#47;');
-                        
+
                         if ($(this).val() !== '') {
                             port_plts += $(this).val() + '(' + nom_port + ')(' + plts + ')(' + $('select[name="plt_preview_' + id + '"]').val() + ')|';
                         }
@@ -109,7 +109,7 @@ var Cfgedit = {
                     }
                 });
                 $('input[name="BASE_PORTS"]').val(base_ports);
-                
+
                 var ports_dd = '';
                 $('[name="INPUT_PORT_DRAGANDROP[]"]').each(function () {
                     if (!$(this).is(':disabled')) {
@@ -117,7 +117,7 @@ var Cfgedit = {
                     }
                 });
                 $('input[name="PORT_DRAGANDROP"]').val(ports_dd);
-                
+
             } else if (cfg === 'tax') {
                 var taxport_orden = '';
                 taxport_orden = $('select[name="TAXPORT_ORDEN_TIPO"]').val() + '(' + $('select[name="TAXPORT_ORDEN_ORD"]').val() + ')';
@@ -139,7 +139,7 @@ var Cfgedit = {
                         }
                     }
                 });
-                
+
                 $('input[name="MULTIVISTA"]').val(multivista);
 
                 var varnish = '';
@@ -148,6 +148,25 @@ var Cfgedit = {
                 });
                 $('input[name="VARNISH_SERVER_NAME"]').val(varnish);
             } else if (cfg === 'buscador') {
+                //=============
+                var prontus_dirs = '';
+                $('input[name="INPUT_PRONTUS_DIR[]"]').each(function () {
+                    if (!$(this).is(':disabled') && $(this).val() !== '') {
+                        prontus_dirs += (($(this).val()).replace(/( +)|(\t)/, '')) + "|";
+                    }
+                });
+                prontus_dirs = prontus_dirs.substring(0, prontus_dirs.length - 1);
+                $('input[name="PRONTUS_DIR"]').val(prontus_dirs);
+                //=============
+                var raw_dirs = '';
+                $('input[name="INPUT_RAW_DIR[]"]').each(function () {
+                    if (!$(this).is(':disabled') && $(this).val() !== '') {
+                        raw_dirs += (($(this).val()).replace(/( +)|(\t)/, '')) + "|";
+                    }
+                });
+                raw_dirs = raw_dirs.substring(0, raw_dirs.length - 1);
+                $('input[name="RAW_DIR"]').val(raw_dirs);
+                //=============
                 var raw_filetypes = '';
                 $('input[name="INPUT_RAW_FILETYPES[]"]').each(function () {
                     if (!$(this).is(':disabled')) {
@@ -156,7 +175,7 @@ var Cfgedit = {
                 });
                 raw_filetypes = raw_filetypes.substring(0, raw_filetypes.length - 1);
                 $('input[name="RAW_FILETYPES"]').val(raw_filetypes);
-                
+
                 var url_filetypes = '';
                 $('input[name="INPUT_URL_FILETYPES[]"]').each(function () {
                     if (!$(this).is(':disabled')) {
@@ -165,7 +184,7 @@ var Cfgedit = {
                 });
                 url_filetypes = url_filetypes.substring(0, url_filetypes.length - 1);
                 $('input[name="URL_FILETYPES"]').val(url_filetypes);
-                
+
                 var fids = '';
                 $('input[name="INPUT_FIDS[]"]').each(function () {
                     if ($(this).is(":checked")) {
@@ -174,7 +193,7 @@ var Cfgedit = {
                 });
                 fids = fids.substring(0, fids.length - 1);
                 $('input[name="FIDS"]').val(fids);
-                
+
                 var textvars = '';
                 $('input[name="INPUT_TEXTVARS[]"]').each(function () {
                     if (!$(this).is(':disabled')) {
@@ -184,7 +203,7 @@ var Cfgedit = {
                 textvars = textvars.substring(0, textvars.length - 1);
                 $('input[name="TEXTVARS"]').val(textvars);
             }
-            
+
             SubmitForm.submitGenericAjax(configAjax, optsAjax);
         }
     },
@@ -203,6 +222,14 @@ var Cfgedit = {
     agregarMv: function () {
         var html = '<tr><td><input name="INPUT_MULTIVISTA[]" value="" class="fieldform" style="margin-bottom: 1px; width: 125px;"/></td><td></td></tr>';
         $('#multivista_listado').append(html);
+    },
+    agregarRawDir: function () {
+        var html = '<tr><td><input name="INPUT_RAW_DIR[]" value="" class="fieldform" style="margin-bottom: 1px; width: 125px;"/></td><td></td></tr>';
+        $('#rawdir_listado').append(html);
+    },
+    agregarProntusDir: function () {
+        var html = '<tr><td><input name="INPUT_PRONTUS_DIR[]" value="" class="fieldform" style="margin-bottom: 1px; width: 125px;"/></td><td></td></tr>';
+        $('#prontusdir_listado').append(html);
     },
     agregarRawftype: function () {
         var html = '<tr><td><input name="INPUT_RAW_FILETYPES[]" value="" class="fieldform" style="margin-bottom: 1px; width: 125px;"/></td><td></td></tr>';
@@ -230,73 +257,92 @@ var Cfgedit = {
     quitarFid: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
-            $('input[name="nombrefid_' + id + '"]').attr("disabled", "disabled");
-            $('input[name="archivofid_' + id + '"]').attr("disabled", "disabled");
-            $('select[name="plantillasfid_' + id + '"]').attr("disabled", "disabled");
+            $('input[name="nombrefid_' + id + '"]').attr("disabled", "disabled").addClass('disabled-field');
+            $('input[name="archivofid_' + id + '"]').attr("disabled", "disabled").addClass('disabled-field');
+            $('select[name="plantillasfid_' + id + '"]').attr("disabled", "disabled").addClass('disabled-field');
+            $('select[name="plantillasfid_pla_' + id + '"]').attr("disabled", "disabled").addClass('disabled-field');
+
         } else {
-            $('input[name="nombrefid_' + id + '"]').removeAttr("disabled");
-            $('input[name="archivofid_' + id + '"]').removeAttr("disabled");
-            $('select[name="plantillasfid_' + id + '"]').removeAttr("disabled");
+            $('input[name="nombrefid_' + id + '"]').removeAttr("disabled").removeClass('disabled-field');
+            $('input[name="archivofid_' + id + '"]').removeAttr("disabled").removeClass('disabled-field');
+            $('select[name="plantillasfid_' + id + '"]').removeAttr("disabled").removeClass('disabled-field');
+            $('select[name="plantillasfid_pla_' + id + '"]').removeAttr("disabled").removeClass('disabled-field');
         }
     },
     quitarPortada: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
-            $('input[name="portada_' + id + '"]').attr("disabled", "disabled");
-            $('select[name="plt_paralelas_' + id + '"]').attr("disabled", "disabled");
-            $('select[name="plt_preview_' + id + '"]').attr("disabled", "disabled");
+            $('input[name="portada_' + id + '"]').attr("disabled", "disabled").addClass('disabled-field');
+            $('select[name="plt_paralelas_' + id + '"]').attr("disabled", "disabled").addClass('disabled-field');
+            $('select[name="plt_preview_' + id + '"]').attr("disabled", "disabled").addClass('disabled-field');
         } else {
-            $('input[name="portada_' + id + '"]').removeAttr("disabled");
-            $('select[name="plt_paralelas_' + id + '"]').removeAttr("disabled");
-            $('select[name="plt_preview_' + id + '"]').removeAttr("disabled");
+            $('input[name="portada_' + id + '"]').removeAttr("disabled").removeClass('disabled-field');
+            $('select[name="plt_paralelas_' + id + '"]').removeAttr("disabled").removeClass('disabled-field');
+            $('select[name="plt_preview_' + id + '"]').removeAttr("disabled").removeClass('disabled-field');
         }
     },
     quitarBaseport: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
-            $('#baseport_' + id).attr("disabled", "disabled");
+            $('#baseport_' + id).attr("disabled", "disabled").addClass('disabled-field');
         } else {
-            $('#baseport_' + id).removeAttr("disabled");
+            $('#baseport_' + id).removeAttr("disabled").removeClass('disabled-field');
         }
     },
     quitarPortDD: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
-            $('#portdd_' + id).attr("disabled", "disabled");
+            $('#portdd_' + id).attr("disabled", "disabled").addClass('disabled-field');
         } else {
-            $('#portdd_' + id).removeAttr("disabled");
+            $('#portdd_' + id).removeAttr("disabled").removeClass('disabled-field');
         }
     },
     quitarMV: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
-            $('#mv_' + id).attr("disabled", "disabled");
+            $('#mv_' + id).attr("disabled", "disabled").addClass('disabled-field');
         } else {
-            $('#mv_' + id).removeAttr("disabled");
+            $('#mv_' + id).removeAttr("disabled").removeClass('disabled-field');
+        }
+    },
+    quitarProntusDir: function (obj, id) {
+        if ($(obj).is(':checked')) {
+            // Deshabilitar inputs, para que no sean enviados en el formulario.
+            $('#prontusdir_' + id).attr("disabled", "disabled").addClass('disabled-field');
+        } else {
+            $('#prontusdir_' + id).removeAttr("disabled").removeClass('disabled-field');
+        }
+    },
+    quitarRawDir: function (obj, id) {
+        if ($(obj).is(':checked')) {
+            // Deshabilitar inputs, para que no sean enviados en el formulario.
+            $('#rawdir_' + id).attr("disabled", "disabled").addClass('disabled-field');
+        } else {
+            $('#rawdir_' + id).removeAttr("disabled").removeClass('disabled-field');
         }
     },
     quitarRawftype: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
-            $('#rawftype_' + id).attr("disabled", "disabled");
+            $('#rawftype_' + id).attr("disabled", "disabled").addClass('disabled-field');
         } else {
-            $('#rawftype_' + id).removeAttr("disabled");
+            $('#rawftype_' + id).removeAttr("disabled").removeClass('disabled-field');
         }
     },
     quitarUrlftype: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
-            $('#urlftype_' + id).attr("disabled", "disabled");
+            $('#urlftype_' + id).attr("disabled", "disabled").addClass('disabled-field');
         } else {
-            $('#urlftype_' + id).removeAttr("disabled");
+            $('#urlftype_' + id).removeAttr("disabled").removeClass('disabled-field');
         }
     },
     quitarTextvar: function (obj, id) {
         if ($(obj).is(':checked')) {
             // Deshabilitar inputs, para que no sean enviados en el formulario.
-            $('#textvar_' + id).attr("disabled", "disabled");
+            $('#textvar_' + id).attr("disabled", "disabled").addClass('disabled-field');
         } else {
-            $('#textvar_' + id).removeAttr("disabled");
+            $('#textvar_' + id).removeAttr("disabled").removeClass('disabled-field');
         }
     },
     // Cambia de multiple a single y viceversa.
@@ -342,7 +388,7 @@ var Cfgedit = {
         $(obj).find('.botones').remove();
         var id = '';
         var new_id = '';
-        
+
         if (Cfgedit.newPortLastId == 0) {
             id = $(obj).find('select[name^="portada_"]').attr("name");
             var new_id = id.replace("portada_", "");
@@ -355,7 +401,7 @@ var Cfgedit = {
             Cfgedit.newPortLastId = new_id;
         }
 
-        
+
         $(obj).find('select[name^="portada_"]').attr("name", "portada_" + new_id);
         $(obj).find('select[id^="portada_"]').attr("id", "portada_" + new_id);
         $(obj).find('input[name^="nom_portada_"]').attr("name", "nom_portada_" + new_id);
@@ -367,7 +413,7 @@ var Cfgedit = {
         $(obj).find('.selmultiple').attr("onclick", "Cfgedit.toggleCombo(this, 'plt_paralelas_" + new_id + "');");
         $(obj).find('select[name^="portada_"]').attr("onchange", "Cfgedit.setPortNom(this.value, '" + new_id + "');");
         $(obj).insertAfter("#plt_new_port");
-        
+
     },
 
     setPortNom: function (value, id) {
@@ -385,5 +431,5 @@ var Cfgedit = {
         };
         $.fn.colorbox(obj);
     },
-    
+
 };

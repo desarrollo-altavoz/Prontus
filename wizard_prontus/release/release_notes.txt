@@ -7044,6 +7044,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cron_taxport.cgi
         /cgi-cpn/prontus_art_sbmit.cgi
 
+- Editor de CFG GUI
+    [bugfix]
+        - Se agregan las variables: PRONTUS_DIR_i y RAW_DIR_i para el Buscador
+    [files]
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/cfgedit.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_search.html
+
 - Buscador Prontus
     [bugfix]
         - Se soluciona problema con friendly url en resultados de busqueda en otros índices.

@@ -26,6 +26,8 @@
                                     <input type="hidden" name="_cfg" value="buscador"/>
                                     <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
                                     <input type="hidden" name="_tab" value="cfg-tab5" />
+                                    <input type="hidden" name="PRONTUS_DIR" value="" />
+                                    <input type="hidden" name="RAW_DIR" value="" />
                                     <input type="hidden" name="RAW_FILETYPES" value="%%RAW_FILETYPES%%" />
                                     <input type="hidden" name="URL_FILETYPES" value="%%URL_FILETYPES%%" />
                                     <input type="hidden" name="FIDS" value="%%FIDS%%" />
@@ -33,6 +35,64 @@
                                     <tr class="head">
                                         <td>Variable</td>
                                         <td>Valor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            PRONTUS_DIR_i<br>
+                                            <span class="ayuda">Directorios de otros Prontus a Indexar (i = 1, 2, 3,...), aparte del directorio de la instancia de Prontus donde el buscador ha sido activado.</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%" id="prontusdir_listado">
+                                                <tr class="head">
+                                                    <td>Directorio</td>
+                                                    <td align="center">Quitar</td>
+                                                </tr>
+                                                <!--loop_prontus_dir-->
+                                                <tr>
+                                                <td><input type="text" name="INPUT_PRONTUS_DIR[]" value="%%prontusdir_valor%%" style="margin-bottom: 1px; width: 125px;" class="fieldform" id="prontusidr_%%num%%"/></td>
+                                                    <td align="center"><input type="checkbox" name="QUITAR_PRONTUS_DIR[]" value="%%prontusdir_valor%%" onclick="Cfgedit.quitarProntusDir(this, '%%num%%');"/></td>
+                                                </tr>
+                                                <!--/loop_prontus_dir-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_PRONTUS_DIR[]" value="" style="margin-bottom: 1px; width: 125px;" class="fieldform"/></td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                            <div class="boton-gris3 aleft">
+                                                <a onclick="Cfgedit.agregarProntusDir(); return false;" href="#" class="button">
+                                                    <span>+ Agregar</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            RAW_DIR_i<br>
+                                            <span class="ayuda">Directorios arbitrarios a indexar (i = 1, 2, 3,...). Estos directorios serán indexados dentro de un mismo índice, denominado "RAW".</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%" id="rawdir_listado">
+                                                <tr class="head">
+                                                    <td>Directorio</td>
+                                                    <td align="center">Quitar</td>
+                                                </tr>
+                                                <!--loop_rawdir-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_RAW_DIR[]" value="%%rawdir_valor%%" style="margin-bottom: 1px; width: 125px;" class="fieldform" id="rawdir_%%num%%"/></td>
+                                                    <td align="center"><input type="checkbox" name="QUITAR_RAW_DIR[]" value="%%rawdir_valor%%" onclick="Cfgedit.quitarRawDir(this, '%%num%%');"/></td>
+                                                </tr>
+                                                <!--/loop_rawdir-->
+                                                <tr>
+                                                    <td><input type="text" name="INPUT_RAW_DIR[]" value="" style="margin-bottom: 1px; width: 125px;" class="fieldform"/></td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                            <div class="boton-gris3 aleft">
+                                                <a onclick="Cfgedit.agregarRawDir(); return false;" href="#" class="button">
+                                                    <span>+ Agregar</span>
+                                                </a>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">

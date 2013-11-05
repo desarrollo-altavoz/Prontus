@@ -171,6 +171,8 @@ main: {
     $hash_defaultvars{'coment'}{'MODERACION'} = 'MODERACION;(SI|NO);SI;U';
 
     # buscador_prontus.cfg
+    $hash_defaultvars{'buscador'}{'PRONTUS_DIR'} = 'PRONTUS_DIR;([\w\|]+);;U';
+    $hash_defaultvars{'buscador'}{'RAW_DIR'} = 'RAW_DIR;([\w\|]+);;U';
     $hash_defaultvars{'buscador'}{'RAW_FILETYPES'} = 'RAW_FILETYPES;(\w+);html htm shtml php asp;U';
     $hash_defaultvars{'buscador'}{'URL_FILETYPES'} = 'URL_FILETYPES;(\w+);html htm shtml php asp jsp;U';
     $hash_defaultvars{'buscador'}{'URL_MAXPAGS'} = 'URL_MAXPAGS;^(\d+)$;100;U';
@@ -291,7 +293,27 @@ main: {
 
                         # Concideracion especial para el buscador.... ya que los valores van sin ''.
                         if ($FORM{'_cfg'} eq 'buscador') {
-                            $buffer = $buffer . "$var_valida = $input_value\n";
+                            #~ print STDERR "var_valida[$var_valida] -> input_value[$input_value]\n";
+                            # consideracion especial para el buscador
+                            if ($var_valida eq 'PRONTUS_DIR') {
+                                my @arr = split /\|/, $input_value;
+                                my $counter = 1;
+                                foreach my $dir (@arr) {
+                                    next unless($dir);
+                                    $buffer = $buffer . "PRONTUS_DIR_$counter = $dir\n";
+                                    $counter++;
+                                }
+                            } elsif($var_valida eq 'RAW_DIR') {
+                                my @arr = split /\|/, $input_value;
+                                my $counter = 1;
+                                foreach my $dir (@arr) {
+                                    next unless($dir);
+                                    $buffer = $buffer . "RAW_DIR_$counter = $dir\n";
+                                    $counter++;
+                                }
+                            } else {
+                                $buffer = $buffer . "$var_valida = $input_value\n";
+                            };
                         } else {
                             # Si la variable es multivista, no guardar vacia.
                             if ($var_valida eq 'MULTIVISTA') {
@@ -444,7 +466,7 @@ sub validarTax {
 
 sub validarSearch { # solo vacios.
     my ($var) = shift;
-    print STDERR "var[$var]\n";
+    #~ print STDERR "var[$var]\n";
     if ($var eq 'FIDS') {
         &glib_html_02::print_json_result(0, "La variable $var debe tener seleccionado al menos 1 FID.", 'exit=1,ctype=1');
     }

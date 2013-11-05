@@ -21,3 +21,5 @@
 .msg-alert {width:240px; font-size:11px; color:#c00; font-weight:normal; display:none; float:right;}
 .msg-alert span {font-weight:bold;}
 
+select.disabled-field {color:#999999; background-color:#dddddd; text-decoration:line-through;}
+input.disabled-field {color:#999999; background-color:#dddddd; text-decoration:line-through;}
