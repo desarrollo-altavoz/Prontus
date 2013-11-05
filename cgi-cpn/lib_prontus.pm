@@ -5582,9 +5582,13 @@ sub call_system_and_location {
   }
   # SI UNIX
   else {
+
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if($pathnice);
+
     print STDERR "unix!\n";
     my $script = $ruta_script . "$nom_script_detachado.cgi "; # EN UNIX ES .cgi
-    my $cmd = "$script $params &";
+    my $cmd = "$pathnice $script $params &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
     print "Location: $location\n\n";

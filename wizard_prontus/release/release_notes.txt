@@ -6981,9 +6981,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.71 - 05/10/2013 - CVI/JOR/EAG
 ====================================================================================================
 
+- Prontus en General
+    [mejoras]
+        - Los procesos que usen: &lib_prontus::call_system_and_location, irán con "nice"
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
 - Listado de Artículos
     [mejoras]
-        - Al buscar si los artículos están publicados en una portada, esa Hash, se guarda como JSON, para tener a mano esa info.
+        - Al buscar si los artículos están publicados en una portada, ese Hash se guarda como JSON, para tener a mano esa info.
           Dicho JSON se guarda en: /<prontus_id>/cpan/data/chache/json_artics_in_ports.json
           Al quedar en dicha carpeta, se borran al igual que el caché de los listados
     [files]
