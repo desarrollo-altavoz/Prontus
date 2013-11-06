@@ -1696,6 +1696,13 @@ sub generar_vista_art {
     $nom_tema1 = $campos_xml{'_nom_tema1'};
     $nom_subtema1 = $campos_xml{'_nom_subtema1'};
 
+    # Fix por si es que las taxonomias vienen con cero
+    for (my $i = 1; $i <= 3; $i++) {
+        $campos_xml{'_seccion'.$i}  = '' if($campos_xml{'_seccion'.$i} eq '0');
+        $campos_xml{'_tema'.$i}    = '' if($campos_xml{'_tema'.$i} eq '0');
+        $campos_xml{'_subtema'.$i} = '' if($campos_xml{'_subtema'.$i} eq '0');
+    };
+
     $plt = $campos_xml{'_plt'} if (!$plt);
 
     # Path completo al articulo a generar
@@ -1728,8 +1735,8 @@ sub generar_vista_art {
             my $inicio = $1;
             my $fin = $2;
             my $loop = $3;
-            print STDERR "_loop_artic($inicio,$fin)\n";
-            print STDERR "loop[$loop]\n";
+            #~ print STDERR "_loop_artic($inicio,$fin)\n";
+            #~ print STDERR "loop[$loop]\n";
             my $totloop;
             for(my $i = $inicio; $i <= $fin; $i++) {
                 print STDERR "for($i)\n";
@@ -1737,7 +1744,7 @@ sub generar_vista_art {
                 $looptemp =~ s/##i##/$i/isg;
                 $totloop = $totloop . $looptemp;
             }
-            print STDERR "totloop[$totloop]\n";
+            #~ print STDERR "totloop[$totloop]\n";
             $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
         }
 
@@ -2258,8 +2265,7 @@ sub _parsing_vtxt {
         }
         $code = quotemeta $code;
         $vtxt_aux_consubtit =~ s/$code/$newnode/is;
-
-        print STDERR "\n\n\n";
+        #~ print STDERR "\n\n\n";
     }
 
     # Se le indica que no se deben escapear los PHP

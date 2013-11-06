@@ -6932,6 +6932,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_usr_sbmit.cgi
 
 - Artículos
+    [bugfix]
+        - Fix por si es que las taxonomias vienen con cero, al parsear la vista del artículo (xmls antiguos)
     [mejoras]
         - Se agrega la opción de generar artículos con salidas paralelas utilizando plantillas definidas
           en el EDITOR DE CFG GUI.
