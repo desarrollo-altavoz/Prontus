@@ -178,7 +178,7 @@ sub procesa_quota_vps {
 
                 #~ print STDERR "montaje[$montaje] document_root[$document_root]\n";
                 if ($montaje eq $document_root) {
-                    print STDERR "match! document_root[$document_root] = montaje[$montaje]\n";
+                    #~ print STDERR "match! document_root[$document_root] = montaje[$montaje]\n";
                     $quota_asig = $usado + $disponible;
                     last;
                 };
@@ -189,7 +189,7 @@ sub procesa_quota_vps {
     };
 
     if (!$quota_asig) {
-        print STDERR "[lib_quota] Usando valores de la particion raiz\n";
+        #~ print STDERR "[lib_quota] Usando valores de la particion raiz\n";
         $usado = $usado_raiz;
         $quota_asig = $usado_raiz + $disponible_raiz;
     };
