@@ -1,4 +1,28 @@
 ====================================================================================================
+11.2.71 - 07/11/2013
+====================================================================================================
+- notice: Se habilitan LOOPS dentro de los artículos para generar marcas recursivas. Mas info en Manual de Desarrollo
+- bugfix: Bug en el banco de imagenes al usar Directorio Externo de Multimedia
+- bugfix: Se agregan las variables: PRONTUS_DIR_i y RAW_DIR_i para el Buscador a la interfaz del Editor de CFG
+- bugfix: Se soluciona problema con friendly url en resultados de busqueda en otros índices.
+- bugfix: En Multimedia, se soluciona problema con posición de imagen de preview en videos.
+- bugfix: Se corrige bug al cargar los CSS del artículo en el VTXT
+- bugfix: Se corrigen textos en el nuevo plugin Insert
+- bugfix: Error cuando borraban un Video que se estaba procesando, el script quedaba en un bucle infinito
+- improvement: Los procesos que usen: &lib_prontus::call_system_and_location, irán con "nice"
+- improvement: En el listado de articulos, se mejora busquedas de articulos publicados en portadas, usando un caché
+- improvement: Se acelera escritura de la primera página de todas las salidas de Portadas Taxonomicas, generando más FORK
+- improvement: Al guardar un articulo, se revisa que datos cambiaron para ver si amerita regenerar todo o solo 1 pagina
+- improvement: En el buscador, ahora se puede usar _prontus_id en los campos Metadata. Útil cuando se indexan multiples Prontus.
+- improvement: Se agrega marca: %%search_total%% con el total de resultados en el buscador
+- improvement: Se comienza a parsear la marca: %%_prontus_id%% en el buscador
+- improvement: Al guardar artículos, se aplica nice al ejecutar las cgis del DAM y Tagport
+- improvement: Se mejora la visualización de las imágenes (colorbox), indicando tamaño, peso, total de imagenes, etc.
+- improvement: Al borrar artículos los script de taxport, dam y tagport se corren con nice
+- changes: Se agregan variables de configuración: SEARCHTIPS_MAXRESULT, SEARCHTIPS_MINLEN, SEARCHTIPS_DURACION_CACHE, SEARCHTIPS_MAXREQUESTXIP
+- changes: Se hace un reemplazo de las imágenes agregando el Server Name. Outlook.com no hacen uso sel tag <base>
+
+====================================================================================================
 11.2.70 - 01/10/2013
 ====================================================================================================
 - notice: Se crea nuevo plugin llamado: Insert encargado de hacer 4 tipos de "insert": PHP, SSI, Archivo JS y Código JS

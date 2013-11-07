@@ -6980,7 +6980,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.71 - 05/10/2013 - CVI/JOR/EAG
+11.2.71 - 07/11/2013 - CVI/JOR/EAG
 ====================================================================================================
 
 - Prontus en General
@@ -7041,7 +7041,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           En base a esto, la prontus_cron_taxport.cgi recibe un 3er parámetro (TS) si este parametro viene
           sólo escribirá la página que tenga dicho TS. En este modo, no se trabjará con semáforos, ya que
           se escribirá directamente la página comprometida.
-        -
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
         /cgi-cpn/prontus_art_sbmit.cgi
