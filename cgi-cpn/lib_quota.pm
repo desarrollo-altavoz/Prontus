@@ -143,13 +143,24 @@ sub procesa_quota_vps {
     my ($usado, $quota_asig, $disponible);
     my ($usado_raiz, $disponible_raiz);
 
-    my $df = `df -T | grep -v tmpfs`;
-
-    return ('','') if (!$df);
-
-    my @lineas_df = split(/\n/, $df); shift @lineas_df; # quitar cabecera.
     my $document_root = $prontus_varglb::DIR_SERVER;
 
+    my $df = `df -T | grep -v tmpfs`;
+    if(!$df) {
+        if($document_root =~ /^\/sites\//) {
+            $df = `df -t notmpfs | grep '/sites'`;
+            if ($df =~ /(\d+)\s+(\d+)\s+(\d+)\s+\d+%\s+/) {
+               my $usado = $2;
+               my $disp = $3;
+               my $quota_asig = $usado + $disp;
+               return ($usado, $quota_asig);
+            }
+        }
+        return ('','');
+    }
+
+
+    my @lineas_df = split(/\n/, $df); shift @lineas_df; # quitar cabecera.
     return ('', '') if (scalar @lineas_df == 0);
 
     while ($document_root =~ /^.+(\/.*?)$/sg) {
