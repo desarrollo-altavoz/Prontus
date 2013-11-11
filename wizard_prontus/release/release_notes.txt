@@ -7129,3 +7129,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/xcoding/qtfaststart.cgi
 
+
+====================================================================================================
+11.2.72 - 07/11/2013 - JOR
+====================================================================================================
+
+- Editor de CFG GUI
+    [bugfix]
+        - Se soluciona problema con cfg de articulos. Al seleccionar un fid como "Inicial", 
+        se repetía la variable FORM_PLTS para ese fid. Esto ocurre desde que se agregaron las 
+        plantillas paralelas de artículo.
+    [files]
+        /cgi-cpn/prontus_cfg_save.cgi
+

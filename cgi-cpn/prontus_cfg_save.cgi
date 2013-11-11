@@ -380,15 +380,14 @@ main: {
     if ($FORM{'_cfg'} eq 'art') {
         my $fid_default = &glib_cgi_04::param('form_plts_ini');
         my $first_fid = '';
-        if ($buffer =~ /($fid_default):(.*?)\((.*?)\)/) {
-            $first_fid = "FORM_PLTS = '$1:$2($3)'";
+        if ($buffer =~ /(FORM_PLTS = '$fid_default:.*?')[^\n]?/) {
+            $first_fid = $1;
         };
         my @buff_split = split(/\n/, $buffer);
         my $new_buffer = "$first_fid\n";
         foreach my $buffer_line (@buff_split) {
-            if ($buffer_line ne $first_fid) {
-                $new_buffer = $new_buffer . $buffer_line . "\n";
-            };
+            next if ($buffer_line =~ /^FORM_PLTS = '$fid_default:/);
+            $new_buffer = $new_buffer . $buffer_line . "\n";
         };
         $buffer = $new_buffer;
     };
