@@ -7147,3 +7147,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrige pequeño issue al usar freeBSD sin quota. (usado en Dirac Minrel)
     [files]
         /cgi-bin/lib_quota.pm
+
+- Portadas Taxonómicas
+    [cambio]
+        - Se cambia el usleep entre páginas a 500.000us
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi

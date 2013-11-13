@@ -693,7 +693,7 @@ sub generar_taxports_thislevel {
 
                     if ($nro_pag > 0) {
                         # Se deja en medio segundo
-                        usleep(5000);
+                        usleep(500000);
                     };
                 };
             };
