@@ -7158,5 +7158,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se agrega un pooling con un sleep de 3 segundos (máximo 3 ciclos) al chequear instancias en ejecución.
         - Además se sube el máximo de instancias corriendo a 500
+        - Se cambian parámetros internos para archivos máximos de sesion (captcha antiguo) y antiguedad maxima de dichos archivos
     [files]
         /cgi-bin/prontus_captcha.cgi
+        /cgi-cpn/lib_captcha.pm

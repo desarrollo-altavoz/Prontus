@@ -18,7 +18,9 @@ use glib_fildir_02;
 use glib_str_02;
 
 # variables globales del paquete
-our $MAX_FILES = 500; # NRO. MAXIMO DE ARCHIVOS QUE PUEDEN EXISTIR SIMULTANEAMENTE
+our $MAX_FILES = 1000; # NRO. MAXIMO DE ARCHIVOS QUE PUEDEN EXISTIR SIMULTANEAMENTE
+our $MAX_TIME = 1800; # Tiempo máximo antes de borra los captcha antiguos -> 30 mins.
+
 our $FORECOLOR = '0,0,0'; # COLOR LETRAS
 our $BACKCOLOR = '255,255,255'; # COLOR FONDO
 our $TTF = './fontcaptcha.ttf';
@@ -136,19 +138,19 @@ sub garbage_collector {
     $ERRCODE = 3;
     return 0;
   };
-  
+
   # Si hay menos de $MAX_FILES, se retorna
   if ($num_files < $MAX_FILES) {
-     return 1; 
+     return 1;
   };
-  
+
   # Borra archivos con mas de 30 mins de antiguedad
   # print $$ . 'time = ' . time . ' ';
   foreach $entry (@entries) {
     if (-f "$dir/$entry") {
       @stats = stat "$dir/$entry";
       # print $stats[10] . ' ';
-      if ($stats[10] < (time - 3600)) { # 30 mins.
+      if ($stats[10] < (time - $MAX_TIME)) {
         unlink "$dir/$entry";
         $num_files--;
       };
@@ -329,27 +331,27 @@ sub get_captcha_imag {
 # 1.2
 sub set_simple_cookie {
 # Setea una cookie temporal para la sesion.
-	my($name, $value) = @_;
-	print 'Set-Cookie: ';
-	print ("$name=$value; path=/; \n"); # 1.10
+  my($name, $value) = @_;
+  print 'Set-Cookie: ';
+  print ("$name=$value; path=/; \n"); # 1.10
 };
 
 #------------------------------------------------------------------------#
 sub get_cookies {
 # Get Cookies desde la variable de ambiente ENV.
-	# Las cookies estan separadas por ";" y un espacio,
-	# esto las esplitea y retorna un hash de cookies.
+  # Las cookies estan separadas por ";" y un espacio,
+  # esto las esplitea y retorna un hash de cookies.
 
-	my(@rawCookies) = split (/; /,$ENV{'HTTP_COOKIE'});
-	my(%cookies);
-	my($key, $val); # 1.3
+  my(@rawCookies) = split (/; /,$ENV{'HTTP_COOKIE'});
+  my(%cookies);
+  my($key, $val); # 1.3
 
-	foreach(@rawCookies){
-	    ($key, $val) = split (/=/,$_);
-	    $cookies{$key} = $val;
-	};
+  foreach(@rawCookies){
+      ($key, $val) = split (/=/,$_);
+      $cookies{$key} = $val;
+  };
 
-	return %cookies;
+  return %cookies;
 };
 
 #------------------------------------------------------------------------#
