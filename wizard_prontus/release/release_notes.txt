@@ -7153,3 +7153,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia el usleep entre páginas a 500.000us
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
+
+- Captcha
+    [mejoras]
+        - Se agrega un pooling con un sleep de 3 segundos (máximo 3 ciclos) al chequear instancias en ejecución.
+        - Además se sube el máximo de instancias corriendo a 500
+    [files]
+        /cgi-bin/prontus_captcha.cgi

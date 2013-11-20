@@ -72,10 +72,22 @@ main: {
         print "Cache-Control: no-store\n";
     };
 
-    # Soporta un maximo de n copias corriendo.
-    if (&lib_maxrunning::maxExcedido(200)) {
-        print "Content-type: image/jpeg\n\n";
-        print STDERR "Servidor ocupado, muchas instancias de la CGI\n";
+    # Soporta un maximo de 500 copias corriendo.
+    my $counter = 1;
+    my $maxExcedido = 0;
+    while($counter <= 3) {
+        if (&lib_maxrunning::maxExcedido(500)) {
+            $maxExcedido = 1;
+        } else {
+            $maxExcedido = 0;
+            last;
+        };
+        $counter++;
+        sleep(1);
+    };
+    if($maxExcedido == 1) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","908-Servidor ocupado.");
         exit;
     };
 
