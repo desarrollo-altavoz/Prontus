@@ -174,7 +174,7 @@ sub main {
         &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
         my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
         if ($msg_err_captcha ne '') {
-            my $resp = &make_resp($msg_err_captcha);
+            my $resp = &make_resp($msg_err_captcha, 1);
             print "Content-Type: text/html\n\n";
             print $resp;
             exit;
@@ -336,9 +336,19 @@ sub load_config_posting {
 sub make_resp {
   # Genera respuesta.
   my $msg = $_[0];
-  my $path_plt = "$prontus_varglb::DIR_SERVER/$FORM{'_NP'}/plantillas/extra/posting/pags/" . &param('_msg_plantilla');
+  my $error = $_[1];
+
+  my $plt = '';
+  my $plterror = &param('_error_plantilla');
+  if($error && $plterror) {
+    $plt = $plterror;
+  } else {
+    $plt = &param('_msg_plantilla');
+  };
+  my $path_plt = "$prontus_varglb::DIR_SERVER/$FORM{'_NP'}/plantillas/extra/posting/pags/" . $plt;
+
   my $buffer;
-  # print STDERR "path_plt[$path_plt]\n";
+  #~ print STDERR "path_plt[$path_plt]\n";
   if (-f $path_plt) {
     $buffer = &glib_fildir_02::read_file($path_plt);
   };

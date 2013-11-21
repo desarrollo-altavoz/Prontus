@@ -7167,6 +7167,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Faltaba referencia a lib_captcha.pm
         - Se cambia el orden de la validación del captcha, después de caragar la configuracion, para que el mensaje de error venga con la plantilla.
+        - Se habilita la opción de setear plantilla de error para el captcha y otros errores, con la variable: _ERROR_PLANTILLA
+          del CFG. Si esta variable no viene, se usa la plantilla de mensaje normal
     [files]
         /cgi-bin/prontus_art_posting.cgi
 
