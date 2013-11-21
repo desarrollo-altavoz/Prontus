@@ -140,6 +140,23 @@ sub main {
         &glib_html_02::print_pag_result("Error","902-Error en los datos enviados.", 0, 'exit=1,ctype=1');
     };
 
+    # Path de cfg de prontus
+    $FORM{'_PATH_CONF'} = "/$FORM{'_NP'}/cpan/$FORM{'_NP'}.cfg";
+    $FORM{'_PATH_CONF'} = &lib_prontus::ajusta_pathconf($FORM{'_PATH_CONF'});
+
+    # Carga variables de configuracion de prontus.
+    &lib_prontus::load_config($FORM{'_PATH_CONF'});
+    $FORM{'_PATH_CONF'} =~ s/^$prontus_varglb::DIR_SERVER//;
+
+
+    # Cargar var de conf de posting
+    if (!&load_config_posting()) {
+        &glib_html_02::print_pag_result("Error","903-Error en los datos enviados.", 0, 'exit=1,ctype=1');
+    };
+
+    # Asigna valores por defecto a vars de cfg de posting.
+    &load_default_posting_params();
+
     # CVI - Cambio para Posting Batch
     $FORM{'_MODE'} = &glib_cgi_04::param('_MODE'); # 'batch' | <anything>
 
@@ -163,23 +180,6 @@ sub main {
             exit;
         };
     };
-
-    # Path de cfg de prontus
-    $FORM{'_PATH_CONF'} = "/$FORM{'_NP'}/cpan/$FORM{'_NP'}.cfg";
-    $FORM{'_PATH_CONF'} = &lib_prontus::ajusta_pathconf($FORM{'_PATH_CONF'});
-
-    # Carga variables de configuracion de prontus.
-    &lib_prontus::load_config($FORM{'_PATH_CONF'});
-    $FORM{'_PATH_CONF'} =~ s/^$prontus_varglb::DIR_SERVER//;
-
-
-    # Cargar var de conf de posting
-    if (!&load_config_posting()) {
-        &glib_html_02::print_pag_result("Error","903-Error en los datos enviados.", 0, 'exit=1,ctype=1');
-    };
-
-    # Asigna valores por defecto a vars de cfg de posting.
-    &load_default_posting_params();
 
     # Crear objeto Artic
     $lib_artic::ARTIC_OBJ = &crear_objeto_artic();
