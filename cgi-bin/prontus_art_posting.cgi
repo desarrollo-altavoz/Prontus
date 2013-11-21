@@ -83,6 +83,7 @@ use lib_tax;
 use lib_waitlock; # Bloqueos tipo espera.
 use lib_thumb;
 use lib_captcha;
+use lib_captcha2;
 use lib_ipcheck;
 use lib_artic;
 use lib_maxrunning;
@@ -145,14 +146,14 @@ sub main {
     # Validacion captcha
     # Si es modo batch, no se valida captcha
     if ($FORM{'_MODE'} ne 'batch') {
-        
+
         # Usando la nueva lib_captcha se manejan ambos formatos
         my $captcha_input = &glib_cgi_04::param('_CAPTCHA');
         my $captcha_type = 'posting'; # custom
         my $captcha_img = &glib_cgi_04::param('_captcha_img');
         my $captcha_code = &glib_cgi_04::param('_captcha_code');
         $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
-        #~ require 'dir_cgi.pm'; 
+        #~ require 'dir_cgi.pm';
         &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
         my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
         if ($msg_err_captcha ne '') {

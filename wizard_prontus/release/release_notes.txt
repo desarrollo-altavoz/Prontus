@@ -7162,3 +7162,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-bin/prontus_captcha.cgi
         /cgi-cpn/lib_captcha.pm
+
+- Posting de Contenido
+    [bugfixes]
+        - Faltaba referencia a lib_captcha.pm
+    [files]
+        /cgi-bin/prontus_art_posting.cgi
+
