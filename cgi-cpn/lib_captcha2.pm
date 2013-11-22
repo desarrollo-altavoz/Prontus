@@ -12,7 +12,7 @@
 # Funciones para utilizar captcha sin utilizar sesiones.
 package lib_captcha2;
 
-use Digest::SHA1  qw(sha1 sha1_hex sha1_base64);
+use Digest::SHA  qw(sha1 sha1_hex sha1_base64);
 use glib_fildir_02;
 use glib_str_02;
 
@@ -41,14 +41,14 @@ $TTF = './fontcaptcha.ttf';
 #--------------------------------------------------------------------------------------------------#
 sub init {
     my ($DOC_ROOT, $DIR_CGI) = @_;
-    
+
     # Se cargan las variables generales
     $DOCUMENT_ROOT = $DOC_ROOT;
     $PATH_CAPTCHA_IMG = "/imag/prontus_captcha";
     $TTF = "$lib_captcha2::DOCUMENT_ROOT/$DIR_CGI/fontcaptcha.ttf";
 
     # faltaria cargar un arreglo con mensajes segun idioma
-    
+
 };
 #--------------------------------------------------------------------------------------------------#
 sub validar_tipo {
@@ -57,27 +57,27 @@ sub validar_tipo {
         return 0;
     } else {
         return 1;
-    }    
+    }
 }
 #--------------------------------------------------------------------------------------------------#
 sub valida_captcha {
     my ($captcha_input, $captcha_code, $captcha_type, $captcha_img) = @_;
     #~ my ($captcha_input, $captcha_encoded, $captcha_type, $captcha_img) = @_;
     $captcha_input =~ s/[^\w]//sg;
-    
+
     if(! &validar_tipo($captcha_type)) {
         print STDERR "Captcha no valido captcha_type[$captcha_type]\n";
         return $ERR_MSGS{'MSG_CAPTCHA_BADTYPE'};
     };
-    
+
     if($captcha_img && $captcha_code) {
-        
+
         # Se revisa que los datos de la librería hayan sido iniciados
         unless($lib_captcha2::PATH_CAPTCHA_IMG && $lib_captcha2::DOCUMENT_ROOT) {
             print STDERR "lib_captcha2 no ha sido inicializada\n";
             return $ERR_MSGS{'MSG_CAPTCHA_SYSTEM'};
         }
-        
+
         # Si no hay gd, No se valida nada, arroja error de sistema
         my $no_hay_gd;
         eval "require GD;";    $no_hay_gd = $@;
@@ -85,13 +85,13 @@ sub valida_captcha {
             print STDERR "No se encontro la libreria perl GD en el sistema\n";
             return $ERR_MSGS{'MSG_CAPTCHA_SYSTEM'};
         };
-        
+
         # El codigo de validacion no puede ser vacio
         if($captcha_input eq '') {
             print STDERR "No venia el codigo de seguridad: captcha_input[$captcha_input]\n";
             return $ERR_MSGS{'MSG_CAPTCHA_VOID'};
         }
-            
+
         # Se revisa que la imagen exista
         if(! -f "$lib_captcha2::DOCUMENT_ROOT$lib_captcha2::PATH_CAPTCHA_IMG/$captcha_type/$captcha_img") {
             print STDERR "La imagen no existe: $lib_captcha2::DOCUMENT_ROOT$lib_captcha2::PATH_CAPTCHA_IMG/$captcha_type/$captcha_img\n";
@@ -108,9 +108,9 @@ sub valida_captcha {
             return $ERR_MSGS{'MSG_CAPTCHA_INVALID'};
         }
         return '';
-        
+
     } else {
-        # Captcha antiguo con sesiones        
+        # Captcha antiguo con sesiones
         my $msg_err_captcha = &lib_captcha::check_captcha_prontus($captcha_input, $captcha_type);
         return $msg_err_captcha;
     };
@@ -119,11 +119,11 @@ sub valida_captcha {
 #--------------------------------------------------------------------------------------------------#
 sub make_hash {
     my $str = $_[0];
-    my $pass1 = &Digest::SHA1::sha1_hex($str);
-    my $pass2 = &Digest::SHA1::sha1_base64($pass1) . $str;
-    my $pass3 = &Digest::SHA1::sha1_hex($pass2);
+    my $pass1 = &Digest::SHA::sha1_hex($str);
+    my $pass2 = &Digest::SHA::sha1_base64($pass1) . $str;
+    my $pass3 = &Digest::SHA::sha1_hex($pass2);
     return $pass3;
-    
+
 };
 
 #--------------------------------------------------------------------------------------------------#
@@ -134,7 +134,7 @@ sub get_img_name {
     my @parts = split(" ", $str_parts);
     my @new_order = (9,6,3,0,5,8,2,7,1,4);
     my $new_str;
-    
+
     foreach my $num (@new_order) {
         $new_str .= $parts[$num];
     };
@@ -144,15 +144,15 @@ sub get_img_name {
 
 #--------------------------------------------------------------------------------------------------#
 sub delete_captcha_img {
-    
+
     my ($captcha_type, $captcha_img) = @_;
-    
+
     # Se revisa que los datos de la librería hayan sido iniciados
     unless($lib_captcha2::PATH_CAPTCHA_IMG && $lib_captcha2::DOCUMENT_ROOT) {
         print STDERR "lib_captcha2 no ha sido inicializada\n";
         return $ERR_MSGS{'MSG_CAPTCHA_SYSTEM'};
     }
-    
+
     &glib_fildir_02::check_dir("$lib_captcha2::DOCUMENT_ROOT$lib_captcha2::PATH_CAPTCHA_IMG/$captcha_type");
     if(-f "$lib_captcha2::DOCUMENT_ROOT$lib_captcha2::PATH_CAPTCHA_IMG/$captcha_type/$captcha_img") {
         unlink "$lib_captcha2::DOCUMENT_ROOT$lib_captcha2::PATH_CAPTCHA_IMG/$captcha_type/$captcha_img";
@@ -281,14 +281,14 @@ sub garbage_collector {
             };
         };
     };
-    
+
 };
 
 #--------------------------------------------------------------------------------------------------#
 sub print_response {
-    
+
     my ($img, $path, $code, $msg) = @_;
-    
+
     my $resp;
     #~ my $json = new JSON;
     $resp->{'img'} = $img;

@@ -13,7 +13,7 @@
 package lib_captcha;
 
 use strict;
-use Digest::SHA1  qw(sha1 sha1_hex sha1_base64);
+use Digest::SHA  qw(sha1 sha1_hex sha1_base64);
 use glib_fildir_02;
 use glib_str_02;
 
@@ -74,7 +74,7 @@ sub set_captcha {
 
   # nombre de la cookie dentro de la cual se guardara el nombre del archivo
   my $nom_cookie = $ENV{'REMOTE_ADDR'} . $folder_captcha_files;
-  $nom_cookie = &Digest::SHA1::sha1_hex($nom_cookie);
+  $nom_cookie = &Digest::SHA::sha1_hex($nom_cookie);
 
 
   # nombre del archivo en el cual se guardará el captcha encriptado
@@ -86,12 +86,12 @@ sub set_captcha {
     $nom_file_captcha = $cookies{$nom_cookie};
   }
   else {
-    $nom_file_captcha = &Digest::SHA1::sha1_hex($$);
+    $nom_file_captcha = &Digest::SHA::sha1_hex($$);
   };
 
   # Obtencion del string del captcha y codificacion del mismo
   my $str = &glib_str_02::random_string(4);
-  my $str_coded = &Digest::SHA1::sha1_base64(lc $str); # captcha es case-insens
+  my $str_coded = &Digest::SHA::sha1_base64(lc $str); # captcha es case-insens
 
   my $path_captcha_file = &get_path_captcha_file($folder_captcha_files, $nom_file_captcha);
   return '' if (!$path_captcha_file);
@@ -213,7 +213,7 @@ sub valida_captcha {
   };
   # Obtiene nombre de la cookie para poder leerla y sacar de ahi el nombre del archivo donde se encuentra el captcha
   my $nom_cookie = $ENV{'REMOTE_ADDR'} . $folder_captcha_files;
-  $nom_cookie = &Digest::SHA1::sha1_hex($nom_cookie);
+  $nom_cookie = &Digest::SHA::sha1_hex($nom_cookie);
   my %cookies = &get_cookies();
   my $nom_file_captcha = $cookies{$nom_cookie};
   # lee archivo
@@ -221,7 +221,7 @@ sub valida_captcha {
   return 0 if (!$path_captcha_file);
   my $str_coded = &glib_fildir_02::read_file($path_captcha_file);
   # print STDERR "nom_file_captcha[$nom_file_captcha] path_captcha_file[$path_captcha_file] str_coded[$str_coded] str_a_validar[$str_a_validar]\n";
-  if (&Digest::SHA1::sha1_base64(lc $str_a_validar) eq $str_coded) {
+  if (&Digest::SHA::sha1_base64(lc $str_a_validar) eq $str_coded) {
     unlink $path_captcha_file;
     &set_simple_cookie($nom_cookie, '');
     return 1;

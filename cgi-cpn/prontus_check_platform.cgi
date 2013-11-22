@@ -59,7 +59,7 @@ my $MODULES = [
 
   {name => 'PHP::Session', version => '0.26'},
 
-  {name => 'Digest::SHA1', version => '2.0'}
+  {name => 'Digest::SHA', version => '5.60'}
 
 
 ];
