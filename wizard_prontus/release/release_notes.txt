@@ -7134,6 +7134,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.72 - 07/11/2013 - JOR
 ====================================================================================================
 
+- Artículos
+    [bugfix]
+        - Se corrige codificación de un mensaje de error cuando el Tipo de artículos no es válido
+    [files]
+        /cgi-cpn/prontus_cfg_save.cgi
+
 - Editor de CFG GUI
     [bugfix]
         - Se soluciona problema con cfg de articulos. Al seleccionar un fid como "Inicial",

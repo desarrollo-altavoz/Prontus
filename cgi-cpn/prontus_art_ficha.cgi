@@ -194,7 +194,7 @@ if ($FORM{'_file'} eq '') {
 
     # Validar tipo de articulo.
     if (!-f $PATH_FICHA) {
-        &glib_html_02::print_pag_result('Error','Tipo de artículo no válido o indeterminado.',1,'exit=1,ctype=0');
+        &glib_html_02::print_pag_result('Error','Tipo de art&iacute;�culo no v&aacute;lido o indeterminado.',1,'exit=1,ctype=0');
     };
 
 
@@ -315,7 +315,7 @@ if ($FORM{'_file'} eq '') {
 
     # Validar tipo de articulo.
     if (!-f $PATH_FICHA) {
-        &glib_html_02::print_pag_result('Error','Tipo de artículo no válido o indeterminado.',1,'exit=1,ctype=0');
+        &glib_html_02::print_pag_result('Error','Tipo de art&iacute;�culo no v&aacute;lido o indeterminado.',1,'exit=1,ctype=0');
     };
 
     $pagina = &cargar_campos($dir_tpl_pags);
