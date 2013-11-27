@@ -6678,7 +6678,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.69 - 26/08/2013 - CVI/JOR
 ====================================================================================================
 
-- Global
+- Multimedia Externa
     [cambios]
         - Se agrega la posibilidad de tener los archivos (imag, asocfile, multimedia, swf) en un directorio separado.
           Con esto, por ejemplo, se puede montar por NFS un directorio, y tener los archivos en un servidor externo.
@@ -7134,6 +7134,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.72 - 07/11/2013 - JOR
 ====================================================================================================
 
+- Prontus en General
+    [bugfix]
+        - Se evita que el Prontus arroje error 500 al querdar mal cerrada un MACRO.
+          Intentaba usar el nombre del archivo en una regexp, y si quedaba con caracteres reservados, la cgi se caía.
+          Ahora se escapea dicha expresion regular con \Q ... \E
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_art_ficha.cgi
+
 - Artículos
     [bugfix]
         - Se corrige codificación de un mensaje de error cuando el Tipo de artículos no es válido
@@ -7197,4 +7206,3 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se escapean los & de las URLs asociadas a niveles taxonómios, para que no se caiga el XML al exportar
     [files]
         /cgi-cpn/prontus_tax_export_real.cgi
-

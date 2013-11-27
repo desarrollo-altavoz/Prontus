@@ -1839,7 +1839,7 @@ sub carga_buffer_fid {
 
 # -------------------------------------------------------------------------
 sub add_macros_fid {
-  # Incluye en el tpl las macros señaladas en el con la marca
+  # Incluye en el tpl las macros senaladas en el con la marca
   # %%MACRO(<nomfilemacro>)%%
   # <nomfilemacro> : Nombre del archivo de la macro (con extension y sin path), ubicado dentro del dir macros
 
@@ -1853,7 +1853,7 @@ sub add_macros_fid {
   my $pag_aux = $textpag;
 
   # Recorre tpl y parsea macros.
-  while ($pag_aux =~ /%%MACRO\((.+?)\)%%/isg) {
+  while ($pag_aux =~ /%%MACRO\((.+?)\)%%/ig) {
 
     my $nomfile = $1;
     my $dir_macros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/fid/macros";
@@ -1865,7 +1865,7 @@ sub add_macros_fid {
     if (! -f "$dir_macros/$nomfile") {
         my $relpath_macro = &lib_prontus::remove_front_string("$dir_macros/$nomfile", $prontus_varglb::DIR_SERVER);
         $buffer_macro = "Macro '$relpath_macro' no existe";
-        $textpag =~ s/%%MACRO\($nomfile\)%%/$buffer_macro/is;
+        $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
         next;
     };
 
@@ -1879,8 +1879,8 @@ sub add_macros_fid {
     $profundidad++;
 
     if ($profundidad > 10) {
-      $buffer_macro = '<b>[Error: Se alcanzó el nivel máximo de anidamiento de macros (max=10)]</b>';
-      $textpag =~ s/%%MACRO\($nomfile\)%%/$buffer_macro/is;
+      $buffer_macro = '<b>[Error: Se alcanzo el nivel maximo de anidamiento de macros (max=10)]</b>';
+      $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
       $profundidad = 0;
       next;
     }
@@ -1891,7 +1891,7 @@ sub add_macros_fid {
     };
 
     $profundidad = 0;
-    $textpag =~ s/%%MACRO\($nomfile\)%%/$buffer_macro/is;
+    $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
 
   };
 

@@ -2711,7 +2711,7 @@ sub add_macros {
     if (! -f "$dir_macros/$nomfile") {
         my $relpath_macro = &remove_front_string("$dir_macros/$nomfile", $prontus_varglb::DIR_SERVER);
         $buffer_macro = "Macro '$relpath_macro' no existe";
-        $textpag =~ s/%%MACRO\($nomfile\)%%/$buffer_macro/is;
+        $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
         next;
     };
 
@@ -2726,7 +2726,7 @@ sub add_macros {
 
     if ($profundidad > 10) {
       $buffer_macro = '<b>[Error: Se alcanzó el nivel máximo de anidamiento de macros (max=10)]</b>';
-      $textpag =~ s/%%MACRO\($nomfile\)%%/$buffer_macro/is;
+      $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
       $profundidad = 0;
       next;
     }
@@ -2737,7 +2737,7 @@ sub add_macros {
     };
 
     $profundidad = 0;
-    $textpag =~ s/%%MACRO\($nomfile\)%%/$buffer_macro/is;
+    $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
 
   };
 
