@@ -197,6 +197,8 @@ sub tax_export {
         $nom_s = &lib_prontus::escape_xml($nom_s);
         if ($mostrar) { $mostrar = 'SI'; } else { $mostrar = 'NO'; };
         $nom_envistas = &get_nom_envistas($nom4vistas);
+        $port =~ s/&/&amp;/g; # Para que las url con & no boten el XML
+
         $registros .= "<seccion id='$id_s'>\n"
         . "<nom>$nom_s</nom>\n"
         . $nom_envistas

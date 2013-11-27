@@ -7192,4 +7192,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_captcha2.pm
         /cgi-cpn/prontus_check_platform.cgi
 
--
+- Exportar Categorías
+    [bugfixes]
+        - Se escapean los & de las URLs asociadas a niveles taxonómios, para que no se caiga el XML al exportar
+    [files]
+        /cgi-cpn/prontus_tax_export_real.cgi
+
