@@ -507,10 +507,10 @@ sub validarVar {
         };
     };
 
-    # Los parámetros no pueden tener " o '
+    # Los parámetros no pueden tener '
     if ($var eq 'FFMPEG_PARAMS') {
-        if ($item =~ /["|']/) {
-            &glib_html_02::print_json_result(0, "La variable FFMPEG_PARAMS tiene datos inválidos. No puede contener caracteres como \" o '.", 'exit=1,ctype=1');
+        if ($item =~ /'/) {
+            &glib_html_02::print_json_result(0, "La variable FFMPEG_PARAMS tiene datos inválidos. No puede contener el caracter '.", 'exit=1,ctype=1');
         };
     };
 

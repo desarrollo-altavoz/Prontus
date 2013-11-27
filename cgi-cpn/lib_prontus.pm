@@ -2081,8 +2081,8 @@ sub load_config {
     $prontus_varglb::FOTO_MAX_PIXEL = $2;
   };
 
-  if ($buffer =~ m/\s*FFMPEG_PARAMS\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FFMPEG_PARAMS = $2;
+  if ($buffer =~ m/\s*FFMPEG_PARAMS\s*=\s*'(.*?)'/) {
+    $prontus_varglb::FFMPEG_PARAMS = $1;
   };
 
   # El valor por defecto es vacio
