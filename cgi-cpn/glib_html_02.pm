@@ -47,6 +47,7 @@ use JSON;
 sub text2html {
   # Escapea texto para ponerlo en pag html.
   my $toencode = $_[0];
+  no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
   $toencode=~s/&([^#][^0-9]+)/&amp;\1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
   $toencode=~s/>/&gt;/g;              # >
   $toencode=~s/"/&quot;/g;            # " # 8.0
