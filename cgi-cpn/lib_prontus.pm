@@ -1949,21 +1949,21 @@ sub load_config {
   # Varnish purge
   %prontus_varglb::VARNISH_SERVER_NAME = ();
   my $varnish_server_name;
-  while ($buffer =~ m/\s*VARNISH\_SERVER\_NAME\s*=\s*("|')(.+?)("|')/g) {
+  while ($buffer =~ m/\s*VARNISH\_SERVER\_NAME\s*=\s*("|')(.*?)\1/g) {
      $varnish_server_name = $2;
      $prontus_varglb::VARNISH_SERVER_NAME{$varnish_server_name} = 1;
   };
 
   # Varnish global purge
   my $varnish_global_purge;
-  while ($buffer =~ m/\s*VARNISH_GLOBAL_PURGE\s*=\s*("|')(.+?)("|')/sg) {
+  while ($buffer =~ m/\s*VARNISH_GLOBAL_PURGE\s*=\s*("|')(.*?)\1/sg) {
      $varnish_global_purge = $2;
   };
   $prontus_varglb::VARNISH_GLOBAL_PURGE = $varnish_global_purge;
 
   # clustering servers    # CLUSTERING_SERVER = '192.168.1.6(cluster1000)(passcluster1)'
   my $num_server;
-  while ($buffer =~ m/\s*CLUSTERING\_SERVER\s*=\s*("|')(.+?)\((.+?)\)\((.+?)\)("|')/g) {
+  while ($buffer =~ m/\s*CLUSTERING\_SERVER\s*=\s*("|')(.+?)\((.+?)\)\((.+?)\)\1/g) {
      $num_server++;
      $prontus_varglb::CLUSTERING_SERVER{$num_server}{'ip'} = $2;
      $prontus_varglb::CLUSTERING_SERVER{$num_server}{'user'} = $3;
