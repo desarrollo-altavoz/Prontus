@@ -7189,8 +7189,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Faltaba referencia a lib_captcha.pm
         - Se cambia el orden de la validación del captcha, después de caragar la configuracion, para que el mensaje de error venga con la plantilla.
+    [mejora]
         - Se habilita la opción de setear plantilla de error para el captcha y otros errores, con la variable: _ERROR_PLANTILLA
           del CFG. Si esta variable no viene, se usa la plantilla de mensaje normal
+        - Se homologa mismo formato de mensajes que en el prontus FORM, vale decir, se escribe archivo a disco y luego se hace un "Location"
+          Con esto se consigue que las plantillas de respuesta y error, puedan ejecutar PHP, SSI, etc...
+          Las páginas quedan en: /<prontus_id>/site/cache/posting/pags/
     [files]
         /cgi-bin/prontus_art_posting.cgi
 

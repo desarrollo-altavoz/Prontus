@@ -87,11 +87,15 @@ use lib_captcha2;
 use lib_ipcheck;
 use lib_artic;
 use lib_maxrunning;
+use lib_form;
 
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
 my (%CONFIG_POSTING, $ARTIC_OBJ);
+
+my $CACHE_DIR = 'site/cache/posting'; # /pags-vvv Directorio de las paginas generadas.
+my $ANSWERS_DIR;
 
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(4)) {
@@ -157,6 +161,18 @@ sub main {
     # Asigna valores por defecto a vars de cfg de posting.
     &load_default_posting_params();
 
+    # Define directorio de las respuestas y la identificacion de esta.
+    $ANSWERS_DIR = "/$FORM{'_NP'}/$CACHE_DIR";
+    print STDERR "ANSWERS_DIR[$ANSWERS_DIR]\n";
+    if (! (-d "$prontus_varglb::DIR_SERVER$ANSWERS_DIR") ) {
+        if (&glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$ANSWERS_DIR") == 0) {
+            &make_resp_and_exit("No se puede crear directorio de respuestas [$ANSWERS_DIR].", 1);
+        };
+    };
+
+    # Limpia el directorio de archivos temporales.
+    &lib_form::garbage_collection("$prontus_varglb::DIR_SERVER$ANSWERS_DIR");
+
     # CVI - Cambio para Posting Batch
     $FORM{'_MODE'} = &glib_cgi_04::param('_MODE'); # 'batch' | <anything>
 
@@ -174,10 +190,7 @@ sub main {
         &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
         my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
         if ($msg_err_captcha ne '') {
-            my $resp = &make_resp($msg_err_captcha, 1);
-            print "Content-Type: text/html\n\n";
-            print $resp;
-            exit;
+            &make_resp_and_exit($msg_err_captcha, 1);
         };
     };
 
@@ -204,9 +217,7 @@ sub main {
         print "Content-Type: text/plain\n\n";
         print '1';
     } else {
-        my $resp = &make_resp(&param('_msg_ok'));
-        print "Content-Type: text/html\n\n";
-        print $resp;
+        &make_resp_and_exit(&param('_msg_ok'));
     };
 
 };
@@ -222,17 +233,6 @@ sub crear_objeto_artic {
                            # y complementados con la conf de posting.
     my %hash_datos;
     foreach $nom_campo (sort {$a cmp $b} @campos) {
-
-        # Para el caso de posting, validar extensiones de archivos a subir.
-        # Ya no es necesario validar aca porque Prontus lo valida internamente
-        # if (&glib_cgi_04::real_paths($nom_campo) ne '') { # Es un archivo.
-            # my $upload_filename = &glib_cgi_04::real_paths($nom_campo);
-            # if ($upload_filename !~ /(\.pdf|\.doc|\.docx|\.rtf|\.xls|\.xlsx|\.zip|\.rar|\.jpg|\.jpeg|\.gif|\.png|\.bmp|\.txt|\.ppt|\.pptx)$/i) {
-                # my $resp = &make_resp('El tipo de archivo que est&aacute; intentando subir no es v&aacute;lido');
-                # print "Content-Type: text/html\n\n";
-                # print $resp;
-            # };
-        # };
 
         # Al obj artic se le pasan los campos en minusculas
         my $nom_lc = lc $nom_campo;
@@ -333,58 +333,75 @@ sub load_config_posting {
 
 };
 # ---------------------------------------------------------------
-sub make_resp {
-  # Genera respuesta.
-  my $msg = $_[0];
-  my $error = $_[1];
+sub make_resp_and_exit {
+    # Genera respuesta.
+    my $msg = $_[0];
+    my $error = $_[1];
 
-  my $plt = '';
-  my $plterror = &param('_error_plantilla');
-  if($error && $plterror) {
-    $plt = $plterror;
-  } else {
-    $plt = &param('_msg_plantilla');
-  };
-  my $path_plt = "$prontus_varglb::DIR_SERVER/$FORM{'_NP'}/plantillas/extra/posting/pags/" . $plt;
+    my $plt = '';
+    my $plterror = &param('_error_plantilla');
+    if($error && $plterror) {
+        $plt = $plterror;
+    } else {
+        $plt = &param('_msg_plantilla');
+    };
+    my $path_plt = "$prontus_varglb::DIR_SERVER/$FORM{'_NP'}/plantillas/extra/posting/pags/" . $plt;
 
-  my $buffer;
-  #~ print STDERR "path_plt[$path_plt]\n";
-  if (-f $path_plt) {
-    $buffer = &glib_fildir_02::read_file($path_plt);
-  };
+    my $buffer;
+    #~ print STDERR "path_plt[$path_plt]\n";
+    if (-f $path_plt) {
+        $buffer = &glib_fildir_02::read_file($path_plt);
+    };
 
-  if ($buffer) {
-    my $marca = &param('_msg_marca');
-    $buffer =~ s/$marca/$msg/ig;
-  }
-  else {
-    $buffer = $msg;
-  };
-  return $buffer;
+    if ($buffer) {
+        my $marca = &param('_msg_marca');
+        $buffer =~ s/$marca/$msg/ig;
+    } else {
+        $buffer = $msg;
+    };
+
+    my $answerid = $prontus_varglb::PRONTUS_ID . $TS . time . $$; # rand(1000000000);
+    my $extension = &lib_prontus::get_file_extension($path_plt);
+
+    # Escribe el archivo de respuesta.
+    my $archivo = "$ANSWERS_DIR/$answerid\.$extension";
+    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$archivo")
+            || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";
+
+    print STDERR "archivo[$prontus_varglb::DIR_SERVER$archivo]\n";
+
+    #binmode(ARCHIVO, ":utf8");
+    print ARCHIVO $buffer; #Escribe buffer completo
+    close ARCHIVO;
+
+    # Redirige al visitante hacia la pagina de respuesta.
+    print "Location: $archivo\n\n";
+    exit;
+
 };
 # ---------------------------------------------------------------
 sub param {
-  # Obtiene dato del hash del cfg de posting y si no existe,
-  # entonces lo saca de los submitidos.
-  my $key = $_[0];
-  if ($key) {
-    if ($CONFIG_POSTING{lc $key}) {
-      return $CONFIG_POSTING{lc $key};
+    # Obtiene dato del hash del cfg de posting y si no existe,
+    # entonces lo saca de los submitidos.
+    my $key = $_[0];
+    if ($key) {
+      if ($CONFIG_POSTING{lc $key}) {
+        return $CONFIG_POSTING{lc $key};
+      }
+      else {
+        return '' if (uc $key eq '_ALTA'); # NO PERMITE QUE VENGA EL _ALTA POR PARAMETRO.
+        return '' if (uc $key eq '_VB'); # NO PERMITE QUE VENGA EL _VB POR PARAMETRO.
+        return &glib_cgi_04::param($key);
+      };
     }
     else {
-      return '' if (uc $key eq '_ALTA'); # NO PERMITE QUE VENGA EL _ALTA POR PARAMETRO.
-      return '' if (uc $key eq '_VB'); # NO PERMITE QUE VENGA EL _VB POR PARAMETRO.
-      return &glib_cgi_04::param($key);
+      my @campos = &glib_cgi_04::param();
+      my $k;
+      foreach $k (keys %CONFIG_POSTING) {
+        push @campos, $k if (!exists $glib_cgi_04::FORM{$k});
+      };
+      return @campos;
     };
-  }
-  else {
-    my @campos = &glib_cgi_04::param();
-    my $k;
-    foreach $k (keys %CONFIG_POSTING) {
-      push @campos, $k if (!exists $glib_cgi_04::FORM{$k});
-    };
-    return @campos;
-  };
 
 };
 # ---------------------------------------------------------------
