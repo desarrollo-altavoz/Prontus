@@ -163,7 +163,7 @@ sub main {
 
     # Define directorio de las respuestas y la identificacion de esta.
     $ANSWERS_DIR = "/$FORM{'_NP'}/$CACHE_DIR";
-    print STDERR "ANSWERS_DIR[$ANSWERS_DIR]\n";
+    #~ print STDERR "ANSWERS_DIR[$ANSWERS_DIR]\n";
     if (! (-d "$prontus_varglb::DIR_SERVER$ANSWERS_DIR") ) {
         if (&glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$ANSWERS_DIR") == 0) {
             &make_resp_and_exit("No se puede crear directorio de respuestas [$ANSWERS_DIR].", 1);
@@ -314,7 +314,7 @@ sub load_config_posting {
   # Carga config de posting.
   my $path_cfg = "$prontus_varglb::DIR_SERVER/$FORM{'_NP'}/cpan/$FORM{'_NP'}-posting.cfg";
   my $buffer = &glib_fildir_02::read_file($path_cfg);
-  print STDERR "path_cfg [$path_cfg]\n";
+  #~ print STDERR "path_cfg [$path_cfg]\n";
   return 0 if (!$buffer);
 
   my $idf = $FORM{'_IDF'}; # id del form de posting
@@ -322,7 +322,7 @@ sub load_config_posting {
     my $data = $1;
     while ($data =~ / *([\w\-]+) *= *("|')(.*?)("|')/isg) {
       my ($clave, $valor) = ($1, $3);
-      print STDERR "$clave [$valor]\n";
+      #~ print STDERR "$clave [$valor]\n";
       $CONFIG_POSTING{lc $clave} = $valor;
     };
   }
@@ -368,7 +368,7 @@ sub make_resp_and_exit {
     open (ARCHIVO,">$prontus_varglb::DIR_SERVER$archivo")
             || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";
 
-    print STDERR "archivo[$prontus_varglb::DIR_SERVER$archivo]\n";
+    #~ print STDERR "archivo[$prontus_varglb::DIR_SERVER$archivo]\n";
 
     #binmode(ARCHIVO, ":utf8");
     print ARCHIVO $buffer; #Escribe buffer completo
