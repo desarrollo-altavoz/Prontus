@@ -1,4 +1,29 @@
 ====================================================================================================
+11.2.72 - 28/11/2013
+====================================================================================================
+- notice: Multimedia Externa: Se cambia el concepto muiltimedia externa, para alojar y considerar sólo Audios y Videos.
+- bugfix: Se evita que el Prontus arroje error 500 al querdar mal cerrada un MACRO.
+- bugfix: Se corrige codificación de un mensaje de error cuando el Tipo de artículos no es válido
+- bugfix: Al ser perfil Editor, en el fid, no se estaba mostrando la pestaña de Categorías
+- bugfix: Al seleccionar un fid como "Inicial", se repetía la variable FORM_PLTS para ese fid
+- bugfix: Se corrige error en regexp al leer VARNISH_GLOBAL_PURGE. Cuando era vacío, tomaba valores basura.
+- bugfix: Se cambian validaciones de FFMPEG_PARAMS, para que acepte comillas dobles.
+- bugfix: Se corrige pequeño issue al usar freeBSD sin quota. (usado en Dirac Minrel)
+- changes: Se cambia el usleep entre páginas a 500.000us en las taxport
+- improvement: Captcha: Se agrega "pooling" con sleep de 3 segundos, máximo 3 ciclos, al chequear instancias en ejecución.
+- improvement: Se sube el máximo de instancias corriendo a 500 de prontus_captcha.cgi
+- improvement: Captcha: Se cambian parámetros para archivos máximos de sesion (captcha antiguo) y antiguedad maxima
+- bugfix: Posting de Contenido: Faltaba referencia a lib_captcha.pm
+- bugfix: Se corrige validación del captcha, para que el mensaje de error venga con la plantilla.
+- improvement: Posting de Contenido: Se habilita la opción de setear plantilla de error con la variable: _ERROR_PLANTILLA
+- improvement: Posting de Contenido: Se homologa formato de mensajes del prontus FORM, para que las plantillas de respuesta, puedan ejecutar PHP, SSI, etc...
+- changes: Se comienza a usar Digest::SHA en vez de Digest::SHA1, ya que este modulo figura como Módulo del Core, por lo que es más comun que esté instalado
+- bugfix: Se escapean los & de las URLs asociadas a niveles taxonómios, para que no se caiga el XML al exportar taxonomía
+- bugfix: Si un archivo se llamaba igual, pero en rutas distintas, se marcaba como "activo" en el arbol del Editor de Archivos
+- improvement: Se agrega link a editar el artículo desde el listado de Comentarios
+- improvement: Se ajustan los anchos de las columnas del listado de Comentarios, para que los elementos se distribuyan mejor
+
+====================================================================================================
 11.2.71 - 07/11/2013
 ====================================================================================================
 - notice: Se habilitan LOOPS dentro de los artículos para generar marcas recursivas. Mas info en Manual de Desarrollo
