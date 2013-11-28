@@ -61,14 +61,14 @@ var Editor = {
             });
             return false;
         });
-        
+
         // Para el scroll del arbol de directorios
         var tipo = Cookies.readCookie('prontus-editor-scroll');
         if(tipo != 'normal') {
             tipo = 'scroll';
         }
         Editor.setScrollArbol(tipo);
-        
+
         $('a.link-scroll').click(function() {
             var tipo = $(this).attr('href');
             if(tipo == '#arbol-scroll') {
@@ -77,7 +77,7 @@ var Editor = {
                 Editor.setScrollArbol('normal');
             }
         });
-        
+
     },
     // -------------------------------------------------------------------------
     setScrollArbol: function(ahora) {
@@ -92,7 +92,7 @@ var Editor = {
         Cookies.createCookie('prontus-editor-scroll', ahora);
         $('.link-scroll').hide();
         $('.tipo-'+antes).show();
-        
+
     },
     // -------------------------------------------------------------------------
     initEditor: function() {
@@ -301,9 +301,16 @@ var Editor = {
         if(typeof file === 'undefined' || typeof file === '') {
             return;
         }
+        // Se valida que estemos en el mismo directorio
+        var currdir = $('#_curr_dir').val();
+        var path =  Editor.extractPath(file);
+        console.log('path: '+path);
+        if(currdir != path) {
+            return;
+        }
+        // Se valida que el nombre de archivo coincida y se marca como selected
         var filename = Editor.extractFilename(file);
         $('#col-arbol .item').removeClass('selected').each(function() {
-            //alert($(this).text() +', '+ file);
             if($(this).text() == filename) {
                 $(this).addClass('selected');
             }
@@ -324,6 +331,19 @@ var Editor = {
         return filename;
     },
 
+    // -------------------------------------------------------------------------
+    extractPath: function(file) {
+
+        var path = '';
+        if(typeof file === 'undefined' || typeof file === '') {
+            return path;
+        }
+        var lastIdx = file.lastIndexOf('/');
+        if(lastIdx >= 0) {
+            path = file.substr(0, lastIdx);
+        }
+        return path;
+    },
     // -------------------------------------------------------------------------
     getParam: function (theurl, nom) {
         if(typeof theurl === 'undefined' || typeof theurl === '' || typeof nom === 'undefined' || typeof nom === '') {
@@ -441,7 +461,7 @@ var Editor = {
         SubmitForm.submitGenericAjax(config, opts);
 
     },
-    
+
     // -------------------------------------------------------------------------
     accionCopiar: function() {
         //document.forms[0].curr_dir.value = parent.frames[0].document.forms[0].curr_dir.value;
@@ -451,7 +471,7 @@ var Editor = {
         }
         var actual_file = actual.substr(actual.lastIndexOf('/')+1, actual.length - actual.lastIndexOf('/')+1);
         var actual_dir = actual.substr(0, actual.lastIndexOf('/')+1);
-        
+
         var param = prompt("Ingrese el nuevo nombre del archivo a copiar:\n(El archivo se copiará en el directorio actual)", "");
         if ((param === null) || !Editor.validFileName(param)) {
             return false;
@@ -465,13 +485,13 @@ var Editor = {
                 return false;
             }
         }
-        
+
         if(Editor.loading) {
             return;
         }
         Editor.loading = true;
         Editor.muestraAcciones(false);
-        
+
         $('#nom_new_file').val(param);
         var dir = $('#_curr_dir').val();
         var config = {
@@ -588,7 +608,7 @@ var Editor = {
         var dir = $('#_curr_dir').val();
         var newdir = dir + '/' + param;
         newdir = newdir.replace('//', '/');
-        
+
         $('#nom_new_file').val(param);
         $('#sbm_accion').val('CrearDir');
 
