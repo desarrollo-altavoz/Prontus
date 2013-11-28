@@ -171,6 +171,17 @@ main: {
 sub generar_listado {
   # Generar pagina final (loopeando una fila modelo)
   my $pagina = &glib_fildir_02::read_file("$coment_varglb::DIR_SERVER/$FORM{'_prontus_id'}$CPAN_LIST_PAG");
+
+  my $pathconf = "/$FORM{'_prontus_id'}/cpan/$FORM{'_prontus_id'}.cfg";
+  $pagina =~ s/%%_path_conf%%/$pathconf/isg;
+
+  # CVI - 28/11/2013
+  my $open_fid_in_pop = 'open_normally';
+  if($prontus_varglb::ABRIR_FIDS_EN_POP eq 'SI') {
+      $open_fid_in_pop = 'open_in_pop';
+  }
+  $pagina =~ s/%%_class_open_fid%%/$open_fid_in_pop/ig;
+
   $pagina =~ /<!--LOOP-->(.*?)<!--\/LOOP-->/isg;
   $LOOP = $1;
 
@@ -280,6 +291,8 @@ sub make_lista {
        . "COMENT_TEXTO, "
        . "COMENT_NICK, "
        . "COMENT_EMAIL, "
+       . "ART_EXTENSION, "
+       . "ART_TIPOFICHA, "
        . "ART_IDSECC1, "
        . "ART_IDTEMAS1, "
        . "ART_IDSUBTEMAS1 "
@@ -300,6 +313,8 @@ sub make_lista {
            $hash_data{'COMENT_TEXTO'},
            $hash_data{'COMENT_NICK'},
            $hash_data{'COMENT_EMAIL'},
+           $hash_data{'ART_EXTENSION'},
+           $hash_data{'ART_TIPOFICHA'},
            $hash_data{'ART_IDSECC1'},
            $hash_data{'ART_IDTEMAS1'},
            $hash_data{'ART_IDSUBTEMAS1'}
@@ -340,6 +355,7 @@ sub generar_fila {
   if ($hash_data{'COMENT_ID'}) {
     # Armar la fila.
     $hash_data{'COMENT_DATETIME'} = &lib_coment::print_date_and_time($hash_data{'COMENT_DATETIME'});
+    $hash_data{'COMENT_DATETIME'} =~ s/ - /<br>/;
     $fila =~ s/%%COMENT_DATETIME%%/$hash_data{'COMENT_DATETIME'}/ig;
 
     # Tipo obj
@@ -374,7 +390,7 @@ sub generar_fila {
     # ver solo opin. de este item
     # my $lnk_vermas = "<a href=\"/cgi-cpn/coment/coment_admin.cgi?OBJID=$hash_data{'COMENT_OBJID'}\"><img src=\"/coment/cpan/imag/ver.gif\" width=\"23\" height=\"14\" border=\"0\" /></a>";
     # my $lnk_vermas = "<a href=\"/cgi-cpn/coment/coment_admin.cgi?OBJTIPO=$hash_data{'COMENT_OBJTIPO'}&OBJID=$hash_data{'COMENT_OBJID'}\"><div class=\"vermas\"></div></a>";
-    my $lnk_vermas = "<a title=\"Ver m&aacute;s\" href=\"coment_admin.cgi?OBJTIPO=$hash_data{'COMENT_OBJTIPO'}&amp;OBJID=$hash_data{'COMENT_OBJID'}&amp;_prontus_id=$FORM{'_prontus_id'}\"><span class=\"vermas\"></span></a>";
+    my $lnk_vermas = "<a title=\"Ver m&aacute;s comentarios de este art&iacute;culo\" href=\"coment_admin.cgi?OBJTIPO=$hash_data{'COMENT_OBJTIPO'}&amp;OBJID=$hash_data{'COMENT_OBJID'}&amp;_prontus_id=$FORM{'_prontus_id'}\"><span class=\"vermas\"></span></a>";
     $fila =~ s/%%LNK_VERMAS%%/$lnk_vermas/ig;
 
     # status
@@ -393,6 +409,20 @@ sub generar_fila {
     # $fila =~ s/%%LNK_BORRAR%%/$lnk_del/ig;
 
     $VERTITLE = $hash_data{'COMENT_OBJTIT'};
+
+    if($hash_data{'ART_TIPOFICHA'}) {
+      my $ts_ext = $hash_data{'COMENT_OBJID'}.'.'.$hash_data{'ART_EXTENSION'};
+      my $fid = $hash_data{'ART_TIPOFICHA'};
+
+      $fila =~ s/%%_ts_ext%%/$ts_ext/ig;
+      $fila =~ s/%%_fid%%/$fid/ig;
+
+      no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
+      $fila =~ s/<!--coment_link_editar-->(.*?)<!--\/coment_link_editar-->/\1/isg;
+
+    } else {
+      $fila =~ s/<!--coment_link_editar-->(.*?)<!--\/coment_link_editar-->//isg;
+    }
 
   }else {
     # Armar la fila sin datos.

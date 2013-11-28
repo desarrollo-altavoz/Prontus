@@ -7248,4 +7248,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_indexer.cgi
         /cgi-cpn/prontus_varglb.pm
 
-
+- Comentarios
+    [mejoras]
+        - Se agrega link a editar el artículo desde el listado de Comentarios
+        - Se ajustan los anchos de las columnas para que los elementos se distribuyan mejor
+    [files]
+        /cgi-cpn/coment/coment_admin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/coment/coment_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/css/coment.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Coment.class.js

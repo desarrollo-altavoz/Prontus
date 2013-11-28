@@ -4,7 +4,7 @@
     <title>Administrar comentarios &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
-    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/coment.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/coment.css?v2" />
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
 
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/dir_cgi.js"></script>
@@ -16,6 +16,12 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Coment.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            Coment.init();
+        });
+    </script>
   </head>
   <body class="bodysite">
 
@@ -81,11 +87,11 @@
                 <div class="col960">
 
                   <div class="rotulo">
-                    <div class="col0 aleft">&nbsp;&nbsp;Fecha/Hora</div>
+                    <div class="col0 aleft">Fecha/Hora</div>
                     <div class="col1 aleft">Titular</div>
                     <div class="col2 aleft">Comentario</div>
-                    <div class="col4 aleft">Nick</div>
-                    <div class="col5 aleft">Email</div>
+                    <div class="col3 aleft">Nick / Email</div>
+                    <div class="col4 aleft"></div>
                   </div>
 
                   <ul>
@@ -101,15 +107,22 @@
                         <div class="col2 aleft">
                           %%COMENT_TEXTO%%<br/>
                         </div>
-                        <div class="col4 aleft">%%COMENT_NICK%%</div>
-                        <div class="col5 aleft">%%COMENT_EMAIL%%</div>
                         <div class="col3 aleft">
+                            <b>%%COMENT_NICK%%</b><br>
+                            %%COMENT_EMAIL%%
+                        </div>
+                        <div class="col4 aleft">
                           <div class="fila_loading" style="display: none;">
                             <img src="/%%_prontus_id%%/cpan/core/imag/loading_button.gif" alt="loading"/>
                           </div>
+                          <!--coment_link_editar-->
+                          <a href="../prontus_art_ficha.cgi?_file=%%_ts_ext%%&_fid=%%_fid%%&_path_conf=%%_path_conf%%&fotosvtxt=/1/2/3/4" class="editar_item %%_class_open_fid%%">
+                              <img src="/%%_prontus_id%%/cpan/core/imag/boto/editar.png" width="18" height="18" alt="Editar artículo" title="Editar artículo" /></a>
+                          <!--/coment_link_editar-->
                           %%LNK_VERMAS%%
                           <a href="#" onclick="Coment.toggleSt(this, '%%COMENT_ID%%'); return false;"><img class="status" src="/%%_prontus_id%%/cpan/core/imag/boto/%%status%%.png" width="18" height="18" alt="%%status%%" title="Aprobar comentario" /></a>
                           <a href="#" onclick="Coment.borrar(this, '%%COMENT_ID%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/borrar.png" width="18" height="18" alt="borrar" title="Borrar comentario" /></a>
+
                         </div>
                     </div>
                    </li>
