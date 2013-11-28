@@ -136,7 +136,7 @@ sub make_lista {
         my $loop_counter = 0;
         while ($salida->fetch) {
                 my $loop_tmp = $loop;
-                my $lafoto = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/' . $dir_fecha . '/imag/' . $asset_file;
+                my $lafoto = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha . '/imag/' . $asset_file;
 
                 my ($sizex, $sizey) = &lib_dam::get_proporcion_imagen(610,450, $asset_art_fotow, $asset_art_fotoh);
 

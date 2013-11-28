@@ -200,9 +200,9 @@ sub _set_dirs {
     $this->{dst_xml}        = "$this->{dst_base}/xml";
     $this->{dst_pags}       = "$this->{dst_base}/pags";
     $this->{dst_pagspar}    = "$this->{dst_base}/pagspar";
-    $this->{dst_asocfile}   = "$this->{dst_base_mm}/asocfile/$this->{ts}";
-    $this->{dst_foto}       = "$this->{dst_base_mm}/imag";
-    $this->{dst_swf}        = "$this->{dst_base_mm}/swf";
+    $this->{dst_asocfile}   = "$this->{dst_base}/asocfile/$this->{ts}";
+    $this->{dst_foto}       = "$this->{dst_base}/imag";
+    $this->{dst_swf}        = "$this->{dst_base}/swf";
     $this->{dst_multimedia} = "$this->{dst_base_mm}/mmedia";
 
     $this->{pathdir_plt} = $this->{document_root}

@@ -98,7 +98,7 @@ main: {
                                                                        $plantilla);
 
 
-  my $image_path = "/$prontus_varglb::PRONTUS_ID/site/$prontus_varglb::DIR_EXMEDIA/$dirfecha$prontus_varglb::DIR_IMAG/$FORM{'foto'}";
+  my $image_path = "/$prontus_varglb::PRONTUS_ID/site/$prontus_varglb::DIR_ARTIC/$dirfecha$prontus_varglb::DIR_IMAG/$FORM{'foto'}";
   if(!(-f $prontus_varglb::DIR_SERVER . $image_path)) {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("Error","La imagen no es válida");

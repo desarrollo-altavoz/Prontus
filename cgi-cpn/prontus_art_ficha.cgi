@@ -1099,17 +1099,17 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         next if (lc $nom_campo eq 'foto_n'); # --> producto de un prb en la glib es posible que hayan fotos fantasma en el xml
         $nom_foto = $2;
 
-        $bytes_foto = -s $base_path_mm . $prontus_varglb::DIR_IMAG . "/$nom_foto";       # 1.9
+        $bytes_foto = -s $base_path . $prontus_varglb::DIR_IMAG . "/$nom_foto";       # 1.9
         $size_total += $bytes_foto;
         my $kbytes_foto = &lib_prontus::bytes2kb($bytes_foto, 0);
 
         # my ($reemp) = "<img src=\"$prontus_varglb::DIR_CORE/imag/cpan/reemp_of.gif\" style=\"border:0\;width:16\;heigth:16\;\" alt=\"Reemplazar por nueva imagen\" />";
         #~ $relpath_foto = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_IMAG . "/$nom_foto";
 
-        # JOR - 02/03/2011 - Agrega parámetro al azar para evitar cache del browser.
+        # JOR - 02/03/2011 - Agrega parametro al azar para evitar cache del browser.
         # $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/$nom_foto" . "?" . rand(1000);
         # CVI - 10/03/2011 - Se cambia sistema para evitar cache del browser, aplicando el random al nombre de la foto
-        $relpath_foto = $relbase_path_mm . $prontus_varglb::DIR_IMAG . "/" . $nom_foto;
+        $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/" . $nom_foto;
 
         # Se parsean los campos principales
         my $bufferBancoImg = $moldeBancoImg;
@@ -1208,7 +1208,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $valor_campo = $1;
       };
       # warn "nom_campo[$nom_campo] - valor_campo[$valor_campo] path[$base_path$prontus_varglb::DIR_IMAG]";
-      if ($valor_campo =~ /$relbase_path_mm$prontus_varglb::DIR_IMAG\/(foto_\w+)\d{14}/i)  {
+      if ($valor_campo =~ /$relbase_path$prontus_varglb::DIR_IMAG\/(foto_\w+)\d{14}/i)  {
         my $nom_foto_fija = $1;
         # warn "nom_foto_fija[$nom_foto_fija]";
         my $foto_fija_aux = $fotos_icono{$nom_foto_fija};
@@ -1263,9 +1263,9 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     elsif ($nom_campo =~ /^ASOCFILE_\w+/i) {
 
       $nom = $valor_campo;
-      $relpath_af = $relbase_path_mm . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
+      $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
 
-      my $bytes = -s $base_path_mm . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
+      my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
       $size_total += $bytes;
       my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
       $valor_campo = '<a href="' . $relpath_af . '" target="_blank">' . $nom . '</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">Borrar</label> <input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />'; # 7.0
@@ -1277,9 +1277,9 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     # Rescatar htmlfiles
     elsif ($nom_campo =~ /^HTMLFILE_\w+/i) {
       $nom = $valor_campo;
-      $relpath_af = $relbase_path_mm . $prontus_varglb::DIR_ASOCFILE . "/$nom";
+      $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
 
-      my $bytes = -s $base_path_mm . $prontus_varglb::DIR_ASOCFILE . "/$nom";
+      my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
       $size_total += $bytes;
 
       $valor_campo = '<a href="' . $relpath_af . '" target="_blank">Ver HTMLFILE actual</a>&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />'; # 7.0
@@ -1292,9 +1292,9 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     # Rescatar swf
     elsif ($nom_campo =~ /^SWF_\w+/isg) {
       $nom = $valor_campo;
-      $relpath_swf = $relbase_path_mm . $prontus_varglb::DIR_SWF . "/$nom";
+      $relpath_swf = $relbase_path . $prontus_varglb::DIR_SWF . "/$nom";
 
-      my $bytes = -s $base_path_mm . $prontus_varglb::DIR_SWF . "/$nom";
+      my $bytes = -s $base_path . $prontus_varglb::DIR_SWF . "/$nom";
       $size_total += $bytes;
       my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
       $valor_campo = '<a href="' . $relpath_swf . '" target="_blank">Swf actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '"/>';
@@ -1302,7 +1302,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
       # ---- Imprime advertencia en rojo en caso de que el peso de la swf exceda el limite establecido.
       # El limite se establece por c/swf en el formulario, de la forma <!--SWF1_MAXBYTES=1500-->.
-      $bytes_swf = -s $base_path_mm . $prontus_varglb::DIR_SWF . "/$nom";
+      $bytes_swf = -s $base_path . $prontus_varglb::DIR_SWF . "/$nom";
       $maxbytes = 0;
       if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
         $maxbytes = $1;

@@ -169,16 +169,16 @@ my($id, $cod, @campos);
   $DST_PAG = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_PAG;
 
   # Path absoluto a Directorio destino de las imagenes.
-  $DST_IMG = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_IMAG;
+  $DST_IMG = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_IMAG;
 
   # Path absoluto a Directorio destino de las swf. # 8.0
-  $DST_SWF = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_SWF;
+  $DST_SWF = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_SWF;
 
   # Path absoluto a Directorio destino de los archivos windowsmedia. # 8.1
   $DST_WMEDIA = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_MMEDIA;
 
   # Path absoluto a Directorio destino de los archivos gericos asociados. # 1.2
-  $DST_ASOCFILE = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_ASOCFILE;
+  $DST_ASOCFILE = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_ASOCFILE;
 
   return 1;
 };

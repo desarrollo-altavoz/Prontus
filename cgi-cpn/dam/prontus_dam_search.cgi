@@ -373,7 +373,7 @@ sub generar_fila {
             foreach my $values_string (@asset_list) {
                 my $loop_foto_tmp = $loop_foto;
                 my ($asset_file, $asset_width, $asset_height, $asset_search_texto, $asset_search_foto) = split(/\|/, $values_string);
-                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/' . $dir_fecha . '/imag/' . $asset_file;
+                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha . '/imag/' . $asset_file;
                 my $path_img_dam = $path_img;
                 $path_img_dam =~ s/(\.\w+)$/\.dam\1/;
 
@@ -408,8 +408,8 @@ sub generar_fila {
             };
 
         } elsif (($FORM{'asset_search_type'} eq 'video') || ($FORM{'asset_search_type'} eq 'audio')) {
-                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/' . $dir_fecha . '/imag/' . $hash_data{'ASSET_FILE'};
-                $path_asset = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . '/' . $dir_fecha
+                $path_img = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha . '/imag/' . $hash_data{'ASSET_FILE'};
+                $path_asset = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/' . $dir_fecha
                               . '/mmedia/' . $hash_data{'ASSET_FILE'};
 
                 $path_img_dam = $path_img;

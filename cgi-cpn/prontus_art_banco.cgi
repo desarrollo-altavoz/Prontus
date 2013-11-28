@@ -85,8 +85,8 @@ if ($FORM{'_ts'} =~ /^(\d{8})\d{6}$/) {
 # Cargar xml del articulo.
 my $xml_data = &get_xml_data();
 
-my $base_path = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . "/$DIR_FECHA";
-my $relbase_path = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . "/$DIR_FECHA";
+my $base_path = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$DIR_FECHA";
+my $relbase_path = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$DIR_FECHA";
 
 my %fotos_controls;
 my %fotos_icono;

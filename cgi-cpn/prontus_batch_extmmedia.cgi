@@ -82,15 +82,12 @@ main: {
     };
 
     my $dirprontusmm = $dirprontus;
-    if($dirprontusmm =~ s|/site/artic|/site/mm|) {
+    if($dirprontusmm =~ s|/site/artic|/site$prontus_varglb::DIR_EXMEDIA|) {
         &glib_fildir_02::check_dir($dirprontusmm);
     } else {
-        print "[error] No se pudo calcular la nueva carpeta dirprontusmm[$dirprontusmm]\n";
+        print "[error] No se pudo crear la nueva carpeta dirprontusmm[$dirprontusmm]\n";
         exit;
     };
-
-    # Se conecta a la BD
-    #~ &conectar_bd();
 
     # Primero se procesan los dias
     my @DIRFECHAS = &glib_fildir_02::lee_dir($dirprontus);
@@ -106,11 +103,6 @@ main: {
         };
     };
 
-    # Una vez finalizado todo, se corren algunos Post Procesos
-    #~ my $cgi_dam = "$prontus_varglb::DIR_SERVER$DIR_CGI_CPAN/dam/prontus_dam_regen_real.cgi";
-    #~ system("$cgi_dam $pathconf");
-    #~ print "[info] La tabla ASSET ha sido regenerada con las nuevas rutas\n";
-
     my $cgi_port = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_port_regen_real.cgi";
     #~ print "[info] Regenerando Portadas: $cgi_port $pathconf\n";
     system("$cgi_port $pathconf");
@@ -118,7 +110,7 @@ main: {
     print "[info] Las Portadas del sitio fueron regeneradas pero sin tocar los Post Procesos\n";
     print "[info] Ademas recuerde que las Portadas Taxonomicas NO fueron regeneradas\n";
 
-    print "[info] El proceso ha terminado terminado completamente\n";
+    print "[info] El proceso ha terminado completamente\n";
 };
 
 # --------------------------------------------------------------------------------------------------
@@ -126,20 +118,13 @@ sub procesa_carpeta {
 
     my $carpeta = shift;
     my $carpetamm = $carpeta;
-    $carpetamm =~ s|/site/artic|/site/mm|;
+    $carpetamm =~ s|/site/artic|/site$prontus_varglb::DIR_EXMEDIA|;
 
     #~ print STDOUT "\tcarpetamm[$carpetamm]\n";
     &glib_fildir_02::check_dir($carpetamm);
 
-    &glib_fildir_02::copy_tree($carpeta, 'asocfile', $carpetamm, 'asocfile');
-    &glib_fildir_02::copy_tree($carpeta, 'imag', $carpetamm, 'imag');
     &glib_fildir_02::copy_tree($carpeta, 'mmedia', $carpetamm, 'mmedia');
-    &glib_fildir_02::copy_tree($carpeta, 'swf', $carpetamm, 'swf');
-
-    &glib_fildir_02::borra_dir("$carpeta/asocfile");
-    &glib_fildir_02::borra_dir("$carpeta/imag");
     &glib_fildir_02::borra_dir("$carpeta/mmedia");
-    &glib_fildir_02::borra_dir("$carpeta/swf");
 
     # Se procesan los XML de esta carpeta
     my @XMLS = &glib_fildir_02::lee_dir("$carpeta/xml");
@@ -157,13 +142,9 @@ sub procesa_xml {
     my $ts_artic = substr($xml, 0, 14);
 
     my $buffer = &glib_fildir_02::read_file("$carpeta/xml/$xml");
-    my $flagchange = 0;
-    $flagchange = 1 if($buffer =~ s|/site/artic/(\d{8})/asocfile/|/site/mm/\1/asocfile/|g);
-    $flagchange = 1 if($buffer =~ s|/site/artic/(\d{8})/imag/|/site/mm/\1/imag/|g);
-    $flagchange = 1 if($buffer =~ s|/site/artic/(\d{8})/mmedia/|/site/mm/\1/mmedia/|g);
-    $flagchange = 1 if($buffer =~ s|/site/artic/(\d{8})/swf/|/site/mm/\1/swf/|g);
 
-    if($flagchange) {
+    no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
+    if($buffer =~ s|/site/artic/(\d{8})/mmedia/|/site$prontus_varglb::DIR_EXMEDIA/\1/mmedia/|g) {
         &glib_fildir_02::write_file("$carpeta/xml/$xml", $buffer);
         my $artic_obj = Artic->new(
                 'prontus_id'=> $prontus_varglb::PRONTUS_ID,
@@ -182,26 +163,3 @@ sub procesa_xml {
         };
     };
 };
-#~ # --------------------------------------------------------------------------------------------------
-#~ sub conectar_bd {
-#~
-    #~ my ($motor_bd, $nom_bd, $server_bd, $user_bd, $pwd_bd) = @_;
-#~
-    #~ # Se prueba si existe la conexion y esta abierta
-    #~ if (!ref($BD) || !$BD->ping) {
-#~
-        #~ $motor_bd   = $prontus_varglb::MOTOR_BD if ($motor_bd eq '');
-        #~ $nom_bd     = $prontus_varglb::NOM_BD if ($nom_bd eq '');
-        #~ $server_bd  = $prontus_varglb::SERVER_BD if ($server_bd eq '');
-        #~ $user_bd    = $prontus_varglb::USER_BD if ($user_bd eq '');
-        #~ $pwd_bd     = $prontus_varglb::PWD_BD if ($pwd_bd eq '');
-#~
-        #~ $BD = DBI->connect("DBI:mysql:$prontus_varglb::NOM_BD:$prontus_varglb::SERVER_BD", $prontus_varglb::USER_BD, $prontus_varglb::PWD_BD) ||
-                #~ return "Error: la base de datos '$prontus_varglb::NOM_BD' no existe o no se pudo conectar con ella, revise los parámetros de conexion en el .cfg del publicador o bien contacte al administrador del sistema.";
-#~
-        #~ if(!ref($BD)) {
-            #~ return 'Error: No se pudo conectar a la BD';
-        #~ }
-    #~ }
-    #~ return '';
-#~ };

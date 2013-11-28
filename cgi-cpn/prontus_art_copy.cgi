@@ -177,9 +177,9 @@ sub copia_archivos {
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac"));
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac/xml"));
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_PAG"));
-    $res = 0 unless(&glib_fildir_02::check_dir("$dir_base_mm/$newfechac$prontus_varglb::DIR_IMAG"));
-    $res = 0 unless(&glib_fildir_02::check_dir("$dir_base_mm/$newfechac$prontus_varglb::DIR_SWF"));
-    $res = 0 unless(&glib_fildir_02::check_dir("$dir_base_mm/$newfechac$prontus_varglb::DIR_ASOCFILE"));
+    $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_IMAG"));
+    $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_SWF"));
+    $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE"));
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base_mm/$newfechac$prontus_varglb::DIR_MMEDIA"));
     if(! $res) {
         &glib_html_02::print_json_result(0, "Error al crear los directorios", 'exit=1,ctype=1');
@@ -197,36 +197,36 @@ sub copia_archivos {
     }
 
     # Los archivos adjuntos
-    if(-d "$dir_base_mm/$oldfechac$prontus_varglb::DIR_ASOCFILE/$oldts") {
-        &glib_fildir_02::check_dir("$dir_base_mm/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
-        &glib_fildir_02::copy_tree("$dir_base_mm/$oldfechac$prontus_varglb::DIR_ASOCFILE", $oldts, "$dir_base_mm/$newfechac$prontus_varglb::DIR_ASOCFILE", $newts);
+    if(-d "$dir_base/$oldfechac$prontus_varglb::DIR_ASOCFILE/$oldts") {
+        &glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
+        &glib_fildir_02::copy_tree("$dir_base/$oldfechac$prontus_varglb::DIR_ASOCFILE", $oldts, "$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE", $newts);
         # Se renombran por si las moscas
-        my @asoc = &glib_fildir_02::lee_dir("$dir_base_mm/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
+        my @asoc = &glib_fildir_02::lee_dir("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
         foreach my $file (@asoc) {
             if($file =~ /^(.*?)$oldts(.*?)$/) {
                 my $newasoc = $1.$newts.$2;
-                &File::Copy::move("$dir_base_mm/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$file", "$dir_base_mm/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$newasoc");
+                &File::Copy::move("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$file", "$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$newasoc");
             }
         }
     }
 
     # Se copian las imagenes
-    my @imags = &glib_fildir_02::lee_dir("$dir_base_mm/$oldfechac$prontus_varglb::DIR_IMAG");
+    my @imags = &glib_fildir_02::lee_dir("$dir_base/$oldfechac$prontus_varglb::DIR_IMAG");
     foreach my $file (@imags) {
-        #~ print STDERR "testeando de $dir_base_mm/$oldfechac/imag/$file\n";
+        #~ print STDERR "testeando de $dir_base/$oldfechac/imag/$file\n";
         if($file =~ /^(.*?)$oldts(\.\w+)$/) {
             my $newimage = $1.$newts.$2;
-            &File::Copy::copy("$dir_base_mm/$oldfechac$prontus_varglb::DIR_IMAG/$file", "$dir_base_mm/$newfechac$prontus_varglb::DIR_IMAG/$newimage");
+            &File::Copy::copy("$dir_base/$oldfechac$prontus_varglb::DIR_IMAG/$file", "$dir_base/$newfechac$prontus_varglb::DIR_IMAG/$newimage");
 
         }
     }
 
     # Se copian los flashes
-    my @swf = &glib_fildir_02::lee_dir("$dir_base_mm/$oldfechac$prontus_varglb::DIR_SWF");
+    my @swf = &glib_fildir_02::lee_dir("$dir_base/$oldfechac$prontus_varglb::DIR_SWF");
     foreach my $file (@swf) {
         if($file =~ /^(.*?)$oldts(\.\w+)$/) {
             my $newswf = $1.$newts.$2;
-            &File::Copy::copy("$dir_base_mm/$oldfechac$prontus_varglb::DIR_SWF/$file", "$dir_base_mm/$newfechac$prontus_varglb::DIR_SWF/$newswf");
+            &File::Copy::copy("$dir_base/$oldfechac$prontus_varglb::DIR_SWF/$file", "$dir_base/$newfechac$prontus_varglb::DIR_SWF/$newswf");
         }
     }
 

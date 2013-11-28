@@ -90,10 +90,10 @@ sub articUpdateCluster {
     };
 
     # imag, swf, mmedia, asocfile, pags
-    &transmiteArchs($docRoot, "$relDirMmedia/imag", $ts . '\.\w+$');
-    &transmiteArchs($docRoot, "$relDirMmedia/swf", $ts . '\.\w+$');
+    &transmiteArchs($docRoot, "$relDirArtic/imag", $ts . '\.\w+$');
+    &transmiteArchs($docRoot, "$relDirArtic/swf", $ts . '\.\w+$');
+    &transmiteArchs($docRoot, "$relDirArtic/asocfile/$ts", '[\w\-]+\.\w+$');
     &transmiteArchs($docRoot, "$relDirMmedia/mmedia", $ts . '\.\w+$');
-    &transmiteArchs($docRoot, "$relDirMmedia/asocfile/$ts", '[\w\-]+\.\w+$');
 
     # Vista principal
     # relDirArtic: /prontus_nots/site/artic/20080714

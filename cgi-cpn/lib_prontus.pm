@@ -1016,6 +1016,7 @@ sub load_artic_pubs {
             $arch_seccion = "$pathdir_seccs/$port";
 
             my ($arch_xml) = $arch_seccion;
+            no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
             $arch_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/\1\.xml/;
 
             next if ((! -f $arch_xml) || ($port =~ /^preview/i));
@@ -2295,6 +2296,7 @@ sub write_log {
   my ($linea, $fecha, $hora, $buf, $nom_file, $usr);
   $prontus_varglb::DIR_LOG =~ s/\\/\//g;
 
+  no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
   $prontus_varglb::DIR_LOG =~ s/(\w)\/$/\1/; # Borrar posible ultimo slash.
 
 

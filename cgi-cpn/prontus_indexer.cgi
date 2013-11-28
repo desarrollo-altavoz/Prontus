@@ -915,15 +915,11 @@ sub indexa {
   # 1.9 Busca archivos de data de este articulo que haya que indexar.
   # site/artic/20070402/asocfile/20070402165132
   # $archivo,$ts,$extension,$daypath
-
-  my $dir_mmedia = &getMmediaDir();
-  my $daypathm = $daypath;
-  $daypathm =~ s/\/artic\//$dir_mmedia\//;
-  @files = &lib_search::lee_dir("$daypathm/asocfile/$ts");
+  @files = &lib_search::lee_dir("$daypath/asocfile/$ts");
   foreach $file (@files) {
     foreach $ext (keys %FILEFILTER) {
       if ($file =~ /\.$ext$/i) {
-        push @data2index,"$daypathm/asocfile/$ts/$file";
+        push @data2index,"$daypath/asocfile/$ts/$file";
       };
     };
   };
@@ -1476,22 +1472,3 @@ sub getHTML {
   };
   return ($titular,$descripcion,$fechap,$texto,$robots,$buffer);
 }; # getHTML.
-
-# ---------------------------------------------------------------
-# Lee y retorna la pagina web pasada como parametro.
-sub getMmediaDir {
-  #~ Para configurar la externalizacion de la multimedia
-  my($buffer);
-  my $archivo = "$ROOTDIR$PRONTUS/cpan/data/customcfg/mmedia.cfg";
-  if (-f $archivo) {
-    open (ARCHIVO,"<$archivo")
-      || die "Fail Open file $archivo \n $!\n";
-    binmode ARCHIVO;
-    read ARCHIVO, $buffer, -s $archivo;
-    close ARCHIVO;
-    if ($buffer =~ m/\s*EXTERNAL_MMEDIA\s*=\s*("|')1("|')/) {
-      return '/mm';
-    }
-  };
-  return '/artic';
-};
