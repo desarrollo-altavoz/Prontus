@@ -304,7 +304,6 @@ var Editor = {
         // Se valida que estemos en el mismo directorio
         var currdir = $('#_curr_dir').val();
         var path =  Editor.extractPath(file);
-        console.log('path: '+path);
         if(currdir != path) {
             return;
         }
