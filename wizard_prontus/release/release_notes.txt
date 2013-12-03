@@ -7274,3 +7274,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Por lo tanto, se debe considerar sólo el archivo index-{mv}.html.
     [files]
         /cgi-cpn/prontus_cfg_save.cgi
+
+- Regenera Taxport
+    [bugfixes]
+        - Se corrige mensaje de error cuando no se detecta el DIR_SERVER
+    [files]
+        /cgi-cpn/prontus_regenera_taxport.cgi
+
+- Regenera Relacionados
+    [mejoras]
+        - Se crea el nuevo script: prontus_regenera_relac.cgi que regenera los artículos relacionados.
+          Modo se uso:  ./prontus_regenera_relac.cgi <prontus_id>
+    [files]
+        /cgi-cpn/prontus_regenera_relac.cgi
