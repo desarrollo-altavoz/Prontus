@@ -7287,3 +7287,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Modo se uso:  ./prontus_regenera_relac.cgi <prontus_id>
     [files]
         /cgi-cpn/prontus_regenera_relac.cgi
+
+- Prontus Function
+    [bugfixes]
+        - Se corrige error al cargar la lib_custom cuando era un artículo nuevo.
+          Cuando era artículo nuevo, quedaba parado en un directorio nada que ver y no encontraba la lib_custom
+    [files]
+        /cgi-cpn/lib_prontus.pm

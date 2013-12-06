@@ -5284,6 +5284,8 @@ sub parser_custom_function {
   my $buffer = $_[0];
   my $path_include = $_[1];
   #~ unshift @INC, $path_include if ($path_include); # comentado por JOR - 09/10/2012
+
+  chdir("$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN");  # CVI - 06/12/2013
   eval "require lib_custom;";
   if ($@) {
     # Avisa del error solo en caso de que las p functions se esten utilizando.
