@@ -7294,3 +7294,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Cuando era artículo nuevo, quedaba parado en un directorio nada que ver y no encontraba la lib_custom
     [files]
         /cgi-cpn/lib_prontus.pm
+
+- RSS de Portads
+    [bugfixes]
+        - Si venía una entidad en el RSS, justo antes de escribir se convertían las entidades en caracteres,
+          pero en ISO-8859-1. Ahora se dejan sólo las entidades hasta que se encuentre una mejor solución
+    [files]
+        /cgi-cpn/lib_prontus.pm

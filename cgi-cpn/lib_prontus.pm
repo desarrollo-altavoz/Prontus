@@ -2470,7 +2470,7 @@ sub write_rss_port {
   $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss\1\/\2\.xml/; # Deduce del path completo de la portada, el del rss.
 
   $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual no mas escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija: toma cachito e goma!
-  $buffer = &mini_unescape_html($buffer); # parche heredado de subsecmar para el flash
+  #~ $buffer = &mini_unescape_html($buffer); # parche heredado de subsecmar para el flash
 
   my $destdir_rss = $destrss;
   $destdir_rss =~ s/\/[\w\.]+$//;
