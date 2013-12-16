@@ -105,8 +105,8 @@ var Preview = {
                 $('.loading-preview').hide();
             });
         }
-        
-        
+
+
     },
 
     // -------------------------------------------------------------------------
@@ -298,8 +298,10 @@ var Preview = {
                 if(textStatus == 'success') {
                     if(resp.status == 1) {
                         //~ $('#theIframe').attr('src', resp.msg);
-                        $('#openblank').val(resp.msg);
-                        Preview.isBussy = false;
+                        var respuesta = resp.msg;
+                        if (respuesta !== '') {
+                            Utiles.subWin(respuesta, 'Preview'+$('#_port').val());
+                        }
                     } else {
                         Admin.displayMessage(resp.msg, 'error');
                     }
@@ -315,13 +317,6 @@ var Preview = {
 
         //Acciones.muestraAcciones(false);
         SubmitForm.submitGenericAjax(config, opts);
-
-        var intervalo = setInterval(function () {
-            if ($('#openblank').val() != '') {
-                window.open($('#openblank').val());
-                clearInterval(intervalo);
-            }
-        }, 500);
     },
 
     // -------------------------------------------------------------------------
