@@ -7264,7 +7264,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.73 - 02/12/2013 - CVI
+11.2.73 - 02/12/2013 - CVI/JOR
 ====================================================================================================
 
 - Listado de Artículos
@@ -7308,3 +7308,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
+- Transcodificación
+    [bugfixes]
+        - Se soluciona problema con marca de video alternativo al tratar de parsear una marca con el sufijo de la versión en mayúsculas.
+    [files]
+        /cgi-cpn/Artic.pm
