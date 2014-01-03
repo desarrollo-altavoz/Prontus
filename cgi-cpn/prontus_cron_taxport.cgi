@@ -972,19 +972,34 @@ sub write_pag {
 
             $tax_fixedurl = &lib_prontus::get_tax_link($tax_fixedurl, $mv);
             $pagina =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
+    
+            # Lee el nombre de tema y subtema
+            my ($temas_nom, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$temas_id});
+            my ($subtemas_nom, $filler3, $filler4) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
+
+            # Para poder hacer IF de seccion, tema y subtema
+            my %claves = ('_tax_seccion' => $secc_id, '_tax_tema' => $temas_id, '_tax_subtema' => $subtemas_id,
+                    '_tax_nom_seccion' => $secc_nom, '_tax_nom_tema' => $temas_nom, '_tax_nom_subtema' => $subtemas_nom);
+            my %claves_compatibles = ('_seccion1' => $secc_id, '_tema1' => $temas_id, '_subtema1' => $subtemas_id,
+                    '_nom_seccion1' => $secc_nom, '_nom_tema1' => $temas_nom, '_nom_subtema1' => $subtemas_nom);
+            $pagina = &lib_prontus::procesa_condicional($pagina, \%claves, \%claves_compatibles);
 
             # Se parsean todas las marcas de seccion, tema y subtema.
+            # Esto se mantiene por compatibilidad
             $pagina =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
             $pagina =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
             $pagina =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
-
-            $pagina =~ s/%%_NOM_SECCION[1-3]%%/$secc_nom/isg;
-
-            my ($temas_nom, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$temas_id});
-            $pagina =~ s/%%_NOM_TEMA[1-3]%%/$temas_nom/isg;
-
-            my ($subtemas_nom, $filler3, $filler4) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
+            $pagina =~ s/%%_NOM_SECCION[1-3]%%/$secc_nom/isg;            
+            $pagina =~ s/%%_NOM_TEMA[1-3]%%/$temas_nom/isg;            
             $pagina =~ s/%%_NOM_SUBTEMA[1-3]%%/$subtemas_nom/isg;
+
+            # Se parsean las nuevas marcas de taxport
+            $pagina =~ s/%%_tax_seccion%%/$secc_id/isg;
+            $pagina =~ s/%%_tax_tema%%/$temas_id/isg;
+            $pagina =~ s/%%_tax_subtema%%/$subtemas_id/isg;
+            $pagina =~ s/%%_tax_nom_seccion%%/$secc_nom/isg;            
+            $pagina =~ s/%%_tax_nom_tema%%/$temas_nom/isg;            
+            $pagina =~ s/%%_tax_nom_subtema%%/$subtemas_nom/isg;
 
             my $path_include = &lib_prontus::get_path_croncgi();
             $pagina = &lib_prontus::parser_custom_function($pagina, $path_include);
