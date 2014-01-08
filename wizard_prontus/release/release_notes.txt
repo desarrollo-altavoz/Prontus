@@ -7326,6 +7326,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Prontus Form
     [bugfixes]
-        - Error con el JSON en el mantenedor del archivo de respaldo
+        - Error con el JSON en el mantenedor del archivo de respaldo: en el listado y la cgi de descarga
     [files]
         /cgi-cpn/prontus_form_list.cgi
+        /cgi-cpn/prontus_form_download.cgi
