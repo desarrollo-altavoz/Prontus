@@ -1761,7 +1761,7 @@ sub generar_vista_art {
         foreach my $video (@multimedia_video) {
             my $path = "$this->{'dst_multimedia'}/$campos_xml{$video}";
             while ($buffer =~ /%%$video\.(.*?)%%/isg) {
-                my $version = $1;
+                my $version = lc $1;
                 # Revisar si existe el archivo en disco.
                 $path =~ /\/($video.*?)(\.\w+)$/is;
                 my $file_version = "$1$version$2";
