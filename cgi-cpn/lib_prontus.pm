@@ -6171,6 +6171,7 @@ sub add_generator_tag {
 sub purge_cache {
     my ($path_file) = shift;
     my $relpath = &remove_front_string($path_file, $prontus_varglb::DIR_SERVER);
+
     if ($relpath !~ /\/site\/tax\/port\//is) {
         my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
         &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);
@@ -6183,7 +6184,7 @@ sub purge_cache {
     #     "Por el momento, no se está considerando el PURGE de las portadas taxonómica.
     #      Lo cual en un futuro quedará configurable"
     # Por ahora, hasta nuevo aviso se aplica sólo si la taxport es la primera página
-    } elsif($relpath !~ /_1\.\w+$/is) {
+    } elsif($relpath =~ /_1\.\w+$/is) {
         my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
         &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);
         my $pid = $$;

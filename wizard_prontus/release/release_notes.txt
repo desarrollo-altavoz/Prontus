@@ -7313,3 +7313,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se soluciona problema con marca de video alternativo al tratar de parsear una marca con el sufijo de la versión en mayúsculas.
     [files]
         /cgi-cpn/Artic.pm
+
+- Varnish
+  [bugfixes]
+    - No se estaba considerando purge de la primera página de taxport.
+  [files]
+      /cgi-cpn/lib_prontus.pm
+
