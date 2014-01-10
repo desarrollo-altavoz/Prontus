@@ -435,7 +435,7 @@ sub generar_taxports {
 
     # Escribe los semaforos de los id levels q va a utilizar (en realidad solo cambia el fid)
     # y borra los escritos por otros procesos para este mismo level, para provocar q aborten
-    # CVI - 08/10/2013 - Si viene el parametro del TS no se renuevan los sem·foros
+    # CVI - 08/10/2013 - Si viene el parametro del TS no se renuevan los sem√°foros
     unless($FORM{'params_ts'}) {
         &renovar_semaforos($FORM{'seccion_especif'}, $FORM{'tema_especif'}, $FORM{'subtema_especif'}, \%fids2process);
     };
@@ -611,7 +611,7 @@ sub generar_taxports_thislevel {
     $base->disconnect;
 
     # Si viene el dichoso parametro que nos indica el articulo modificado,
-    # buscamos en que p·gina est·, para generar solo esa pagina
+    # buscamos en que p√°gina est√°, para generar solo esa pagina
     my $justthispage = 0;
     if($FORM{'params_ts'}) {
         my $page = 1;
@@ -629,7 +629,7 @@ sub generar_taxports_thislevel {
             }
         }
 
-        # TS muy antiguo, no se genera esta p·gina
+        # TS muy antiguo, no se genera esta p√°gina
         if($justthispage == 0) {
             return;
         } else {
@@ -653,7 +653,7 @@ sub generar_taxports_thislevel {
         # print STDERR "\tpag[$nro_pag_to_write] row[$nro_filas]";
         # sleep (1) if ($nro_filas > 98);
 
-        # Si viene el TS, solo se debe regenerar la p·gina indicada por: $justthispage
+        # Si viene el TS, solo se debe regenerar la p√°gina indicada por: $justthispage
         if($FORM{'params_ts'}) {
             if($justthispage eq $nro_pag_to_write) {
                 $doprocess = 1;
@@ -678,7 +678,7 @@ sub generar_taxports_thislevel {
                     my $fila_content;
                     my ($auxref, $auxref2);
 
-                    # En estos casos sÛlo es v·lida la primera p·gina
+                    # En estos casos s√≥lo es v√°lida la primera p√°gina
                     my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
                     if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 0) {
                         next;
@@ -690,11 +690,6 @@ sub generar_taxports_thislevel {
                     $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
 
                     $filas{"$mv|$nombase_plt"} .= $fila_content;
-
-                    if ($nro_pag > 0) {
-                        # Se deja en medio segundo
-                        usleep(500000);
-                    };
                 };
             };
         };
@@ -708,16 +703,21 @@ sub generar_taxports_thislevel {
             $nro_filas = 0; # resetea conta de filas para empezar del ppio en la pagina que viene.
             %filas = ();
 
-            # Luego de escribir "La P·gina" nos retiramos
+            # Luego de escribir "La P√°gina" nos retiramos
             if($FORM{'params_ts'}) {
                 return;
             };
 
-            # Revisamos el sem·foro para saber si aun debemos procesar
+            # Revisamos el sem√°foro para saber si aun debemos procesar
             if (! -f "$dir_semaf/$id_level.$pid_padre") {
                 # print STDERR "\n[$$] FETCHING: hasta aca no mas llegamos!\n";
                 return;
             };
+
+            # Se deja en 2 segundos despues de cada pagina
+            $prontus_varglb::BD_CONN->disconnect;
+            sleep(2);
+
         };
     };
 
@@ -948,7 +948,7 @@ sub write_pag {
             my $pagina = &get_buffer_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
             next if (!$pagina);
 
-            # En estos casos sÛlo es v·lida la primera p·gina
+            # En estos casos s√≥lo es v√°lida la primera p√°gina
             my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
             if($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pag > 1) {
                 next;
@@ -1178,7 +1178,7 @@ sub incluir_nrosdepag {
             $prevlink =  $tpl_nropag_aux . ' ... ';
         };
 
-        # Se procesan las p·ginas hacia arriba
+        # Se procesan las p√°ginas hacia arriba
         $fin = ($nro_pag + $prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS);
         if($fin >= $nro_paginas_totales) {
             $fin = $nro_paginas_totales;
@@ -1291,7 +1291,7 @@ sub get_tot_artics {
 sub valida_param {
 
     if ( (! -d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} eq '')  || ($FORM{'prontus'} =~ /^\//) )  {
-        print STDERR "\nError: Directorio del publicador no es v·lido.";
+        print STDERR "\nError: Directorio del publicador no es v√°lido.";
         print STDERR "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como parametro de esta CGI\n";
         exit;
     };

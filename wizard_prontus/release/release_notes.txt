@@ -7321,6 +7321,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 		  Estas marcas se pueden usar fuera de los loops y reemplazan a los otros tipos de marcas similares        
 		- Adicionalmente, se habilita el uso de IFs para estas marcas. Ojo que los IF fuera de los loops, ahora 
 		  podrían quedar vacíos si no se usan las marcas correctas
+		- Se cambia el sleep entre páginas, ya que, estaba haciendo un sleep entre artículos.
+		  Ahora de deja entre página con 2 segundos (esto implica mayor uso se cpu, pero menos nice).
 	[files]
 		/cgi-cpn/prontus_cron_taxport.cgi
 
@@ -7332,8 +7334,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_form_download.cgi
 
 - Varnish
-  [bugfixes]
-    - No se estaba considerando purge de la primera página de taxport.
-  [files]
-      /cgi-cpn/lib_prontus.pm
+  	[bugfixes]
+    	- No se estaba considerando purge de la primera página de taxport.
+  	[files]
+      	/cgi-cpn/lib_prontus.pm
 
