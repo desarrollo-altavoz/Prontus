@@ -205,7 +205,7 @@ sub gatillar_procesos {
             # Se chequea para descansar con un sleep
             my $safetycounter = 1;
             while(&check_taxport_running() >= 15) {
-                print "Muchos procesos, duermiendo por 2 segundos, ciclo $safetycounter de 5... \n";
+                print "Muchos procesos, durmiendo por 2 segundos, ciclo $safetycounter de 5... \n";
                 last if($safetycounter > 5);
                 $safetycounter++;
                 sleep(2);
