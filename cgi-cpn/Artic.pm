@@ -1623,7 +1623,8 @@ sub _ajusta_campos_art4bd {
 
     $campos{'_horae'} =~ s/://g;
     $campos{'_horae'} = '0000' if ($campos{'_horae'} eq '');
-
+    $campos{'_fechae'} = '99999999' if ($campos{'_fechae'} eq '');
+    
     $campos{'_extension'} = &lib_prontus::get_file_extension($campos{'_plt'});
 
     # Ajusta bajada

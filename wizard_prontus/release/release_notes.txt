@@ -7339,3 +7339,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
   	[files]
       	/cgi-cpn/lib_prontus.pm
 
+- Regenerar BD
+  	[bugfixes]
+    	- Cuando "_fechae" era vacío en el XML, arrojaba error al inetentar insertar en BD.
+    	  Ahora, si viene vacío se rellena con el valor por omision: 99999999
+  	[files]
+        /cgi-cpn/Artic.pm
+  		
