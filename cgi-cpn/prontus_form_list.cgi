@@ -150,8 +150,8 @@ main: {
             my $json = &glib_fildir_02::read_file("$ROOT$DIRFORM/$file");
             my $jsonhashref;
             if($JSON::VERSION =~ /^1\./) {
-                my $json = new JSON;
-                $jsonhashref = $json->jsonToObj($json);
+                my $jsonobj = new JSON;
+                $jsonhashref = $jsonobj->jsonToObj($json);
             } else {
                 $jsonhashref = &JSON::from_json($json);
             }
