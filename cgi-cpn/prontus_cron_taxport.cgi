@@ -699,15 +699,26 @@ sub generar_taxports_thislevel {
 
             $nro_pag++; # avanza pag
             $nro_pag_to_write = $nro_pag + 1;
+
+            if ($FORM{'params_ts'}) {
+                if ($nro_pag_to_write <= $justthispage) {
+                    $nro_filas = 0;
+                    %filas = ();
+                    next;
+                };
+            };
+
             &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pag, $secc_id, $temas_id, $subtemas_id, \%filas, $pid_padre);
             $nro_filas = 0; # resetea conta de filas para empezar del ppio en la pagina que viene.
             %filas = ();
 
-            # Luego de escribir "La Página" nos retiramos
-            if($FORM{'params_ts'}) {
-                return;
+            if ($FORM{'params_ts'}) {
+                if ($nro_pag_to_write > $justthispage) {
+                    $prontus_varglb::BD_CONN->disconnect;
+                    return;
+                };
             };
-
+            
             # Revisamos el semáforo para saber si aun debemos procesar
             if (! -f "$dir_semaf/$id_level.$pid_padre") {
                 # print STDERR "\n[$$] FETCHING: hasta aca no mas llegamos!\n";
