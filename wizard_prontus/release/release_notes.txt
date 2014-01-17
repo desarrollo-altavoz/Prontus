@@ -7267,6 +7267,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.73 - 02/12/2013 - CVI/JOR
 ====================================================================================================
 
+- Fid
+    [mejoras]
+        - Se robustece la regex que procesa/posiciona los SELECT
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
+
 - Listado de Artículos
     [mejoras]
         - Se mejora forma en que se abre el Preview en ventana nueva (para evitar carreras críticas)
@@ -7313,20 +7319,20 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se soluciona problema con marca de video alternativo al tratar de parsear una marca con el sufijo de la versión en mayúsculas.
     [files]
         /cgi-cpn/Artic.pm
-        
+
 - Portadas Taxonómicas
-	[cambios]
-		- Se habilitan las marcas: _tax_seccion, _tax_tema, _tax_subtema, _tax_nom_seccion, _tax_nom_tema, _tax_nom_subtema,
-		  para indicar la seccion, tema y subtema de la taxport (independiente del los artículos parseados)
-		  Estas marcas se pueden usar fuera de los loops y reemplazan a los otros tipos de marcas similares        
-		- Adicionalmente, se habilita el uso de IFs para estas marcas. Ojo que los IF fuera de los loops, ahora 
-		  podrían quedar vacíos si no se usan las marcas correctas
-		- Se cambia el sleep entre páginas, ya que, estaba haciendo un sleep entre artículos.
-		  Ahora de deja entre página con 2 segundos (esto implica mayor uso se cpu, pero menos nice).
+    [cambios]
+        - Se habilitan las marcas: _tax_seccion, _tax_tema, _tax_subtema, _tax_nom_seccion, _tax_nom_tema, _tax_nom_subtema,
+          para indicar la seccion, tema y subtema de la taxport (independiente del los artículos parseados)
+          Estas marcas se pueden usar fuera de los loops y reemplazan a los otros tipos de marcas similares
+        - Adicionalmente, se habilita el uso de IFs para estas marcas. Ojo que los IF fuera de los loops, ahora
+          podrían quedar vacíos si no se usan las marcas correctas
+        - Se cambia el sleep entre páginas, ya que, estaba haciendo un sleep entre artículos.
+          Ahora de deja entre página con 2 segundos (esto implica mayor uso se cpu, pero menos nice).
   [bugfixes]
     - Se corrige problema en la generación de las taxports. En ocaciones la primera página quedaba en blanco.
-	[files]
-		/cgi-cpn/prontus_cron_taxport.cgi
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
 
 - Prontus Form
     [bugfixes]
@@ -7336,15 +7342,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_form_download.cgi
 
 - Varnish
-  	[bugfixes]
-    	- No se estaba considerando purge de la primera página de taxport.
-  	[files]
-      	/cgi-cpn/lib_prontus.pm
+    [bugfixes]
+        - No se estaba considerando purge de la primera página de taxport.
+    [files]
+        /cgi-cpn/lib_prontus.pm
 
 - Regenerar BD
-  	[bugfixes]
-    	- Cuando "_fechae" era vacío en el XML, arrojaba error al inetentar insertar en BD.
-    	  Ahora, si viene vacío se rellena con el valor por omision: 99999999
-  	[files]
+    [bugfixes]
+        - Cuando "_fechae" era vacío en el XML, arrojaba error al inetentar insertar en BD.
+          Ahora, si viene vacío se rellena con el valor por omision: 99999999
+    [files]
         /cgi-cpn/Artic.pm
-  		
+

@@ -1543,11 +1543,19 @@ sub procesar_select {
     my $parte1 = $2;
     if ($parte1 =~ /name *= *['"]$nom_campo['"]/is) { # ubica control con nombre correspondiente.
       my $tag_original = $tag;
+
       # remueve actual seleccionado en caso de haberlo.
-      $tag =~ s/(.*)selected(.*)/$1$2/is;
+      # CVI - 17/01/2014 - Se robustece la expresión regular
+      #~ $tag =~ s/(.*)selected(.*)/$1$2/is;
+      $tag =~ s/(.*)selected(="selected")?(.*)/$1$3/is;
+
       # Posiciona en el option correspondiente
-      $tag =~ s/(.*)value *= *["']$valor_campo["'] *>(.*)/$1value="$valor_campo" selected="selected">$2/is;
-      $pag =~ s/$tag_original/$tag/is;
+      # CVI - 17/01/2014 - Se robustece la expresión regular
+      #~ $tag =~ s/(.*)value *= *["']$valor_campo["'] *>(.*)/$1value="$valor_campo" selected="selected">$2/is;
+      #~ $pag =~ s/$tag_original/$tag/is;
+      $tag =~ s/ value *= *["']$valor_campo["']([^>]*>)/ value="$valor_campo" selected="selected"$1/is;
+      $pag =~ s/\Q$tag_original\E/$tag/is;
+
     };
   };
   return $pag;
