@@ -7284,8 +7284,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Al generar el link simbolico a la "PORT_HOME", para las vistas, se genera: index-{mv}.html,
           ademas del index_{mv}.html. Este último se dará de baja en la próxima release no compatible
           Por lo tanto, se debe considerar sólo el archivo index-{mv}.html.
+        - Se habilita la clase :nth-child(odd), para los listados de Artículos y Portadas, con un background-color distinto
+          Esto facilita la usabilidad y legibilidad de ambos listados.
     [files]
         /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_art.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_port.html
 
 - Regenera Taxport
     [bugfixes]
@@ -7321,6 +7326,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Artic.pm
 
 - Portadas Taxonómicas
+    [bugfixes]
+        - Se corrige problema en la generación de las taxports. En ocaciones la primera página quedaba en blanco.
     [cambios]
         - Se habilitan las marcas: _tax_seccion, _tax_tema, _tax_subtema, _tax_nom_seccion, _tax_nom_tema, _tax_nom_subtema,
           para indicar la seccion, tema y subtema de la taxport (independiente del los artículos parseados)
@@ -7329,8 +7336,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           podrían quedar vacíos si no se usan las marcas correctas
         - Se cambia el sleep entre páginas, ya que, estaba haciendo un sleep entre artículos.
           Ahora de deja entre página con 2 segundos (esto implica mayor uso se cpu, pero menos nice).
-  [bugfixes]
-    - Se corrige problema en la generación de las taxports. En ocaciones la primera página quedaba en blanco.
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
 
