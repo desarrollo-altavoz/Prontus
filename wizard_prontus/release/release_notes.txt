@@ -7292,19 +7292,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_art.html
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_port.html
 
-- Regenera Taxport
-    [bugfixes]
-        - Se corrige mensaje de error cuando no se detecta el DIR_SERVER
-    [files]
-        /cgi-cpn/prontus_regenera_taxport.cgi
-
-- Regenera Relacionados
-    [mejoras]
-        - Se crea el nuevo script: prontus_regenera_relac.cgi que regenera los artículos relacionados.
-          Modo se uso:  ./prontus_regenera_relac.cgi <prontus_id>
-    [files]
-        /cgi-cpn/prontus_regenera_relac.cgi
-
 - Prontus Function
     [bugfixes]
         - Se corrige error al cargar la lib_custom cuando era un artículo nuevo.
@@ -7312,7 +7299,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
-- RSS de Portads
+- RSS de Portadas
     [bugfixes]
         - Si venía una entidad en el RSS, justo antes de escribir se convertían las entidades en caracteres,
           pero en ISO-8859-1. Ahora se dejan sólo las entidades hasta que se encuentre una mejor solución
@@ -7346,11 +7333,24 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_form_list.cgi
         /cgi-cpn/prontus_form_download.cgi
 
-- Varnish
+- Buscador
     [bugfixes]
-        - No se estaba considerando purge de la primera página de taxport.
+        - Se corrige problema con la variable "MAXPAGS" que no se estaba tomando en cuenta
     [files]
-        /cgi-cpn/lib_prontus.pm
+        /cgi-bin/prontus_search.cgi
+
+- Regenera Taxport
+    [bugfixes]
+        - Se corrige mensaje de error cuando no se detecta el DIR_SERVER
+    [files]
+        /cgi-cpn/prontus_regenera_taxport.cgi
+
+- Regenera Relacionados
+    [mejoras]
+        - Se crea el nuevo script: prontus_regenera_relac.cgi que regenera los artículos relacionados.
+          Modo se uso:  ./prontus_regenera_relac.cgi <prontus_id>
+    [files]
+        /cgi-cpn/prontus_regenera_relac.cgi
 
 - Regenerar BD
     [bugfixes]
@@ -7359,3 +7359,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/Artic.pm
 
+- Varnish
+    [bugfixes]
+        - No se estaba considerando purge de la primera página de taxport.
+    [files]
+        /cgi-cpn/lib_prontus.pm

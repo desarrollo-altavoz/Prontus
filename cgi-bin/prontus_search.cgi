@@ -229,6 +229,9 @@ use prontus_varglb; &prontus_varglb::init();
 
 # Para mostrar de inmediato la pagina de resultados.
 $|=1;
+# Para debug, comentar arriba y descomentar abajo
+# use lib_stdlog;
+# &lib_stdlog::set_stdlog($0, 51200);
 
 # 1.10 Una sola \n porque despues normalmente viene un header location.
 print "Content-type: text/html\n";
@@ -313,6 +316,8 @@ if ( ($CFG{'SEARCH_MAXEXEC'} < 0) || ($CFG{'SEARCH_MAXEXEC'} !~ /^\d+$/) ) {
 # 1.27.2 Si no se especifican el la CFG, usa valores por defecto.
 if ($CFG{'RESPERPAG'} !~ /^\d+$/) { $CFG{'RESPERPAG'} = $RESXPAG; };
 if ($CFG{'MAXPAGS'} !~ /^\d+$/) { $CFG{'MAXPAGS'} = $MAXPAGS; };
+
+# CVI - Toma los valores por defecto
 # 1.27.2 Si los valores del form no se especifican o exceden el maximo, aplica el maximo.
 if(($FORM{'search_resxpag'} eq '') || ($FORM{'search_resxpag'} > $CFG{'RESPERPAG'})) {
   $FORM{'search_resxpag'} = $CFG{'RESPERPAG'};
@@ -320,6 +325,9 @@ if(($FORM{'search_resxpag'} eq '') || ($FORM{'search_resxpag'} > $CFG{'RESPERPAG
 if(($FORM{'search_maxpags'} eq '') || ($FORM{'search_maxpags'} > $CFG{'MAXPAGS'})) {
   $FORM{'search_maxpags'} = $CFG{'MAXPAGS'};
 };
+# CVI - Si dsps de todo, sigue vacio, se toma el valor por defecto
+if ($FORM{'search_resxpag'} eq '') { $FORM{'search_resxpag'} = 20; };
+if ($FORM{'search_maxpags'} eq '') { $FORM{'search_maxpags'} = 20; };
 
 # Cargar variables de configuración
 &carga_variables_prontus();
@@ -473,6 +481,9 @@ sub parsea_plantilla2 {
   my $paginastotales = int( 1 + ($RESULTADOSTOTALES - 1) / $search_resxpag);
   my $yeswords;
 
+  if ( $paginastotales > $FORM{'search_maxpags'}) { $paginastotales = $FORM{'search_maxpags'}; };
+  if ($max > $RESULTADOSTOTALES) { $max = $RESULTADOSTOTALES; };
+
   my $moldelink = $scriptname . '?search_prontus=' . $FORM{'search_prontus'}
             . '&amp;search_idx=' . $FORM{'search_idx'}
             . '&amp;search_tmp=' . $FORM{'search_tmp'}
@@ -530,9 +541,7 @@ sub parsea_plantilla2 {
     $ini = 1;
     $fin = $paginastotales;
   }
-
-  if ( $paginastotales > $FORM{'search_maxpags'}) { $paginastotales = $FORM{'search_maxpags'}; };
-  if ($max > $RESULTADOSTOTALES) { $max = $RESULTADOSTOTALES; };
+   
   for(my $i = $ini; $i <= $fin; $i++) {
     if ($i != $search_pag) {
       # 1.13 $pags .= '| <a href="/cgi-bin/prontus_search.cgi?search_prontus=' . $FORM{'search_prontus'}
@@ -1283,9 +1292,9 @@ sub getFormData {
   $FORM{'search_idx'} =~ s/[^\w\-\.]//sg; # 1.18
   if ($FORM{'search_idx'} eq '')     { $FORM{'search_idx'} = $FORM{'search_prontus'}; };
   $FORM{'search_resxpag'} =~ s/[^0-9]//sg; # 1.18
-  if ($FORM{'search_resxpag'} eq '') { $FORM{'search_resxpag'} = 20; };
+  # if ($FORM{'search_resxpag'} eq '') { $FORM{'search_resxpag'} = 20; }; # CVI - No tomaba nunca el valor del CFG
   $FORM{'search_maxpags'} =~ s/[^0-9]//sg; # 1.18
-  if ($FORM{'search_maxpags'} eq '') { $FORM{'search_maxpags'} = 20; };
+  # if ($FORM{'search_maxpags'} eq '') { $FORM{'search_maxpags'} = 20; }; # CVI - No tomaba nunca el valor del CFG
   $FORM{'search_pag'} =~ s/[^0-9]//sg; # 1.18
   if ($FORM{'search_pag'} eq '')     { $FORM{'search_pag'} = 1; };
   $FORM{'search_orden'} =~ s/[^\w]//sg; # 1.18
