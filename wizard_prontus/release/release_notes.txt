@@ -7366,3 +7366,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - No se estaba considerando purge de la primera página de taxport.
     [files]
         /cgi-cpn/lib_prontus.pm
+
+- Cerrar Sesión
+    [bugfixes]
+        - Se comienza a hacer garbage collector de los locks de artículo y portada.
+          Estos se estaban acumulando y producían que el prontus se cuelgue al cerrar sesion
+    [files]
+        /cgi-cpn/lib_prontus.pm
