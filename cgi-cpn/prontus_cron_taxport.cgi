@@ -424,6 +424,7 @@ sub generar_taxports {
     %TABLA_TEM = &lib_tax::carga_tabla_temas($base);
     %TABLA_STEM = &lib_tax::carga_tabla_subtemas($base);
 
+    $base->{mysql_auto_reconnect} = 0;
     $base->disconnect;
 
     &carga_nombase_plts();
@@ -580,7 +581,8 @@ sub generar_taxports_thislevel {
     };
 
     # Reconectar por si las moscas
-    if (! ref($base)) {
+    my $rp = $base->ping;
+    if ($rp != 1) {
         $base = &conecta_db();
     }
 
@@ -608,6 +610,7 @@ sub generar_taxports_thislevel {
 
     my $arrayref = $salida->fetchall_arrayref;
     $salida->finish;
+    $base->{mysql_auto_reconnect} = 0;
     $base->disconnect;
 
     # Si viene el dichoso parametro que nos indica el articulo modificado,
@@ -718,7 +721,7 @@ sub generar_taxports_thislevel {
                     return;
                 };
             };
-            
+
             # Revisamos el semáforo para saber si aun debemos procesar
             if (! -f "$dir_semaf/$id_level.$pid_padre") {
                 # print STDERR "\n[$$] FETCHING: hasta aca no mas llegamos!\n";
@@ -983,7 +986,7 @@ sub write_pag {
 
             $tax_fixedurl = &lib_prontus::get_tax_link($tax_fixedurl, $mv);
             $pagina =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
-    
+
             # Lee el nombre de tema y subtema
             my ($temas_nom, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$temas_id});
             my ($subtemas_nom, $filler3, $filler4) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
@@ -1000,16 +1003,16 @@ sub write_pag {
             $pagina =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
             $pagina =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
             $pagina =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
-            $pagina =~ s/%%_NOM_SECCION[1-3]%%/$secc_nom/isg;            
-            $pagina =~ s/%%_NOM_TEMA[1-3]%%/$temas_nom/isg;            
+            $pagina =~ s/%%_NOM_SECCION[1-3]%%/$secc_nom/isg;
+            $pagina =~ s/%%_NOM_TEMA[1-3]%%/$temas_nom/isg;
             $pagina =~ s/%%_NOM_SUBTEMA[1-3]%%/$subtemas_nom/isg;
 
             # Se parsean las nuevas marcas de taxport
             $pagina =~ s/%%_tax_seccion%%/$secc_id/isg;
             $pagina =~ s/%%_tax_tema%%/$temas_id/isg;
             $pagina =~ s/%%_tax_subtema%%/$subtemas_id/isg;
-            $pagina =~ s/%%_tax_nom_seccion%%/$secc_nom/isg;            
-            $pagina =~ s/%%_tax_nom_tema%%/$temas_nom/isg;            
+            $pagina =~ s/%%_tax_nom_seccion%%/$secc_nom/isg;
+            $pagina =~ s/%%_tax_nom_tema%%/$temas_nom/isg;
             $pagina =~ s/%%_tax_nom_subtema%%/$subtemas_nom/isg;
 
             my $path_include = &lib_prontus::get_path_croncgi();
