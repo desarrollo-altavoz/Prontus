@@ -1624,7 +1624,7 @@ sub _ajusta_campos_art4bd {
     $campos{'_horae'} =~ s/://g;
     $campos{'_horae'} = '0000' if ($campos{'_horae'} eq '');
     $campos{'_fechae'} = '99999999' if ($campos{'_fechae'} eq '');
-    
+
     $campos{'_extension'} = &lib_prontus::get_file_extension($campos{'_plt'});
 
     # Ajusta bajada
@@ -1873,19 +1873,23 @@ sub parse_artic_data {
     my $buffer = shift;
     my $ref_campos_xml = shift;
     my $vars_adicionales = shift;
+    my $use_xml_tax = shift;
 
     my %campos_xml = %$ref_campos_xml;
     undef $ref_campos_xml;
 
-    # Obtiene nom de secc, tema y subtema en vista correspondiente
-    if ($fullpath_vista =~ /\/pags\-(\w+)\/[0-9]{14}\.\w+$/) {
-        my $mv = $1;
-        ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
-            = &lib_prontus::get_nom4vistas($mv, $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
-    } else {
-        # Obtiene nom de secc, tema y subtema vista principal.
-        ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
-            = &lib_prontus::get_nom4vistas('', $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+    unless($use_xml_tax) {
+
+        # Obtiene nom de secc, tema y subtema en vista correspondiente
+        if ($fullpath_vista =~ /\/pags\-(\w+)\/[0-9]{14}\.\w+$/) {
+            my $mv = $1;
+            ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
+                = &lib_prontus::get_nom4vistas($mv, $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+        } else {
+            # Obtiene nom de secc, tema y subtema vista principal.
+            ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
+                = &lib_prontus::get_nom4vistas('', $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+        };
     };
 
     # Agrega algunas vars adicionales que no vienen en el XML.
