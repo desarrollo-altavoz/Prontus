@@ -7373,3 +7373,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Estos se estaban acumulando y producían que el prontus se cuelgue al cerrar sesion
     [files]
         /cgi-cpn/lib_prontus.pm
+
+
+====================================================================================================
+11.2.74 - 17/03/2014 - CVI
+====================================================================================================
+
+- Regenerar Articulos
+    [bugfixes]
+        - Cuando se regeneran los artículos se parsean las plantillas paralelas
+    [files]
+        /cgi-cpn/prontus_art_regen_real.cgi
