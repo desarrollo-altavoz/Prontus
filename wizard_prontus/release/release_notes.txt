@@ -7373,3 +7373,28 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Estos se estaban acumulando y producían que el prontus se cuelgue al cerrar sesion
     [files]
         /cgi-cpn/lib_prontus.pm
+
+
+====================================================================================================
+11.2.74 - 17/03/2014 - CVI
+====================================================================================================
+
+- Regenerar Articulos
+    [bugfixes]
+        - Cuando se regeneran los artículos se parsean las plantillas paralelas
+    [files]
+        /cgi-cpn/prontus_art_regen_real.cgi
+
+- Objeto Artic
+    [mejoras]
+        - Se agrega un quinto parámetro a la función &parse_artic_data del objeto Artic.
+          Al pasar 1 en dicho parámetro, se usarán los nombres de la taxonomía del XML en vez de leerlos de la BD.
+          Esto se usa, por ejemplo, en el SSTLM cuando se trabajan con múltiples prontus
+    [files]
+        /cgi-cpn/Artic.pm
+
+- Check Platrform
+    [mejoras]
+        - Se mejora la salida "no Web" para cuando el script corre por consola.
+    [files]
+        /cgi-cpn/prontus_check_platform.cgi
