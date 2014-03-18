@@ -7376,7 +7376,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.74 - 17/03/2014 - CVI
+11.2.74 - 18/03/2014 - CVI
 ====================================================================================================
 
 - Regenerar Articulos
@@ -7405,3 +7405,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se mejora la forma en que se desconecta de la BD para forzar que efectivamente se desconecte
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
+
+- Mapa del Sitio
+    [mejoras]
+        - Se comienza a parsear la marca: %%_mostrar%% para indicar si el nivel tax es visible o no
+    [files]
+        /cgi-cpn/lib_prontus.pm
