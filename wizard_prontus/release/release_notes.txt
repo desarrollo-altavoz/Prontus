@@ -7379,6 +7379,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.74 - 18/03/2014 - CVI
 ====================================================================================================
 
+- Salidas List
+    [mejoras]
+        - Se habilita la posibilidad de múltiples LOOPs dentro de las salidas List.
+    [files]
+        /cgi-cpn/prontus_cron_list.cgi
+
 - Regenerar Articulos
     [bugfixes]
         - Cuando se regeneran los artículos se parsean las plantillas paralelas

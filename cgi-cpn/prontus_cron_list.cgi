@@ -231,44 +231,53 @@ sub procesar_plantilla {
 
     my $buffer = $CONTENT_PLTS{$nombase_plt};
     my $loop_plt;
-    if ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
-        $loop_plt = $1;
-    };
-    if (!$loop_plt) {
+
+    my %LOOPS;
+    my $counter = 1;
+    while ($buffer =~ s/%%LOOP%%(.*?)%%\/LOOP%%/##loop$counter##/is) {
+        $LOOPS{"##loop$counter##"} = $1;
+        $counter++;
+    }
+    $CONTENT_PLTS{$nombase_plt} = $buffer;
+
+    unless(keys %LOOPS) {
         &write_pag($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, \%filas);
         print STDERR "Plantilla sin LOOP: $nombase_plt\n";
         return;
-    }
+    };
 
     while ($salida->fetch) {
         $nro_filas++;
 
         # parsea esta fila en todas las multivistas
         my ($tem, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$art_idtemas1});
-        my $mv = '';
 
-        my $fila_content;
-        my ($auxref, $auxref2);
+        foreach my $loopname (keys %LOOPS) {
+            $loop_plt = $LOOPS{$loopname};
 
-        # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
-        ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id});
+            my $fila_content;
+            my ($auxref, $auxref2);
 
-        $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
-        $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer 2 veces un xml
+            # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
+            ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id});
 
-        $filas{"$mv|$nombase_plt"} .= $fila_content;
+            $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
+            $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer 2 veces un xml
 
+            $filas{"$nombase_plt|$loopname"} .= $fila_content;
+        };
     };
     #~ print "nombase_plt[$nombase_plt]\n";
-    &write_pag($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, \%filas);
+    &write_pag($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, \%filas, \%LOOPS);
     $salida->finish;
 };
 
 # ---------------------------------------------------------------
 sub write_pag {
 
-    my ($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, $filas_hashref) = @_;
+    my ($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, $filas_hashref, $loops_hasref) = @_;
     my %filas = %$filas_hashref;
+    my %loops = %$loops_hasref;
 
     my $pagina = $CONTENT_PLTS{$nombase_plt};
     if (!$pagina) {
@@ -276,23 +285,20 @@ sub write_pag {
         return;
     }
 
+    #~ print STDERR "Parseando plantilla: tot_artics[$tot_artics]\n";
     $pagina =~ s/%%_totartics%%/$tot_artics/ig;
-    #~ my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
-    # warn "$key_hash lista[$lista]";
     my ($nombase, $extension) = &lib_prontus::split_nom_y_extension($nombase_plt);
     $extension = '.' . $extension;
-    #~ $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"$mv|$nombase_plt"}/isg;
-    $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"|$nombase_plt"}/isg;
-    #~ $pagina = &incluir_navbar($pagina, $secc_id, $temas_id, $subtemas_id, $RELDIR_LIST_DST, $extension, $nombase);
-    #~ $pagina = &incluir_nrosdepag($tot_artics, $pagina, $nro_pag, $secc_id, $temas_id, $subtemas_id, $RELDIR_LIST_DST, $extension, $nombase);
-    #~ $pagina =~ s/%%NOMSECC%%/$secc_nom/isg;
+
+    foreach my $loopname (keys %loops) {
+        print STDERR "loopname[$loopname]\n";
+
+        $pagina =~ s/$loopname/$filas{"$nombase_plt|$loopname"}/isg;
+    }
+
     # reemplazar nombre del prontus
     $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
     $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/isg;
-
-
-    #~ $tax_fixedurl = &lib_prontus::get_tax_link($tax_fixedurl, $mv);
-    #~ $pagina =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
 
     # Se parsean todas las marcas de seccion, tema y subtema.
     $pagina =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
