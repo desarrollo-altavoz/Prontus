@@ -5199,7 +5199,7 @@ sub get_arbol_mapa {
       $mapa_t =~ s/%%_id%%/$temas_id/ig;
       $mapa_t =~ s/%%_nom%%/$temas_nom/ig;
       $mapa_t =~ s/%%_indent%%/$local_indent/ig;
-      $mapa_t =~ s/%%_mostrar%%/$secc_mostrar/ig;
+      $mapa_t =~ s/%%_mostrar%%/$temas_mostrar/ig;
 
       $tax_fixedurl = &lib_prontus::get_tax_link($temas_port, $mv);
       $mapa_t =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
