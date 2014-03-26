@@ -7417,3 +7417,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se comienza a parsear la marca: %%_mostrar%% para indicar si el nivel tax es visible o no
     [files]
         /cgi-cpn/lib_prontus.pm
+
+- Logout
+    [bugfixes]
+        - Se corrige error cuando no existía el directorio de MultiEditing al desloguearse
+    [files]
+        /cgi-cpn/lib_multiediting.pm
