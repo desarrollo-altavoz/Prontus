@@ -7438,4 +7438,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/Artic.pm
 
+- Buscador Prontus
+    [mejoras]
+        - Da la opción de colocar el "_ts" del artículo en los campos METADATA
+    [files]
+        /cgi-cpn/prontus_indexer.cgi
 

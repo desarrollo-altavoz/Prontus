@@ -925,7 +925,7 @@ sub indexa {
   };
 
   $buffer = &lib_search::lee_archivo($archivo); # 1.9
-  ($titular,$meta1,$meta2,$meta3,$descripcion,$fechap,$texto,$seccion,$tema,$subtema,@data) = &get_contents($buffer, $prontus);
+  ($titular,$meta1,$meta2,$meta3,$descripcion,$fechap,$texto,$seccion,$tema,$subtema,@data) = &get_contents($buffer, $prontus, $ts);
   # print "$archivo = $titular,$descripcion,$fechap,$texto,$seccion,$tema,$subtema\n"; # debug
   while ($titular ne '') { # 1.9
     # No hace nada si el texto no es significativo.
@@ -1142,6 +1142,7 @@ sub get_contents_raw {
 sub get_contents {
   my($buffer) = shift;
   my($prontus) = shift;
+  my($ts) = shift;
   my($titular,$meta1,$meta2,$meta3,$descripcion,$fechap,$texto,$seccion,$tema,$subtema); # 1.7 Variables de respuesta.
   my(@metadata, @metadata_var);
   my($var,$tipoficha,$k);
@@ -1236,6 +1237,9 @@ sub get_contents {
     next unless($mdata);
     if($mdata eq '_prontus_id') {
       $metadata[$k] = $prontus;
+      next;
+    } elsif($mdata eq '_ts') {
+      $metadata[$k] = $ts;
       next;
     }
     if ($buffer =~ /<$mdata>\s*<!\[CDATA\[(.*?)\]\]>\s*<\/$mdata>/is) {
