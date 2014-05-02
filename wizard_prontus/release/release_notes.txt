@@ -7430,3 +7430,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           cuando se subían imágenes antes de que terminara la Transcodificacion
     [files]
         /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+
+- Varnish
+    [bugfixes]
+        - Al guardar un artículo, se comienza a hacer purge de los "recursos" (flash, audios, videos, archivos)
+          Esto es indispensable cuando cambian el recurso por otro o lo editan a través del xcoding
+    [files]
+        /cgi-cpn/Artic.pm
+
+

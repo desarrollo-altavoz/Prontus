@@ -469,10 +469,10 @@ sub _guarda_recursos {
             };
 
             # Guarda archivo descriptor, especial para MULTIMEDIA
-            if ($type eq 'multimedia') {
-                # my ($nomfile_aux, $buffer_aux) = $this->_get_aux_mediafile("$nom_campo$this->{ts}", $nom_arch);
-                # &glib_fildir_02::write_file("$dst_dir/$nomfile_aux", $buffer_aux);
-            };
+            #~ if ($type eq 'multimedia') {
+                #~ # my ($nomfile_aux, $buffer_aux) = $this->_get_aux_mediafile("$nom_campo$this->{ts}", $nom_arch);
+                #~ # &glib_fildir_02::write_file("$dst_dir/$nomfile_aux", $buffer_aux);
+            #~ };
 
         # Si no se esta subiendo nada nuevo, ver si habia uno existente
         } else {
@@ -528,7 +528,45 @@ sub _guarda_recursos {
             };
         };
 
+
+        # Para el caso de Video, revisamos el screenshot
+        if ($nom_campo eq 'multimedia_video1') {
+            my @videos;
+            push @videos, $nom_arch;
+            my ($onlyname, $onlyext);
+            if($nom_arch =~ /^(.*?)(\..*?)$/) {
+                $onlyname = $1;
+                $onlyext = $2;
+            }
+
+            # Se obtienen los formatos de video
+            my %formatos = &lib_prontus::get_formatos_multimedia('MULTIMEDIA_VIDEO1');
+            foreach my $formato (keys %formatos) {
+                if($formato =~ /\.(\w+)$/) {
+                    my $newfile = $onlyname . lc($1) . $onlyext;
+                    push @videos, $newfile;
+                }
+            }
+
+            # Loopeamos todas las versiones
+            foreach my $file (@videos) {
+                if( -f "$dst_dir/$file" ) {
+                    # print STDERR "Agregando a purge [$dst_dir/$file]\n";
+                    &lib_prontus::purge_cache("$dst_dir/$file");
+                }
+                my $img = $file;
+                $img =~ s/\.mp4/.jpg/;
+                if( -f "$dst_dir/$img") {
+                    # print STDERR "Agregando a purge [$dst_dir/$img]\n";
+                    &lib_prontus::purge_cache("$dst_dir/$img");
+                }
+            }
+        } else {
+            &lib_prontus::purge_cache("$dst_dir/$nom_arch");
+        }
+
     };
+
 };
 
 # ---------------------------------------------------------------
