@@ -562,7 +562,10 @@ sub _guarda_recursos {
                 }
             }
         } else {
-            &lib_prontus::purge_cache("$dst_dir/$nom_arch");
+            if(-f "$dst_dir/$nom_arch") {
+                # print STDERR "Agregando a purge [$dst_dir/$nom_arch]\n";
+                &lib_prontus::purge_cache("$dst_dir/$nom_arch");
+            }
         }
 
     };
