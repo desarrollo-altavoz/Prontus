@@ -7461,4 +7461,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
+- Articulo
+    [mejoras]
+        - Se agrega visualizador del XML del artículo, desde el FID
+          El link se encuentra ubicado en el fid en la parte de "Ver más información"
+    [files]
+        /cgi-cpn/lib_prontus.pm
 
