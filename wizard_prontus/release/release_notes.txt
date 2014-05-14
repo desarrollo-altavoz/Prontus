@@ -7379,6 +7379,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.74 - 23/04/2014 - CVI
 ====================================================================================================
 
+- Prontus en General
+    [bugfix]
+        - Se comienza a escribir al Log de operación cuando alguien sube o borra un video de transcodificación.
+    [files]
+        /cgi-cpn/prontus_art_sbmit.cgi
+
 - Salidas List
     [mejoras]
         - Se habilita la posibilidad de múltiples LOOPs dentro de las salidas List.
@@ -7434,7 +7440,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Varnish
     [bugfixes]
         - Al guardar un artículo, se comienza a hacer purge de los "recursos" (flash, audios, videos, archivos)
-          Esto es indispensable cuando cambian el recurso por otro o lo editan a través del xcoding
+          Esto es indispensable cuando cambia el recurso por otro o lo editan a través del xcoding
     [cambios]
         - Desde esta release en adelante, la forma de hacer purge será con método GET + /purge al final de la URL
     [files]
@@ -7467,4 +7473,5 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           El link se encuentra ubicado en el fid en la parte de "Ver más información"
     [files]
         /cgi-cpn/lib_prontus.pm
+
 
