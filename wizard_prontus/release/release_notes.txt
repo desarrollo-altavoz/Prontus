@@ -7399,7 +7399,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/Artic.pm
 
-- Check Platrform
+- Check Platform
     [mejoras]
         - Se mejora la salida "no Web" para cuando el script corre por consola.
         - Se agrega la ruta /usr/bin/ al chequeo de la librería x264
@@ -7435,8 +7435,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Al guardar un artículo, se comienza a hacer purge de los "recursos" (flash, audios, videos, archivos)
           Esto es indispensable cuando cambian el recurso por otro o lo editan a través del xcoding
+    [cambios]
+        - Desde esta release en adelante, la forma de hacer purge será con método GET + /purge al final de la URL
     [files]
         /cgi-cpn/Artic.pm
+        /cgi-cpn/prontus_purge_cache.cgi
 
 - Buscador Prontus
     [mejoras]
@@ -7457,3 +7460,5 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Ahora se busca el <body> y si no se encuentra se hace lo anterior.
     [files]
         /cgi-cpn/lib_prontus.pm
+
+
