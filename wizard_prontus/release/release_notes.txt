@@ -7451,4 +7451,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_form_download.cgi
         /cgi-cpn/prontus_form_list.cgi
 
-
+- Previsualizar
+    [bugfixes]
+        - Al previsualizar, antes se imprimía HTML antes de la página, lo que hacía que quedara fuera del HTML
+          Ahora se busca el <body> y si no se encuentra se hace lo anterior.
+    [files]
+        /cgi-cpn/lib_prontus.pm
