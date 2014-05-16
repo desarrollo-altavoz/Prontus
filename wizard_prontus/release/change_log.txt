@@ -1,4 +1,24 @@
 ====================================================================================================
+11.2.74 - 16/05/2014
+====================================================================================================
+- notice: Se agrega visualizador del XML del artículo, desde el FID. El link se encuentra ubicado en la parte de "Ver más información"
+- bugfix: Cuando se regeneran los artículos se parsean las plantillas paralelas
+- bugfix: Se corrige error cuando no existía el directorio de MultiEditing al desloguearse
+- bugfix: Se corrige bug tipo carrera crítica que borraba la imágenes del articulo al transcodificar
+- bugfix: Al guardar un artículo, se comienza a hacer purge de los "recursos" (flash, audios, videos, archivos)
+- bugfix: Se corrige bug al ordenar las columnas del archivo de respaldo en el Prontus Form
+- bugfix: Al previsualizar portadas, ya no se imprime HTML antes de la página
+- improvement: Se comienza a escribir al Log de operación cuando alguien sube o borra un video de transcodificación
+- improvement: Se habilita la posibilidad de múltiples LOOPs dentro de las salidas List.
+- improvement: Se da la posibilidad de usar la del XML en vez de la BD en método del objeto artic (issue con sstlm)
+- improvement: Se mejora la salida "no Web" para cuando el script "Check Platform" corre por consola.
+- improvement: Se agrega la ruta /usr/bin/ al chequeo de la librería x264
+- improvement: Se mejora la forma en que se desconecta de la BD al generar las Taxport
+- improvement: Se comienza a parsear la marca: %%_mostrar%% para indicar si el nivel tax es visible o no en el mapa del sitio
+- improvement: Da la opción de colocar el "_ts" del artículo en los campos METADATA del buscador
+- changes: Desde esta release en adelante, la forma de hacer purge será con método GET + /purge al final de la URL
+
+====================================================================================================
 11.2.73 - 13/02/2014
 ====================================================================================================
 - bugfix: Se corrige problema en la generación de las taxports. En ocaciones la primera página quedaba en blanco.
