@@ -56,8 +56,8 @@
 # Prontus 6.0 - 29/10/2001 - Revision/modificaciones para Prontus 6.0
 
 # 7.0 - 20/12/2001 - Extensiones p7 :
-#   . "- Agrega marca a la portada para que inserte los men˙s de p·ginas con subtÌtulos.<br>"
-#     . "- PerfilaciÛn de periodistas en lista de artÌculos para permitir artÌculos personales<br>"
+#   . "- Agrega marca a la portada para que inserte los men√∫s de p√°ginas con subt√≠tulos.<br>"
+#     . "- Perfilaci√≥n de periodistas en lista de art√≠culos para permitir art√≠culos personales<br>"
 #     . "- Capacidad para borrar fotos, asocfile y realmedia<br>"
 #     . "- Linkeo de URLs https<br>"
 
@@ -116,13 +116,13 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de articulos no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de plantillas de articulos no es v√°lido");
     exit;
   };
 
   if (!(&check_contenido_dir($dir))) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de artÌculos est· vacÌo, Èste debe contener al menos una plantilla");
+    &glib_html_02::print_pag_result("Error","El directorio de plantillas de art√≠culos est√° vac√≠o, √©ste debe contener al menos una plantilla");
     exit;
   };
 
@@ -136,7 +136,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio destino de artÌculos no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio destino de art√≠culos no es v√°lido");
     exit;
   };
 
@@ -149,12 +149,12 @@ my ($dir);
 
     if ( ! (&glib_fildir_02::check_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados no es v·lido");
+      &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados no es v√°lido");
       exit;
     };
     if ( ! (&check_contenido_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados est· vacÌo. Debe haber a lo menos una plantilla.");
+      &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados est√° vac√≠o. Debe haber a lo menos una plantilla.");
       exit;
     };
 
@@ -168,7 +168,7 @@ my ($dir);
 
     if ( ! (&glib_fildir_02::check_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de destino de art. relacionados no es v·lido");
+      &glib_html_02::print_pag_result("Error","El directorio de destino de art. relacionados no es v√°lido");
       exit;
     };
   };
@@ -181,7 +181,7 @@ my ($dir);
 
     if ( ! (&glib_fildir_02::check_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas tipo tema no es v·lido");
+      &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas tipo tema no es v√°lido");
       exit;
     };
 
@@ -195,7 +195,7 @@ my ($dir);
 
     if ( ! (&glib_fildir_02::check_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de destino de portadas tipo tema no es v·lido");
+      &glib_html_02::print_pag_result("Error","El directorio de destino de portadas tipo tema no es v√°lido");
       exit;
     };
   };
@@ -204,14 +204,14 @@ my ($dir);
   # Dir de los dbm
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_DBM)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de data de usuarios no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de data de usuarios no es v√°lido");
     exit;
   };
 
   # Dir de los logs
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/log')) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de logs de Prontus no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de logs de Prontus no es v√°lido");
     exit;
   };
 
@@ -222,7 +222,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/procs')) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de logs de procesos masivos de Prontus no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de logs de procesos masivos de Prontus no es v√°lido");
     exit;
   };
 
@@ -231,19 +231,19 @@ my ($dir);
   # Dir cpan
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio cpan no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio cpan no es v√°lido");
     exit;
   };
 
   # Dir cpan/fid
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/fid')) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de FIDs no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de FIDs no es v√°lido");
     exit;
   };
   if (!(&check_contenido_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/fid'))) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error", "El directorio de FIDs est· vacÌo, Èste debe contener al menos un FID");
+    &glib_html_02::print_pag_result("Error", "El directorio de FIDs est√° vac√≠o, √©ste debe contener al menos un FID");
     exit;
   };
 
@@ -260,7 +260,7 @@ my ($dir);
   $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
   if ( ! (&glib_fildir_02::check_dir($core_dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio cpan no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio cpan no es v√°lido");
     exit;
   };
 
@@ -276,7 +276,7 @@ my ($dir);
 #  $core_file = "$core_dir/prontus_edi_ficha.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de Ficha de EdiciÛn no existe");
+#    &glib_html_02::print_pag_result("Error","Form. de Ficha de Edici√≥n no existe");
 #    exit;
 #  };
 #
@@ -290,70 +290,70 @@ my ($dir);
 #  $core_file = "$core_dir/prontus_art_admin.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de lista de artÌculos no existe");
+#    &glib_html_02::print_pag_result("Error","Form. de lista de art√≠culos no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_art_fset.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Frameset de lista de artÌculos no existe");
+#    &glib_html_02::print_pag_result("Error","Frameset de lista de art√≠culos no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_art_head.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Head de lista de artÌculos no existe");
+#    &glib_html_02::print_pag_result("Error","Head de lista de art√≠culos no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_index.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","P·gina de control de acceso no existe");
+#    &glib_html_02::print_pag_result("Error","P√°gina de control de acceso no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_menu.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","P·gina de Menu principal no existe");
+#    &glib_html_02::print_pag_result("Error","P√°gina de Menu principal no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_copy_spare_confirm.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","P·gina de confirmaciÛn de copia de port. recambio no existe");
+#    &glib_html_02::print_pag_result("Error","P√°gina de confirmaci√≥n de copia de port. recambio no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_show_spares.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","P·gina de despliegue de port. recambio no existe");
+#    &glib_html_02::print_pag_result("Error","P√°gina de despliegue de port. recambio no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_usr_admin.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","P·gina de Adm. de usuarios no existe");
+#    &glib_html_02::print_pag_result("Error","P√°gina de Adm. de usuarios no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_usr_ficha.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","P·gina de Ficha de usuario no existe");
+#    &glib_html_02::print_pag_result("Error","P√°gina de Ficha de usuario no existe");
 #    exit;
 #  };
 #
 #  $core_file = "$core_dir/prontus_waiting.html";
 #  if ( ! (-f $core_file) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","P·gina de espera no existe");
+#    &glib_html_02::print_pag_result("Error","P√°gina de espera no existe");
 #    exit;
 #  };
 #
@@ -390,7 +390,7 @@ my ($dir);
 #  # Dir imag
 #  if ( ! (&glib_fildir_02::check_dir("$core_dir/imag")) ) {
 #    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","El directorio de imagenes no es v·lido");
+#    &glib_html_02::print_pag_result("Error","El directorio de imagenes no es v√°lido");
 #    exit;
 #  };
 
@@ -404,13 +404,13 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas no es v√°lido");
     exit;
   };
 
   if (!(&check_contenido_dir($dir))) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error", "El directorio de plantillas de portadas est· vacÌo, Èste debe contener al menos un template");
+    &glib_html_02::print_pag_result("Error", "El directorio de plantillas de portadas est√° vac√≠o, √©ste debe contener al menos un template");
     exit;
   };
 
@@ -423,7 +423,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas de recambio no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas de recambio no es v√°lido");
     exit;
   };
 
@@ -433,7 +433,7 @@ my ($dir);
   # Tpls. repetidos.
   if (&tpls_duplicados($dir)) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Una o m·s plantillas de portada est· repetida dentro del mismo directorio pero con extensiÛn distinta");
+    &glib_html_02::print_pag_result("Error","Una o m√°s plantillas de portada est√° repetida dentro del mismo directorio pero con extensi√≥n distinta");
     exit;
   };
 
@@ -446,7 +446,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantilla de la home page de ediciones no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de plantilla de la home page de ediciones no es v√°lido");
     exit;
   };
 
@@ -470,7 +470,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de ediciones no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de destino de ediciones no es v√°lido");
     exit;
   };
 
@@ -479,7 +479,7 @@ my ($dir);
   # Pagina de inicializacion para las portadas en construccion.
   if ( ! (-f "$prontus_varglb::DIR_SERVER$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/$prontus_varglb::PAG_WORKING") ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Pagina para portada 'en construcciÛn' no existe");
+    &glib_html_02::print_pag_result("Error","Pagina para portada 'en construcci√≥n' no existe");
     exit;
   };
 
@@ -493,14 +493,14 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de ediciÛn ˙nica no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de edici√≥n √∫nica no es v√°lido");
     exit;
   };
 
   $dir .= $prontus_varglb::DIR_SECC;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de las portadas de la ediciÛn ˙nica no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de destino de las portadas de la edici√≥n √∫nica no es v√°lido");
     exit;
   };
 
@@ -509,7 +509,7 @@ my ($dir);
   # print STDERR "alfa[$dir]\n";
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino del xml de las portadas de la ediciÛn ˙nica no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de destino del xml de las portadas de la edici√≥n √∫nica no es v√°lido");
     exit;
   };
 
@@ -517,7 +517,7 @@ my ($dir);
   $dir =~ s/\/xml$/\/rss/;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de los rss de las portadas de la ediciÛn ˙nica no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de destino de los rss de las portadas de la edici√≥n √∫nica no es v√°lido");
     exit;
   };
 
@@ -863,7 +863,7 @@ sub check_user {
             print "<script type='text/javascript'>window.location.href='/$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html';</script>";
             exit;
         } else {
-            return ('', 'No se detectÛ una sesiÛn activa');
+            return ('', 'No se detect√≥ una sesi√≥n activa');
         };
     };
 
@@ -872,7 +872,7 @@ sub check_user {
     my ($flag_sysadmin) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_sysadmin.txt";
     if (-f $flag_sysadmin) { # sysadmin
         my $pass_sysadmin = &glib_fildir_02::read_file($flag_sysadmin);
-        # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseÒa
+        # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contrase√±a
         my $crypted_sys_pass;
         if(length($crypted_pass) == 32) {
             $crypted_sys_pass = md5_hex($pass_sysadmin);
@@ -899,7 +899,7 @@ sub check_user {
                 last;
             };
         };
-        $perfil = 'Usuario o ContraseÒa no v·lida.' if (!$id);
+        $perfil = 'Usuario o Contrase√±a no v√°lida.' if (!$id);
         return ($id, $perfil);
     };
 
@@ -956,7 +956,7 @@ sub check_artic_pub {
 
 # ---------------------------------------------------------------
 sub load_artic_pubs {
-# Carga un hash con los articulos publicados en las ˙ltimas portadas
+# Carga un hash con los articulos publicados en las √∫ltimas portadas
 
     # procesa edicion, vigente, la ultima y la base.
     my (@ediciones) = &lib_prontus::get_edics4update();
@@ -978,7 +978,7 @@ sub load_artic_pubs {
         return %$ref_hash_artics;
     };
 
-    # Solo si la edicion es base, se guardan sÛlo las portadas base
+    # Solo si la edicion es base, se guardan s√≥lo las portadas base
     my %ports_base;
     if($prontus_varglb::MULTI_EDICION eq 'SI') {
         foreach my $port_base (@prontus_varglb::BASE_PORTS) {
@@ -1185,7 +1185,7 @@ sub load_config {
   };
 
   if (not(-f "$nomcfg-id.cfg")) { # 1.22
-    print STDERR "No se pudo localizar el Archivo de ConfiguraciÛn PRONTUS\n";
+    print STDERR "No se pudo localizar el Archivo de Configuraci√≥n PRONTUS\n";
     print "Content-Type: text/html\n\n";
     print "<P>No se pudo localizar el Archivo de Configuraci&oacute;n PRONTUS";
     exit;
@@ -1198,7 +1198,7 @@ sub load_config {
   $errcfg = "[$nomcfg-bd.cfg]" if (! -f $nomcfg . '-bd.cfg');
   $errcfg = "[$nomcfg-var.cfg]" if (! -f $nomcfg . '-var.cfg');
   if ($errcfg) {
-    print STDERR "No se pudo localizar el Archivo de ConfiguraciÛn PRONTUS $errcfg\n";
+    print STDERR "No se pudo localizar el Archivo de Configuraci√≥n PRONTUS $errcfg\n";
     print "Content-Type: text/html\n\n";
     print "<P>No se pudo localizar el Archivo de Configuraci&oacute;n PRONTUS $errcfg";
     exit;
@@ -1219,9 +1219,9 @@ sub load_config {
   # print STDERR "buffer[$buffer]";
 
   if ($buffer !~ /\w/) {
-    print STDERR "Archivos de ConfiguraciÛn PRONTUS est·n vacÌos.\n";
+    print STDERR "Archivos de Configuraci√≥n PRONTUS est√°n vac√≠os.\n";
     print "Content-Type: text/html\n\n";
-    print "<P>Archivos de ConfiguraciÛn PRONTUS est·n vacÌos.";
+    print "<P>Archivos de Configuraci√≥n PRONTUS est√°n vac√≠os.";
     exit;
   };
 
@@ -1311,9 +1311,9 @@ sub load_config {
      my $extra_ports = $6; # segundo (): portadas paralelas, ej: inicio2.php;inicio3.php
      my $port4preview = $8; # tercer (): portada para preview, por ejemplo, si la portada ppal es footer.html, entonces la port para preview podria ser inicio.html
      if ($clave !~ /^\w+\.\w+$/) {
-        print STDERR "Error en CFG: Nombre de Portada [$clave] no es v·lido, debe contener sÛlo caracteres alfanumÈricos, incluido el underscore. Adem·s, debe tener una extensiÛn v·lida.\n";
+        print STDERR "Error en CFG: Nombre de Portada [$clave] no es v√°lido, debe contener s√≥lo caracteres alfanum√©ricos, incluido el underscore. Adem√°s, debe tener una extensi√≥n v√°lida.\n";
         print "Content-Type: text/html\n\n";
-        print "<p>Error en CFG: Nombre de Portada [$clave] no es v·lido, debe contener sÛlo caracteres alfanumÈricos, incluido el underscore. Adem·s, debe tener una extensiÛn v·lida.<p>";
+        print "<p>Error en CFG: Nombre de Portada [$clave] no es v√°lido, debe contener s√≥lo caracteres alfanum√©ricos, incluido el underscore. Adem√°s, debe tener una extensi√≥n v√°lida.<p>";
         exit;
      };
      $prontus_varglb::PORT_PLTS{$clave} = 1;
@@ -1389,9 +1389,9 @@ sub load_config {
     ($oct_dig_tipoprontus, $oct_dig, $rtext_enabled)  = &get_oct_dig($oct_dig);
 
     if ($oct_dig_tipoprontus ne $nro_prontus) {
-      print STDERR "Requerimiento de VersiÛn PRONTUS no autorizada, cont·ctese con AltaVoz SA.\n";
+      print STDERR "Requerimiento de Versi√≥n PRONTUS no autorizada, cont√°ctese con AltaVoz SA.\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Requerimiento de VersiÛn PRONTUS no autorizada, cont·ctese con AltaVoz SA.";
+      print "<P>Requerimiento de Versi√≥n PRONTUS no autorizada, cont√°ctese con AltaVoz SA.";
       exit;
     };
 
@@ -1579,18 +1579,18 @@ sub load_config {
         $pwd_bd = $2;
       };
       if ((! $server_bd) || (! $nom_bd) || (! $user_bd) || (! $pwd_bd)) {
-        print STDERR "Error en CFG: Faltan parametros de conexion a la base de datos MySQL. Los par·metros son: SERVER_BD, NOM_BD, USER_BD y PWD_BD\n";
+        print STDERR "Error en CFG: Faltan parametros de conexion a la base de datos MySQL. Los par√°metros son: SERVER_BD, NOM_BD, USER_BD y PWD_BD\n";
         print "Content-Type: text/html\n\n";
-        print "<P>Error en CFG: Faltan parametros de conexion a la base de datos MySQL. Los par·metros son: SERVER_BD, NOM_BD, USER_BD y PWD_BD";
+        print "<P>Error en CFG: Faltan parametros de conexion a la base de datos MySQL. Los par√°metros son: SERVER_BD, NOM_BD, USER_BD y PWD_BD";
         exit;
       };
 
     };
 
     if (($motor_bd ne 'MYSQL') && ($motor_bd ne 'PRONTUS')) {
-      print STDERR "Error en CFG: Motor de base de datos no v·lido, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.\n";
+      print STDERR "Error en CFG: Motor de base de datos no v√°lido, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: Motor de base de datos no v·lido, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.";
+      print "<P>Error en CFG: Motor de base de datos no v√°lido, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.";
       exit;
     };
 
@@ -1927,9 +1927,9 @@ sub load_config {
   };
   $nubetags_factor_olvido =~ s/\,/\./;
   if ($nubetags_factor_olvido !~ /^[0-9]+(\.[0-9]+)?$/) {
-      print STDERR "Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un n˙mero entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'\n";
+      print STDERR "Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un n√∫mero entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un n˙mero entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'";
+      print "<P>Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un n√∫mero entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'";
       exit;
   };
   $prontus_varglb::NUBETAGS_FACTOR_OLVIDO = $nubetags_factor_olvido;
@@ -1940,9 +1940,9 @@ sub load_config {
     $nubetags_max_tags = $2;
   };
   if ($nubetags_max_tags !~ /^[0-9]+$/) {
-      print STDERR "Error en CFG: seteo de variable NUBETAGS_MAX_TAGS contiene un valor no v&aacute;lido.<br>Debe contener un n˙mero entero, por ejemplo: '10'<br>Por omisi&oacute;n es: '30'\n";
+      print STDERR "Error en CFG: seteo de variable NUBETAGS_MAX_TAGS contiene un valor no v&aacute;lido.<br>Debe contener un n√∫mero entero, por ejemplo: '10'<br>Por omisi&oacute;n es: '30'\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable NUBETAGS_MAX_TAGS contiene un valor no v&aacute;lido.<br>Debe contener un n˙mero entero, por ejemplo: '10'<br>Por omisi&oacute;n es: '30'";
+      print "<P>Error en CFG: seteo de variable NUBETAGS_MAX_TAGS contiene un valor no v&aacute;lido.<br>Debe contener un n√∫mero entero, por ejemplo: '10'<br>Por omisi&oacute;n es: '30'";
       exit;
   };
   $prontus_varglb::NUBETAGS_MAX_TAGS = $nubetags_max_tags;
@@ -1981,7 +1981,7 @@ sub load_config {
       if ($clustering_debug_level !~ /^[0-2]$/) {
          my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_DEBUG_LEVEL contiene un valor no v&aacute;lido."
                   . "<br>Valores posibles: '0', '1' o '2'."
-                  . "<br>'0':SÛlo errores | '1': Errores e informaciÛn b·sica | '2': Todo lo anterior y adem·s debug especÌfico de FTP"
+                  . "<br>'0':S√≥lo errores | '1': Errores e informaci√≥n b√°sica | '2': Todo lo anterior y adem√°s debug espec√≠fico de FTP"
                   . "<br>Por omisi&oacute;n es: '1'";
           &glib_html_02::print_pag_result('Error', $msg, 0, 'exit=1,ctype=1');
       };
@@ -1994,7 +1994,7 @@ sub load_config {
       };
       if ($clustering_timeout_connect_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_TIMEOUT_CONNECT_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un n˙mero entero de segundos, por ejemplo: '10'"
+                  . "<br>Debe contener un n√∫mero entero de segundos, por ejemplo: '10'"
                   . "<br>Por omisi&oacute;n es: '15'";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
@@ -2007,7 +2007,7 @@ sub load_config {
       };
       if ($clustering_log_duration_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_LOG_DURATION_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un n˙mero entero de segundos, por ejemplo: '3600'"
+                  . "<br>Debe contener un n√∫mero entero de segundos, por ejemplo: '3600'"
                   . "<br>Por omisi&oacute;n es: '86400' (24 horas)";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
@@ -2020,7 +2020,7 @@ sub load_config {
       };
       if ($clustering_file_update_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_FILE_UPDATE_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un n˙mero entero de segundos, por ejemplo: '10'"
+                  . "<br>Debe contener un n√∫mero entero de segundos, por ejemplo: '10'"
                   . "<br>Por omisi&oacute;n es: '15'";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
@@ -2424,7 +2424,10 @@ sub make_portada {
 
                 $links_previews = "<div><a href='$k_dst'>Ver preview de portada $paralela '$k'</a></div>" . $links_previews;
             };
-            $buffer = "<div>Previsualizando '$cual_viendo'.</div> $links_previews <hr>" . $buffer;
+            my $info_string = "<div style=\"width:100%; background-color:#FFF;\"><div>Previsualizando '$cual_viendo'.</div> $links_previews <hr></div>";
+            if($buffer !~ s/(<body[^>]*?>)/\1$info_string/) {
+               $buffer = $info_string . $buffer;
+            }
         };
         $buffer =~ s/%%.+?%%//g;
         &glib_fildir_02::write_file($dest_file_clon, $buffer);
@@ -2690,7 +2693,7 @@ sub ajusta_crlf {
 };
 # -------------------------------------------------------------------------
 sub add_macros {
-  # Incluye en el tpl las macros seÒaladas en el con la marca
+  # Incluye en el tpl las macros se√±aladas en el con la marca
   # %%MACRO(<nomfilemacro>)%%
   # <nomfilemacro> : Nombre del archivo de la macro (con extension y sin path), ubicado dentro del dir macros
 
@@ -2727,7 +2730,7 @@ sub add_macros {
     $profundidad++;
 
     if ($profundidad > 10) {
-      $buffer_macro = '<b>[Error: Se alcanzÛ el nivel m·ximo de anidamiento de macros (max=10)]</b>';
+      $buffer_macro = '<b>[Error: Se alcanz√≥ el nivel m√°ximo de anidamiento de macros (max=10)]</b>';
       $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
       $profundidad = 0;
       next;
@@ -2782,7 +2785,7 @@ sub parser_area {
     my $totartics = 0;
     my $salida_html;
 
-    # Aca se calculan los articulos que efectivamente ser·n publicados
+    # Aca se calculan los articulos que efectivamente ser√°n publicados
     my %array_artics;
     foreach my $key (@keys_articulos) {
 
@@ -2825,7 +2828,7 @@ sub parser_area {
         $totartics++;
     };
 
-    # Aca se asume que todos los artÌculos ser·n parseados
+    # Aca se asume que todos los art√≠culos ser√°n parseados
     my $stop_loop = 0;
     my $loopcounter = 0;
     while (($loopcounter <= $#filtered_keys) && ($stop_loop < 1)) {
@@ -2860,7 +2863,7 @@ sub parser_area {
         my $buf_aux = $localbuf;
         my ($div, $res, $mod, $instancias);
         if (($buf_aux =~ /%%IFVC\((\d+)\, *(\d+)\)%%.+?%%\/IFVC%%/is) and ($buf_aux !~ /%%IFV\((\d+)\, *(\d+)\)%%.+?%%\/IFV%%/is)) {
-            return ('Error en Loop: Sentencia IFVC debe ir acompaÒada de a lo menos un IFV', $loopcounter);
+            return ('Error en Loop: Sentencia IFVC debe ir acompa√±ada de a lo menos un IFV', $loopcounter);
         };
         while ($buf_aux =~ /%%IFV(C?)\((\d+)\, *(\d+)\)%%.+?%%\/IFV\1%%/isg) {
             my $ifvc = $1;
@@ -3045,7 +3048,7 @@ sub fechas_ok {
     }
     else {
         $ts_now = &glib_hrfec_02::get_dtime_pack4(); # TS de AHORA.
-        # $ts_now = '20110112000000'; # TS 0 de la maÒana
+        # $ts_now = '20110112000000'; # TS 0 de la ma√±ana
     };
 
     # ts_p
@@ -3250,9 +3253,9 @@ sub ajusta_nchars {
 sub parser_fechap {
 # Parsea fechaplong y fechapshrt en base a fechap en el articulo.
   my ($buffer, $val_campo, $nom_campo) = @_;
-  # %%FECHAPLONG%% = Fecha de publicaciÛn, en formato largo
-  # %%FECHAPSHRT%% = Fecha de publicaciÛn, en formato corto
-  # %%FECHAP%%     = Fecha de publicaciÛn, en formato ISO --> Calza con el 2o. tipo de sustitucion estandar por tanto no se hace nada especial.
+  # %%FECHAPLONG%% = Fecha de publicaci√≥n, en formato largo
+  # %%FECHAPSHRT%% = Fecha de publicaci√≥n, en formato corto
+  # %%FECHAP%%     = Fecha de publicaci√≥n, en formato ISO --> Calza con el 2o. tipo de sustitucion estandar por tanto no se hace nada especial.
   # funciona igual para _fechae
 
   my $marca_shrt = $nom_campo . 'SHRT';
@@ -3388,7 +3391,7 @@ sub parser_condicional {
         # $cont_condicionales_begin++ if ($inicio >= 0);
         # $cont_condicionales_end++ if ($fin >= 0);
 
-        # Si encontrÛ ambos, prosigue.
+        # Si encontr√≥ ambos, prosigue.
         if (($inicio >= 0) && ($fin >= 0) && ($fin > $inicio)) {
 
             # Busca otro comienzo de IF que este despues del recien
@@ -3521,7 +3524,7 @@ sub test_servers {
   };
   # El request no proviene de ningun server habilitado.
   print "Content-Type: text/html\n\n";
-  print "<P>Error de EjecuciÛn - Falta el par·metro requerido. [$referer]";
+  print "<P>Error de Ejecuci√≥n - Falta el par√°metro requerido. [$referer]";
   exit;
 
 };
@@ -3625,7 +3628,7 @@ sub formatea_texto_simple {
 #
 # Goodies:
 # Sustituye primer %e1% por <span class=e1> y segundo por </span>. El estilo debe estar definido como css.
-# Si la linea consiste en cuatro o más ----, la sustituye por un <HR>.
+# Si la linea consiste en cuatro o mas ----, la sustituye por un <HR>.
 # Detecta URLs (de la forma '(http://..)'), aplicando un link sobre la palabra anterior
 # al string http.
 
@@ -3662,12 +3665,12 @@ sub formatea_texto_simple {
 
       # 1.1 modificado en # 1.8
       if ($LINEAS[$i] !~ s/\(([^)]+?)\)\s*?[(](https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2" target="_blank">\1<\/A>/igs) { # 7.0
-        $LINEAS[$i] =~ s/([\wø\-ˇ\?]+?)\s*?[(](https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2" target="_blank">\1<\/A>/igs;  # 7.0
+        $LINEAS[$i] =~ s/([\w¬ø\-√ø\?]+?)\s*?[(](https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2" target="_blank">\1<\/A>/igs;  # 7.0
       };
 
       # 1.2 modificado en # 1.8
       if ($LINEAS[$i] !~ s/\(([^)]+?)\)\s*?[(]\_(https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2">\1<\/A>/igs) { # 7.0
-        $LINEAS[$i] =~ s/([\wø\-ˇ\?]+?)\s*?[(]\_(https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2">\1<\/A>/igs;   # 7.0
+        $LINEAS[$i] =~ s/([\w¬ø\-√ø\?]+?)\s*?[(]\_(https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2">\1<\/A>/igs;   # 7.0
       };
 
 
@@ -4260,7 +4263,7 @@ sub saca_tags_rets {
     $toencode =~ s/^ //sg;
     $toencode=~ s/"/'/g;
     $toencode=~ s/&quot;/'/g;
-    my $inclinada = "¥";
+    my $inclinada = "¬¥";
     utf8::encode($inclinada);
     $toencode =~ s/'/$inclinada/sg; # cambia comilla vertical por comilla inclinada, para compatib. JS
     $toencode =~ s/&#39;/$inclinada/sg; # cambia comilla vertical por comilla inclinada, para compatib. JS
@@ -4309,7 +4312,7 @@ sub check_dirs_edic() {
   # Dir de la edicion.
   if ( ! (&glib_fildir_02::check_dir($dir_dest_edic)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de la edicion no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de la edicion no es v√°lido");
     exit;
   };
 
@@ -4317,7 +4320,7 @@ sub check_dirs_edic() {
   $dir = $dir_dest_edic . $prontus_varglb::DIR_SECC;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de portadas de la ediciÛn no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de portadas de la edici√≥n no es v√°lido");
     exit;
   };
 
@@ -4325,7 +4328,7 @@ sub check_dirs_edic() {
   $dir =~ s/$prontus_varglb::DIR_SECC$/\/xml/;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio del xml de portadas de la ediciÛn no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio del xml de portadas de la edici√≥n no es v√°lido");
     exit;
   }
   else {
@@ -4337,7 +4340,7 @@ sub check_dirs_edic() {
   $dir = $dir_dest_edic . $prontus_varglb::DIR_HPAGES;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de homepage de la ediciÛn no es v·lido");
+    &glib_html_02::print_pag_result("Error","El directorio de homepage de la edici√≥n no es v√°lido");
     exit;
   };
 
@@ -4457,7 +4460,7 @@ sub dev_tam_img {
       ($msg, $ancho, $alto) = &ancho_alto_png($file);
     }
     else {
-      return ('Archivo no tiene extensiÛn JPG/JPE/JPEG/PNG/GIF/BMP', 0, 0);
+      return ('Archivo no tiene extensi√≥n JPG/JPE/JPEG/PNG/GIF/BMP', 0, 0);
     };
 
     return ($msg, $ancho, $alto);
@@ -4542,7 +4545,7 @@ sub ancho_alto_jpg {
       # if ($length < 2) { # ych
       if( !defined( $length ) || $length < 2 ) {
         close($jpeg);
-        return ("Longitud del marcador JPEG errÛnea!", 0, 0);
+        return ("Longitud del marcador JPEG err√≥nea!", 0, 0);
       };
 
       read($jpeg, $dummy, $length-2);
@@ -4556,7 +4559,7 @@ sub ancho_alto_gif {
   (open my $gif, "<$file") || return ("No se puede abrir archivo GIF!", 0, 0);
   binmode $gif;
   read($gif, $type, 6);
-  $type =~ /GIF8[7,9]a/ || return ("Archivo GIF inv·lido!", 0, 0);
+  $type =~ /GIF8[7,9]a/ || return ("Archivo GIF inv√°lido!", 0, 0);
   read($gif, $s, 4) == 4 || return ("Archivo GIF corrupto!", 0, 0);
   close($gif);
   ($a,$b,$c,$d)=unpack("C"x4,$s);
@@ -4569,7 +4572,7 @@ sub ancho_alto_bmp {
   (open $bmp, "<$file") || return ("No se puede abrir archivo BMP!", 0, 0);
   binmode $bmp;
   read($bmp, $type, 2);
-  $type =~ /BM/ || return ("Archivo BMP inv·lido!", 0, 0);
+  $type =~ /BM/ || return ("Archivo BMP inv√°lido!", 0, 0);
   read($bmp, $type, 12);
   read($bmp, $s, 4) == 4 || return ("Archivo BMP corrupto!", 0, 0);
   $a=unpack("C"x1,$s);
@@ -4587,7 +4590,7 @@ sub ancho_alto_bmp {
   }
   else {
     close($bmp);
-    return ("Archivo BMP inv·lido!", 0, 0);
+    return ("Archivo BMP inv√°lido!", 0, 0);
   };
 }; # ancho_alto_bmp.
 
@@ -4830,7 +4833,7 @@ sub parse_filef {
 
         $fileurl .= "$titular/$fecha4friendly/$hora.$ext";
     } else {
-        # Deja por defecto la versiÛn 1, en caso de que no exista la variable o estÈ vacia.
+        # Deja por defecto la versi√≥n 1, en caso de que no exista la variable o est√© vacia.
         $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
     };
 
@@ -5150,10 +5153,10 @@ sub get_arbol_mapa {
 
   # -----------------------------------------------------
   # secc
-  my $sql = "select SECC_ID, SECC_NOM, SECC_PORT, SECC_NOM4VISTAS from SECC where SECC_ORDEN > 0 order by SECC_ORDEN";
-  my ($mapa_s, $nested_s, $secc_id, $secc_nom, $secc_port, $secc_nom4vistas);
+  my $sql = "select SECC_ID, SECC_NOM, SECC_PORT, SECC_NOM4VISTAS, SECC_MOSTRAR from SECC where SECC_ORDEN > 0 order by SECC_ORDEN";
+  my ($mapa_s, $nested_s, $secc_id, $secc_nom, $secc_port, $secc_nom4vistas, $secc_mostrar);
   my ($salida) = &glib_dbi_02::ejecutar_sql($bd, $sql);
-  $salida->bind_columns(undef, \($secc_id, $secc_nom, $secc_port, $secc_nom4vistas));
+  $salida->bind_columns(undef, \($secc_id, $secc_nom, $secc_port, $secc_nom4vistas, $secc_mostrar));
   while ($salida->fetch) {
     # Cambia nom para la vista.
     $secc_nom = &lib_prontus::get_nomtax_envista($mv, $secc_nom4vistas) if ($mv); # rotulos tax
@@ -5168,6 +5171,8 @@ sub get_arbol_mapa {
     $mapa_s =~ s/%%_id%%/$secc_id/ig;
     $mapa_s =~ s/%%_nom%%/$secc_nom/ig;
     $mapa_s =~ s/%%_indent%%/$local_indent/ig;
+    $mapa_s =~ s/%%_mostrar%%/$secc_mostrar/ig;
+
     my $tax_fixedurl = &lib_prontus::get_tax_link($secc_port, $mv);
     $mapa_s =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
     $mapa_s =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
@@ -5182,10 +5187,10 @@ sub get_arbol_mapa {
 
     # -----------------------------------------------------
     # temas
-    $sql = "select TEMAS_ID, TEMAS_NOM, TEMAS_PORT, TEMAS_NOM4VISTAS from TEMAS where TEMAS_ORDEN > 0 AND TEMAS_IDSECC = '$secc_id' order by TEMAS_ORDEN";
-    my ($mapa_t, $mapa_total_t, $temas_id, $temas_nom, $temas_port, $temas_nom4vistas);
+    $sql = "select TEMAS_ID, TEMAS_NOM, TEMAS_PORT, TEMAS_NOM4VISTAS, TEMAS_MOSTRAR from TEMAS where TEMAS_ORDEN > 0 AND TEMAS_IDSECC = '$secc_id' order by TEMAS_ORDEN";
+    my ($mapa_t, $mapa_total_t, $temas_id, $temas_nom, $temas_port, $temas_nom4vistas, $temas_mostrar);
     my ($salida_t) = &glib_dbi_02::ejecutar_sql($bd, $sql);
-    $salida_t->bind_columns(undef, \($temas_id, $temas_nom, $temas_port, $temas_nom4vistas));
+    $salida_t->bind_columns(undef, \($temas_id, $temas_nom, $temas_port, $temas_nom4vistas, $temas_mostrar));
     while ($salida_t->fetch) {
       $temas_nom = &lib_prontus::get_nomtax_envista($mv, $temas_nom4vistas) if ($mv); # rotulos tax
       $temas_nom = &lib_prontus::escape_html($temas_nom);
@@ -5197,6 +5202,7 @@ sub get_arbol_mapa {
       $mapa_t =~ s/%%_id%%/$temas_id/ig;
       $mapa_t =~ s/%%_nom%%/$temas_nom/ig;
       $mapa_t =~ s/%%_indent%%/$local_indent/ig;
+      $mapa_t =~ s/%%_mostrar%%/$temas_mostrar/ig;
 
       $tax_fixedurl = &lib_prontus::get_tax_link($temas_port, $mv);
       $mapa_t =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
@@ -5206,10 +5212,10 @@ sub get_arbol_mapa {
 
       # -----------------------------------------------------
       # subtemas
-      $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM, SUBTEMAS_PORT, SUBTEMAS_NOM4VISTAS from SUBTEMAS where SUBTEMAS_ORDEN > 0 AND SUBTEMAS_IDTEMAS = '$temas_id' order by SUBTEMAS_ORDEN";
-      my ($mapa_st, $mapa_st_total, $subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas);
+      $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM, SUBTEMAS_PORT, SUBTEMAS_NOM4VISTAS, SUBTEMAS_MOSTRAR from SUBTEMAS where SUBTEMAS_ORDEN > 0 AND SUBTEMAS_IDTEMAS = '$temas_id' order by SUBTEMAS_ORDEN";
+      my ($mapa_st, $mapa_st_total, $subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas, $subtemas_mostrar);
       my ($salida_st) = &glib_dbi_02::ejecutar_sql($bd, $sql);
-      $salida_st->bind_columns(undef, \($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas));
+      $salida_st->bind_columns(undef, \($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas, $subtemas_mostrar));
       while ($salida_st->fetch) {
         $subtemas_nom = &lib_prontus::get_nomtax_envista($mv, $subtemas_nom4vistas) if ($mv); # rotulos tax
         $subtemas_nom = &lib_prontus::escape_html($subtemas_nom);
@@ -5220,6 +5226,7 @@ sub get_arbol_mapa {
         $mapa_st =~ s/%%_id%%/$subtemas_id/ig;
         $mapa_st =~ s/%%_nom%%/$subtemas_nom/ig;
         $mapa_st =~ s/%%_indent%%/$local_indent/ig;
+        $mapa_st =~ s/%%_mostrar%%/$subtemas_mostrar/ig;
 
         $tax_fixedurl = &lib_prontus::get_tax_link($subtemas_port, $mv);
         $mapa_st =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
@@ -5582,7 +5589,7 @@ sub call_system_and_location {
     $path_conf =~ s/^$dir_server//;
     $script .= "?path_conf=$path_conf";
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Ejecutar Proceso","Para completar la ejecuciÛn del proceso requerido, haga click <a href=\"$script\">aquÌ</a>.");
+    &glib_html_02::print_pag_result("Ejecutar Proceso","Para completar la ejecuci√≥n del proceso requerido, haga click <a href=\"$script\">aqu√≠</a>.");
   }
   # SI UNIX
   else {
@@ -5830,7 +5837,7 @@ sub notildes {
   # convierte a latin1 para poder aplicar la er
   utf8::decode($toencode);
 
-  $toencode =~ tr/·ÈÌÛ˙¡…Õ”⁄¸‹Ò—/aeiouaeiouuunn/; # Destilda ISO.
+  $toencode =~ tr/√°√©√≠√≥√∫√Å√â√ç√ì√ö√º√ú√±√ë/aeiouaeiouuunn/; # Destilda ISO.
 
   $toencode =~ s/&(.)acute;/$1/g;
   $toencode =~ s/&(.)tilde;/$1/g;
@@ -6181,9 +6188,9 @@ sub purge_cache {
         close PURGEFILE;
 
     # Segun release_notes:
-    #     "Por el momento, no se est· considerando el PURGE de las portadas taxonÛmica.
-    #      Lo cual en un futuro quedar· configurable"
-    # Por ahora, hasta nuevo aviso se aplica sÛlo si la taxport es la primera p·gina
+    #     "Por el momento, no se est√° considerando el PURGE de las portadas taxon√≥mica.
+    #      Lo cual en un futuro quedar√° configurable"
+    # Por ahora, hasta nuevo aviso se aplica s√≥lo si la taxport es la primera p√°gina
     } elsif($relpath =~ /_1\.\w+$/is) {
         my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
         &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);

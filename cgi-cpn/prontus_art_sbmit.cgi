@@ -142,6 +142,20 @@ sub main {
         &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 0, 'exit=1,ctype=1');
     };
 
+    my $video_subido = &glib_cgi_04::param('MULTIMEDIA_VIDEO1');
+    if ($video_subido ne '') {
+        my $ts = &glib_cgi_04::param('_file');
+        $ts =~ s/\.html//;
+        &lib_prontus::write_log('Carga Video', 'Articulo', "TS[$ts] VIDEOTEMP[$video_subido]", $prontus_varglb::USERS_USR);
+    }
+
+    my $borrar_video = &glib_cgi_04::param('_BORR_multimedia_video1');
+    if ($borrar_video eq 'S') {
+        my $ts = &glib_cgi_04::param('_file');
+        $ts =~ s/\.html//;
+        &lib_prontus::write_log('Borrar Video', 'Articulo', "TS[$ts] VIDEO[". &glib_cgi_04::param('_HIDD_multimedia_video1')."]", $prontus_varglb::USERS_USR);
+    }
+
     # Validar quota
     my $msg_err_quota = &lib_quota::check_quota_suficiente();
     &glib_html_02::print_pag_result('Error',$msg_err_quota, 0, 'exit=1,ctype=1') if ($msg_err_quota);

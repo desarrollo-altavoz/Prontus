@@ -338,6 +338,18 @@ sub check_xcoding {
         print "<span class=\"check-error\">" if ($ambiente_web);
         print "/usr/lib/       -> no se encontró\n";
         print "</span>" if ($ambiente_web);
+
+        printf(" * %42s", '');
+        $resp2 = `ls /usr/bin/ | grep x264`;
+        if($resp2) {
+          $resp2 =~ s/\s+$//ig;
+          $resp2 =~ s/\s+/, /ig;
+          print "/usr/bin/       -> ok ($resp2)\n";
+        } else {
+          print "<span class=\"check-error\">" if ($ambiente_web);
+          print "/usr/bin/       -> no se encontró\n";
+          print "</span>" if ($ambiente_web);
+        }
       }
     }
 

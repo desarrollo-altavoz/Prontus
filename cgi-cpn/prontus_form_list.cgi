@@ -125,9 +125,7 @@ main: {
         push(@orderreal, '_fecha');
         push(@orderreal, '_hora');
         push(@orderreal, '_ip');
-        foreach my $index (sort keys %orderhash) {
-            my $col = $orderhash{$index};
-            $col =~ s/"/""/;
+        foreach my $index (sort { $a <=> $b} keys %orderhash) {
             push(@orderreal, $orderhash{$index});
         };
 

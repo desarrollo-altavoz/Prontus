@@ -893,6 +893,16 @@ var Fid = {
             return;
         }
         Admin.pingRecurso('art', mainFidJs.TS, Fid.pingRecurso);
+    },
+
+    // -------------------------------------------------------------------------
+    // Abre el XML desde el CPAN
+    verXML: function(p, ts) {
+
+        var loc = 'prontus_art_view_xml.cgi?_prontus_id='+p+'&_ts='+ts;
+        nom = "verXML"+ts;
+        Utiles.subWin(loc, nom, 800, 500, 50, 50);
+        
     }
 
 };

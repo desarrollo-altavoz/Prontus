@@ -135,9 +135,6 @@ sub garbage_collector {
     if (-d $dir) {
         my $cmd = "find $dir -mtime +$lib_multiediting::MAX_DAY_GARBAGE  -name '*.lck' -exec rm \{\} \\;";
         my $res = `$cmd`;
-
-    } else {
-        print "No existe el directorio de Locks [$dir]\n";
     }
 };
 

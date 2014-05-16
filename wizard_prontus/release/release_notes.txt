@@ -7376,8 +7376,20 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.74 - 17/03/2014 - CVI
+11.2.74 - 16/05/2014 - CVI
 ====================================================================================================
+
+- Prontus en General
+    [bugfix]
+        - Se comienza a escribir al Log de operación cuando alguien sube o borra un video de transcodificación.
+    [files]
+        /cgi-cpn/prontus_art_sbmit.cgi
+
+- Salidas List
+    [mejoras]
+        - Se habilita la posibilidad de múltiples LOOPs dentro de las salidas List.
+    [files]
+        /cgi-cpn/prontus_cron_list.cgi
 
 - Regenerar Articulos
     [bugfixes]
@@ -7393,8 +7405,73 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/Artic.pm
 
-- Check Platrform
+- Check Platform
     [mejoras]
         - Se mejora la salida "no Web" para cuando el script corre por consola.
+        - Se agrega la ruta /usr/bin/ al chequeo de la librería x264
     [files]
         /cgi-cpn/prontus_check_platform.cgi
+
+- Portadas Taxonómicas
+    [mejoras]
+        - Se mejora la forma en que se desconecta de la BD para forzar que efectivamente se desconecte
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+
+- Mapa del Sitio
+    [mejoras]
+        - Se comienza a parsear la marca: %%_mostrar%% para indicar si el nivel tax es visible o no
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Logout
+    [bugfixes]
+        - Se corrige error cuando no existía el directorio de MultiEditing al desloguearse
+    [files]
+        /cgi-cpn/lib_multiediting.pm
+
+- Transcodificación
+    [bugfixes]
+        - Se corrige bug tipo carrera crítica que borraba la imágenes del articulo
+          cuando se subían imágenes antes de que terminara la Transcodificacion
+    [files]
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+
+- Varnish
+    [bugfixes]
+        - Al guardar un artículo, se comienza a hacer purge de los "recursos" (flash, audios, videos, archivos)
+          Esto es indispensable cuando cambia el recurso por otro o lo editan a través del xcoding
+    [cambios]
+        - Desde esta release en adelante, la forma de hacer purge será con método GET + /purge al final de la URL
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/prontus_purge_cache.cgi
+
+- Buscador Prontus
+    [mejoras]
+        - Da la opción de colocar el "_ts" del artículo en los campos METADATA
+    [files]
+        /cgi-cpn/prontus_indexer.cgi
+
+- Prontus Form
+    [bugfixes]
+        - Se corrige bug al ordenar las columnas del archivo de respaldo
+    [files]
+        /cgi-cpn/prontus_form_download.cgi
+        /cgi-cpn/prontus_form_list.cgi
+
+- Previsualizar
+    [bugfixes]
+        - Al previsualizar, antes se imprimía HTML antes de la página, lo que hacía que quedara fuera del HTML
+          Ahora se busca el <body> y si no se encuentra se hace lo anterior.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Articulo
+    [mejoras]
+        - Se agrega visualizador del XML del artículo, desde el FID
+          El link se encuentra ubicado en el fid en la parte de "Ver más información"
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+
