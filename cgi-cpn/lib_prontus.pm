@@ -2424,7 +2424,10 @@ sub make_portada {
 
                 $links_previews = "<div><a href='$k_dst'>Ver preview de portada $paralela '$k'</a></div>" . $links_previews;
             };
-            $buffer = "<div>Previsualizando '$cual_viendo'.</div> $links_previews <hr>" . $buffer;
+            my $info_string = "<div style=\"width:100%; background-color:#FFF;\"><div>Previsualizando '$cual_viendo'.</div> $links_previews <hr></div>";
+            if($buffer !~ s/(<body[^>]*?>)/\1$info_string/) {
+               $buffer = $info_string . $buffer;
+            }
         };
         $buffer =~ s/%%.+?%%//g;
         &glib_fildir_02::write_file($dest_file_clon, $buffer);
