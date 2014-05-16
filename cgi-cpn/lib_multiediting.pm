@@ -34,6 +34,7 @@ use strict;
 use glib_fildir_02;
 
 our $RELDIR_CONCURRENCY = '/cpan/data/users/concurrency';
+our $MAX_DAY_GARBAGE = 15;
 
 #---------------------------------------------------------------#
 # SUB-RUTINAS.
@@ -52,7 +53,7 @@ sub send_ping {
 
 sub lock_recurso {
     # Escribe en un archivo el primer usuario que tomo un recurso. (art|port)
-    
+
     my ($document_root, $prontus_id, $recurso, $tipo_recurso, $current_user, $id_session, $tipo_bloqueo) = @_;
     my $dir = "$document_root/$prontus_id$lib_multiediting::RELDIR_CONCURRENCY/$tipo_recurso/lock";
     &glib_fildir_02::check_dir($dir);
@@ -122,6 +123,19 @@ sub get_concurrency {
     };
     $str =~ s/\, $//;
     return $str;
+};
+
+
+# ---------------------------------------------------------------
+sub garbage_collector {
+# Elimina los locks mas antiguos de X dias
+    my ($document_root, $prontus_id, $tipo_recurso) = @_;
+
+    my $dir = "$document_root/$prontus_id$lib_multiediting::RELDIR_CONCURRENCY/$tipo_recurso/lock";
+    if (-d $dir) {
+        my $cmd = "find $dir -mtime +$lib_multiediting::MAX_DAY_GARBAGE  -name '*.lck' -exec rm \{\} \\;";
+        my $res = `$cmd`;
+    }
 };
 
 # ---------------------------------------------------------------

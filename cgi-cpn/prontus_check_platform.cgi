@@ -65,11 +65,9 @@ my $MODULES = [
 ];
 
 # ---------------------------------------
-
+my $ambiente_web;
 main: {
 
-
-  my $ambiente_web;
   if ($ENV{'SERVER_NAME'} ne '') {
     $ambiente_web = 1;
   };
@@ -80,8 +78,9 @@ main: {
   print "<center><b>" if ($ambiente_web);
   print "\nProntus - Verificar Plataforma\n";
   print "</b></center>" if ($ambiente_web);
-  print "<pre>" if ($ambiente_web);
-  print "\n\n<b>Chequeando modulos PERL requeridos por Prontus...</b>\n";
+  print "<pre><b>" if ($ambiente_web);
+  print "\nChequeando modulos PERL requeridos por Prontus...\n";
+  print "</b>" if ($ambiente_web);
 
   # S.O.
   my $os = uc $^O; # solo esta en algunas plataformas
@@ -112,7 +111,9 @@ main: {
   push @paths_ffmpeg, '/usr/local/bin/ffmpeg';
   push @paths_ffmpeg, '/usr/bin/ffmpeg';
 
-  print "<br>\n<b>Chequeando soporte transcodificaci&oacute;n ...</b><br>\n";
+  print "\n<b>" if ($ambiente_web);
+  print "Chequeando soporte transcodificación ...\n";
+  print "</b>" if ($ambiente_web);
 
 #    # Se comprueba presencia de Python
 #    printf("* %28s %-12s ", 'Python', '');
@@ -125,7 +126,7 @@ main: {
 #    }
 
   # ffmpeg
-  printf("* %28s %-12s ", 'ffmpeg', '');
+  # printf("* %28s %-12s ", 'ffmpeg', '');
   my $found_path_ffmpeg = 0;
   foreach my $path_ffmpeg (@paths_ffmpeg) {
 
@@ -136,10 +137,16 @@ main: {
   };
 
   if (!$found_path_ffmpeg) {
-    print "<span class=\"check-error\">No se pudo detectar ffmpeg instalado en el sistema.<br>\nRutas analizadas:\n<br>$paths_ffmpeg[0] y $paths_ffmpeg[1]</span>\n";
+    print "<span class=\"check-error\">" if ($ambiente_web);
+    print "No se pudo detectar ffmpeg instalado en el sistema.\n";
+    print "<br>" if ($ambiente_web);
+    print "Rutas analizadas:\n";
+    print "<br>" if ($ambiente_web);
+    print "$paths_ffmpeg[0] y $paths_ffmpeg[1]\n";
+    print "</span>\n" if ($ambiente_web);
   };
 
-  print "\nFIN\n\n";
+  print "\n==== FIN ====\n\n";
   print "</pre>" if ($ambiente_web);
 
 }; # main
@@ -190,7 +197,7 @@ sub have_vers {
 
   my $version = !$wanted?'(any version)':"(v$wanted)";
 
-  printf("* %28s %-12s ", $pkg4display, !$wanted?'(any)':"(v$wanted)");
+  printf(" * %28s %-12s ", $pkg4display, !$wanted?'(any)':"(v$wanted)");
 
   # Modules may change $SIG{__DIE__} and $SIG{__WARN__}, so localise them here
   # so that later errors display 'normally'
@@ -215,7 +222,10 @@ sub have_vers {
   }
 
   my $vok = (vers_cmp($vnum,$wanted) > -1);
-  print ((($vok) ? "ok $vstr\n" : "<span class=\"check-error\">error $vstr</span>\n"));
+
+  my $error = "error $vstr\n";
+  $error = "<span class=\"check-error\">$error</span>\n" if ($ambiente_web);
+  print ((($vok) ? "ok $vstr\n" : $error));
 
   if ($pkg eq 'GD') {
     &check_soporte_gd('gif');
@@ -238,7 +248,7 @@ sub check_soporte_gd { # jpeg, libungif y libpng
   $nomlib = 'jpeg' if ($format eq 'jpeg');
   $nomlib = 'libungif' if ($format eq 'gif');
   $nomlib = 'libpng' if ($format eq 'png');
-  printf("* %28s %-12s ", "GD - soporte $format", "($nomlib)");
+  printf(" * %28s %-12s ", "GD - soporte $format", "($nomlib)");
   if (GD::Image->can($format)) {
     print "ok\n";
   }
@@ -250,7 +260,8 @@ sub check_soporte_gd { # jpeg, libungif y libpng
 # ---------------------------------------
 sub check_xcoding {
   my $path_ffmpeg = shift;
-  print "<br><b>Revisando soporte con $path_ffmpeg</b><br>";
+
+  print "Revisando soporte con $path_ffmpeg\n";
   my $xcoding_ver = '0.5.2';
 
   # Primero se chequea la version
@@ -258,7 +269,7 @@ sub check_xcoding {
   print STDERR '['.$resp.']';
   if($resp =~ /^FFmpeg (version | |)([^\s,]+)/i) {
     my $ver = $2;
-    printf("* %28s %-12s ", 'FFmpeg', "($xcoding_ver)");
+    printf(" * %28s %-12s ", 'FFmpeg', "($xcoding_ver)");
 
     if($ver =~ /\d+\.\d+\.\d+/) {
       my $vok = (vers_cmp($ver,$xcoding_ver) > -1);
@@ -267,14 +278,14 @@ sub check_xcoding {
     } elsif($resp =~ /(built on .*?) with/) {
       my $built = $1;
       print "<span class=\"check-error\">no se pudo comparar la version</span>\n";
-      printf("* %42s", '');
+      printf(" * %42s", '');
       print "<span class=\"check-error\">($built)</span>\n";
     } else {
       print "<span class=\"check-error\">no se pudo comparar version ($ver)</span>\n";
     }
 
     # Se comprueba soporte para libx264
-    printf("* %28s %-12s ", 'FFmpeg con soporte libx264', '');
+    printf(" * %28s %-12s ", 'FFmpeg con soporte libx264', '');
     if($resp =~ /--enable-libx264/) {
       print "ok\n";
     } else {
@@ -282,12 +293,14 @@ sub check_xcoding {
       if($resp ne '') {
         print "ok\n";
       } else {
-        print "<span class=\"check-error\">not enabled</span>\n";
+        print "<span class=\"check-error\">" if ($ambiente_web);
+        print "not enabled";
+        print "</span>\n" if ($ambiente_web);
       };
     }
 
     # Se comprueba soporte para libfaac
-    printf("* %28s %-12s ", 'FFmpeg con soporte libfaac', '');
+    printf(" * %28s %-12s ", 'FFmpeg con soporte libfaac', '');
     if($resp =~ /--enable-libfaac/) {
       print "ok\n";
     } else {
@@ -295,12 +308,14 @@ sub check_xcoding {
       if($resp ne '') {
         print "ok\n";
       } else {
-        print "<span class=\"check-error\">not enabled</span>\n";
+        print "<span class=\"check-error\">" if ($ambiente_web);
+        print "not enabled\n";
+        print "</span>" if ($ambiente_web);
       };
     };
 
     # Se comprueba presencia de la libx264
-    printf("* %28s %-12s ", 'libreria x264', '');
+    printf(" * %28s %-12s ", 'libreria x264', '');
     my $resp2 = `ls /usr/local/lib/ | grep libx264`;
     $resp2 =~ s/^\s+|\s$//isg;
     if($resp2) {
@@ -308,16 +323,33 @@ sub check_xcoding {
       $resp2 =~ s/\s+/, /ig;
       print "ok ($resp2)\n";
     } else {
-      print "<span class=\"check-error\">/usr/local/lib/ -> no se encontr&oacute;</span>\n";
-      printf("* %42s", '');
-      $resp2 = `ls /usr/lib/ | grep libx264`;
+      print "<span class=\"check-error\">" if ($ambiente_web);
+      print "/usr/local/lib/ -> no se encontró\n";
+      print "</span>" if ($ambiente_web);
+
+      printf(" * %42s", '');
+      $resp2 = `ls /usr/lib | grep libx264`;
       if($resp2) {
         $resp2
          =~ s/\s+$//ig;
         $resp2 =~ s/\s+/, /ig;
         print "/usr/lib/       -> ok ($resp2)\n";
       } else {
-        print "<span class=\"check-error\">/usr/lib/       -> no se encontr&oacute;</span>\n";
+        print "<span class=\"check-error\">" if ($ambiente_web);
+        print "/usr/lib/       -> no se encontró\n";
+        print "</span>" if ($ambiente_web);
+
+        printf(" * %42s", '');
+        $resp2 = `ls /usr/bin/ | grep x264`;
+        if($resp2) {
+          $resp2 =~ s/\s+$//ig;
+          $resp2 =~ s/\s+/, /ig;
+          print "/usr/bin/       -> ok ($resp2)\n";
+        } else {
+          print "<span class=\"check-error\">" if ($ambiente_web);
+          print "/usr/bin/       -> no se encontró\n";
+          print "</span>" if ($ambiente_web);
+        }
       }
     }
 
@@ -329,10 +361,12 @@ sub check_xcoding {
     my $msg = "<u>Importante:</u> Es posible que la transcodificaci&oacute;n falle, aun cuando todos estos <br>requisitos se cumplan. ";
     $msg .= "Para mayor informaci&oacute;n y ayuda frente a errores, dirigirse <br>al <a href=\"$url_manual_desa\" target=\"_blank\">manual de desarrollo</a>, ";
     $msg .= "secci&oacute;n \"Instalaci&oacute;n\", sub-secci&oacute;n \"Soporte para transcodificaci&oacute;n\"";
-    print "<br>".$msg."<br><br>";
+    print "<br>".$msg."<br><br>" if ($ambiente_web);
 
   } else {
-    print "FFmpeg... <span class=\"check-error\">no se pudo leer la version</span>\n";
+    print "FFmpeg... <span class=\"check-error\">" if ($ambiente_web);
+    print "no se pudo leer la version\n";
+    print "</span>" if ($ambiente_web);
     return;
   }
 

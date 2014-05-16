@@ -46,7 +46,7 @@
 # 1.4 - 26/10/2012 - EAG - Se transcodifica cualquier audio excepto AAC.
 # 1.5 - 05/03/2013 - EAG - Se agrega variable prontus para parametros de transcodificación.
 # 1.6 - 13/08/2013 - JOR - Cambia main, estaba mal implementado.
-#                        - Agrega logeo de STDERR, ya que ahora este script corre en background.   
+#                        - Agrega logeo de STDERR, ya que ahora este script corre en background.
 #                        - Ordena codigo.
 #                        - Cambia algunas funciones a lib_xcoding.
 # ---------------------------------------------------------------
@@ -171,13 +171,24 @@ sub actualizar_articulo {
                 'ts'                => $ARTIC_ts_articulo,
                 'campos'=>{}) || return "Error inicializando objeto articulo: $Artic::ERR TS[$ARTIC_ts_articulo]";
 
-    my %campos_xml = $artic_obj->get_xml_content();
-    $campos_xml{$marca} = "$ARTIC_filename.mp4";
-    $artic_obj->{campos} = \%campos_xml;
-    $artic_obj->generar_xml_artic();
+    my $parse_as_cdata = '';
+    my $xml_base = &glib_fildir_02::read_file($artic_obj->{fullpath_xml});
+    $xml_base = &lib_prontus::replace_in_xml($xml_base, $marca, "$ARTIC_filename.mp4", $parse_as_cdata);
+    $artic_obj->{xml_data} = $xml_base;
+    $artic_obj->_flush_xml();
 
     # Generar vista (a partir del xml)
     $artic_obj->generar_vista_art('', '', $prontus_varglb::PRONTUS_KEY) || return $Artic::ERR;
+
+    my %datos = &lib_prontus::getCamposXml($xml_base, '_fid,_plt');
+    my $fid = $datos{'_fid'};
+    my $plt = $datos{'_plt'};
+
+    # Parsear plantillas paralelas.
+    my @plt_paralelas_list = split(/;/, $prontus_varglb::FORM_PLTS_PARALELAS{$fid});
+    foreach my $plt_paralela (@plt_paralelas_list)  {
+        $artic_obj->generar_vista_art('', '', $prontus_varglb::PRONTUS_KEY, $plt_paralela, 1) || return $Artic::ERR;
+    };
 
     # Generar vistas secundarias
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
@@ -185,7 +196,7 @@ sub actualizar_articulo {
     };
 
     # Actualizar el DAM
-    my $ext = &lib_prontus::get_file_extension($campos_xml{'_plt'});
+    my $ext = &lib_prontus::get_file_extension($plt);
     my $fullpath_artic = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/site/artic/$ARTIC_dirfecha/pags/$ARTIC_ts_articulo.$ext";
     use FindBin '$Bin';
     my $rutaScript = $Bin;

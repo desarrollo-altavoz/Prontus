@@ -7264,7 +7264,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.73 - 02/12/2013 - CVI/JOR
+11.2.73 - 13/02/2014 - CVI/JOR
 ====================================================================================================
 
 - Fid
@@ -7286,7 +7286,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Por lo tanto, se debe considerar sólo el archivo index-{mv}.html.
         - Se habilita la clase :nth-child(odd), para los listados de Artículos y Portadas, con un background-color distinto
           Esto facilita la usabilidad y legibilidad de ambos listados.
-        - 
+        - Se elimina referencia a variable de configuración TAXPORT_REFRESH por estar obsoleta.
     [files]
         /cgi-cpn/prontus_cfg_save.cgi
         /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
@@ -7366,3 +7366,89 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - No se estaba considerando purge de la primera página de taxport.
     [files]
         /cgi-cpn/lib_prontus.pm
+
+- Cerrar Sesión
+    [bugfixes]
+        - Se comienza a hacer garbage collector de los locks de artículo y portada.
+          Estos se estaban acumulando y producían que el prontus se cuelgue al cerrar sesion
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+
+====================================================================================================
+11.2.74 - 23/04/2014 - CVI
+====================================================================================================
+
+- Salidas List
+    [mejoras]
+        - Se habilita la posibilidad de múltiples LOOPs dentro de las salidas List.
+    [files]
+        /cgi-cpn/prontus_cron_list.cgi
+
+- Regenerar Articulos
+    [bugfixes]
+        - Cuando se regeneran los artículos se parsean las plantillas paralelas
+    [files]
+        /cgi-cpn/prontus_art_regen_real.cgi
+
+- Objeto Artic
+    [mejoras]
+        - Se agrega un quinto parámetro a la función &parse_artic_data del objeto Artic.
+          Al pasar 1 en dicho parámetro, se usarán los nombres de la taxonomía del XML en vez de leerlos de la BD.
+          Esto se usa, por ejemplo, en el SSTLM cuando se trabajan con múltiples prontus
+    [files]
+        /cgi-cpn/Artic.pm
+
+- Check Platrform
+    [mejoras]
+        - Se mejora la salida "no Web" para cuando el script corre por consola.
+        - Se agrega la ruta /usr/bin/ al chequeo de la librería x264
+    [files]
+        /cgi-cpn/prontus_check_platform.cgi
+
+- Portadas Taxonómicas
+    [mejoras]
+        - Se mejora la forma en que se desconecta de la BD para forzar que efectivamente se desconecte
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+
+- Mapa del Sitio
+    [mejoras]
+        - Se comienza a parsear la marca: %%_mostrar%% para indicar si el nivel tax es visible o no
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Logout
+    [bugfixes]
+        - Se corrige error cuando no existía el directorio de MultiEditing al desloguearse
+    [files]
+        /cgi-cpn/lib_multiediting.pm
+
+- Transcodificación
+    [bugfixes]
+        - Se corrige bug tipo carrera crítica que borraba la imágenes del articulo
+          cuando se subían imágenes antes de que terminara la Transcodificacion
+    [files]
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+
+- Varnish
+    [bugfixes]
+        - Al guardar un artículo, se comienza a hacer purge de los "recursos" (flash, audios, videos, archivos)
+          Esto es indispensable cuando cambian el recurso por otro o lo editan a través del xcoding
+    [files]
+        /cgi-cpn/Artic.pm
+
+- Buscador Prontus
+    [mejoras]
+        - Da la opción de colocar el "_ts" del artículo en los campos METADATA
+    [files]
+        /cgi-cpn/prontus_indexer.cgi
+
+- Prontus Form
+    [bugfixes]
+        - Se corrige bug al ordenar las columnas del archivo de respaldo
+    [files]
+        /cgi-cpn/prontus_form_download.cgi
+        /cgi-cpn/prontus_form_list.cgi
+
+

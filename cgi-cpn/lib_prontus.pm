@@ -5150,10 +5150,10 @@ sub get_arbol_mapa {
 
   # -----------------------------------------------------
   # secc
-  my $sql = "select SECC_ID, SECC_NOM, SECC_PORT, SECC_NOM4VISTAS from SECC where SECC_ORDEN > 0 order by SECC_ORDEN";
-  my ($mapa_s, $nested_s, $secc_id, $secc_nom, $secc_port, $secc_nom4vistas);
+  my $sql = "select SECC_ID, SECC_NOM, SECC_PORT, SECC_NOM4VISTAS, SECC_MOSTRAR from SECC where SECC_ORDEN > 0 order by SECC_ORDEN";
+  my ($mapa_s, $nested_s, $secc_id, $secc_nom, $secc_port, $secc_nom4vistas, $secc_mostrar);
   my ($salida) = &glib_dbi_02::ejecutar_sql($bd, $sql);
-  $salida->bind_columns(undef, \($secc_id, $secc_nom, $secc_port, $secc_nom4vistas));
+  $salida->bind_columns(undef, \($secc_id, $secc_nom, $secc_port, $secc_nom4vistas, $secc_mostrar));
   while ($salida->fetch) {
     # Cambia nom para la vista.
     $secc_nom = &lib_prontus::get_nomtax_envista($mv, $secc_nom4vistas) if ($mv); # rotulos tax
@@ -5168,6 +5168,8 @@ sub get_arbol_mapa {
     $mapa_s =~ s/%%_id%%/$secc_id/ig;
     $mapa_s =~ s/%%_nom%%/$secc_nom/ig;
     $mapa_s =~ s/%%_indent%%/$local_indent/ig;
+    $mapa_s =~ s/%%_mostrar%%/$secc_mostrar/ig;
+
     my $tax_fixedurl = &lib_prontus::get_tax_link($secc_port, $mv);
     $mapa_s =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
     $mapa_s =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
@@ -5182,10 +5184,10 @@ sub get_arbol_mapa {
 
     # -----------------------------------------------------
     # temas
-    $sql = "select TEMAS_ID, TEMAS_NOM, TEMAS_PORT, TEMAS_NOM4VISTAS from TEMAS where TEMAS_ORDEN > 0 AND TEMAS_IDSECC = '$secc_id' order by TEMAS_ORDEN";
-    my ($mapa_t, $mapa_total_t, $temas_id, $temas_nom, $temas_port, $temas_nom4vistas);
+    $sql = "select TEMAS_ID, TEMAS_NOM, TEMAS_PORT, TEMAS_NOM4VISTAS, TEMAS_MOSTRAR from TEMAS where TEMAS_ORDEN > 0 AND TEMAS_IDSECC = '$secc_id' order by TEMAS_ORDEN";
+    my ($mapa_t, $mapa_total_t, $temas_id, $temas_nom, $temas_port, $temas_nom4vistas, $temas_mostrar);
     my ($salida_t) = &glib_dbi_02::ejecutar_sql($bd, $sql);
-    $salida_t->bind_columns(undef, \($temas_id, $temas_nom, $temas_port, $temas_nom4vistas));
+    $salida_t->bind_columns(undef, \($temas_id, $temas_nom, $temas_port, $temas_nom4vistas, $temas_mostrar));
     while ($salida_t->fetch) {
       $temas_nom = &lib_prontus::get_nomtax_envista($mv, $temas_nom4vistas) if ($mv); # rotulos tax
       $temas_nom = &lib_prontus::escape_html($temas_nom);
@@ -5197,6 +5199,7 @@ sub get_arbol_mapa {
       $mapa_t =~ s/%%_id%%/$temas_id/ig;
       $mapa_t =~ s/%%_nom%%/$temas_nom/ig;
       $mapa_t =~ s/%%_indent%%/$local_indent/ig;
+      $mapa_t =~ s/%%_mostrar%%/$temas_mostrar/ig;
 
       $tax_fixedurl = &lib_prontus::get_tax_link($temas_port, $mv);
       $mapa_t =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
@@ -5206,10 +5209,10 @@ sub get_arbol_mapa {
 
       # -----------------------------------------------------
       # subtemas
-      $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM, SUBTEMAS_PORT, SUBTEMAS_NOM4VISTAS from SUBTEMAS where SUBTEMAS_ORDEN > 0 AND SUBTEMAS_IDTEMAS = '$temas_id' order by SUBTEMAS_ORDEN";
-      my ($mapa_st, $mapa_st_total, $subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas);
+      $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM, SUBTEMAS_PORT, SUBTEMAS_NOM4VISTAS, SUBTEMAS_MOSTRAR from SUBTEMAS where SUBTEMAS_ORDEN > 0 AND SUBTEMAS_IDTEMAS = '$temas_id' order by SUBTEMAS_ORDEN";
+      my ($mapa_st, $mapa_st_total, $subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas, $subtemas_mostrar);
       my ($salida_st) = &glib_dbi_02::ejecutar_sql($bd, $sql);
-      $salida_st->bind_columns(undef, \($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas));
+      $salida_st->bind_columns(undef, \($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas, $subtemas_mostrar));
       while ($salida_st->fetch) {
         $subtemas_nom = &lib_prontus::get_nomtax_envista($mv, $subtemas_nom4vistas) if ($mv); # rotulos tax
         $subtemas_nom = &lib_prontus::escape_html($subtemas_nom);
@@ -5220,6 +5223,7 @@ sub get_arbol_mapa {
         $mapa_st =~ s/%%_id%%/$subtemas_id/ig;
         $mapa_st =~ s/%%_nom%%/$subtemas_nom/ig;
         $mapa_st =~ s/%%_indent%%/$local_indent/ig;
+        $mapa_st =~ s/%%_mostrar%%/$subtemas_mostrar/ig;
 
         $tax_fixedurl = &lib_prontus::get_tax_link($subtemas_port, $mv);
         $mapa_st =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
@@ -6235,6 +6239,15 @@ sub cerrar_sesion {
                                           'port',
                                           $user_anterior,
                                           $sess_obj->{id_session});
+
+    # Garbage de archivos mas antiguos de X dias
+    &lib_multiediting::garbage_collector( $prontus_varglb::DIR_SERVER,
+                                          $prontus_varglb::PRONTUS_ID,
+                                          'art');
+
+    &lib_multiediting::garbage_collector( $prontus_varglb::DIR_SERVER,
+                                          $prontus_varglb::PRONTUS_ID,
+                                          'port');
 
     $sess_obj->end_session();
 };

@@ -1,4 +1,27 @@
 ====================================================================================================
+11.2.73 - 13/02/2014
+====================================================================================================
+- bugfix: Se corrige problema en la generación de las taxports. En ocaciones la primera página quedaba en blanco.
+- changes: Portadas Taxonómicas: Se habilitan nuevas marcas para indicar los niveles
+- changes: Adicionalmente, se habilita el uso de IFs para las marcas anteriores en las Portadas Taxonómicas.
+- changes: Se cambia el sleep al generar las taxport, ya que, estaba haciendo un sleep entre artículos.
+- bugfix: Prontus Form: Error con el JSON en el mantenedor del archivo de respaldo: en el listado y la cgi de descarga
+- bugfix: Se corrige problema con la variable "MAXPAGS" que no se estaba tomando en cuenta en el buscador
+- bugfix: Regenera Taxport: Se corrige mensaje de error cuando no se detecta el DIR_SERVER
+- improvement: Se robustece la regex que procesa/posiciona los SELECT en los FIDs
+- improvement: Se mejora forma en que se abre el Preview en ventana nueva desde el Listado de Artículos
+- improvement: Al generar el link simbolico a la "PORT_HOME", para las vistas, se genera: index-{mv}.html, ademas del index_{mv}.html
+- improvement: Se habilita la clase :nth-child(odd), para los listados de Artículos y Portadas, en el Editor de CFG
+- improvement: Se elimina referencia a variable de configuración TAXPORT_REFRESH por estar obsoleta.
+- bugfix: Se corrige error al cargar la lib_custom cuando era un artículo nuevo.
+- bugfix: RSS de Portada: Si venía una entidad, justo antes de escribir se convertían las entidades en caracteres, pero en ISO-8859-1.
+- bugfix: Transcodificación: Se soluciona problema con marca de video alternativo al tratar de parsear una marca con el sufijo de la versión en mayúsculas.
+- improvement: Se crea el nuevo script: prontus_regenera_relac.cgi que regenera los artículos relacionados.
+- bugfix: Cuando "_fechae" era vacío en el XML, arrojaba error al intentar insertar en BD. Ahora, el valor por omision es 99999999
+- bugfix: Varnish: No se estaba considerando purge de la primera página de taxport.
+- bugfix: Cerrar Sesión: Se comienza a hacer garbage collector de los locks de artículo y portada.
+
+====================================================================================================
 11.2.72 - 28/11/2013
 ====================================================================================================
 - notice: Multimedia Externa: Se cambia el concepto muiltimedia externa, para alojar y considerar sólo Audios y Videos.

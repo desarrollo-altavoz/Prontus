@@ -246,6 +246,14 @@ sub procesa_files {
 
                 }
 
+                # Parsear plantillas paralelas.
+                my @plt_paralelas_list = split(/;/, $prontus_varglb::FORM_PLTS_PARALELAS{$campos_xml{'_fid'}});
+                foreach my $plt_paralela (@plt_paralelas_list)  {
+                  # print STDERR "plt_paralela[$plt_paralela]\n";
+                  $artic_obj->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY, $plt_paralela, 1)
+                        || return $Artic::ERR;
+                };
+
                 foreach my $mv (keys %MULTIVISTAS_REGEN) {
                     # Generar vista (a partir del xml)
                     $artic_obj->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)

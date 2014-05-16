@@ -469,10 +469,10 @@ sub _guarda_recursos {
             };
 
             # Guarda archivo descriptor, especial para MULTIMEDIA
-            if ($type eq 'multimedia') {
-                # my ($nomfile_aux, $buffer_aux) = $this->_get_aux_mediafile("$nom_campo$this->{ts}", $nom_arch);
-                # &glib_fildir_02::write_file("$dst_dir/$nomfile_aux", $buffer_aux);
-            };
+            #~ if ($type eq 'multimedia') {
+                #~ # my ($nomfile_aux, $buffer_aux) = $this->_get_aux_mediafile("$nom_campo$this->{ts}", $nom_arch);
+                #~ # &glib_fildir_02::write_file("$dst_dir/$nomfile_aux", $buffer_aux);
+            #~ };
 
         # Si no se esta subiendo nada nuevo, ver si habia uno existente
         } else {
@@ -528,7 +528,48 @@ sub _guarda_recursos {
             };
         };
 
+
+        # Para el caso de Video, revisamos el screenshot
+        if ($nom_campo eq 'multimedia_video1') {
+            my @videos;
+            push @videos, $nom_arch;
+            my ($onlyname, $onlyext);
+            if($nom_arch =~ /^(.*?)(\..*?)$/) {
+                $onlyname = $1;
+                $onlyext = $2;
+            }
+
+            # Se obtienen los formatos de video
+            my %formatos = &lib_prontus::get_formatos_multimedia('MULTIMEDIA_VIDEO1');
+            foreach my $formato (keys %formatos) {
+                if($formato =~ /\.(\w+)$/) {
+                    my $newfile = $onlyname . lc($1) . $onlyext;
+                    push @videos, $newfile;
+                }
+            }
+
+            # Loopeamos todas las versiones
+            foreach my $file (@videos) {
+                if( -f "$dst_dir/$file" ) {
+                    # print STDERR "Agregando a purge [$dst_dir/$file]\n";
+                    &lib_prontus::purge_cache("$dst_dir/$file");
+                }
+                my $img = $file;
+                $img =~ s/\.mp4/.jpg/;
+                if( -f "$dst_dir/$img") {
+                    # print STDERR "Agregando a purge [$dst_dir/$img]\n";
+                    &lib_prontus::purge_cache("$dst_dir/$img");
+                }
+            }
+        } else {
+            if(-f "$dst_dir/$nom_arch") {
+                # print STDERR "Agregando a purge [$dst_dir/$nom_arch]\n";
+                &lib_prontus::purge_cache("$dst_dir/$nom_arch");
+            }
+        }
+
     };
+
 };
 
 # ---------------------------------------------------------------
@@ -1624,7 +1665,7 @@ sub _ajusta_campos_art4bd {
     $campos{'_horae'} =~ s/://g;
     $campos{'_horae'} = '0000' if ($campos{'_horae'} eq '');
     $campos{'_fechae'} = '99999999' if ($campos{'_fechae'} eq '');
-    
+
     $campos{'_extension'} = &lib_prontus::get_file_extension($campos{'_plt'});
 
     # Ajusta bajada
@@ -1873,19 +1914,23 @@ sub parse_artic_data {
     my $buffer = shift;
     my $ref_campos_xml = shift;
     my $vars_adicionales = shift;
+    my $use_xml_tax = shift;
 
     my %campos_xml = %$ref_campos_xml;
     undef $ref_campos_xml;
 
-    # Obtiene nom de secc, tema y subtema en vista correspondiente
-    if ($fullpath_vista =~ /\/pags\-(\w+)\/[0-9]{14}\.\w+$/) {
-        my $mv = $1;
-        ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
-            = &lib_prontus::get_nom4vistas($mv, $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
-    } else {
-        # Obtiene nom de secc, tema y subtema vista principal.
-        ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
-            = &lib_prontus::get_nom4vistas('', $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+    unless($use_xml_tax) {
+
+        # Obtiene nom de secc, tema y subtema en vista correspondiente
+        if ($fullpath_vista =~ /\/pags\-(\w+)\/[0-9]{14}\.\w+$/) {
+            my $mv = $1;
+            ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
+                = &lib_prontus::get_nom4vistas($mv, $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+        } else {
+            # Obtiene nom de secc, tema y subtema vista principal.
+            ($campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'})
+                = &lib_prontus::get_nom4vistas('', $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+        };
     };
 
     # Agrega algunas vars adicionales que no vienen en el XML.
