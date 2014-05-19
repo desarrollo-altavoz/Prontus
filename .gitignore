@@ -24,6 +24,7 @@ Thumbs.db
 /.settings
 /cgi-cpn/prontus_error_log
 /cgi-cpn/prontus_temp
+/cgi-cpn/xcoding/prontus_error_log
 /cgi-bin/prontus_error_log
 /cgi-bin/prontus_temp
 /wizard_prontus/_data
