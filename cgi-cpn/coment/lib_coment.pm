@@ -203,7 +203,7 @@ sub get_objtipos {
         if ($obj_data =~ /\s*CAPTCHA\s*=\s*("|')(.*?)("|')/) {
             $captcha = $2;
         };
-        
+
         # Moderacion
         my $MODERACION = 'SI';
         if ($obj_data =~ /\s*MODERACION\s*=\s*("|')(.*?)("|')/) {
@@ -642,6 +642,15 @@ sub generar_fila {
     $hash_data{'COMENT_DATETIME'} = &print_date_and_time($hash_data{'COMENT_DATETIME'});
     $fila =~ s/%%_COMENT_DATETIME%%/$hash_data{'COMENT_DATETIME'}/ig;
 
+    # CVI - Para parsear fecha y hora por separado
+    my ($fecha, $hora);
+    if($hash_data{'COMENT_DATETIME'} =~ /^(.*?) - (.*?)$/) {
+        $fecha = $1;
+        $hora = $2;
+    }
+    $fila =~ s/%%_COMENT_FECHA%%/$fecha/ig;
+    $fila =~ s/%%_COMENT_HORA%%/$hora/ig;
+
     $hash_data{'COMENT_TEXTO'} = &basic_escape_html($hash_data{'COMENT_TEXTO'});
     # $hash_data{'COMENT_TEXTO'} = &tildes2html($hash_data{'COMENT_TEXTO'});
     # $hash_data{'COMENT_NICK'} = &tildes2html($hash_data{'COMENT_NICK'});
@@ -715,7 +724,7 @@ sub print_date_and_time {
     $aaaammdd = 'sin fecha';
   };
 
-	return "$aaaammdd - $hhmmss"
+    return "$aaaammdd - $hhmmss"
 
 };
 
