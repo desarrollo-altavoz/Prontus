@@ -98,8 +98,9 @@ sub get_url {
     my($url) = $_[0];
 
     return '' if (($url eq '') or ($url !~ /^https?/i));
-    # my($request) = new HTTP::Request('PURGE', $url) || return ('', $!);
-    my($request) = new HTTP::Request('GET', $url . "/purge") || return ('', $!);
+    # my($request) = new HTTP::Request('GET', $url . "/purge") || return ('', $!);
+    # CVI - Por n-ésima vez se cambia esto. Finalmente se decide usar método PURGE
+    my($request) = new HTTP::Request('PURGE', $url) || return ('', $!);
     my($response) = $ua->request($request) || return ('', $!);
     #~ print STDERR "[$$] status_line[" . $response->status_line . "], header: [" . $response->headers_as_string . "]\n";
     if ($response->is_success) {

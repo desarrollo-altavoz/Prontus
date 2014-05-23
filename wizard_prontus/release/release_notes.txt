@@ -7505,3 +7505,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             %%_coment_hora%% Hora del comntario en formato 'hh:mm:ss'
     [files]
         /cgi-cpn/coment/lib_coment.pm
+
+- Varnish
+    [cambios]
+        - Para la expiración de contenido se vuelve a usar el método PURGE, en vez del formato $url + '/purge'
+    [files]
+        /cgi-cpn/prontus_purge_cache.cgi
