@@ -7511,3 +7511,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Para la expiración de contenido se vuelve a usar el método PURGE, en vez del formato $url + '/purge'
     [files]
         /cgi-cpn/prontus_purge_cache.cgi
+
+- Preview
+    [mejora]
+        - Se hace mas robusta la forma en que se busca el <body> para insertar los datos del preview.
+          Se caia cuando el tag body adentro tenía código PHP o SSI
+          Ahora, si se pilla algo extraño, se inserta el código antes del primer <div
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+
