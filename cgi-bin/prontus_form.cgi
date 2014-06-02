@@ -711,6 +711,9 @@ sub salida {
         print ARCHIVO $plantilla; #Escribe buffer completo
         close ARCHIVO;
 
+        # CVI - 02/06/2014 - Para el error_log
+        print STDERR "[prontus_form] Error: $msg\n";
+
         # Redirige al visitante hacia la pagina de respuesta.
         # print "Location: /$ANSWERS_DIR/$ANSWERID\.$EXT\n\n";
         # 02/01/2012 - CVI - se quita slash del comienzo para evitar // con error en nginx

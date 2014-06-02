@@ -7520,4 +7520,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
+- Prontus Form
+    [mejora]
+        - Al usar el metodo "salida()" para el mensaje de error, se escribe en el Log de errores, para facilitar el soporte
+    [files]
+        /cgi-bin/prontus_form.cgi
 
