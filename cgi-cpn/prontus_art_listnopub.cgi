@@ -575,7 +575,7 @@ sub genera_filtros {
     if ($FORM{'seccion'} eq 'SS') { # Los sin seccion
       my $esc_value = &lib_prontus::escape_html($FORM{'nom_seccion'});
       $filtros .= " and " if $filtros ne '';
-      $filtros .= "(ART_IDSECC1 = \"0\" or ART_IDSECC2 = \"0\" or ART_IDSECC3 = \"0\")";
+      $filtros .= "(ART_IDSECC1 = \"0\" and ART_IDSECC2 = \"0\" and ART_IDSECC3 = \"0\")";
       $filtros_texto .= " | <b>Secci&oacute;n:</b> $esc_value" if $filtros_texto ne '';
       $filtros_texto .= "<b>Secci&oacute;n:</b> $esc_value" if $filtros_texto eq '';
     };

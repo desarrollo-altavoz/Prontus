@@ -7498,6 +7498,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/spellchecker/config.php
         /wizard_prontus/prontus_dir/cpan/core/vtxt/include_common.html
 
+- Listado de Artículos
+    [cambios]
+        - Se cambia la forma de búsqueda al usar la sección: "Sin sección". Ahora encuentra los artículos
+          que no tienen ninguna sección en ninguna de las 3 tripletas (antes encontraba articulos que tuvieran
+          por lo menos 1 vacía, aunque ésta estuviera deshabilitada en el cpan)
+    [files]    
+        /cgi-cpn/prontus_art_listnopub.cgi
+
 - Comentarios
     [mejoras]
         - En el cpan, se habilita botón para subir + segunda paginación abajo
