@@ -1781,7 +1781,7 @@ sub generar_vista_art {
             #~ print STDERR "loop[$loop]\n";
             my $totloop;
             for(my $i = $inicio; $i <= $fin; $i++) {
-                print STDERR "for($i)\n";
+                # print STDERR "for($i)\n";
                 my $looptemp = $loop;
                 $looptemp =~ s/##i##/$i/isg;
                 $totloop = $totloop . $looptemp;
