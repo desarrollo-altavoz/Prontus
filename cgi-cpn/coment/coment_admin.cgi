@@ -188,7 +188,7 @@ sub generar_listado {
   my ($lista, $paginacion) = &make_lista();
   $pagina =~ s/<!--LOOP-->(.*?)<!--\/LOOP-->/$lista/isg;
   if ($paginacion) {
-    $pagina =~ s/%%PAGINACION%%/$paginacion/;
+    $pagina =~ s/%%PAGINACION%%/$paginacion/g;
   }
   else {
     $pagina =~ s/%%PAGINACION%%/<strong>Sin resultados.<\/strong>/;

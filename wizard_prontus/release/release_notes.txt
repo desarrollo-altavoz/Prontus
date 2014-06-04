@@ -7491,7 +7491,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           </script>
           %%_INIT_VTXT%%
           <!-- /Control VTXT -->
-          Como prerfequisito, se debe instalar en el server los binarios/paquetes: aspell y aspell-es
+          Como prerequisito, se debe instalar en el server los binarios/paquetes: aspell y aspell-es
           El primer binario debe estar instalado en esta ruta: /usr/bin/aspell
           Si no se encuantra ubicado en dicha ruta, usar un link simbólico o bien, recurrir al Área Prontus
     [files]
@@ -7500,6 +7500,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Comentarios
     [mejoras]
+        - En el cpan, se habilita botón para subir + segunda paginación abajo
         - Se habilitan 2 nuevas marcas para parsear:
             %%_coment_fecha%% Con la fecha del comentario en formato 'dd/mm/yyyy'
             %%_coment_hora%% Hora del comntario en formato 'hh:mm:ss'

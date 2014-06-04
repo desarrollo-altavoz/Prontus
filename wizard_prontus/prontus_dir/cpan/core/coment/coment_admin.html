@@ -4,7 +4,7 @@
     <title>Administrar comentarios &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
-    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/coment.css?v2" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/coment.css?v3" />
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
 
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/dir_cgi.js"></script>
@@ -26,12 +26,12 @@
   <body class="bodysite">
 
     <div id="main">
-
+        <a name="top"></a>
         %%MACRO(menu_head3.html)%%
 
         <!--INICIO CONTENIDO-->
           <div class="main-left">
-             <div class="content">
+             <div class="content coment">
 
                 <!--TITULO PRINCIPAL-->
                 <div class="top-titulo">
@@ -130,6 +130,8 @@
                   </ul>
                 </div>
                 <!-- / COLUMNA IZQUIERDA-->
+                <div class="paginas">%%PAGINACION%%</div>
+                <a href="#top" class="subir">Subir</a>
               </div>
            </div>
         </div>
