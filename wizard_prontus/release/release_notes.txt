@@ -7481,6 +7481,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 
 - Prontus en General:
+    [bugfixes]    
+        - Se corrige error de codificación en el mensaje de error cuando no hay sesión activa.
     [mejoras]
         - Se habilita la posibilidad de usar guiones en el nombre del Prontus.
           Además, se centraliza la validación por si a futuro se debe cambiar esta validación

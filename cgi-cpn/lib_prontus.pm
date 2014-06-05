@@ -863,7 +863,7 @@ sub check_user {
             print "<script type='text/javascript'>window.location.href='/$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html';</script>";
             exit;
         } else {
-            return ('', 'No se detectó una sesión activa');
+            return ('', 'No se detect&oacute; una sesi&oacute;n activa');
         };
     };
 
@@ -899,7 +899,7 @@ sub check_user {
                 last;
             };
         };
-        $perfil = 'Usuario o Contraseña no válida.' if (!$id);
+        $perfil = 'Usuario o Contrase&ntilde;a no v&aacute;lida.' if (!$id);
         return ($id, $perfil);
     };
 
