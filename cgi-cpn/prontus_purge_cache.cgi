@@ -20,7 +20,7 @@ use strict;
 use lib_stdlog;
 use LWP::UserAgent;
 use HTTP::Response;
-&lib_stdlog::set_stdlog($0, 51200);
+&lib_stdlog::set_stdlog($0, 200000);
 
 close STDOUT;
 
