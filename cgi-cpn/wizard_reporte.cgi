@@ -42,12 +42,19 @@
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
+BEGIN {
+    # Captura STDERR
+    use lib_stdlog;
+    &lib_stdlog::set_stdlog($0, 51200);
+};
+
 use glib_cgi_04;
 use glib_fildir_02;
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use lib_prontus;
 use strict;
+use wizard_lib;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -139,10 +146,9 @@ sub get_model_data {
     if ($buffer =~ /(\[PRONTUS\].*\[\/PRONTUS\]\n\n)/s) {
         my $buffer_prontus = $1;
         # Validar id
-        if ($buffer_prontus !~ /PRONTUS_ID=(\w+)\n/) {
-            return 'Información de paso 1 está corrupta.';
-        } else {
-            $prontus_id = $1;
+        $prontus_id = &wizard_lib::get_prontus_id($buffer_prontus);
+        if ($prontus_id eq '') {
+          return 'Información de paso 1 está corrupta.';
         };
     } else {
         return 'Información de paso 1 está corrupta';

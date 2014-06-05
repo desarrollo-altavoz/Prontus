@@ -48,10 +48,9 @@ main: {
 
     &glib_cgi_04::new(); # Rescata parametros del formulario.
 
+    # Carga variables de configuracion.
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
-    # Ajusta path_conf para completar path y/o cambiar \ por /
     $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
-
     &lib_prontus::load_config($FORM{'_path_conf'});
 
 

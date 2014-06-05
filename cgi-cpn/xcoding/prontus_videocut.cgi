@@ -81,6 +81,12 @@ main: {
   &glib_cgi_04::set_formvar('t2', \%FORM);
   &glib_cgi_04::set_formvar('prontus_id', \%FORM);
 
+  # Se valida el nombre del prontus
+  if (! $lib_prontus::valida_prontus($FORM{'prontus_id'})) {
+    print STDERR "Prontus ID inicado no es valido: $FORM{'prontus_id'}\n";
+    die("Prontus ID inicado no es valido");
+  }
+
   # Path conf y load config de prontus
   my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
   $path_conf = &lib_prontus::ajusta_pathconf($path_conf);

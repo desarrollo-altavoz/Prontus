@@ -462,10 +462,9 @@ sub test_lock {
 };
 # ---------------------------------------------------------------
 sub get_path_conf {
-  my ($nom_prontus);
-  if ($FORM{'_prontus_id'} =~ /^(\w+)$/) {
-    $nom_prontus = $1;
-    return "$prontus_varglb::DIR_SERVER/$FORM{'_prontus_id'}/cpan/$nom_prontus.cfg";
+  
+  if (&lib_prontus::valida_prontus($FORM{'_prontus_id'})) {
+    return "$prontus_varglb::DIR_SERVER/$FORM{'_prontus_id'}/cpan/$FORM{'_prontus_id'}.cfg";
   };
   return '';
 };

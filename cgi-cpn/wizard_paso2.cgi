@@ -50,6 +50,8 @@ use glib_fildir_02;
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use strict;
+use wizard_lib;
+use lib_prontus;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -141,11 +143,9 @@ sub validar_datos {
   if ($buffer =~ /(\[PRONTUS\].*\[\/PRONTUS\]\n\n)/s) {
     my $buffer_prontus = $1;
     # Validar id
-    if ($buffer_prontus !~ /PRONTUS_ID=(\w+)\n/) {
+    $prontus_id = &wizard_lib::get_prontus_id($buffer_prontus);
+    if ($prontus_id eq '') {
       return 'Información de paso previo está corrupta. Para poder continuar debe volver al paso anterior.';
-    }
-    else {
-      $prontus_id = $1;
     };
   }
   else {

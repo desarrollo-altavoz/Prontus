@@ -157,7 +157,7 @@ main:{
         exit;
     };
 
-    if ($FORM{'_prontus_id'} !~ /^\w+$/) {
+    if (! &lib_prontus::valida_prontus($FORM{'_prontus_id'})) {
         print "0|Error en los datos enviados - 901";
         exit;
     };

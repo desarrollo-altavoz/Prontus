@@ -225,6 +225,10 @@ main: {
         &aborta('No se pudo localizar directorio Prontus');
     };
 
+    if(! &lib_prontus::valida_prontus($prontus_id)) {
+        &aborta('El directorio Prontus indicado no es valido');
+    }
+
     # Dir de Plantillas usadas por la aplicacion.
     $TDIR = "$ROOTDIR/$prontus_id/plantillas/extra/enviar/pags";
 

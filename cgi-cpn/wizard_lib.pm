@@ -17,6 +17,7 @@
 #
 
 package wizard_lib;
+use lib_prontus;
 
 $INF_DIR = "/wizard_prontus/_data";
 $INF_FILE = "inf.txt";
@@ -45,10 +46,9 @@ sub check_paso1 {
     if ($buffer =~ /(\[PRONTUS\].*\[\/PRONTUS\]\n\n)/s) {
         my $buffer_prontus = $1;
         # Validar id
-        if ($buffer_prontus !~ /PRONTUS_ID=(\w+)\n/) {
+        $prontus_id = &get_prontus_id($buffer_prontus);
+        if (! &lib_prontus::valida_prontus($prontus_id)) {
             return 'Información de paso previo está corrupta. Para poder continuar debe volver al paso anterior.';
-        } else {
-            $prontus_id = $1;
         };
     } else {
         return 'Información de paso previo está corrupta. Para poder continuar debe volver al paso anterior.';
@@ -69,6 +69,19 @@ sub check_paso1 {
         };
     };
 
+    return '';
+}
+
+# ---------------------------------------------------------------
+sub get_prontus_id {
+
+    my $buffer_prontus = shift;
+    if($buffer_prontus =~ /PRONTUS_ID=(.+?)\n/) {
+        $prontus_id = $1;
+        if(&lib_prontus::valida_prontus($prontus_id)) {
+            return $prontus_id;
+        }
+    }
     return '';
 }
 

@@ -111,7 +111,7 @@ if (&lib_maxrunning::maxExcedido(5)) {
 # Inicializaciones varias.
 
 # Variables globales.
-my (%FORM, $RUTA_PRONTUS, $TDIR, $SMTP);
+my (%FORM, $RUTA_PRONTUS, $PRONTUS_ID, $TDIR, $SMTP);
 my ($CRLF) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
 my ($ROOTDIR) = $prontus_varglb::DIR_SERVER; # 2.8
 
@@ -146,6 +146,13 @@ main: {
   my $ruta = $FORM{'_FILE'};         # onda /prontus_dir/site/artic/20050823/pags/20050823163215.html
   $ruta =~ s/\/site\/artic\/\d{8}\/pags\/.*$//si;   # 2.2.
   $RUTA_PRONTUS = $ruta; # path del prontus, desde la raiz del web server, ie /prontus_noticias
+  if($RUTA_PRONTUS =~ /^\/(.+?)$/) {
+    $PRONTUS_ID = $1;  
+  }
+  # Se valida el nombre del prontus, por si las moscas
+  if(! $lib_prontus::valida_prontus($PRONTUS_ID)) {
+    &aborta('El Prontus indicado, no es v&aacute;lido.');  
+  }
 
   # Dir de Plantillas usadas por la aplicacion.
   $TDIR = "$ROOTDIR$RUTA_PRONTUS/plantillas/extra/imprimir/pags";
@@ -330,7 +337,7 @@ sub parse_prontus {
   my $ts = $1;
   $buffer_tpl =~ s/%%_TS%%/$ts/isg;
   $buffer_tpl =~ s/%%_FILE%%/$FORM{'_FILE'}/isg;
-  $buffer_tpl =~ s/%%_PRONTUS_ID%%/$RUTA_PRONTUS/isg;
+  $buffer_tpl =~ s/%%_PRONTUS_ID%%/$PRONTUS_ID/isg;
 
   return $buffer_tpl;
 

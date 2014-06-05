@@ -50,7 +50,12 @@ main: {
     $FORM{"search_texto"} =~ s/[^0-9a-z ]//g;
   	$FORM{"search_texto"} =~ s/ +/ /g; # quitar doble espacios.
 
-    $FORM{"search_prontus"} =~ s/[^0-9a-zA-Z_-]//g;
+    if(! &lib_prontus::valida_prontus($FORM{"search_prontus"})) {
+      print STDERR "Directorio Prontus no válido [".$FORM{"search_prontus"}."]\n";
+      print "[]";
+      exit;
+    }
+    # $FORM{"search_prontus"} =~ s/[^0-9a-zA-Z_-]//g;
 
     # Validar prontus.
     my $path_to_prontus = "$prontus_varglb::DIR_SERVER/$FORM{'search_prontus'}";

@@ -53,7 +53,7 @@ sub new {
     };
 
     # Valida prontus_id
-    if ( (!-d "$sess->{document_root}/$sess->{prontus_id}") || ($sess->{prontus_id} eq '') || ($sess->{prontus_id} !~ /^[\w\d]+$/) ) {
+    if ( (!-d "$sess->{document_root}/$sess->{prontus_id}") || ($sess->{prontus_id} eq '') || (! &lib_prontus::valida_prontus($sess->{prontus_id})) ) {
         $Session::ERR = "Session::new con params no validos:\n"
                       . "prontus_id[$sess->{prontus_id}] \n";
         return 0;

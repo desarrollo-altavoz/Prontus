@@ -57,7 +57,7 @@ use glib_fildir_02; # Prontus 6.0
 use strict;
 use File::Copy;
 use lib_multiediting;
-
+use utf8;
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
@@ -75,22 +75,18 @@ main: {
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
 
-    # Ajusta path_conf para completar path y/o cambiar \ por /
-    $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
-
     # Carga var. globales con los datos del arch. conf.
-    &lib_prontus::load_config($FORM{'_path_conf'});   # Prontus 6.0
-    $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
-
+    &lib_prontus::load_config(&lib_prontus::ajusta_pathconf($FORM{'_path_conf'}));   # Prontus 6.0
+    
     $FORM{'_tipo_recurso'} = &glib_cgi_04::param('_tipo_recurso'); # port | art
     if ($FORM{'_tipo_recurso'} !~ /^(art|port)$/) {
-        &glib_html_02::print_json_result(0, 'Tipo de recurso no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, 'Tipo de recurso no es vÃ¡lido', 'exit=1,ctype=1');
     };
 
     $FORM{'_nom_recurso'} = &glib_cgi_04::param('_nom_recurso');
     $FORM{'_nom_recurso'} =~ s/\.\w+$//; # borra ext en caso de venir
     if ($FORM{'_nom_recurso'} !~ /^[\w\-]+$/) {
-        &glib_html_02::print_json_result(0, 'Nombre de recurso no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, 'Nombre de recurso no es vÃ¡lido', 'exit=1,ctype=1');
     };
 
 
@@ -137,9 +133,8 @@ main: {
     $resp->{'status'} = 1;
     $resp->{'msg'} = $concurrency;
     $resp->{'lock'} = $lock_recurso;
+    &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=1');  
 
-    #~ print &JSON::to_json($resp);
-    &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=1');
     #~ exit;
 
     # devuelve la concurrencia para que el js actualice el dato run-time

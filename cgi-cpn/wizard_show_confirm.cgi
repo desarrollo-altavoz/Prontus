@@ -58,6 +58,7 @@ use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use strict;
 use lib_prontus;
+use wizard_lib;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -135,11 +136,9 @@ sub check_paso_anterior {
   if ($buffer =~ /(\[PRONTUS\].*\[\/PRONTUS\]\n\n)/s) {
     my $buffer_prontus = $1;
     # Validar id
-    if ($buffer_prontus !~ /PRONTUS_ID=(\w+)\n/) {
+    $prontus_id = &wizard_lib::get_prontus_id($buffer_prontus);
+    if ($prontus_id eq '') {
       return 'Información de paso 1 está corrupta.';
-    }
-    else {
-      $prontus_id = $1;
     };
 
 

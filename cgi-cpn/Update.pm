@@ -51,7 +51,7 @@ sub new {
     $upd_obj->{path_conf} ||= ''; # se asume q lo valida la CGI que utiliza esta lib.
     $upd_obj->{just_status} ||='0';
 
-    if ( ($upd_obj->{prontus_id} !~ /^[\w\d]+$/) || ($upd_obj->{version_prontus} eq '') || ($upd_obj->{path_conf} eq '') ) {
+    if ( (! &lib_prontus::valida_prontus($upd_obj->{prontus_id})) || ($upd_obj->{version_prontus} eq '') || ($upd_obj->{path_conf} eq '') ) {
         $Update::ERR = "Update::new con params no validos:\n"
                     . "prontus_id[$upd_obj->{prontus_id}] \n"
                     . "path_conf[$upd_obj->{path_conf}] \n"

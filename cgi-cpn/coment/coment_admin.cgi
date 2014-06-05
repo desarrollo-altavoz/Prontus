@@ -110,7 +110,7 @@ main: {
     $FORM{'OBJTIT_SEARCH'} = &glib_cgi_04::param('OBJTIT_SEARCH');
 
 
-    if ($FORM{'_prontus_id'} !~ /^\w+$/) {
+    if (! &lib_prontus::valida_prontus($FORM{'_prontus_id'})) {
         &glib_html_02::print_pag_result("Error",'Error en los datos enviados - 901',0,'exit=1,ctype=1');
     };
     if (! -d "$coment_varglb::DIR_SERVER/$FORM{'_prontus_id'}") {
@@ -192,6 +192,7 @@ sub generar_listado {
   }
   else {
     $pagina =~ s/%%PAGINACION%%/<strong>Sin resultados.<\/strong>/;
+    $pagina =~ s/%%PAGINACION%%//g;
   };
 
   return $pagina;

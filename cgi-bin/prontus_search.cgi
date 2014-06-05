@@ -1286,7 +1286,11 @@ sub getFormData {
     };
   };
   # Valida variables.
-  $FORM{'search_prontus'} =~ s/[^\w\-]//g; # 1.20 1.8 Elimina todos los eslaishes y caracteres raros (sorry, solo sirve para Prontus ubicados en la raiz del sitio).
+  if(! &lib_prontus::valida_prontus($FORM{'search_prontus'})) {
+    print "Directorio Prontus no v&aacute;lido";
+    exit;
+  };
+  #$FORM{'search_prontus'} =~ s/[^\w\-]//g; # 1.20 1.8 Elimina todos los eslaishes y caracteres raros (sorry, solo sirve para Prontus ubicados en la raiz del sitio).
   $FORM{'search_tmp'} =~ s/[^\w\-\.]//g; # 1.18 1.4 Elimina caracteres no validos como nombres de archivo.
   if ($FORM{'search_tmp'} eq '')     { $FORM{'search_tmp'} = 'search.html'; };
   $FORM{'search_idx'} =~ s/[^\w\-\.]//sg; # 1.18

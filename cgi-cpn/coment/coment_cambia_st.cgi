@@ -99,7 +99,7 @@ main: {
     $FORM{'_prontus_id'} = &glib_cgi_04::param('_prontus_id');
 
 
-    if ($FORM{'_prontus_id'} !~ /^\w+$/) {
+    if (! &lib_prontus::valida_prontus($FORM{'_prontus_id'})) {
         &glib_html_02::print_json_result(0, 'Error en los datos enviados - 901', 'exit=1,ctype=1');
     };
     if (! -d "$coment_varglb::DIR_SERVER/$FORM{'_prontus_id'}") {

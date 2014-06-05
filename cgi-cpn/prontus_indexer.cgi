@@ -293,7 +293,11 @@ if ($PRONTUS_DIR =~ /^(.+)(\/[^\/]+)$/) {
   $ROOTDIR = $1;
   $PRONTUS_DIR[0] = $2; # (comentar para que no indexe de nuevo las noticias)
 }else{
-  print "Directorio Prontus no valido [$PRONTUS_DIR].\n";
+  if($INVOCACION eq 'web') {
+    print "Directorio Prontus no valido.\n";  
+  } else {
+    print STDERR "Directorio Prontus no valido [$PRONTUS_DIR].\n";
+  }  
   exit;
 };
 my $FECHAACTUAL = &lib_search::fecha_iso(); # Fecha de hoy en formato ISO.

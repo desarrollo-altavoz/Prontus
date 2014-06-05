@@ -76,12 +76,8 @@ main:{
   # Deduce path conf del referer, en caso de no ser suministrado.
   $FORM{'path_conf'} = &get_path_conf() if ($FORM{'path_conf'} eq '');
 
-  # Ajusta path_conf para completar path y/o cambiar \ por /
-  $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
-
-
   # Carga variables de configuracion.
-  &lib_prontus::load_config($FORM{'path_conf'});
+  &lib_prontus::load_config(&lib_prontus::ajusta_pathconf($FORM{'path_conf'}));
   $FORM{'path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
   ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();

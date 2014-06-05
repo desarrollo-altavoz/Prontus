@@ -38,14 +38,10 @@ main: {
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
 
-    $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
-    # Ajusta path_conf para completar path y/o cambiar \ por /
-    $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
-
     # Carga variables de configuracion.
-    &lib_prontus::load_config($FORM{'_path_conf'});  # Prontus 6.0
-    $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
-
+    $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');    
+    &lib_prontus::load_config(&lib_prontus::ajusta_pathconf($FORM{'_path_conf'}));  # Prontus 6.0
+    
     if ($prontus_varglb::IP_SERVER ne '') {
         &lib_prontus::test_servers($ENV{'HTTP_REFERER'});
     };

@@ -94,8 +94,7 @@ main: {
     $trace_info .= "filedata[$FORM{'filedata'}]\n";
     $trace_info .= "sdata[$FORM{'sdata'}]\n";
 
-    $FORM{'prontus_id'} =~ s/[^\w\-]//sg;
-
+    # $FORM{'prontus_id'} =~ s/[^\w\-]//sg;
     &valida_invocacion($trace_info);
 
     # Path de cfg de prontus
@@ -186,7 +185,7 @@ main: {
 sub valida_invocacion {
     my $trace_info = shift;
 
-    if ($FORM{'prontus_id'} !~ /^[\w\-]+$/) {
+    if (! &lib_prontus::valida_prontus($FORM{'prontus_id'})) {
         print STDERR "prontus_id no valido, trace_info[$trace_info]\n";
         print "Content-Type: text/html\n\n";
         print 0;

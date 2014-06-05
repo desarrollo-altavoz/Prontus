@@ -90,7 +90,7 @@ sub new {
     $artic->{prontus_id}         ||= '';
     $artic->{public_server_name} ||= '';
     $artic->{cpan_server_name}   ||= '';
-    if ( ($artic->{prontus_id} !~ /^[\w\d]+$/) || ($artic->{public_server_name} eq '')
+    if ( (! &lib_prontus::valida_prontus($artic->{prontus_id})) || ($artic->{public_server_name} eq '')
                                                || ($artic->{cpan_server_name} eq '') ) {
         $Artic::ERR = "Artic::new con params no validos:\n"
                     . "prontus_id[$artic->{prontus_id}] \n"

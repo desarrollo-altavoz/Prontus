@@ -168,6 +168,7 @@ use lib_form;
 use lib_validator;
 use lib_mail;
 use lib_maxrunning;
+use lib_prontus;
 
 my $DEBUG = 0;    # 1.6 Flag para debug.
 
@@ -649,6 +650,11 @@ sub get_form_data {
     if ($PRONTUS_ID eq '') {
         &lib_form::aborta("Error: Prontus no identificado."); # 1.3.1 # 1.10
     };
+
+    if(! &lib_prontus::valida_prontus($PRONTUS_ID)) {
+        &lib_form::aborta("Error: Prontus indicado no es valido.");
+    };
+
     # Busca y lee las variables Prontus del articulo.
     $xmlpath = "$ROOTDIR/$PRONTUS_ID/site/artic/$FECHA/xml/$TS\.xml";
     &get_prontus_vars($xmlpath);

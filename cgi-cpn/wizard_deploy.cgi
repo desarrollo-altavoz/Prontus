@@ -63,6 +63,7 @@ use glib_dbi_02;
 use DBI;
 use lib_prontus;
 use lib_setbd;
+use wizard_lib;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -422,15 +423,11 @@ sub check_paso_anterior {
   if ($buffer =~ /(\[PRONTUS\].*\[\/PRONTUS\]\n\n)/s) {
     my $buffer_prontus = $1;
     # Validar id
-    if ($buffer_prontus !~ /PRONTUS_ID=(\w+)\n/) {
+    $prontus_id = &wizard_lib::get_prontus_id($buffer_prontus);
+    if ($prontus_id eq '') {
       return 'Información de paso 1 está corrupta.';
     }
-    else {
-      $prontus_id = $1;
-    };
-
-
-
+    
     # extension
     # CVI se movió a la seccion [MODEL] [/MODEL]
 #    if ($buffer_prontus !~ /MODEL_EXT=(\w+)\n/) {
@@ -466,6 +463,8 @@ sub check_paso_anterior {
   else {
     return 'Información de paso 1 está corrupta';
   };
+
+  print STDERR "prontus_id[$prontus_id]\n";
 
   # Validar que no exista el dir destino del prontus.
   # Esto ya se chequea en el paso 1 pero se hace nuevamente por seguridad.

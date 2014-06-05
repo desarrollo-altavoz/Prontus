@@ -1160,7 +1160,16 @@ sub check_prontus_key { # 8.0
   return "$input[6]$input[1]$input[0]$input[5]" . '-' . "$input[7]$input[2]$input[4]$input[3]" . '-' . "$output[0]$output[1]$output[2]$output[3]" . '-' . "$output[4]$output[5]$output[6]$output[7]";
 
 };
+# -------------------------------------------------------------------------#
+sub valida_prontus {
 
+  my $prontus_id = shift;
+  if($prontus_id !~ /^[\w\_\-\d]+$/) {
+    return 0
+  } 
+  return 1;
+
+}
 # -------------------------------------------------------------------------#
 # 1.11
 sub load_config {

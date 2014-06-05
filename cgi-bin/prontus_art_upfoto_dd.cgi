@@ -63,8 +63,7 @@ main: {
     
     $FORM{'files'} = &glib_cgi_04::param('fileInput');
     $FORM{'prontus_id'} = &glib_cgi_04::param('prontus_id');
-    
-    $FORM{'prontus_id'} =~ s/[^\w\-]//sg;
+    # $FORM{'prontus_id'} =~ s/[^\w\-]//sg; No es necesario se valida dentro de valida_invocacion()
     
     &valida_invocacion();
 
@@ -122,7 +121,7 @@ main: {
 };
 
 sub valida_invocacion {
-    if ($FORM{'prontus_id'} !~ /^[\w\-]+$/) {
+    if (! &lib_prontus::valida_prontus($prontus_id)) {
         print STDERR "prontus_id no valido\n";
         print "Content-Type: text/html\n\n";
         print 0;

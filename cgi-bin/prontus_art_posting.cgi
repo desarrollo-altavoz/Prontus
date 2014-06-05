@@ -132,8 +132,8 @@ sub main {
 
     # Nombre del prontus
     $FORM{'_NP'} = &glib_cgi_04::param('_NP');
-    $FORM{'_NP'} =~ s/[^0-9a-zA-Z\-\_]//sg;
-    if (!$FORM{'_NP'}) {
+    # $FORM{'_NP'} =~ s/[^0-9a-zA-Z\-\_]//sg;
+    if (!&lib_prontus::valida_prontus($FORM{'_NP'})) {
         &glib_html_02::print_pag_result("Error","901-Error en los datos enviados.", 0, 'exit=1,ctype=1');
     };
 

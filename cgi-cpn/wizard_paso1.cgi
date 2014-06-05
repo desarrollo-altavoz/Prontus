@@ -57,6 +57,7 @@ use glib_fildir_02;
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use strict;
+use lib_prontus;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -144,8 +145,8 @@ my ($buffer);
 sub validar_datos {
 # Valida datos provenientes del formulario paso1.
 # Retorna msg de error si lo hay o nada si todo ok.
-
-  if ($FORM{'PRONTUS_ID'} !~ /^[a-z][a-z0-9\_\-]*$/) {
+  
+  if (! &lib_prontus::valida_prontus($FORM{'PRONTUS_ID'})) {
     return 'Nombre de publicador no válido.';
   };
 
