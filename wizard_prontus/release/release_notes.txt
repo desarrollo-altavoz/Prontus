@@ -7568,6 +7568,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
+- Multimedia
+    [bugfixes]
+        - Se agrega target="_blank" a los links de "Editar Artículo" del listado de Multimedia
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/dam/plantillas/prontus_dam_search.html
+
 - Prontus Form
     [mejora]
         - Al usar el metodo "salida()" para el mensaje de error, se escribe en el Log de errores, para facilitar el soporte
