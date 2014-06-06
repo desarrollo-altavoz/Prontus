@@ -1,4 +1,20 @@
 ====================================================================================================
+11.2.75 - 06/06/2014
+====================================================================================================
+- notice: Se habilita la posibilidad de usar guiones en el nombre del Prontus.
+- bugfix: Se corrige error de codificación en el mensaje de error cuando no hay sesión activa.
+- bugfix: Se agrega target="_blank" a los links de "Editar Artículo" del listado de Multimedia
+- improvement: Se corrige el "spellchecker" del vtxt, para habilitar revisar el manual de desarrollo
+- changes: Se elimina de la botonera del vtxt, el plugin de "spellchecker", ya que no estaba funcionando
+- changes: La búsqueda avanzada, ahora encuentra los artículos que no tienen ninguna sección en ninguna de las 3 tripletas
+- changes: Se agrega nueva marca: %%_DMULTIMEDIA_<nombre>%% que entrega la duración para audios y videos.
+- improvement: En el cpan de comentarios, se habilita botón para subir + segunda paginación abajo
+- improvement: Se habilitan 2 nuevas marcas para parsear en comentarios: %%_coment_fecha%% y %%_coment_hora%%
+- changes: Para la expiración de contenido se vuelve a usar el método PURGE, en vez del formato $url + '/purge'
+- improvement: Se hace mas robusta la forma en que se busca el <body> para insertar los datos del preview.
+- improvement: En el prontus form, al usar el metodo "salida()" para el mensaje de error, se escribe en el Log de errores
+
+====================================================================================================
 11.2.74 - 16/05/2014
 ====================================================================================================
 - notice: Se agrega visualizador del XML del artículo, desde el FID. El link se encuentra ubicado en la parte de "Ver más información"
