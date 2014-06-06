@@ -66,15 +66,20 @@
 
 
 BEGIN {
-    require '../dir_cgi.pm';
-    my ($ROOTDIR) = $ENV{'DOCUMENT_ROOT'};  # desde el web
-    $ROOTDIR .= '/' . $DIR_CGI_CPAN;
-    unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias de prontus
+    
+    use FindBin '$Bin';
+    $pathLibs = $Bin;
+    unshift(@INC, $pathLibs);
 
-    $ROOTDIR .= '/coment';
-    unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias de coment
+    $pathLibs =~ s/\/coment$//;
+    unshift(@INC, $pathLibs);
+    require 'dir_cgi.pm';
 
-    # print STDERR "ROOTDIR[$ROOTDIR]\n";
+    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    unshift(@INC,$pathLibs);
+
+    $pathLibs = $pathLibs . '/coment';
+    unshift(@INC,$pathLibs);
 };
 
 use lib_stdlog;

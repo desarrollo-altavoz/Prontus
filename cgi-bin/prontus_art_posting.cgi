@@ -55,11 +55,13 @@
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
 BEGIN {
+    use FindBin '$Bin';
+    $pathLibs = $Bin;
+    unshift(@INC, $pathLibs);
     require 'dir_cgi.pm';
-    my ($ROOTDIR) = $ENV{'DOCUMENT_ROOT'};  # desde el web
-    $ROOTDIR .= '/' . $DIR_CGI_CPAN;
-    unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
-
+    
+    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    unshift(@INC,$pathLibs);
 };
 
 # Captura STDERR

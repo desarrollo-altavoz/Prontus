@@ -35,11 +35,13 @@
 
 
 BEGIN {
+    use FindBin '$Bin';
+    $pathLibs = $Bin;
+    unshift(@INC, $pathLibs);
     require 'dir_cgi.pm';
-    my ($ROOTDIR) = $ENV{'DOCUMENT_ROOT'};  # desde el web
-    $ROOTDIR .= '/' . $DIR_CGI_CPAN;
-    unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
 
+    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    unshift(@INC,$pathLibs);
 };
 
 # Captura STDERR
@@ -120,8 +122,10 @@ main: {
     exit;
 };
 
+
 sub valida_invocacion {
-    if (! &lib_prontus::valida_prontus($prontus_id)) {
+
+    if (! &lib_prontus::valida_prontus($FORM{'prontus_id'})) {
         print STDERR "prontus_id no valido\n";
         print "Content-Type: text/html\n\n";
         print 0;

@@ -56,6 +56,11 @@
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
+BEGIN {
+    use FindBin '$Bin';
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
+};
 
 # Captura STDERR
 use lib_stdlog;

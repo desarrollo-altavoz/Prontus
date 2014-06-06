@@ -76,13 +76,13 @@
 # ##############################################
 # Paquetes utilizados.
 BEGIN {
-  # dir_cgi.pm trae algo como:
-  # $DIR_CGI_CPAN = 'cgi-cpn';
-  # $DIR_CGI_PUBLIC = 'cgi-bin';
-  require 'dir_cgi.pm';
-  my ($ROOTDIR) = $ENV{'DOCUMENT_ROOT'};  # desde el web
-  $ROOTDIR .= '/' . $DIR_CGI_CPAN;
-  unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
+    use FindBin '$Bin';
+    $pathLibs = $Bin;
+    unshift(@INC, $pathLibs);
+    require 'dir_cgi.pm';
+
+    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    unshift(@INC,$pathLibs);
 };
 
 # Captura STDERR
@@ -150,7 +150,7 @@ main: {
     $PRONTUS_ID = $1;  
   }
   # Se valida el nombre del prontus, por si las moscas
-  if(! $lib_prontus::valida_prontus($PRONTUS_ID)) {
+  if(! &lib_prontus::valida_prontus($PRONTUS_ID)) {
     &aborta('El Prontus indicado, no es v&aacute;lido.');  
   }
 

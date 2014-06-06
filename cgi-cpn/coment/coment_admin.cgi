@@ -60,10 +60,10 @@
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
+    
     $pathLibsProntus =~ s/\/coment$//;
-    unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
-
-
+    unshift(@INC,$pathLibsProntus);
 };
 
 use lib_stdlog;

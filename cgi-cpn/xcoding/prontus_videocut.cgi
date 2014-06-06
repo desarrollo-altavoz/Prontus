@@ -82,7 +82,7 @@ main: {
   &glib_cgi_04::set_formvar('prontus_id', \%FORM);
 
   # Se valida el nombre del prontus
-  if (! $lib_prontus::valida_prontus($FORM{'prontus_id'})) {
+  if (! &lib_prontus::valida_prontus($FORM{'prontus_id'})) {
     print STDERR "Prontus ID inicado no es valido: $FORM{'prontus_id'}\n";
     die("Prontus ID inicado no es valido");
   }

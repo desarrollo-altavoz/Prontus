@@ -199,21 +199,13 @@
 
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
-  # dir_cgi.pm trae algo como:
-  # $DIR_CGI_CPAN = 'cgi-cpn';
-  # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.15
-  use vars qw($DIR_CGI_CPAN $DIR_CGI_PUBLIC); # para que queden disponibles como vars. globales
-  require 'dir_cgi.pm';
+    use FindBin '$Bin';
+    $pathLibs = $Bin;
+    unshift(@INC, $pathLibs);
+    require 'dir_cgi.pm';
 
-  my ($ROOTDIR) = '';  # 1.12 desde el web
-  if ($ENV{'DOCUMENT_ROOT'} ne '') {
-    $ROOTDIR = $ENV{'DOCUMENT_ROOT'};
-  }elsif ($ENV{'PATH_TRANSLATED'} ne '') {
-    $ROOTDIR = $ENV{'PATH_TRANSLATED'};
-  };
-  $ROOTDIR .= '/' . $DIR_CGI_CPAN;
-  unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
-
+    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    unshift(@INC,$pathLibs);
 };
 
 # ---------------------------------------------------------------

@@ -136,12 +136,13 @@
 
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
+    use FindBin '$Bin';
+    $pathLibs = $Bin;
+    unshift(@INC, $pathLibs);
     require 'dir_cgi.pm';
-    my ($ROOTDIR) = $ENV{'DOCUMENT_ROOT'};  # Desde el web.
-    #~ $ROOTDIR = '/var/www/prontus_development' unless($ROOTDIR);
-    $ROOTDIR .= '/' . $DIR_CGI_CPAN;
-    unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
 
+    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    unshift(@INC,$pathLibs);
 };
 
 # Captura STDERR

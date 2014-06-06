@@ -81,7 +81,7 @@ my $ARTIC_extension;
 # ---------------------------------------------------------------
 main: {
     &die_stderr("El parámetro 'origen' no es válido.", "", 1) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if ($PRONTUS_ID !~ /^[\w\-]+$/);
+    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
     &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
 
     $GENERAR_VERSIONES = 0 if (!$GENERAR_VERSIONES);

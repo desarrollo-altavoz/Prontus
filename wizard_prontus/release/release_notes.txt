@@ -7486,6 +7486,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se habilita la posibilidad de usar guiones en el nombre del Prontus.
           Además, se centraliza la validación por si a futuro se debe cambiar esta validación
+          Se chequea syntaxis de las cgis modificadas, se corrigen algunos trozos de codigo antiguos
     [files]
         /cgi-bin/coment/coment_enviar.cgi
         /cgi-bin/prontus_art_posting.cgi
@@ -7516,11 +7517,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/wizard_reporte.cgi
         /cgi-cpn/wizard_show_confirm.cgi
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
         /cgi-cpn/xcoding/prontus_videocut.cgi
         /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
         /cgi-cpn/xcoding/prontus_videoxcode.cgi
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
-
+        
 - Articulo
     [cambios]
         - Se elimina de la botonera del vtxt, el plugin de "spellchecker", ya que no estaba funcionando
