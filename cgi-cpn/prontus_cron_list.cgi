@@ -92,10 +92,6 @@ my %NOMBASE_PLTS;
 my %CONTENT_PLTS;
 my %CONFIG_PLTS;
 
-# my %HASH_FILES;
-# cd /sites/prontus_development/web/cgi-cpn
-# perl /sites/prontus_development/web/cgi-cpn/prontus_cron_taxport.cgi prontus_toolbox
-
 if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
   print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
   exit;
@@ -119,10 +115,6 @@ my (%EXT_PORT_TMP, %BUF_PLT, %BUF_PLT_LOOP, %MSGS, %LOADED_NAMES_PLT);
 my ($CURR_DTIME) = &glib_hrfec_02::get_dtime_pack4();
 
 my (%ART_XML_FIELDS, %ART_XDATA_FIELDS);
-
-#if (&lib_maxrunning::maxExcedido(1)) {
-#  die "[$CURR_DTIME] prontus_cron_taxport en proceso, se aborta ejecucion de [prontus_cron_taxport.cgi $FORM{'prontus'} $FORM{'params_especif'}]\n";
-#}
 
 # $prontus_varglb::TAXPORT_MAXARTICS = 500; # debug
 use Time::HiRes qw ( time ); # debug
