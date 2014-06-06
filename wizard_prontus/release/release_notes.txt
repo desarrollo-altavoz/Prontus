@@ -7485,7 +7485,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrige error de codificación en el mensaje de error cuando no hay sesión activa.
     [mejoras]
         - Se habilita la posibilidad de usar guiones en el nombre del Prontus.
-          Además, se centraliza la validación por si a futuro se debe cambiar esta validación
+          Además, se centraliza la validación por si a futuro se debe cambiar esta validación con nuevos caractares
           Se chequea syntaxis de las cgis modificadas, se corrigen algunos trozos de codigo antiguos
     [files]
         /cgi-bin/coment/coment_enviar.cgi
@@ -7517,12 +7517,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/wizard_reporte.cgi
         /cgi-cpn/wizard_show_confirm.cgi
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
-        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
         /cgi-cpn/xcoding/prontus_videocut.cgi
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
         /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
         /cgi-cpn/xcoding/prontus_videoxcode.cgi
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
-        
+    
 - Articulo
     [cambios]
         - Se elimina de la botonera del vtxt, el plugin de "spellchecker", ya que no estaba funcionando
@@ -7549,6 +7549,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]    
         /cgi-cpn/prontus_art_listnopub.cgi
 
+- Multimedia
+    [bugfixes]
+        - Se agrega target="_blank" a los links de "Editar Artículo" del listado de Multimedia
+    [mejoras]
+        - Se agrega nueva marca: %%_DMULTIMEDIA_<nombre>%% que entrega la duración para audios y videos.
+          Si no se puede calcular ese dato, se parsea vacía. Se homologa el formato usando un _D, similar
+          a las marcas _E y _S para extension y peso, respectivamente
+    [files]
+        /cgi-cpn/Artic.pm
+        /wizard_prontus/prontus_dir/cpan/core/dam/plantillas/prontus_dam_search.html
+
 - Comentarios
     [mejoras]
         - En el cpan, se habilita botón para subir + segunda paginación abajo
@@ -7571,12 +7582,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Ahora, si se pilla algo extraño, se inserta el código antes del primer <div
     [files]
         /cgi-cpn/lib_prontus.pm
-
-- Multimedia
-    [bugfixes]
-        - Se agrega target="_blank" a los links de "Editar Artículo" del listado de Multimedia
-    [files]
-        /wizard_prontus/prontus_dir/cpan/core/dam/plantillas/prontus_dam_search.html
 
 - Prontus Form
     [mejora]

@@ -2109,6 +2109,17 @@ sub _parsing_recursos {
     my $ext = &lib_prontus::get_file_extension($val_campo);
     $buffer =~ s/%%_E$nom_campo%%/$ext/isg;
 
+    # Parsea la duracion de audio y video
+    if($nom_campo =~ /^multimedia_/) {
+        my $fullpath = $this->{document_root} . $path;
+        my $resp = `$prontus_varglb::DIR_FFMPEG/ffmpeg -i $fullpath 2>&1`;
+        if($resp =~ /Duration\:\s*(\d\d\:\d\d\:\d\d)/i) {
+            my $duracion = $1;
+            $buffer =~ s/%%_D$nom_campo%%/$duracion/isg;
+        } else {
+            print STDERR "[".$this->{ts}."][$path] No se pudo calcular la duracion\n";
+        }
+    }
     return $buffer;
 };
 
