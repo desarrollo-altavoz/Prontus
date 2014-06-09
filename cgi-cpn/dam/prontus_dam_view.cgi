@@ -42,11 +42,14 @@
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
 # ------------------------
+
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
+
     $pathLibsProntus =~ s/\/dam$//;
-    unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
+    unshift(@INC,$pathLibsProntus);
 };
 
 # Captura STDERR

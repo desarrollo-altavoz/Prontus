@@ -54,9 +54,14 @@
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
+
 BEGIN {
     use FindBin '$Bin';
-    unshift(@INC,$Bin); # Para dejar disponibles las librerias
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
+
+    eval {"require MIME::Parser; 1;";} 
+            or die("Se necesita el módulo MIME::Parser; para ejecutar este Script");
 };
 
 # Captura STDERR
@@ -71,7 +76,7 @@ use File::Copy;
 use DBI;
 use lib_artic;
 use Net::POP3;
-use MIME::Parser;
+
 use File::Path;
 use File::Copy;
 use lib_tax;
@@ -112,7 +117,7 @@ sub main {
 
     # Carga variables de configuracion de prontus.
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
-    &lib_prontus::load_config( &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
+    &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
     my ($msg_pop, $pop3) = &conectar_pop($FORM{'casilla_popserver'}, $FORM{'casilla_user'}, $FORM{'casilla_pass'});
     die "Error al conectar pop[$msg_pop]\n" if ($msg_pop);
@@ -120,6 +125,10 @@ sub main {
     # dir de salida para mime parser
     my $output_dir_mparser = "$Bin/prontus_temp/emailposting/$FORM{'prontus'}";
     die "check_dir error en [$output_dir_mparser]\n" if (!&glib_fildir_02::check_dir($output_dir_mparser));
+
+    # Se testea antes de usar
+    eval {"require MIME::Parser; 1;";}
+            or die("Se necesita el módulo MIME::Parser para ejecutar este Script");
 
     my $parser = new MIME::Parser;
     $parser->output_under($output_dir_mparser);

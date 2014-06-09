@@ -42,11 +42,16 @@
 # ---------------------------------------------------------------
 # DECLARACIONES GLOBALES.
 # ------------------------
+
 BEGIN {
-    # Captura STDERR
-    use lib_stdlog;
-    &lib_stdlog::set_stdlog($0, 51200);
-}
+    use FindBin '$Bin';
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
+};
+
+# Captura STDERR
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
 
 
 use strict;
@@ -55,7 +60,6 @@ use prontus_varglb; &prontus_varglb::init();
 use glib_fildir_02;
 use glib_html_02;
 use glib_cgi_04;
-
 use lib_prontus;
 use lib_form;
 
@@ -66,6 +70,7 @@ my $DIRFORM;
 my $ROOT;
 my $PRONTUS;
 my $TS;
+
 main: {
 
     my $hashref = &lib_form::getFormData(); # Lee formulario de invocacion y valida las variables.

@@ -48,15 +48,17 @@
 # ---------------------------
 
 BEGIN {
-    # Captura STDERR
-    use lib_stdlog;
-    &lib_stdlog::set_stdlog($0, 51200);
-
-    # Incluir path de coment/
     use FindBin '$Bin';
-    $nuevopath = $Bin . "/coment";
-    unshift(@INC, $nuevopath);
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
+
+    $pathLibsProntus = $Bin . "/coment";
+    unshift(@INC, $pathLibsProntus);
 };
+
+# Captura STDERR
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
 
 use glib_cgi_04;
 use glib_fildir_02;

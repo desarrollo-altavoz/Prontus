@@ -45,10 +45,10 @@
 # DIRECTIVAS DE COMPILACION.
 # ------------------------
 
-
 BEGIN {
     use FindBin '$Bin';
-    unshift(@INC,$Bin); # Para dejar disponibles las librerias
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
 };
 
 # Captura STDERR

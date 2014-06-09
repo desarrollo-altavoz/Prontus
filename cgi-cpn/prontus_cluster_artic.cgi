@@ -62,15 +62,18 @@
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
-close STDOUT;
 
 BEGIN {
-
     use FindBin '$Bin';
-    my $pathCGIProntus = $Bin; # por ej /sites/misitio.cl/web/cgi-p10.14
-    unshift(@INC,$pathCGIProntus);
-
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
 };
+
+# Captura STDERR
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
+
+close STDOUT;
 
 use prontus_varglb; &prontus_varglb::init();
 use lib_maxrunning;

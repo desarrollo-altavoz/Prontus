@@ -198,15 +198,9 @@
 # ------------------------
 
 BEGIN {
-  my ($SCRIPTROOT) = '.';
-  unshift(@INC,$SCRIPTROOT); # Para dejar disponibles las librerias.
-  $SCRIPTROOT = $0;
-  $SCRIPTROOT =~ s/[^\/]+$//g;
-  unshift(@INC,$SCRIPTROOT); # Para dejar disponibles las librerias.
-  #~ my $pesoscero = $0;
-  #~ $pesoscero =~ s/(\w+\.cgi)$/prontus_temp\/\1/;
-  # open (STDERR, ">$pesoscero.error.log");
-
+    use FindBin '$Bin';
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
 };
 
 # Captura STDERR

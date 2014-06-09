@@ -38,7 +38,7 @@ main: {
 	foreach my $dir (@DIRS) {
 
 		next unless (-d "$DOCUMENT_ROOT$dir");
-		print STDOUT "Chequeando [$dir]\n"
+		print STDOUT "Chequeando [$dir]\n";
 		&procesar_directorio("$DOCUMENT_ROOT$dir");
 	}
 }
@@ -49,7 +49,7 @@ sub procesar_directorio {
 	my $dir = shift;
 	next unless(-d $dir);
 
-	opendir(my $dh, $dir) || die;
+	opendir(my $dh, $dir) || die "No se pudo abrir el directorio [$dir]\n";
     while(readdir $dh) {
     	my $archivo = $_;
     	next unless(-f "$dir/$archivo");

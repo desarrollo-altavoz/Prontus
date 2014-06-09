@@ -16,12 +16,15 @@
 # 1.2 - 10/2004 - ycc - Adpatacion para nuevo publicador de noticias version 2.
 # 1.3 - 07/2007 - ycc - Adpatacion para nuevo publicador lanacion 2007
 
-
 BEGIN {
-    # Captura STDERR
-    use lib_stdlog;
-    &lib_stdlog::set_stdlog($0, 51200);
+    use FindBin '$Bin';
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
 };
+
+# Captura STDERR
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
 
 use glib_cgi_04;
 use glib_hrfec_02;

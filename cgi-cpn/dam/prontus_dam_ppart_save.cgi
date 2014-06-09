@@ -32,15 +32,16 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-    $pathLibsProntus =~ s/\/dam$//;
-    unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
-};
 
-close STDOUT;
+    $pathLibsProntus =~ s/\/dam$//;
+    unshift(@INC,$pathLibsProntus);
+};
 
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
+
+close STDOUT;
 
 use strict;
 use prontus_varglb;&prontus_varglb::init();

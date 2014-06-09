@@ -38,10 +38,16 @@
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
+
 BEGIN {
     use FindBin '$Bin';
-    unshift(@INC,$Bin); # Para dejar disponibles las librerias
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
 };
+
+# Captura STDERR
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
 
 use prontus_varglb; &prontus_varglb::init();
 use lib_prontus;

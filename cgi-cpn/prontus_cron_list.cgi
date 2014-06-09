@@ -67,10 +67,16 @@
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
+
 BEGIN {
     use FindBin '$Bin';
-    unshift(@INC,$Bin); # Para dejar disponibles las librerias
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
 };
+
+# Captura STDERR
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
 
 use strict;
 use prontus_varglb; &prontus_varglb::init();
@@ -79,8 +85,6 @@ use glib_dbi_02;
 use glib_fildir_02;
 use Artic;
 use lib_tax;
-use lib_stdlog;
-&lib_stdlog::set_stdlog($0, 51200);
 
 close STDOUT;
 # ---------------------------------------------------------------

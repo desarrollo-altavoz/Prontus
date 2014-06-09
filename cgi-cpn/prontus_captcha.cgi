@@ -39,15 +39,14 @@
 # ------------------------
 
 BEGIN {
-    require 'dir_cgi.pm';
-    my ($ROOTDIR) = $ENV{'DOCUMENT_ROOT'};  # desde el web
-    $ROOTDIR .= '/' . $DIR_CGI_CPAN;
-    unshift(@INC,$ROOTDIR); # Para dejar disponibles las librerias
-    
-    # Captura STDERR
-    use lib_stdlog;
-    &lib_stdlog::set_stdlog($0, 51200);
+    use FindBin '$Bin';
+    $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
 };
+
+# Captura STDERR
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
 
 #~ use strict;
 #~ use lib_captcha;

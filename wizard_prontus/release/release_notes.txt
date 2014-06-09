@@ -7475,7 +7475,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_prontus.pm
 
 
-
 ====================================================================================================
 11.2.75 - 06/06/2014 - CVI
 ====================================================================================================
@@ -7588,4 +7587,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Al usar el metodo "salida()" para el mensaje de error, se escribe en el Log de errores, para facilitar el soporte
     [files]
         /cgi-bin/prontus_form.cgi
+
+
+====================================================================================================
+11.2.76 - 09/06/2014 - CVI
+====================================================================================================
+
+- Prontus en General    
+    [mejora]
+        - Se homologan códigos BEGIN de las cgis, para hacer pruebas de chequeo de sintaxis masivos
+    [files]
+        Casi todas las CGIs tanto publicas como de administración.
 
