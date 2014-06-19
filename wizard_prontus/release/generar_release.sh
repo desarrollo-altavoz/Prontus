@@ -15,57 +15,107 @@ function limpiarDirectorio {
 }
 
 #----------------------------------------------------
+# Ve si el modelo debe ser actualizado o no
+function check_modelo_actualizado {
+
+    modelo=$1
+    modelosactual="$BASEDIR/wizard_prontus/models"
+    rutamodelo="$modelosactual/$modelo"
+    
+    # Si el directoio no existe, nada que hacer
+    if [ ! -d "$rutamodelo" ] ; then
+        echo "0"
+        return
+    fi
+
+    # Se chequea si el modelo ya está actualizado
+    if [ ! -f "$rutamodelo" ] ; then
+        urlmodelo="$URLPRONTUS/$modelo"
+        wget -nv "$urlmodelo/$modelo.cfg" -O "$rutamodelo/$modelo-new.cfg";
+        
+        version1=$(cat $rutamodelo/$modelo.cfg | grep -e 'MODELO_VERSION' | grep -o "[0-9\.]*")
+        version2=$(cat $rutamodelo/$modelo-new.cfg | grep -e 'MODELO_VERSION' | grep -o "[0-9\.]*")
+        rm "$rutamodelo/$modelo-new.cfg"
+        if [ "$version1" == "$version2" ] ; then
+            echo "1"
+        else 
+            echo "0"   
+        fi
+
+    else
+        echo 0;
+    fi
+}
+
+#----------------------------------------------------
 #Trae los modelos del server publico de prontus
 function traerModelo {
-    modelo=$1;
-    url="http://www.prontus.cl/release/models/"
 
+    modelo=$1;
+
+    modelosactual="$BASEDIR/wizard_prontus/models"
+    rutamodelo="$modelosactual/$modelo"
+    urlmodelo="$URLPRONTUS/$modelo"
+
+    resp=$(check_modelo_actualizado $modelo)
+    
+    # Si la respuesta es cero, se debe descargar el modelo
+    if [ "$resp" == "0" ] ; then
+        echo "Modelo [$modelo] desactualizado";
+        echo "Limpiando y descargando en: $rutamodelo";
+
+        limpiarDirectorio "$rutamodelo"
+        wget -nv "$urlmodelo/$modelo.cfg" -O "$rutamodelo/$modelo.cfg";
+        wget -nv "$urlmodelo/$modelo-big.png" -O "$rutamodelo/$modelo-big.png";
+        wget -nv "$urlmodelo/$modelo-thumb.png" -O "$rutamodelo/$modelo-thumb.png";
+        wget -nv "$urlmodelo/$modelo.tgz.md5" -O "$rutamodelo/$modelo.tgz.md5";
+        wget -nv "$urlmodelo/$modelo.tgz" -O "$rutamodelo/$modelo.tgz";
+        wget -nv "$urlmodelo/release_notes.txt" -O "$rutamodelo/release_notes.txt";
+
+        # Se lee el md5 del modelo descargado
+        md5a=$(cat $rutamodelo/$modelo.tgz.md5)
+        md5a=`expr match "$md5a" '.*= \([a-z0-9]*\)'`
+
+        # Se calcula el md5 del archivo tgz
+        cd $rutamodelo    
+        if [ -x /sbin/md5 ] ; then
+            md5b=`/sbin/md5 "$modelo.tgz"`
+        else
+            md5b=`/usr/bin/openssl dgst -md5 "$modelo.tgz"`
+        fi
+        md5b=`expr match "$md5b" '.*= \([a-z0-9]*\)'`
+
+        # Se comparan los md5 a ver si coinciden
+        if [ "$md5a" == "$md5b" ] ; then
+            echo "Modelo descargado correctamente"
+            tar xfz "$rutamodelo/$modelo.tgz" -C "$rutamodelo"
+            rm -rf "$modelo.tgz"
+            rm -rf "$modelo.tgz.md5"
+        else
+            echo "Modelo con errores, se borra lo descargado"
+            echo "[$md5a] [$md5b]"
+            rm -rf "$rutamodelo"
+            return
+        fi
+    else
+        echo "Modelo [$modelo] actualizado no se descarga";
+    fi
+
+    # Si todo sale bien con la descarga, copiamos el modelo
     rutamodelos="$RELEASEPATH/wizard_prontus/models"
     if [ ! -d "$rutamodelos" ] ; then
-        mkdir "$rutamodelos"
+        mkdir -p "$rutamodelos"
     fi
+    echo "Copiando [$rutamodelo] hacia [$rutamodelos]"
+    cp -rf "$rutamodelo" "$rutamodelos"
 
-    rutamodelo="$rutamodelos/$modelo"
-    limpiarDirectorio "$rutamodelo"
-    urlmodelo="$url/$modelo"
 
-    limpiarDirectorio "$rutamodelo"
-    wget -nv "$urlmodelo/$modelo.cfg" -O "$rutamodelo/$modelo.cfg";
-    wget -nv "$urlmodelo/$modelo-big.png" -O "$rutamodelo/$modelo-big.png";
-    wget -nv "$urlmodelo/$modelo-thumb.png" -O "$rutamodelo/$modelo-thumb.png";
-    wget -nv "$urlmodelo/$modelo.tgz.md5" -O "$rutamodelo/$modelo.tgz.md5";
-    wget -nv "$urlmodelo/$modelo.tgz" -O "$rutamodelo/$modelo.tgz";
-    wget -nv "$urlmodelo/release_notes.txt" -O "$rutamodelo/release_notes.txt";
-
-    md5a=$(cat $rutamodelo/$modelo.tgz.md5)
-    md5a=`expr match "$md5a" '.*= \([a-z0-9]*\)'`
-
-    cd $rutamodelo
-    if [ -x /sbin/md5 ] ; then
-        md5b=`/sbin/md5 "$modelo.tgz"`
-    else
-        md5b=`/usr/bin/openssl dgst -md5 "$modelo.tgz"`
-    fi
-    md5b=`expr match "$md5b" '.*= \([a-z0-9]*\)'`
-
-    if [ "$md5a" == "$md5b" ]
-    then
-        echo "Modelo descargado correctamente"
-        tar xfz "$rutamodelo/$modelo.tgz" -C "$rutamodelo"
-        rm -rf "$modelo.tgz"
-        rm -rf "$modelo.tgz.md5"
-    else
-        echo "Modelo con errores, se borra lo descargado"
-        echo "[$md5a] [$md5b]"
-        rm -rf "$rutamodelo"
-    fi
 }
 
 
 #~ A futuro, leer esto desde el prontus_varglb.pm
-# echo "Ingrese la release (ej: 11.2.31):"
-# read -r release
-release='11.2.76'
+echo "Ingrese la release (ej: 11.2.31):"
+read -r release
 fecha=$(date +"%d/%m/%Y");
 rama=`expr match "$release" '\([0-9]*\.[0-9]*\)\.[0-9]*'`
 
@@ -81,6 +131,7 @@ SCRIPTPATH=`dirname $SCRIPTPATH`
 BASEDIR=`dirname $SCRIPTPATH`
 RELEASEPATH="$BASEDIR/release"
 BASEDIRTEMP="$RELEASEPATH/temporal"
+URLPRONTUS="http://www.prontus.cl/release/models/"
 
 #~ Se verifica directorio de destino.
 limpiarDirectorio "$RELEASEPATH"
