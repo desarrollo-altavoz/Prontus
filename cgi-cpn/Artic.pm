@@ -457,6 +457,17 @@ sub _guarda_recursos {
             $nom_arch = $this->_get_newnom_arch($type, $nom_campo, $val_campo, $arch_existente);
             next if ($nom_arch eq '');
             &glib_fildir_02::check_dir($dst_dir);
+
+            # Antes de mover lo nuevo, se elimina lo antiguo
+            if ($arch_existente ne '' && $type eq 'multimedia') {    
+                # Obtener nombre de arch. sin extension
+                my $nom_sin_ext = $nom_arch;
+                $nom_sin_ext =~ s/\.\w*$//;            
+                # print STDERR "Eliminando["."$dst_dir/$nom_sin_ext" . '*.*'."]\n";
+                my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
+            };
+
+            # Se mueve el nuevo video a la ruta final
             &File::Copy::move($val_campo, "$dst_dir/$nom_arch");
 
             # Si es foto, medirla
@@ -467,12 +478,6 @@ sub _guarda_recursos {
                     next;
                 };
             };
-
-            # Guarda archivo descriptor, especial para MULTIMEDIA
-            #~ if ($type eq 'multimedia') {
-                #~ # my ($nomfile_aux, $buffer_aux) = $this->_get_aux_mediafile("$nom_campo$this->{ts}", $nom_arch);
-                #~ # &glib_fildir_02::write_file("$dst_dir/$nomfile_aux", $buffer_aux);
-            #~ };
 
         # Si no se esta subiendo nada nuevo, ver si habia uno existente
         } else {
@@ -497,21 +502,6 @@ sub _guarda_recursos {
                     my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
 
                     $nom_arch = ''; # para no grabar la entrada en el xml
-                } else {
-# ya no se edita por aca la img, sino via editor de imagenes
-#                    if ($type eq 'foto') {
-#                        # ver si habia q hacerle algo a la imagen , como por ej. un crop
-#                        my $crop_data = $this->{campos}->{'_crop_' . $nom_campo};
-#                        # print STDERR "nom_campo[$nom_campo] crop_data[$crop_data] nom_arch[$nom_arch] y val_campo[$val_campo]\n";
-#                        if ($crop_data =~ /^[0-9]+,[0-9]+,[0-9]+,[0-9]+$/) {
-#                            my ($srcX, $srcY, $width, $height) = split(/\,/, $crop_data);
-#                            my ($binfoto, $final_dimx, $final_dimy) = &lib_thumb::make_crop($srcX, $srcY, $width, $height, "$dst_dir/$nom_arch");
-#                            my $nom_arch_crop = $this->_guarda_binfoto_prontus($nom_arch, $final_dimx, $final_dimy, $binfoto, '');
-#                            print STDERR "nom_campo[$nom_campo] crop_data[$crop_data] nom_arch_crop[$nom_arch_crop] y nom_arch[$nom_arch]\n";
-#                            $this->_add_foto_prontus_xml($final_dimx, $final_dimy, $nom_arch_crop);
-#                        };
-#                    };
-
                 };
             };
         };

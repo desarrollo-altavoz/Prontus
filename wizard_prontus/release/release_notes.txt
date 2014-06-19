@@ -7599,3 +7599,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         Casi todas las CGIs tanto publicas como de administración.
 
+- Transcodificación
+    [bugfixes]
+        - Al subir un nuevo video o audio, si existía uno antes, se eliminan él y sus versiones
+          Se daba el caso en que si existían versiones y además se subían un mp4 que no necesitaba 
+          procesamiento, las versiones no se volvían a generar.
+    [files]
+        /cgi-cpn/Artic.pm
