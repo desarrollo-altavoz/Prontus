@@ -63,8 +63,9 @@ function traerModelo {
 
 
 #~ A futuro, leer esto desde el prontus_varglb.pm
-echo "Ingrese la release (ej: 11.2.31):"
-read -r release
+# echo "Ingrese la release (ej: 11.2.31):"
+# read -r release
+release='11.2.76'
 fecha=$(date +"%d/%m/%Y");
 rama=`expr match "$release" '\([0-9]*\.[0-9]*\)\.[0-9]*'`
 
@@ -106,14 +107,20 @@ rm -rf "$BASEDIRTEMP/cgi-cpn/pproc"
 rm -rf "$BASEDIRTEMP/cgi-cpn/encuesta"
 rm -rf "$BASEDIRTEMP/cgi-cpn/develop"
 
-#~ Generando el TGZ
+#~ Se copia el change_log.txt al core del prontus
+if [ ! -d "$BASEDIRTEMP/wizard_prontus/prontus_dir/cpan/core/version" ] ; then
+    mkdir "$BASEDIRTEMP/wizard_prontus/prontus_dir/cpan/core/version"
+fi
+cp "$BASEDIR/wizard_prontus/release/change_log.txt"  "$BASEDIRTEMP/wizard_prontus/prontus_dir/cpan/core/version/change_log.txt"
+
+#~ Generando el TGZ para el update de Prontus
 echo "Generando archivo tgz en: $RELEASEPATH/files.$release.tgz"
 cd $BASEDIRTEMP
 tar czf "$RELEASEPATH/files.$release.tgz" . \
         --exclude=*.orig
 rm -rf "$BASEDIRTEMP"
 
-#~ Generando md5
+#~ Generando md5 del TGZ
 echo "Generando md5"
 cd $RELEASEPATH
 if [ -x /sbin/md5 ] ; then
@@ -122,14 +129,16 @@ else
     /usr/bin/openssl dgst -md5 "files.$release.tgz" > "$RELEASEPATH/files.$release.tgz.md5"
 fi
 
-#~ Generando copiando TXTs
+#~ Copiando TXTs del change_log y del release_notes
 echo "Copiando change_log y release_notes"
 cp "$BASEDIR/wizard_prontus/release/change_log.txt" "$RELEASEPATH/change_log.txt"
 cp "$BASEDIR/wizard_prontus/release/release_notes.txt" "$RELEASEPATH/release_notes.txt"
+
+#~ Creando el descriptor de la release
 echo "Creando archivo last.11.2.txt"
 echo "$release - $fecha" > "last.$rama.txt"
 
-#~ Se descomprime el directorio y se copia algunos archivos
+#~ Se descomprime el directorio y se copian algunos archivos
 tar xfz "$RELEASEPATH/files.$release.tgz" -C "$RELEASEPATH"
 cp "$BASEDIR/wizard_prontus/dir_cgi.js" "$RELEASEPATH/wizard_prontus/dir_cgi.js"
 cp "$BASEDIR/wizard_prontus/index.html" "$RELEASEPATH/wizard_prontus/index.html"

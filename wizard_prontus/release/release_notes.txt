@@ -7596,8 +7596,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Prontus en General    
     [mejora]
         - Se homologan códigos BEGIN de las cgis, para hacer pruebas de chequeo de sintaxis masivos
+        - Se comienza a distribuir junto con la release el archivo: change_log.txt
+          La idea a futuro es poder desplegarlo desde la Ayuda de Prontus.
+          La ruta será: /<_prontus_id>/cpan/core/version/change_log.txt
     [files]
         Casi todas las CGIs tanto publicas como de administración.
+        /wizard_prontus/release/generar_release.sh
 
 - Transcodificación
     [bugfixes]
@@ -7606,3 +7610,4 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           procesamiento, las versiones no se volvían a generar.
     [files]
         /cgi-cpn/Artic.pm
+
