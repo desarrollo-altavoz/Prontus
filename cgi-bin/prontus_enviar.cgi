@@ -346,7 +346,11 @@ sub parse_prontus {
   $FILEURL = &lib_prontus::parse_filef('%%_fileurl%%', $campos_xml{'_txt_titular'}, $ts, $prontus_id, $FORM{'_FILE'}, $campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'});
 
   no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-  $buffer_enviar =~ s/(<img[^>]+src=["|'])(\/.*?["|'][^>]+>)/\1http:\/\/$prontus_varglb::IP_SERVER\2/isg;
+  my $protocolo = 'http';
+  if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+    $protocolo = 'https';
+  };
+  $buffer_enviar =~ s/(<img[^>]+src=["|'])(\/.*?["|'][^>]+>)/\1$protocolo:\/\/$prontus_varglb::IP_SERVER\2/isg;
 
   return ($buffer_enviar, $campos_xml{'_txt_titular'});
 

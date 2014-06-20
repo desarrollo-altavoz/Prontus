@@ -619,24 +619,30 @@ sub _get_aux_mediafile {
     my ($nom_arch_mm) = shift;
     my ($extension_mm) = &lib_prontus::get_file_extension($nom_arch_mm);
     my ($nom_file, $texto_mm);
+
+    my $protocolo = 'http';
+    if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+        $protocolo = 'https';
+    }
+
     # Real
     if ($extension_mm =~ /^(rm|ra|rmvb|rts)$/) {
-        $texto_mm = 'http://'. $this->{public_server_name} . $this->{lnk_multimedia} . '/' . $nom_arch_mm;
+        $texto_mm = $protocolo . '://'. $this->{public_server_name} . $this->{lnk_multimedia} . '/' . $nom_arch_mm;
         $nom_file = $solo_nom . '.ram';
     }
     # m3u
     elsif ($extension_mm =~ /^(aac|aif|aiff|m4a|mid|midi|mp2|mp3|mpa|mpu|msv|ogg|wav|wave|wma)$/) {
-        $texto_mm = 'http://'. $this->{public_server_name} . $this->{lnk_multimedia} . '/' . $nom_arch_mm;
+        $texto_mm = $protocolo . '://'. $this->{public_server_name} . $this->{lnk_multimedia} . '/' . $nom_arch_mm;
         $nom_file = $solo_nom . '.m3u';
     }
     # m4u
     elsif ($extension_mm =~ /^(m1v|m2v|m4e|mp4|mpe|mpeg|mpg|mpv2|ogm)$/) {
-        $texto_mm = 'http://'. $this->{public_server_name} . $this->{lnk_multimedia} . '/' . $nom_arch_mm;
+        $texto_mm = $protocolo . '://'. $this->{public_server_name} . $this->{lnk_multimedia} . '/' . $nom_arch_mm;
         $nom_file = $solo_nom . '.m4u';
     }
     # wvx
     elsif ($extension_mm =~ /^(asf|wm|wmv)$/i) {
-        $texto_mm = 'http://'. $this->{public_server_name} . $this->{lnk_multimedia} . '/' . $nom_arch_mm;
+        $texto_mm = $protocolo . '://'. $this->{public_server_name} . $this->{lnk_multimedia} . '/' . $nom_arch_mm;
         $texto_mm = '<asx version="3.0">'
                   . '<entry>'
                   . "<ref href=\"$texto_mm\" />"

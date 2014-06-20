@@ -1221,14 +1221,12 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         # warn "foto_fija_aux[$foto_fija_aux]";
         $foto_fija_aux =~ s/ondblclick *= *".+?"//isg;
         $foto_fija_aux =~ s/\n|\r/ /isg;
-        my $protocolo = $ENV{'HTTPS'};
-        if (lc $protocolo eq 'on') {
-          $protocolo = 'https://';
-        }
-        else {
-          $protocolo = 'http://';
-        };
-        $foto_fija_aux =~ s/src="/src="$protocolo$prontus_varglb::IP_SERVER/isg;
+
+        my $protocolo = 'http';
+        if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+            $protocolo = 'https';
+        } 
+        $foto_fija_aux =~ s/src="/src="$protocolo:\/\/$prontus_varglb::IP_SERVER/isg;
         $foto_fija_aux =~ s/"/' \+ String.fromCharCode\(34\) \+ '/isg;
         $pag =~ s/%%_DIV_$nom_campo%%/$foto_fija_aux/ig;
         $pag =~ s/%%$nom_campo%%/$valor_campo/ig; # para el ver imagen

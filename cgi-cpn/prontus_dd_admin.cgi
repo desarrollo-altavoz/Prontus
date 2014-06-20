@@ -188,8 +188,11 @@ main: {
     if ($http_host eq '') {
         &glib_html_02::print_pag_result('Error', "No se pudo determinar el HTTP_HOST del sitio.", 1, 'exit=1,ctype=1');
     };
-
-    my $url_port_site = "http://$http_host/$prontus_varglb::PRONTUS_ID/site/edic/$FORM{'edic'}/port/dd_$FORM{'port'}";
+    my $protocolo = 'http';
+    if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+        $protocolo = 'https';
+    }    
+    my $url_port_site = "$protocolo://$http_host/$prontus_varglb::PRONTUS_ID/site/edic/$FORM{'edic'}/port/dd_$FORM{'port'}";
     my ($http_content, $http_line) = &lib_prontus::get_url($url_port_site);
 
     if ($http_line ne '') {
@@ -269,7 +272,11 @@ sub actualizar_area_port {
     &glib_fildir_02::write_file("$tmpfiledir/$tmpfilename", $buffer);
 
     # En caso que falle esto, se usará el buffer obtenido desde filesystem.
-    my $url_port_site = "http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/site/tmp/$tmpfilename";
+    my $protocolo = 'http';
+    if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+        $protocolo = 'https';
+    }    
+    my $url_port_site = "$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/site/tmp/$tmpfilename";
     my ($http_content, $http_line) = &lib_prontus::get_url($url_port_site);
 
     if ($http_line eq '') {

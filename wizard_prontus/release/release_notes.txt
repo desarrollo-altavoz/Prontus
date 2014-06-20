@@ -7624,3 +7624,22 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cfg_save.cgi
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 
+- Editor de CFG GUI
+    [mejora]
+        - Se da la opción de configurar si los servidores serán http o https usando la 
+          variable SERVER_PROTOCOLO_HTTPS, seteando su valor en "SI"
+          Ya que por ahora, en servidores nginx no es posible detectarlo de manera segura.
+          A futuro se podría configurar este valor de manera separada para el backend y frontend
+    [files]
+        /cgi-bin/prontus_enviar.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_dd_admin.cgi
+        /cgi-cpn/prontus_indexer.cgi
+        /cgi-cpn/prontus_recordarpass.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/release/release_notes.txt
+

@@ -584,7 +584,7 @@ sub recursiveSpider {
 # por una rama del sitio, cuando lo que conviene es que vaya por capas.
 sub simpleSpider {
   my ($url,$scope) = @_;
-  my ($host,$path,$file,$params,$lnk,$i,$l,$p);
+  my ($protocolo,$host,$path,$file,$params,$lnk,$i,$l,$p);
   my (@lnk) = ();
   # print "Spider: $url\n"; # debug
   return if ($LINKS{$url} ne '');
@@ -597,12 +597,12 @@ sub simpleSpider {
     return;
   };
   # print "$FIDX $url\n"; # debug
-  if ($url =~ /http:\/\/([a-z0-9\.\-]+)\/*(\?|$)/i) {
-    ($host,$path,$file) = ($1,'','');
-  }elsif ($url =~ /http:\/\/([a-z0-9\.\-]+)(\/[a-z0-9\.\-\_\%\@\~\,]+)$/i) {
-    ($host,$path,$file) = ($1,'',$2);
-  }elsif ($url =~ /http:\/\/([a-z0-9\.\-]+)(\/[a-z0-9\.\-\_\%\@\~\,\/]+)(\/[a-z0-9\.\-\_\%\@\~\,]*)($|\?)/i) {
-    ($host,$path,$file) = ($1,$2,$3);
+  if ($url =~ /(https?):\/\/([a-z0-9\.\-]+)\/*(\?|$)/i) {
+    ($host,$path,$file,$protocolo) = ($2,'','',$1);
+  }elsif ($url =~ /(https?):\/\/([a-z0-9\.\-]+)(\/[a-z0-9\.\-\_\%\@\~\,]+)$/i) {
+    ($host,$path,$file,$protocolo) = ($2,'',$3,$1);
+  }elsif ($url =~ /(https?):\/\/([a-z0-9\.\-]+)(\/[a-z0-9\.\-\_\%\@\~\,\/]+)(\/[a-z0-9\.\-\_\%\@\~\,]*)($|\?)/i) {
+    ($host,$path,$file,$protocolo) = ($2,$3,$4,$1);
   };
   # print "$FIDX url=[$url] host=[$host] path=[$path] file=[$file]\n"; # debug
   if ($INVOCACION eq 'web') { print "$FIDX prof=[$PROFUNDIDAD] url=[$url]\n"; };
@@ -627,7 +627,7 @@ sub simpleSpider {
       $lnk =~ s/^\.\/(.+)/$1/i;
       # Si el link "califica", entonces lo recorre tambien.
       if ($lnk =~ /^\//i) {  # Link absoluto.
-        $lnk = "http://$host$lnk";
+        $lnk = "$protocolo://$host$lnk";
         # print "absoluto: $lnk\n"; # debug
       }elsif ($lnk =~ s/^((\.\.\/)+)//) { # Link relativo.
         $l = length($1) / 3;
@@ -635,10 +635,10 @@ sub simpleSpider {
         for ($i=0;$i<$l;$i++) {
           $p =~ s/\/[^\/]+$//i; # Elimina tantos directorios como ../ hay en el link.
         };
-        $lnk = "http:\/\/$host$p/$lnk";
+        $lnk = "$protocolo:\/\/$host$p/$lnk";
         # print "relativo: $lnk\n"; # debug
       }elsif ($lnk !~ /^http/) { # Link relativo a partir del mismo directorio.
-        $lnk = "http://$host$path/$lnk";
+        $lnk = "$protocolo://$host$path/$lnk";
         # print "simple: $lnk\n"; # debug
       }; # Si no se cumplio nada de lo anterior, se asume que el link viene con host.
       # Califica si el link esta en un nivel inferior al original.

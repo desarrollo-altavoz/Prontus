@@ -1030,7 +1030,7 @@ sub parseaVars {
         $pagina =~ s/%%VTXT_DTD_S%%//ig;
         $pagina =~ s/%%VTXT_DTD_T%%//ig;
     };
-    
+
     if ($prontus_varglb::VTXT_ENCODE_CHARS eq 'SI') {
         $pagina =~ s/%%VTXT_ENCODE_CHARS_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%VTXT_ENCODE_CHARS_NO%%//ig;
@@ -1074,6 +1074,15 @@ sub parseaVars {
 
     $pagina =~ s/<!--loop_multivista-->.*?<!--\/loop_multivista-->/$buffer/sig;
 
+    # Para indicar si se usará HTTPS
+    if ($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+        $pagina =~ s/%%SERVER_PROTOCOLO_HTTPS_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%SERVER_PROTOCOLO_HTTPS_NO%%//ig;
+    } else {
+        $pagina =~ s/%%SERVER_PROTOCOLO_HTTPS_SI%%//ig;
+        $pagina =~ s/%%SERVER_PROTOCOLO_HTTPS_NO%%/ checked="checked"/ig;
+    };  
+    
     $buffer = '';
     $pagina =~ /<!--loop_varnish-->(.*?)<!--\/loop_varnish-->/s;
     $loop = $1;

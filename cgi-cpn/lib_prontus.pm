@@ -1977,6 +1977,13 @@ sub load_config {
   };
   $prontus_varglb::NUBETAGS_MAX_TAGS = $nubetags_max_tags;
 
+  # Para indicar si se usará https
+  my $protocolo_https = 'NO'; # Valor por defecto = NO
+  if ($buffer =~ m/\s*SERVER_PROTOCOLO_HTTPS\s*=\s*("|')(SI|NO)("|')/) {
+    $protocolo_https = $2;
+  };
+  $prontus_varglb::SERVER_PROTOCOLO_HTTPS = $protocolo_https;
+
   # Varnish purge
   %prontus_varglb::VARNISH_SERVER_NAME = ();
   my $varnish_server_name;

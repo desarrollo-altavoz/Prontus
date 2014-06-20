@@ -204,11 +204,16 @@ sub enviar_confirmacion {
 
     &glib_fildir_02::write_file($filepath, $token);
 
-    $urltoken = "http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::DIR_CGI_CPAN/prontus_olvidopass.cgi?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg&_token=$token&_usr=$user";
+    
+    my $protocolo = 'http';
+    if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+        $protocolo = 'https';
+    }   
+    $urltoken = "$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::DIR_CGI_CPAN/prontus_olvidopass.cgi?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg&_token=$token&_usr=$user";
 
-    $asunto = "[http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID] Confirmación de recuperación de contraseña";
+    $asunto = "[$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID] Confirmación de recuperación de contraseña";
     $cuerpo = "Estimado usuario ($user):<br/><br/>";
-    $cuerpo .= "Alguien ha solicitado restablecer la contraseña de tu cuenta para acceder al Panel de Control Prontus en <a href=\"http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan\">http://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan</a>.<br/><br/>Visita el siguiente enlace para iniciar el proceso de recuperación, de lo contrario puedes ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
+    $cuerpo .= "Alguien ha solicitado restablecer la contraseña de tu cuenta para acceder al Panel de Control Prontus en <a href=\"$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan\">$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan</a>.<br/><br/>Visita el siguiente enlace para iniciar el proceso de recuperación, de lo contrario puedes ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
     utf8::encode($cuerpo);
     utf8::encode($asunto);
 
