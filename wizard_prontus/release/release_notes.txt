@@ -7603,6 +7603,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Casi todas las CGIs tanto publicas como de administración.
         /wizard_prontus/release/generar_release.sh
 
+- Borrar Artículo
+    [bugfixes]
+        - Al escribir en el log de operación, al borrar un artículo, se agrega el TS del artículo
+    [files]
+        /cgi-cpn/prontus_art_borrar.cgi
+
 - Transcodificación
     [bugfixes]
         - Al subir un nuevo video o audio, si existía uno antes, se eliminan él y sus versiones
@@ -7643,3 +7649,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
         /wizard_prontus/release/release_notes.txt
 
+        
+
+
+ 

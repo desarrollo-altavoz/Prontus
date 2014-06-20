@@ -132,10 +132,10 @@ main: {
 
         my $resp = $artic_obj->borra_artic($base);
         if($resp) {
-            &lib_prontus::write_log('Borrar Error', 'Articulo', $ts);
+            &lib_prontus::write_log('Borrar Error', 'Articulo', $FORM{'_ts'});
             &glib_html_02::print_json_result(0, $resp, 'exit=1,ctype=1');
         } else {
-            &lib_prontus::write_log('Borrar', 'Articulo', $ts);
+            &lib_prontus::write_log('Borrar', 'Articulo', $FORM{'_ts'});
         };
 
     };
