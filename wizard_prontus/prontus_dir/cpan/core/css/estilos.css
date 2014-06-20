@@ -26,6 +26,8 @@ img {border:0;}
 #dialogping .error {font-weight:bold;}
 #dialogping .detalle {width:500px; height:200px; margin-top:4px; border:1px solid #cccccc; font-family:monospace; display:none;}
 #dialogping a {font-weight: bold; color: #09F;}
+/* Retoques al tooltip **/
+.ui-tooltip {-webkit-box-shadow:2px 2px 4px #666 !important; box-shadow:2px 2px 4px #666 !important; border:1px solid #cccccc !important; max-width:450px !important;}
 /* Para que los labels tengan la manito */
 label {cursor:pointer;}
 /* Para que funcione correctamente el Colorbox */
