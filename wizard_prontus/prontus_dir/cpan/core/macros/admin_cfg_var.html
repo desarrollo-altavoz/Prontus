@@ -139,6 +139,30 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
+                                            VTXT_DTD<br>
+                                            <span class="ayuda">Permite definir el uso de xhtml 1.0 strict o transitional para el código generado en el VTXT.</span>
+                                        </td>
+                                        <td>
+                                            <select name="VTXT_DTD">
+                                                <option value="">- Seleccione -</option>
+                                                <option value="STRICT"%%VTXT_DTD_S%%>STRICT</option>
+                                                <option value="TRANSITIONAL"%%VTXT_DTD_T%%>TRANSITIONAL</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            VTXT_ENCODE_CHARS<br>
+                                            <span class="ayuda">Hace un encode de los caracteres sensibles. Es el responsable de escapear los tags HTML colocando espacios entre los signos &lt; y &gt;.<br>Ayuda: Configurar en NO, si se requiere que el VTXT parsee código (por ejemplo en manuales o ejemplos)</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="VTXT_ENCODE_CHARS" id="VTXT_ENCODE_CHARS_SI" value="SI"%%VTXT_ENCODE_CHARS_SI%%/> <label for="VTXT_ENCODE_CHARS_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="VTXT_ENCODE_CHARS" id="VTXT_ENCODE_CHARS_NO" value="NO"%%VTXT_ENCODE_CHARS_NO%%/> <label for="VTXT_ENCODE_CHARS_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
                                             FRIENDLY_URLS<br>
                                             <span class="ayuda">Habilita o deshabilita las url amigables.</span>
                                         </td>
@@ -242,19 +266,6 @@
                                         </td>
                                         <td>
                                             <textarea name="VARNISH_GLOBAL_PURGE" cols="80" rows="8" class="fieldform">%%VARNISH_GLOBAL_PURGE%%</textarea>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 300px;" valign="top">
-                                            VTXT_DTD<br>
-                                            <span class="ayuda">Permite definir el uso de xhtml 1.0 strict o transitional para el código generado en el VTXT.</span>
-                                        </td>
-                                        <td>
-                                            <select name="VTXT_DTD">
-                                                <option value="">- Seleccione -</option>
-                                                <option value="STRICT"%%VTXT_DTD_S%%>STRICT</option>
-                                                <option value="TRANSITIONAL"%%VTXT_DTD_T%%>TRANSITIONAL</option>
-                                            </select>
                                         </td>
                                     </tr>
                                     <tr>

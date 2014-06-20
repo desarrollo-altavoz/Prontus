@@ -1040,8 +1040,10 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     elsif ($nom_campo =~ /^VTXT_/i) {
       if ($valor_campo =~ /<!\[CDATA\[(.*?)\]\]>/isg) {
         $valor_campo = $1;
-        $valor_campo =~ s/&lt;/&lt; /g;
-        $valor_campo =~ s/&gt;/ &gt;/g;
+        if($prontus_varglb::VTXT_ENCODE_CHARS eq 'SI') {
+          $valor_campo =~ s/&lt;/&lt; /g;
+          $valor_campo =~ s/&gt;/ &gt;/g;
+        }
         $valor_campo = &lib_prontus::escape_html($valor_campo); # para preservar entidades html
 
          #print STDERR "$valor_campo\n";

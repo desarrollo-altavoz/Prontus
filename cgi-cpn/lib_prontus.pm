@@ -1821,6 +1821,27 @@ sub load_config {
   $prontus_varglb::VTXT_PASTE_NEWLINES_AS_P = $vtxt_paste_newlines_as_p;
 
 
+  # Configuracion de DTD a usar en VTXT
+  my $vtxt_dtd = 'STRICT'; # TRANSITIONAL | STRICT
+  if ($buffer =~ m/\s*VTXT_DTD\s*=\s*("|')(.*?)("|')/) {
+    $vtxt_dtd = $2;
+    if ($vtxt_dtd !~ /^(STRICT|TRANSITIONAL)$/) {
+      print STDERR "Error en CFG: seteo de variable VTXT_DTD\n";
+      print "Content-Type: text/html\n\n";
+      print "<P>Error en CFG: seteo de variable VTXT_DTD contiene un valor no v&aacute;lido.<br>Valores posibles: 'STRICT', 'TRANSITIONAL'<br>Por omisi&oacute;n es: 'STRICT'";
+      exit;
+    };
+  };
+  $prontus_varglb::VTXT_DTD = $vtxt_dtd;
+
+  # Indica si se debe realizar escapeo o no
+  my $vtxt_encode = 'SI'; # Valor por defecto, funciona como siempre
+  if ($buffer =~ m/\s*VTXT_ENCODE_CHARS\s*=\s*("|')(SI|NO)("|')/) { # SI | NO
+    $vtxt_encode = $2;
+  }
+  $prontus_varglb::VTXT_ENCODE_CHARS = $vtxt_encode;
+
+
   # actualizaciones automaticas
   my $actualizaciones = 'SI';
   if ($buffer =~ m/\s*ACTUALIZACIONES\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -2037,18 +2058,6 @@ sub load_config {
   };
 
 
-  # Configuracion de DTD a usar en VTXT
-  my $vtxt_dtd = 'STRICT'; # TRANSITIONAL | STRICT
-  if ($buffer =~ m/\s*VTXT_DTD\s*=\s*("|')(.*?)("|')/) {
-    $vtxt_dtd = $2;
-    if ($vtxt_dtd !~ /^(STRICT|TRANSITIONAL)$/) {
-      print STDERR "Error en CFG: seteo de variable VTXT_DTD\n";
-      print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable VTXT_DTD contiene un valor no v&aacute;lido.<br>Valores posibles: 'STRICT', 'TRANSITIONAL'<br>Por omisi&oacute;n es: 'STRICT'";
-      exit;
-    };
-  };
-  $prontus_varglb::VTXT_DTD = $vtxt_dtd;
 
   # Configuracion de la codificacion del archivo de respaldo del prontus form
   my $form_csv_charset = 'utf-8'; # TRANSITIONAL | STRICT
@@ -3766,8 +3775,11 @@ sub escape_html {
 #      $i++;
 #    };
 
-
-    $toencode=~s/&([^#][^0-9]+)/&amp;\1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
+    if($prontus_varglb::VTXT_ENCODE_CHARS eq 'SI') {
+      $toencode=~s/&([^#][^0-9]+)/&amp;\1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
+    } else {
+      $toencode=~s/&/&amp;/g;             # CVI - Esto no estaba funcionando
+    }
     $toencode=~s/>/&gt;/g;              # >
     $toencode=~s/"/&quot;/g;            # " # 8.0
     $toencode=~s/'/&#39;/g;

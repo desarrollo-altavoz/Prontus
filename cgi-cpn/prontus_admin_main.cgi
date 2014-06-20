@@ -949,14 +949,6 @@ sub parseaVars {
         $pagina =~ s/<!--comentarios-->(.*?)<!--\/comentarios-->//sig;
     };
 
-    if ($prontus_varglb::VTXT_PASTE_NEWLINES_AS_P eq 'SI') {
-        $pagina =~ s/%%VTXT_PASTE_NEWLINES_AS_P_SI%%/ checked="checked"/ig;
-        $pagina =~ s/%%VTXT_PASTE_NEWLINES_AS_P_NO%%//ig;
-    } else {
-        $pagina =~ s/%%VTXT_PASTE_NEWLINES_AS_P_SI%%//ig;
-        $pagina =~ s/%%VTXT_PASTE_NEWLINES_AS_P_NO%%/ checked="checked"/ig;
-    };
-
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URLS_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URLS_NO%%//ig;
@@ -1020,6 +1012,14 @@ sub parseaVars {
     $pagina =~ s/%%UPLOADS_PERMITIDOS%%/$permitidos_vista/ig;
 #   $pagina =~ s/%%UPLOADS_EXTRAS%%/$prontus_varglb::UPLOADS_EXTRAS/ig;
 
+    if ($prontus_varglb::VTXT_PASTE_NEWLINES_AS_P eq 'SI') {
+        $pagina =~ s/%%VTXT_PASTE_NEWLINES_AS_P_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%VTXT_PASTE_NEWLINES_AS_P_NO%%//ig;
+    } else {
+        $pagina =~ s/%%VTXT_PASTE_NEWLINES_AS_P_SI%%//ig;
+        $pagina =~ s/%%VTXT_PASTE_NEWLINES_AS_P_NO%%/ checked="checked"/ig;
+    };
+
     if ($prontus_varglb::VTXT_DTD eq 'STRICT') {
         $pagina =~ s/%%VTXT_DTD_S%%/ selected="selected"/ig;
         $pagina =~ s/%%VTXT_DTD_T%%//ig;
@@ -1030,11 +1030,19 @@ sub parseaVars {
         $pagina =~ s/%%VTXT_DTD_S%%//ig;
         $pagina =~ s/%%VTXT_DTD_T%%//ig;
     };
+    
+    if ($prontus_varglb::VTXT_ENCODE_CHARS eq 'SI') {
+        $pagina =~ s/%%VTXT_ENCODE_CHARS_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%VTXT_ENCODE_CHARS_NO%%//ig;
+    } else {
+        $pagina =~ s/%%VTXT_ENCODE_CHARS_SI%%//ig;
+        $pagina =~ s/%%VTXT_ENCODE_CHARS_NO%%/ checked="checked"/ig;
+    };    
 
     if ($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
         $pagina =~ s/%%FORM_CSV_CHARSET_1%%//ig;
         $pagina =~ s/%%FORM_CSV_CHARSET_2%%/ selected="selected"/ig;
-   } else {
+    } else {
         $pagina =~ s/%%FORM_CSV_CHARSET_1%%/ selected="selected"/ig;
         $pagina =~ s/%%FORM_CSV_CHARSET_2%%//ig;
     };
