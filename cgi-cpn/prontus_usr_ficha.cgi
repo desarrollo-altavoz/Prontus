@@ -265,11 +265,13 @@ sub get_lst_port {
         if ( ($usr eq $FORM{'USERS_ID'})) {
             $port_usr{$port} = 1;
         };
-    };
+    };  
         
     foreach $key (sort keys %prontus_varglb::PORT_PLTS) {
-        $val_display = $key;
-        $val_display =~ s/\..*$//;
+
+        my $nombre = $prontus_varglb::PORT_PLTS_NOM{$key};
+        # $val_display = $key;
+        # $val_display =~ s/\..*$//;
         $clave = $key;
 
         my $checked;
@@ -278,8 +280,9 @@ sub get_lst_port {
             $checked = "checked=\"checked\"";
             $label_class = "class=\"checked\"";
         };
-        my $val_display_short = &procesar_nombre($val_display);
-        
+        my $val_display_short = &procesar_nombre($nombre);
+        my $val_display = "<div style=\'white-space:nowrap;text-align:left;width:auto;\''><b>Nombre:</b> $nombre<br><b>Archivo:</b> $clave</div>";
+
         $looptmp = $loop;
         $looptmp =~ s/%%clave%%/$clave/isg;
         $looptmp =~ s/%%val_display%%/$val_display/isg;
