@@ -7480,7 +7480,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 
 - Prontus en General:
-    [bugfixes]    
+    [bugfixes]
         - Se corrige error de codificación en el mensaje de error cuando no hay sesión activa.
     [mejoras]
         - Se habilita la posibilidad de usar guiones en el nombre del Prontus.
@@ -7521,7 +7521,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
         /cgi-cpn/xcoding/prontus_videoxcode.cgi
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
-    
+
 - Articulo
     [cambios]
         - Se elimina de la botonera del vtxt, el plugin de "spellchecker", ya que no estaba funcionando
@@ -7545,7 +7545,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia la forma de búsqueda al usar la sección: "Sin sección". Ahora encuentra los artículos
           que no tienen ninguna sección en ninguna de las 3 tripletas (antes encontraba articulos que tuvieran
           por lo menos 1 vacía, aunque ésta estuviera deshabilitada en el cpan)
-    [files]    
+    [files]
         /cgi-cpn/prontus_art_listnopub.cgi
 
 - Multimedia
@@ -7593,9 +7593,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.76 - 09/06/2014 - CVI
 ====================================================================================================
 
-- Prontus en General    
+- Prontus en General
     [mejora]
         - Se homologan códigos BEGIN de las cgis, para hacer pruebas de chequeo de sintaxis masivos
+        - Se agrega el uso de lib_stdlog en algunas cgis que no la estaban usando
         - Se comienza a distribuir junto con la release el archivo: change_log.txt
           La idea a futuro es poder desplegarlo desde la Ayuda de Prontus.
           La ruta será: /<_prontus_id>/cpan/core/version/change_log.txt
@@ -7615,14 +7616,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Transcodificación
     [bugfixes]
         - Al subir un nuevo video o audio, si existía uno antes, se eliminan él y sus versiones
-          Se daba el caso en que si existían versiones y además se subían un mp4 que no necesitaba 
+          Se daba el caso en que si existían versiones y además se subían un mp4 que no necesitaba
           procesamiento, las versiones no se volvían a generar.
     [files]
         /cgi-cpn/Artic.pm
 
 - VTXT
     [mejora]
-        - Se da la posibilidad de no codificar ampersand ni entidades HTML en el VTXT, 
+        - Se da la posibilidad de no codificar ampersand ni entidades HTML en el VTXT,
           usando la nueva variable: VTXT_ENCODE_CHARS en la sección "Variables generales"
           Esto es realmente útil en sitios donde se desea pegar código HTML dentro del vtxt
           (útil para usar como código de ejemplo)
@@ -7635,7 +7636,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Editor de CFG GUI
     [mejora]
-        - Se da la opción de configurar si los servidores serán http o https usando la 
+        - Se da la opción de configurar si los servidores serán http o https usando la
           variable SERVER_PROTOCOLO_HTTPS, seteando su valor en "SI"
           Ya que por ahora, en servidores nginx no es posible detectarlo de manera segura.
           A futuro se podría configurar este valor de manera separada para el backend y frontend
@@ -7659,6 +7660,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_usr_ficha.cgi
 
+- Control Fecha
+    [bugfixes]
+        - Cuando se usaba CONTROL_FECHA con MULTI_EDICION, al correr el cron, agregaban articulos de otras areas
+    [mejoras]
+        - Al escribir en el log de operación, se agrega el número de articulos procesados por portada
+    [files]
+        /cgi-cpn/prontus_cron_fechas.cgi
 
 
- 

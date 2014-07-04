@@ -236,7 +236,7 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
         $text_seccion = &glib_fildir_02::read_file($arch_seccion);
         # $text_final = $text_seccion;
         # Rescatar la info de c/artic de la seccion correspondiente
-
+        my $totartics = 0;
         while ($text_seccion =~ /<rowartic>[ \n]*?<dir>(\d+?)<\/dir>[ \n]*?<file>(.*?)<\/file>[ \n]*?<area>(\d*?)<\/area>[ \n]*?<ord>(\d*?)<\/ord>[ \n]*?(<vb>(\w*?)<\/vb>)?[ \n]*?<?i?n?>?([\w\/\-]*?)<?\/?i?n?>?[ \n]*?<?o?u?t?>?([\w\/\-]*?)<?\/?o?u?t?>?[ \n]*?<?p?u?b?>?(\d?)<?\/?p?u?b?>?[ \n]*?<\/rowartic>/isg) {
 
           # print STDERR "ENTRA";
@@ -249,6 +249,7 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
           $lib_prontus::VB{$art} = $vb;      # Asocia VoBo correspondiente.
           $lib_prontus::DIR_FECHA{$art} = $dirfecha;
 
+          $totartics++ if($lib_prontus::AREA{$art});
         };# while
 
         $entry = &get_nom_port($entry); # obtener nombre de la portada a re-escribir
@@ -256,7 +257,13 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
 
         if ($prontus_varglb::MULTI_EDICION eq 'SI') {
             # solo para multi-edicion: si la edicion es la base, actualiza solo las portadas declaradas como BASE_PORTS
-            next if (($EDIC eq 'base') && (! &is_base_port($entry)));
+            if (($EDIC eq 'base') && (! &is_base_port($entry))) {
+              %lib_prontus::AREA = ();
+              %lib_prontus::PRIO = ();
+              %lib_prontus::VB = ();
+              %lib_prontus::DIR_FECHA = ();
+              next;
+            }
         };
 
         if ($entry) {
@@ -286,7 +293,7 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
                                      $ts_preview, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS, $users_perfil);
           };
 
-          &lib_prontus::write_log('Actualizar', 'Portada', "$DST_SEC/$entry", 'Control Fecha');
+          &lib_prontus::write_log('Actualizar', 'Portada', "$DST_SEC/$entry (Articulos: $totartics)", 'Control Fecha');
         }
         else {
           if($arch_seccion =~ /^(.*?)\/([^\/]+)$/) {
