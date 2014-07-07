@@ -7668,4 +7668,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_cron_fechas.cgi
 
+- Comentarios
+    [mejora]
+        - Se agrega script que regenerar los comentarios.
+          Este script está en fase de beta: recibe el nombre del prontus y va imprimiendo los
+          articulos regnerados. Falta agregar gráfica a la salida. Podría dar timeout si el sitio
+          posee muchos comentarios. Ejemplo de invocación:
+          http://misitio.cl/cgi-cpn/coment/coment_regenera.cgi?_prontus_id=<prontus_id>
+    [files]
+        /cgi-cpn/coment/coment_regenera.cgi
 
