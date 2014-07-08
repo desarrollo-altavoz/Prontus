@@ -7622,6 +7622,21 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Artic.pm
 
 - VTXT
+    [cambio]
+        - Se cambia la forma en que funciona el Spellchecker del VTXT, ya que no era muy intuitivo
+          Ahora hay 2 modos: pasivo (por defecto) y activo.
+          Modo pasivo: Al presionar el botón, indica errores pero al editar el texto, el resaltado se desactiva
+          Modo activo: El resaltado queda activo mientras se escribe y se corrige al presionar enter o espacio
+          El modo activo NO se recomienda ya que tiene serios problemas de performance.
+          Para activar el modo activo colocar esto en el FID antes de la marca %%_INIT_VTXT%%:
+          <script type="text/javascript">
+                var vtxt_custom_buttons1 = "styleselect,bold,italic,underline,strikethrough,removeformat,cleanup,|,formatselect,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,outdent,indent,|,spellchecker";
+                var custom_spellchecker_mode = 'active';
+          </script>
+          La primera linea del JS habilita el plugin en la botonera.
+          La segunda linea indica que se usará el modo activo
+        - Por seguridad, se cambia el lugar en donde se genera el archivo temporal para el Spellchecker.
+          Ahora se genera una carpeta llamada /_aspell_tmp en el document_root del sitio
     [mejora]
         - Se da la posibilidad de no codificar ampersand ni entidades HTML en el VTXT,
           usando la nueva variable: VTXT_ENCODE_CHARS en la sección "Variables generales"

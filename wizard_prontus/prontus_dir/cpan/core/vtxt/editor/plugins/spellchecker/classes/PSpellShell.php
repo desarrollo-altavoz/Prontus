@@ -17,7 +17,7 @@ class PSpellShell extends SpellChecker {
 	 */
 	function &checkWords($lang, $words) {
 		$cmd = $this->_getCMD($lang);
-
+		
 		if ($fh = fopen($this->_tmpfile, "w")) {
 			fwrite($fh, "!\n");
 
@@ -101,8 +101,13 @@ class PSpellShell extends SpellChecker {
 	}
 
 	function _getCMD($lang) {
-		$this->_tmpfile = tempnam($this->_config['PSpellShell.tmp'], "tinyspell");
 
+		$tmpdir = $_SERVER['DOCUMENT_ROOT'] . $this->_config['PSpellShell.tmp'];
+		if(! is_dir($tmpdir)) {
+			mkdir($tmpdir);
+		}
+		$this->_tmpfile = tempnam($tmpdir, "tinyspell");		
+		
 		$file = $this->_tmpfile;
 		$lang = preg_replace("/[^-_a-z]/", "", strtolower($lang));
 		$bin  = $this->_config['PSpellShell.aspell'];
