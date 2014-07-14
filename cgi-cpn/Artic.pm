@@ -357,7 +357,7 @@ sub generar_xml_artic {
         if ($nom_campo =~ /^_/) {
             next if ($Artic::XML_BASE !~ /<_private>.*<$nom_campo>.*<\/$nom_campo>.*<\/_private>/s);
         };
-        next if (! $val_campo);
+        next if ($val_campo eq ''); # CVI - Permite guardar el "0" en el XML
 
         my $parse_as_cdata = 0;
         $parse_as_cdata = 1 if ($nom_campo =~ /^(_?txt_|vtxt_)/i);
@@ -459,10 +459,10 @@ sub _guarda_recursos {
             &glib_fildir_02::check_dir($dst_dir);
 
             # Antes de mover lo nuevo, se elimina lo antiguo
-            if ($arch_existente ne '' && $type eq 'multimedia') {    
+            if ($arch_existente ne '' && $type eq 'multimedia') {
                 # Obtener nombre de arch. sin extension
                 my $nom_sin_ext = $nom_arch;
-                $nom_sin_ext =~ s/\.\w*$//;            
+                $nom_sin_ext =~ s/\.\w*$//;
                 # print STDERR "Eliminando["."$dst_dir/$nom_sin_ext" . '*.*'."]\n";
                 my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
             };
