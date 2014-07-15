@@ -1166,7 +1166,7 @@ sub valida_prontus {
   my $prontus_id = shift;
   if($prontus_id !~ /^[\w\_\-\d]+$/) {
     return 0
-  } 
+  }
   return 1;
 
 }
@@ -4299,7 +4299,7 @@ sub saca_tags_rets {
     $toencode=~ s/"/'/g;
     $toencode=~ s/&quot;/'/g;
     my $inclinada = "´";
-    utf8::encode($inclinada);
+    # utf8::encode($inclinada);
     $toencode =~ s/'/$inclinada/sg; # cambia comilla vertical por comilla inclinada, para compatib. JS
     $toencode =~ s/&#39;/$inclinada/sg; # cambia comilla vertical por comilla inclinada, para compatib. JS
 

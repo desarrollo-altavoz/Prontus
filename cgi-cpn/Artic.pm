@@ -1837,7 +1837,7 @@ sub generar_vista_art {
         $buffer =~ s/&#37;&#37;/%%/sg; # restituyo los %% escritos por el usuario al interior de los campos
 
         # aprovecha de rescatar el post_proceso
-        if (!$mv) {
+        if (!$mv && !$is_paralela) {
             while ($buffer =~ /<!--POST_PROCESO=(.+?)-->/isg) {
                 $this->{post_proceso_lista} .= "$1\t";
             };

@@ -7610,8 +7610,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Articulo
     [bugfixes]
         - Se modifica validación en el objeto Artic, para poder guardar el "0" en el XML
+        - Los postprocesos de artículo se ejecutan sólo si están definidos en la plantilla principal
+        - Se corrige error de codificación al usar la funcion: saca_tags_rets con las comillas simples
     [files]
         /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
 
 - Borrar Artículo
     [bugfixes]
