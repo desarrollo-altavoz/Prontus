@@ -34,6 +34,8 @@
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
+    unshift(@INC,$pathLibsProntus);
+
     $pathLibsProntus =~ s/\/coment$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 
@@ -92,7 +94,7 @@ main: {
     }
     print "</pre>";
     $salida->finish;
-    $BD->disconnect;        
+    $BD->disconnect;
 
-    
+
 }; # main.
