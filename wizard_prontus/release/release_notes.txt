@@ -7684,6 +7684,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           variable SERVER_PROTOCOLO_HTTPS, seteando su valor en "SI"
           Ya que por ahora, en servidores nginx no es posible detectarlo de manera segura.
           A futuro se podría configurar este valor de manera separada para el backend y frontend
+        - A la variable SEARCHTIPS_DURACION_CACHE, se le aumenta el maxlength a 3, y se indica que el máximo es 999
+        - Se indica que la variable: SEARCHTIPS_MAXREQUESTXIP, tiene como máximo 99
     [files]
         /cgi-bin/prontus_enviar.cgi
         /cgi-cpn/Artic.pm
