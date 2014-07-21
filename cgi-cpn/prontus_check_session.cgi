@@ -70,6 +70,10 @@ main: {
                         || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
         $upd_obj->descarga_upd_descriptor();
 
+        # Se loguea en el Log de Operaciones
+        my %cookies = &lib_cookies::get_cookies();
+        my $username = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_ID};
+        &lib_prontus::write_log('Auto Login', $username, '');
         print "1";
     };
 

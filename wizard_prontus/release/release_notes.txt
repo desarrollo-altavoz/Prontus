@@ -7707,3 +7707,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/coment/coment_regenera.cgi
 
+- Login
+    [mejora]
+        - Se comienza a loguear en el Log de Operaciones, cuando se hace Auto-Login
+    [files]
+        /cgi-cpn/prontus_check_session.cgi
