@@ -198,7 +198,9 @@ sub new {
       };
       # print CHORRO "buf2[$readbytes][" . length($buf2) . "]\n"; # debug
       $aux = $buf1 . $buf2;
-      if ($aux =~ /$sep.+?\r\n\r\n/s) { # Encontro un separador con encabezado y todo.
+      # Encontro un separador con encabezado y todo.
+      # Se agrega "|$sep.+?" para que considere el último separador en el editor de archivos prontus
+      if ($aux =~ /$sep.+?\r\n\r\n|$sep.+?/s) {
         # Redefine buffers para acomodarse al limite recien descubierto.
         $prematch = $`; # Prematch.
         chop $prematch; # 4.1
