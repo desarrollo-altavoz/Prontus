@@ -55,9 +55,9 @@ BEGIN {
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
+use prontus_varglb; &prontus_varglb::init();
 use glib_cgi_04;
 use glib_fildir_02;
-use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use lib_edit;
 use lib_prontus;
@@ -161,11 +161,12 @@ main:{
     &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un directorio existente, especifique uno distinto por favor", 'exit=1,ctype=1');
   };
 
+
   # Se mueve el archivo al destino final
   print STDERR "Moviendo $FORM{'file_upload'} a $full_curr_dir/$name_final";
   if(&File::Copy::move($FORM{'file_upload'}, "$full_curr_dir/$name_final")) {
     &lib_prontus::write_log('Upload', 'Editor', "$full_curr_dir/$name_final");
-    &glib_html_02::print_json_result(1, "El archivo fue subido exitosamente. Nombre Final: $name_final", 'exit=1,ctype=1');    
+    &glib_html_02::print_json_result(1, "El archivo fue subido exitosamente. Nombre Final: $name_final", 'exit=1,ctype=1');
   } else {
     print STDERR "Error al renombrar el archivo: $FORM{'file_upload'}\nEn el destino: $full_curr_dir/$name_final\nDetalles: $!\n";
     &glib_html_02::print_json_result(0, "Se produjo un error en el renombrado", 'exit=1,ctype=1');
