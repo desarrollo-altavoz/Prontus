@@ -2,6 +2,7 @@
 // -----------------------------------------
 var Fid = {
 
+    showDragDrop: false,
     objFormFid: '', // se setea en el doc. ready
     isGecko: navigator.userAgent.indexOf('Gecko') !== -1,
     isMac: navigator.userAgent.indexOf('Macintosh') !== -1,
@@ -103,36 +104,38 @@ var Fid = {
 
 
         /* Verificar si d&d es compatible con el browser. */
-        var showDragDrop = false;
         var userAgent = navigator.userAgent.toString().toLowerCase();
         jQuery.browser.version = parseInt(jQuery.browser.version);
-
         if (jQuery.browser.mozilla && jQuery.browser.version >= 4) { // Firefox 4+
-            showDragDrop = true;
+            Fid.showDragDrop = true;
+            $('.ishttps').hide();
+
         } else if (jQuery.browser.webkit) {
             if (userAgent.indexOf('safari') != -1 && userAgent.indexOf('windows') == -1) { // Safari en MAC.
                 if (jQuery.browser.version >= 5) {
-                    showDragDrop = true;
+                    Fid.showDragDrop = true;
                 }
             } else if (userAgent.indexOf('chrome') != -1) { // Chrome 7+
                 if (jQuery.browser.version >= 7) {
-                    showDragDrop = true;
+                    Fid.showDragDrop = true;
                 }
             }
         }
 
         /* Mostrar drag & drop siempre y cuando este soportado. */
-        if (showDragDrop) {
+        if (Fid.showDragDrop) {
+
             // Iniciar upload Drag & Drop
             $('#uploadNormal').hide();
             $('#uploadDragDrop').show();
+            $('#uploadUploadify').show();
             $('#DragDropAndTradicional').show();
 
             var valoresAdicionales = {
                 prontus_id: mainFidJs.PRONTUS_ID
             };
 
-            $('#fileInput').fileupload({
+            $('#fileInputDD').fileupload({
                 dataType: 'text',
                 url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
                 dropZone: $('#dropZone'),
@@ -173,7 +176,7 @@ var Fid = {
                 stop: function (e) {
                     $('#uploadProgressBar').css('width', '100%');
                     $('#uploadProgressPercent').text('100%');
-                    $('#fileInput').fileupload('disable');
+                    $('#fileInputDD').fileupload('disable');
                     $('#dropZone').css('cursor', 'not-allowed');
                     setTimeout(function () {
                         $('#uploadProgressContainer').hide();
@@ -198,44 +201,43 @@ var Fid = {
                     }
 
                     $('#uploadProgress').show();
-                    $('#fileInput').hide();
-                    $('#DragDropAndTradicional').hide();
-                    $('#fileInputUploader').hide();
+                    $('#uploadUploadify').hide();
                 }
             });
         }
 
         /* Uploadify */
         $('#fileInput').uploadify({
-            'uploader'  : '/' + mainFidJs.PRONTUS_ID + '/cpan/core/js-local/uploadify/uploadify.swf',
-            'queueSizeLimit' : 30,
-
-            'buttonText': 'Examinar...',
-            'script'    : '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi',
-            'fileDesc': 'Image Files',
-            'fileExt': '*.jpg;*.jpeg;*.gif;*.png',
-            'scriptData' : { "prontus_id": mainFidJs.PRONTUS_ID, "sdata": mainFidJs.SDATA},
-            'cancelImg' : '/' + mainFidJs.PRONTUS_ID + '/cpan/core/js-local/uploadify/cancel.png',
-            'auto'      : true,
-            // 'folder'    : '%%_PRONTUS_ID%%/cpan/procs/uploadify',
-            'multi'          : true,
-            'onAllComplete'  : function(evt, data) {
+            //debug:          true,
+            removeCompleted: false,
+            buttonText:     'Examinar...',
+            swf:            '/' + mainFidJs.PRONTUS_ID + '/cpan/core/js-local/uploadify/uploadify.swf',
+            auto:           true,
+            multi:          true,
+            queueSizeLimit: 30,
+            uploader:       '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi',
+            fileSizeLimit:  0,
+            fileTypeDesc:   'Image Files',
+            fileTypeExts:   '*.jpg;*.jpeg;*.gif;*.png',
+            uploadLimit:    100,
+            formData: {
+                    "prontus_id":   mainFidJs.PRONTUS_ID,
+                    "sdata":        mainFidJs.SDATA
+            },
+            'onQueueComplete':  function(queueData) {
+                $('#uploadcomplete').show();
                 setTimeout(function() {
                     Fid.submitir('Guardar', '_self');
                 }, 1500);
-                $('#uploadcomplete').show();
             },
-            'onComplete'     : function(evt, queueID, fileObj, response, data) {
-                // alert(fileObj.filePath);
-                // alert(response);
+            'onUploadSuccess': function(fileObj, data, response) {
+
                 if (response === false) {
                     alert( 'No fue posible subir correctamente la imagen ' + fileObj.name );
-                    //$('#fileInput').uploadifyCancel(queueID);
-                    //$('#fileInput').uploadifyUpload();
                     return true;
                 } else {
                     var arrResp = [];
-                    arrResp = response.split(","); // $idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile
+                    arrResp = data.split(","); // $idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile
                     var idFoto = arrResp[0];
                     var wFoto = arrResp[1];
                     var hFoto = arrResp[2];
@@ -246,28 +248,33 @@ var Fid = {
                         wFoto = 100;
                     }
 
-                    $('#imagenescargadas').append('<div style="margin-left:10px;margin-top:16px;width:120px;height:135px;overflow:auto;display:inline;float:left">' +
+                    $('#imagenescargadas').append('<div class="item-uploaded">' +
                             '<div>' + fileObj.name + labelSize + '</div>' +
                             '<img src="' + relPath + '" id="' + idFoto  + '" width="' + wFoto + '">' +
-                            '</div>' +
-                            '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">');
-
+                            '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">' +
+                            '</div>');
                     return true;
                 }
             },
-            'onError'   :   function( evt, queueID, fileObj, errObj ) {
-                alert( 'Error: [' + errObj.type + '] [' + errObj.info + '] No fue posible subir la imagen ' + fileObj.name );
+            'onUploadError': function(fileObj, errorCode, errorMsg, errorString) {
+                alert( 'Error: [' + errorCode + '] No fue posible subir la imagen ' + fileObj.name );
+                alert( 'errorMsg[' + errorMsg + '], errorString[' + errorString + ']');
                 return true;
             },
-            'onOpen'      : function(event,ID,fileObj) {
-                /* Al subir imagenes por este metodo y si esta activado d&d, deshabilitarlo.*/
-                if (showDragDrop) {
-                    $('#fileInput').fileupload('disable');
+            'onDialogOpen': function() {
+                // Al subir imagenes por este metodo y si esta activado d&d, deshabilitarlo
+                if (Fid.showDragDrop) {
+                    $('#fileInputDD').fileupload('disable');
                     $('#dropZone').css('cursor', 'not-allowed');
                 }
             }
-        });
+        }, {preserve_relative_urls: true});
         /* /Uploadify */
+
+        // El uploadify no funciona en Firefox con https
+        if (jQuery.browser.mozilla) {
+            $('.ishttps').hide();
+        }
 
         Fid.setGUIProcesando(false);
 
@@ -902,7 +909,7 @@ var Fid = {
         var loc = 'prontus_art_view_xml.cgi?_prontus_id='+p+'&_ts='+ts;
         nom = "verXML"+ts;
         Utiles.subWin(loc, nom, 800, 500, 50, 50);
-        
+
     }
 
 };

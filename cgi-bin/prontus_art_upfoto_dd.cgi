@@ -63,7 +63,7 @@ my (%FORM);
 main: {
     &glib_cgi_04::new();
     
-    $FORM{'files'} = &glib_cgi_04::param('fileInput');
+    $FORM{'files'} = &glib_cgi_04::param('fileInputDD');
     $FORM{'prontus_id'} = &glib_cgi_04::param('prontus_id');
     # $FORM{'prontus_id'} =~ s/[^\w\-]//sg; No es necesario se valida dentro de valida_invocacion()
     
@@ -85,7 +85,7 @@ main: {
         $ext = lc $3; # ext con punto
     }
     
-    my $relpath = &glib_cgi_04::real_paths('fileInput');
+    my $relpath = &glib_cgi_04::real_paths('fileInputDD');
 
     # Compone path destino de la imagen y realiza garbage
     my $rel_dst_dir = "/$FORM{'prontus_id'}/cpan/procs/uploadify";
@@ -133,7 +133,7 @@ sub valida_invocacion {
     };
     
     if ($FORM{'files'} eq '') {
-        print STDERR "fileInput no valido\n";
+        print STDERR "fileInputDD no valido\n";
         print "Content-Type: text/html\n\n";
         print 0;
         exit;

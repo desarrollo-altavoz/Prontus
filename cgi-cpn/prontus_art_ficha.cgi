@@ -433,6 +433,13 @@ my $prontus_manual_oper =  'prontus_operacion_v' . $version4manual;
 $pagina =~ s/%%_prontus_manual_oper%%/$prontus_manual_oper/isg;
 
 
+# CVI - 21/07/2014 - Para uso desde el CPAN
+if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+    $pagina =~ s/%%class_ishttps%%/ishttps/ig;
+} else {
+    $pagina =~ s/%%class_ishttps%%//ig;
+}
+
 # CVI - 16/06/2011
 my $open_fid_in_pop = 'open_normally';
 if($prontus_varglb::ABRIR_FIDS_EN_POP eq 'SI') {
@@ -1225,7 +1232,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         my $protocolo = 'http';
         if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
             $protocolo = 'https';
-        } 
+        }
         $foto_fija_aux =~ s/src="/src="$protocolo:\/\/$prontus_varglb::IP_SERVER/isg;
         $foto_fija_aux =~ s/"/' \+ String.fromCharCode\(34\) \+ '/isg;
         $pag =~ s/%%_DIV_$nom_campo%%/$foto_fija_aux/ig;
