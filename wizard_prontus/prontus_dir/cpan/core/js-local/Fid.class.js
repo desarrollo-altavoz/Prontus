@@ -233,7 +233,7 @@ var Fid = {
             'onUploadSuccess': function(fileObj, data, response) {
 
                 if (response === false) {
-                    alert( 'No fue posible subir correctamente la imagen ' + fileObj.name );
+                    alert( 'No fue posible subir correctamente la imagen [' + fileObj.name + ']');
                     return true;
                 } else {
                     var arrResp = [];
@@ -257,8 +257,7 @@ var Fid = {
                 }
             },
             'onUploadError': function(fileObj, errorCode, errorMsg, errorString) {
-                alert( 'Error: [' + errorCode + '] No fue posible subir la imagen ' + fileObj.name );
-                alert( 'errorMsg[' + errorMsg + '], errorString[' + errorString + ']');
+                alert( '[' + errorMsg + '] No fue posible subir la imagen [' + fileObj.name + ']');
                 return true;
             },
             'onDialogOpen': function() {
