@@ -45,7 +45,7 @@
 
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Admin.class.js"></script>
-  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Fid.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Fid.class.js?v2"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Tags.class.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Botones.class.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Utiles.class.js"></script>
@@ -66,6 +66,7 @@
     };
     $(document).ready(function () {
       Admin.init('%%_prontus_id%%');
+      Fid.setHttps();
       Fid.init();
 
       // Se revisa si el articulo es nuevo o no

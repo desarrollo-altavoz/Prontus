@@ -3,6 +3,8 @@
 var Fid = {
 
     showDragDrop: false,
+    ishttps: false,
+
     objFormFid: '', // se setea en el doc. ready
     isGecko: navigator.userAgent.indexOf('Gecko') !== -1,
     isMac: navigator.userAgent.indexOf('Macintosh') !== -1,
@@ -207,6 +209,10 @@ var Fid = {
         }
 
         /* Uploadify */
+        var cgiuploadify = '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi';
+        if(Fid.ishttps) {
+            cgiuploadify = 'https://' + cgiuploadify;
+        }
         $('#fileInput').uploadify({
             //debug:          true,
             removeCompleted: false,
@@ -215,7 +221,7 @@ var Fid = {
             auto:           true,
             multi:          true,
             queueSizeLimit: 30,
-            uploader:       '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi',
+            uploader:       cgiuploadify,
             fileSizeLimit:  0,
             fileTypeDesc:   'Image Files',
             fileTypeExts:   '*.jpg;*.jpeg;*.gif;*.png',
@@ -271,8 +277,8 @@ var Fid = {
         /* /Uploadify */
 
         // El uploadify no funciona en Firefox con https
-        if (jQuery.browser.mozilla) {
-            $('.ishttps').hide();
+        if (jQuery.browser.mozilla && Fid.ishttps) {
+            $('#uploadUploadify').hide();
         }
 
         Fid.setGUIProcesando(false);
@@ -355,6 +361,12 @@ var Fid = {
         if(typeof Transcoding !== 'undefined') {
             Transcoding.init(thediv);
         }
+    },
+
+    // -----------------------------------------
+    // Deja seteado el flag de https
+    setHttps: function() {
+        Fid.ishttps = true;
     },
 
     // -----------------------------------------

@@ -435,9 +435,9 @@ $pagina =~ s/%%_prontus_manual_oper%%/$prontus_manual_oper/isg;
 
 # CVI - 21/07/2014 - Para uso desde el CPAN
 if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
-    $pagina =~ s/%%class_ishttps%%/ishttps/ig;
+    $pagina =~ s/%%_ishttps%%(.*?)%%\/_ishttps%%/\1/isg;
 } else {
-    $pagina =~ s/%%class_ishttps%%//ig;
+    $pagina =~ s/%%_ishttps%%.*?%%\/_ishttps%%//isg;
 }
 
 # CVI - 16/06/2011
