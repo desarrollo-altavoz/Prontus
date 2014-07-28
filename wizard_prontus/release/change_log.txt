@@ -1,4 +1,31 @@
 ====================================================================================================
+11.2.76 - 28/07/2014
+====================================================================================================
+- bugfix: Se modifica validación en el objeto Artic, para poder guardar el "0" en el XML
+- bugfix: Los postprocesos de artículo se ejecutan sólo si están definidos en la plantilla principal
+- bugfix: Se corrige error de codificación al usar la funcion: saca_tags_rets con las comillas simples
+- improvement: Se homologan códigos BEGIN de las cgis, para hacer pruebas de chequeo de sintaxis masivos
+- improvement: Se agrega el uso de lib_stdlog en algunas cgis que no la estaban usando
+- improvement: Se comienza a distribuir junto con la release el archivo: /<_prontus_id>/cpan/core/version/change_log.txt
+- improvement: Se actualiza la versión del script Uploadify a la v3.2.1
+- changes: Cuando se detecta que es HTTPS, se deshabilita el Uploadify en Firefox, ya que no funciona
+- changes: Retoque gráfico al tooltip de la UI, usado en varios lados del CPAN
+- bugfix: Al escribir en el log de operación, al borrar un artículo, se agrega el TS del artículo
+- bugfix: Al subir un nuevo video o audio, si existía uno antes, se eliminan él y sus versiones
+- changes: Se cambia la forma en que funciona el Spellchecker del VTXT. Ahora hay 2 modos: pasivo (por defecto) y activo.
+- changes: Por seguridad, se cambia la ubicación del archivo temporal para el Spellchecker: /<document_root>/_aspell_tmp
+- improvement: Se da la opción de no codificar ampersand ni entidades HTML en el VTXT. La variable nueva: VTXT_ENCODE_CHARS
+- improvement: Se da la opción de configurar si los servidores serán http o https usando la variable SERVER_PROTOCOLO_HTTPS
+- improvement: A la variable SEARCHTIPS_DURACION_CACHE, se le aumenta el maxlength a 3, y se indica que el máximo es 999
+- improvement: Se indica que la variable: SEARCHTIPS_MAXREQUESTXIP, tiene como máximo 99
+- improvement: Al asignar portadas a los usuarios, éstas aparecerán con el nombre "humano" (En vez del archivo)
+- bugfix: Cuando se usaba CONTROL_FECHA con MULTI_EDICION, al correr el cron, agregaban articulos de otras areas
+- improvement: Al escribir en el log de operación, el cron fechas, ahora agrega el número de articulos procesados por portada
+- improvement: Se agrega script que regenerar los comentarios (aún en beta).
+- improvement: Se comienza a loguear en el Log de Operaciones, cuando se hace Auto-Login
+- bugfix: Bug al subir archivos por el Editor de Archivos. Algunos navegadores dejaban codigo basura al final del archivo
+
+====================================================================================================
 11.2.75 - 06/06/2014
 ====================================================================================================
 - notice: Se habilita la posibilidad de usar guiones en el nombre del Prontus.
