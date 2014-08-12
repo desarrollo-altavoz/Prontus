@@ -1781,8 +1781,22 @@ sub load_config {
 
   # detecta ubicacion ffmpeg en el sistema
   my @dirs_ffmpeg;
-  push @dirs_ffmpeg, '/usr/local/bin';
-  push @dirs_ffmpeg, '/usr/bin';
+
+  # Se busca en las rutas especificadas en la variable de entorno PATH.
+  my $str = "echo \$PATH";
+  my $ret_path = `$str`;
+  $ret_path =~ s/\n//sg;
+  $ret_path =~ s/\t//sg;
+  $ret_path =~ s/\s//sg;
+  $ret_path =~ s/\r//sg;
+
+  if ($ret_path) {
+    @paths_ffmpeg = split(/:/, $ret_path);
+  } else {
+    push @paths_ffmpeg, '/usr/local/bin/ffmpeg';
+    push @paths_ffmpeg, '/usr/bin/ffmpeg';
+  };
+
   my $found_path_ffmpeg = 0;
   foreach my $dir_ffmpeg (@paths_ffmpeg) {
     if (-f "$dir_ffmpeg/ffmpeg") {
@@ -1790,21 +1804,26 @@ sub load_config {
         last;
     };
   };
+
   # si no se detecta ninguno, asigna el primero que se probo, para que la var no quede en blanco
   $default_dir_ffmpeg = $dirs_ffmpeg[0] if (!$default_dir_ffmpeg);
 
   # si el dir se define por cfg, usa ese en lugar del por defecto
   if ($buffer =~ m/\s*DIR_FFMPEG\s*=\s*("|')(.*?)("|')/) {
    $dir_ffmpeg = $2;
+   if (!$dir_ffmpeg) {
+    $dir_ffmpeg = $default_dir_ffmpeg;
+   };
   } else {
    $dir_ffmpeg = $default_dir_ffmpeg;
   };
+
   $prontus_varglb::DIR_FFMPEG = $dir_ffmpeg;
   $prontus_varglb::DIR_FFMPEG =~ s/[^\w\-\/]//sg;
   $prontus_varglb::DIR_FFMPEG =~ s/\/$//sg;
 
   if (!-d $prontus_varglb::DIR_FFMPEG) {
-      print STDERR "Error en CFG: variable DIR_FFMPEG no corresponde a un directorio existente en el sistema.\n";
+      print STDERR "Error en CFG: variable DIR_FFMPEG [$prontus_varglb::DIR_FFMPEG] no corresponde a un directorio existente en el sistema.\n";
       print "Content-Type: text/html\n\n";
       print "<P>Error en CFG: variable DIR_FFMPEG no corresponde a un directorio existente en el sistema.";
       exit;
@@ -6231,6 +6250,9 @@ sub add_generator_tag {
 # ---------------------------------------------------------------
 sub purge_cache {
     my ($path_file) = shift;
+    my $servers = (keys %prontus_varglb::VARNISH_SERVER_NAME);
+    return if (!$servers);
+
     my $relpath = &remove_front_string($path_file, $prontus_varglb::DIR_SERVER);
 
     if ($relpath !~ /\/site\/tax\/port\//is) {

@@ -112,8 +112,21 @@ main: {
 
   # chequeo de xcoding
   my @paths_ffmpeg;
-  push @paths_ffmpeg, '/usr/local/bin/ffmpeg';
-  push @paths_ffmpeg, '/usr/bin/ffmpeg';
+
+  # Se busca en las rutas especificadas en la variable de entorno PATH.
+  my $str = "echo \$PATH";
+  my $ret_path = `$str`;
+  $ret_path =~ s/\n//sg;
+  $ret_path =~ s/\t//sg;
+  $ret_path =~ s/\s//sg;
+  $ret_path =~ s/\r//sg;
+
+  if ($ret_path) {
+    @paths_ffmpeg = split(/:/, $ret_path);
+  } else {
+    push @paths_ffmpeg, '/usr/local/bin/ffmpeg';
+    push @paths_ffmpeg, '/usr/bin/ffmpeg';
+  };
 
   print "\n<b>" if ($ambiente_web);
   print "Chequeando soporte transcodificación ...\n";
@@ -134,9 +147,9 @@ main: {
   my $found_path_ffmpeg = 0;
   foreach my $path_ffmpeg (@paths_ffmpeg) {
 
-    if (-f $path_ffmpeg) {
+    if (-f "$path_ffmpeg/ffmpeg") {
         $found_path_ffmpeg = 1;
-        &check_xcoding($path_ffmpeg);
+        &check_xcoding("$path_ffmpeg/ffmpeg");
     };
   };
 

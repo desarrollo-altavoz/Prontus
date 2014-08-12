@@ -32,6 +32,7 @@ close STDOUT;
 
 my %FORM;
 my $ua;
+my $dir_semaf;
 
 main: {
     $FORM{'prontus_id'} = $ARGV[0];
@@ -43,15 +44,66 @@ main: {
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus_id'});
     &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
+    $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
+    &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
+
+    if (-f "$dir_semaf/purge_cache.lck") {
+        my $pid = &glib_fildir_02::read_file("$dir_semaf/purge_cache.lck");
+        print STDERR "[$$] Ya existe un proceso corriendo pid[$pid]\n";
+        my $mtime = (stat("$dir_semaf/purge_cache.lck"))[9];
+        my $now = time;
+        my $diff = $now - $mtime;
+        if ($diff > 1800) { # 30 minutos.
+            print STDERR "[$$] Semaforo muy antiguo, eliminando...";
+            unlink "$dir_semaf/purge_cache.lck";
+        } else {
+            my $ret = `ps p $pid | grep prontus_purge_cache | grep -v grep`;
+            if ($ret) {
+                print STDERR "[$$] pid[$pid] still runnin, leaving...\n";
+                exit;
+            } else {
+                print STDERR "[$$] $pid is dead\n";
+            };
+        };
+    };
+
+    &glib_fildir_02::write_file("$dir_semaf/purge_cache.lck", $$);
+
+    my $espera_segs = 5;
+    $ua = new LWP::UserAgent;
+    $ua->timeout($espera_segs); # segs # default es 180
+    $ua->agent('Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'); # default es "libwww-perl/#.##"
+
     if (-f $FORM{'file'}) {
-        my $espera_segs = 5;
-        $ua = new LWP::UserAgent;
-        $ua->timeout($espera_segs); # segs # default es 180
-        $ua->agent('Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'); # default es "libwww-perl/#.##"
         &purge($FORM{'file'});
         print STDERR "[$$] Se termino de procesar [$FORM{'file'}].\n";
         unlink $FORM{'file'};
     };
+
+    # Revisar si hay más archivos.
+    my $dir_purgepend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
+    my @files = glob("$dir_purgepend/*.txt");
+    my $file;
+
+    print STDERR "[$$] Buscando si hay mas archivos...\n";
+
+    while (defined($file = shift @files)) {
+        print STDERR "[$$] Procesando [$file]\n";
+        next if (!-s $file);
+        &purge($file);
+        print STDERR "[$$] Se termino de procesar [$file].\n";
+        unlink $file;
+
+        # La idea es que si van agregando mas archivos mientras este proceso corre, se procecen.
+        if ($#files <= 0) {
+            print STDERR "[$$] Buscando si hay mas archivos...\n";
+            @files = glob("$dir_purgepend/*.txt");
+        };
+    };
+
+    print STDERR "[$$] Fin.\n";
+
+    unlink "$dir_semaf/purge_cache.lck";
     exit;
 };
 
@@ -71,13 +123,15 @@ sub purge {
 
     open (PURGEFILE, "<$path_file");
     foreach my $filetopurge (<PURGEFILE>) {
-        if (!-f $FORM{'file'}) {
-            print STDERR "[$$] Abortado, el archivo [$FORM{'file'}] ya no existe.\n";
+        if (!-f $path_file) {
+            print STDERR "[$$] Abortado, el archivo [$path_file] ya no existe.\n";
+            unlink "$dir_semaf/purge_cache.lck";
             exit;
         };
         $filetopurge =~ s/\n//is;
         my $relpath = &lib_prontus::remove_front_string($filetopurge, $prontus_varglb::DIR_SERVER);
         foreach my $server (keys %prontus_varglb::VARNISH_SERVER_NAME) {
+            next if (!$server);
             my $url_purge = "http://$server$relpath";
             my ($resp, $err) = &get_url($url_purge);
             print STDERR "[$$] server[$server], url_purge[$url_purge], status[$err]\n";
@@ -98,6 +152,11 @@ sub purge {
             };
         };
     };
+
+    # Actualiza fecha de modificación del semaforo en caso de que se procesen muchos archivos
+    # no llegue otro proceso y lo pise.
+    # El semaforo es util cuando el script se caiga o se quede pegado (sin actualizar mtime).
+    utime time, time, "$dir_semaf/purge_cache.lck";
 };
 
 sub get_url {

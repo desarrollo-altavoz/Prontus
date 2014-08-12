@@ -109,7 +109,7 @@ main: {
     $hash_defaultvars{'var'}{'MULTIVISTA'} = 'MULTIVISTAS;(\w+);;M';
     $hash_defaultvars{'var'}{'UPLOADS_PERMITIDOS'} = 'UPLOADS_PERMITIDOS;(\w+);' . $prontus_varglb::UPLOADS_PERMITIDOS . ';U';
     $hash_defaultvars{'var'}{'UPLOADS_EXTRAS'} = 'UPLOADS_EXTRAS;(\w+);;U';
-    $hash_defaultvars{'var'}{'DIR_FFMPEG'} = 'DIR_FFMPEG;(\w+);/usr/local/bin;U';
+    $hash_defaultvars{'var'}{'DIR_FFMPEG'} = 'DIR_FFMPEG;(\w+);;U';
     $hash_defaultvars{'var'}{'ABRIR_FIDS_EN_POP'} = 'ABRIR_FIDS_EN_POP;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'SCRIPT_QUOTA'} = 'SCRIPT_QUOTA;(\w+);;U';
     $hash_defaultvars{'var'}{'FOTO_MAX_PIXEL'} = 'FOTO_MAX_PIXEL;(.*?);;U';
@@ -339,6 +339,11 @@ main: {
                     &validarSearch($var_valida);
                     $buffer = $buffer . "$var_valida = $var_info[2]\n";
                 } else {
+                    # Esto no puede quedar vacio y no hay que poner el valor por defecto.
+                    if ($var_valida eq 'DIR_FFMPEG') {
+                        &glib_html_02::print_json_result(0, 'La variable DIR_FFMPEG debe tener una ruta válida.', 'exit=1,ctype=1');
+                    }
+
                     # Si la variable es multivista, no guardar vacia.
                     if ($var_valida eq 'MULTIVISTA') {
                         if ($var_info[2] ne '') {
@@ -357,6 +362,12 @@ main: {
                 &validarSearch($var_valida);
                 $buffer = $buffer . "$var_valida = $var_info[2]\n";
             } else {
+
+                # Esto no puede quedar vacio y no hay que poner el valor por defecto.
+                if ($var_valida eq 'DIR_FFMPEG') {
+                    &glib_html_02::print_json_result(0, 'La variable DIR_FFMPEG debe tener una ruta válida.', 'exit=1,ctype=1');
+                }
+
                 # $buffer = $buffer . "$var_valida = '$var_info[2]'\n";
                 my $utf8_value = $var_info[2];
                 utf8::encode($utf8_value); # en caso de que los valores por defecto contenga tildes

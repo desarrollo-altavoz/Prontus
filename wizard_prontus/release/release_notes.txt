@@ -7735,3 +7735,22 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrige bug al subir archivos por el Editor de Archivos. En algunos navegadores dejaba codigo basura al final del archivo
     [files]
         /cgi-cpn/glib_cgi_04.pm
+
+====================================================================================================
+11.2.77 - 05/08/2014 - JOR
+====================================================================================================
+
+- Prontus en General
+  [bugfixes]
+    - Se corrige problema con purge cache. Se estaban generando muchos procesos de manera simultanea.
+  [files]
+      /cgi-cpn/prontus_purge_cache.cgi
+      /cgi-cpn/lib_prontus.pm
+
+- Transcoding
+  [mejoras]
+    - Se mejora la búsqueda del binario del ffmpeg en las rutas definidas por el sistema operativo.
+  [files]
+      /cgi-cpn/lib_prontus.pm
+      /cgi-cpn/prontus_check_platform.cgi
+      /cgi-cpn/prontus_cfg_save.cgi

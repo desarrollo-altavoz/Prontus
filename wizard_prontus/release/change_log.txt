@@ -1,4 +1,10 @@
 ====================================================================================================
+11.2.77 - 05/08/2014
+====================================================================================================
+- bugfix: Se corrige problema con purge cache. Se estaban generando muchos procesos de manera simultanea.
+- improvement: Se mejora la búsqueda del binario del ffmpeg en las rutas definidas por el sistema operativo.
+
+====================================================================================================
 11.2.76 - 28/07/2014
 ====================================================================================================
 - bugfix: Se modifica validación en el objeto Artic, para poder guardar el "0" en el XML
