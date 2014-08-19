@@ -53,7 +53,7 @@ BEGIN {
 
 # Captura STDERR
 use lib_stdlog;
-&lib_stdlog::set_stdlog($0, 51200);
+&lib_stdlog::set_stdlog($0, 51200, 'wizard_error_log');
 
 use glib_cgi_04;
 use glib_fildir_02;
@@ -148,7 +148,7 @@ my ($buffer);
 sub validar_datos {
 # Valida datos provenientes del formulario paso1.
 # Retorna msg de error si lo hay o nada si todo ok.
-  
+
   if (! &lib_prontus::valida_prontus($FORM{'PRONTUS_ID'})) {
     return 'Nombre de publicador no válido.';
   };

@@ -21,7 +21,7 @@
       <div class="head">
         <a href="http://www.prontus.cl" target="_blank"><img src="/wizard_prontus/core/imag/head.gif" width="702" height="52" alt="Logo Prontus"></a>
       </div>
-      
+
       <div id="content">
         <div class="separa">
           <div id="datos">
@@ -42,15 +42,15 @@
 
         <h1 class="title">Administrador de Modelos</h1>
         <h3 class="subtitle">Bienvenido al administrador de Modelos Prontus. Acá podrá descargar nuevos modelos, actualizar los existentes o simplemente eliminar los que no utilice.</h3>
-      </div>          
-      
+      </div>
+
       <div id="content2">
         <form name="form1" method="post" action="wizard_paso2.cgi">
         <table id="models">
           <tr align="left" valign="middle">
             <th>Screenshot</th>
             <th>Modelo</th>
-            <th>Versiones</th>  
+            <th>Versiones</th>
             <th>Acciones</th>
           </tr>
           <!--LOOP_MODELS-->
@@ -79,7 +79,7 @@
             <td class="acciones">
               <div class="content-loading">
                 <img src="/wizard_prontus/core/imag/ajax-loader-bar.gif" width="16" height="11" alt="Por favor espere unos segundos">
-                
+                <div class="msg-loading" style="display: none; text-align: center;"></div>
               </div>
               <div class="boton-gris3 content-buttons">
                 <a class="button remove" href="#" onclick="Wizard.eliminarModelo('%%model_id%%'); return false;"><span>

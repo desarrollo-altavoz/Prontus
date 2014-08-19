@@ -54,7 +54,7 @@ BEGIN {
 
 # Captura STDERR
 use lib_stdlog;
-&lib_stdlog::set_stdlog($0, 51200);
+&lib_stdlog::set_stdlog($0, 51200, 'wizard_error_log');
 
 use glib_cgi_04;
 use glib_fildir_02;
@@ -296,7 +296,7 @@ sub deploy {
     my $rutaScript = $Bin;
     system "$rutaScript/prontus_regenerabd_real.cgi $prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id.cfg ";
     return ('', 'Error al poblar tabla de artículos') if ($? != 0);
-    
+
     system "$rutaScript/dam/prontus_dam_regen_real.cgi $prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id.cfg ";
     return ('', 'Error al poblar tabla multimedia') if ($? != 0);
 
@@ -431,7 +431,7 @@ sub check_paso_anterior {
     if ($prontus_id eq '') {
       return 'Información de paso 1 está corrupta.';
     }
-    
+
     # extension
     # CVI se movió a la seccion [MODEL] [/MODEL]
 #    if ($buffer_prontus !~ /MODEL_EXT=(\w+)\n/) {

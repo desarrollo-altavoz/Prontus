@@ -7737,7 +7737,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/glib_cgi_04.pm
 
 ====================================================================================================
-11.2.77 - 05/08/2014 - JOR
+11.2.77 - 19/08/2014 - JOR
 ====================================================================================================
 
 - Prontus en General
@@ -7754,3 +7754,31 @@ Esto quedó actualizado en el check platform y detallado más abajo.
       /cgi-cpn/lib_prontus.pm
       /cgi-cpn/prontus_check_platform.cgi
       /cgi-cpn/prontus_cfg_save.cgi
+
+- Wizard Prontus
+  [bugfixes]
+    - Se corrige problema al descargar modelos de gran tamaño. La CGI se caía por timeout.
+    Ahora la descarga se hace en segundo plano.
+  [cambios]
+    - El log de errores ahora se guarda en el directorio wizard_error_log en vez de prontus_error_log
+  [files]
+      /cgi-cpn/wizard_models_download_real.cgi
+      /cgi-cpn/wizard_models_status.cgi
+      /cgi-cpn/wizard_deploy.cgi
+      /cgi-cpn/wizard_models_delete.cgi
+      /cgi-cpn/wizard_models_download.cgi
+      /cgi-cpn/wizard_paso1.cgi
+      /cgi-cpn/wizard_paso2.cgi
+      /cgi-cpn/wizard_reporte.cgi
+      /cgi-cpn/wizard_show_confirm.cgi
+      /cgi-cpn/wizard_show_models.cgi
+      /cgi-cpn/wizard_show_paso2.cgi
+      /wizard_prontus/core/js/Wizard.class.js
+      /wizard_prontus/core/models.html
+
+- Login
+  [bugfixes]
+    - Se corrige salida cuando falla el chequeo de actualizaciones y sesiones. Se estaba entregando
+    html en vez de json.
+  [files]
+      /cgi-cpn/prontus_login.cgi

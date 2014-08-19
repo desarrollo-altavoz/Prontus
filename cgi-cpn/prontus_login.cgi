@@ -148,7 +148,7 @@ main: {
             my $sess_obj = Session->new(
                             'prontus_id'        => $prontus_varglb::PRONTUS_ID,
                             'document_root'     => $prontus_varglb::DIR_SERVER)
-                            || die("Error inicializando objeto Session: $Session::ERR\n");
+                            || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
             # libera recursos de sesion existente para info de concurrencia
             if ($sess_obj->{id_session} ne '') {
                 my %cookies = &lib_cookies::get_cookies();
@@ -165,13 +165,13 @@ main: {
                                                       'art',
                                                       $user_anterior,
                                                       $sess_obj->{id_session});
-                                                      
+
                 &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                                       $prontus_varglb::PRONTUS_ID,
                                                       'art',
                                                       $user_anterior,
                                                       $sess_obj->{id_session});
-                                                      
+
                 &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                                       $prontus_varglb::PRONTUS_ID,
                                                       'port',
@@ -190,7 +190,7 @@ main: {
             my $sess_obj = Session->new(
                             'prontus_id'        => $prontus_varglb::PRONTUS_ID,
                             'document_root'     => $prontus_varglb::DIR_SERVER)
-                            || die("Error inicializando objeto Session: $Session::ERR\n");
+                            || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
 
             # libera recursos de sesion existente para info de concurrencia
             if ($sess_obj->{id_session} ne '') {
@@ -214,13 +214,13 @@ main: {
                                                       'art',
                                                       $user_anterior,
                                                       $sess_obj->{id_session});
-                                                      
+
                 &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                                       $prontus_varglb::PRONTUS_ID,
                                                       'port',
                                                       $user_anterior,
                                                       $sess_obj->{id_session});
-                                                      
+
             };
             # nueva sesion
             $sess_obj->set_new_session();
@@ -231,7 +231,7 @@ main: {
                             'version_prontus'   => $prontus_varglb::VERSION_PRONTUS,
                             'path_conf'         => $FORM{'_path_conf'},
                             'document_root'     => $prontus_varglb::DIR_SERVER)
-                            || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
+                            || &glib_html_02::print_json_result(0, "Error inicializando objeto Update: $Update::ERR", 'exit=1,ctype=1');
 
             $upd_obj->descarga_upd_descriptor();
 

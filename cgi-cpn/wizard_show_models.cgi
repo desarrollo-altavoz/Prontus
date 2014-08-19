@@ -64,7 +64,7 @@ BEGIN {
 
 # Captura STDERR
 use lib_stdlog;
-&lib_stdlog::set_stdlog($0, 51200);
+&lib_stdlog::set_stdlog($0, 51200, 'wizard_error_log');
 
 use glib_fildir_02;
 use prontus_varglb; &prontus_varglb::init();
@@ -81,7 +81,7 @@ use wizard_lib;
 my (%PRONTUS);
 
 main:{
-  
+
     # Valida informacion de paso 1.
     my $msg_err = &wizard_lib::check_paso1();
     if ($msg_err) {
@@ -91,13 +91,13 @@ main:{
     # lee la plantilla
     my $plantilla = "$prontus_varglb::DIR_SERVER$wizard_lib::CORE_DIR/models.html";
     my $buffer = &glib_fildir_02::read_file($plantilla);
-    
+
     # Se leen los modelos instalados y disponibles
     my $refmodels = &wizard_lib::get_models();
     my %models = %$refmodels;
-    
+
     # Parsea los modelos e imprime la plantilla
-    $buffer = &parsea_modelos($buffer, $refmodels);    
+    $buffer = &parsea_modelos($buffer, $refmodels);
     print "Content-Type: text/html\n\n";
     print $buffer;
 };
@@ -120,7 +120,7 @@ sub parsea_modelos {
         $prontus_varglb::DIR_CORE = $wizard_lib::CORE_DIR; # solo para efectos de la plantilla de mensaje
         &glib_html_02::print_pag_result('Error', $msg_err, 0, "exit=1, ctype=1");
     };
-    
+
     my ($loop1, $loop2);
     foreach my $k (keys %models) {
         # localiza cfg descriptor del modelo,
@@ -134,7 +134,7 @@ sub parsea_modelos {
             $loop_item =~ s/%%model_$dato%%/$models{$k}{$dato}/ig;
         }
         $loop_item =~ s/%%model_id%%/$k/ig;
-        
+
         if($models{$k}{'instalado'} eq 'instalado') {
             $loop1 = $loop1 . $loop_item;
         } else {

@@ -13,12 +13,13 @@
 # ---------------------------------------------------------------
 # PROPOSITO.
 # -----------
-# CGI encargada de eliminar un modelo Local
+# CGI encargada de obtener el status de la descarga/actualizacion
+# de un modelo.
 #
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 # ---------------------------
-# 01 - 11/2005 - YCH - Primera Version.
+# 1.0.0 - 14/08/2014 - JOR - Primera Version.
 #
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -40,8 +41,8 @@ use glib_html_02;
 use glib_cgi_04;
 use strict;
 use lib_prontus;
-
 use wizard_lib;
+
 # ---------------------------------------------------------------
 # MAIN.
 # ---------------------------------------------------------------
@@ -49,43 +50,49 @@ use wizard_lib;
 my (%PRONTUS);
 my ($INF_DIR) = "$prontus_varglb::DIR_SERVER/wizard_prontus/_data";
 my ($INF_FILE) = "$INF_DIR/inf.txt";
-
+my ($STATUS_FILE) = "$INF_DIR/progress.txt";
 
 main:{
-
     &glib_cgi_04::new();
 
     my $modelid = &glib_cgi_04::param('modelid');
 
-    # Valida que el modelo exista
-    if (! &wizard_lib::backup_model($modelid)) {
-        my $resp;
-        $resp->{'error'} = 1;
-        $resp->{'msg'} = "No se pudo respaldar el modelo antes de eliminar. El modelo no ha sido eliminado";
-        &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=1');
-    };
-
-    # Chequea modelo online
-    my $nodisponible = 0;
-    my $urlCFG = "$wizard_lib::URL_MODELS/$modelid/$modelid.cfg";
-    print STDERR "Chequeando el modelo online [$urlCFG]\n";
-    my ($buffercfg, $msg_err) = &lib_prontus::get_url($urlCFG, 30);
-    if($msg_err || $buffercfg eq '') {
-        print STDERR "CFG de modelo no encontrado o invalido [$wizard_lib::URL_MODELS/$modelid/$modelid.cfg]\n";
-        $nodisponible = 1;
-    };
-
-    my $dirmodel = "$prontus_varglb::DIR_SERVER$wizard_lib::MODELS_DIR/$modelid";
-    print STDERR "Eliminando modelo: $dirmodel\n";
-    &glib_fildir_02::borra_dir($dirmodel);
-
+    my $res = qx/ps auxww |grep 'wizard_models_download_real.cgi '|grep -v grep/;
     my $resp;
-    $resp->{'error'} = 0;
-    $resp->{'msg'} = '';
-    $resp->{'nodisponible'} = $nodisponible;
+
+    if ($res ne '') {
+        $resp->{'status'} = 1; # ocupado.
+        $resp->{'msg'} = '';
+
+        if (-s $STATUS_FILE) {
+            my $progress = &glib_fildir_02::read_file($STATUS_FILE);
+            if ($progress eq '100') {
+                $resp->{'msg'} = "Instalando";
+            } elsif ($progress =~ /(\d+)/) {
+                $resp->{'msg'} = "Descargando ($1%)";
+            } else {
+                $resp->{'status'} = 0; # error.
+                $resp->{'msg'} = $progress;
+            };
+        };
+
+    } else {
+        $resp->{'status'} = 2; # disponible.
+        $resp->{'msg'} = '';
+
+        if (-f $STATUS_FILE) {
+            my $progress = &glib_fildir_02::read_file($STATUS_FILE);
+            if ($progress !~ /(\d+)/) {
+                $resp->{'status'} = 0; # error.
+                $resp->{'msg'} = $progress;
+            };
+
+            unlink $STATUS_FILE;
+        };
+
+        ## revisar si se descargo el modelo.
+    };
+
     print "Content-Type: application/json\n\n";
     &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=0');
 };
-
-# -------------------------------END SCRIPT----------------------
-
