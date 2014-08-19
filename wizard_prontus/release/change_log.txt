@@ -1,7 +1,10 @@
 ====================================================================================================
-11.2.77 - 05/08/2014
+11.2.77 - 19/08/2014
 ====================================================================================================
 - bugfix: Se corrige problema con purge cache. Se estaban generando muchos procesos de manera simultanea.
+- bugfix: Se corrige problema al descargar modelos de gran tamaño. La CGI se caía por timeout.
+- bugfix: Se corrige salida cuando falla el chequeo de actualizaciones y sesiones en login.
+- changes: El log de errores del wizard ahora se guarda en el directorio wizard_error_log en vez de prontus_error_log.
 - improvement: Se mejora la búsqueda del binario del ffmpeg en las rutas definidas por el sistema operativo.
 
 ====================================================================================================
