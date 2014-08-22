@@ -334,13 +334,19 @@ var Wizard = {
 
     },
 
-    checkStatus: function (id) {
+    checkStatus: function (id, type) {
+        if (typeof type === 'undefined') {
+            type = 'download';
+        }
+
         Wizard.showLoading(id, true);
+
         var urlCGI = './wizard_models_status.cgi';
         $.ajax({
             url: urlCGI,
             data: {
-                modelid: id
+                modelid: id,
+                type: type
             },
             complete: function() {
 
@@ -356,27 +362,31 @@ var Wizard = {
                 if (resp.status == 1) {
                     Wizard.showLoading(id, true, resp.msg);
                     setTimeout(function () {
-                        Wizard.checkStatus(id);
+                        Wizard.checkStatus(id, type);
                     }, 1500);
                 } else if (resp.status == 0) { // error.
                     alert(resp.msg);
-                    Wizard.showLoading(id, false);
                 } else {
-                    var offset = $('#models').offset();
-                    $('html, body').animate({scrollTop: offset.top}, 'fast');
-                    $('#idmodel-'+id).fadeOut('slow', function() {
-                        $('#idmodel-'+id).insertAfter('#models tr:first').show();
-
+                    if (type == 'update') {
                         $('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
-                        $('#idmodel-'+id).removeClass('noinstalado').addClass('instalado')
-                        $('#idmodel-'+id).addClass('actualizado');
+                        $('#idmodel-'+id+'').removeClass('actualizar').addClass('actualizado');
+                    } else {
+                        var offset = $('#models').offset();
+                        $('html, body').animate({scrollTop: offset.top}, 'fast');
+                        $('#idmodel-'+id).fadeOut('slow', function() {
+                            $('#idmodel-'+id).insertAfter('#models tr:first').show();
 
-                        var color = $('#idmodel-'+id+' td').css('background-color');
-                        $('#idmodel-'+id+' td').css('background-color', '#F0E0D0');
-                        setTimeout(function() {
-                            $('#idmodel-'+id+' td').css('background-color', '');
-                        }, 1500);
-                    });
+                            $('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
+                            $('#idmodel-'+id).removeClass('noinstalado').addClass('instalado')
+                            $('#idmodel-'+id).addClass('actualizado');
+
+                            var color = $('#idmodel-'+id+' td').css('background-color');
+                            $('#idmodel-'+id+' td').css('background-color', '#F0E0D0');
+                            setTimeout(function() {
+                                $('#idmodel-'+id+' td').css('background-color', '');
+                            }, 1500);
+                        });
+                    }
                     Wizard.showLoading(id, false);
                 }
             }
@@ -403,7 +413,6 @@ var Wizard = {
 
             },
             complete: function() {
-                Wizard.showLoading(id, false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 Wizard.handleError(urlCGI, jqXHR, textStatus, errorThrown);
@@ -414,16 +423,13 @@ var Wizard = {
                     alert('Respuesta no valida desde el servidor');
                     return;
                 }
-                if(resp.error) {
+
+                if (resp.error) {
                     alert(resp.msg);
-
                 } else {
-                    $('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
-                    $('#idmodel-'+id+'').removeClass('actualizar').addClass('actualizado');
-                    //~ $('#idmodel-'+id+' .version .status').html('Actualizado');
-                    //$('#idmodel-'+id).removeClass('noinstalado').addClass('instalado');
-                    //~ $('#idmodel-'+id+' .actualizar').removeClass('actualizable');
-
+                    //$('#idmodel-'+id+' .version .actual').html($('#idmodel-'+id+' .version .last').html());
+                    //$('#idmodel-'+id+'').removeClass('actualizar').addClass('actualizado');
+                    Wizard.checkStatus(id, 'update');
                 }
             }
         });

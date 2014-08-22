@@ -231,26 +231,11 @@ sub do_save {
 
     my $fid = $ARTIC_OBJ->{campos}->{'_fid'};
 
-    # Parsear plantillas paralelas.
-    my @plt_paralelas_list = split(/;/, $prontus_varglb::FORM_PLTS_PARALELAS{$fid});
-
-    foreach my $plt_paralela (@plt_paralelas_list)  {
-      # print STDERR "plt_paralela[$plt_paralela]\n";
-      $ARTIC_OBJ->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY, $plt_paralela, 1)
-            || return $Artic::ERR;
-    };
-
     # Generar vistas secundarias (a partir del xml)
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         # print STDERR "Generar vista $mv con autoinc[$autoinc]\n";
         $ARTIC_OBJ->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
                 || return $Artic::ERR;
-
-      foreach my $plt_paralela (@plt_paralelas_list)  {
-        # print STDERR "plt_paralela[$plt_paralela]\n";
-        $ARTIC_OBJ->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY, $plt_paralela, 1)
-              || return $Artic::ERR;
-      };
     };
 
     # $ARTIC_OBJ->tags2bd($base, $tags_old, $is_new) || return $Artic::ERR;

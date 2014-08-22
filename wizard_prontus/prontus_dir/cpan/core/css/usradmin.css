@@ -33,3 +33,4 @@
 .usr_ficha .itemlistado label {vertical-align:middle; padding-left:5px; /*overflow:hidden;*/ /*position:absolute;*/ background-color: #FAFAFA; padding:2px 0;}
 
 .ui-tooltip-content .tooltip-ficha {font-size:12px;}
+.seleccion {font-size: 11px !important; text-align: right !important; font-weight: normal !important;}

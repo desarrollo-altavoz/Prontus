@@ -8,7 +8,7 @@ var UsrAdmin = {
     widthAdmin: 735,
     heightAdmin: 390,
     idAdmin: 1,
-    
+
     // -------------------------------------------------------------------------
     cargarFicha: function(id) {
         var url;
@@ -39,18 +39,18 @@ var UsrAdmin = {
     },
     // -------------------------------------------------------------------------
     initFicha: function() {
-        
+
         $('.list input[type="checkbox"]').bind('click', function() {
             UsrAdmin.toggleChecked($(this));
         });
         $(document).tooltip({
             position: {
-                my: "center center", 
+                my: "center center",
                 at: "center top-20",
                 within: '#content-list',
                 collision: 'flipfit'
             },
-            
+
             show: {effect: "fadeIn", duration: 200 },
             hide: {effect: "hide"},
             items: ".itemlistado label",
@@ -85,7 +85,7 @@ var UsrAdmin = {
             });
         }
     },
-    
+
     // -------------------------------------------------------------------------
     guardarFicha: function(id) {
 
@@ -124,7 +124,7 @@ var UsrAdmin = {
         };
         SubmitForm.submitGenericAjax(configAjax, optsAjax);
     },
-    
+
     // -------------------------------------------------------------------------
     guardarChgPass: function() {
 
@@ -148,15 +148,15 @@ var UsrAdmin = {
                 /* Cargando... */
             }
         };
-        
+
         SubmitForm.submitGenericAjax(configAjax, optsAjax);
     },
-    
+
     // -------------------------------------------------------------------------
     chgImgSrc: function(obj, img) {
         $(obj).attr("src", img);
     },
-    
+
     // -------------------------------------------------------------------------
     toggleChecked: function (o) {
         if ($(o).is(':checked')) {
@@ -164,6 +164,17 @@ var UsrAdmin = {
         } else {
             $(o).parent().find('label').removeClass('checked');
         }
-    }
-    
+    },
+
+    // -------------------------------------------------------------------------
+    checkboxToggleChecked: function(name, action) {
+        if (action == true) {
+            $('input[name="' + name + '"]').attr("checked", "checked");
+            $('input[name="' + name + '"]').next('label').addClass("checked");
+        } else {
+            $('input[name="' + name + '"]').removeAttr("checked");
+            $('input[name="' + name + '"]').next('label').removeClass("checked");
+        }
+    },
+
 };

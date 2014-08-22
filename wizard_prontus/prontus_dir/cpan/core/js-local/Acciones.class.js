@@ -170,11 +170,11 @@ var Acciones = {
     // -------------------------------------------------------------------------
     muestraAcciones: function(flag) {
         if(!flag) {
-            $('.top-titulo .botones a').hide();
-            $('.top-titulo .botones .loading-action').fadeIn();
+            $('.top-titulo.botones a').hide();
+            $('.top-titulo.botones .loading-action').fadeIn();
         } else {
-            $('.top-titulo .botones .loading-action').hide();
-            $('.top-titulo .botones a').filter(':not("#port_dd_btn")').fadeIn();
+            $('.top-titulo.botones .loading-action').hide();
+            $('.top-titulo.botones a').filter(':not("#port_dd_btn")').fadeIn();
         }
     },
 

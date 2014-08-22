@@ -59,7 +59,7 @@ BEGIN {
     $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
     require 'dir_cgi.pm';
-    
+
     $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
 };
@@ -189,7 +189,7 @@ sub main {
         my $captcha_code = &glib_cgi_04::param('_captcha_code');
         $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
         #~ require 'dir_cgi.pm';
-        &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
+        &lib_captcha2::init($prontus_varglb::DIR_SERVER, $DIR_CGI_CPAN);
         my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
         if ($msg_err_captcha ne '') {
             &make_resp_and_exit($msg_err_captcha, 1);
@@ -204,6 +204,13 @@ sub main {
     my $msg_err_save = &lib_artic::save_artic_with_object($is_new);
     &glib_html_02::print_pag_result("Error", $msg_err_save, 1, 'exit=1,ctype=1') if ($msg_err_save);
 
+    my $rutaScript = "$prontus_varglb::DIR_SERVER/$DIR_CGI_CPAN";
+
+    # Solo se ejecutan estos procesos si el articulo tiene alta.
+    &call_procs($rutaScript) if (&param('_alta'));
+
+    my $fullpath_artic = $lib_artic::ARTIC_OBJ->get_fullpath_artic('', $lib_artic::ARTIC_OBJ->{campos}->{'_plt'});
+    &call_clustering($rutaScript, $fullpath_artic);
 
     # Agregar el art. a portada
     if ((&param('_port')) && (&param('_area'))) {
@@ -235,14 +242,12 @@ sub crear_objeto_artic {
                            # y complementados con la conf de posting.
     my %hash_datos;
     foreach $nom_campo (sort {$a cmp $b} @campos) {
-
         # Al obj artic se le pasan los campos en minusculas
         my $nom_lc = lc $nom_campo;
         $hash_datos{$nom_lc} = &param($nom_campo);
         if (($nom_lc =~ /^asocfile_/) && ($hash_datos{$nom_lc} ne '')) {
             $hash_datos{$nom_lc}{'real_path'} = &glib_cgi_04::real_paths($nom_campo);
         };
-
     };
 
 
@@ -322,7 +327,7 @@ sub load_config_posting {
   my $idf = $FORM{'_IDF'}; # id del form de posting
   if ($buffer =~ /\[$idf\](.*?)\[\/$idf\]/is) {
     my $data = $1;
-    while ($data =~ / *([\w\-]+) *= *("|')(.*?)("|')/isg) {
+    while ($data =~ /\s*([\w\-]+) *= *("|')(.*?)("|')/isg) {
       my ($clave, $valor) = ($1, $3);
       #~ print STDERR "$clave [$valor]\n";
       $CONFIG_POSTING{lc $clave} = $valor;
@@ -393,6 +398,9 @@ sub param {
       else {
         return '' if (uc $key eq '_ALTA'); # NO PERMITE QUE VENGA EL _ALTA POR PARAMETRO.
         return '' if (uc $key eq '_VB'); # NO PERMITE QUE VENGA EL _VB POR PARAMETRO.
+        return '' if (uc $key eq '_REGEN_LIST'); # NO PERMITE QUE VENGA POR PARAMETRO.
+        return '' if (uc $key eq '_REGEN_TAXPORT'); # NO PERMITE QUE VENGA POR PARAMETRO.
+        return '' if (uc $key eq '_REGEN_TAGPORT'); # NO PERMITE QUE VENGA POR PARAMETRO.
         return &glib_cgi_04::param($key);
       };
     }
@@ -425,7 +433,124 @@ sub load_default_posting_params {
   $CONFIG_POSTING{'_seccion1'} = '' if (!&param('_seccion1'));
   $CONFIG_POSTING{'_tema1'} = '0' if (!&param('_tema1'));
   $CONFIG_POSTING{'_subtema1'} = '0' if (!&param('_subtema1'));
-};
 
+
+  $CONFIG_POSTING{'_regen_list'} = 'N' if (!&param('_regen_list'));
+  $CONFIG_POSTING{'_regen_taxport'} = 'N' if (!&param('_regen_taxport'));
+  $CONFIG_POSTING{'_regen_tagport'} = 'N' if (!&param('_regen_tagport'));
+};
+# ---------------------------------------------------------------
+sub call_procs {
+    my $rutaScript = $_[0];
+    my $fid = &param('_fid');
+    my $tags_id = &param('_tags');
+    my $filtro_fid = '';
+
+    # Verifica que exista filtro para FID
+    my $dir_filtro_fid = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP
+                       . $prontus_varglb::DIR_PTEMA . '/' . $fid;
+
+    if (-e $dir_filtro_fid) {
+        $filtro_fid = $fid;
+    };
+
+    my $seccion1 = &param('_seccion1');
+    my $tema1 = &param('_tema1');
+    my $subtema1 = &param('_subtema1');
+
+    my $seccion2 = &param('_seccion2');
+    my $tema2 = &param('_tema2');
+    my $subtema2 = &param('_subtema2');
+
+    my $seccion3 = &param('_seccion3');
+    my $tema3 = &param('_tema3');
+    my $subtema3 = &param('_subtema3');
+
+    if ($seccion1) {
+        my $param_especif_taxport = '/' . $seccion1
+                                  . '/' . $tema1
+                                  . '/' . $subtema1;
+
+        &call_taxports_regen($rutaScript, "$filtro_fid$param_especif_taxport") if ($CONFIG_POSTING{'_regen_taxport'} eq 'S');
+        &call_list_regen($rutaScript, "$fid$param_especif_taxport") if ($CONFIG_POSTING{'_regen_list'} eq 'S');
+    };
+
+    if ($seccion2) {
+        my $param_especif_taxport = '/' . $seccion2
+                                  . '/' . $tema2
+                                  . '/' . $subtema2;
+
+        &call_taxports_regen($rutaScript, "$filtro_fid$param_especif_taxport") if ($CONFIG_POSTING{'_regen_taxport'} eq 'S');
+        &call_list_regen($rutaScript, "$fid$param_especif_taxport") if ($CONFIG_POSTING{'_regen_list'} eq 'S');
+    };
+
+    if ($seccion3) {
+        my $param_especif_taxport = '/' . $seccion3
+                                  . '/' . $tema3
+                                  . '/' . $subtema3;
+
+        &call_taxports_regen($rutaScript, "$filtro_fid$param_especif_taxport") if ($CONFIG_POSTING{'_regen_taxport'} eq 'S');
+        &call_list_regen($rutaScript, "$fid$param_especif_taxport") if ($CONFIG_POSTING{'_regen_list'} eq 'S');
+    };
+
+    if (!($seccion1 || $seccion3 || $seccion3)) {
+        my $param_especif_taxport = $fid . '///';
+        &call_list_regen($rutaScript, $param_especif_taxport) if ($CONFIG_POSTING{'_regen_list'} eq 'S');
+    };
+
+    # Regenerar tagonomicas
+    if ($tags_id && $CONFIG_POSTING{'_regen_tagport'} eq 'S') {
+        $tags_id =~ s/\,/\//g;
+        my $param_especif_tagonomicas = $tags_id;
+        $param_especif_tagonomicas .= " $filtro_fid" if ($filtro_fid);
+        &call_tagonomicas_regen($rutaScript, $param_especif_tagonomicas);
+    };
+
+};
+# ---------------------------------------------------------------
+sub call_taxports_regen {
+    my $rutaScript = shift;
+    my $param_especif_taxport = shift;
+
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if ($pathnice);
+    my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
+
+    print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+    system $cmd;
+};
+# ---------------------------------------------------------------
+sub call_list_regen {
+    my $rutaScript = shift;
+    my $param_especif_list = shift;
+    return if ($prontus_varglb::LIST_PROCESO_INTERNO ne 'SI');
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if($pathnice);
+    my $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif_list >/dev/null 2>&1 &";
+
+    print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+    system $cmd;
+};
+# ---------------------------------------------------------------
+sub call_tagonomicas_regen {
+    my $rutaScript = shift;
+    my $param_especif_tagonomicas = shift;
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if($pathnice);
+    my $cmd = "$pathnice $rutaScript/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $param_especif_tagonomicas >/dev/null 2>&1 &";
+
+    print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+    system $cmd;
+};
+# ---------------------------------------------------------------
+sub call_clustering {
+    my $rutaScript = shift;
+    my $fullpath_artic = shift;
+
+    if (keys(%prontus_varglb::CLUSTERING_SERVER) > 0) {
+        print STDERR $rutaScript . "/prontus_cluster_artic.cgi $fullpath_artic &\n";
+        system $rutaScript . "/prontus_cluster_artic.cgi $fullpath_artic >/dev/null 2>&1 &";
+    };
+};
 # -------------------------------END SCRIPT----------------------
 

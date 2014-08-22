@@ -1729,10 +1729,11 @@ sub generar_vista_art {
     # Carga campos
     my %campos_xml = $this->get_xml_content();
     my $titular_crudo = $campos_xml{'_txt_titular'}; # lo rescata para usos varios
-    my ($nom_seccion1, $nom_tema1, $nom_subtema1);
+    my ($nom_seccion1, $nom_tema1, $nom_subtema1, $fid);
     $nom_seccion1 = $campos_xml{'_nom_seccion1'};
     $nom_tema1 = $campos_xml{'_nom_tema1'};
     $nom_subtema1 = $campos_xml{'_nom_subtema1'};
+    $fid = $campos_xml{'_fid'};
 
     # Fix por si es que las taxonomias vienen con cero
     for (my $i = 1; $i <= 3; $i++) {
@@ -1894,6 +1895,18 @@ sub generar_vista_art {
         $fileurl = &lib_prontus::parse_filef($fileurl, $titular_crudo, $this->{ts}, $this->{prontus_id}, $marca_file, $nom_seccion1, $nom_tema1, $nom_subtema1);
 
         &lib_prontus::purge_cache($fileurl);
+    };
+
+    # Solo se entra aqui si el articulo que se esta parseando no es paralelo, ya que se genería
+    # un loop infinito.
+    if (!$is_paralela) {
+        # Plantillas paralelas del fid.
+        my @plt_paralelas_list = split(/;/, $prontus_varglb::FORM_PLTS_PARALELAS{$fid});
+
+        foreach my $plt_paralela (@plt_paralelas_list)  {
+          # print STDERR "plt_paralela[$plt_paralela]\n";
+          $this->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY, $plt_paralela, 1);
+        };
     };
 
     return 1;

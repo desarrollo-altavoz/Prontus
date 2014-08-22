@@ -56,6 +56,7 @@ main:{
     &glib_cgi_04::new();
 
     my $modelid = &glib_cgi_04::param('modelid');
+    my $type = &glib_cgi_04::param('type');
 
     my $res = qx/ps auxww |grep 'wizard_models_download_real.cgi '|grep -v grep/;
     my $resp;
@@ -67,7 +68,11 @@ main:{
         if (-s $STATUS_FILE) {
             my $progress = &glib_fildir_02::read_file($STATUS_FILE);
             if ($progress eq '100') {
-                $resp->{'msg'} = "Instalando";
+                if ($type eq 'update') {
+                    $resp->{'msg'} = "Actualizando";
+                } else {
+                    $resp->{'msg'} = "Instalando";
+                };
             } elsif ($progress =~ /(\d+)/) {
                 $resp->{'msg'} = "Descargando ($1%)";
             } else {

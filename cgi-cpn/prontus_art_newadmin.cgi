@@ -104,7 +104,7 @@ main: {
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result('Ha ocurrido un error', $prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
 
@@ -228,10 +228,21 @@ sub get_default_port {
             if ($prontus_varglb::PORT_INI_SELECTED eq $entry) {
                 return $entry;
             };
-        }
-        else {
+        } else {
+            $dir_tpl_port = $prontus_varglb::DIR_TEMP .
+                               $prontus_varglb::DIR_EDIC .
+                               $prontus_varglb::DIR_NROEDIC .
+                               $prontus_varglb::DIR_SECC;
             print "Content-Type: text/html\n\n";
-            &glib_html_02::print_pag_result("","Error: Archivo plantilla de portada no existe");
+            my $msg = "El archivo plantilla de portada <b>$dir_tpl_port/$entry</b> no existe."
+                    . " Debes crearlo o cambiar la configuraci&oacute;n manualmente"
+                    . " <a href=\"/$prontus_varglb::DIR_CGI_CPAN/prontus_edit_main.cgi"
+                    . "?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg"
+                    . "&_dir=/$prontus_varglb::PRONTUS_ID/cpan&_file=$prontus_varglb::PRONTUS_ID-port.cfg\">"
+                    . "editando</a>"
+                    . " el archivo <b>/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID-port.cfg</b>.";
+
+            &glib_html_02::print_pag_result("Ha ocurrido un problema", $msg);
             print STDERR "Error: Archivo plantilla de portada no existe: $dir_tpl_port/$entry\n";
             exit;
         };
@@ -448,7 +459,7 @@ sub generar_js_base_ports {
     foreach $bport (@prontus_varglb::BASE_PORTS) {
     if ((not exists $prontus_varglb::PORT_PLTS{$bport}) and ($bport)) {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("","Error: Una o m&aacute;s portadas de la edicion base no han sido declaradas como portadas v&aacute;lidas en el archivo de configuraci&oacute;n.");
+        &glib_html_02::print_pag_result("Ha ocurrido un problema","Una o m&aacute;s portadas de la edici&oacute;n base no han sido declaradas como portadas v&aacute;lidas en el archivo de configuraci&oacute;n.");
         exit;
     };
     $portadas .= "'$bport',";

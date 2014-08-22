@@ -240,7 +240,6 @@ sub procesa_files {
             # Carga hash de taxonomias para luego regenerar relacionados
             my %campos_xml = $artic_obj->get_xml_content();
 
-
             if($FID_TYPES_STR eq '' || $FID_TYPES{$campos_xml{'_fid'}}) {
 
                 if($MULTIVISTAS_DEFAULT) {
@@ -249,14 +248,6 @@ sub procesa_files {
                             || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
 
                 }
-
-                # Parsear plantillas paralelas.
-                my @plt_paralelas_list = split(/;/, $prontus_varglb::FORM_PLTS_PARALELAS{$campos_xml{'_fid'}});
-                foreach my $plt_paralela (@plt_paralelas_list)  {
-                  # print STDERR "plt_paralela[$plt_paralela]\n";
-                  $artic_obj->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY, $plt_paralela, 1)
-                        || return $Artic::ERR;
-                };
 
                 foreach my $mv (keys %MULTIVISTAS_REGEN) {
                     # Generar vista (a partir del xml)

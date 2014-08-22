@@ -184,12 +184,6 @@ sub actualizar_articulo {
     my $fid = $datos{'_fid'};
     my $plt = $datos{'_plt'};
 
-    # Parsear plantillas paralelas.
-    my @plt_paralelas_list = split(/;/, $prontus_varglb::FORM_PLTS_PARALELAS{$fid});
-    foreach my $plt_paralela (@plt_paralelas_list)  {
-        $artic_obj->generar_vista_art('', '', $prontus_varglb::PRONTUS_KEY, $plt_paralela, 1) || return $Artic::ERR;
-    };
-
     # Generar vistas secundarias
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         $artic_obj->generar_vista_art($mv, '', $prontus_varglb::PRONTUS_KEY) || return $Artic::ERR;
