@@ -1914,7 +1914,6 @@ sub generar_vista_art {
 };
 
 
-
 # ---------------------------------------------------------------
 sub parse_artic_data {
 # parsea todas las marcas del xml mas algunas derivadas de estas.
@@ -1927,6 +1926,13 @@ sub parse_artic_data {
 
     my %campos_xml = %$ref_campos_xml;
     undef $ref_campos_xml;
+
+    # Fix por si es que las taxonomias vienen con cero
+    for (my $i = 1; $i <= 3; $i++) {
+        $campos_xml{'_seccion'.$i}  = '' if($campos_xml{'_seccion'.$i} eq '0');
+        $campos_xml{'_tema'.$i}    = '' if($campos_xml{'_tema'.$i} eq '0');
+        $campos_xml{'_subtema'.$i} = '' if($campos_xml{'_subtema'.$i} eq '0');
+    };
 
     unless($use_xml_tax) {
 
