@@ -1,15 +1,18 @@
 ====================================================================================================
-11.2.78 - 22/08/2014
+11.2.78 - 25/08/2014
 ====================================================================================================
-- bugfix: Se corrige botón para actualizar modelos en Wizard Prontus. No aparecía barra de avance.
 - changes: Se centraliza el parseo de las salidas paralelas en el objeto Artic.
-- improvement: Se agrega botón para seleccionar todas las portadas o tipos de artículos del listado.
+- improvement: Se agrega botón para seleccionar todas las portadas o tipos de artículos del listado,
 en la ficha de edición o creación de usuarios.
 - improvement: Se agregan 4 variables de configuración al posting de contenido para controlar
 la regeneración de taxport, tagport y list.
+- improvement: Se cambia mensaje que aparece cuando una portada no existe. Se agrega información mas completa.
+- bugfixes: El id de sección/tema/subtema se estaba parseando como "0" en vez de "vacío" cuando
+no había taxonomía seleccionada.
 - bugfix: Se soluciona problema con ruta hacia cgi-cpn en captcha en posting de artículos.
 - bugfix: En listado de artículos, se soluciona problema con loading al guardar una portada.
 No se estaban esconciendo los botones ni mostrando la animación.
+- bugfix: Se corrige botón para actualizar modelos en Wizard Prontus. No aparecía barra de avance.
 
 ====================================================================================================
 11.2.77 - 19/08/2014

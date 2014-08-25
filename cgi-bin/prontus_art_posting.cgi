@@ -431,8 +431,8 @@ sub load_default_posting_params {
   $CONFIG_POSTING{'_vb'} = 'N' if (!&param('_vb'));
 
   $CONFIG_POSTING{'_seccion1'} = '' if (!&param('_seccion1'));
-  $CONFIG_POSTING{'_tema1'} = '0' if (!&param('_tema1'));
-  $CONFIG_POSTING{'_subtema1'} = '0' if (!&param('_subtema1'));
+  $CONFIG_POSTING{'_tema1'} = '' if (!&param('_tema1'));
+  $CONFIG_POSTING{'_subtema1'} = '' if (!&param('_subtema1'));
 
 
   $CONFIG_POSTING{'_regen_list'} = 'N' if (!&param('_regen_list'));
