@@ -7839,3 +7839,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
         /cgi-cpn/prontus_art_newadmin.cgi
+
+- Marcas externas
+    [bugfixes]
+        - Se soluciona problema con cache. Al utilizar la marca externa dentro de un loop de portada
+        siempre se parseaba el mismo valor para todos los artículos.
+    [files]
+        /cgi-cpn/Artic.pm

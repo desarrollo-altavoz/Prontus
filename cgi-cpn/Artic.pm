@@ -2026,7 +2026,6 @@ sub get_xdata {
     my ($this) = shift;
 
     my (%xdata, $nom_marca, $valor_marca);
-    my %globalxdata;
 
     my ($pathdir_xdata) = "$this->{document_root}/$this->{prontus_id}/xdata";
     return %xdata if (!-d $pathdir_xdata);
@@ -2038,16 +2037,7 @@ sub get_xdata {
         next if (!-d "$pathdir_xdata/$sist_externo"); # solo lee directorios
 
         # Detecta marcas comunes a todos los articulos
-        if(%prontus_varglb::globalxdata) {
-            # Utiliza cache de las marcas comunes
-            if(%xdata) {
-                foreach my $key (keys %prontus_varglb::globalxdata) {
-                    $xdata{$key} = $prontus_varglb::globalxdata{$key};
-                };
-            } else {
-                %xdata = %prontus_varglb::globalxdata;
-            };
-        } else {
+        if (!keys %prontus_varglb::globalxdata) {
             # Si no está cacheado, lee el directorio y busca las marcas
             my @lisdirext = &glib_fildir_02::lee_dir("$pathdir_xdata/$sist_externo");
             @lisdirext = grep !/^\./, @lisdirext; # Elimina directorios . y ..
@@ -2056,10 +2046,14 @@ sub get_xdata {
                     $nom_marca = $1;
                     next if ($nom_marca =~ /^_/); # descarta las q comienzan con _
                     $valor_marca = &glib_fildir_02::read_file("$pathdir_xdata/$sist_externo/$k");
-                    $xdata{$nom_marca} = $valor_marca;
+
+                    if (defined $prontus_varglb::globalxdata{$nom_marca}) {
+                        print STDERR "Conflicto con marca externa comun!! [$nom_marca]\n. Se sobreescribe.\n";
+                    };
+
+                    $prontus_varglb::globalxdata{$nom_marca} = $valor_marca;
                 };
             };
-            %prontus_varglb::globalxdata = %xdata;
         };
 
         # Detecta marcas especificas para este articulo
@@ -2082,6 +2076,15 @@ sub get_xdata {
                     $xdata{$nom_marca} = $valor_marca;
                 };
             };
+        };
+    };
+
+    # Incluir marcas comunes.
+    foreach my $marca_comun (keys %prontus_varglb::globalxdata) {
+        if (!defined $xdata{$marca_comun}) {
+            $xdata{$marca_comun} = $prontus_varglb::globalxdata{$marca_comun};
+        } else {
+            print "Nombre de marca comun [$marca_comun] existe como especifica, no se sobreescribe!\n";
         };
     };
 

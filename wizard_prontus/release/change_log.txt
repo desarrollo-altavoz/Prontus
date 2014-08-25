@@ -13,6 +13,8 @@ no había taxonomía seleccionada.
 - bugfix: En listado de artículos, se soluciona problema con loading al guardar una portada.
 No se estaban esconciendo los botones ni mostrando la animación.
 - bugfix: Se corrige botón para actualizar modelos en Wizard Prontus. No aparecía barra de avance.
+- bugfix: Se soluciona problema con cache en marcas externas. Al utilizar la marcadentro de un loop de portada
+siempre se parseaba el mismo valor para todos los artículos.
 
 ====================================================================================================
 11.2.77 - 19/08/2014
