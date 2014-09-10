@@ -1780,7 +1780,7 @@ sub load_config {
   my $default_dir_ffmpeg;
 
   # detecta ubicacion ffmpeg en el sistema
-  my @dirs_ffmpeg;
+  my @paths_ffmpeg;
 
   # Se busca en las rutas especificadas en la variable de entorno PATH.
   my $str = "echo \$PATH";
@@ -1806,7 +1806,7 @@ sub load_config {
   };
 
   # si no se detecta ninguno, asigna el primero que se probo, para que la var no quede en blanco
-  $default_dir_ffmpeg = $dirs_ffmpeg[0] if (!$default_dir_ffmpeg);
+  $default_dir_ffmpeg = $paths_ffmpeg[0] if (!$default_dir_ffmpeg);
 
   # si el dir se define por cfg, usa ese en lugar del por defecto
   if ($buffer =~ m/\s*DIR_FFMPEG\s*=\s*("|')(.*?)("|')/) {
@@ -3032,7 +3032,7 @@ sub procesa_condicional {
         foreach my $k (keys %$vars_adicionales) {
             $$vars_common{lc $k} = $$vars_adicionales{$k};
         };
-        undef $vars_adicionales;
+        #undef $vars_adicionales;
     };
     #~ warn "------ procesa_condicional ------\n";
     # Almacena las claves, pero solo las cque tengan if/nif en la plantilla
@@ -3041,16 +3041,19 @@ sub procesa_condicional {
         my $clave = lc $2; # esta clave no es siempre el nombre del campo, ya que puede contener operadores >, =, etc.
         my $nom_campo = $clave;
         $nom_campo = $1 if ($clave =~ /(\w+) *$lib_prontus::IF_OPERATORS/);
+
+        #print STDERR "clave[$clave] nom_campo[$nom_campo]\n";
         if ($$vars_common{$nom_campo} ne '') {
             $claves{$clave} = $$vars_common{$nom_campo};
         };
-        #~ warn "clave[$clave] y value[$$vars_common{$clave}]";
+        #print STDERR "clave[$clave] y value[" . $$vars_common{$nom_campo} . "]\n";
     };
     undef $vars_common;
 
+    $buffer = &lib_prontus::parser_condicional('IF', $buffer, \%claves, $vars_adicionales);
+    $buffer = &lib_prontus::parser_condicional('NIF', $buffer, \%claves, $vars_adicionales);
 
-    $buffer = &lib_prontus::parser_condicional('IF', $buffer, \%claves);
-    $buffer = &lib_prontus::parser_condicional('NIF', $buffer, \%claves);
+    undef $vars_adicionales;
 
     return $buffer;
 
@@ -3383,10 +3386,16 @@ sub parser_condicional {
     my $sentencia = shift;
     my $buffer = shift;
     my $refhash_campos = shift;
+    my $refhash_var_adicionales = shift;
 
     my $cont_condicionales_begin = 0;
     my $cont_condicionales_end = 0;
     my %claves = %$refhash_campos;
+    my %vars_adicionales;
+
+    if (ref $refhash_var_adicionales) {
+      %vars_adicionales = %$refhash_var_adicionales;
+    };
 
     # traduce a mayusculas todos los if y nif del buffer
     $sentencia = uc $sentencia;
@@ -3476,7 +3485,11 @@ sub parser_condicional {
                         my $operador = $1;
                         # warn "var[$var] operador[$operador]";
                         my ($nombre,$valor) = split(/ *$operador */,$var,2);
-                        # warn "nombre[$nombre] valor[$valor]";
+
+                        if ($valor =~ /\w+/ && defined $vars_adicionales{$valor}) {
+                          $valor = $vars_adicionales{$valor};
+                        }
+
                         $operador = '==' if ($operador eq '=');
                         my $expresion;
                         if ($operador eq '~') {
@@ -4869,6 +4882,26 @@ sub parse_filef {
     } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
         # Formato: /prontus/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
         $fileurl = "/$prontus_id/";
+
+        if ($nom_seccion1 ne '') {
+            $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
+            $fileurl .= "$nom_seccion1/";
+        };
+
+        if ($nom_tema1 ne '') {
+            $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
+            $fileurl .= "$nom_tema1/";
+        };
+
+        if ($nom_subtema1 ne '') {
+            $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
+            $fileurl .= "$nom_subtema1/";
+        };
+
+        $fileurl .= "$titular/$fecha4friendly/$hora.$ext";
+    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '3') {
+        # Formato: www.<prontus_id>.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
+        $fileurl = "/";
 
         if ($nom_seccion1 ne '') {
             $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);

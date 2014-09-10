@@ -116,7 +116,7 @@ main: {
 
     $origen = "$dir_port/" . $FORM{'Lst_PORTACT'};
 
-    if (!(-s $origen)) {
+    if (!(-f $origen)) {
         &glib_html_02::print_json_result(0, "Plantilla seleccionada no es válida", 'exit=1,ctype=1');
         exit;
     };

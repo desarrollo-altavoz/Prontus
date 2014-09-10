@@ -974,9 +974,15 @@ sub parseaVars {
     if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '1') {
         $pagina =~ s/%%FRIENDLY_URLS_V1%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
+        $pagina =~ s/%%FRIENDLY_URLS_V3%%//ig;
     } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
         $pagina =~ s/%%FRIENDLY_URLS_V2%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URLS_V1%%//ig;
+        $pagina =~ s/%%FRIENDLY_URLS_V3%%//ig;
+    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '3') {
+        $pagina =~ s/%%FRIENDLY_URLS_V3%%/ checked="checked"/ig;
+        $pagina =~ s/%%FRIENDLY_URLS_V1%%//ig;
+        $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
     } else {
         # Dejar la versión 1 por defecto.
         $pagina =~ s/%%FRIENDLY_URLS_V1%%/ checked="checked"/ig;
@@ -1037,7 +1043,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%VTXT_ENCODE_CHARS_SI%%//ig;
         $pagina =~ s/%%VTXT_ENCODE_CHARS_NO%%/ checked="checked"/ig;
-    };    
+    };
 
     if ($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
         $pagina =~ s/%%FORM_CSV_CHARSET_1%%//ig;
@@ -1081,8 +1087,8 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%SERVER_PROTOCOLO_HTTPS_SI%%//ig;
         $pagina =~ s/%%SERVER_PROTOCOLO_HTTPS_NO%%/ checked="checked"/ig;
-    };  
-    
+    };
+
     $buffer = '';
     $pagina =~ /<!--loop_varnish-->(.*?)<!--\/loop_varnish-->/s;
     $loop = $1;

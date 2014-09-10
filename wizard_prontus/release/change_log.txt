@@ -1,4 +1,24 @@
 ====================================================================================================
+11.2.79 - 10/09/2014
+====================================================================================================
+- bugfix: Se corrige problema con input de tags en los FID. No aparecían los tags producto de una incompatibilidad
+de plugins jquery.
+- bugfix: Se soluciona problema con captcha en la recuperación de contraseña de admin de prontus.
+- bugfix: Se corrige listado de ciclos en la regeneración de taxports.
+- bugfix: Se cambia el uso de copy a move en la rotación de logs ya que causaba problemas de rendimiento.
+- improvement: Se habilita parámetro en cgi de regeneración de taxports para ejecutar solo un FID.
+- improvement: Se agrega Friendly URL versión 3. Se elimina el prontus_id del path y en reemplazo se utiliza
+el nombre de dominio o subdominio para identificar la instancia de prontus.
+- changes: Se renueva la sesión al auto-loguearse en Prontus para evitar que expire.
+- bugfix: En administrador de portadas, se corrige validación de existencia de portada origen/destino. Si el archivo
+estaba vacío (0Kb) se sobreescribía.
+- improvement: En loops de portada, se agrega comparación entre la variable _loopcounter y _totartics en IF y NIF, para saber si llegó al último articulo del loop.
+llegó al final.
+- bugfix: Se soluciona problema con verificación de ruta hacia ffmpeg cuando la variable DIR_FFMPEG no existe en el cfg.
+- changes: En el editor de configuración, se agrega validación a directorio DIR_FFMPEG para permitir solo
+caracteres alfanuméricos, guión y guión bajo.
+
+====================================================================================================
 11.2.78 - 25/08/2014
 ====================================================================================================
 - changes: Se centraliza el parseo de las salidas paralelas en el objeto Artic.

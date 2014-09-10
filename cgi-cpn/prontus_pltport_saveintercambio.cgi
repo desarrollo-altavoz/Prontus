@@ -114,7 +114,7 @@ main: {
     my $port1 = "$dir_port/" . $FORM{'Lst_PORT1'};
     my $port2 = "$dir_port/" . $FORM{'Lst_PORT2'};
 
-    if ((! -s $port1) || (! -s $port2))  {
+    if ((! -f $port1) || (! -f $port2))  {
         &glib_html_02::print_json_result(0, 'Portadas no válidas', 'exit=1,ctype=1');
     };
 

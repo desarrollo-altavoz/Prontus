@@ -13,9 +13,6 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-
-    $pathLibsProntus = $pathLibsProntus . "/coment";
-    unshift(@INC, $pathLibsProntus);
 };
 
 # Captura STDERR
@@ -27,12 +24,9 @@ use glib_fildir_02;
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use lib_prontus;
+use lib_multiediting;
 
-use lib_search;
-
-use coment_varglb;
-use lib_coment;
-
+use Session;
 use Update;
 use strict;
 
@@ -61,6 +55,18 @@ main: {
         print "0";
 
     } else {
+        # Regenera la sesion.
+
+        # crea obj session
+        my $sess_obj = Session->new(
+                        'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                        'document_root'     => $prontus_varglb::DIR_SERVER)
+                        || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
+
+
+        # para evitar que sea borrada por el gc.
+        $sess_obj->rejuvenece_sesion();
+
         # Descarga archivo descriptor de update
         my $upd_obj = Update->new(
                         'prontus_id'        => $prontus_varglb::PRONTUS_ID,
@@ -68,12 +74,9 @@ main: {
                         'path_conf'         => $FORM{'path_conf'},
                         'document_root'     => $prontus_varglb::DIR_SERVER)
                         || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
+
         $upd_obj->descarga_upd_descriptor();
 
-        # Se loguea en el Log de Operaciones
-        my %cookies = &lib_cookies::get_cookies();
-        my $username = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_ID};
-        &lib_prontus::write_log('Auto Login', $username, '');
         print "1";
     };
 

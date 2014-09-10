@@ -7846,3 +7846,73 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         siempre se parseaba el mismo valor para todos los artículos.
     [files]
         /cgi-cpn/Artic.pm
+
+====================================================================================================
+11.2.79 - 10/09/2014 - JOR
+====================================================================================================
+
+- Artículo
+    [bugfixes]
+        - Se corrige problema con tags del artículo. No estaban apareciendo en el input producto
+        de una incompatibilidad con el plugin uploadify introducido en la versión 11.2.76.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/tags_input/jquery.tagsinput.js
+
+- Prontus en general
+    [bugfixes]
+        - Se soluciona problema con captcha en recuperación de contraseña. Faltaba inicializar
+        variables globales de prontus.
+        - Se corrige listado de ciclos en la regeneración de taxports.
+        - Se cambia el uso de copy a move en la rotación de logs ya que causa problemas de rendimiento
+        al procesar logs muy grandes.
+    [mejoras]
+        - Se habilita parámetro en la regeneración de taxports para ejecutar un solo FID
+        - Se agrega Friendly URL versión 3.0. Se elimina el prontus_id del path y en reemplazo se utiliza el nombre de
+        dominio o subdominio para identificar la instancia de prontus. Por ejemplo:
+
+            - http://www.<prontus_id>.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.ext
+            - http://www.<prontus_id>.dominio.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.ext
+
+            * El prontus_id no puede tener guión bajo (_).
+            * Se debe aplicar la configuración respectiva a nginx/apache.
+    [cambios]
+        - Se renueva la sesión al auto-loguearse en Prontus para evitar que expire.
+    [files]
+        /cgi-cpn/prontus_captcha.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/lib_prontus.cgi
+        /cgi-cpn/prontus_check_session.cgi
+        /cgi-cpn/lib_stdlog.pm
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Administrador de Portadas
+    [bugfixes]
+        - Se corrige validación de existencia de portada origen/destino. Si el archivo estaba vacío
+        se sobreescribía.
+    [files]
+        /cgi-cpn/prontus_pltport_duplicar.cgi
+        /cgi-cpn/prontus_pltport_saveintercambio.cgi
+        /cgi-cpn/prontus_pltport_borrar.cgi
+
+- Parseo de portadas
+    [mejoras]
+        - Ahora es posible hacer comparacion entre la variable _loopcounter y _totartics para
+        saber si se llegó al último elemento de la lista. Por ejemplo:
+            %%IF(_loopcounter eq _totartics)%%  ...  %%/IF%%
+    [files]
+        /cgi-cpn/lib_prontus.cgi
+
+- Transcoding
+    [bugfixes]
+        - Se soluciona problema con verificación de ruta hacia ffmpeg cuando la variable DIR_FFMPEG no existe en el cfg.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Editor de configuración vía GUI
+    [cambios]
+        - Se agrega validación a directorio DIR_FFMPEG para permitir solo caracteres alfanuméricos,
+        guión y guión bajo.
+    [files]
+        /cgi-cpn/prontus_cfg_save.cgi

@@ -79,14 +79,14 @@ my %NOMBASE_PLTS;
 my ($FILASXPAG);
 
 if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
-    print STDERR "Error: Document root no valido.\n";
+    print "Error: Document root no valido.\n";
     exit;
 };
 
 $FORM{'prontus'} = $ARGV[0];
 if ( (! -d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} eq '')  || ($FORM{'prontus'} =~ /^\//) )  {
-    print STDERR "\nError: Directorio del publicador no es válido.";
-    print STDERR "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como parametro de esta CGI\n";
+    print "\nError: Directorio del publicador no es valido.";
+    print "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como parametro de esta CGI\n";
     exit;
 };
 
@@ -96,6 +96,8 @@ my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'})
 
 my %LEVELS2TRIGGER;
 my %FIDS2PROCESS;
+
+$FORM{'fid2process'} = $ARGV[1];
 
 main:{
 
@@ -118,7 +120,7 @@ sub conecta_db {
     # Conectar a BD
     my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($base)) {
-        print STDERR "ERROR: $msg_err_bd\n";
+        print "ERROR: $msg_err_bd\n";
         exit;
     };
     $base->{mysql_auto_reconnect} = 1;
@@ -210,9 +212,10 @@ sub gatillar_procesos {
 
             # Se chequea para descansar con un sleep
             my $safetycounter = 1;
-            while(&check_taxport_running() >= 15) {
-                print "Muchos procesos, durmiendo por 2 segundos, ciclo $safetycounter de 5... \n";
+            while (&check_taxport_running() >= 15) {
                 last if($safetycounter > 5);
+
+                print "Muchos procesos, durmiendo por 2 segundos, ciclo $safetycounter de 5... \n";
                 $safetycounter++;
                 sleep(2);
             };
@@ -257,6 +260,22 @@ sub get_fids2process {
             $fidswithtax{$fid} = 1;
         };
     };
+
+    # Si viene por parametro el fid, se utiliza solo ese.
+    if ($FORM{'fid2process'}) {
+
+        if (!defined $fids{$FORM{'fid2process'}}) {
+            print "ERROR: El FID [$FORM{'fid2process'}] no existe en la configuracion de Prontus.\n";
+            exit;
+        }
+
+        if (defined $fidswithtax{$FORM{'fid2process'}}) {
+            return ($FORM{'fid2process'} => 1);
+        } else {
+            print "ERROR: No hay articulos con taxonomia con FID [$FORM{'fid2process'}].\n";
+            exit;
+        }
+    }
 
     return %fidswithtax;
 };

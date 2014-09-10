@@ -118,7 +118,7 @@ main: {
 
     $origen = "$dir_port/" . $FORM{'Lst_PORTACT'};
 
-    if (!(-s $origen)) {
+    if (!(-f $origen)) {
         &glib_html_02::print_json_result(0, 'Plantilla seleccionada no es válida', 'exit=1,ctype=1');
         exit;
     };
@@ -142,7 +142,7 @@ main: {
     my $destino = "$dir_port/" . $FORM{'NEW_PORT'};
 
     # Valida q no exista una portada con el mismo nombre.
-    if (-s $destino) {
+    if (-f $destino) {
         $msg = "Ya existe otra plantilla de portada con el nombre: $FORM{'NEW_PORT'}. Por favor escoja uno distinto.";
         &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
     } else { # duplicar
@@ -150,7 +150,7 @@ main: {
         &glib_fildir_02::check_dir($dir_port);
         &glib_fildir_02::write_file($destino, $portada);
         #print STDERR "dir_port[$dir_port], destino[$destino], origen[$origen], portada[$portada]\n";
-        if (-s $destino) { # verifica q se haya grabado la nueva plantilla
+        if (-f $destino) { # verifica q se haya grabado la nueva plantilla
             &update_cfg();
             # Duplica vistas
             my $mv;

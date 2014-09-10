@@ -94,7 +94,7 @@ main: {
     $hash_defaultvars{'var'}{'CONTROLAR_ALTA_ARTICULOS'} = 'CONTROLAR_ALTA_ARTICULOS;(SI|NO);NO;U';
     #$hash_defaultvars{'var'}{'ACTUALIZACION_MASIVA'} = 'ACTUALIZACION_MASIVA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
-    $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2);1;U';
+    $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3);1;U';
     $hash_defaultvars{'var'}{'COMENTARIOS'} = 'COMENTARIOS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'ARTIC_ACTUALIZA_PORTS'} = 'ARTIC_ACTUALIZA_PORTS;(SI|NO);NO;U';
     #$hash_defaultvars{'var'}{'VERIFICAR_INSTALACION'} = 'VERIFICAR_INSTALACION;(SI|NO);NO;U';
@@ -502,9 +502,15 @@ sub validarVar {
 
     # Validar existencia directorio de FFMPEG. (DIR_FFMPEG)
     if ($var eq 'DIR_FFMPEG') {
-        if (! -d $item) {
-            &glib_html_02::print_json_result(0, "Para la variable DIR_FFMPEG, el directorio [$item] no existe.", 'exit=1,ctype=1');
-        };
+        if (!-d $item) {
+            &glib_html_02::print_json_result(0, "El directorio [$item] configurado en la variable DIR_FFMPEG no existe.", 'exit=1,ctype=1');
+        } else {
+            if ($item =~ /[^\w\-\/_]/isg) {
+                my $msg = "El directorio [$item] configurado en la variable DIR_FFMPEG tiene caracteres inválidos.\n"
+                        . "Solo se permite el uso de caracteres alfanuméricos, guión (-) y guión bajo (_).";
+                &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
+            }
+        }
     };
 
     # Validar existencia de script para cuota
@@ -527,6 +533,15 @@ sub validarVar {
             &glib_html_02::print_json_result(0, "La variable FFMPEG_PARAMS tiene datos inválidos. No puede contener el caracter '.", 'exit=1,ctype=1');
         };
     };
+
+    # Si es la version 3 de friendly url se valida que el id de prontus no tenga underscore.
+    if ($var eq 'FRIENDLY_URLS_VERSION' && $item eq '3') {
+        if ($prontus_varglb::PRONTUS_ID =~ /_/sg) {
+            &glib_html_02::print_json_result(0, "No es posible habilitar Friendly URL versión 3 si el ID de Prontus tiene guiones bajos (_).", 'exit=1,ctype=1');
+        };
+    };
+
+
 
 };
 

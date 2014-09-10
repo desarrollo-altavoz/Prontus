@@ -45,7 +45,7 @@ sub set_stdlog {
         use File::Copy;
         use glib_hrfec_02;
         my $ts_file = &glib_hrfec_02::get_dtime_pack4();
-        &File::Copy::copy("$dir/$log_file", "$dir/$log_file.$ts_file"); # lo rota
+        &File::Copy::move("$dir/$log_file", "$dir/$log_file.$ts_file"); # lo rota
         open (STDERR, ">$dir/$log_file"); # abre el nuevo
         &do_garbage($dir, $log_file); # borra el mas antiguo si es q hay mas de 10
     } else {

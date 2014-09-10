@@ -21,7 +21,7 @@ function check_modelo_actualizado {
     modelo=$1
     modelosactual="$BASEDIR/wizard_prontus/models"
     rutamodelo="$modelosactual/$modelo"
-    
+
     # Si el directoio no existe, nada que hacer
     if [ ! -d "$rutamodelo" ] ; then
         echo "0"
@@ -32,14 +32,14 @@ function check_modelo_actualizado {
     if [ ! -f "$rutamodelo" ] ; then
         urlmodelo="$URLPRONTUS/$modelo"
         wget -nv "$urlmodelo/$modelo.cfg" -O "$rutamodelo/$modelo-new.cfg";
-        
+
         version1=$(cat $rutamodelo/$modelo.cfg | grep -e 'MODELO_VERSION' | grep -o "[0-9\.]*")
         version2=$(cat $rutamodelo/$modelo-new.cfg | grep -e 'MODELO_VERSION' | grep -o "[0-9\.]*")
         rm "$rutamodelo/$modelo-new.cfg"
         if [ "$version1" == "$version2" ] ; then
             echo "1"
-        else 
-            echo "0"   
+        else
+            echo "0"
         fi
 
     else
@@ -58,7 +58,7 @@ function traerModelo {
     urlmodelo="$URLPRONTUS/$modelo"
 
     resp=$(check_modelo_actualizado $modelo)
-    
+
     # Si la respuesta es cero, se debe descargar el modelo
     if [ "$resp" == "0" ] ; then
         echo "Modelo [$modelo] desactualizado";
@@ -77,7 +77,7 @@ function traerModelo {
         md5a=`expr match "$md5a" '.*= \([a-z0-9]*\)'`
 
         # Se calcula el md5 del archivo tgz
-        cd $rutamodelo    
+        cd $rutamodelo
         if [ -x /sbin/md5 ] ; then
             md5b=`/sbin/md5 "$modelo.tgz"`
         else
@@ -153,7 +153,7 @@ rm -rf "$BASEDIRTEMP/cgi-bin/encuesta"
 rm -rf "$BASEDIRTEMP/cgi-cpn/coment/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/coment/prontus_temp"
 rm -rf "$BASEDIRTEMP/cgi-cpn/dam/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/dam/prontus_temp"
 rm -rf "$BASEDIRTEMP/cgi-cpn/xcoding/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/xcoding/prontus_temp"
-rm -rf "$BASEDIRTEMP/cgi-cpn/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/prontus_temp"
+rm -rf "$BASEDIRTEMP/cgi-cpn/prontus_error_log" "$BASEDIRTEMP/cgi-cpn/wizard_error_log" "$BASEDIRTEMP/cgi-cpn/prontus_temp"
 rm -rf "$BASEDIRTEMP/cgi-cpn/pproc"
 rm -rf "$BASEDIRTEMP/cgi-cpn/encuesta"
 rm -rf "$BASEDIRTEMP/cgi-cpn/develop"
