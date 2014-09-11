@@ -7898,7 +7898,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Parseo de portadas
     [mejoras]
-        - Ahora es posible hacer comparacion entre la variable _loopcounter y _totartics para
+        - Ahora es posible hacer comparación entre la variable _loopcounter y _totartics para
         saber si se llegó al último elemento de la lista. Por ejemplo:
             %%IF(_loopcounter eq _totartics)%%  ...  %%/IF%%
     [files]
