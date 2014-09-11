@@ -11,7 +11,7 @@ de plugins jquery.
 el nombre de dominio o subdominio para identificar la instancia de prontus.
 - changes: Se renueva la sesión al auto-loguearse en Prontus para evitar que expire.
 - bugfix: En administrador de portadas, se corrige validación de existencia de portada origen/destino. Si el archivo
-estaba vacío (0Kb) se sobreescribía.
+estaba vacío (0Kb) se sobrescribía.
 - improvement: En loops de portada, se agrega comparación entre la variable _loopcounter y _totartics en IF y NIF, para saber si llegó al último articulo del loop.
 llegó al final.
 - bugfix: Se soluciona problema con verificación de ruta hacia ffmpeg cuando la variable DIR_FFMPEG no existe en el cfg.
