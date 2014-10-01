@@ -1,4 +1,18 @@
 ====================================================================================================
+11.2.80 - 01/10/2014
+====================================================================================================
+- improvement: En las salidas de articulos (list) se pueden excluir los articulos que están publicados en una
+portada.
+- improvement: Se agrega variable de configuración para activar o desactivar la generación de salidas de articulos
+cada vez que se guarde un portada.
+- improvement: En la regeneración de artículos, se agrega a la configuración avanzada filtro por taxonomía, sección, tema y subtema.
+- bugfix: Se evita que los campos _seccion|_tema|_subtema se guarden en el xml con cero (0) en vez de vacío cuando el artículo no tiene taxonomía.
+- bugfix: Se soluciona problema al arrastrar una foto desde el banco de imágenes a un campo de fotofija en las últimas
+versiones de firefox.
+- changes: Al insertar código javascript en el VTXT no se encierra entre las tags <script> ... </script>
+- improvement: Se agrega condicional if/nif al mapa del sitio para saber si existen temas o subtemas anidados.
+
+====================================================================================================
 11.2.79 - 10/09/2014
 ====================================================================================================
 - bugfix: Se corrige problema con input de tags en los FID. No aparecían los tags producto de una incompatibilidad

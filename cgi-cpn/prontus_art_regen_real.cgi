@@ -57,6 +57,9 @@ my ($DIRFECHA_INI); # DIR FECHA A PARTIR DEL CUAL EL SCRIPT DEBE PROCESAR
 
 my ($FID_TYPES_STR);
 my ($MULTIVISTAS_STR);
+my ($TAXONOMIA_STR);
+
+my (%FILTAX);
 
 my (%FID_TYPES);
 my (%MULTIVISTAS_REGEN);
@@ -86,6 +89,7 @@ if ($ARGV[0]) {
     $DIRFECHA_INI       = $ARGV[1];
     $FID_TYPES_STR      = $ARGV[2];
     $MULTIVISTAS_STR    = $ARGV[3];
+    $TAXONOMIA_STR      = $ARGV[4];
 
     print STDERR "DIR_SERVER: [$prontus_varglb::DIR_SERVER]\n";
     print STDERR "PATH_CONF: [$PATH_CONF]\n";
@@ -127,6 +131,9 @@ $lib_logproc::MODO_WEB = $MODO_WEB;
 
 # Valida los FIDs
 &valida_y_ajusta_fids();
+
+# Valida taxonomia.
+&valida_y_ajusta_taxonomia();
 
 # reparsea articulos en base a su tpl.
 &reparsea_artic();
@@ -240,31 +247,42 @@ sub procesa_files {
             # Carga hash de taxonomias para luego regenerar relacionados
             my %campos_xml = $artic_obj->get_xml_content();
 
+            my $sec1 = $campos_xml{'_seccion1'};
+            my $tem1 = $campos_xml{'_tema1'};
+            my $sub1 = $campos_xml{'_subtema1'};
+
             if($FID_TYPES_STR eq '' || $FID_TYPES{$campos_xml{'_fid'}}) {
 
-                if($MULTIVISTAS_DEFAULT) {
-                    # Generar vista (a partir del xml)
-                    $artic_obj->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
-                            || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
+                # si no hay filtro o la sección se matchea con el filtro, lo deja pasar.
+                if ($TAXONOMIA_STR eq '' || exists $FILTAX{$sec1}) {
+                    # si hay tema y el tema no matchea con el tema del filtro, pasar al siguiente.
+                    next if (ref $FILTAX{$sec1} && !exists $FILTAX{$sec1}{$tem1});
+                    next if (ref $FILTAX{$sec1} && ref $FILTAX{$sec1}{$tem1} && !exists $FILTAX{$sec1}{$tem1}{$sub1});
 
+                    if($MULTIVISTAS_DEFAULT) {
+                        # Generar vista (a partir del xml)
+                        $artic_obj->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
+                                || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
+
+                    }
+
+                    foreach my $mv (keys %MULTIVISTAS_REGEN) {
+                        # Generar vista (a partir del xml)
+                        $artic_obj->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
+                                || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
+                    }
+
+                    my $secc4tax = $campos_xml{'_seccion1'};
+                    my $tem4tax = $campos_xml{'_tema1'};
+                    my $stem4tax = $campos_xml{'_subtema1'};
+                    $secc4tax = '0' if ($secc4tax eq '');
+                    $tem4tax = '0' if ($tem4tax eq '');
+                    $stem4tax = '0' if ($stem4tax eq '');
+                    $TAXONOMIAS_TO_REGEN{$secc4tax . '_' . $tem4tax . '_' . $stem4tax} = '1';
+
+                    # $TOT_REGS++ if (!$mv);  # Total de articulos procesados, las iteraciones de multivista no se cuentan.
+                    $TOT_REGS++;
                 }
-
-                foreach my $mv (keys %MULTIVISTAS_REGEN) {
-                    # Generar vista (a partir del xml)
-                    $artic_obj->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
-                            || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
-                }
-
-                my $secc4tax = $campos_xml{'_seccion1'};
-                my $tem4tax = $campos_xml{'_tema1'};
-                my $stem4tax = $campos_xml{'_subtema1'};
-                $secc4tax = '0' if ($secc4tax eq '');
-                $tem4tax = '0' if ($tem4tax eq '');
-                $stem4tax = '0' if ($stem4tax eq '');
-                $TAXONOMIAS_TO_REGEN{$secc4tax . '_' . $tem4tax . '_' . $stem4tax} = '1';
-
-                # $TOT_REGS++ if (!$mv);  # Total de articulos procesados, las iteraciones de multivista no se cuentan.
-                $TOT_REGS++;
             }
         };# if
 
@@ -393,5 +411,32 @@ sub valida_y_ajusta_fids {
         }
     }
 }
+
+# ---------------------------------------------------------------
+sub valida_y_ajusta_taxonomia {
+    $TAXONOMIA_STR =~ s/\s//g;
+
+    print STDERR "TAXONOMIA_STR[$TAXONOMIA_STR]\n";
+
+    if ($TAXONOMIA_STR eq '0_0_0' || $TAXONOMIA_STR eq '') {
+        $TAXONOMIA_STR = '';
+        return;
+    };
+
+    if ($TAXONOMIA_STR !~ /(\d+)_(\d+)_(\d+)/) {
+        return;
+    };
+
+    my ($s, $t, $st) = split(/_/, $TAXONOMIA_STR);
+
+    if ($s && $t && $st) {
+        $FILTAX{$s}{$t}{$st} = 1;
+    } elsif ($s && $t) {
+        $FILTAX{$s}{$t} = 1;
+    } elsif ($s) {
+        $FILTAX{$s} = 1;
+    };
+
+};
 
 # -------------------------------END SCRIPT----------------------

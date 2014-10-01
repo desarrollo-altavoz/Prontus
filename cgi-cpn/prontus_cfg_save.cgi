@@ -153,6 +153,7 @@ main: {
 
     # -list.cfg
     $hash_defaultvars{'list'}{'LIST_PROCESO_INTERNO'} = 'LIST_PROCESO_INTERNO;(SI|NO);SI;U';
+    $hash_defaultvars{'list'}{'LIST_PORT_PPROC'} = 'LIST_PORT_PPROC;(SI|NO);SI;U';
     $hash_defaultvars{'list'}{'LIST_MAXARTICS'} = 'LIST_MAXARTICS;^(\d+)$;20;U';
     $hash_defaultvars{'list'}{'LIST_ORDEN'} = 'LIST_ORDEN;^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$;PUBLICACION(DESC);U';
     #~ $hash_defaultvars{'list'}{'LIST_ARTXPAG'} = 'LIST_ARTXPAG;^(\d+)$;20;U';

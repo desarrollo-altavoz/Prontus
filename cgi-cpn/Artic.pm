@@ -358,6 +358,8 @@ sub generar_xml_artic {
             next if ($Artic::XML_BASE !~ /<_private>.*<$nom_campo>.*<\/$nom_campo>.*<\/_private>/s);
         };
         next if ($val_campo eq ''); # CVI - Permite guardar el "0" en el XML
+        next if ($nom_campo =~ /^(_seccion|_tema|_subtema)/ && $val_campo eq '0');
+
 
         my $parse_as_cdata = 0;
         $parse_as_cdata = 1 if ($nom_campo =~ /^(_?txt_|vtxt_)/i);
@@ -1961,6 +1963,7 @@ sub parse_artic_data {
     foreach my $nom_campo (keys %campos_xml) {
         my $val_campo = $campos_xml{$nom_campo};
         next if ($val_campo eq '');
+        next if ($nom_campo =~ /^(_seccion|_tema|_subtema)/ && $val_campo eq '0'); # evitar que s/t/st se guarde con 0.
         next if ($nom_campo =~ /^_fecha(p|e)$/);
         next if ($nom_campo =~ /^chk_cuadrar_fotofija|^_NOMfoto_|^_wfoto_|^_hfoto_|^foto_\d+/);
 
@@ -2335,7 +2338,8 @@ sub _parsing_vtxt {
             } elsif($attrs =~ / code="(.*?)"/) {
                 my $jscode = $1;
                 $jscode = uri_unescape($jscode);
-                $newnode = '<script type="text/javascript">'."\n".$jscode."\n".'</script>';
+                #$newnode = '<script type="text/javascript">'."\n".$jscode."\n".'</script>';
+                $newnode = $jscode;
             }
         }
         $code = quotemeta $code;

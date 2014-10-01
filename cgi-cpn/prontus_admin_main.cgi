@@ -70,11 +70,13 @@ use lib_search;
 
 use coment_varglb;
 use lib_coment;
+use lib_tax;
 
 use strict;
 
 my (%FORM);
 my $REL_DIR_LOGS = '/cpan/log';
+my $DB;
 
 main: {
   # Rescatar parametros recibidos
@@ -101,13 +103,20 @@ main: {
     exit;
   };
 
+  my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
+  if (! ref($base)) {
+    &glib_html_02::print_pag_result("Error","$msg_err_bd");
+    exit;
+  };
+
+  $DB = $base;
+
   print "Content-Type: text/html\n\n";
   # Generar pagina final (loopeando una fila modelo)
   my $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/prontus_admin_main.html";
   my $pagina = &glib_fildir_02::read_file($plantilla);
 
   $pagina = &lib_prontus::set_coreplt_ppal($pagina);
-
 
   # Se parsean variables
   $pagina =~ s/%%_path_conf%%/$FORM{'path_conf'}/sg;
@@ -122,6 +131,10 @@ main: {
   } else {
       $pagina =~ s/%%default_tab%%//sg;
   };
+
+  # Random para tax4fids.
+  my $str_random_tax = &glib_str_02::random_string(10);
+  $pagina =~ s/%%str_random_tax%%/$str_random_tax/sg;
 
   # Se parsean los logs de operacion
   $pagina = &parseaLogs($pagina);
@@ -871,6 +884,14 @@ sub parseaVars {
         $pagina =~ s/%%LIST_PROCESO_INTERNO_NO%%/ checked="checked"/ig;
     };
 
+    if ($prontus_varglb::LIST_PORT_PPROC eq 'SI') {
+        $pagina =~ s/%%LIST_PORT_PPROC_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%LIST_PORT_PPROC_NO%%//ig;
+    } else {
+        $pagina =~ s/%%LIST_PORT_PPROC_SI%%//ig;
+        $pagina =~ s/%%LIST_PORT_PPROC_NO%%/ checked="checked"/ig;
+    };
+
     $pagina =~ s/%%LIST_MAXARTICS%%/$prontus_varglb::LIST_MAXARTICS/ig;
     #~ $pagina =~ s/%%LIST_ARTXPAG%%/$prontus_varglb::LIST_ARTXPAG/ig;
     my $list_orden = $prontus_varglb::LIST_ORDEN;
@@ -1374,6 +1395,17 @@ sub parseRegen {
 
     my $filas_tabla_checkbox_mvs = &glib_html_02::generar_filas_tabla_checkbox(\@mvlist, 'INPUT_MVS_REGEN[]', 'regen');
     $pagina =~ s/%%filas_tabla_checkbox_mvs%%/$filas_tabla_checkbox_mvs/sig;
+
+    # Listado de secciones.
+    my %secciones = &lib_tax::carga_tabla_seccion($DB);
+    my $secciones_list;
+
+    foreach my $secc (sort keys %secciones) {
+      my @info_secc = split(/\t\t/, $secciones{$secc});
+      $secciones_list .= "<option value=\"$secc\">$info_secc[0]</option>";
+    };
+
+    $pagina =~ s/%%secciones%%/$secciones_list/sig;
 
     return $pagina;
 

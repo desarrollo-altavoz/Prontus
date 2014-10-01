@@ -7916,3 +7916,79 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         guión y guión bajo.
     [files]
         /cgi-cpn/prontus_cfg_save.cgi
+
+====================================================================================================
+11.2.80 - 01/10/2014 - JOR
+====================================================================================================
+
+- Portadas list
+    [mejoras]
+        - Se agrega la posibilidad de excluir de la lista los articulos que están publicados en una portada:
+            Se especifica el xml de la portada.
+            <!-- CONFIG LIST_EXCLUDE_PORT = inicio.xml -->
+            Se especifica el área donde estan publicados los articulos que se excluirán de la lista. (Opcional)
+            <!-- CONFIG LIST_EXCLUDE_PORT_AREA = 1 -->
+        - Se agrega variable de configuración LIST_PORT_PPROC, para activar o desactivar la generación de salidas de artículos cada vez que se guarde una portada.
+    [files]
+        /cgi-cpn/prontus_cron_list.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/lib_prontus.pm
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_list.html
+
+- Artículos
+    [bugfixes]
+        - Se evita que los campos _seccion|_tema|_subtema se guarden en el xml con cero (0) en vez de vacío
+        cuando el artículo no tiene taxonomía. Esto causaba problemas con la generación de los artículos
+        relacionados y el parseo de las marcas en los artículos.
+        - Se soluciona problema al arrastrar una foto desde el banco de imágenes a un campo de fotofija en firefox 30+.
+    [files]
+        /cgi-cpn/Artic.pm
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+
+    [cambios]
+        - Cuando se inserta código javascript en el VTXT, al parsear el artículo el código se encerraba entre
+        los tags <script>.*?</script> lo cual limitaba el uso de ficha funcionalidad. Ahora el código queda tal cual como se ingresa en el VTXT.
+    [files]
+        /cgi-cpn/Artic.pm
+
+- Administración / Regenerador de artículos
+    [mejoras]
+        - En la configuración avanzada se agrega filtro por taxonomía, sección, tema y subtema.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_regen_art.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/css/cfgedit.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Opciones.class.js
+        /cgi-cpn/prontus_art_regen.cgi
+        /cgi-cpn/prontus_art_regen_real.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+
+- Mapa del sitio
+    [mejoras]
+        - Se agrega condicional if/nif para saber si existen temas o subtemas anidados. Por ejemplo:
+        <ul>
+        %%LOOP_SECCION%%
+            <li>%%_nom%%
+            %%if(_tema)%%
+                <ul>
+                    %%LOOP_TEMA%%
+                    <li>%%_nom%%
+                    %%if(_subtema)%%
+                        <ul>
+                            %%LOOP_SUBTEMA%%
+                            <li>%%_nom%%</li>
+                            %%/LOOP_SUBTEMA%%
+                        </ul>
+                    %%/if%%
+                    </li>
+                    %%/LOOP_TEMA%%
+                </ul>
+            %%/if%%
+            </li>
+        %%/LOOP_SECCION%%
+        </ul>
+    [files]
+        /cgi-cpn/lib_prontus.pm
+

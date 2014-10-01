@@ -325,6 +325,16 @@ sub exec_postproceso {
             system $cmd;
         };
     };
+
+
+    if ($prontus_varglb::LIST_PORT_PPROC eq 'SI') {
+        my $pathnice = &lib_prontus::get_path_nice();
+        $pathnice = "$pathnice -n19 " if ($pathnice);
+        my $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    };
+
 };
 
 # --------------------------------------------------------------------

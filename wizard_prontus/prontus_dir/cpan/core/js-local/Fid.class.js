@@ -515,6 +515,7 @@ var Fid = {
         iframe.contentWindow.document.body.innerHTML = content;
         iframe.contentWindow.document.body.style.border = "none";
         iframe.contentWindow.document.body.style.margin = "2px";
+        iframe.contentWindow.document.body.style.height = "100%";
 
         if (Fid.isGecko) {
             iframe.contentWindow.document.body.style.overflow = "hidden";

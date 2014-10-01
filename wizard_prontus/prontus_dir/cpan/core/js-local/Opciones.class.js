@@ -156,6 +156,29 @@ var Opciones = {
             } else {
                 href += '&fecha=@all&op=';
             }
+
+            var secc1 = $('#_SECCION1').val();
+            var tem1 = $('#_TEMA1').val();
+            var subtem1 = $('#_SUBTEMA1').val();
+
+            if (secc1) {
+                href += '&_seccion1=' +  secc1;
+            } else {
+                href += '&_seccion1=0';
+            }
+
+            if (tem1) {
+                href += '&_tema1=' +  tem1;
+            } else {
+                href += '&_tema1=0';
+            }
+
+            if (subtem1) {
+                href += '&_subtema1=' +  subtem1;
+            } else {
+                href += '&_subtema1=0';
+            }
+
             if (confirm('¿Está seguro de ejecutar la actualización masiva de artículos?')) {
                 var obj = Opciones.optsDefault;
                 obj.href = href;

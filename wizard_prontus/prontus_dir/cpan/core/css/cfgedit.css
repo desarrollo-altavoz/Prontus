@@ -23,3 +23,4 @@
 
 select.disabled-field {color:#999999; background-color:#dddddd; text-decoration:line-through;}
 input.disabled-field {color:#999999; background-color:#dddddd; text-decoration:line-through;}
+.select-tax { width: 164px;}

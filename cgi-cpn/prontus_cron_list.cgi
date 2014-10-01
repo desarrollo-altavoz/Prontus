@@ -179,8 +179,12 @@ sub generar_lists {
                     }
                 }
             }
+
+            # Crear tabla temporal con articulos a excluir.
+            my $is_exclude = &get_exclude_port($config{'LIST_EXCLUDE_PORT'}, $config{'LIST_EXCLUDE_PORT_AREA'}, $plt, $base);
+
             #~ print STDERR "Procesando: $seccion, $tema, $subtema, $fids... \n";
-            &procesar_plantilla($seccion, $tema, $subtema, $fids, $plt, $maxartics, $orden, $base);
+            &procesar_plantilla($seccion, $tema, $subtema, $fids, $plt, $maxartics, $orden, $base, $is_exclude);
         } else {
             print STDERR "Plantilla vacia: $plt\n";
         }
@@ -194,7 +198,7 @@ sub procesar_plantilla {
 # Genera todas las portadas tax (de la 1..n) correspondientes
 # a este nivel taxonomico, para todas las vistas declaradas y fids.
 
-    my ($secc_id, $temas_id, $subtemas_id, $fids, $nombase_plt, $maxartics, $orden, $base) = @_;
+    my ($secc_id, $temas_id, $subtemas_id, $fids, $nombase_plt, $maxartics, $orden, $base, $is_exclude) = @_;
 
     #TODO Queda pendiente el manejo de semáforos
 
@@ -205,8 +209,13 @@ sub procesar_plantilla {
     my ($secc_nom, $filler) = split (/\t\t/, $TABLA_SECC{$secc_id});
 
     my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
-    . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
-    . "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
+        . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
+        . "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
+
+    if ($is_exclude) {
+        my $nom_table = &get_nom_for_table($nombase_plt);
+        $filtros .= " AND ART_ID NOT IN (SELECT EXCLUDE_ART_ID FROM EXCLUDE_PORT_$nom_table)";
+    };
 
     if ($filtros ne '') {
         $sql =~ s/%%FILTRO%%/ where $filtros /;
@@ -244,6 +253,8 @@ sub procesar_plantilla {
 
     while ($salida->fetch) {
         $nro_filas++;
+
+        print STDERR "nombase_plt[$nombase_plt] art_id[$art_id]\n";
 
         # parsea esta fila en todas las multivistas
         my ($tem, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$art_idtemas1});
@@ -287,8 +298,7 @@ sub write_pag {
     $extension = '.' . $extension;
 
     foreach my $loopname (keys %loops) {
-        print STDERR "loopname[$loopname]\n";
-
+        #print STDERR "loopname[$loopname]\n";
         $pagina =~ s/$loopname/$filas{"$nombase_plt|$loopname"}/isg;
     }
 
@@ -432,12 +442,16 @@ sub carga_config {
     $config_default{'LIST_FIDS'} = '';
     $config_default{'LIST_ORDEN'} = $prontus_varglb::LIST_ORDEN;
 
+    $config_default{'LIST_EXCLUDE_PORT'} = '';
+    $config_default{'LIST_EXCLUDE_PORT_AREA'} = '';
+
     foreach my $k (keys %CONTENT_PLTS) {
         my %config = %config_default;
         my $plantilla = $CONTENT_PLTS{$k};
         while ($plantilla =~ /<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->/sg) {
             my $name = $1;
             my $value = $2;
+
             if($name eq 'LIST_ORDEN') {
                 $value = &get_taxport_orden($value);
 
@@ -445,14 +459,30 @@ sub carga_config {
                 $value =~ s/[^\d]//ig;
                 $value = $prontus_varglb::LIST_MAXARTICS unless($value);
 
-            } elsif($name eq 'LIST_SECCION' || $name eq 'LIST_TEMA' || $name eq 'LIST_SUBTEMA') {
+            } elsif($name eq 'LIST_SECCION' || $name eq 'LIST_TEMA' || $name eq 'LIST_SUBTEMA' || $name eq 'LIST_EXCLUDE_PORT_AREA') {
                 $value =~ s/[^\d,]//isg;
                 $value =~ s/,{2,}/,/g;
                 $value =~ s/^,+//g;
                 $value =~ s/,+$//g;
-            }
+            } elsif ($name eq 'LIST_EXCLUDE_PORT') {
+                my $path_xml = $prontus_varglb::DIR_SERVER
+                             . $prontus_varglb::DIR_CONTENIDO
+                             . $prontus_varglb::DIR_EDIC
+                             . $prontus_varglb::DIR_UNICAEDIC
+                             . "/xml/$value";
+
+                if ($value !~ /\.xml$/) {
+                    $value = '';
+                } elsif (!-f $path_xml) {
+                    $value = '';
+                } else {
+                    $value = $path_xml;
+                };
+            };
+
             $config{$name} = $value;
-        }
+        };
+
         # Elimina mensajes de la plantilla.
         $plantilla =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
         $CONTENT_PLTS{$k} = $plantilla;
@@ -593,5 +623,64 @@ sub test_taxo {
         return 1;
     }
     return 0;
-}
+};
+
+sub get_nom_for_table {
+    my $str = $_[0];
+
+    $str =~ s/\.(\w+)$//sg;
+    $str =~ s/\.//sg;
+    $str =~ s/ +//sg;
+    $str =~ s/_//sg;
+    $str =~ s/-//sg;
+
+    return $str;
+};
+
+sub get_exclude_port {
+    my $path_xml = $_[0];
+    my $exclude_area = $_[1];
+    my $plt = $_[2];
+    my $base = $_[3];
+
+    my $nom_table = &get_nom_for_table($plt);
+
+    my @artics_to_exclude;
+
+    if (-f $path_xml) {
+        my $buffer = &glib_fildir_02::read_file($path_xml);
+        &lib_prontus::ajusta_crlf($buffer);
+
+        # Crear tabla temporal.
+        my $sql_create = "CREATE TEMPORARY TABLE EXCLUDE_PORT_$nom_table (EXCLUDE_ART_ID VARCHAR(14) NOT NULL);";
+        &glib_dbi_02::ejecutar_sql($base, $sql_create);
+
+        while ($buffer =~ /(<rowartic>\s*<dir>(\d+?)<\/dir>\s*<file>(.*?)<\/file>\s*<area>(.*?)<\/area>.*?<\/rowartic>)/isg) {
+            my $rowartic = $1;
+            my $dirfecha = $2;
+            my $art = $3;
+            my $area = $4;
+
+            #print STDERR "art[$art] area[$area]\n";
+
+            if ($exclude_area) {
+                if ($exclude_area == $area) {
+                    my $sql_insert = "INSERT INTO EXCLUDE_PORT_$nom_table SET EXCLUDE_ART_ID = $art";
+                    &glib_dbi_02::ejecutar_sql($base, $sql_insert);
+                    #print STDERR "exclude[$art]\n";
+                };
+            } else {
+                push @artics_to_exclude, $art;
+                my $sql_insert = "INSERT INTO EXCLUDE_PORT_$nom_table SET EXCLUDE_ART_ID = $art";
+                &glib_dbi_02::ejecutar_sql($base, $sql_insert);
+                #print STDERR "exclude[$art]\n";
+            };
+        };
+
+        return 1;
+    };
+
+    return 0;
+};
+
 # -------------------------END SCRIPT----------------------

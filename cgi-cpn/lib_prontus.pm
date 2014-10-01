@@ -1728,6 +1728,13 @@ sub load_config {
   };
   $prontus_varglb::LIST_PROCESO_INTERNO = $proc_int;
 
+  # list.LIST_PORT_PPROC
+  my $port_pproc = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*LIST_PORT_PPROC\s*=\s*("|')(.*?)("|')/) { # 1.22 valores posibles : SI | NO
+    $port_pproc = $2;
+  };
+  $prontus_varglb::LIST_PORT_PPROC = $port_pproc;
+
   #~ # list.LIST_ARTXPAG
   #~ $prontus_varglb::LIST_ARTXPAG = '20'; # valor por defecto.
   #~ if ($buffer =~ m/\s*LIST_ARTXPAG\s*=\s*("|')([0-9]+?)("|')/) {
@@ -5236,6 +5243,7 @@ sub get_arbol_mapa {
   my $local_indent;
   my $mapa;
   my ($mapa_total);
+  my ($tot_s, $tot_t, $tot_st);
   # print STDERR "loop_mapa[$loop_mapa]\n";
 
   # -----------------------------------------------------
@@ -5244,6 +5252,8 @@ sub get_arbol_mapa {
   my ($mapa_s, $nested_s, $secc_id, $secc_nom, $secc_port, $secc_nom4vistas, $secc_mostrar);
   my ($salida) = &glib_dbi_02::ejecutar_sql($bd, $sql);
   $salida->bind_columns(undef, \($secc_id, $secc_nom, $secc_port, $secc_nom4vistas, $secc_mostrar));
+
+  $tot_s = $salida->rows;
   while ($salida->fetch) {
     # Cambia nom para la vista.
     $secc_nom = &lib_prontus::get_nomtax_envista($mv, $secc_nom4vistas) if ($mv); # rotulos tax
@@ -5278,6 +5288,7 @@ sub get_arbol_mapa {
     my ($mapa_t, $mapa_total_t, $temas_id, $temas_nom, $temas_port, $temas_nom4vistas, $temas_mostrar);
     my ($salida_t) = &glib_dbi_02::ejecutar_sql($bd, $sql);
     $salida_t->bind_columns(undef, \($temas_id, $temas_nom, $temas_port, $temas_nom4vistas, $temas_mostrar));
+    $tot_t = $salida_t->rows;
     while ($salida_t->fetch) {
       $temas_nom = &lib_prontus::get_nomtax_envista($mv, $temas_nom4vistas) if ($mv); # rotulos tax
       $temas_nom = &lib_prontus::escape_html($temas_nom);
@@ -5303,6 +5314,7 @@ sub get_arbol_mapa {
       my ($mapa_st, $mapa_st_total, $subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas, $subtemas_mostrar);
       my ($salida_st) = &glib_dbi_02::ejecutar_sql($bd, $sql);
       $salida_st->bind_columns(undef, \($subtemas_id, $subtemas_nom, $subtemas_port, $subtemas_nom4vistas, $subtemas_mostrar));
+      $tot_st = $salida_st->rows;
       while ($salida_st->fetch) {
         $subtemas_nom = &lib_prontus::get_nomtax_envista($mv, $subtemas_nom4vistas) if ($mv); # rotulos tax
         $subtemas_nom = &lib_prontus::escape_html($subtemas_nom);
@@ -5320,6 +5332,9 @@ sub get_arbol_mapa {
         $mapa_st =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
         $mapa_st =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
         $mapa_st =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
+
+        $mapa_st = &lib_prontus::parser_condicional('IF', $mapa_st, \%claves);
+
         $mapa_st_total = $mapa_st_total . $mapa_st;
       };
       if($mapa_t =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
@@ -5327,6 +5342,12 @@ sub get_arbol_mapa {
       } else {
         $mapa_t = $mapa_t . $mapa_st_total;
       };
+
+      my %claves;
+      $claves{'_subtema'} = $tot_st if ($tot_st);
+      $mapa_t = &lib_prontus::parser_condicional('IF', $mapa_t, \%claves);
+      $mapa_t = &lib_prontus::parser_condicional('NIF', $mapa_t, \%claves);
+
       $mapa_total_t = $mapa_total_t . $mapa_t;
       $salida_st->finish;
     };
@@ -5335,6 +5356,12 @@ sub get_arbol_mapa {
     } else {
       $mapa_s = $mapa_s . $mapa_total_t;
     };
+
+    my %claves;
+    $claves{'_tema'} = $tot_t if ($tot_t);
+    $mapa_s = &lib_prontus::parser_condicional('IF', $mapa_s, \%claves);
+    $mapa_s = &lib_prontus::parser_condicional('NIF', $mapa_s, \%claves);
+
     $salida_t->finish;
     $mapa_total = $mapa_total . $mapa_s;
   };

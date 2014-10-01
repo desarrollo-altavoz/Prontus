@@ -22,6 +22,9 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Cfgedit.class.js?v2"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/CombosTax.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/procs/tax4fids/tax4fids.js?%%str_random_tax%%"></script>
+
 
     <script type="text/javascript">
       // Variables globales usadas para el publicador.
@@ -30,6 +33,7 @@
         Opciones.init('%%_prontus_id%%');
         Opciones.validarMaxartics('%%TAXPORT_MAXARTICS%%');
         Opciones.validarTaxNivCero('%%TAXONOMIA_NIVELES%%');
+        CombosTax.objFormFid = document.regen_art;
       });
     </script>
   </head>

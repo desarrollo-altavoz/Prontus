@@ -56,12 +56,12 @@ sub main {
     &glib_cgi_04::new(); # Rescata parametros del formulario.
 
     $FORM{'path_conf'} = &glib_cgi_04::param('_path_conf');
-    
+
     $FORM{'fids'} = &glib_cgi_04::param('fids');
     $FORM{'mvs'} = &glib_cgi_04::param('mvs');
     $FORM{'fecha'} = &glib_cgi_04::param('fecha');
     $FORM{'op'} = &glib_cgi_04::param('op');
-    
+
     # Ajusta path_conf para completar path y/o cambiar \ por /
     $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
 
@@ -85,7 +85,7 @@ sub main {
     my $result_page = "..$prontus_varglb::DIR_CPAN/core/prontus_loading_art_regen.html";
 
     my $params = "\"$FORM{'path_conf'}\"";
-    
+
     # Agregar parametros adicionales.
     if ($FORM{'fecha'} ne '@all') {
         my $op;
@@ -96,9 +96,19 @@ sub main {
         };
         $FORM{'fecha'} = $op . $FORM{'fecha'};
     };
-    
-    $params .= " \"$FORM{'fecha'}\" \"$FORM{'fids'}\" \"$FORM{'mvs'}\"";
-    
+
+    $FORM{'_seccion1'} = &glib_cgi_04::param('_seccion1');
+    $FORM{'_tema1'} = &glib_cgi_04::param('_tema1');
+    $FORM{'_subtema1'} = &glib_cgi_04::param('_subtema1');
+
+    $FORM{'_seccion1'} = 0 if ($FORM{'_seccion1'} !~ /^\d+$/);
+    $FORM{'_tema1'} = 0 if ($FORM{'_tema1'} !~ /^\d+$/);
+    $FORM{'_subtema1'} = 0 if ($FORM{'_subtema1'} !~ /^\d+$/);
+
+    ($FORM{'_tema1'}, $FORM{'_subtema1'}) = (0, 0) if (!$FORM{'_seccion1'});
+
+    $params .= " \"$FORM{'fecha'}\" \"$FORM{'fids'}\" \"$FORM{'mvs'}\" \"$FORM{'_seccion1'}_$FORM{'_tema1'}_$FORM{'_subtema1'}\"";
+
     &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER,
                                            'prontus_art_regen_real',
                                            $result_page,
