@@ -466,7 +466,16 @@ sub _guarda_recursos {
                 my $nom_sin_ext = $nom_arch;
                 $nom_sin_ext =~ s/\.\w*$//;
                 # print STDERR "Eliminando["."$dst_dir/$nom_sin_ext" . '*.*'."]\n";
-                my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
+                #my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
+
+                my @archivos_rel = glob("$dst_dir/$nom_sin_ext" . '*');
+                foreach my $archivo_rel (@archivos_rel) {
+                    if (-d $archivo_rel) {
+                        &glib_fildir_02::borra_dir($archivo_rel);
+                    } else {
+                        unlink $archivo_rel;
+                    }
+                }
             };
 
             # Se mueve el nuevo video a la ruta final
@@ -501,7 +510,16 @@ sub _guarda_recursos {
                     $nom_sin_ext =~ s/\.\w*$//;
 
                     # Borra todos los relacionados
-                    my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
+                    #my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
+
+                    my @archivos_rel = glob("$dst_dir/$nom_sin_ext" . '*');
+                    foreach my $archivo_rel (@archivos_rel) {
+                        if (-d $archivo_rel) {
+                            &glib_fildir_02::borra_dir($archivo_rel);
+                        } else {
+                            unlink $archivo_rel;
+                        }
+                    }
 
                     $nom_arch = ''; # para no grabar la entrada en el xml
                 };
@@ -526,7 +544,7 @@ sub _guarda_recursos {
             my @videos;
             push @videos, $nom_arch;
             my ($onlyname, $onlyext);
-            if($nom_arch =~ /^(.*?)(\..*?)$/) {
+            if ($nom_arch =~ /^(.*?)(\..*?)$/) {
                 $onlyname = $1;
                 $onlyext = $2;
             }

@@ -7992,3 +7992,40 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
+====================================================================================================
+11.2.81 - 21/10/2014 - JOR
+====================================================================================================
+
+- Portadas list
+    [cambios]
+        - La variable de configuración en las portadas, LIST_EXCLUDE_PORT_AREA, ahora acepta más de un area,
+        separadas por coma. Por ejemplo:
+            <!-- CONFIG LIST_EXCLUDE_PORT_AREA = 1,2 -->
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cron_list.cgi
+
+
+- Artículos relacionados
+    [mejoras]
+        - Se agrega la posibilidad de excluir de la lista los articulos que están publicados en una portada:
+            %%_EXCLUDE_PORT=inicio.xml%%
+            %%_EXCLUDE_PORT_AREA=1,2%%
+        - Se agrega filtro por FID.
+            %%_FIDS=fid_galeria,fid_audio%%
+
+    [files]
+        /cgi-cpn/lib_tax.pm
+
+- Prontus en general
+    [cambios]
+        - Se agrega validación de path_conf a varias cgi.
+    [files]
+        /cgi-cpn/prontus_ping_inuse.cgi
+        /cgi-cpn/prontus_dd_public.cgi
+
+- Artículos
+    [cambios]
+        - Se eliminan todos los archivos asociados a una marca multimedia.
+    [files]
+        /cgi-cpn/Artic.pm

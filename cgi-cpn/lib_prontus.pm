@@ -6391,6 +6391,73 @@ sub cerrar_sesion {
     $sess_obj->end_session();
 };
 
+sub get_nom_for_table {
+    my $str = $_[0];
+
+    $str =~ s/\.(\w+)$//sg;
+    $str =~ s/\.//sg;
+    $str =~ s/ +//sg;
+    $str =~ s/_//sg;
+    $str =~ s/-//sg;
+
+    return $str;
+};
+
+sub set_exclude_port_table {
+    my $path_xml = $_[0];
+    my $exclude_areas = $_[1]; # puede ser mas de una, separadas por coma.
+    my $base = $_[2];
+
+    my $nom_table = &glib_str_02::random_string(8);
+    $nom_table = "EXCLUDE_PORT_$nom_table";
+
+    $exclude_areas =~ s/\s*//sg;
+    $exclude_areas =~ s/\t//sg;
+    $exclude_areas =~ s/\n//sg;
+
+    my @numAreas = split(/,/, $exclude_areas);
+    my %areas;
+    @areas{@numAreas} = undef;
+
+    my @artics_to_exclude;
+
+    if (-f $path_xml) {
+        my $buffer = &glib_fildir_02::read_file($path_xml);
+        &ajusta_crlf($buffer);
+
+        # Crear tabla temporal.
+        my $sql_create = "CREATE TEMPORARY TABLE $nom_table (EXCLUDE_ART_ID VARCHAR(14) NOT NULL);";
+
+        &glib_dbi_02::ejecutar_sql($base, $sql_create);
+
+        while ($buffer =~ /(<rowartic>\s*<dir>(\d+?)<\/dir>\s*<file>(.*?)<\/file>\s*<area>(.*?)<\/area>.*?<\/rowartic>)/isg) {
+            my $rowartic = $1;
+            my $dirfecha = $2;
+            my $art = $3;
+            my $area = $4;
+
+            #print STDERR "art[$art] area[$area]\n";
+
+            if ($exclude_areas) {
+                if (exists $areas{$area}) {
+                    my $sql_insert = "INSERT INTO $nom_table SET EXCLUDE_ART_ID = $art";
+                    &glib_dbi_02::ejecutar_sql($base, $sql_insert);
+                    #print STDERR "exclude[$art] area[$area]\n";
+                };
+            } else {
+                push @artics_to_exclude, $art;
+                my $sql_insert = "INSERT INTO $nom_table SET EXCLUDE_ART_ID = $art";
+                &glib_dbi_02::ejecutar_sql($base, $sql_insert);
+                #print STDERR "exclude[$art]\n";
+            };
+        };
+
+        return $nom_table;
+    };
+
+    return '';
+};
+
 sub call_purge_proc {
     my $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$.txt";
     if (-f $file_pend) {

@@ -43,9 +43,13 @@ main: {
     &glib_cgi_04::new();
 
     # Carga variables de configuracion.
-    $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');    
+    $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
+    # Ajusta path_conf para completar path y/o cambiar \ por /
+    $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
+
     &lib_prontus::load_config(&lib_prontus::ajusta_pathconf($FORM{'_path_conf'}));  # Prontus 6.0
-    
+    $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
+
     if ($prontus_varglb::IP_SERVER ne '') {
         &lib_prontus::test_servers($ENV{'HTTP_REFERER'});
     };
@@ -102,7 +106,7 @@ main: {
 
     # Cargar paraemtros en lib_dd
     &cargar_parametros();
-    
+
     # Detectar portadas.
     my %portadas = &detectar_portadas();
 
@@ -131,7 +135,7 @@ main: {
         use FindBin '$Bin';
         &call_clustering("$DST_SEC/$port", $Bin);
     };
-        
+
     # Vuelve a refrescar la pagina de administracion.
     my $path_conf_rel = $FORM{'_path_conf'}; # 1.3
     $path_conf_rel =~ s/$prontus_varglb::DIR_SERVER//i; # Deja el path de conf. relativo al sitio. # 1.3
@@ -248,7 +252,7 @@ sub exec_postproceso {
     foreach my $pp (@postProcesos) {
         # para que sea un script valido debe ubicarse en el mismo dir. de cgi del prontus o a lo mas un nivel hacia arriba.
         if ( ($pp =~ /^\w/) or ($pp =~ /^\.\.(\/|\\)\w/) ) {
-            
+
             my $cmd = "$rutaScript/$pp $DST_SEC/$port $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
             print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
             system $cmd;

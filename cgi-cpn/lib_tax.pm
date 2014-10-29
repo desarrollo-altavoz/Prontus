@@ -91,112 +91,170 @@ sub get_taxonomia {
 # ---------------------------------------------------------------
 
 sub generar_relacionados {
-  my ($id_secc1, $id_tema1, $id_subtema1, $base, $mv) = @_;
+    my ($id_secc1, $id_tema1, $id_subtema1, $base, $mv) = @_;
 
+    # Procesa Plantillas que hayan en el dir.
+    my ($plantilla, $pagina, $loop, $lista, $k);
+    my ($ruta_dir) = $prontus_varglb::DIR_SERVER . $RELDIR_ARTIC_RELAC;
 
-  # Procesa Plantillas que hayan en el dir.
-  my ($plantilla, $pagina, $loop, $lista, $k);
-  my ($ruta_dir) = $prontus_varglb::DIR_SERVER . $RELDIR_ARTIC_RELAC;
+    $ruta_dir =~ s/\/taxonomia\/pags/\/taxonomia\/pags-$mv/ if ($mv);
 
-  $ruta_dir =~ s/\/taxonomia\/pags/\/taxonomia\/pags-$mv/ if ($mv);
+    my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
+    my ($limit) = $NUM_RELAC_DEFAULT;
 
-  my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
-  my ($limit) = $NUM_RELAC_DEFAULT;
+    @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
 
-  @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
+    foreach $k (@lisdir) {
+        if (-f "$ruta_dir/$k") {
+            # print STDERR "DIR[$ruta_dir/$k]\n";
+            $plantilla = "$ruta_dir/$k";
+            $pagina = &glib_fildir_02::read_file($plantilla);
 
-  foreach $k (@lisdir) {
-    if (-f "$ruta_dir/$k") {
-      # print STDERR "DIR[$ruta_dir/$k]\n";
-      $plantilla = "$ruta_dir/$k";
-      $pagina = &glib_fildir_02::read_file($plantilla);
+            if ($pagina =~ /%%_NUM_RELAC=(\d+)%%/is) {
+                $limit = $1;
+            };
 
-      if ($pagina =~ /%%_NUM_RELAC=(\d+)%%/is) {
-        $limit = $1;
-      };
-      # %%_TAX_LEVEL=seccion-tema-subtema%%
-      my $taxlevel;
-      if ($pagina =~ /%%_TAX_LEVEL=(seccion|seccion-tema|seccion-tema-subtema)%%/i) {
-        $taxlevel = $1;
-      }
-      else {
-        $taxlevel = 'seccion-tema-subtema'; # lo por defecto
-      };
-      $pagina =~ s/%%_TAX_LEVEL=[\w\-]+%%//ig; # borra marca
+            # %%_TAX_LEVEL=seccion-tema-subtema%%
+            my $taxlevel;
+            if ($pagina =~ /%%_TAX_LEVEL=(seccion|seccion-tema|seccion-tema-subtema)%%/i) {
+                $taxlevel = $1;
+            } else {
+                $taxlevel = 'seccion-tema-subtema'; # lo por defecto
+            };
 
+            $pagina =~ s/%%_TAX_LEVEL=[\w\-]+%%//ig; # borra marca
 
-      if ($pagina =~ /%%LOOP%%(.*?)%%\/LOOP%%/is) {
-        $loop = $1;
-      };
-      $limit++;
-      if ($limit > $MAX_LIMIT) {
-        $limit = $MAX_LIMIT;
-      };
+            my ($exclude_port, $exclude_port_area, $fids);
 
+            if ($pagina =~ /%%_EXCLUDE_PORT=(.*?)%%/is) {
+                $exclude_port = $1;
 
-      # Generar lista.
-      my $hay_mas = 0;
-      ($lista, $hay_mas) = &make_lista($id_secc1, $id_tema1, $id_subtema1, $loop, $limit, $base, $mv, $taxlevel); # parche fiap agrega $mv
-      $limit--;
-      $pagina =~ s/%%_NUM_RELAC%%/$limit/isg;
-      # print STDERR "lista[$lista]\n";
-      &parse_and_write($id_secc1, $id_tema1, $id_subtema1, $lista, $pagina, $loop, $k, $hay_mas, $mv);
+                $exclude_port = $prontus_varglb::DIR_SERVER
+                             . $prontus_varglb::DIR_CONTENIDO
+                             . $prontus_varglb::DIR_EDIC
+                             . $prontus_varglb::DIR_UNICAEDIC
+                             . "/xml/$exclude_port";
+
+                if ($exclude_port !~ /\.xml$/) {
+                    $value = '';
+                } elsif (!-f $exclude_port) {
+                    $exclude_port = '';
+                };
+            };
+
+            $pagina =~ s/%%_EXCLUDE_PORT=.*?%%//ig; # borra marca
+
+            if ($pagina =~ /%%_EXCLUDE_PORT_AREA=(.*?)%%/is) {
+                $exclude_port_area = $1;
+                $exclude_port_area =~ s/[^\d,]//isg;
+                $exclude_port_area =~ s/,{2,}/,/g;
+                $exclude_port_area =~ s/^,+//g;
+                $exclude_port_area =~ s/,+$//g;
+
+                #print STDERR "exclude_port_area[$exclude_port_area]\n";
+            };
+
+            $pagina =~ s/%%_EXCLUDE_PORT_AREA=.*?%%//ig; # borra marca
+
+            if ($pagina =~ /%%_FIDS=(.*?)%%/is) {
+                $fids = $1;
+                $fids =~ s/,{2,}/,/g;
+                $fids =~ s/^,+//g;
+                $fids =~ s/,+$//g;
+
+                #print STDERR "fids[$fids]\n";
+            };
+
+            $pagina =~ s/%%_FIDS=.*?%%//ig; # borra marca
+
+            if ($pagina =~ /%%LOOP%%(.*?)%%\/LOOP%%/is) {
+                $loop = $1;
+            };
+
+            $limit++;
+
+            if ($limit > $MAX_LIMIT) {
+                $limit = $MAX_LIMIT;
+            };
+
+            my $nom_tabla_exclude;
+            if ($exclude_port) {
+                $nom_tabla_exclude = &lib_prontus::set_exclude_port_table($exclude_port, $exclude_port_area, $base);
+            };
+
+            # Generar lista.
+            my $hay_mas = 0;
+            ($lista, $hay_mas) = &make_lista($id_secc1, $id_tema1, $id_subtema1, $loop, $limit, $base, $mv, $taxlevel, $fids, $nom_tabla_exclude); # parche fiap agrega $mv
+            $limit--;
+            $pagina =~ s/%%_NUM_RELAC%%/$limit/isg;
+            # print STDERR "lista[$lista]\n";
+            &parse_and_write($id_secc1, $id_tema1, $id_subtema1, $lista, $pagina, $loop, $k, $hay_mas, $mv);
+        };
     };
-  };
-
-
 };
 
 # ---------------------------------------------------------------
 sub make_lista {
-  # Construye listas de articulos relacionados, para ser considerados, deben tener seccion a lo menos.
-  my ($id_secc1, $id_tema1, $id_subtema1, $loop, $limit, $base, $mv, $taxlevel) = @_; # parche fiap agrega $mv
+    # Construye listas de articulos relacionados, para ser considerados, deben tener seccion a lo menos.
+    my ($id_secc1, $id_tema1, $id_subtema1, $loop, $limit, $base, $mv, $taxlevel, $fids, $nom_tabla_exclude) = @_;
+    my ($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha);
+
+    my $dthr_system = &glib_hrfec_02::get_dtime_pack4();
+    $dthr_system =~ /^(\d{8})(\d\d\d\d)/;
+    my $hhmm_system = $2;
+    my $dt_system = $1;
 
 
-  my ($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha);
+    my ($filtros) = &genera_filtros($id_secc1, $id_tema1, $id_subtema1, $dt_system, $hhmm_system, $taxlevel);
 
-  my $dthr_system = &glib_hrfec_02::get_dtime_pack4();
-  $dthr_system =~ /^(\d{8})(\d\d\d\d)/;
-  my $hhmm_system = $2;
-  my $dt_system = $1;
-
-
-  my ($filtros) = &genera_filtros($id_secc1, $id_tema1, $id_subtema1, $dt_system, $hhmm_system, $taxlevel);
-
-  my ($sql) = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, ART_DIRFECHA, ART_EXTENSION, "
+    my ($sql) = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, ART_DIRFECHA, ART_EXTENSION, "
             . "ART_TIPOFICHA from ART %%FILTRO%% order by ART_FECHAP desc, ART_HORAP desc LIMIT $limit";
 
-  if ($filtros ne '') {
-
-    $sql =~ s/%%FILTRO%%/ where $filtros /;
-  }
-  else {
-    return '';
-  };
-  # print STDERR "SQLRELAC[$sql]\n" if ($id_secc1 eq '1');
-
-
-  my ($salida) = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha));
-  my ($nro_filas) = 1;
-
-  my ($filas);
-  my $hay_mas = 0;
-  my $loopcounter = 0;
-  while ($salida->fetch) {
-    if ($nro_filas >= $limit) {
-      $hay_mas = 1;
-      last;
+    if ($nom_tabla_exclude) {
+        $filtros .= " AND ART_ID NOT IN (SELECT EXCLUDE_ART_ID FROM $nom_tabla_exclude)" if ($filtros);
+        $filtros = " WHERE ART_ID NOT IN (SELECT EXCLUDE_ART_ID FROM $nom_tabla_exclude)" if (!$filtros);
     };
-    $loopcounter++;
-    my ($una_fila, $filler, $filler2) = &generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop, $loopcounter);
 
-    $filas .= $una_fila;
-    $nro_filas++;
-  };
-  $salida->finish;
+    if ($fids) {
+        my @arrfids = split /,/, $fids;
+        my $str;
+        foreach my $f (@arrfids) {
+           $str = $str . "ART_TIPOFICHA = \"$f\" or ";
+        }
+        $str =~ s/ or $//;
+        $filtros .= " AND ($str) " if ($filtros);
+        $filtros = " WHERE ($str) " if (!$filtros);
+    };
 
-  return ($filas, $hay_mas);
+    if ($filtros ne '') {
+        $sql =~ s/%%FILTRO%%/ where $filtros /;
+    } else {
+        return '';
+    };
+    # print STDERR "SQLRELAC[$sql]\n" if ($id_secc1 eq '1');
 
+    my ($salida) = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha));
+    my ($nro_filas) = 1;
+    my ($filas);
+    my $hay_mas = 0;
+    my $loopcounter = 0;
+
+    while ($salida->fetch) {
+        if ($nro_filas >= $limit) {
+          $hay_mas = 1;
+          last;
+        };
+
+        $loopcounter++;
+        my ($una_fila, $filler, $filler2) = &generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop, $loopcounter);
+
+        $filas .= $una_fila;
+        $nro_filas++;
+    };
+
+    $salida->finish;
+
+    return ($filas, $hay_mas);
 };
 
 # ---------------------------------------------------------------
