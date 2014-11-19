@@ -85,6 +85,7 @@ sub articUpdateCluster {
     my $s = $camposArtXML{'_SECCION1'};
     my $t = $camposArtXML{'_TEMA1'};
     my $st = $camposArtXML{'_SUBTEMA1'};
+
     if ($s) {
         &transmiteArchs($docRoot, "/$prontusID/site/cache/taxonomia/pags", '^' . $s . '_' . $t . '_' . $st . '_');
     };

@@ -8005,10 +8005,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_cron_list.cgi
 
-
 - Artículos relacionados
     [mejoras]
-        - Se agrega la posibilidad de excluir de la lista los articulos que están publicados en una portada:
+        - Se agrega la posibilidad de excluir de la lista, los articulos que están publicados en una portada:
             %%_EXCLUDE_PORT=inicio.xml%%
             %%_EXCLUDE_PORT_AREA=1,2%%
         - Se agrega filtro por FID.
@@ -8023,9 +8022,86 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_ping_inuse.cgi
         /cgi-cpn/prontus_dd_public.cgi
+    [mejoras]
+        - Se agrega soporte de cache CloudFlare configurable en Prontus.
+            => Se realiza un PURGE cada vez que se guarda un artículo. El mismo comportamiento que ocurre
+        con Varnish.
+            => Puede funcionar en conjunto con Varnish.
+        - Se agrega soporte de respaldos en Dropbox.
+            => Se debe crear una aplicación en Dropbox.
+            => Se configura en la interfaz, habilitando la opción y especificando la API KEY.
+            => Mas información será agregada al manual de desarrollo.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/lib_dropbox.pm
+        /cgi-cpn/prontus_purge_cache.cgi
+        /cgi-cpn/prontus_dropbox_backup.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_dropbox.html
 
 - Artículos
     [cambios]
         - Se eliminan todos los archivos asociados a una marca multimedia.
     [files]
         /cgi-cpn/Artic.pm
+- FIDs
+    [mejoras]
+        - Se agrega segundo parámetro (opcional) a marca %%MACRO()%% para indicar un identificador. De esta manera
+        se podrá reutilizar código en campos repetitivos. Por ejemplo:
+
+        %%MACRO(macro_campo.html, 1)%%
+
+        <input type="text" name="txt_campo##id##" />
+
+        Esto reemplazará la marca ##id## por el valor indicado (1), dando como resultado:
+
+        <input type="text" name="txt_campo1" />
+
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
+
+- Prontus Form
+    [cambios]
+        - Se carga la configuración de Prontus.
+    [mejoras]
+        - Se parsean "Prontus Function" en mensaje de auto-respuesta y asunto para el remitente.
+          %_PF_nombreFuncion()%
+        - Se parsean las siguientes marcas:
+          %_ts% => ts del artículo.
+          %_tsenvio% => ts del envío.
+          %_public_server_name% => nombre del servidor.
+          %_prontus_id% => id del prontus.
+
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Prontus Function
+    [bugfixes]
+        - Se escapea la @ en los parámetros de la PF.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Varnish
+    [bugfixes]
+        - Se soluciona problema con purge. No se estaba respetando el semáforo.
+        - Se agrega purge de friendly url de artículo.
+    [files]
+        /cgi-cpn/prontus_purge_cache.cgi
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/Artic.pm
+
+- Buscador
+    [mejoras]
+        - Introduce delays para no generar CPU interrupt.
+        - Introduce el ano ficticio 7777, que representa los ultimos 2 dias.
+          De esta manera la mayor parte de las veces solo se indexa este ano y no meses de meses.
+          Si no hay cambios en el restio del ano en curso, solo indexa los ultimos 2 dias.
+        - El indexado igual se puede forzar usando el ano 7777 o cualquier otro ano.
+        - Limpia un poco el codigo.
+    [files]
+        /cgi-cpn/prontus_indexer.cgi
+

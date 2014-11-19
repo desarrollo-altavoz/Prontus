@@ -233,6 +233,14 @@ main: {
     # Inicializa las variables de invocacion.
     &get_form_data();
 
+    my $path_conf = "/$PRONTUS_ID/cpan/$PRONTUS_ID.cfg";
+
+    $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
+
+    # Carga variables de configuracion de prontus.
+    &lib_prontus::load_config($path_conf);
+    $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
+
     # Valida las variables Prontus y las del formulario.
     &valida_data();
 
@@ -369,6 +377,25 @@ sub data_management {
                 $data =~ s/[^\w\- ]//g; # Elimina todo caracter extrano en el subject.
                 $subj =~ s/\%$key\%/$data/sg;
             };
+
+            $subj =~ s/\%_ts%/$TS/sig;
+            $body =~ s/\%_ts%/$TS/sig;
+
+            $subj =~ s/\%_tsenvio%/$TSENVIO/sig;
+            $body =~ s/\%_tsenvio%/$TSENVIO/sig;
+
+            $subj =~ s/\%_public_server_name%/$prontus_varglb::PUBLIC_SERVER_NAME/sig;
+            $body =~ s/\%_public_server_name%/$prontus_varglb::PUBLIC_SERVER_NAME/sig;
+
+            $subj =~ s/\%_prontus_id%/$PRONTUS_ID/sig;
+            $body =~ s/\%_prontus_id%/$PRONTUS_ID/sig;
+
+            $body =~ s/%_PF_(\w+\(.*?\))%/%%_PF_\1%%/isg;
+            $subj =~ s/%_PF_(\w+\(.*?\))%/%%_PF_\1%%/isg;
+
+            $body = &lib_prontus::parser_custom_function($body);
+            $subj = &lib_prontus::parser_custom_function($subj);
+
             $body =~ s/%\w+%//sg; # Elimina tags no parseados.
             $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
             $result .= ' 5 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');

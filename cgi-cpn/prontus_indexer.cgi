@@ -191,6 +191,12 @@
 #                        - Completa cambios de mod 1.25.
 #                        - Elimina compatibilidad con Prontus 9.
 #                        - Si se detecta FORZAR, solo se indexa el ano indicado. No se buscan otros anos.
+# 1.27   18/08/2014  ALD - Introduce delays para no generar CPU interrupt.
+#                        - Introduce el ano ficticio 7777, que representa los ultimos 2 dias.
+#                          De esta manera la mayor parte de las veces solo se indexa este ano y no meses de meses.
+#                          Si no hay cambios en el restio del ano en curso, solo indexa los ultimos 2 dias.
+#                        - El indexado igual se puede forzar usando el ano 7777 o cualquier otro ano.
+#                        - Limpia un poco el codigo.
 
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -288,10 +294,10 @@ if ($PRONTUS_DIR =~ /^(.+)(\/[^\/]+)$/) {
   $PRONTUS_DIR[0] = $2; # (comentar para que no indexe de nuevo las noticias)
 }else{
   if($INVOCACION eq 'web') {
-    print "Directorio Prontus no valido.\n";  
+    print "Directorio Prontus no valido.\n";
   } else {
     print STDERR "Directorio Prontus no valido [$PRONTUS_DIR].\n";
-  }  
+  }
   exit;
 };
 my $FECHAACTUAL = &lib_search::fecha_iso(); # Fecha de hoy en formato ISO.
@@ -743,57 +749,83 @@ sub escribe_palabras {
 # ------------------------------------------------------------------------#
 # Recorre el directorio de articulos buscando archivos que indexar.
 sub busca_articulos {
-  my($eldir) = $_[0];
-  my(@days,$day,$fullpath,@files,$file,$ts,$extension,@webpages,$webpage);
+    my($eldir) = $_[0];
+    my(@days,$day,$fullpath,@files,$file,$ts,$extension,@webpages,$webpage);
+    my($ano2index,$currentyear,$antesdeayer,$cc); # 1.27
 
-  open FILES, ">$SEARCH_DIR$PRONTUS/$ANO/$FILES_FILENAME.tmp";   # Archivo de articulos.
-  open FILESINDEX, ">$SEARCH_DIR$PRONTUS/$ANO/$FILESINDEX_FILENAME.tmp"; # Archivo indice de articulos.
-  open FILESINDEXF, ">$SEARCH_DIR$PRONTUS/$ANO/$FILESINDEXF_FILENAME.tmp"; # 1.19 Archivo indice de articulos para busqueda por frases.
+    open FILES, ">$SEARCH_DIR$PRONTUS/$ANO/$FILES_FILENAME.tmp";   # Archivo de articulos.
+    open FILESINDEX, ">$SEARCH_DIR$PRONTUS/$ANO/$FILESINDEX_FILENAME.tmp"; # Archivo indice de articulos.
+    open FILESINDEXF, ">$SEARCH_DIR$PRONTUS/$ANO/$FILESINDEXF_FILENAME.tmp"; # 1.19 Archivo indice de articulos para busqueda por frases.
 
-  # Ordena al reves para busqueda cronologica (los mas antiguos quedan al final del archivo de articulos).
-  @days = sort {$b cmp $a} (&lib_search::lee_dir($eldir));
-  my $prontusid = $PRONTUS;
-  $prontusid=~ s/^\///;
-  foreach $day (@days) {
-    next if ( $day !~ /^\d{8}$/); # 20050612
-    next if ( $day !~ /^$ANO/);   # Solo considera dias del ano en curso.
-    # print "day = $day ano = $ANO\n"; # debug
-    if ($CFG{'PRONTUS_VER'} > 9) {
-      $fullpath = "$eldir/$day/xml";
+    # Ordena al reves para busqueda cronologica (los mas antiguos quedan al final del archivo de articulos).
+    @days = sort {$b cmp $a} (&lib_search::lee_dir($eldir));
+
+    # 1.27 Obtiene el ano en curso.
+    $currentyear = (localtime(time))[5] + 1900;
+    # 1.27 Obtiene el dia de antes de ayer.
+    $antesdeayer = ((localtime(time))[5] + 1900)
+                 . sprintf('%02d',((localtime(time - 172800))[4]+1))
+                 . sprintf('%02d',(localtime(time - 172800))[3]);
+
+    # 1.27 Si $ANO es 7777 significa que se deben indexar solo los ultimos 2 dias del ano en curso.
+    if ($ANO == 7777) {
+        $ano2index = $currentyear;
     }else{
-      $fullpath = "$eldir/$day/pags";
+        $ano2index = $ANO;
     };
-    if (-d "$fullpath") {
-      # print "fullpath = $fullpath\n"; # debug
-      @files = &lib_search::lee_dir($fullpath);
-      foreach $file (@files) {
-        if ((-f "$fullpath/$file") && ($file =~ /^(\d{14})\.(\w+)$/)) { # Archivos con TS.
-          $ts = $1;
-          $extension = $2;
-          if ($CFG{'PRONTUS_VER'} > 9) {
-            # Jamas se indexaran xml por error
-            $extension = '';
-            # Determina extension del archivo visible por web.
-            @webpages = &lib_search::lee_dir("$eldir/$day/pags");
-            foreach $webpage (@webpages) {
-              if ($webpage =~ /^$ts\.(\w+)$/) {
-                $extension = $1;
-                last;
-              };
-            };
-          };
-          # Indexa el archivo. Solo indexa si el archivo existe
-          if($extension) {
-            &indexa("$fullpath/$file",$ts,$extension,"$eldir/$day", $prontusid); # 1.9
-          };
+
+    my $prontusid = $PRONTUS;
+    $prontusid=~ s/^\///;
+
+    foreach $day (@days) {
+        next if ( $day !~ /^\d{8}$/);       # 20050612
+        next if ( $day !~ /^$ano2index/);   # 1.27 Solo considera dias del ano en curso.
+
+        if ($ANO == 7777) {
+            # 1.27 Si $ANO es 7777 se salta dias anteriores a antes de ayer.
+            next if ($day <= $antesdeayer);
+        }else{
+            # 1.27 Si $ANO no es 7777 se salta dias posteriores a antes de ayer.
+            next if ($day > $antesdeayer);
         };
-      };
+
+        # print "day = $day ano = $ANO\n"; # debug
+        $fullpath = "$eldir/$day/xml"; # 1.27 Elimina compatibilidad < 10.
+        if (-d "$fullpath") {
+            # print "fullpath = $fullpath\n"; # debug
+            @files = &lib_search::lee_dir($fullpath);
+            foreach $file (@files) {
+                if ((-f "$fullpath/$file") && ($file =~ /^(\d{14})\.(\w+)$/)) { # Archivos con TS.
+                    $ts = $1;
+                    # Jamas se indexaran xml por error
+                    $extension = '';
+                    # Determina extension del archivo visible por web.
+                    @webpages = &lib_search::lee_dir("$eldir/$day/pags");
+                    foreach $webpage (@webpages) {
+                        if ($webpage =~ /^$ts\.(\w+)$/) {
+                            $extension = $1;
+                            last;
+                        };
+                    };
+                    # Indexa el archivo. Solo indexa si el archivo existe
+                    if ($extension) {
+                        &indexa("$fullpath/$file",$ts,$extension,"$eldir/$day", $prontusid); # 1.9
+                    };
+                };
+            };
+        };
+        # 1.27 Cada 10 dias descansa 1 segundo.
+        $cc++;
+        if ($cc >= 10) {
+            sleep(1);
+            $cc = 0;
+        };
     };
-  };
-  close FILES;
-  close FILESINDEX;
-  close FILESINDEXF; # 1.19
+    close FILES;
+    close FILESINDEX;
+    close FILESINDEXF; # 1.19
 }; # busca_articulos
+
 
 # ------------------------------------------------------------------------#
 # Recorre el directorio de archivos en bruto buscando archivos que indexar.
@@ -1319,33 +1351,61 @@ sub get_contents {
 # contenidos en el.
 # Si se esta forzando un reindexado, no hace nada mas que simular que el
 # indice de ese ano expiro.
+# 1.27 En el ano actual se omiten los ultimos dos dias.
+# 1.27 Se inserta un delay de 1 segundo cada 10 directorios.
 sub busca_anos {
-  my($dir) = $_[0];
-  my(@days);
-  my($ano,$day,$maxtime);
-  @days = &lib_search::lee_dir($dir);
-  foreach $day (@days) {
-    next if ($day !~ /^\d{8}$/); # 20050612
-    if ( $day =~ /^(\d{4})/) {
-      $ano = $1;
-      if ($FORZAR ne $PRONTUS) { # Variables globales, sorry.
-        $maxtime = &maxtime("$dir/$day/pags");
-      }else{
-        # 1.26 $maxtime = 0; # Con esto fuerza el reindexado de estos anos.
-        $maxtime = 1; # Con esto fuerza el reindexado de estos anos.
-      };
-      if ($ANOS{$ano} < $maxtime) {
-        # my $mtime = (stat("$SEARCH_DIR$PRONTUS/$ano/$WORDSINDEX_FILENAME"))[9]; # debug
-        # print "day=$day mtime=$mtime maxtime=$maxtime\n"; # debug
-        $ANOS{$ano} = $maxtime;
-      };
+    my($dir) = $_[0];
+    my(@days);
+    my($ano,$day,$maxtime,$antesdeayer,$cc); # 1.27
+
+    # 1.27 Obtiene el dia de antes de ayer.
+    $antesdeayer = ((localtime(time))[5] + 1900)
+                 . sprintf('%02d',((localtime(time - 172800))[4]+1))
+                 . sprintf('%02d',(localtime(time - 172800))[3]);
+
+    @days = &lib_search::lee_dir($dir);
+
+    $ANOS{'7777'} = 0; # 1.27 Fuerza la existencia del ano ficticio 7777 e inicializa su antiguedad en 0 (super antiguo).
+
+    foreach $day (sort @days) {
+        next if ($day !~ /^\d{8}$/); # 20050612
+        if ($day <= $antesdeayer) { # 1.27 En la busqueda de anos no considera los dos ultimos dias.
+            if ( $day =~ /^(\d{4})/) {
+                $ano = $1;
+                next if ($ano lt '2014'); # ln 1.0
+                $cc++; # 1.27 Cada 50 directorios descansa 1 segundo.
+                if ($cc >= 50) {
+                    sleep(1); # 1.27
+                    $cc = 0;
+                };
+                if ($FORZAR ne $PRONTUS) { # Variables globales, sorry.
+                    $maxtime = &maxtime("$dir/$day/pags");
+                }else{
+                    # 1.26 $maxtime = 0; # Con esto fuerza el reindexado de estos anos.
+                    $maxtime = 1; # Con esto fuerza el reindexado de todos los anos de este Prontus.
+                };
+                if ($ANOS{$ano} < $maxtime) {
+                    # my $mtime = (stat("$SEARCH_DIR$PRONTUS/$ano/$WORDSINDEX_FILENAME"))[9]; # debug
+                    # print "day=$day maxtime=$maxtime\n"; # debug
+                    $ANOS{$ano} = $maxtime;
+                };
+            };
+        }else{
+            # Fechas de modificacion de los ultimos 2 dias.
+            $maxtime = &maxtime("$dir/$day/pags");
+            if ($ANOS{'7777'} < $maxtime) {
+                # my $mtime = (stat("$SEARCH_DIR$PRONTUS/$ano/$WORDSINDEX_FILENAME"))[9]; # debug
+                # print "day=$day maxtime=$maxtime\n"; # debug
+                $ANOS{'7777'} = $maxtime;
+            };
+        };
     };
-  };
 }; # busca_anos
 
 # ------------------------------------------------------------------------#
 # Detecta el archivo mas reciente de la coleccion de directorios dado
 # y retorna su antiguedad en segundos.
+# 1.27 Cambia el nombre de esta funcion a maxtime.
 sub maxtime {
   my($dir) = $_[0];
   my(@files) = &lib_search::lee_dir($dir);

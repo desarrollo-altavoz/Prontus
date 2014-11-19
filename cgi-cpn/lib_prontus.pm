@@ -1222,7 +1222,9 @@ sub load_config {
           . &glib_fildir_02::read_file($nomcfg . '-list.cfg') . "\n"
           . &glib_fildir_02::read_file($nomcfg . '-usr.cfg') . "\n"
           . &glib_fildir_02::read_file($nomcfg . '-var.cfg') . "\n"
-          . &glib_fildir_02::read_file($nomcfg . '-clustering.cfg') . "\n";
+          . &glib_fildir_02::read_file($nomcfg . '-clustering.cfg') . "\n"
+          . &glib_fildir_02::read_file($nomcfg . '-dropbox.cfg') . "\n" # dropbox.
+          . &glib_fildir_02::read_file($nomcfg . '-cloudflare.cfg') . "\n"; # cloudflare.
 
   $buffer =~ s/\r/\n/sg;
   # print STDERR "buffer[$buffer]";
@@ -1268,11 +1270,70 @@ sub load_config {
     $friendly_urls_version = $2;
   };
 
-  my $comentarios = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*COMENTARIOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $comentarios = $2;
+  # Dropbox.
+  my $dropbox = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*DROPBOX\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $dropbox = $2;
   };
-  $prontus_varglb::COMENTARIOS = $comentarios;
+  $prontus_varglb::DROPBOX = $dropbox;
+
+  my $dropbox_access_token = ''; # valor por defecto.
+  if ($buffer =~ m/\s*DROPBOX_ACCESS_TOKEN\s*=\s*("|')(.*?)("|')/) {
+    $dropbox_access_token = $2;
+  };
+  $prontus_varglb::DROPBOX_ACCESS_TOKEN = $dropbox_access_token;
+
+  my $dropbox_filext_exclude = ''; # valor por defecto.
+  %prontus_varglb::DROPBOX_FILEXT_EXCLUDE_LIST = ();
+
+  if ($buffer =~ m/\s*DROPBOX_FILEXT_EXCLUDE\s*=\s*("|')(.*?)("|')/) {
+    $dropbox_filext_exclude = $2;
+    my @filext_exclude_list = split(/,/, $dropbox_filext_exclude);
+    foreach my $ext (@filext_exclude_list) {
+      $ext =~ s/\n//sg;
+      $ext =~ s/\s//sg;
+      $ext =~ s/\t//sg;
+      $prontus_varglb::DROPBOX_FILEXT_EXCLUDE_LIST{$ext} = 1;
+    };
+  };
+  $prontus_varglb::DROPBOX_FILEXT_EXCLUDE = $dropbox_filext_exclude;
+
+  # CloudFlare.
+  my $cloudflare = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*CLOUDFLARE\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $cloudflare = $2;
+  };
+  $prontus_varglb::CLOUDFLARE = $cloudflare;
+
+  my $cloudflare_api_key = ''; # valor por defecto.
+  if ($buffer =~ m/\s*CLOUDFLARE_API_KEY\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $cloudflare_api_key = $2;
+  };
+  $prontus_varglb::CLOUDFLARE_API_KEY = $cloudflare_api_key;
+
+  my $cloudflare_email = ''; # valor por defecto.
+  if ($buffer =~ m/\s*CLOUDFLARE_EMAIL\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $cloudflare_email = $2;
+  };
+  $prontus_varglb::CLOUDFLARE_EMAIL = $cloudflare_email;
+
+  my $cloudflare_zone = ''; # valor por defecto.
+  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $cloudflare_zone = $2;
+  };
+  $prontus_varglb::CLOUDFLARE_ZONE = $cloudflare_zone;
+
+  my $cloudflare_api_url = ''; # valor por defecto.
+  if ($buffer =~ m/\s*CLOUDFLARE_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $cloudflare_api_url = $2;
+  };
+  $prontus_varglb::CLOUDFLARE_API_URL = $cloudflare_api_url;
+
+  my $cloudflare_global_purge = ''; # valor por defecto.
+  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $cloudflare_global_purge = $2;
+  };
+  $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE = $cloudflare_global_purge;
 
 
   # extensiones permitidas para uploads
@@ -2015,6 +2076,7 @@ sub load_config {
   my $varnish_server_name;
   while ($buffer =~ m/\s*VARNISH\_SERVER\_NAME\s*=\s*("|')(.*?)\1/g) {
      $varnish_server_name = $2;
+     next if (!$varnish_server_name);
      $prontus_varglb::VARNISH_SERVER_NAME{$varnish_server_name} = 1;
   };
 
@@ -5451,12 +5513,16 @@ sub parser_custom_function {
         $params = '"' . $params . '"';
         # print STDERR "\nPARAMS: $params\n\n";
         $params =~ s/\$/\\\$/sg; # escapea $.
+        $params =~ s/\@/\\\@/sg; # escapea @.
         $newfunction =~ s/^(\w+)\((.*?)\)$/\1($params)/s;
       };
 
       my $result;
       my $sentencia = '$result = &lib_custom::' . $newfunction;
       $sentencia .= ';' if ($sentencia !~ /;$/);
+
+      print STDERR "sentencia[$sentencia]\n";
+
       eval($sentencia);
       if ($@) {
         print STDERR 'Error ejecutando &lib_custom::' . $newfunction . " : $@\n";
@@ -6307,11 +6373,45 @@ sub add_generator_tag {
     return $buffer;
 };
 
+sub dropbox_backup {
+    my $recurso = $_[0];
+    my $dir_dropbox = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/dropbox";
+    my $pid = $$;
+    my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
+    my $semaf_dropbox = "$dir_semaf/dropbox_backup.lck";
+    my $file = "$dir_dropbox/$^T_$pid.txt";
+
+    &glib_fildir_02::check_dir($dir_dropbox) if (! -d $dir_dropbox);
+
+    open(FILE, ">>$file");
+    print FILE $recurso . "\n";
+    close FILE;
+
+    if (-f $semaf_dropbox) {
+        my $mtime = (stat($semaf_dropbox))[9];
+        my $now = time;
+        my $diff = $now - $mtime;
+        if ($diff > 1800) { # 30 minutos.
+          # muy antiguo, eliminar.
+          unlink $semaf_dropbox;
+        };
+    };
+
+    if (!-f $semaf_dropbox && -f $file) {
+        my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_dropbox_backup.cgi $prontus_varglb::PRONTUS_ID $file >/dev/null 2>&1 &";
+        &glib_fildir_02::write_file($semaf_dropbox, "0");
+        print STDERR "dropbox[$cmd]\n";
+        system $cmd;
+    };
+
+};
+
 # ---------------------------------------------------------------
 sub purge_cache {
     my ($path_file) = shift;
     my $servers = (keys %prontus_varglb::VARNISH_SERVER_NAME);
-    return if (!$servers);
+
+    return if (!$servers && $prontus_varglb::CLOUDFLARE ne 'SI');
 
     my $relpath = &remove_front_string($path_file, $prontus_varglb::DIR_SERVER);
 
@@ -6460,12 +6560,27 @@ sub set_exclude_port_table {
 
 sub call_purge_proc {
     my $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$.txt";
-    if (-f $file_pend) {
+    my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
+    my $semaf_purge_cache = "$dir_semaf/purge_cache.lck";
+
+    if (-f $semaf_purge_cache) {
+        my $mtime = (stat($semaf_purge_cache))[9];
+        my $now = time;
+        my $diff = $now - $mtime;
+        if ($diff > 1800) { # 30 minutos.
+          # muy antiguo, eliminar.
+          unlink $semaf_purge_cache;
+        };
+    };
+
+    if (!-f $semaf_purge_cache && -f $file_pend) {
         #~ print STDERR "[purge][$$] con archivo\n";
         my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID $file_pend >/dev/null 2>&1 &";
-        #~ print STDERR "purge[$cmd]\n";
+        &glib_fildir_02::write_file($semaf_purge_cache, "0");
+        print STDERR "purge[$cmd]\n";
         system $cmd;
-    }
+    };
+
 };
 
 

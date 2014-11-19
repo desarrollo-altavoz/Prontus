@@ -1873,22 +1873,30 @@ sub add_macros_fid {
 
   # Recorre tpl y parsea macros.
   while ($pag_aux =~ /%%MACRO\((.+?)\)%%/ig) {
+    my $arg_str = $1;
+    my @args_macro = split(",", $arg_str);
 
-    my $nomfile = $1;
+    my $nomfile = $args_macro[0];
+    my $id = $args_macro[1];
+
+    $id =~ s/ //sg;
+    $id = 1 if (!$id);
+
     my $dir_macros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/fid/macros";
     if ($nomfile =~ /^_/) {
         $dir_macros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/fid/macros_reservadas";
     };
 
     my $buffer_macro = &glib_fildir_02::read_file("$dir_macros/$nomfile");
-    if (! -f "$dir_macros/$nomfile") {
-        my $relpath_macro = &lib_prontus::remove_front_string("$dir_macros/$nomfile", $prontus_varglb::DIR_SERVER);
-        $buffer_macro = "Macro '$relpath_macro' no existe";
-        $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
+    if (! -f "$dir_macros/$nomfile") {        my $relpath_macro = &lib_prontus::remove_front_string("$dir_macros/$nomfile", $prontus_varglb::DIR_SERVER);
+        $buffer_macro = "Macro '$relpath_macro' no existe!";
+        $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
         next;
     };
 
     $buffer_macro = &lib_prontus::ajusta_crlf($buffer_macro);
+
+    $buffer_macro =~ s/##id##/$id/sg;
 
     my $body;
     if ($buffer_macro =~ /<body.*?>(.*)<\/body *>/is) {
@@ -1899,7 +1907,7 @@ sub add_macros_fid {
 
     if ($profundidad > 10) {
       $buffer_macro = '<b>[Error: Se alcanzo el nivel maximo de anidamiento de macros (max=10)]</b>';
-      $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
+      $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
       $profundidad = 0;
       next;
     }
@@ -1910,7 +1918,7 @@ sub add_macros_fid {
     };
 
     $profundidad = 0;
-    $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
+    $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
 
   };
 

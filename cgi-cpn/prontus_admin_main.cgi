@@ -970,6 +970,34 @@ sub parseaVars {
         $pagina =~ s/<!--comentarios-->(.*?)<!--\/comentarios-->//sig;
     };
 
+    if ($prontus_varglb::DROPBOX eq 'SI') {
+        $pagina =~ s/%%DROPBOX_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%DROPBOX_NO%%//ig;
+    } else {
+        $pagina =~ s/%%DROPBOX_SI%%//ig;
+        $pagina =~ s/%%DROPBOX_NO%%/ checked="checked"/ig;
+        $pagina =~ s/<!--dropbox-->(.*?)<!--\/dropbox-->//sig;
+    };
+
+    $pagina =~ s/%%DROPBOX_ACCESS_TOKEN%%/$prontus_varglb::DROPBOX_ACCESS_TOKEN/ig;
+    $pagina =~ s/%%DROPBOX_FILEXT_EXCLUDE%%/$prontus_varglb::DROPBOX_FILEXT_EXCLUDE/ig;
+
+    # CloudFlare.
+    if ($prontus_varglb::CLOUDFLARE eq 'SI') {
+        $pagina =~ s/%%CLOUDFLARE_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CLOUDFLARE_NO%%//ig;
+    } else {
+        $pagina =~ s/%%CLOUDFLARE_SI%%//ig;
+        $pagina =~ s/%%CLOUDFLARE_NO%%/ checked="checked"/ig;
+        $pagina =~ s/<!--cloudflare-->(.*?)<!--\/cloudflare-->//sig;
+    };
+
+    $pagina =~ s/%%CLOUDFLARE_API_KEY%%/$prontus_varglb::CLOUDFLARE_API_KEY/ig;
+    $pagina =~ s/%%CLOUDFLARE_EMAIL%%/$prontus_varglb::CLOUDFLARE_EMAIL/ig;
+    $pagina =~ s/%%CLOUDFLARE_ZONE%%/$prontus_varglb::CLOUDFLARE_ZONE/ig;
+    $pagina =~ s/%%CLOUDFLARE_API_URL%%/$prontus_varglb::CLOUDFLARE_API_URL/ig;
+    $pagina =~ s/%%CLOUDFLARE_GLOBAL_PURGE%%/$prontus_varglb::CLOUDFLARE_GLOBAL_PURGE/ig;
+
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URLS_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URLS_NO%%//ig;

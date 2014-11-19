@@ -96,6 +96,8 @@ main: {
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3);1;U';
     $hash_defaultvars{'var'}{'COMENTARIOS'} = 'COMENTARIOS;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'DROPBOX'} = 'DROPBOX;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'CLOUDFLARE'} = 'CLOUDFLARE;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'ARTIC_ACTUALIZA_PORTS'} = 'ARTIC_ACTUALIZA_PORTS;(SI|NO);NO;U';
     #$hash_defaultvars{'var'}{'VERIFICAR_INSTALACION'} = 'VERIFICAR_INSTALACION;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'VTXT_PASTE_NEWLINES_AS_P'} = 'VTXT_PASTE_NEWLINES_AS_P;(SI|NO);NO;U';
@@ -174,6 +176,17 @@ main: {
     $hash_defaultvars{'coment'}{'PHP_SESSION_NAME'} = 'PHP_SESSION_NAME;(\w+);PHPSESSID;U';
     $hash_defaultvars{'coment'}{'MODERACION'} = 'MODERACION;(SI|NO);SI;U';
 
+    # -cloudflare.cfg
+    $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_API_KEY'} = 'CLOUDFLARE_API_KEY;(\w+);;U';
+    $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_EMAIL'} = 'CLOUDFLARE_EMAIL;(\w+);;U';
+    $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_ZONE'} = 'CLOUDFLARE_ZONE;(\w+);;U';
+    $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_API_URL'} = 'CLOUDFLARE_API_URL;(\w+);;U';
+    $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_GLOBAL_PURGE'} = 'CLOUDFLARE_GLOBAL_PURGE;(\w+);;U';
+
+    # -dropbox.cfg
+    $hash_defaultvars{'dropbox'}{'DROPBOX_ACCESS_TOKEN'} = 'DROPBOX_ACCESS_TOKEN;(\w+);;U';
+    $hash_defaultvars{'dropbox'}{'DROPBOX_FILEXT_EXCLUDE'} = 'DROPBOX_FILEXT_EXCLUDE;(\w+);;U';
+
     # buscador_prontus.cfg
     $hash_defaultvars{'buscador'}{'PRONTUS_DIR'} = 'PRONTUS_DIR;([\w\|]+);;U';
     $hash_defaultvars{'buscador'}{'RAW_DIR'} = 'RAW_DIR;([\w\|]+);;U';
@@ -214,7 +227,7 @@ main: {
 
     # Verificar tipo de CFG.
     $FORM{'_cfg'} = &glib_cgi_04::param('_cfg');
-    if ($FORM{'_cfg'} !~ /^(id|art|port|var|bd|usr|tax|coment|buscador|tag|list)$/) {
+    if ($FORM{'_cfg'} !~ /^(id|art|port|var|bd|usr|tax|coment|buscador|tag|list|dropbox|cloudflare)$/) {
         &glib_html_02::print_json_result(0, 'Tipo de CFG inválido.', 'exit=1,ctype=1');
     };
 
@@ -284,6 +297,7 @@ main: {
                         &validarTax($var_valida, $input_value) if ($FORM{'_cfg'} eq 'tax');
                         &validarVar($var_valida, $input_value) if ($FORM{'_cfg'} eq 'var');
                         &validarComent($var_valida, $input_value) if ($FORM{'_cfg'} eq 'coment');
+                        &validarCloudFlare($var_valida, $input_value) if ($FORM{'_cfg'} eq 'cloudflare');
 
                         if ($FORM{'_cfg'} eq 'var' && $var_valida eq 'UPLOADS_PERMITIDOS') {
                             # Quitar espacios.
@@ -383,6 +397,8 @@ main: {
                     $buffer = $buffer . "$var_valida = '$utf8_value'\n";
                 };
             };
+
+            &validarCloudFlare($var_valida, '') if ($FORM{'_cfg'} eq 'cloudflare');
         };
     };
 
@@ -463,6 +479,34 @@ sub guardarCFG {
 
     # Escribir archivo.
     &glib_fildir_02::write_file($prontus_varglb::DIR_SERVER . $nomcfg, $last_buffer);
+
+};
+
+sub validarCloudFlare {
+    my ($var) = shift;
+    my ($item) = shift;
+
+    print STDERR "var[$var]\n";
+
+    if ($var eq 'CLOUDFLARE_API_KEY' && $item eq '') {
+        &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
+    };
+
+    if ($var eq 'CLOUDFLARE_EMAIL' && $item eq '') {
+        &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
+    };
+
+    if ($var eq 'CLOUDFLARE_ZONE' && $item eq '') {
+        &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
+    };
+
+    if ($var eq 'CLOUDFLARE_API_URL' && $item eq '') {
+        &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
+    };
+
+    if ($var eq 'CLOUDFLARE_EMAIL' && $item !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {
+        &glib_html_02::print_json_result(0, "La casilla de correo $var es inválida.", 'exit=1,ctype=1');
+    };
 
 };
 

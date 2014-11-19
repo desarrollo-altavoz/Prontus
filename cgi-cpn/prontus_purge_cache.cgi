@@ -13,9 +13,6 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-
-    $pathLibsProntus = $pathLibsProntus . "/coment";
-    unshift(@INC, $pathLibsProntus);
 };
 
 # Captura STDERR
@@ -49,20 +46,23 @@ main: {
 
     if (-f "$dir_semaf/purge_cache.lck") {
         my $pid = &glib_fildir_02::read_file("$dir_semaf/purge_cache.lck");
-        print STDERR "[$$] Ya existe un proceso corriendo pid[$pid]\n";
-        my $mtime = (stat("$dir_semaf/purge_cache.lck"))[9];
-        my $now = time;
-        my $diff = $now - $mtime;
-        if ($diff > 1800) { # 30 minutos.
-            print STDERR "[$$] Semaforo muy antiguo, eliminando...";
-            unlink "$dir_semaf/purge_cache.lck";
-        } else {
-            my $ret = `ps p $pid | grep prontus_purge_cache | grep -v grep`;
-            if ($ret) {
-                print STDERR "[$$] pid[$pid] still runnin, leaving...\n";
-                exit;
+
+        if ($pid) {
+            print STDERR "[$$] Ya existe un proceso corriendo pid[$pid]\n";
+            my $mtime = (stat("$dir_semaf/purge_cache.lck"))[9];
+            my $now = time;
+            my $diff = $now - $mtime;
+            if ($diff > 1800) { # 30 minutos.
+                print STDERR "[$$] Semaforo muy antiguo, eliminando...";
+                unlink "$dir_semaf/purge_cache.lck";
             } else {
-                print STDERR "[$$] $pid is dead\n";
+                my $ret = `ps p $pid | grep prontus_purge_cache | grep -v grep`;
+                if ($ret) {
+                    print STDERR "[$$] pid[$pid] still runnin, leaving...\n";
+                    exit;
+                } else {
+                    print STDERR "[$$] $pid is dead\n";
+                };
             };
         };
     };
@@ -98,6 +98,8 @@ main: {
         if ($#files <= 0) {
             print STDERR "[$$] Buscando si hay mas archivos...\n";
             @files = glob("$dir_purgepend/*.txt");
+
+            sleep 5;
         };
     };
 
@@ -120,6 +122,11 @@ sub valida_params {
 
 sub purge {
     my ($path_file) = shift;
+    my $purge_cloudflare = 0;
+
+    if ($prontus_varglb::CLOUDFLARE eq 'SI' && $prontus_varglb::CLOUDFLARE_API_URL ne '' && $prontus_varglb::CLOUDFLARE_API_KEY ne '' && $prontus_varglb::CLOUDFLARE_EMAIL ne '' && $prontus_varglb::CLOUDFLARE_ZONE ne '') {
+        $purge_cloudflare = 1;
+    };
 
     open (PURGEFILE, "<$path_file");
     foreach my $filetopurge (<PURGEFILE>) {
@@ -134,9 +141,27 @@ sub purge {
             next if (!$server);
             my $url_purge = "http://$server$relpath";
             my ($resp, $err) = &get_url($url_purge);
-            print STDERR "[$$] server[$server], url_purge[$url_purge], status[$err]\n";
+            print STDERR "[$$] varnish: server[$server], url_purge[$url_purge], status[$err]\n";
         };
+
+        if ($purge_cloudflare) {
+            my %datos_post;
+            my $url_purge = "http://$prontus_varglb::PUBLIC_SERVER_NAME$relpath";
+
+            $datos_post{'a'} = 'zone_file_purge';
+            $datos_post{'tkn'} = $prontus_varglb::CLOUDFLARE_API_KEY;
+            $datos_post{'email'} = $prontus_varglb::CLOUDFLARE_EMAIL;
+            $datos_post{'z'} = $prontus_varglb::CLOUDFLARE_ZONE;
+            $datos_post{'url'} = $url_purge;
+
+            my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
+
+            print STDERR "[$$] cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], url_purge[$url_purge], status[$err] resp[$resp]\n";
+        };
+
     };
+
+
     close PURGEFILE;
 
     # Se intenta realizar el Global Purge, si aplica
@@ -149,6 +174,29 @@ sub purge {
                 my $url_purge = "http://$server$path";
                 my ($resp, $err) = &get_url($url_purge);
                 print STDERR "[$$] global purge -> server[$server], url_purge[$url_purge], status[$err]\n";
+            };
+        };
+    };
+
+    if ($purge_cloudflare) {
+        if($prontus_varglb::CLOUDFLARE_GLOBAL_PURGE) {
+            my @arr = split( /[\n\r]/, $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE);
+            foreach my $path (@arr) {
+                next unless($path);
+                next unless($path =~ /^\//); # debe empezar con /
+                foreach my $server (keys %prontus_varglb::CLOUDFLARE_GLOBAL_PURGE) {
+                    my %datos_post;
+                    my $url_purge = "http://$prontus_varglb::PUBLIC_SERVER_NAME$path";
+
+                    $datos_post{'a'} = 'zone_file_purge';
+                    $datos_post{'tkn'} = $prontus_varglb::CLOUDFLARE_API_KEY;
+                    $datos_post{'email'} = $prontus_varglb::CLOUDFLARE_EMAIL;
+                    $datos_post{'z'} = $prontus_varglb::CLOUDFLARE_ZONE;
+                    $datos_post{'url'} = $url_purge;
+
+                    my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
+                    print STDERR "[$$] global purge cloudflare -> server[$server], url_purge[$url_purge], status[$err]\n";
+                };
             };
         };
     };
@@ -175,3 +223,19 @@ sub get_url {
     };
 
 }; # getHTML
+
+sub post_url {
+    my $url = $_[0];
+    my $data_ref = $_[1];
+    my %data = %{$data_ref};
+
+    my $ua       = LWP::UserAgent->new();
+    my $response = $ua->post( $url, \%data );
+
+    if ($response->is_success) {
+        return ($response->content, $response->status_line);
+    } else {
+        return ('', $response->status_line);
+    };
+
+};

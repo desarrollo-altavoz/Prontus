@@ -222,6 +222,9 @@ sub main {
     # Clustering
     &call_clustering($fullpath_artic, $rutaScript);
 
+    # Dropbox.
+    &call_dropbox_backup($lib_artic::ARTIC_OBJ->{ts});
+
     # Verifica que exista filtro para FID
     my $dir_filtro_fid = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP
                        . $prontus_varglb::DIR_PTEMA . '/' . $lib_artic::ARTIC_OBJ->{campos}->{'_fid'};
@@ -605,7 +608,14 @@ sub main {
     print "Location: prontus_art_ficha.$prontus_varglb::EXTENSION_CGI?_curr_body=$FORM{'_curr_body'}" . '&_dir_fecha=' . $dir_fecha . '&_file=' . $nom_file_artic . '&_fid=' . $FORM{'_fid'} . '&_path_conf=' . $FORM{'_path_conf'} . '&fotosvtxt=/1/2/3/4' . $popup . $port_preview . $upd_port_preview . "\n\n";    # 1.15
 
 };
+# ---------------------------------------------------------------
+sub call_dropbox_backup {
+    my $ts = $_[0];
 
+    if ($prontus_varglb::DROPBOX eq 'SI') {
+        &lib_prontus::dropbox_backup("art;$ts");
+    };
+};
 # ---------------------------------------------------------------
 sub call_clustering {
     my $fullpath_artic = shift;

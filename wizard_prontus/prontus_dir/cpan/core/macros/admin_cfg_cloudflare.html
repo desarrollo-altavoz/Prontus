@@ -1,0 +1,104 @@
+<div class="listado">
+
+    <div style="height:37px;">
+        <p style="float: left;"><b>Configuración de CloudFlare</b>: %%_prontus_id%%-cloudflare.cfg</p>
+        <div class="botones">
+            <div class="boton-gris3 aright">
+                <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                    <span>Cancelar</span>
+                </a>
+            </div>
+            <div class="boton-gris3 aright">
+                <a onclick="Cfgedit.guardaCfg('cloudflare'); return false;" href="#" class="button" title="Guardar">
+                    <span>Guardar</span>
+                </a>
+            </div>
+        </div>
+        <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+            <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+        </div>
+    </div>
+
+    <form name="frmCFG-CLOUDFLARE" id="frmCFG-CLOUDFLARE" method="post">
+        <table class="tableform" width="100%">
+            <input type="hidden" name="_cfg" value="cloudflare"/>
+            <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+            <input type="hidden" name="_tab" value="cfg-tab13" />
+            <tr class="head">
+                <td>Variable</td>
+                <td>Valor</td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CLOUDFLARE_API_URL<br>
+                    <span class="ayuda">URL de la API de CloudFlare. Por lo general es <a href="https://www.cloudflare.com/api_json.html">https://www.cloudflare.com/api_json.html</a></span>
+                </td>
+                <td>
+                    <input type="text" name="CLOUDFLARE_API_URL" value="%%CLOUDFLARE_API_URL%%" class="fieldform"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CLOUDFLARE_API_KEY<br>
+                    <span class="ayuda">Llave única para poder interactuar con la API de CloudFlare.</span>
+                </td>
+                <td>
+                    <input type="text" name="CLOUDFLARE_API_KEY" value="%%CLOUDFLARE_API_KEY%%" class="fieldform"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CLOUDFLARE_EMAIL<br>
+                    <span class="ayuda">Casilla de correo asociada a la API Key de CloudFlare.</span>
+                </td>
+                <td>
+                    <input type="text" name="CLOUDFLARE_EMAIL" value="%%CLOUDFLARE_EMAIL%%" class="fieldform"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CLOUDFLARE_ZONE<br>
+                    <span class="ayuda">Dominio inscrito en CloudFlare.</span>
+                </td>
+                <td>
+                    <input type="text" name="CLOUDFLARE_ZONE" value="%%CLOUDFLARE_ZONE%%" class="fieldform"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CLOUDFLARE_GLOBAL_PURGE<br>
+                    <span class="ayuda">Indicar las rutas serán expiradas cada vez que se haga purge. Se recomienda indicar sólo lo necesario para no sobrecargar el sistema.
+                        Una ruta por línea (no debe incluír el dominio).<br/><br/>Ejemplos:<br/>
+                        /prontus/site/edic/base/port/portada.html<br/>
+                        /noticias/<br/>
+                        /<br/>
+                        </span>
+                </td>
+                <td>
+                    <textarea name="CLOUDFLARE_GLOBAL_PURGE" cols="80" rows="8" class="fieldform">%%CLOUDFLARE_GLOBAL_PURGE%%</textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <div class="botones">
+        <div class="boton-gris3 aright">
+            <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                <span>Cancelar</span>
+            </a>
+        </div>
+        <div class="boton-gris3 aright">
+            <a onclick="Cfgedit.guardaCfg('cloudflare'); return false;" href="#" class="button" title="Guardar">
+                <span>Guardar</span>
+            </a>
+        </div>
+    </div>
+    <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+        <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+    </div>
+</div> <!--/listado-->
+

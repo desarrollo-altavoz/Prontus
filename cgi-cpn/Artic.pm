@@ -1338,6 +1338,17 @@ sub borra_artic {
         &lib_prontus::purge_cache($file2delete);
     };
 
+    # Cargar datos del xml. Necesarios para poder armar friendly url.
+    my %campos_xml = $this->get_xml_content();
+
+    # Incluye friendly.
+    my $marca_file = $this->get_fullpath_artic('', $campos_xml{'_plt'});
+    $marca_file = &lib_prontus::remove_front_string($marca_file, $this->{document_root});
+    my $fileurl = '%%_FILEURL%%';
+    $fileurl = &lib_prontus::parse_filef($fileurl, $campos_xml{'_txt_titular'}, $this->{ts}, $this->{prontus_id}, $marca_file, $campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'});
+
+    &lib_prontus::purge_cache($fileurl);
+
     # Borrar paginas paralelas
     @files2delete = glob("$dirpagpar/$ts*" . '.*');
     foreach my $file2delete (@files2delete) {

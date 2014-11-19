@@ -199,7 +199,19 @@ sub actualizar_articulo {
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 
+
+    # Dropbox.
+    &call_dropbox_backup($ARTIC_ts_articulo);
+
     return '';
+};
+
+sub call_dropbox_backup {
+    my $ts = $_[0];
+
+    if ($prontus_varglb::DROPBOX eq 'SI') {
+        &lib_prontus::dropbox_backup("art;$ts");
+    };
 };
 
 sub load_artic_info {
