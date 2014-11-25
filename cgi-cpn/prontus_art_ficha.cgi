@@ -212,7 +212,7 @@ if ($FORM{'_file'} eq '') {
     # print STDERR "html_tpag2[$html_tpag]\n";
 
     # Generar combo con tipos de articulos
-    my $tipos_art = 'Formulario:<br/>' . $popup_tipos . '&nbsp;';
+    my $tipos_art = 'FID:<br/>' . $popup_tipos . '&nbsp;';
     my $cmb_multivistas;
     if (keys(%prontus_varglb::MULTIVISTAS)) {
         $cmb_multivistas = 'Vista: ' . &lib_prontus::generar_popup_multivistas();
@@ -903,7 +903,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
   # Mostrar glosa de tipo de articulo
   my $glosa_tipo_ficha = &get_glosa_tipo_ficha($FORM{'_fid'});
-  $pag =~ s/%%_FID%%/Formulario:<br\/><div class="label-fid" title="$glosa_tipo_ficha">$glosa_tipo_ficha<\/div>/ig;
+  $pag =~ s/%%_FID%%/FID:<br\/><div class="label-fid" title="$glosa_tipo_ficha">$glosa_tipo_ficha<\/div>/ig;
 
 
 

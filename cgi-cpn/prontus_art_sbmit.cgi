@@ -223,7 +223,7 @@ sub main {
     &call_clustering($fullpath_artic, $rutaScript);
 
     # Dropbox.
-    &call_dropbox_backup($lib_artic::ARTIC_OBJ->{ts});
+    &call_dropbox_backup($lib_artic::ARTIC_OBJ->{ts}, $lib_artic::ARTIC_OBJ->{campos}->{'_seccion1'}, $lib_artic::ARTIC_OBJ->{campos}->{'_tema1'}, $lib_artic::ARTIC_OBJ->{campos}->{'_subtema1'});
 
     # Verifica que exista filtro para FID
     my $dir_filtro_fid = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP
@@ -611,9 +611,12 @@ sub main {
 # ---------------------------------------------------------------
 sub call_dropbox_backup {
     my $ts = $_[0];
+    my $seccion1 = $_[1];
+    my $tema1 = $_[2];
+    my $subtema1 = $_[3];
 
     if ($prontus_varglb::DROPBOX eq 'SI') {
-        &lib_prontus::dropbox_backup("art;$ts");
+        &lib_prontus::dropbox_backup("art;$ts;$seccion1;$tema1;$subtema1");
     };
 };
 # ---------------------------------------------------------------

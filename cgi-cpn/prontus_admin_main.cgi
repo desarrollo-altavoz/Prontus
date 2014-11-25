@@ -979,6 +979,20 @@ sub parseaVars {
         $pagina =~ s/<!--dropbox-->(.*?)<!--\/dropbox-->//sig;
     };
 
+    $buffer = '';
+    $temp = '';
+    $loop = '';
+    $pagina =~ /<!--loop_dropbox_customdir-->(.*?)<!--\/loop_dropbox_customdir-->/s;
+    $loop = $1;
+
+    foreach my $customdir (keys %prontus_varglb::DROPBOX_CUSTOM_DIR) {
+        $temp = $loop;
+        $temp =~ s/%%customdir%%/$customdir/isg;
+        $buffer = $buffer . $temp;
+    };
+
+    $pagina =~ s/<!--loop_dropbox_customdir-->.*?<!--\/loop_dropbox_customdir-->/$buffer/sig;
+
     $pagina =~ s/%%DROPBOX_ACCESS_TOKEN%%/$prontus_varglb::DROPBOX_ACCESS_TOKEN/ig;
     $pagina =~ s/%%DROPBOX_FILEXT_EXCLUDE%%/$prontus_varglb::DROPBOX_FILEXT_EXCLUDE/ig;
 

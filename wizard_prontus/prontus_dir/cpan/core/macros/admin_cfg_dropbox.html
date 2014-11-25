@@ -25,6 +25,7 @@
             <input type="hidden" name="_cfg" value="dropbox"/>
             <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
             <input type="hidden" name="_tab" value="cfg-tab12" />
+            <input type="hidden" name="DROPBOX_CUSTOM_DIR" value="">
             <tr class="head">
                 <td>Variable</td>
                 <td>Valor</td>
@@ -45,6 +46,25 @@
                 </td>
                 <td>
                     <input type="text" name="DROPBOX_FILEXT_EXCLUDE" value="%%DROPBOX_FILEXT_EXCLUDE%%" class="fieldform"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    DROPBOX_CUSTOM_DIR<br>
+                    <span class="ayuda">Directorios adicionales del artículo que se respaldarán. Estos se buscarán en /artic/&lt;fecha_dir&gt;/*<br/>Solo se consideran los archivos que contengan el TS del artículo.</span>
+                </td>
+                <td>
+                    <div id="dropbox_customdir">
+                        <!--loop_dropbox_customdir-->
+                        <input type="text" name="INPUT_DROPBOX_CUSTOM_DIR[]" value="%%customdir%%" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+                        <!--/loop_dropbox_customdir-->
+                        <input type="text" name="INPUT_DROPBOX_CUSTOM_DIR[]" value="" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+                    </div>
+                    <div class="boton-gris3 aleft">
+                        <a onclick="Cfgedit.agregarDropboxCustomdir(); return false;" href="#" class="button">
+                            <span>+ Agregar</span>
+                        </a>
+                    </div>
                 </td>
             </tr>
         </table>

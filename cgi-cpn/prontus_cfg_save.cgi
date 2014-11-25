@@ -186,6 +186,7 @@ main: {
     # -dropbox.cfg
     $hash_defaultvars{'dropbox'}{'DROPBOX_ACCESS_TOKEN'} = 'DROPBOX_ACCESS_TOKEN;(\w+);;U';
     $hash_defaultvars{'dropbox'}{'DROPBOX_FILEXT_EXCLUDE'} = 'DROPBOX_FILEXT_EXCLUDE;(\w+);;U';
+    $hash_defaultvars{'dropbox'}{'DROPBOX_CUSTOM_DIR'} = 'DROPBOX_CUSTOM_DIR;(\w+);;M';
 
     # buscador_prontus.cfg
     $hash_defaultvars{'buscador'}{'PRONTUS_DIR'} = 'PRONTUS_DIR;([\w\|]+);;U';

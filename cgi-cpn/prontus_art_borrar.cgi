@@ -130,6 +130,9 @@ main: {
                 'ts' => $FORM{'_ts'}, # si no va, asigna uno nuevo
                 'campos'=> '') || &glib_html_02::print_json_result(0, "Error inicializando objeto articulo: $Artic::ERR\n", 'exit=1,ctype=1');
 
+        my %campos_xml = $artic_obj->get_xml_content();
+        &call_dropbox_backup($FORM{'_ts'}, $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+
         my $resp = $artic_obj->borra_artic($base);
         if($resp) {
             &lib_prontus::write_log('Borrar Error', 'Articulo', $FORM{'_ts'});
@@ -200,4 +203,15 @@ sub exec_postproceso_artborrar {
     };
 };
 
+# ---------------------------------------------------------------
+sub call_dropbox_backup {
+    my $ts = $_[0];
+    my $seccion1 = $_[1];
+    my $tema1 = $_[2];
+    my $subtema1 = $_[3];
+
+    if ($prontus_varglb::DROPBOX eq 'SI') {
+        &lib_prontus::dropbox_backup("art;$ts;$seccion1;$tema1;$subtema1");
+    };
+};
 # -------------------------------END SCRIPT----------------------

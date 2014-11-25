@@ -1298,6 +1298,14 @@ sub load_config {
   };
   $prontus_varglb::DROPBOX_FILEXT_EXCLUDE = $dropbox_filext_exclude;
 
+  %prontus_varglb::DROPBOX_CUSTOM_DIR = ();
+  my $dropbox_custom_dir;
+  while ($buffer =~ m/\s*DROPBOX_CUSTOM_DIR\s*=\s*("|')(.*?)\1/g) {
+     $dropbox_custom_dir = $2;
+     next if (!$dropbox_custom_dir);
+     $prontus_varglb::DROPBOX_CUSTOM_DIR{$dropbox_custom_dir} = 1;
+  };
+
   # CloudFlare.
   my $cloudflare = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*CLOUDFLARE\s*=\s*("|')(.*?)("|')/) { # SI | NO

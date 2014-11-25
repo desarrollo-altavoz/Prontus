@@ -147,6 +147,12 @@ var Cfgedit = {
                     varnish += $(this).val() + "|";
                 });
                 $('input[name="VARNISH_SERVER_NAME"]').val(varnish);
+            } else if (cfg === 'dropbox') {
+                var dropbox = '';
+                $('input[name="INPUT_DROPBOX_CUSTOM_DIR[]"]').each(function () {
+                    dropbox += $(this).val() + "|";
+                });
+                $('input[name="DROPBOX_CUSTOM_DIR"]').val(dropbox);
             } else if (cfg === 'buscador') {
                 //=============
                 var prontus_dirs = '';
@@ -246,6 +252,10 @@ var Cfgedit = {
     agregarVarnish: function () {
         var html = '<input name="INPUT_VARNISH_SERVER_NAME[]" value="" class="fieldform" style="margin-bottom: 1px; width: 89%;"/>';
         $('#varnish_list').append(html);
+    },
+    agregarDropboxCustomdir: function () {
+        var html = '<input name="INPUT_DROPBOX_CUSTOM_DIR[]" value="" class="fieldform" style="margin-bottom: 1px; width: 89%;"/>';
+        $('#dropbox_customdir').append(html);
     },
     agregarCluster: function () {
         var html = '<input name="INPUT_CLUSTERING_SERVER[]" value="" class="fieldform" style="margin-bottom: 1px; width: 89%;"/>';
