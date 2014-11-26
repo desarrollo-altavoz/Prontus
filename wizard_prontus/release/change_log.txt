@@ -1,4 +1,22 @@
 ====================================================================================================
+11.2.81 - 26/11/2014
+====================================================================================================
+- improvement: Se agrega soporte de cache CloudFlare.
+- improvement: Se agrega soporte Dropbox, para realizar respaldos automatizados de artículos y portadas.
+- improvement: Se agrega la posibilidad de excluir de la lista de artículos relacionados, los articulos que están publicados en una portada.
+- improvement: Se agrega parseo de prontus functions y nuevas marcas a prontus form.
+- improvement: Se aplican mejoras al indexador de prontus para aumentar la velocidad del indexado.
+- improvement: Se agrega segundo parámetro (opcional) a marca %%MACRO()%% para indicar un identificador. De esta manera se podrá reutilizar código en campos repetitivos.
+- changes: La variable de configuración en las portadas list, LIST_EXCLUDE_PORT_AREA, ahora acepta más de un area, separadas por coma.
+- changes: Cambio menor, se agrega validación de path_conf a varias cgi de cgi-cpn.
+- changes: Al eliminar un artículo, tambien se eliminarán todos los archivos asociados a una marca multimedia.
+- changes: En la ficha del artículo, se cambia el rótulo "Formulario" por "FID".
+- changes: Se agrega carga de configuración prontus a prontus form.
+- bugfix: Se escapea la @ en los parámetros de la PF.
+- bugfix: Se soluciona problema con purge. No se estaba respetando el semáforo.
+- bugfix: Se agrega purge de friendly url de artículo.
+
+====================================================================================================
 11.2.80 - 01/10/2014
 ====================================================================================================
 - improvement: En las salidas de articulos (list) se pueden excluir los articulos que están publicados en una

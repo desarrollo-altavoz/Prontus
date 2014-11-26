@@ -7993,7 +7993,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_prontus.pm
 
 ====================================================================================================
-11.2.81 - 25/11/2014 - JOR
+11.2.81 - 26/11/2014 - JOR
 ====================================================================================================
 
 - Portadas list
@@ -8027,7 +8027,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             => Se realiza un PURGE cada vez que se guarda un artículo. El mismo comportamiento que ocurre
         con Varnish.
             => Puede funcionar en conjunto con Varnish.
-        - Se agrega soporte de respaldos en Dropbox.
+        - Se agrega soporte Dropbox, para realizar respaldos automatizados de artículos y portadas.
             => Se debe crear una aplicación en Dropbox.
             => Se configura en la interfaz, habilitando la opción y especificando la API KEY.
             => Mas información será agregada al manual de desarrollo.
@@ -8050,7 +8050,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Artículos
     [cambios]
-        - Se eliminan todos los archivos asociados a una marca multimedia.
+        - Al eliminar un artículo, tambien se eliminan todos los archivos asociados a una marca multimedia.
         - En la ficha del articulo, se cambia la palabra "Formulario" por "FID" en las Opciones.
     [files]
         /cgi-cpn/Artic.pm
