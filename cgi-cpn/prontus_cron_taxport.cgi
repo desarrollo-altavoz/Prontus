@@ -117,6 +117,7 @@ my %ART_XDATA_FIELDS;
 
 my ($LOOP, %FORM, $NOM_PRONTUS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC);
 my %NOMBASE_PLTS;
+my %CFG_FIL_TAXPORT;
 # my %HASH_FILES;
 # cd /sites/prontus_development/web/cgi-cpn
 # perl /sites/prontus_development/web/cgi-cpn/prontus_cron_taxport.cgi prontus_toolbox
@@ -467,8 +468,6 @@ sub generar_taxports {
             print STDERR "No se pudo hacer el fork general: $!\n";
         };
 
-
-
         if (($FORM{'seccion_especif'}) || ($FORM{'params_especif'} eq '')) {
 
             # secc
@@ -608,6 +607,8 @@ sub generar_taxports_thislevel {
         $sql =~ s/%%FILTRO%%/$filtros/;
     };
 
+    #print STDERR "sql[$sql] fid[$fid] tot_artics[$tot_artics]\n";
+
     my $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
     my $nro_filas = 0;
     my $nro_pag = 0;
@@ -659,7 +660,7 @@ sub generar_taxports_thislevel {
 
         $nro_filas++;
 
-        # print STDERR "\tpag[$nro_pag_to_write] row[$nro_filas]";
+        #print STDERR "\tpag[$nro_pag_to_write] row[$nro_filas]";
         # sleep (1) if ($nro_filas > 98);
 
         # Si viene el TS, solo se debe regenerar la página indicada por: $justthispage
@@ -955,7 +956,6 @@ sub write_pag {
 #    $temas_id = '' if ($temas_id == 0);
 #    $subtemas_id = '' if ($subtemas_id == 0);
 
-
     # escribe pagina en todas las vistas incluida la normal
     my %vistas; # incluye las mv y la normal
     %vistas = %prontus_varglb::MULTIVISTAS;
@@ -967,6 +967,11 @@ sub write_pag {
             # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
             my $pagina = &get_buffer_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
             next if (!$pagina);
+
+            # Solo para filtros. Si estan configuradas las plantillas, solo se consideran esas.
+            if ($fid =~ /^fil_/ && defined $CFG_FIL_TAXPORT{$fid}{'PLANTILLAS'} && !defined $CFG_FIL_TAXPORT{$fid}{'PLANTILLAS'}{$nombase_plt}) {
+                next;
+            };
 
             # En estos casos sólo es válida la primera página
             my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
@@ -980,6 +985,10 @@ sub write_pag {
             # warn "$key_hash lista[$lista]";
             my $reldir_port_dst = &obtieneRelDirDestino($fid, $mv);
             my ($nombase, $extension) = &lib_prontus::split_nom_y_extension($nombase_plt);
+
+            $pagina =~ s/%%_plt_nom%%/$nombase/isg;
+            $pagina =~ s/%%_plt_ext%%/$extension/isg;
+
             $extension = '.' . $extension;
             $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"$mv|$nombase_plt"}/isg;
             $pagina = &incluir_navbar($pagina, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase);
@@ -989,6 +998,8 @@ sub write_pag {
             $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
             $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/isg;
 
+            $pagina =~ s/%%_nropagina%%/$nro_pag/isg;
+            $pagina =~ s/%%_vista%%/$mv/isg;
 
             $tax_fixedurl = &lib_prontus::get_tax_link($tax_fixedurl, $mv);
             $pagina =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
@@ -1000,8 +1011,11 @@ sub write_pag {
             # Para poder hacer IF de seccion, tema y subtema
             my %claves = ('_tax_seccion' => $secc_id, '_tax_tema' => $temas_id, '_tax_subtema' => $subtemas_id,
                     '_tax_nom_seccion' => $secc_nom, '_tax_nom_tema' => $temas_nom, '_tax_nom_subtema' => $subtemas_nom);
+
             my %claves_compatibles = ('_seccion1' => $secc_id, '_tema1' => $temas_id, '_subtema1' => $subtemas_id,
-                    '_nom_seccion1' => $secc_nom, '_nom_tema1' => $temas_nom, '_nom_subtema1' => $subtemas_nom);
+                    '_nom_seccion1' => $secc_nom, '_nom_tema1' => $temas_nom, '_nom_subtema1' => $subtemas_nom,
+                    '_vista' => $mv, '_nropagina' => $nro_pag);
+
             $pagina = &lib_prontus::procesa_condicional($pagina, \%claves, \%claves_compatibles);
 
             # Se parsean todas las marcas de seccion, tema y subtema.
@@ -1038,6 +1052,7 @@ sub write_pag {
                                         . '_' . $subtemas_id
                                         . '_' . $nro_pag
                                     . $extension;
+
             # debug
             #~ if (! exists $HASH_FILES{$k}) {
                 #~ $HASH_FILES{$k} = 1;
@@ -1370,6 +1385,70 @@ sub carga_mensajes {
     return ($plantilla, \%msgs);
 };
 
+# -------------------------------------------------------------------------#
+# Se buscan los directorios que comiencen con fil_ en las plantillas de taxport.
+sub get_taxport_fil {
+    my ($ruta_dir) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP";
+    my @listado = glob("$ruta_dir/fil_*");
+    my @filtros;
+
+    foreach my $dir (@listado) {
+        if ($dir =~ /fil_(.*?)$/) {
+            push @filtros, "fil_" . $1;
+            &cargar_fil_cfg("$dir/filtros.cfg", "fil_" . $1);
+        };
+
+    };
+
+    return @filtros;
+};
+
+# -------------------------------------------------------------------------#
+sub cargar_fil_cfg {
+    my $file = $_[0];
+    my $fil = $_[1];
+    my $cfg = &glib_fildir_02::read_file($file);
+
+    return if (exists $CFG_FIL_TAXPORT{$fil}); # para no cargarlo dos veces.
+
+    if ($cfg =~ m/\s*TAXPORT_FIDS\s*=\s*("|')(.*?)("|')/) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        $value =~ s/[^a-zA-Z0-9_,]//sg; # dejar solo caracteres permitidos
+
+        my @valores = split(',', $value);
+
+        $CFG_FIL_TAXPORT{$fil}{'FIDS'} = \@valores;
+
+        #print STDERR "CFG TAXPORT_FIDS! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAXPORT_PLANTILLAS\s*=\s*("|')(.*?)("|')/) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        $value =~ s/[^a-zA-Z0-9_\-,\.]//sg; # dejar solo caracteres permitidos
+
+        my @valores = split(',', $value);
+
+        foreach my $tpl (@valores) {
+            $CFG_FIL_TAXPORT{$fil}{'PLANTILLAS'}{$tpl} = 1;
+        };
+
+        #print STDERR "CFG TAXPORT_PLANTILLAS! fil[$fil] value[$value]\n";
+    };
+
+};
+
 # ---------------------------------------------------------------
 sub get_fids2process {
 # Obtiene fids para los cuales se generaran portadas taxonomicas.
@@ -1401,6 +1480,13 @@ sub get_fids2process {
         };
     };
 
+    # Se agregan como fids los filtros para usar la misma logica.
+    my @listado_filtros = &get_taxport_fil();
+
+    foreach my $fil (@listado_filtros) {
+        $fids{$fil} = $1;
+    };
+
     return %fids;
 
 };
@@ -1421,6 +1507,11 @@ sub genera_filtros_taxports {
 # Aplica a portadas tax normales y a portadillas de calendarios taxonomicos
 
     my ($id_secc1, $id_tema1, $id_subtema1, $fid, $curr_dtime) = @_;
+    my $fid_fil = $fid;
+
+    if ($fid =~ /^fil_/) {
+        $fid = '';
+    };
 
     $id_secc1 =~ s/"/""/g;
     $id_tema1 =~ s/"/""/g;
@@ -1478,6 +1569,22 @@ sub genera_filtros_taxports {
         $filtros .= " (ART_TIPOFICHA = \"$fid\") ";
     };
 
+    if ($fid_fil && defined $CFG_FIL_TAXPORT{$fid_fil}{'FIDS'}) {
+        my @fidlist = @{$CFG_FIL_TAXPORT{$fid_fil}{'FIDS'}};
+        my $filtro_fids;
+
+        if (scalar @fidlist) {
+            foreach my $filfid (@fidlist) {
+                $filtro_fids .= "ART_TIPOFICHA = '$filfid' OR ";
+            };
+
+            $filtro_fids = substr($filtro_fids, 0, (length($filtro_fids)-3));
+
+            $filtros .= " and " if ($filtros);
+            $filtros .= "($filtro_fids)";
+        };
+    };
+
     $filtros .= " and " if ($filtros);
 
     $filtros .= " (ART_FECHAPHORAP <= \"$dt_system$hhmm_system\") ";
@@ -1486,6 +1593,8 @@ sub genera_filtros_taxports {
     if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
         $filtros .= " and ( (ART_FECHAEHORAE >= \"$dt_system$hhmm_system\") OR ( (ART_FECHAEHORAE < \"$dt_system$hhmm_system\") AND (ART_SOLOPORTADAS = \"1\") ) )";
     };
+
+    #print STDERR "filtros[$filtros]\n";
 
     return $filtros;
 

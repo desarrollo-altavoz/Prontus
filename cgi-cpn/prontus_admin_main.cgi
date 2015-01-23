@@ -152,12 +152,69 @@ main: {
   unless(-f ($prontus_varglb::DIR_SERVER.'/'.$prontus_varglb::PRONTUS_ID.'/cpan/procs/prontus_art_regen_log.html')) {
     $pagina =~ s/<!--link_last_proc-->.*?<!--\/link_last_proc-->//gs;
   };
+
+  # Se parsea el tab custom en caso de existir.
+  $pagina = &parseCustom($pagina);
+
   print $pagina;
 
 
 };
 
+# ------------------------------------------------------------------------------
+sub parseCustom {
+    my $pagina = $_[0];
+    # Tab custom en pestaña Administración.
+    # Se puede utilizar para integrar sistemas externos a prontus.
+    my $plantilla_custom = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . "/custom/admin_custom.html";
 
+    if (-f $plantilla_custom) {
+        my $pagina_custom = &glib_fildir_02::read_file($plantilla_custom);
+        my $custom_tab_name = "Custom";
+        my $custom_css;
+        my $custom_js;
+
+        while ($pagina_custom =~ /<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->/sg) {
+            my $name = $1;
+            my $value = $2;
+
+            if ($name eq 'TAB_NAME') {
+                $custom_tab_name = $2;
+            };
+
+            if ($name eq 'CSS') {
+                my @csslist = split(',', $value);
+                foreach my $cssname (@csslist) {
+                    $cssname =~ s/\s*//sg;
+                    $custom_css .= '<link type="text/css" rel="stylesheet" href="/' . $prontus_varglb::PRONTUS_ID . '/cpan/custom/css/' . $cssname . '" />';
+                    $custom_css .= "\n";
+                };
+            };
+
+            if ($name eq 'JS') {
+                my @jslist = split(',', $value);
+                foreach my $jsname (@jslist) {
+                    $jsname =~ s/\s*//sg;
+                    $custom_js .= '<script type="text/javascript" src="/' . $prontus_varglb::PRONTUS_ID . '/cpan/custom/js-local/' . $jsname . '"></script>';
+                    $custom_js .= "\n";
+                };
+            };
+        };
+
+        $pagina_custom =~ s/%%_path_conf%%/$FORM{'path_conf'}/sg;
+        $pagina_custom =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/ig;
+
+        $pagina =~ s/%%custom_tab_name%%/$custom_tab_name/sg;
+        $pagina =~ s/%%CUSTOM%%/$pagina_custom/sg;
+        $pagina =~ s/%%CUSTOM_CSS%%/$custom_css/sg;
+        $pagina =~ s/%%CUSTOM_JS%%/$custom_js/sg;
+
+    } else {
+        $pagina =~ s/<!--custom-->.*?<!--\/custom-->//gs;
+    };
+
+    return $pagina;
+};
 
 # ------------------------------------------------------------------------------
 sub parseaLogs {

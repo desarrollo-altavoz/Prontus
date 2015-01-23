@@ -8112,3 +8112,55 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_indexer.cgi
 
+====================================================================================================
+11.2.82 - 23/01/2015 - JOR
+====================================================================================================
+- Artículos
+    [cambios]
+        - Ahora se permite hasta 10 "prontus insert" en el cuerpo de una artículo.
+    [files]
+        /cgi-cpn/Artic.pm
+
+- Administración
+    [mejoras]
+        - Nueva funcionalidad que permite agregar una pestaña custom a la sección de Administración.
+        Esta pestaña está pensada para incluir sistemas externos o mantenedores, como por ejemplo,
+        la actualización de calendarios, importación de datos, sistema de encuestas, etc.
+            * La pestaña aparece automaticamente al crear la plantilla /<prontus_id>/cpan/custom/admin_custom.html
+            * Todo el contenido de la plantilla se mostrará en la pestaña. Es posible incluir subpestañas para mayor orden.
+            * Variables de configuaración opcionales (se indican dentro de la plantilla admin_custom.html):
+                <!-- CONFIG TAB_NAME = Mantenedores --> : Cambia el nombre a la pestaña.
+                <!-- CONFIG CSS = estilo1.css,estilo2.css --> : Incluye una o más hojas de estilo (separadas por coma) desde el directorio
+                /<prontus_id>/cpan/custom/css
+                <!-- CONFIG JS = js1.js,js2.js --> : Incluye uno o más scripts js desde el directorio /<prontus_id>/cpan/custom/js-local
+
+- Portadas tagonómicas
+    [mejoras]
+        - Se agrega soporte para macros en las portadas tagonómicas.
+        - Se agregan nuevas marcas:
+            _nropagina : numero de la página.
+            _vista : nombre de la vista, por ejemplo: movil
+            _plt_nom : nombre de la plantilla
+            _plt_ext : extension de la plantilla
+        - Se agrega perseo condicional. Se evaluan las marcas _nropagina, _vista, _tag_id y _tag_nom
+    [files]
+        /cgi-cpn/prontus_tags_ports.cgi
+
+- Portadas taxonómicas
+    [mejoras]
+        - Se agregan nuevas marcas:
+            _nropagina : numero de la página.
+            _vista : nombre de la vista, por ejemplo: movil
+            _plt_nom : nombre de la plantilla
+            _plt_ext : extension de la plantilla
+        - Nueva funcionalidad para filtrar artículos en las taxport. Se aplica a un directorio de plantilla que debe tener un nombre especial.
+            * Crear un directorio en plantillas de taxport /plantillas/tax/port que comience con fil_, por ejemplo /plantillas/tax/port/fil_ejemplo
+            * En este directorio se debe crear un archivo llamado filtros.cfg, el cual acepta la siguiente configuración:
+                TAXPORT_FIDS = 'fid_foto,fid_formulario' <- tipos de fids a considerar en el filtro, separados por comas.
+                TAXPORT_PLANTILLAS = 'taxport.html' <- una o mas plantillas que se usarán para las salidas. Por ejemplo, si en 'all'
+                existen 4 plantillas distintas, solo se usará la indicada en la configuración minimizando el número de archivos creados.
+            * Si el archivo de configuración no existe, el comportamiento será igual a 'all'.
+            * El uso de las plantillas y la estructura de archivos es igual al resto de las taxport.
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+

@@ -122,6 +122,7 @@ $FORM{'fid_especif'} = $ARGV[2]; # optativo
 &valida_param();
 
 my $DIR_TAGPORT = '/tag/port';
+my $DIR_TAGPORT_MACRO = '/tag/macros';
 
 # Carga variables de configuracion de prontus.
 my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
@@ -130,6 +131,7 @@ my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'})
 my ($RELDIR_ARTIC) = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/%%DIRFECHA%%$prontus_varglb::DIR_PAG";
 my ($RELDIR_PORT_DST) = "$prontus_varglb::DIR_CONTENIDO$DIR_TAGPORT";
 my ($RELDIR_PORT_TMP) = "$prontus_varglb::DIR_TEMP$DIR_TAGPORT";
+my ($RELDIR_PORT_MACROS) = "$prontus_varglb::DIR_TEMP$DIR_TAGPORT_MACRO";
 my (%EXT_PORT_TMP, %BUF_PLT, %BUF_PLT_LOOP, %MSGS, %LOADED_NAMES_PLT);
 my ($CURR_DTIME) = &glib_hrfec_02::get_dtime_pack4();
 
@@ -348,9 +350,9 @@ sub generar_tagonomicas_thislevel {
 };
 # ---------------------------------------------------------------
 sub get_loop_plt {
-# Obtiene buffer del loop del tpl de la portada tipo tema, de acuerdo a s, t y st + fid y mv.
-
+    # Obtiene buffer del loop del tpl de la portada tipo tema, de acuerdo a s, t y st + fid y mv.
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
+    my ($dir_macros) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_MACROS";
 
     # Si fue cargado el tpl, lo retorna
     my $key_hash = "$tag_id|$fid|$mv|$nombase_plt";
@@ -370,10 +372,14 @@ sub get_loop_plt {
     };
 
     my $buffer = &glib_fildir_02::read_file($plt);
+
+    $buffer = &lib_prontus::add_macros($buffer, $dir_macros);
+
     my $loop;
     if ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
         $loop = $1;
     };
+
     # Carga en ram plantillas
     $BUF_PLT_LOOP{$key_hash} = $loop;
     $BUF_PLT{$key_hash} = $buffer;
@@ -384,9 +390,9 @@ sub get_loop_plt {
 
 # ---------------------------------------------------------------
 sub get_buffer_plt {
-# Obtiene buffer del tpl de la portada tipo tema, de acuerdo a s, t y st.
-
+    # Obtiene buffer del tpl de la portada tipo tema, de acuerdo a s, t y st.
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
+    my ($dir_macros) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_MACROS";
 
     # Si fue cargado el tpl, lo retorna
     my $key_hash = "$tag_id|$fid|$mv|$nombase_plt";
@@ -406,6 +412,10 @@ sub get_buffer_plt {
     };
 
     my $buffer = &glib_fildir_02::read_file($plt);
+
+    $buffer = &lib_prontus::add_macros($buffer, $dir_macros);
+
+
     my $loop;
     if ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
         $loop = $1;
@@ -550,6 +560,10 @@ sub write_pag {
             # warn "$key_hash lista[$lista]";
             my $reldir_port_dst = &obtieneRelDirDestino($fid, $mv);
             my ($nombase, $extension) = &lib_prontus::split_nom_y_extension($nombase_plt);
+
+            $pagina =~ s/%%_plt_nom%%/$nombase/isg;
+            $pagina =~ s/%%_plt_ext%%/$extension/isg;
+
             $extension = '.' . $extension;
             $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"$mv|$nombase_plt"}/isg;
             # $pagina = &incluir_navbar($pagina, $tag_id, $mv, $reldir_port_dst, $extension, $nombase);
@@ -559,10 +573,18 @@ sub write_pag {
             $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
             $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/isg;
 
+            $pagina =~ s/%%_nropagina%%/$nro_pag/isg;
+            $pagina =~ s/%%_vista%%/$mv/isg;
+
             $pagina =~ s/%%_tag_id%%/$tag_id/isg;
 
             my $tag_nom = $tag_noms{$mv};
             $pagina =~ s/%%_tag_nom%%/$tag_nom/isg;
+
+            my %claves = ('_nropagina' => $nro_pag, '_vista' => $mv, '_tag_id' => $tag_id,
+                    '_tag_nom' => $tag_nom);
+
+            $pagina = &lib_prontus::procesa_condicional($pagina, \%claves);
 
             my $path_include = &lib_prontus::get_path_croncgi();
             $pagina = &lib_prontus::parser_custom_function($pagina, $path_include);
