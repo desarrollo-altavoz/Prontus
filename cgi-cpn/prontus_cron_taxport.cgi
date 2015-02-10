@@ -753,6 +753,36 @@ sub generar_taxports_thislevel {
             print STDERR "[$pid_padre][$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
         };
     };
+
+    # Eliminar paginas basura. Son las que quedan cuando se eliminan articulos.
+    use POSIX qw(ceil);
+    my $nro_paginas_totales = POSIX::ceil($tot_artics / $FILASXPAG);
+    my $nro_pagina_inexistente = $nro_paginas_totales + 1;
+
+    #print STDERR "nro_paginas_totales[$nro_paginas_totales]\n";
+
+    foreach my $key (keys %BUF_PLT) {
+        # $secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt
+        my ($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt) = split(/\|/, $key);
+        $nombase_plt =~ /(.*?)\.(\w+)$/;
+        my $plt = $1;
+        my $ext = $2;
+
+        my $reldir_port_dst = &obtieneRelDirDestino($fid, $mv);
+        my $fullpath_dir = "$prontus_varglb::DIR_SERVER$reldir_port_dst";
+        my $fullpath_pag = "$fullpath_dir/$plt" . '_'
+                                    . $secc_id
+                                    . '_' . $temas_id
+                                    . '_' . $subtemas_id
+                                    . '_' . $nro_pagina_inexistente
+                                    . "." . $ext;
+
+        if (-f $fullpath_pag) {
+            print STDERR "[$$] Eliminando pagina basura nro_paginas_totales[$nro_paginas_totales] nro_pagina_inexistente[$nro_pagina_inexistente] [$fullpath_pag]\n";
+            unlink $fullpath_pag;
+        };
+    };
+
 };
 
 # ---------------------------------------------------------------
@@ -988,6 +1018,8 @@ sub write_pag {
 
             $pagina =~ s/%%_plt_nom%%/$nombase/isg;
             $pagina =~ s/%%_plt_ext%%/$extension/isg;
+            $pagina =~ s/%%_tax_fid%%/$fid/isg if ($fid);
+            $pagina =~ s/%%_tax_fid%%/all/isg if (!$fid);
 
             $extension = '.' . $extension;
             $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"$mv|$nombase_plt"}/isg;
@@ -1014,7 +1046,7 @@ sub write_pag {
 
             my %claves_compatibles = ('_seccion1' => $secc_id, '_tema1' => $temas_id, '_subtema1' => $subtemas_id,
                     '_nom_seccion1' => $secc_nom, '_nom_tema1' => $temas_nom, '_nom_subtema1' => $subtemas_nom,
-                    '_vista' => $mv, '_nropagina' => $nro_pag);
+                    '_vista' => $mv, '_nropagina' => $nro_pag, '_tax_fid' => $fid);
 
             $pagina = &lib_prontus::procesa_condicional($pagina, \%claves, \%claves_compatibles);
 
@@ -1034,6 +1066,17 @@ sub write_pag {
             $pagina =~ s/%%_tax_nom_seccion%%/$secc_nom/isg;
             $pagina =~ s/%%_tax_nom_tema%%/$temas_nom/isg;
             $pagina =~ s/%%_tax_nom_subtema%%/$subtemas_nom/isg;
+
+            # Parsear el nombre de la s, t, st segun la vista.
+            if ($mv) {
+                my ($mv_nom_seccion1, $mv_nom_tema1, $mv_nom_subtema1) = &lib_prontus::get_nom4vistas($mv, $secc_id, $temas_id, $subtemas_id);
+                $pagina =~ s/%%_tax_nom_seccion_$mv%%/$mv_nom_seccion1/isg;
+                $pagina =~ s/%%_tax_nom_tema_$mv%%/$mv_nom_tema1/isg;
+                $pagina =~ s/%%_tax_nom_subtema_$mv%%/$mv_nom_subtema1/isg;
+                $pagina =~ s/%%_nom_seccion[1-3]_$mv%%/$mv_nom_seccion1/isg;
+                $pagina =~ s/%%_nom_tema[1-3]_$mv%%/$mv_nom_tema1/isg;
+                $pagina =~ s/%%_nom_subtema[1-3]_$mv%%/$mv_nom_subtema1/isg;
+            };
 
             my $path_include = &lib_prontus::get_path_croncgi();
             $pagina = &lib_prontus::parser_custom_function($pagina, $path_include);

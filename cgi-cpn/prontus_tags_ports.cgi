@@ -563,6 +563,8 @@ sub write_pag {
 
             $pagina =~ s/%%_plt_nom%%/$nombase/isg;
             $pagina =~ s/%%_plt_ext%%/$extension/isg;
+            $pagina =~ s/%%_tag_fid%%/$fid/isg if ($fid);
+            $pagina =~ s/%%_tag_fid%%/all/isg if (!$fid);
 
             $extension = '.' . $extension;
             $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"$mv|$nombase_plt"}/isg;
@@ -582,7 +584,7 @@ sub write_pag {
             $pagina =~ s/%%_tag_nom%%/$tag_nom/isg;
 
             my %claves = ('_nropagina' => $nro_pag, '_vista' => $mv, '_tag_id' => $tag_id,
-                    '_tag_nom' => $tag_nom);
+                    '_tag_nom' => $tag_nom, '_tag_fid' => $fid);
 
             $pagina = &lib_prontus::procesa_condicional($pagina, \%claves);
 

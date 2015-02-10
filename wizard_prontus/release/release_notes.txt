@@ -8117,9 +8117,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 - Artículos
     [cambios]
-        - Ahora se permite hasta 10 "prontus insert" en el cuerpo de una artículo.
+        - Ahora se permite hasta 10 "prontus insert" en el cuerpo de un artículo.
+    [bugfixes]
+        - Se corrige generación de articulos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba
+        considerando solo la primera.
+        - Se elimina generación de relacionados sin taxonomía, por ejemplo: ___art_relac.html
     [files]
         /cgi-cpn/Artic.pm
+        /cgi-cpn/prontus_regenera_relac.cgi
 
 - Administración
     [mejoras]
@@ -8142,6 +8147,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             _vista : nombre de la vista, por ejemplo: movil
             _plt_nom : nombre de la plantilla
             _plt_ext : extension de la plantilla
+            _tag_fid : nombre del fid o all.
         - Se agrega perseo condicional. Se evaluan las marcas _nropagina, _vista, _tag_id y _tag_nom
     [files]
         /cgi-cpn/prontus_tags_ports.cgi
@@ -8153,6 +8159,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             _vista : nombre de la vista, por ejemplo: movil
             _plt_nom : nombre de la plantilla
             _plt_ext : extension de la plantilla
+            _tax_fid : nombre del fid o all
         - Nueva funcionalidad para filtrar artículos en las taxport. Se aplica a un directorio de plantilla que debe tener un nombre especial.
             * Crear un directorio en plantillas de taxport /plantillas/tax/port que comience con fil_, por ejemplo /plantillas/tax/port/fil_ejemplo
             * En este directorio se debe crear un archivo llamado filtros.cfg, el cual acepta la siguiente configuración:
@@ -8161,6 +8168,26 @@ Esto quedó actualizado en el check platform y detallado más abajo.
                 existen 4 plantillas distintas, solo se usará la indicada en la configuración minimizando el número de archivos creados.
             * Si el archivo de configuración no existe, el comportamiento será igual a 'all'.
             * El uso de las plantillas y la estructura de archivos es igual al resto de las taxport.
+    [cambios]
+        - Se parsean nuevas marcas con el nombre de la seccion/tema/subtema según la vista:
+            %%_tax_nom_seccion_<vista>%%
+            %%_tax_nom_tema_<vista>%%
+            %%_tax_nom_subtema_<vista>%%
+            %%_nom_seccion1_<vista>%%
+            %%_nom_tema1_<vista>%%
+            %%_nom_subtema1_<vista>%%
+
+            Por ejemplo: %%_tax_nom_seccion_en%%
+    [bugfix]
+        - Al regenerar las portadas taxonómicas con menos artículos que antes las páginas remanentes no se eliminaban.
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
+
+- Prontus Search
+    [bugfixes]
+        - Se soluciona problema con redirección a caché de la búsqueda. Se agrega la cabecera "Status: 302 Found" antes de hacer
+        el Location.
+    [files]
+        /cgi-bin/prontus_search.cgi
+
 

@@ -533,7 +533,7 @@ sub parsea_plantilla2 {
     $ini = 1;
     $fin = $paginastotales;
   }
-   
+
   for(my $i = $ini; $i <= $fin; $i++) {
     if ($i != $search_pag) {
       # 1.13 $pags .= '| <a href="/cgi-bin/prontus_search.cgi?search_prontus=' . $FORM{'search_prontus'}
@@ -1160,8 +1160,10 @@ sub muestraResultado {
   my $answerid = 'search' . time . $$;
   &lib_search::escribe_archivo("$CACHE_DIR/$answerid\.$EXT",$RESULTADO);
   if ($ENV{'SERVER_SOFTWARE'} =~ /nginx/i) { # 1.31
+    print "Status: 302 Found\n";
     print "X-Accel-Redirect: $CACHE_REL_DIR/$answerid\.$EXT\n\n";
   }else{
+    print "Status: 302 Found\n";
     print "Location: $CACHE_REL_DIR/$answerid\.$EXT\n\n";
   };
   &garbageCollection($CACHE_DIR); # Limpia directorio de cache.

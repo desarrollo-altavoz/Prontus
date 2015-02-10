@@ -100,7 +100,7 @@ main: {
 
     # Para las secciones
     foreach my $seccion (keys %tabla_secc) {
-        $TAXONOMIAS_TO_REGEN{$seccion . '_0_0'} = '1';
+        $TAXONOMIAS_TO_REGEN{$seccion . '__'} = '1';
     }
 
     # Para los temas
@@ -109,7 +109,7 @@ main: {
         if($tabla_tem{$tema} =~ /^(.*?)\t\t(.*?)\t\t(.*?)\t\t/) {
             my $seccion = $3;
             $hashtemas{$tema} = $seccion;
-            $TAXONOMIAS_TO_REGEN{$seccion . '_'.$tema.'_0'} = '1';
+            $TAXONOMIAS_TO_REGEN{$seccion . '_'.$tema.'_'} = '1';
         }
     }
 
