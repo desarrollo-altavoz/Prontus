@@ -165,11 +165,11 @@ sub purge {
     close PURGEFILE;
 
     # Se intenta realizar el Global Purge, si aplica
-    if($prontus_varglb::VARNISH_GLOBAL_PURGE) {
+    if ($prontus_varglb::VARNISH_GLOBAL_PURGE) {
         my @arr = split( /[\n\r]/, $prontus_varglb::VARNISH_GLOBAL_PURGE);
         foreach my $path (@arr) {
             next unless($path);
-            next unless($path =~ /^\//); # debe empezar con /
+            next if ($path !~ /^\//); # debe empezar con /
             foreach my $server (keys %prontus_varglb::VARNISH_SERVER_NAME) {
                 my $url_purge = "http://$server$path";
                 my ($resp, $err) = &get_url($url_purge);
@@ -179,24 +179,24 @@ sub purge {
     };
 
     if ($purge_cloudflare) {
-        if($prontus_varglb::CLOUDFLARE_GLOBAL_PURGE) {
-            my @arr = split( /[\n\r]/, $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE);
+        if ($prontus_varglb::CLOUDFLARE_GLOBAL_PURGE) {
+            my @arr = split(/[\n\r]/, $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE);
             foreach my $path (@arr) {
                 next unless($path);
-                next unless($path =~ /^\//); # debe empezar con /
-                foreach my $server (keys %prontus_varglb::CLOUDFLARE_GLOBAL_PURGE) {
-                    my %datos_post;
-                    my $url_purge = "http://$prontus_varglb::PUBLIC_SERVER_NAME$path";
+                next if ($path !~ /^\//); # debe empezar con /
 
-                    $datos_post{'a'} = 'zone_file_purge';
-                    $datos_post{'tkn'} = $prontus_varglb::CLOUDFLARE_API_KEY;
-                    $datos_post{'email'} = $prontus_varglb::CLOUDFLARE_EMAIL;
-                    $datos_post{'z'} = $prontus_varglb::CLOUDFLARE_ZONE;
-                    $datos_post{'url'} = $url_purge;
+                my %datos_post;
+                my $url_purge = "http://$prontus_varglb::PUBLIC_SERVER_NAME$path";
 
-                    my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
-                    print STDERR "[$$] global purge cloudflare -> server[$server], url_purge[$url_purge], status[$err]\n";
-                };
+                $datos_post{'a'} = 'zone_file_purge';
+                $datos_post{'tkn'} = $prontus_varglb::CLOUDFLARE_API_KEY;
+                $datos_post{'email'} = $prontus_varglb::CLOUDFLARE_EMAIL;
+                $datos_post{'z'} = $prontus_varglb::CLOUDFLARE_ZONE;
+                $datos_post{'url'} = $url_purge;
+
+                my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
+                print STDERR "[$$] global purge cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], url_purge[$url_purge], status[$err] resp[$resp]\n";
+
             };
         };
     };

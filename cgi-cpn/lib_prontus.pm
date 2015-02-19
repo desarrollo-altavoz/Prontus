@@ -1338,7 +1338,7 @@ sub load_config {
   $prontus_varglb::CLOUDFLARE_API_URL = $cloudflare_api_url;
 
   my $cloudflare_global_purge = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*("|')(.*?)("|')/) { # SI | NO
+  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*("|')(.*?)\1/sg) {
     $cloudflare_global_purge = $2;
   };
   $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE = $cloudflare_global_purge;
@@ -1935,6 +1935,13 @@ sub load_config {
     $vtxt_encode = $2;
   }
   $prontus_varglb::VTXT_ENCODE_CHARS = $vtxt_encode;
+
+  # Indica si se debe usar media_use_script en TinyMCE
+  my $vtxt_media_script = 'SI'; # Valor por defecto, funciona como siempre
+  if ($buffer =~ m/\s*VTXT_MEDIA_SCRIPT\s*=\s*("|')(SI|NO)("|')/) { # SI | NO
+    $vtxt_media_script = $2;
+  }
+  $prontus_varglb::VTXT_MEDIA_SCRIPT = $vtxt_media_script;
 
 
   # actualizaciones automaticas
@@ -3503,7 +3510,7 @@ sub parser_condicional {
         $kclaves_lc = lc $kclaves;
         $claves_lc{$kclaves_lc} = lc $claves{$kclaves};
         # next if ($kclaves =~ /vtxt/); # debug
-        # warn "kclaves[$kclaves] valor[$claves{$kclaves}]";
+        print STDERR "kclaves[$kclaves] valor[$claves{$kclaves}]\n";
     };
 
     # Parsea el condicional
@@ -3574,6 +3581,8 @@ sub parser_condicional {
                         } else {
                             $expresion = '$esta = 1 if ($claves_lc{$var} ' . $operador . ' $valor);';
                         };
+
+                        print STDERR "[$claves_lc{$var}] $operador [$valor] => $var\n";
                         eval($expresion);
                         # esta = 1 => Deja el contenido, sin poner las marcas.
                         # warn $expresion;

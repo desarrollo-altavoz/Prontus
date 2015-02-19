@@ -129,7 +129,7 @@ var Cfgedit = {
             } else if (cfg === 'list') {
                 var list_orden = '';
                 list_orden = $('select[name="LIST_ORDEN_TIPO"]').val() + '(' + $('select[name="LIST_ORDEN_ORD"]').val() + ')';
-                $('input[name="TAGPORT_ORDEN"]').val(list_orden);
+                $('input[name="LIST_ORDEN"]').val(list_orden);
             } else if (cfg === 'var') {
                 var multivista = '';
                 $('input[name="INPUT_MULTIVISTA[]"]').each(function () {

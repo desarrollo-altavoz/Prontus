@@ -1165,6 +1165,14 @@ sub parseaVars {
         $pagina =~ s/%%VTXT_ENCODE_CHARS_NO%%/ checked="checked"/ig;
     };
 
+    if ($prontus_varglb::VTXT_MEDIA_SCRIPT eq 'SI') {
+        $pagina =~ s/%%VTXT_MEDIA_SCRIPT_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%VTXT_MEDIA_SCRIPT_NO%%//ig;
+    } else {
+        $pagina =~ s/%%VTXT_MEDIA_SCRIPT_SI%%//ig;
+        $pagina =~ s/%%VTXT_MEDIA_SCRIPT_NO%%/ checked="checked"/ig;
+    };
+
     if ($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
         $pagina =~ s/%%FORM_CSV_CHARSET_1%%//ig;
         $pagina =~ s/%%FORM_CSV_CHARSET_2%%/ selected="selected"/ig;

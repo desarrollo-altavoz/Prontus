@@ -299,8 +299,8 @@
 
                 // YouTube Embed
                 if (src.match(/youtube\.com\/embed\/\w+/)) {
-                    data.width = 425;
-                    data.height = 350;
+                    data.width = (isNaN(getVal("width")) ? 425 : getVal("width"));
+                    data.height = (isNaN(getVal("height")) ? 350 : getVal("height"));
                     data.params.frameborder = '0';
                     data.type = 'iframe';
                     setVal('src', src);
@@ -308,8 +308,8 @@
                 } else {
                     // YouTube *NEW*
                     if (src.match(/youtu\.be\/[a-z1-9.-_]+/)) {
-                        data.width = 425;
-                        data.height = 350;
+                        data.width = (isNaN(getVal("width")) ? 425 : getVal("width"));
+                        data.height = (isNaN(getVal("height")) ? 350 : getVal("height"));
                         data.params.frameborder = '0';
                         data.type = 'iframe';
                         src = 'http://www.youtube.com/embed/' + src.match(/youtu.be\/([a-z1-9.-_]+)/)[1];
@@ -319,8 +319,8 @@
 
                     // YouTube
                     if (src.match(/youtube\.com(.+)v=([^&]+)/)) {
-                        data.width = 425;
-                        data.height = 350;
+                        data.width = (isNaN(getVal("width")) ? 425 : getVal("width"));
+                        data.height = (isNaN(getVal("height")) ? 350 : getVal("height"));
                         data.params.frameborder = '0';
                         data.type = 'iframe';
                         src = 'http://www.youtube.com/embed/' + src.match(/v=([^&]+)/)[1];
@@ -331,8 +331,8 @@
 
                 // Google video
                 if (src.match(/video\.google\.com(.+)docid=([^&]+)/)) {
-                    data.width = 425;
-                    data.height = 326;
+                    data.width = (isNaN(getVal("width")) ? 425 : getVal("width"));
+                    data.height = (isNaN(getVal("height")) ? 350 : getVal("height"));
                     data.type = 'flash';
                     src = 'http://video.google.com/googleplayer.swf?docId=' + src.match(/docid=([^&]+)/)[1] + '&hl=en';
                     setVal('src', src);
@@ -341,8 +341,8 @@
 
                 // Vimeo
                 if (src.match(/vimeo\.com\/([0-9]+)/)) {
-                    data.width = 425;
-                    data.height = 350;
+                    data.width = (isNaN(getVal("width")) ? 425 : getVal("width"));
+                    data.height = (isNaN(getVal("height")) ? 350 : getVal("height"));
                     data.params.frameborder = '0';
                     data.type = 'iframe';
                     src = 'http://player.vimeo.com/video/' + src.match(/vimeo.com\/([0-9]+)/)[1];
@@ -352,8 +352,8 @@
 
                 // stream.cz
                 if (src.match(/stream\.cz\/((?!object).)*\/([0-9]+)/)) {
-                    data.width = 425;
-                    data.height = 350;
+                    data.width = (isNaN(getVal("width")) ? 425 : getVal("width"));
+                    data.height = (isNaN(getVal("height")) ? 350 : getVal("height"));
                     data.params.frameborder = '0';
                     data.type = 'iframe';
                     src = 'http://www.stream.cz/object/' + src.match(/stream.cz\/[^/]+\/([0-9]+)/)[1];
@@ -363,8 +363,8 @@
 
                 // Google maps
                 if (src.match(/maps\.google\.([a-z]{2,3})\/maps\/(.+)msid=(.+)/)) {
-                    data.width = 425;
-                    data.height = 350;
+                    data.width = (isNaN(getVal("width")) ? 425 : getVal("width"));
+                    data.height = (isNaN(getVal("height")) ? 350 : getVal("height"));
                     data.params.frameborder = '0';
                     data.type = 'iframe';
                     src = 'http://maps.google.com/maps/ms?msid=' + src.match(/msid=(.+)/)[1] + "&output=embed";
@@ -434,6 +434,7 @@
         beforeResize : function() {
             this.width = parseInt(getVal('width') || (this.data.type == 'audio' ? "300" : "320"), 10);
             this.height = parseInt(getVal('height') || (this.data.type == 'audio' ? "32" : "240"), 10);
+
         },
 
         changeSize : function(type) {

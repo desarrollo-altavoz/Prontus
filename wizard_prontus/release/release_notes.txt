@@ -8113,11 +8113,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_indexer.cgi
 
 ====================================================================================================
-11.2.82 - 23/01/2015 - JOR
+11.2.82 - 18/02/2015 - JOR
 ====================================================================================================
 - Artículos
     [cambios]
         - Ahora se permite hasta 10 "prontus insert" en el cuerpo de un artículo.
+        - Se quita limitación de tamaño para videos embebidos de youtube, google y vimeo en VTXT.
     [bugfixes]
         - Se corrige generación de articulos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba
         considerando solo la primera.
@@ -8125,6 +8126,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_regenera_relac.cgi
+        /wizard_prontus/prontus_dir/core/vtxt/editor/plugins/media/js/media.js
 
 - Administración
     [mejoras]
@@ -8138,6 +8140,20 @@ Esto quedó actualizado en el check platform y detallado más abajo.
                 <!-- CONFIG CSS = estilo1.css,estilo2.css --> : Incluye una o más hojas de estilo (separadas por coma) desde el directorio
                 /<prontus_id>/cpan/custom/css
                 <!-- CONFIG JS = js1.js,js2.js --> : Incluye uno o más scripts js desde el directorio /<prontus_id>/cpan/custom/js-local
+    [cambios]
+        - Sea grega variable de configuración VTXT_MEDIA_SCRIPT que indica si se usará el embed tradicional o JavaScript en el VTXT de
+        los artículos.
+    [bugfixes]
+        - No se estaba guardando la variable LIST_ORDEN en la configuración de Listas.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/include_common.html
 
 - Portadas tagonómicas
     [mejoras]
@@ -8148,7 +8164,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             _plt_nom : nombre de la plantilla
             _plt_ext : extension de la plantilla
             _tag_fid : nombre del fid o all.
-        - Se agrega perseo condicional. Se evaluan las marcas _nropagina, _vista, _tag_id y _tag_nom
+        - Se agrega perseo condicional. Se evaluan las marcas _nropagina, _vista, _tag_id y _tag_nom (fuera del loop)
     [files]
         /cgi-cpn/prontus_tags_ports.cgi
 
@@ -8190,4 +8206,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-bin/prontus_search.cgi
 
+
+- Cloudflare
+    [bugfixes]
+        - Se soluciona problema con global purge. No era posible agregar la raíz del sitio en la configuración.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_purge_cache.cgi
 

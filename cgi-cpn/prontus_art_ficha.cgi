@@ -1614,6 +1614,12 @@ sub add_vtxt {
     $include4vtxt =~ s/%%_VTXT_PASTE_NEWLINES_AS_P%%/0/isg;
   };
 
+  if ($prontus_varglb::VTXT_MEDIA_SCRIPT eq 'SI') {
+    $include4vtxt =~ s/%%_VTXT_MEDIA_SCRIPT%%/true/isg;
+  } else {
+    $include4vtxt =~ s/%%_VTXT_MEDIA_SCRIPT%%/false/isg;
+  };
+
 
   my $custom_estilos = &get_custom_estilos($path_css_artic, 'vtxt');
   $include4vtxt =~ s/%%_CUSTOM_ESTILOS%%/$custom_estilos/isg;
