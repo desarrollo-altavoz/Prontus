@@ -293,7 +293,7 @@ sub get_artic_dirlist {
     push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_IMAG";
     push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_MMEDIA";
     push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_PAG";
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/pagspag";
+    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/pagspar";
     push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_SWF";
     push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/xml";
 
@@ -306,6 +306,12 @@ sub get_artic_dirlist {
     foreach my $mv (keys(%prontus_varglb::MULTIVISTAS)) {
         push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_PAG-$mv";
         push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/pagspar-$mv";
+
+        # Se agregan los directorios custom, pero ahora con la vista.
+        foreach my $custom_dir (keys %prontus_varglb::DROPBOX_CUSTOM_DIR) {
+            next if (!$custom_dir);
+            push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/$custom_dir-$mv";
+        };
     };
 
     # Se incluye la media externa.

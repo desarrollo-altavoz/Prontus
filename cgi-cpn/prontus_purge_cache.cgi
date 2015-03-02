@@ -24,6 +24,7 @@ use lib_prontus;
 use strict;
 use LWP::UserAgent;
 use HTTP::Response;
+use glib_fildir_02;
 
 close STDOUT;
 
@@ -42,7 +43,7 @@ main: {
     &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
     $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
-    &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
+    &glib_fildir_02::check_dir($dir_semaf) if (!-d $dir_semaf);
 
     if (-f "$dir_semaf/purge_cache.lck") {
         my $pid = &glib_fildir_02::read_file("$dir_semaf/purge_cache.lck");
@@ -99,7 +100,7 @@ main: {
             print STDERR "[$$] Buscando si hay mas archivos...\n";
             @files = glob("$dir_purgepend/*.txt");
 
-            sleep 5;
+            sleep 5; # para evitar bloqueos de la API. 4.5 - "zone_file_purge" -- Purge a single file in CloudFlare's cache
         };
     };
 
@@ -123,25 +124,37 @@ sub valida_params {
 sub purge {
     my ($path_file) = shift;
     my $purge_cloudflare = 0;
+    my $only_cloudflare = 0;
 
     if ($prontus_varglb::CLOUDFLARE eq 'SI' && $prontus_varglb::CLOUDFLARE_API_URL ne '' && $prontus_varglb::CLOUDFLARE_API_KEY ne '' && $prontus_varglb::CLOUDFLARE_EMAIL ne '' && $prontus_varglb::CLOUDFLARE_ZONE ne '') {
         $purge_cloudflare = 1;
     };
 
+    if ($path_file =~ /_cf\.txt$/i) {
+        $only_cloudflare = 1;
+    };
+
     open (PURGEFILE, "<$path_file");
+
     foreach my $filetopurge (<PURGEFILE>) {
         if (!-f $path_file) {
             print STDERR "[$$] Abortado, el archivo [$path_file] ya no existe.\n";
             unlink "$dir_semaf/purge_cache.lck";
             exit;
         };
+
         $filetopurge =~ s/\n//is;
         my $relpath = &lib_prontus::remove_front_string($filetopurge, $prontus_varglb::DIR_SERVER);
-        foreach my $server (keys %prontus_varglb::VARNISH_SERVER_NAME) {
-            next if (!$server);
-            my $url_purge = "http://$server$relpath";
-            my ($resp, $err) = &get_url($url_purge);
-            print STDERR "[$$] varnish: server[$server], url_purge[$url_purge], status[$err]\n";
+
+        if (!$only_cloudflare) { # si no es solo cloudflare, se hace purge normal a varnish.
+            foreach my $server (keys %prontus_varglb::VARNISH_SERVER_NAME) {
+                next if (!$server);
+                my $url_purge = "http://$server$relpath";
+                my ($resp, $err) = &get_url($url_purge);
+                print STDERR "[$$] varnish: server[$server], url_purge[$url_purge], status[$err]\n";
+            };
+        } else {
+                print STDERR "[$$] purge_cloudflare[$purge_cloudflare] only_cloudflare[$only_cloudflare]\n";
         };
 
         if ($purge_cloudflare) {
@@ -161,7 +174,6 @@ sub purge {
 
     };
 
-
     close PURGEFILE;
 
     # Se intenta realizar el Global Purge, si aplica
@@ -178,7 +190,7 @@ sub purge {
         };
     };
 
-    if ($purge_cloudflare) {
+    if ($purge_cloudflare && !$only_cloudflare) {
         if ($prontus_varglb::CLOUDFLARE_GLOBAL_PURGE) {
             my @arr = split(/[\n\r]/, $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE);
             foreach my $path (@arr) {

@@ -83,8 +83,6 @@
     </form>
     <br/>
     <br/>
-    <br/>
-    <br/>
     <div class="botones">
         <div class="boton-gris3 aright">
             <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
@@ -100,5 +98,46 @@
     <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
         <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
     </div>
+
+    <br/>
+    <br/>
+
+    <table class="tableform" width="100%">
+        <tr class="head">
+            <td colspan="2">Utilidades</td>
+        </tr>
+        <tr>
+            <td style="width: 300px;" valign="top">
+            Limpieza total de caché de CloudFlare<br/>
+            <span class="ayuda">Se hará purge a todos los archivos cacheados en CloudFlare. Puede tomar hasta 48 horas para que el cache se reconstruya. Usar con precaución.
+            </span>
+            </td>
+            <td>
+                <div class="boton-gris3 ">
+                    <a onclick="Cfgedit.cloudFlarePurgeAll(); return false;" href="#" class="button" title="Limpiar caché de CloudFlare">
+                        <span>Limpiar caché de CloudFlare</span>
+                    </a>
+                </div>
+                <br/>
+                <span class="ayuda">Esta función se puede ejecutar solo 5 veces por minuto.</span>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 300px;" valign="top">
+            Limpiar caché de CloudFlare de uno o más archivos<br/>
+            <span class="ayuda">Se hará purge a cada uno de los archivos indicados. Uno por linea, solo rutas relativas, sin http, con un máximo de 100.</span>
+            </td>
+            <td>
+                <textarea cols="80" rows="8" class="fieldform" id="purge_files"></textarea>
+                <br/>
+                <div class="boton-gris3 ">
+                    <a onclick="Cfgedit.cloudFlarePurgeFiles(); return false;" href="#" class="button" title="Limpiar caché de archivos">
+                        <span>Limpiar caché de archivos</span>
+                    </a>
+                </div>
+                <br/>
+            </td>
+        </tr>
+    </table>
 </div> <!--/listado-->
 

@@ -442,4 +442,69 @@ var Cfgedit = {
         $.fn.colorbox(obj);
     },
 
+    cloudFlarePurgeAll: function () {
+        var msg = '¿Estás seguro? Esta operación no se puede revertir ni detener.';
+
+        if (confirm(msg)) {
+            $.ajax({
+                url: 'prontus_cloudflare_purge.cgi',
+                data: {
+                    purge_all: '1',
+                    _path_conf: Admin.prontus_id
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function (json) {
+                    if (typeof json.status !== 'undefined') {
+                        if (json.status === 1) {
+                            alert('Se inició el proceso de limpieza. Esto puede tardar varios minutos en completarse.');
+                        } else {
+                            alert(json.msg);
+                        }
+                    }
+                },
+
+                error:   function(XMLHttpRequest, textStatus, errorThrown) {
+                    SubmitForm.handleError('prontus_cloudflare_purge.cgi', XMLHttpRequest, textStatus, errorThrown);
+                }
+            });
+        }
+    },
+
+    cloudFlarePurgeFiles: function () {
+        var msg = '¿Estás seguro? Esta operación no se puede revertir ni detener.';
+        var purge_files = $('#purge_files').val();
+
+        if (!purge_files) {
+            alert("La lista de archivos está vacia.");
+            return;
+        }
+
+        if (confirm(msg)) {
+            $.ajax({
+                url: 'prontus_cloudflare_purge.cgi',
+                data: {
+                    purge_files: purge_files,
+                    _path_conf: Admin.prontus_id
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function (json) {
+                    if (typeof json.status !== 'undefined') {
+                        if (json.status === 1) {
+                            alert('Se inició el proceso de limpieza. Esto puede tardar unos minutos en completarse.');
+                        } else {
+                            alert(json.msg);
+                        }
+                    }
+                },
+
+                error:   function(XMLHttpRequest, textStatus, errorThrown) {
+                    SubmitForm.handleError('prontus_cloudflare_purge.cgi', XMLHttpRequest, textStatus, errorThrown);
+                }
+            });
+        }
+
+    }
+
 };

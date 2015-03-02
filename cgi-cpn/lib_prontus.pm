@@ -6399,6 +6399,7 @@ sub dropbox_backup {
     my $file = "$dir_dropbox/$^T_$pid.txt";
 
     &glib_fildir_02::check_dir($dir_dropbox) if (! -d $dir_dropbox);
+    &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
 
     open(FILE, ">>$file");
     print FILE $recurso . "\n";
@@ -6425,12 +6426,25 @@ sub dropbox_backup {
 
 # ---------------------------------------------------------------
 sub purge_cache {
-    my ($path_file) = shift;
+    my $path_file = $_[0];
+    my $only_cloudflare = $_[1];
     my $servers = (keys %prontus_varglb::VARNISH_SERVER_NAME);
 
     return if (!$servers && $prontus_varglb::CLOUDFLARE ne 'SI');
 
     my $relpath = &remove_front_string($path_file, $prontus_varglb::DIR_SERVER);
+
+    # Esto es para hacer purge solo de cloudflare.
+    if ($only_cloudflare) {
+        my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
+        &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);
+        my $pid = $$;
+        open(PURGEFILE, ">>$dir_pend/$^T_$pid\_cf.txt");
+        print PURGEFILE $relpath . "\n";
+        close PURGEFILE;
+
+        return;
+    };
 
     if ($relpath !~ /\/site\/tax\/port\//is) {
         my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
@@ -6576,9 +6590,19 @@ sub set_exclude_port_table {
 };
 
 sub call_purge_proc {
-    my $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$.txt";
+    my $only_cloudflare = $_[0];
+    my $file_pend;
+
+    if ($only_cloudflare) {
+      $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$\_cf.txt";
+    } else {
+      $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$.txt";
+    };
+
     my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
     my $semaf_purge_cache = "$dir_semaf/purge_cache.lck";
+
+    &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
 
     if (-f $semaf_purge_cache) {
         my $mtime = (stat($semaf_purge_cache))[9];

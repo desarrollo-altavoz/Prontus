@@ -8113,12 +8113,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_indexer.cgi
 
 ====================================================================================================
-11.2.82 - 18/02/2015 - JOR
+11.2.82 - 02/03/2015 - JOR
 ====================================================================================================
 - Artículos
     [cambios]
         - Ahora se permite hasta 10 "prontus insert" en el cuerpo de un artículo.
-        - Se quita limitación de tamaño para videos embebidos de youtube, google y vimeo en VTXT.
+        - Se quita limitación de dimensiones para videos embebidos de youtube, google y vimeo en VTXT.
     [bugfixes]
         - Se corrige generación de articulos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba
         considerando solo la primera.
@@ -8206,12 +8206,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-bin/prontus_search.cgi
 
-
 - Cloudflare
     [bugfixes]
         - Se soluciona problema con global purge. No era posible agregar la raíz del sitio en la configuración.
+    [mejoras]
+        - Se agrega opción para hacer purge desde panel de control de Prontus.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_cfg_save.cgi
         /cgi-cpn/prontus_purge_cache.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        /cgi-cpn/prontus_cloudflare_purge.cgi
+
 
