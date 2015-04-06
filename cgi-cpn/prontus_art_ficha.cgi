@@ -1441,6 +1441,14 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $pag =~ s/%%_fileurlinfo%%/Friendly URLs no se encuentran activadas/ig;
   };
 
+  if ($prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC eq 'SI') {
+    my $protocolo = "http";
+    $protocolo = "https" if ($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI');
+    $pag =~ s/%%_fileurl_abs%%/$protocolo:\/\/$prontus_varglb::PUBLIC_SERVER_NAME$fileurl/ig;
+  } else {
+    $pag =~ s/%%_fileurl_abs%%/$fileurl/ig;
+  };
+
   $pag = &lib_prontus::parse_includes($prontus_varglb::DIR_SERVER, $pag);
   return $pag;
 

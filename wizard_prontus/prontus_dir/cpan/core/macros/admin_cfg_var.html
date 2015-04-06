@@ -117,6 +117,20 @@
 
                                     <tr>
                                         <td style="width: 300px;" valign="top">
+                                            USAR_PUBLIC_SERVER_NAME_VER_ARTIC<br>
+                                            <span class="ayuda">Define si al hacer click en "Ver Artículo" desde el FID se usará la ruta absoluta del artículo usando el nombre del servidor (PUBLIC_SERVER_NAME).<br/>Por ejemplo:<br/> http://%%PUBLIC_SERVER_NAME%%/%%_PRONTUS_ID%%/site/artic/...<br/>
+                                            Por defecto se utiliza la ruta relativa.
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI" value="SI"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO" value="NO"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO">NO</label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
                                             COMENTARIOS<br>
                                             <span class="ayuda">Habilita o deshabilita el sistema de comentarios.</span>
                                         </td>
@@ -211,6 +225,15 @@
                                                 Nota: El prontus_id no puede tener guión bajo (_).
                                             </span>
                                             <br/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FRIENDLY_URLS_LARGO_TITULAR<br>
+                                            <span class="ayuda">Define el largo máximo que tendrá el titular en las Friendly URL. Se recomienda no exceder los 75 caracteres.</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="FRIENDLY_URLS_LARGO_TITULAR" class="fieldform" value="%%FRIENDLY_URLS_LARGO_TITULAR%%" style="width: 125px;" maxlength="3" />
                                         </td>
                                     </tr>
                                     <tr>

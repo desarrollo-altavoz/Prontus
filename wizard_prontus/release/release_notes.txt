@@ -8113,12 +8113,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_indexer.cgi
 
 ====================================================================================================
-11.2.82 - 02/03/2015 - JOR
+11.2.82 - 06/04/2015 - JOR
 ====================================================================================================
 - Artículos
     [cambios]
         - Ahora se permite hasta 10 "prontus insert" en el cuerpo de un artículo.
         - Se quita limitación de dimensiones para videos embebidos de youtube, google y vimeo en VTXT.
+        - Se limita el largo del titular en las friendly url a 75 caracteres por defecto. Este valor se puede cambiar
+        en la variable de configuración FRIENDLY_URLS_LARGO_TITULAR en Administración > Configuráción > Variables generales.
+
     [bugfixes]
         - Se corrige generación de articulos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba
         considerando solo la primera.
@@ -8126,7 +8129,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_regenera_relac.cgi
+        /cgi-cpn/lib_prontus.pm
         /wizard_prontus/prontus_dir/core/vtxt/editor/plugins/media/js/media.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
 
 - Administración
     [mejoras]
@@ -8141,8 +8148,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
                 /<prontus_id>/cpan/custom/css
                 <!-- CONFIG JS = js1.js,js2.js --> : Incluye uno o más scripts js desde el directorio /<prontus_id>/cpan/custom/js-local
     [cambios]
-        - Sea grega variable de configuración VTXT_MEDIA_SCRIPT que indica si se usará el embed tradicional o JavaScript en el VTXT de
+        - Se agrega variable de configuración VTXT_MEDIA_SCRIPT que indica si se usará el embed tradicional o JavaScript en el VTXT de
         los artículos.
+        - Se agrega variable de configuración USAR_PUBLIC_SERVER_NAME_VER_ARTIC que define si al hacer click en "Ver Artículo" desde el FID se usará la ruta absoluta del artículo usando el nombre del servidor (PUBLIC_SERVER_NAME). Por defecto se usa la ruta relativa.
     [bugfixes]
         - No se estaba guardando la variable LIST_ORDEN en la configuración de Listas.
     [files]
@@ -8154,6 +8162,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
         /wizard_prontus/prontus_dir/cpan/core/vtxt/include_common.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_botones.html
 
 - Portadas tagonómicas
     [mejoras]
@@ -8211,6 +8220,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se soluciona problema con global purge. No era posible agregar la raíz del sitio en la configuración.
     [mejoras]
         - Se agrega opción para hacer purge desde panel de control de Prontus.
+    [cambios]
+        - Se introduce delay de 1 segundo entre cada purge para no execeder el límite impuesto por la API.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_cfg_save.cgi

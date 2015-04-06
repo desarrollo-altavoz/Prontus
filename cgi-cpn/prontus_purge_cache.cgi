@@ -170,6 +170,9 @@ sub purge {
             my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
 
             print STDERR "[$$] cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], url_purge[$url_purge], status[$err] resp[$resp]\n";
+
+            # Un purge por segundo, para evitar excender límite.
+            sleep 1;
         };
 
     };
@@ -209,6 +212,8 @@ sub purge {
                 my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
                 print STDERR "[$$] global purge cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], url_purge[$url_purge], status[$err] resp[$resp]\n";
 
+                # Un purge por segundo, para evitar excender límite.
+                sleep 1;
             };
         };
     };

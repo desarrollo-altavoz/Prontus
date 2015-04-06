@@ -1270,6 +1270,12 @@ sub load_config {
     $friendly_urls_version = $2;
   };
 
+  my $friendly_urls_largo_titular = '75'; # valor por defecto.
+  if ($buffer =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $friendly_urls_largo_titular = $2;
+  };
+  $friendly_urls_largo_titular = '75' if (!$friendly_urls_largo_titular);
+
   # Dropbox.
   my $dropbox = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*DROPBOX\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -1959,6 +1965,13 @@ sub load_config {
   };
   $prontus_varglb::ABRIR_FIDS_EN_POP = $abrir_fids_en_pop;
 
+  # Para usar nombre del servidor al ver un articulo desde el FID.
+  my $usar_public_server_name_ver_artic = 'NO';
+  if ($buffer =~ m/\s*USAR_PUBLIC_SERVER_NAME_VER_ARTIC\s*=\s*("|')(.*?)("|')/) { # SI | NO
+   $usar_public_server_name_ver_artic = $2;
+  };
+  $prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC = $usar_public_server_name_ver_artic;
+
   $num_relac_default = 5; # valor default
   if ($buffer =~ m/\s*NUM_RELAC_DEFAULT\s*=\s*("|')(\d+?)("|')/) {
    $num_relac_default = $2;
@@ -2256,6 +2269,7 @@ sub load_config {
 
   $prontus_varglb::FRIENDLY_URLS = $friendly_urls;
   $prontus_varglb::FRIENDLY_URLS_VERSION = $friendly_urls_version;
+  $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $friendly_urls_largo_titular;
 
   $prontus_varglb::MAX_NRO_ARTIC = $max_nro_artic;
 
@@ -4943,6 +4957,10 @@ sub parse_filef {
   return $buffer if (!$ts || !$prontus_id || !$titular);
   return $buffer unless($buffer =~ /%%_FILEURL%%/i);
 
+  # Ajusta largo de titular para friendly.
+  $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
+  $titular =~ s/...$//sg;
+
   my $ext;
   $ext = $1 if ($relpath_artic =~ /\.(\w+)$/);
   $titular = &saca_tags_rets($titular);
@@ -6318,8 +6336,8 @@ sub set_coreplt_ppal {
 };
 # ---------------------------------------------------------------
 sub get_url {
-use LWP::UserAgent;
-use HTTP::Response;
+  use LWP::UserAgent;
+  use HTTP::Response;
 
   my($url) = $_[0];
   my ($espera_segs) = $_[1];

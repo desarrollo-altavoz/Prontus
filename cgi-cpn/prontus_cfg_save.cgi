@@ -95,6 +95,7 @@ main: {
     #$hash_defaultvars{'var'}{'ACTUALIZACION_MASIVA'} = 'ACTUALIZACION_MASIVA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3);1;U';
+    $hash_defaultvars{'var'}{'FRIENDLY_URLS_LARGO_TITULAR'} = 'FRIENDLY_URLS_LARGO_TITULAR;^(\d+)$;1;U';
     $hash_defaultvars{'var'}{'COMENTARIOS'} = 'COMENTARIOS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'DROPBOX'} = 'DROPBOX;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'CLOUDFLARE'} = 'CLOUDFLARE;(SI|NO);NO;U';
@@ -114,6 +115,7 @@ main: {
     $hash_defaultvars{'var'}{'UPLOADS_EXTRAS'} = 'UPLOADS_EXTRAS;(\w+);;U';
     $hash_defaultvars{'var'}{'DIR_FFMPEG'} = 'DIR_FFMPEG;(\w+);;U';
     $hash_defaultvars{'var'}{'ABRIR_FIDS_EN_POP'} = 'ABRIR_FIDS_EN_POP;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'USAR_PUBLIC_SERVER_NAME_VER_ARTIC'} = 'USAR_PUBLIC_SERVER_NAME_VER_ARTIC;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'SCRIPT_QUOTA'} = 'SCRIPT_QUOTA;(\w+);;U';
     $hash_defaultvars{'var'}{'FOTO_MAX_PIXEL'} = 'FOTO_MAX_PIXEL;(.*?);;U';
     $hash_defaultvars{'var'}{'FFMPEG_PARAMS'} = 'FFMPEG_PARAMS;(.*?);;U';

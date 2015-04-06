@@ -1069,6 +1069,8 @@ sub parseaVars {
     $pagina =~ s/%%CLOUDFLARE_API_URL%%/$prontus_varglb::CLOUDFLARE_API_URL/ig;
     $pagina =~ s/%%CLOUDFLARE_GLOBAL_PURGE%%/$prontus_varglb::CLOUDFLARE_GLOBAL_PURGE/ig;
 
+    $pagina =~ s/%%FRIENDLY_URLS_LARGO_TITULAR%%/$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR/ig;
+
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URLS_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URLS_NO%%//ig;
@@ -1231,10 +1233,18 @@ sub parseaVars {
 
     if ($prontus_varglb::ABRIR_FIDS_EN_POP eq 'SI') {
         $pagina =~ s/%%ABRIR_FIDS_EN_POP_SI%%/ checked="checked"/ig;
-        $pagina =~ s/%%ABRIR_FIDS_EN_PO_NOP%%//ig;
+        $pagina =~ s/%%ABRIR_FIDS_EN_POP_NO%%//ig;
     } else {
         $pagina =~ s/%%ABRIR_FIDS_EN_POP_SI%%//ig;
         $pagina =~ s/%%ABRIR_FIDS_EN_POP_NO%%/ checked="checked"/ig;
+    };
+
+    if ($prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC eq 'SI') {
+        $pagina =~ s/%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NOP%%//ig;
+    } else {
+        $pagina =~ s/%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI%%//ig;
+        $pagina =~ s/%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO%%/ checked="checked"/ig;
     };
 
     $pagina =~ s/%%VARNISH_GLOBAL_PURGE%%/$prontus_varglb::VARNISH_GLOBAL_PURGE/ig;
