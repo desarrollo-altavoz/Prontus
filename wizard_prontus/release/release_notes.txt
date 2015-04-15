@@ -8113,7 +8113,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_indexer.cgi
 
 ====================================================================================================
-11.2.82 - 06/04/2015 - JOR
+11.2.82 - 15/04/2015 - JOR/EAG
 ====================================================================================================
 - Artículos
     [cambios]
@@ -8121,11 +8121,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se quita limitación de dimensiones para videos embebidos de youtube, google y vimeo en VTXT.
         - Se limita el largo del titular en las friendly url a 75 caracteres por defecto. Este valor se puede cambiar
         en la variable de configuración FRIENDLY_URLS_LARGO_TITULAR en Administración > Configuráción > Variables generales.
-
+        - Se comenta mensaje de debug en la ejecución de prontus functions.
     [bugfixes]
         - Se corrige generación de articulos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba
         considerando solo la primera.
         - Se elimina generación de relacionados sin taxonomía, por ejemplo: ___art_relac.html
+        - Se soluciona problema que ocurŕía al arrastrar fotos del banco de imágenes a campos de fotofija en firefox. El navegador se cerraba de manera inesperada.
+        - Se soluciona
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_regenera_relac.cgi
@@ -8134,6 +8136,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
         /cgi-cpn/prontus_cfg_save.cgi
         /cgi-cpn/prontus_admin_main.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
 
 - Administración
     [mejoras]
@@ -8227,7 +8230,18 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cfg_save.cgi
         /cgi-cpn/prontus_purge_cache.cgi
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
-        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        /wizard_prontuges/prontus_dir/cpan/core/js-local/Cfgedit.class.js
         /cgi-cpn/prontus_cloudflare_purge.cgi
 
+- Prontus en general
+    [bugfixes]
+        - No se estaban evaluando las variables adicionales (_ts, _totartics, _loopcounter, _area) al parsear condicional NIF.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Transcoding
+    [cambios]
+        - Se parametrizó el nombre de la marca de video.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
 

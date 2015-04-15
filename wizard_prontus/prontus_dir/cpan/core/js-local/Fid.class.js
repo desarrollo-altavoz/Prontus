@@ -507,7 +507,6 @@ var Fid = {
     // excepto su capacidad de edicion, porque no resulta cuando esta hidden.
     // Lo anterior se hace al hacer click en los tabs
     initFotoFija: function(iframe, content) {
-
         if (content === '') {
             content = '&nbsp;';
         }
@@ -564,11 +563,12 @@ var Fid = {
                     // A contar de Firefox 11
                     // this.contentDocument.designMode = 'on';
                     // this.contentWindow.document.contentEditable = true;
-                    if(Fid.isMac) {
+                    if (Fid.isMac) {
                         bodyiframe.contentEditable = true;
                         bodyiframe.addEventListener("click", Fid.cancel_event, true );
                         bodyiframe.addEventListener("keydown", Fid.cancel_event, true );
                         bodyiframe.addEventListener("dragover", function(_event) {
+                            bodyiframe.focus();
                             _event.stopPropagation();
                             _event.preventDefault();
 
@@ -585,6 +585,9 @@ var Fid = {
                         bodyiframe.contentEditable = true;
                         bodyiframe.addEventListener("onclick", Fid.cancel_event);
                         bodyiframe.addEventListener("onkeydown", Fid.cancel_event);
+                        bodyiframe.addEventListener("dragover", function(_event) {
+                            bodyiframe.focus();
+                        }, false);
                     }
                 } else {
                     bodyiframe.contentEditable = true;

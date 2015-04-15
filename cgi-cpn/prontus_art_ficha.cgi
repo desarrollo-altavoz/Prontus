@@ -1391,8 +1391,9 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
   # Para el total de imagenes del banco de imagenes
   my $txt_total_fotos;
-  $txt_total_fotos = "Total de im&aacute;genes: $nro_fotos_banco" if($nro_fotos_banco);
+  $txt_total_fotos = "Total de im&aacute;genes: $nro_fotos_banco" if ($nro_fotos_banco);
   $pag =~ s/%%TOTAL_BANCO_IMAGENES%%/$txt_total_fotos/ig;
+  $pag =~ s/%%NRO_TOTAL_BANCO_IMAGENES%%/$nro_fotos_banco/ig;
 
   # Para el mensaje de que faltan imagenes
   if($nro_fotos_banco > $prontus_varglb::BANCO_IMG_MAX) {

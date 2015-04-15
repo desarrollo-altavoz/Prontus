@@ -10,6 +10,7 @@ var Transcoding, Msg, Flash;
         panelVideo: '.panel-xcode',
         idVideo: '#linkVideo',
         panelStatus: '#panelStatus',
+        idMultimediaVideo: '#MULTIMEDIA_VIDEO1',
 
         dirCgi: './xcoding/',
         cgiCode: 'prontus_videoxcode.cgi',
@@ -37,7 +38,6 @@ var Transcoding, Msg, Flash;
                 return;
             }
             $(Transcoding.idVideo + ' a:first').each(function () {
-
                 if (Transcoding.initialized) {
                     if(! Transcoding.transcoding) {
                         return;
@@ -93,6 +93,9 @@ var Transcoding, Msg, Flash;
                                 Transcoding.procesarVideo(1);
                             } else if (data.msg == 'Xcoding') {
                                 Transcoding.checkStatus();
+                            } else if (data.msg == 'RECODE') {
+                                Msg.setStatusMessage('El video mp4 tiene un bitrate muy alto y necesita ser ajustado para su correcta reproducción, por favor espere mientras es procesado.');
+                                Transcoding.procesarVideo();
                             } else {
                                 Msg.setAlertMessage('Se ha producido un error:<br/> Respuesta no válida');
                             }
@@ -155,7 +158,7 @@ var Transcoding, Msg, Flash;
         // -------------------------------------------------------------------------
         procesarVideo: function (generar_versiones) {
             var opciones = {
-                video: Transcoding.linkVideo, 
+                video: Transcoding.linkVideo,
                 prontus_id: Admin.prontus_id,
                 generar_versiones: 0,
             };
@@ -312,7 +315,7 @@ var Transcoding, Msg, Flash;
         validarVideo: function () {
             var file, idx, ext;
 
-            file = $('#MULTIMEDIA_VIDEO1').val();
+            file = $(Transcoding.idMultimediaVideo).val();
             if (file !== '') {
                 idx = file.lastIndexOf('.');
                 if (idx < 0) {

@@ -3524,7 +3524,7 @@ sub parser_condicional {
         $kclaves_lc = lc $kclaves;
         $claves_lc{$kclaves_lc} = lc $claves{$kclaves};
         # next if ($kclaves =~ /vtxt/); # debug
-        print STDERR "kclaves[$kclaves] valor[$claves{$kclaves}]\n";
+        #print STDERR "kclaves[$kclaves] valor[$claves{$kclaves}]\n";
     };
 
     # Parsea el condicional
@@ -3586,7 +3586,7 @@ sub parser_condicional {
 
                         if ($valor =~ /\w+/ && defined $vars_adicionales{$valor}) {
                           $valor = $vars_adicionales{$valor};
-                        }
+                        };
 
                         $operador = '==' if ($operador eq '=');
                         my $expresion;
@@ -3596,7 +3596,7 @@ sub parser_condicional {
                             $expresion = '$esta = 1 if ($claves_lc{$var} ' . $operador . ' $valor);';
                         };
 
-                        print STDERR "[$claves_lc{$var}] $operador [$valor] => $var\n";
+                        #print STDERR "[$claves_lc{$var}] $operador [$valor] => $var\n";
                         eval($expresion);
                         # esta = 1 => Deja el contenido, sin poner las marcas.
                         # warn $expresion;
@@ -3610,6 +3610,11 @@ sub parser_condicional {
                     if ($var =~ /($lib_prontus::IF_OPERATORS)/) {
                         my $operador = $1;
                         my ($nombre,$valor) = split(/ *$operador */,$var,2);
+
+                        if ($valor =~ /\w+/ && defined $vars_adicionales{$valor}) {
+                          $valor = $vars_adicionales{$valor};
+                        };
+
                         $operador = '==' if ($operador eq '=');
                         my $expresion;
                         if ($operador eq '~') {
@@ -5556,7 +5561,7 @@ sub parser_custom_function {
       my $sentencia = '$result = &lib_custom::' . $newfunction;
       $sentencia .= ';' if ($sentencia !~ /;$/);
 
-      print STDERR "sentencia[$sentencia]\n";
+      #print STDERR "sentencia[$sentencia]\n";
 
       eval($sentencia);
       if ($@) {
