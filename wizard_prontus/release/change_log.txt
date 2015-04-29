@@ -1,4 +1,34 @@
 ====================================================================================================
+11.2.82 - 29/04/2015
+====================================================================================================
+- improvement: Al utilizar un script de cálculo de quota externo, es posible entregar un mensaje adaptado.
+- changes: Se parametrizó el nombre de la marca de video en javascript de transcodificación.
+- bugfix: No se estaban evaluando las variables adicionales (_ts, _totartics, _loopcounter, _area) al parsear condicional NIF.
+- improvement: Se agrega opción para hacer purge desde panel de control de Prontus.
+- bugfix: Se soluciona problema con global purge. No era posible agregar la raíz del sitio en la configuración.
+- changes: Se introduce delay entre cada purge de cloudflare para no exceder límites de API.
+- bugfix: Se soluciona problema con redirección a caché de la búsqueda. Se agrega la cabecera "Status: 302 Found" antes de hacer el Location.
+- bugfix: Al regenerar las portadas taxonómicas con menos artículos que antes las páginas remanentes no se eliminaban.
+- bugfix: Se soluciona problema con regeneración de portadas taxónomica. Al ejecutar multiples procesos los semáforos impedían que se generararn todos los niveles taxonómicos.
+- bugfix: Se soluciona problema con fork de procesos.
+- changes: Se parsean nuevas marcas en las portadas taxonómica. Más información en release notes.
+- improvement: Nueva funcionalidad para filtrar artículos en las taxport. Se aplica a un directorio de plantilla que debe tener un nombre especial. Más información en release notes.
+- bugfix: No se estaban regenerando las portadas tagonómicas asociadas a un artículo al ser eliminado.
+- improvement: Se agrega soporte para macros en las portadas tagonómicas.
+- improvement: Se parsean nuevas marcas en las portadas tagonomicas. Más información en release notes.
+- bugfix: No se estaba guardando la variable LIST_ORDEN en la configuración de Listas (GUI).
+- changes: Se agrega variable de configuración VTXT_MEDIA_SCRIPT que indica si se usará el embed tradicional o JavaScript en el VTXT de los artículos.
+- changes: Se agrega variable de configuración USAR_PUBLIC_SERVER_NAME_VER_ARTIC, que define si al hacer click en "Ver Artículo" desde el FID se usará la ruta absoluta del artículo usando el nombre del servidor (PUBLIC_SERVER_NAME). Por defecto se usa la ruta relativa.
+- improvement: Nueva funcionalidad que permite agregar una pestaña custom a la sección de Administración.
+- bugfix: Se corrige generación de articulos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba considerando solo la primera.
+- bugfix: Se elimina generación de relacionados sin taxonomía, por ejemplo: ___art_relac.html
+- bugfix: Se soluciona problema que ocurría al arrastrar fotos del banco de imágenes a campos de fotofija en firefox. El navegador se cerraba de manera inesperada.
+- changes: Ahora se permite hasta 10 "prontus insert" en el cuerpo de un artículo.
+- changes: Se quita limitación de dimensiones para videos embebidos de youtube, google y vimeo en VTXT.
+- changes: Se limita el largo del titular en las friendly url a 75 caracteres por defecto. Este valor se puede cambiar en la variable de configuración FRIENDLY_URLS_LARGO_TITULAR en Administración > Configuráción > Variables generales.
+- changes: Se comenta mensaje de debug en la ejecución de prontus functions.
+
+====================================================================================================
 11.2.81 - 26/11/2014
 ====================================================================================================
 - improvement: Se agrega soporte de cache CloudFlare.
