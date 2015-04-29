@@ -1276,6 +1276,12 @@ sub load_config {
   };
   $friendly_urls_largo_titular = '75' if (!$friendly_urls_largo_titular);
 
+  my $comentarios = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*COMENTARIOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $comentarios = $2;
+  };
+  $prontus_varglb::COMENTARIOS = $comentarios;
+
   # Dropbox.
   my $dropbox = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*DROPBOX\s*=\s*("|')(.*?)("|')/) { # SI | NO

@@ -25,6 +25,7 @@ use strict;
 use LWP::UserAgent;
 use HTTP::Response;
 use glib_fildir_02;
+use Time::HiRes qw(sleep);
 
 close STDOUT;
 
@@ -56,6 +57,7 @@ main: {
             if ($diff > 1800) { # 30 minutos.
                 print STDERR "[$$] Semaforo muy antiguo, eliminando...";
                 unlink "$dir_semaf/purge_cache.lck";
+                system("kill -9 $pid"); # matar proceso.
             } else {
                 my $ret = `ps p $pid | grep prontus_purge_cache | grep -v grep`;
                 if ($ret) {
@@ -99,8 +101,6 @@ main: {
         if ($#files <= 0) {
             print STDERR "[$$] Buscando si hay mas archivos...\n";
             @files = glob("$dir_purgepend/*.txt");
-
-            sleep 5; # para evitar bloqueos de la API. 4.5 - "zone_file_purge" -- Purge a single file in CloudFlare's cache
         };
     };
 
@@ -135,6 +135,8 @@ sub purge {
     };
 
     open (PURGEFILE, "<$path_file");
+
+    my $counter_cf = 0;
 
     foreach my $filetopurge (<PURGEFILE>) {
         if (!-f $path_file) {
@@ -171,10 +173,17 @@ sub purge {
 
             print STDERR "[$$] cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], url_purge[$url_purge], status[$err] resp[$resp]\n";
 
-            # Un purge por segundo, para evitar excender límite.
-            sleep 1;
-        };
+            $counter_cf++;
 
+            if ($counter_cf >= 100) {
+                $counter_cf = 0;
+                print STDERR "[$$] api rate limit! sleep 60 segundos...\n"
+                sleep 60; # There is a rate limit for file purges of 100 per minute. Exceeding this limit will return an error in the JSON response.
+            } else {
+                sleep 0.5; # para no bombardear la api.
+            };
+
+        };
     };
 
     close PURGEFILE;
@@ -212,8 +221,15 @@ sub purge {
                 my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
                 print STDERR "[$$] global purge cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], url_purge[$url_purge], status[$err] resp[$resp]\n";
 
-                # Un purge por segundo, para evitar excender límite.
-                sleep 1;
+                $counter_cf++;
+
+                if ($counter_cf >= 100) {
+                    $counter_cf = 0;
+                    print STDERR "[$$] api rate limit! sleep 60 segundos...\n"
+                    sleep 60; # There is a rate limit for file purges of 100 per minute. Exceeding this limit will return an error in the JSON response.
+                } else {
+                    sleep 0.5; # para no bombardear la api.
+                };
             };
         };
     };

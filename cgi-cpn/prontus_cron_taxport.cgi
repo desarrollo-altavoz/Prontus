@@ -111,6 +111,8 @@ close STDOUT;
 # MAIN.
 # ---------------------------------------------------------------
 
+$SIG{CHLD} = "IGNORE";
+
 my %ART_XML_FIELDS;
 my %ART_XDATA_FIELDS;
 

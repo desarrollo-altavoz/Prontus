@@ -35,7 +35,7 @@ use prontus_varglb; &prontus_varglb::init();
 use lib_prontus;
 use lib_dropbox;
 
-#close STDOUT;
+close STDOUT;
 
 my %FORM;
 my $DIR_SEMAF;

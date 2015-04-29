@@ -1331,6 +1331,12 @@ sub borra_artic {
     my $dirswf      = $this->{dst_swf};
     my $dirmmedia   = $this->{dst_multimedia};
 
+    use FindBin '$Bin';
+    my $rutaScript = $Bin;
+
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if($pathnice);
+
     # Borra paginas generadas
     my @files2delete = glob("$dirpag/$ts" . '.*');
     foreach my $file2delete (@files2delete) {
@@ -1401,8 +1407,10 @@ sub borra_artic {
     # Desasocia tags al artic y los regenera
     my $sql_deltag = "delete from TAGSART where TAGSART_IDART='$ts'";
     $base->do($sql_deltag);
+    my $tags_data;
+
     if ($buffer_artic =~ /<_tags>(.+?)<\/_tags>/is) {
-        my $tags_data = $1;
+        $tags_data = $1;
         &lib_artic::generar_relacionados_tagging($base, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO", $tags_data);
     };
 
@@ -1443,23 +1451,27 @@ sub borra_artic {
         };
     };
 
-    $base->disconnect;
-
-    # Borra cache listas de articulo
-    &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
-
-    use FindBin '$Bin';
-    my $rutaScript = $Bin;
-    my $cmd;
-
     # regenera taxports
     my $fid;
     if ($buffer_artic =~ /<_fid>(.+?)<\/_fid>/is) {
       $fid = $1;
     };
 
-    my $pathnice = &lib_prontus::get_path_nice();
-    $pathnice = "$pathnice -n19 " if($pathnice);
+    if ($tags_data) {
+        # Regenerar portadas tagonomicas.
+        my $param_especif_tagonomicas = $tags_data;
+        $param_especif_tagonomicas =~ s/,/\//sg;
+        my $cmd = "$pathnice $rutaScript/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $param_especif_tagonomicas $fid >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    };
+
+    $base->disconnect;
+
+    # Borra cache listas de articulo
+    &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
+
+    my $cmd;
 
     for(my $i = 1; $i <= $prontus_varglb::TAXONOMIA_NIVELES; $i++) {
 

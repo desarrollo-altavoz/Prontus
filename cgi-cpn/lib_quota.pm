@@ -18,7 +18,8 @@
 #---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 #------------------------
-
+# 1.0.0 - 14/12/2010 - YCC - Primera version.
+# 2.0.0 - 28/04/2015 - JOR - Se mejora el calculo ademas se agrega salida custom.
 
 #---------------------------------------------------------------
 
@@ -41,23 +42,63 @@ sub calcula_unix {
   my $bgbar = '';
   my $usado = '';
   my $quota_asig = '';
+  my $custom_msg = '';
+  my $total_array = 0;
+  my $count = 1;
+  my $custom_result = 0;
 
   # Si existe el script de cálculo y no tiene .. entremedio
-  if($prontus_varglb::SCRIPT_QUOTA && $prontus_varglb::SCRIPT_QUOTA !~ /\.\./ && $prontus_varglb::SCRIPT_QUOTA !~ / /) {
-    my $rutascript = "$prontus_varglb::DIR_SERVER$prontus_varglb::SCRIPT_QUOTA";
-    if(-f $rutascript) {
-      if($rutascript =~ /\.php$/) {
-        $rutascript = 'php ' . $rutascript;
-      };
-      # Si el script funciona, lo ejecuta enviando el nombre del prontus y el DIR_SERVER
-      my $res = `$rutascript $prontus_varglb::PRONTUS_ID $prontus_varglb::DIR_SERVER`;
-      if($res && $res =~ /(\d+)\|(\d+)/) {
-        ($usado, $quota_asig) = ($1, $2);
-      } else {
-        print STDERR "Script Quota no valido: [$res]\n";
-      }
+    if($prontus_varglb::SCRIPT_QUOTA && $prontus_varglb::SCRIPT_QUOTA !~ /\.\./ && $prontus_varglb::SCRIPT_QUOTA !~ / /) {
+        my $rutascript = "$prontus_varglb::DIR_SERVER$prontus_varglb::SCRIPT_QUOTA";
+        if(-f $rutascript) {
+            if($rutascript =~ /\.php$/) {
+                $rutascript = 'php ' . $rutascript;
+            };
+            # Si el script funciona, lo ejecuta enviando el nombre del prontus y el DIR_SERVER
+            my $res = `$rutascript $prontus_varglb::PRONTUS_ID $prontus_varglb::DIR_SERVER`;
+
+            if($res && $res =~ /^(\d+)\|(\d+)/) {
+
+                ($usado, $quota_asig) = ($1, $2);
+
+            } elsif ($res && $res =~ /^(.*)|(.*)|(.*),?/) {
+                my @discos = split(",", $res);
+                if (scalar @discos) {
+                    $total_array = scalar(@discos);
+                    foreach my $disco (@discos) {
+                        my @item = split(/\|/, $disco);
+
+                        if(scalar @item == 3) {
+                            if ($item[1] > $item[2]) {
+                                $custom_msg .= "<b>$item[0]:</b> Cuota sobrepasada.";
+                            } else {
+                                if($count < $total_array){
+                                    $custom_msg .= "<b>$item[0]\:</b> ".&lib_quota::format_bytes($item[1])." / ".&lib_quota::format_bytes($item[2])." | ";
+                                } else {
+                                    $custom_msg .= "<b>$item[0]\:</b> ".&lib_quota::format_bytes($item[1])." / ".&lib_quota::format_bytes($item[2]);
+                                };
+                            };
+                        } else {
+                            print STDERR "Script Quota no valido: [$res]\n";
+                        };
+                        $count++;
+                    };
+                    $custom_result = 1;
+                } else {
+                    if ($2 > $3) {
+                        $custom_msg .= "<b>$1:</b> Cuota sobrepasada.";
+                    } else {
+                        $custom_msg = "<b>$1\:</b> ".&lib_quota::format_bytes($2)." / ".&lib_quota::format_bytes($3);
+                    };
+
+                    $custom_result = 1;
+                };
+
+            } else {
+                print STDERR "Script Quota no valido: [$res]\n";
+            };
+        };
     };
-  };
 
   # Valida que los campos no sean vacios.
   unless (($usado) && ($quota_asig)) {
@@ -101,7 +142,12 @@ sub calcula_unix {
   my $nousado_porc = 100 - $usado_porc;
   $usado_porc .= '%';
   $nousado_porc .= '%';
-  return ('', $usado, $quota_asig, $usado_porc, $nousado_porc);
+
+  if ($custom_result) {
+    return $custom_msg;
+  } else {
+    return ('', $usado, $quota_asig, $usado_porc, $nousado_porc);
+  };
 
 }; # calcula_unix
 

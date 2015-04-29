@@ -8113,7 +8113,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_indexer.cgi
 
 ====================================================================================================
-11.2.82 - 15/04/2015 - JOR/EAG
+11.2.82 - 29/04/2015 - JOR/EAG
 ====================================================================================================
 - Artículos
     [cambios]
@@ -8126,8 +8126,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrige generación de articulos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba
         considerando solo la primera.
         - Se elimina generación de relacionados sin taxonomía, por ejemplo: ___art_relac.html
-        - Se soluciona problema que ocurŕía al arrastrar fotos del banco de imágenes a campos de fotofija en firefox. El navegador se cerraba de manera inesperada.
-        - Se soluciona
+        - Se soluciona problema que ocurría al arrastrar fotos del banco de imágenes a campos de fotofija en firefox. El navegador se cerraba de manera inesperada.
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_regenera_relac.cgi
@@ -8177,8 +8176,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             _plt_ext : extension de la plantilla
             _tag_fid : nombre del fid o all.
         - Se agrega perseo condicional. Se evaluan las marcas _nropagina, _vista, _tag_id y _tag_nom (fuera del loop)
+    [bugfixes]
+        - No se estaban regenerando las portadas tagonómicas asociadas a un artículo al ser eliminado.
     [files]
         /cgi-cpn/prontus_tags_ports.cgi
+        /cgi-cpn/Artic.pm
 
 - Portadas taxonómicas
     [mejoras]
@@ -8208,8 +8210,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             Por ejemplo: %%_tax_nom_seccion_en%%
     [bugfix]
         - Al regenerar las portadas taxonómicas con menos artículos que antes las páginas remanentes no se eliminaban.
+        - Se soluciona problema con regeneración de portadas taxónomica. Al ejecutar multiples procesos los semáforos impedían
+        que se generararn todos los niveles taxonómicos.
+        - Se soluciona problema con fork de procesos.
+
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
 
 - Prontus Search
     [bugfixes]
@@ -8245,3 +8252,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
 
+- Cálculo de Cuota
+    [mejoras]
+        - Al utilizar un script de cálculo de quota externo, es posible entregar un mensaje adaptado, por ejemplo:
+          Web: 1,0 TB / 3,0 TB | Media: 2,3 TB / 5,0 TB
+
+          Esto se logra retornando el mensaje con el siguiente formato:
+          Texto1|espacio_usado|tamaño_quota,Texto2|espacio_usado|tamaño_quota
+    [files]
+        /cgi-cpn/lib_quota.pm
