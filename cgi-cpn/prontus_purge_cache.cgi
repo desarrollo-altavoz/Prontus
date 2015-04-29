@@ -177,7 +177,7 @@ sub purge {
 
             if ($counter_cf >= 100) {
                 $counter_cf = 0;
-                print STDERR "[$$] api rate limit! sleep 60 segundos...\n"
+                print STDERR "[$$] api rate limit! sleep 60 segundos...\n";
                 sleep 60; # There is a rate limit for file purges of 100 per minute. Exceeding this limit will return an error in the JSON response.
             } else {
                 sleep 0.5; # para no bombardear la api.
@@ -225,7 +225,7 @@ sub purge {
 
                 if ($counter_cf >= 100) {
                     $counter_cf = 0;
-                    print STDERR "[$$] api rate limit! sleep 60 segundos...\n"
+                    print STDERR "[$$] api rate limit! sleep 60 segundos...\n";
                     sleep 60; # There is a rate limit for file purges of 100 per minute. Exceeding this limit will return an error in the JSON response.
                 } else {
                     sleep 0.5; # para no bombardear la api.
