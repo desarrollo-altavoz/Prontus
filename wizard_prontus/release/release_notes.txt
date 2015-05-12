@@ -8261,3 +8261,20 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Texto1|espacio_usado|tamaño_quota,Texto2|espacio_usado|tamaño_quota
     [files]
         /cgi-cpn/lib_quota.pm
+
+====================================================================================================
+11.2.83 - 12/05/2015 - JOR
+====================================================================================================
+
+- Buscador
+    [bugfixes]
+        - Se soluciona problema con parse de friendly url en resultados de búsqueda.
+    [files]
+        /cgi-bin/prontus_search.cgi
+        /cgi-cpn/lib_prontus.cgi
+
+- Artículos
+    [cambios]
+        - Se comenta debug innecesario.
+    [files]
+        /cgi-cpn/Artic.pm

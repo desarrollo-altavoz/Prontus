@@ -1248,6 +1248,11 @@ sub carga_variables_prontus {
     $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
   };
 
+  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $2;
+  };
+
+
 };
 
 # -------------------------------------------------------------------#

@@ -2153,7 +2153,7 @@ sub _parsing_recursos {
     my ($path) = "$dst_dir/$val_campo";
     # return 0 if (!-f $path);
     if (!-f $path) {
-        print STDERR "[$this->{ts}] Archivo no existe [$path]\n";
+        #print STDERR "[$this->{ts}] Archivo no existe [$path]\n";
         $buffer =~ s/%%_S$nom_campo%%/0/isg;
         $buffer =~ s/%%$nom_campo%%/$nom_campo\[$val_campo\]FILE_NOT_FOUND/isg;
         $buffer =~ s/%%_E$nom_campo%%//isg;

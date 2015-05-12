@@ -4970,7 +4970,7 @@ sub parse_filef {
 
   # Ajusta largo de titular para friendly.
   $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
-  $titular =~ s/...$//sg;
+  $titular =~ s/\.\.\.$//sg;
 
   my $ext;
   $ext = $1 if ($relpath_artic =~ /\.(\w+)$/);
