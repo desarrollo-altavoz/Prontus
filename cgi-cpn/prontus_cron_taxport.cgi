@@ -544,7 +544,7 @@ sub generar_taxports {
 
     foreach (@childs) {
         my $tmp = waitpid($_, 0);
-        print STDERR "[$pid_padre] El proceso con pid $tmp, ya termino\n";
+        print STDERR "[$pid_padre] El proceso con pid $_, ya termino\n";
     };
     #~ $base->disconnect;
 };

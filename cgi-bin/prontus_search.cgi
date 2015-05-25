@@ -1250,8 +1250,11 @@ sub carga_variables_prontus {
 
   if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) {
     $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $2;
+  } else {
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75;
   };
 
+  $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75 if (!$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
 
 };
 
@@ -1288,7 +1291,7 @@ sub getFormData {
   };
   # Valida variables.
   if(! &lib_prontus::valida_prontus($FORM{'search_prontus'})) {
-    print "Directorio Prontus no v&aacute;lido";
+    print "\nDirectorio Prontus no v&aacute;lido";
     exit;
   };
   #$FORM{'search_prontus'} =~ s/[^\w\-]//g; # 1.20 1.8 Elimina todos los eslaishes y caracteres raros (sorry, solo sirve para Prontus ubicados en la raiz del sitio).

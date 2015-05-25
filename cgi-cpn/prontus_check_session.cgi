@@ -72,7 +72,8 @@ main: {
                         'prontus_id'        => $prontus_varglb::PRONTUS_ID,
                         'version_prontus'   => $prontus_varglb::VERSION_PRONTUS,
                         'path_conf'         => $FORM{'path_conf'},
-                        'document_root'     => $prontus_varglb::DIR_SERVER)
+                        'document_root'     => $prontus_varglb::DIR_SERVER,
+                        'just_status'       => '1')
                         || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
 
         $upd_obj->descarga_upd_descriptor();

@@ -77,7 +77,8 @@ main: {
                     'prontus_id'        => $prontus_varglb::PRONTUS_ID,
                     'version_prontus'   => $prontus_varglb::VERSION_PRONTUS,
                     'path_conf'         => $FORM{'_path_conf'},
-                    'document_root'     => $prontus_varglb::DIR_SERVER)
+                    'document_root'     => $prontus_varglb::DIR_SERVER,
+                    'just_status'       => '1')
                     || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
 
     if (!$upd_obj->{last_version_disponible}) {
@@ -95,10 +96,10 @@ main: {
         &glib_html_02::print_pag_result('Error','No se pudo escribir el archivo de respuesta',1,'exit=1,ctype=1');
     }
     &lib_loading::update_loading('100', '0');
-    
+
     my $result_page = "..$prontus_varglb::DIR_CPAN/core/prontus_loading_prontus_update.html";
 
-    &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER, 'prontus_update_real', $result_page, $params);   
+    &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER, 'prontus_update_real', $result_page, $params);
 
     exit;
 
