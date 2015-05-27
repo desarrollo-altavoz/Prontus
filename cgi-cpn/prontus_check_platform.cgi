@@ -306,7 +306,7 @@ sub check_xcoding {
     if($resp =~ /--enable-libx264/) {
       print "ok\n";
     } else {
-      my $resp = `ffmpeg -codecs 2> /dev/null | grep x264`;
+      my $resp = `$path_ffmpeg -codecs 2> /dev/null | grep x264`;
       if($resp ne '') {
         print "ok\n";
       } else {
@@ -321,7 +321,22 @@ sub check_xcoding {
     if($resp =~ /--enable-libfaac/) {
       print "ok\n";
     } else {
-      my $resp = `ffmpeg -codecs 2> /dev/null | grep libfaac`;
+      my $resp = `$path_ffmpeg -codecs 2> /dev/null | grep libfaac`;
+      if($resp ne '') {
+        print "ok\n";
+      } else {
+        print "<span class=\"check-error\">" if ($ambiente_web);
+        print "not enabled\n";
+        print "</span>" if ($ambiente_web);
+      };
+    };
+
+    # Se comprueba soporte para libfdk_aac
+    printf(" * %28s %-12s ", 'FFmpeg con soporte libfdk_aac', '');
+    if($resp =~ /--enable-libfdk-aac/) {
+      print "ok\n";
+    } else {
+      my $resp = `$path_ffmpeg -codecs 2> /dev/null | grep libfdk_aac`;
       if($resp ne '') {
         print "ok\n";
       } else {
