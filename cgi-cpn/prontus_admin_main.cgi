@@ -1133,7 +1133,6 @@ sub parseaVars {
 
     $pagina =~ s/%%SERVER_SMTP%%/$prontus_varglb::SERVER_SMTP/ig;
     $pagina =~ s/%%PUBLIC_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
-    $pagina =~ s/%%DIR_FFMPEG%%/$prontus_varglb::DIR_FFMPEG/ig;
 
     my $permitidos_vista = $prontus_varglb::UPLOADS_PERMITIDOS;
     $permitidos_vista =~ s/(,)/, /ig;
@@ -1193,8 +1192,6 @@ sub parseaVars {
     $pagina =~ s/%%SCRIPT_QUOTA%%/$prontus_varglb::SCRIPT_QUOTA/ig;
 
     $pagina =~ s/%%FOTO_MAX_PIXEL%%/$prontus_varglb::FOTO_MAX_PIXEL/ig;
-    $pagina =~ s/%%FFMPEG_PARAMS%%/$prontus_varglb::FFMPEG_PARAMS/ig;
-    $pagina =~ s/%%MAX_XCODING%%/$prontus_varglb::MAX_XCODING/ig;
 
     $buffer = '';
     $pagina =~ /<!--loop_multivista-->(.*?)<!--\/loop_multivista-->/s;
@@ -1248,6 +1245,58 @@ sub parseaVars {
     };
 
     $pagina =~ s/%%VARNISH_GLOBAL_PURGE%%/$prontus_varglb::VARNISH_GLOBAL_PURGE/ig;
+
+    # parametros generales transcodificacion
+    $pagina =~ s/%%DIR_FFMPEG%%/$prontus_varglb::DIR_FFMPEG/ig;
+    $pagina =~ s/%%FFMPEG_PARAMS%%/$prontus_varglb::FFMPEG_PARAMS/ig;
+    $pagina =~ s/%%MAX_XCODING%%/$prontus_varglb::MAX_XCODING/ig;
+
+    if ($prontus_varglb::USAR_LIB_FDK eq 'SI') {
+        $pagina =~ s/%%USAR_LIB_FDK_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%USAR_LIB_FDK_NO%%//ig;
+    } else {
+        $pagina =~ s/%%USAR_LIB_FDK_SI%%//ig;
+        $pagina =~ s/%%USAR_LIB_FDK_NO%%/ checked="checked"/ig;
+    };
+
+    if ($prontus_varglb::ADVANCED_XCODING eq 'SI') {
+        $pagina =~ s/%%ADVANCED_XCODING_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%ADVANCED_XCODING_NO%%//ig;
+    } else {
+        $pagina =~ s/%%ADVANCED_XCODING_SI%%//ig;
+        $pagina =~ s/%%ADVANCED_XCODING_NO%%/ checked="checked"/ig;
+        $pagina =~ s/<!--xcoding-->(.*?)<!--\/xcoding-->//sig;
+    };
+
+    # -xcoding.cfg
+    if ($prontus_varglb::LIMIT_BITRATE eq 'SI') {
+        $pagina =~ s/%%LIMIT_BITRATE_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%LIMIT_BITRATE_NO%%//ig;
+    } else {
+        $pagina =~ s/%%LIMIT_BITRATE_SI%%//ig;
+        $pagina =~ s/%%LIMIT_BITRATE_NO%%/ checked="checked"/ig;
+    };
+    if ($prontus_varglb::GEN_HLS eq 'SI') {
+        $pagina =~ s/%%GEN_HLS_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%GEN_HLS_NO%%//ig;
+    } else {
+        $pagina =~ s/%%GEN_HLS_SI%%//ig;
+        $pagina =~ s/%%GEN_HLS_NO%%/ checked="checked"/ig;
+    };
+    if ($prontus_varglb::MODO_PARALELO eq 'SI') {
+        $pagina =~ s/%%MODO_PARALELO_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%MODO_PARALELO_NO%%//ig;
+    } else {
+        $pagina =~ s/%%MODO_PARALELO_SI%%//ig;
+        $pagina =~ s/%%MODO_PARALELO_NO%%/ checked="checked"/ig;
+    };
+    $pagina =~ s/%%MAX_VIDEO_BITRATE%%/$prontus_varglb::MAX_VIDEO_BITRATE/ig;
+    $pagina =~ s/%%MAX_AUDIO_BITRATE%%/$prontus_varglb::MAX_AUDIO_BITRATE/ig;
+    $pagina =~ s/%%XCODE_MAX_PIXEL%%/$prontus_varglb::XCODE_MAX_PIXEL/ig;
+    $pagina =~ s/%%RUTA_TEMPORAL_XCODING%%/$prontus_varglb::RUTA_TEMPORAL_XCODING/ig;
+    $pagina =~ s/%%N_THREADS%%/$prontus_varglb::N_THREADS/ig;
+    $pagina =~ s/%%XCODING_PPROC%%/$prontus_varglb::XCODING_PPROC/ig;
+    $pagina =~ s/%%XCODE_MAX_PARALELO%%/$prontus_varglb::XCODE_MAX_PARALELO/ig;
 
     # -clustering.cfg
 
