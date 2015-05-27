@@ -1,7 +1,16 @@
 ====================================================================================================
+11.2.84 - 27/05/2015
+====================================================================================================
+- bugfix: Se soluciona error 500 (Internal Server Error) al invocar la cgi de búsqueda sin parámetros. Ahora muestra mensaje de error.
+- bugfix: Se soluciona problema con creación de directorios de respaldos de actualizaciones. Solo se deben crear en la instancia de actualización real.
+- bugfix: Se soluciona problema en la carga de configuración CLOUDFLARE_GLOBAL_PURGE y VARNISH_GLOBAL_PURGE.
+- changes: Se quita la versión de Prontus de la etiqueta meta generator. Se cambia por Prontus CMS.
+- bugfix: Se soluciona problema con codificación en sub-rutina 'notildes'. Se usa utf8, lo que soluciona problema de caracteres en friendly url.
+
+====================================================================================================
 11.2.83 - 12/05/2015
 ====================================================================================================
-- bugfix: Se soluciona problema con parse de friendly url en resultados de búsqueda.
+- bugfix: Se soluciona problema con parseo de friendly url en resultados de búsqueda.
 - changes: Se comenta debug innecesario.
 
 ====================================================================================================
