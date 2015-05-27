@@ -120,7 +120,9 @@ main: {
     $hash_defaultvars{'var'}{'FOTO_MAX_PIXEL'} = 'FOTO_MAX_PIXEL;(.*?);;U';
     $hash_defaultvars{'var'}{'FFMPEG_PARAMS'} = 'FFMPEG_PARAMS;(.*?);;U';
     $hash_defaultvars{'var'}{'BLOQUEO_EDICION'} = 'BLOQUEO_EDICION;(\d+);;U';
-    $hash_defaultvars{'var'}{'MAX_XCODING'} = 'MAX_XCODING;(\d+);50;U';
+    $hash_defaultvars{'var'}{'MAX_XCODING'} = 'MAX_XCODING;(\d+);100;U';
+    $hash_defaultvars{'var'}{'ADVANCED_XCODING'} = 'ADVANCED_XCODING;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'USAR_LIB_FDK'} = 'USAR_LIB_FDK;(SI|NO);NO;U';
 
     # -port.cfg
     $hash_defaultvars{'port'}{'MULTI_EDICION'} = 'MULTI_EDICION;(SI|NO);NO;U';
@@ -229,9 +231,21 @@ main: {
     $hash_defaultvars{'buscador'}{'SEARCHTIPS_DURACION_CACHE'} = 'SEARCHTIPS_DURACION_CACHE;(\d+);300;U';
     $hash_defaultvars{'buscador'}{'SEARCHTIPS_MAXREQUESTXIP'} = 'SEARCHTIPS_MAXREQUESTXIP;(\d+);500;U';
 
+    # -xcoding.cfg
+    $hash_defaultvars{'xcoding'}{'LIMIT_BITRATE'} = 'LIMIT_BITRATE;(SI|NO);NO;U';
+    $hash_defaultvars{'xcoding'}{'GEN_HLS'} = 'GEN_HLS;(SI|NO);NO;U';
+    $hash_defaultvars{'xcoding'}{'MODO_PARALELO'} = 'MODO_PARALELO;(SI|NO);NO;U';
+    $hash_defaultvars{'xcoding'}{'MAX_VIDEO_BITRATE'} = 'MAX_VIDEO_BITRATE;(\d+);1200;U';
+    $hash_defaultvars{'xcoding'}{'MAX_AUDIO_BITRATE'} = 'MAX_AUDIO_BITRATE;(\d+);128;U';
+    $hash_defaultvars{'xcoding'}{'XCODE_MAX_PIXEL'} = 'MAX_PIXEL;(\d+);854;U';
+    $hash_defaultvars{'xcoding'}{'RUTA_TEMPORAL_XCODING'} = 'RUTA_TEMPORAL_XCODING;([\w\-]+);;U';
+    $hash_defaultvars{'xcoding'}{'N_THREADS'} = 'N_THREADS;(\d+);0;U';
+    $hash_defaultvars{'xcoding'}{'XCODING_PPROC'} = 'XCODING_PPROC;(\w+);;U';
+    $hash_defaultvars{'xcoding'}{'XCODE_MAX_PARALELO'} = 'XCODE_MAX_PARALELO;(\d+);3;U';
+
     # Verificar tipo de CFG.
     $FORM{'_cfg'} = &glib_cgi_04::param('_cfg');
-    if ($FORM{'_cfg'} !~ /^(id|art|port|var|bd|usr|tax|coment|buscador|tag|list|dropbox|cloudflare)$/) {
+    if ($FORM{'_cfg'} !~ /^(id|art|port|var|bd|usr|tax|coment|buscador|tag|list|dropbox|cloudflare|xcoding)$/) {
         &glib_html_02::print_json_result(0, 'Tipo de CFG inválido.', 'exit=1,ctype=1');
     };
 
@@ -302,6 +316,7 @@ main: {
                         &validarVar($var_valida, $input_value) if ($FORM{'_cfg'} eq 'var');
                         &validarComent($var_valida, $input_value) if ($FORM{'_cfg'} eq 'coment');
                         &validarCloudFlare($var_valida, $input_value) if ($FORM{'_cfg'} eq 'cloudflare');
+                        &validarXcoding($var_valida, $input_value) if ($FORM{'_cfg'} eq 'xcoding');
 
                         if ($FORM{'_cfg'} eq 'var' && $var_valida eq 'UPLOADS_PERMITIDOS') {
                             # Quitar espacios.
@@ -486,6 +501,44 @@ sub guardarCFG {
 
 };
 
+sub validarXcoding {
+    my ($var) = shift;
+    my ($item) = shift;
+
+    print STDERR "var[$var]\n";
+
+    if ($var eq 'MAX_VIDEO_BITRATE' && $item !~ /^[0-9]+$/) {
+        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico.", 'exit=1,ctype=1');
+    };
+
+    if ($var eq 'MAX_AUDIO_BITRATE' && $item !~ /^[0-9]+$/) {
+        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico.", 'exit=1,ctype=1');
+    };
+
+    if ($var eq 'XCODE_MAX_PIXEL' && $item !~ /^[0-9]+$/) {
+        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico.", 'exit=1,ctype=1');
+    };
+
+    if ($var eq 'XCODE_MAX_PARALELO' && $item !~ /^[0-9]+$/) {
+        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico y mayor que 1.", 'exit=1,ctype=1');
+    };
+
+    if ($var eq 'XCODE_MAX_PARALELO' && $item < 1) {
+        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico y mayor que 1.", 'exit=1,ctype=1');
+    };
+
+    # Validar existencia directorio temporal de trabajo para transcodificar. (RUTA_TEMPORAL_XCODING)
+    if ($var eq 'RUTA_TEMPORAL_XCODING') {
+        if ($item =~ /[^\w\-\/_]/isg) {
+            my $msg = "El directorio [$item] configurado en la variable RUTA_TEMPORAL_XCODING tiene caracteres inválidos.\n"
+                    . "Solo se permite el uso de caracteres alfanuméricos, guión (-) y guión bajo (_).";
+            &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
+        } elsif (!-d $item) {
+            &glib_html_02::print_json_result(0, "El directorio [$item] configurado en la variable RUTA_TEMPORAL_XCODING no existe.", 'exit=1,ctype=1');
+        }
+    };
+};
+
 sub validarCloudFlare {
     my ($var) = shift;
     my ($item) = shift;
@@ -551,14 +604,12 @@ sub validarVar {
 
     # Validar existencia directorio de FFMPEG. (DIR_FFMPEG)
     if ($var eq 'DIR_FFMPEG') {
-        if (!-d $item) {
+        if ($item =~ /[^\w\-\/_]/isg) {
+            my $msg = "El directorio [$item] configurado en la variable DIR_FFMPEG tiene caracteres inválidos.\n"
+                    . "Solo se permite el uso de caracteres alfanuméricos, guión (-) y guión bajo (_).";
+            &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
+        } elsif (!-d $item) {
             &glib_html_02::print_json_result(0, "El directorio [$item] configurado en la variable DIR_FFMPEG no existe.", 'exit=1,ctype=1');
-        } else {
-            if ($item =~ /[^\w\-\/_]/isg) {
-                my $msg = "El directorio [$item] configurado en la variable DIR_FFMPEG tiene caracteres inválidos.\n"
-                        . "Solo se permite el uso de caracteres alfanuméricos, guión (-) y guión bajo (_).";
-                &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
-            }
         }
     };
 
