@@ -1353,7 +1353,7 @@ sub load_config {
   $prontus_varglb::CLOUDFLARE_API_URL = $cloudflare_api_url;
 
   my $cloudflare_global_purge = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*("|')(.*?)\1/s) {
+  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*("|')(.*?)$1/s) {
     $cloudflare_global_purge = $2;
   };
   $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE = $cloudflare_global_purge;
@@ -2170,7 +2170,7 @@ sub load_config {
 
   # Varnish global purge
   my $varnish_global_purge;
-  while ($buffer =~ m/\s*VARNISH_GLOBAL_PURGE\s*=\s*("|')(.*?)\1/sg) {
+  if ($buffer =~ m/\s*VARNISH_GLOBAL_PURGE\s*=\s*("|')(.*?)$1/s) {
      $varnish_global_purge = $2;
   };
   $prontus_varglb::VARNISH_GLOBAL_PURGE = $varnish_global_purge;
@@ -6127,6 +6127,8 @@ sub notildes {
   # convierte a latin1 para poder aplicar la er
   utf8::decode($toencode);
 
+  use utf8;
+
   $toencode =~ tr/áéíóúÁÉÍÓÚüÜñÑ/aeiouaeiouuunn/; # Destilda ISO.
 
   $toencode =~ s/&(.)acute;/$1/g;
@@ -6197,6 +6199,9 @@ sub notildes {
 
   # restaura a utf8
   utf8::encode($toencode);
+
+  no utf8;
+
   return $toencode;
 }; # notildes
 
@@ -6477,7 +6482,6 @@ sub get_formatos_multimedia {
 sub add_generator_tag {
     my $buffer = shift;
     if ($buffer !~ /<meta name *= *["']Generator["']/i) {
-        #~ my $gen_content = "Prontus $prontus_varglb::RAMA_INSTALADA";
         my $gen_content = "Prontus CMS";
         $buffer =~ s/<\/head>/\n<meta name="Generator" content="$gen_content" \/>\n<\/head>/is;
     };
