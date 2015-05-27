@@ -1177,6 +1177,8 @@ sub load_config {
 # Param :
 # 0) Path completo absoluto al archivo.
 # Retorna los valores de c/u.
+# ADVERTENCIA: NO usar greedy matching /g, en los if individuales, produce errores de matcheo
+# solo usar en while
 
 
   my ($path_conf) = $_[0];
@@ -1222,6 +1224,7 @@ sub load_config {
           . &glib_fildir_02::read_file($nomcfg . '-list.cfg') . "\n"
           . &glib_fildir_02::read_file($nomcfg . '-usr.cfg') . "\n"
           . &glib_fildir_02::read_file($nomcfg . '-var.cfg') . "\n"
+          . &glib_fildir_02::read_file($nomcfg . '-xcoding.cfg') . "\n" # transcodificacion
           . &glib_fildir_02::read_file($nomcfg . '-clustering.cfg') . "\n"
           . &glib_fildir_02::read_file($nomcfg . '-dropbox.cfg') . "\n" # dropbox.
           . &glib_fildir_02::read_file($nomcfg . '-cloudflare.cfg') . "\n"; # cloudflare.
@@ -1246,7 +1249,7 @@ sub load_config {
 #  };
 
 
-  # Direcotrio relativo al sitio web donde se instalara el publicador.
+  # Directorio relativo al sitio web donde se instalara el publicador.
   # Si no se especifica, se asume la raiz.
   if ($buffer =~ m/\s*RELDIR\_BASE\s*=\s*("|')(\/.*?)("|')/) {
     $reldir_base = $2;
@@ -1350,11 +1353,62 @@ sub load_config {
   $prontus_varglb::CLOUDFLARE_API_URL = $cloudflare_api_url;
 
   my $cloudflare_global_purge = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*("|')(.*?)\1/sg) {
+  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*("|')(.*?)\1/s) {
     $cloudflare_global_purge = $2;
   };
   $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE = $cloudflare_global_purge;
 
+  # Transcodificacion - XCODING
+  $prontus_varglb::N_THREADS = 0; # valor por defecto.
+  if ($buffer =~ m/\s*N_THREADS\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::N_THREADS = $2;
+  };
+
+  $prontus_varglb::XCODING_PPROC = ''; # valor por defecto.
+  if ($buffer =~ m/\s*XCODING_PPROC\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::XCODING_PPROC = $2;
+  };
+
+  $prontus_varglb::GEN_HLS = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*GEN_HLS\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::GEN_HLS = $2;
+  };
+
+  $prontus_varglb::LIMIT_BITRATE = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*LIMIT_BITRATE\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::LIMIT_BITRATE = $2;
+  };
+
+  $prontus_varglb::MODO_PARALELO = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*MODO_PARALELO\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::MODO_PARALELO = $2;
+  };
+
+  $prontus_varglb::MAX_VIDEO_BITRATE = '1200'; # valor por defecto.
+  if ($buffer =~ m/\s*MAX_VIDEO_BITRATE\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::MAX_VIDEO_BITRATE = $2;
+  };
+
+  $prontus_varglb::MAX_AUDIO_BITRATE = '128'; # valor por defecto.
+  if ($buffer =~ m/\s*MAX_AUDIO_BITRATE\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::MAX_AUDIO_BITRATE = $2;
+  };
+
+  $prontus_varglb::RUTA_TEMPORAL_XCODING = ''; # valor por defecto.
+  if ($buffer =~ m/\s*RUTA_TEMPORAL_XCODING\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::RUTA_TEMPORAL_XCODING = $2;
+  };
+
+  $prontus_varglb::XCODE_MAX_PIXEL = '854'; # valor por defecto.
+  if ($buffer =~ m/\s*XCODE_MAX_PIXEL\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::XCODE_MAX_PIXEL = $2;
+  };
+
+  $prontus_varglb::XCODE_MAX_PARALELO = '3'; # valor por defecto.
+  if ($buffer =~ m/\s*XCODE_MAX_PARALELO\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::XCODE_MAX_PARALELO = $2;
+  };
+  # /XCODING
 
   # extensiones permitidas para uploads
   my $uploads_permitidos = $prontus_varglb::UPLOADS_PERMITIDOS_ORIG;
@@ -2236,12 +2290,12 @@ sub load_config {
   # El valor por defecto es vacio
   if ($buffer =~ m/\s*MAX_XCODING\s*=\s*("|')(\d*)("|')/) {
     if ($2 eq '') {
-        $prontus_varglb::MAX_XCODING = '50';
+        $prontus_varglb::MAX_XCODING = '100';
     } else {
         $prontus_varglb::MAX_XCODING = $2;
     };
   } else {
-      $prontus_varglb::MAX_XCODING = '50';
+      $prontus_varglb::MAX_XCODING = '100';
   };
 
   # El valor por defecto es 0
@@ -2249,6 +2303,16 @@ sub load_config {
     $prontus_varglb::BLOQUEO_EDICION = $2;
   };
 
+  # opciones avanzadas de transcodificacion
+  $prontus_varglb::ADVANCED_XCODING = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*ADVANCED_XCODING\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::ADVANCED_XCODING = $2;
+  };
+
+  $prontus_varglb::USAR_LIB_FDK = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*USAR_LIB_FDK\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::USAR_LIB_FDK = $2;
+  };
 
   # Prontus 6.0
   $prontus_varglb::PRONTUS_ID = $prontus_id;
@@ -6413,7 +6477,8 @@ sub get_formatos_multimedia {
 sub add_generator_tag {
     my $buffer = shift;
     if ($buffer !~ /<meta name *= *["']Generator["']/i) {
-        my $gen_content = "Prontus $prontus_varglb::RAMA_INSTALADA";
+        #~ my $gen_content = "Prontus $prontus_varglb::RAMA_INSTALADA";
+        my $gen_content = "Prontus CMS";
         $buffer =~ s/<\/head>/\n<meta name="Generator" content="$gen_content" \/>\n<\/head>/is;
     };
     return $buffer;
