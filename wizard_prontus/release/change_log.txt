@@ -1,4 +1,21 @@
 ====================================================================================================
+11.2.85 - 28/05/2015
+====================================================================================================
+- improvement: Se agrega verificacion de libfdk_aac a verificacion de plataforma.
+- improvement: Se agrega opción para validar el directorio de ffmpeg, además muestra las opciones que soporta.
+- improvement: Se agrega opción para poder usar libfdk_aac si esta disponible.
+- improvement: Se agrega uso de transcodificación avanzada, requiere ffmpeg desde version 1.
+- improvement: Se agrega opción para limitar el bitrate de los videos subidos, si lo sobrepasan se transcodifican, también se aplica archivos mp4.
+- improvement: agrega pestaña de transcodificación avanzada.
+- improvement: Se agrega un editor de formatos de video, para definir las variantes de un video subido.
+- improvement: Se agrega soporte para procesamiento en paralelo de las variantes.
+- improvement: Se agrega soporte para generar HLS, con esta opción activada siempre se transcodifican los videos subidos.
+- changes: Se sube el tamaño máximo para transcodificar a 100 MB.
+- changes: Se reorganizan las variables de transcodificación en el administrador.
+- changes: Se modifica validación de del directorio de FFmpeg.
+- bugfix: Se corrige el procesamiento de la "endianness" al leer los atoms de los mp4.
+
+====================================================================================================
 11.2.83 - 12/05/2015
 ====================================================================================================
 - bugfix: Se soluciona problema con parse de friendly url en resultados de búsqueda.

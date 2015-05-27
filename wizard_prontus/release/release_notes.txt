@@ -8285,7 +8285,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Buscador
     [bugfixes]
-        - Se soluciona error 500 (Internal Server Error) al invocar la cgi de búsqueda sin parámntros. Ahora muestra
+        - Se soluciona error 500 (Internal Server Error) al invocar la cgi de búsqueda sin parámetros. Ahora muestra
         mensaje de rror.
     [files]
         /cgi-bin/prontus_search.cgi
@@ -8297,3 +8297,51 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_check_session.cgi
         /cgi-cpn/prontus_update.cgi
         /cgi-cpn/prontus_login.cgi
+
+====================================================================================================
+11.2.85 - 28/05/2015 - EAG
+====================================================================================================
+- Prontus en general
+    [mejoras]
+        - Se agrega verificacion de libfdk_aac a verificacion de plataforma.
+    [files]
+        /cgi-cpn/prontus_check_platform.cgi
+
+- Transcodificación
+    [mejoras]
+        - Se agrega opción para validar el directorio de ffmpeg, además muestra las opciones que soporta.
+        - Se agrega opción para poder usar libfdk_aac si esta disponible.
+        - Se agrega uso de transcodificación avanzada, requiere ffmpeg desde version 1.
+        - Se agrega opción para limitar el bitrate de los videos subidos, si lo sobrepasan se transcodifican,
+            también se aplica archivos mp4.
+        - Se agrega pestaña de transcodificación avanzada.
+        - Se agrega un editor de formatos de video, para definir las variantes de un video subido.
+        - Se agrega soporte para procesamiento en paralelo de las variantes.
+        - Se agrega soporte para generar HLS, con esta opción activada siempre se transcodifican los
+            videos subidos.
+    [cambios]
+        - Se sube el tamaño máximo para transcodificar a 100 MB.
+        - Se reorganizan las variables de transcodificación en el administrador.
+        - Se modifica validación de del directorio de FFmpeg.
+    [bugfixes]
+        - Se corrige el procesamiento de la "endianness" al leer los atoms de los mp4.
+    [files]
+        /cgi-cpn/lib_prontus.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/xcoding/qtfaststart.cgi
+        /cgi-cpn/xcoding/prontus_check_ffmpeg.cgi
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videocut.cgi
+        /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
+        /cgi-cpn/xcoding/prontus_xcoding_getformatos.cgi
+        /cgi-cpn/xcoding/prontus_xcoding_guardarformatos.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
