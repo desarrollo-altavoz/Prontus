@@ -55,20 +55,6 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            MAX_XCODING<br>
-                                            <span class="ayuda">Tamaño máximo (en MB) para la transcodificación de videos.</span>
-                                        </td>
-                                        <td><input type="text" name="MAX_XCODING" class="fieldform" value="%%MAX_XCODING%%"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 300px;" valign="top">
-                                            DIR_FFMPEG<br>
-                                            <span class="ayuda">Indica la ruta a la carpeta donde se encuentra el ejecutable de ffmpeg.</span>
-                                        </td>
-                                        <td><input type="text" name="DIR_FFMPEG" class="fieldform" value="%%DIR_FFMPEG%%"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 300px;" valign="top">
                                             PUBLIC_SERVER_NAME<br>
                                             <span class="ayuda">Se debe indicar el nombre del servidor, necesario para la ejecución de los crons.</span>
                                         </td>
@@ -381,17 +367,6 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FFMPEG_PARAMS<br>
-                                            <span class="ayuda">
-                                                Parámetros que se utilizarán con el comando ffmpeg en la transcodificación de videos.
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <textarea name="FFMPEG_PARAMS" cols="80" rows="8" class="fieldform">%%FFMPEG_PARAMS%%</textarea>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 300px;" valign="top">
                                             BLOQUEO_EDICION<br>
                                             <span class="ayuda">Especifica la modalidad de bloqueo de edición de artículos y portadas.</span>
                                         </td>
@@ -432,6 +407,70 @@
                                             <input type="radio" name="CLOUDFLARE" id="CLOUDFLARE_SI" value="SI"%%CLOUDFLARE_SI%%/> <label for="CLOUDFLARE_SI">SI</label>
                                             &nbsp;&nbsp;&nbsp;
                                             <input type="radio" name="CLOUDFLARE" id="CLOUDFLARE_NO" value="NO"%%CLOUDFLARE_NO%%/> <label for="CLOUDFLARE_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr class="head">
+                                        <td colspan="2">TRANSCODIFICACI&Oacute;N</td>
+                                    </tr>
+                                    <tr class="head">
+                                        <td>Variable</td>
+                                        <td>Valor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            MAX_XCODING<br>
+                                            <span class="ayuda">Tamaño máximo (en MB) para la transcodificación de videos.</span>
+                                        </td>
+                                        <td><input type="text" name="MAX_XCODING" class="fieldform" value="%%MAX_XCODING%%" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            DIR_FFMPEG<br>
+                                            <span class="ayuda">Indica la ruta a la carpeta donde se encuentra el ejecutable de ffmpeg.</span>
+                                        </td>
+                                        <td><input type="text" name="DIR_FFMPEG" id="DIR_FFMPEG" class="fieldform" value="%%DIR_FFMPEG%%" /><br /><br />
+                                            <div class="boton-gris3">
+                                                <a onclick="CfgXcoding.tesFFmpeg(); return false;" href="#" class="button" title="Verificar Directorio">
+                                                    <span>Verificar Directorio</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FFMPEG_PARAMS<br>
+                                            <span class="ayuda">
+                                                Parámetros que se utilizarán con el comando ffmpeg en la transcodificación de videos.
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <textarea name="FFMPEG_PARAMS" cols="80" rows="8" class="fieldform">%%FFMPEG_PARAMS%%</textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            USAR_LIB_FDK<br>
+                                            <span class="ayuda">Activa el uso de la librer&iacute;a libfdk_aac.
+                                                <br /><br />Requiere FFMPEG con libfdk_aac instalada. Si no se encuentra disponible, la transcodificaci&oacute;n fallar&aacute;<br />
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="USAR_LIB_FDK" id="USAR_LIB_FDK_SI" value="SI"%%USAR_LIB_FDK_SI%%/> <label for="USAR_LIB_FDK_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="USAR_LIB_FDK" id="USAR_LIB_FDK_NO" value="NO"%%USAR_LIB_FDK_NO%%/> <label for="USAR_LIB_FDK_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            ADVANCED_XCODING<br>
+                                            <span class="ayuda">Activa las opciones avanzadas de transcodificaci&oacute;n.
+                                                <br /><br />Requiere FFMPEG version 1 o mayor<br />
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="ADVANCED_XCODING" id="ADVANCED_XCODING_SI" value="SI"%%ADVANCED_XCODING_SI%%/> <label for="ADVANCED_XCODING_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="ADVANCED_XCODING" id="ADVANCED_XCODING_NO" value="NO"%%ADVANCED_XCODING_NO%%/> <label for="ADVANCED_XCODING_NO">NO</label>
                                         </td>
                                     </tr>
                                 </table>

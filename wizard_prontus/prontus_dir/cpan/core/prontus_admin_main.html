@@ -27,6 +27,7 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/SubmitForm.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Cfgedit.class.js?v2"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/CombosTax.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/CfgXcoding.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/procs/tax4fids/tax4fids.js?%%str_random_tax%%"></script>
 
     <!--custom-->
@@ -116,6 +117,7 @@
                     <a class="button2" href="#cfg-tab6"><span>Portadas</span></a>
                     <a class="button2" href="#cfg-tab7"><span>Usuarios</span></a>
                     <a class="button2" href="#cfg-tab8"><span>Variables generales</span></a>
+                    <!--xcoding--><a class="button2" href="#cfg-tab14"><span>Transcodificaci&oacute;n</span></a><!--/xcoding-->
                     <!--dropbox--><a class="button2" href="#cfg-tab12"><span>Dropbox</span></a><!--/dropbox-->
                     <!--cloudflare--><a class="button2" href="#cfg-tab13"><span>CloudFlare</span></a><!--/cloudflare-->
                 </div>
@@ -165,6 +167,12 @@
                         %%MACRO(admin_cfg_cloudflare.html)%%
                     </div>
                     <!--/cloudflare-->
+
+                    <!--xcoding-->
+                    <div id="cfg-tab14">
+                        %%MACRO(admin_cfg_xcoding.html)%%
+                    </div>
+                    <!--/xcoding-->
                 </div>
 
               </div>
