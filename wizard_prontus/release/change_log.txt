@@ -1,9 +1,9 @@
 ====================================================================================================
 11.2.85 - 28/05/2015
 ====================================================================================================
-- improvement: Se agrega verificacion de libfdk_aac a verificacion de plataforma.
-- improvement: Se agrega opción para validar el directorio de ffmpeg, además muestra las opciones que soporta.
-- improvement: Se agrega opción para poder usar libfdk_aac si esta disponible.
+- improvement: Se agrega verificacion de codec libfdk_aac de ffmpeg a la verificacion de plataforma.
+- improvement: Se agrega opción para validar el directorio de ffmpeg, además muestra las capacidades que soporta.
+- improvement: Se agrega opción para poder usar codec libfdk_aac de ffmpeg si esta disponible.
 - improvement: Se agrega uso de transcodificación avanzada, requiere ffmpeg desde version 1.
 - improvement: Se agrega opción para limitar el bitrate de los videos subidos, si lo sobrepasan se transcodifican, también se aplica archivos mp4.
 - improvement: agrega pestaña de transcodificación avanzada.

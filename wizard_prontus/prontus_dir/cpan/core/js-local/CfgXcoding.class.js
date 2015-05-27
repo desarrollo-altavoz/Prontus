@@ -216,7 +216,6 @@ var CfgXcoding = {
                 document.getElementById('nueva_marca_xcoding').value = '';
                 CfgXcoding.limpiaParametros();
             } else {
-                //~ alert('Sólo se pueden ingresar letras, números y el caracter "_". No se permite Ñ, espacios, letras con tilde o símbolos');
                 alert('Sólo se pueden ingresar números.');
             }
         } else {
