@@ -43,6 +43,8 @@
 #    1.0.1 - 19/02/2013 - EAG - Se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
 #    1.0.2 - 30/04/2013 - CVI - Se captura excepción al intentar hacer un unpack Q, ya que se caía.
 #    1.1.0 - 16/05/2013 - EAG - Se corrige bug al buscar atoms, si habian atoms duplicados se tomaba en cuenta solo el ultimo, lo que provocaba videos corruptos.
+#    1.2.0 - 22/05/2014 - EAG - Se corrige bug en find_atoms, si el atom tenia tamaño 0 el script se pegaba
+#    1.3.0 - 04/03/2015 - EAG - Se corrige "endianness" al hacer unpack Q
 
 use strict;
 
@@ -101,12 +103,14 @@ sub get_index {
 
     my ($datastream, $toplevel) = @_;
     my %index;
+    my $last_pos = 0;
     while(!eof($datastream)) {
+        $last_pos = tell($datastream);
         my $skip = 8;
         my ($atom_size, $atom_type) = &read_atom($datastream);
         if($atom_size == 1){
             read($datastream, my $data, 8);
-            $atom_size = unpack("Q", $data);
+            $atom_size = unpack("Q>", $data);
             $skip = 16;
         }
         my $atom_pos = tell($datastream) - $skip;
@@ -123,6 +127,10 @@ sub get_index {
             exit;
         }
         seek $datastream, ($atom_pos + $atom_size), 0;
+        if ($last_pos == tell($datastream)){
+            #~ warn("Get_index: el cursor del archivo dejo de avanzar, hay que terminar el ciclo.");
+            last;
+        }
     }
 
     # Make sure the atoms we need exist
@@ -138,7 +146,9 @@ sub find_atoms {
 #    The tuple elements will be in the order that they appear in the file.
     my ($size, $datastream) = @_;
     my $stop = tell($datastream) + $size;
+    my $last_pos = 0;
     while (tell($datastream) < $stop) {
+        $last_pos = tell($datastream);
         if (!(-s $FILE)) {
             warn("Archivo eliminado durante ejecucion: $FILE");
             exit;
@@ -154,6 +164,14 @@ sub find_atoms {
             seek $datastream, ($atom_size - 8), 1;
         } else {
             seek $datastream, ($atom_size - 8), 1;
+        }
+        #~ print STDERR "ini: $last_pos - fin: ".tell($datastream)." < $stop\n";
+        if ($last_pos == tell($datastream)){
+            #~ warn("Find_atoms: el cursor del archivo dejo de avanzar, hay que terminar el ciclo.");
+            last;
+        }
+        if ($atom_size == 0) {
+            last;
         }
     }
 }

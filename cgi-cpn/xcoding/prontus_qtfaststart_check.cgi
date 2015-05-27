@@ -65,6 +65,12 @@
 # 1.0.1 - 19/02/2013 - EAG - Se corrige bug al buscar atom, atom size == 0, provocaba bucle infinito.
 # 1.0.2 - 30/04/2013 - CVI - Se captura excepción al intentar hacer un unpack Q, ya que se caía.
 # 1.1.0 - 16/05/2013 - EAG - Se corrige bug al buscar atoms, si habian atoms duplicados se tomaba en cuenta solo el ultimo, lo que provocaba videos corruptos.
+# 1.2.0 - 20/03/2014 - EAG - Se agrega transcodificación para mp4.
+# 1.3.0 - 22/05/2014 - EAG - Se pone proteccion en get_index caso de que el archivo sea eliminado o el cursor no avance
+# 1.3.1 - 03/10/2014 - EAG - Se agrega use utf8
+# 1.4.0 - 06/10/2014 - EAG - Se agrega chequeo de existencia de HLS
+# 1.5.0 - 04/03/2015 - EAG - Se corrige "endianness" al hacer unpack Q
+# 1.6.0 - 12/05/2015 - EAG - Modificaciones por integracion a la release
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
@@ -86,9 +92,12 @@ use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
 use lib_xcoding;
+use utf8;
 
 my @INDICES;
 my %FORM;        # Contenido del formulario de invocacion.
+my $FILE;
+
 main: {
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
@@ -129,7 +138,40 @@ main: {
         &glib_html_02::print_json_result(0, 'Debe especificar el archivo a procesar', 'exit=1,ctype=1');
     };
 
+    $FILE = $infile;
+
     &checkStatus($infile);
+
+    if ($prontus_varglb::ADVANCED_XCODING eq 'SI') {
+        my ($ancho, $alto, $vcodec, $acodec, $vbitrate, $abitrate) = &lib_xcoding::get_info_video($infile);
+        # print STDERR "($ancho, $alto, $vcodec, $acodec, $vbitrate, $abitrate)\n";
+        # si se debe limitar el bitrate
+        if ($prontus_varglb::LIMIT_BITRATE eq 'SI') {
+            # si el bitrate de video es muy alto se debe re-encodear
+            # si el bitrate de audio es muy alto se debe re-encodear
+            if ($vbitrate > $prontus_varglb::MAX_VIDEO_BITRATE || $abitrate > $prontus_varglb::MAX_AUDIO_BITRATE) {
+                &glib_html_02::print_json_result(1, 'RECODE', 'exit=1,ctype=1');
+            };
+        }
+
+        # si se genera hls
+        if ($prontus_varglb::GEN_HLS eq 'SI') {
+            $infile =~ /^(\/.*?\/mmedia\/multimedia_video\d+\d{14}\S?)\.\w+$/i;
+            my $playlist_hls = "$1/playlist.m3u8";
+
+            # si no existe la playlist hay que codificar y  generar el hls
+            if (! -s $playlist_hls) {
+                &glib_html_02::print_json_result(1, 'RECODE', 'exit=1,ctype=1');
+            }
+
+            # si el video es mas nuevo que la playlist de hls asociada, es video nuevo y debe ser procesado para generar hls.
+            # la playlist hls siempre es mas nueva ya que se genera despues de crear el mp4
+            print STDERR (-M $playlist_hls)." > ".(-M $infile)."\n";
+            if ((-M $playlist_hls) > (-M $infile)) {
+                &glib_html_02::print_json_result(1, 'RECODE', 'exit=1,ctype=1');
+            }
+        }
+    }
 
     my $result = &checkMp4($infile);
     if ($result) {
@@ -140,13 +182,19 @@ main: {
         my $marca = $2;
         my $ts = $3;
         my $ext = $4;
-        my %formatos = &lib_xcoding::get_formatos($marca);
+        my %formatos = ();
+        if ($prontus_varglb::ADVANCED_XCODING eq 'SI') {
+            %formatos = &lib_xcoding::get_formatos($marca);
+        } else {
+            %formatos = &lib_xcoding::get_formatos_v1($marca);
+        }
         my $pendiente_xcoding = 0;
         foreach my $key (keys(%formatos)) {
             $key =~ s/\./$ts/sg;
             $key = lc $key;
             my $file = "$path$key.$ext";
             if (!-f $file) {
+                print STDERR "[$file]\n";
                 $pendiente_xcoding++;
             } else {
                 # Si existe, ver si necesita corrección.
@@ -159,7 +207,6 @@ main: {
                 };
             };
         };
-
         if ($pendiente_xcoding > 0) {
             &glib_html_02::print_json_result(1, 'XCODE', 'exit=1,ctype=1');
         } else {
@@ -170,11 +217,10 @@ main: {
         print STDERR "[$infile] necesita correccion\n";
         &startFix($infile);
     };
-
 }
 # -------------------------------------------------------------------#
 # Inicia qtfaststart.cgi.
-sub startFix{
+sub startFix {
     my ($origen) = @_;
     # Verifica que no haya otro proceso identico en ejecucion.
     my $res = qx/ps auxww |grep 'qtfaststart.cgi $origen'|grep -v grep/;
@@ -205,7 +251,7 @@ sub checkStatus {
         &glib_html_02::print_json_result(1, "Xcoding", 'exit=1,ctype=1');
     };
 
-    my $res = qx/ps auxww |grep 'qtfaststart.cgi $origen'|grep -v grep/;
+    $res = qx/ps auxww |grep 'qtfaststart.cgi $origen'|grep -v grep/;
     #print STDERR "Execution test = [$res][ps auxww |grep 'qtfaststart.cgi $origen'|grep -v grep]\n";
     if ($res ne '') {
         print STDERR "qtfaststart en ejecucion\n";
@@ -248,12 +294,15 @@ sub get_index {
 
     my ($datastream, $toplevel) = @_;
     my %index;
+    my $last_pos = 0;
     while(!eof($datastream)) {
+        $last_pos = tell($datastream);
         my $skip = 8;
         my ($atom_size, $atom_type) = &read_atom($datastream);
         if($atom_size == 1){
             read($datastream, my $data, 8);
-            $atom_size = unpack("Q", $data);
+            #~ $atom_size = unpack("Q", $data);
+            $atom_size = unpack("Q>", $data);
             $skip = 16;
         }
         my $atom_pos = tell($datastream) - $skip;
@@ -265,7 +314,15 @@ sub get_index {
         if($atom_size == 0){
             last;
         }
+        if (!(-s $FILE)) {
+            warn("Archivo eliminado durante ejecucion: $FILE");
+            exit;
+        }
         seek $datastream, ($atom_pos + $atom_size), 0;
+        if ($last_pos == tell($datastream)){
+            warn("Get_index: el cursor del archivo dejo de avanzar, hay que terminar el ciclo.");
+            last;
+        }
     }
 
     # Make sure the atoms we need exist
