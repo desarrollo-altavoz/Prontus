@@ -42,8 +42,8 @@
 #
 # ---------------------------------------------------------------
 
-# 1.0 - 31/05/2010 - Primera version.
-
+# 1.0.0 - 31/05/2010 - Primera version.
+# 1.0.1 - 03/10/2014 - EAG - Se agrega use utf8
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
@@ -65,6 +65,7 @@ use lib_prontus;
 use glib_html_02;
 use strict;
 use lib_xcoding;
+use utf8;
 
 my %FORM;        # Contenido del formulario de invocacion.
 
@@ -77,9 +78,9 @@ main: {
 
     # Valida datos de entrada
     my $msg_err;
-    $msg_err = "Parámetro [video] no es válido [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+    $msg_err = "ParÃ¡metro [video] no es vÃ¡lido [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
+    $msg_err = "ParÃ¡metro [prontus_id] no es vÃ¡lido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = "ParÃ¡metro [prontus_id] no es vÃ¡lido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
     &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
     # Path conf y load config de prontus

@@ -39,8 +39,8 @@
 #  No usa plantillas.
 #
 # ---------------------------------------------------------------
-
-# 1.0 - 31/05/2010 - Primera version.
+# 1.0.0 - 31/05/2010 - Primera version.
+# 1.0.1 - 03/10/2014 - EAG - Se agrega use utf8;
 
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
@@ -63,6 +63,7 @@ use glib_cgi_04;
 use strict;
 use FindBin '$Bin';
 use lib_xcoding;
+use utf8;
 
 my %FORM;        # Contenido del formulario de invocacion.
 my $ARTIC_dirfecha;
@@ -180,7 +181,7 @@ sub cortar_versiones_video {
         my $code = lc $2;
         $key =~ s/\./$ARTIC_ts_articulo/sg;
         $key = lc $key;
-        print STDERR "version[$key]\n";      
+        print STDERR "version[$key]\n";
         my $new_origen = $origen;
         $new_origen =~ s/\/multimedia_video\d+\d{14}\.(\w+)$/\/$key\.mp4/is;
         next if (!-f $new_origen);

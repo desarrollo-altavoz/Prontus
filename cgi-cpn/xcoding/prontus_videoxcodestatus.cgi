@@ -37,8 +37,9 @@
 #
 # ---------------------------------------------------------------
 
-# 1.0 - 01/06/2010 - ??? - Primera version.
-# 1.1 - 13/08/2013 - JOR - Cambia respuesta a formato json.
+# 1.0.1 - 01/06/2010 - ??? - Primera version.
+# 1.1.1 - 13/08/2013 - JOR - Cambia respuesta a formato json.
+# 1.1.1 - 03/10/2014 - EAG - Se agrega use utf8
 
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
@@ -59,6 +60,7 @@ use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
 use strict;
+use utf8;
 
 my %FORM;        # Contenido del formulario de invocacion.
 my $RES;
@@ -76,10 +78,10 @@ main: {
     my $destfile;
     $destfile = $FORM{'video'};
     $destfile =~ s/\.\w+$/\.mp4/;
-    
-    $msg_err = "Par·metro [video] no es v·lido [$FORM{'video'}]" if ( ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"))&& ((!-f "$prontus_varglb::DIR_SERVER$destfile") || (!-s "$prontus_varglb::DIR_SERVER$destfile")));
-    $msg_err = "Par·metro [prontus_id] no es v·lido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Par·metro [prontus_id] no es v·lido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+
+    $msg_err = "Par√°metro [video] no es v√°lido [$FORM{'video'}]" if ( ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"))&& ((!-f "$prontus_varglb::DIR_SERVER$destfile") || (!-s "$prontus_varglb::DIR_SERVER$destfile")));
+    $msg_err = "Par√°metro [prontus_id] no es v√°lido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = "Par√°metro [prontus_id] no es v√°lido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
     &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
     # Path conf y load config de prontus
@@ -151,10 +153,10 @@ sub xcode_status {
             };
             unlink $file;
         };
-        
+
         return (1, 'ready');
     } else {
-        # Si no esta el archivo en disco ni en el xml, se gatillar· de nuevo la transcodificaciÛn.
+        # Si no esta el archivo en disco ni en el xml, se gatillar√° de nuevo la transcodificaci√≥n.
         return (1, 'none');
     };
 };
