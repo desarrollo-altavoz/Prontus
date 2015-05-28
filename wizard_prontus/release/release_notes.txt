@@ -8321,8 +8321,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Prontus en general
     [mejoras]
         - Se agrega verificacion de codec libfdk_aac de ffmpeg a verificacion de plataforma.
+        - Se actualiza libreria javascript validator a 5.1.8.
     [files]
         /cgi-cpn/prontus_check_platform.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/validator.js
 
 - Transcodificación
     [mejoras]
