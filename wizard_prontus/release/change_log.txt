@@ -10,7 +10,7 @@
 - improvement: Se agrega un editor de formatos de video, para definir las variantes de un video subido.
 - improvement: Se agrega soporte para procesamiento en paralelo de las variantes.
 - improvement: Se agrega soporte para generar HLS, con esta opción activada siempre se transcodifican los videos subidos.
-- improvement: Se actualiza libreria javascript validator a 5.1.8.
+- improvement: Se actualiza libreria javascript validator.
 - changes: Se sube el tamaño máximo para transcodificar a 100 MB.
 - changes: Se reorganizan las variables de transcodificación en el administrador.
 - changes: Se modifica validación de del directorio de FFmpeg.
