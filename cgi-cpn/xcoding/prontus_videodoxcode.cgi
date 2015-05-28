@@ -70,6 +70,7 @@
 # 2.4.5 - 03/12/2014 - EAG - Se agrega transcodificacion en paralelo para generar versiones de los videos
 # 2.4.6 - 11/05/2015 - EAG/JOR - Integracion soporte dropbox
 # 2.4.7 - 12/05/2015 - EAG - Modificaciones por integracion a la release
+# 2.4.8 - 28/05/2015 - EAG - Agrega hora inicio y fin al STDERR
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -139,6 +140,7 @@ main: {
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
+    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Inicio Proceso\n";
 
     # se inicializa el uso de libfdk_aac, es comun para ambos metodos
     if ($prontus_varglb::USAR_LIB_FDK eq 'SI') {
@@ -174,7 +176,7 @@ main: {
         &do_xcode_v1($ORIGEN, $destino);
 
         # Crear versiones adicionales del video.
-        &crear_versiones_video($MARCA, $destino);
+        &crear_versiones_video_v1($MARCA, $destino);
     } elsif ($prontus_varglb::ADVANCED_XCODING eq 'SI') { # transcodificacion avanzada
         # Forma el nombre de la pelicula destino sustituyendo la extension
         my $destino = $ORIGEN;
@@ -231,6 +233,11 @@ main: {
             $segundos = $total % 60;
             $segundos = $segundos < 10? '0'.$segundos : $segundos;
             print STDERR "[$ARTIC_filename] Tiempo Total Transcodificacion [".int($total/60) .":". $segundos ."]\n";
+
+            # si esta definido un post proceso lo ejecutamos en segundo plano
+            if ($prontus_varglb::XCODING_PPROC ne '') {
+                system("$prontus_varglb::XCODING_PPROC $PRONTUS_ID $ARTIC_ts_articulo >/dev/null 2>&1 &");
+            }
             exit;
         };
 
@@ -558,6 +565,7 @@ sub garbageTempFiles {
         unlink $log;
     }
     #~ print STDERR Dumper(\@logs);
+    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Fin Proceso\n";
 }
 # ---------------------------------------------------------------
 sub actualizar_articulo {

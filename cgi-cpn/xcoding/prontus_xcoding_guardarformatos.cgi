@@ -96,7 +96,7 @@ main: {
     # se arma el string de los formatos para guardarlos
     my $formatos = '';
     foreach my $marca (sort keys(%{$data})) {
-        foreach my $param (sort keys($data->{$marca})) {
+        foreach my $param (sort keys(%{$data->{$marca}})) {
             # si no viene valor en el parametro, no se guarda
             if ($data->{$marca}->{$param} eq '') {
                 next;

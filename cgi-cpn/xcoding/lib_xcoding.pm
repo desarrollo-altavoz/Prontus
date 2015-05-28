@@ -2,28 +2,29 @@ package lib_xcoding;
 
 use glib_fildir_02;
 use POSIX qw(ceil);
+use strict;
 
-$HLS = 0;
-$MODO_PARALELO = 0;
-$MAX_PARALELO = 3;
-$FDK = 0;
-$PATHNICE = '';
-$MAX_PIXEL = '';
-$MAX_VRATE = '';
-$MAX_ARATE = '';
-$RUTA_TEMPORAL = '';
-$RUTA_PRONTUS = '';
-$ARTIC_filename = '';
-$ARTIC_ts_articulo = '';
-$N_THREADS = 0;
-$VBITRATE = 0;
-$ABITRATE = 0;
-$ANCHO = 0;
-$ALTO = 0;
-$VCODEC = '';
-$ACODEC = '';
-$FORMATS_FILE = 'formatos_adv.cfg';
-$XCODING_DATA_PATH = '/cpan/data/xcoding/';
+our $HLS = 0;
+our $MODO_PARALELO = 0;
+our $MAX_PARALELO = 3;
+our $FDK = 0;
+our $PATHNICE = '';
+our $MAX_PIXEL = '';
+our $MAX_VRATE = '';
+our $MAX_ARATE = '';
+our $RUTA_TEMPORAL = '';
+our $RUTA_PRONTUS = '';
+our $ARTIC_filename = '';
+our $ARTIC_ts_articulo = '';
+our $N_THREADS = 0;
+our $VBITRATE = 0;
+our $ABITRATE = 0;
+our $ANCHO = 0;
+our $ALTO = 0;
+our $VCODEC = '';
+our $ACODEC = '';
+our $FORMATS_FILE = 'formatos_adv.cfg';
+our $XCODING_DATA_PATH = '/cpan/data/xcoding/';
 
 # ---------------------------------------------------------------
 # Se leen todas las configuraciones disponibles
@@ -155,7 +156,7 @@ sub get_cmd_ffmpeg {
         $threads_string = "-threads $N_THREADS";
     }
 
-    # ej: /var/www/prontus2.cooperativa.cl/web/noticias/site/mm/20140319/mmedia/multimedia_video120140319122141.flv
+    # ej: /var/www/sitio.cl/web/prontus/site/mm/20140319/mmedia/multimedia_video120140319122141.flv
     # si existe ruta temporal de trabajo se usa, si no usamos la misma ruta del archivo original en prontus
     if ($RUTA_TEMPORAL eq '')  {
         $ruta_trabajo = $RUTA_PRONTUS;
@@ -443,17 +444,17 @@ sub get_cmd_ffmpeg_v1 {
 
     my ($ancho, $alto, $h264, $baseline, $vcodec, $acodec) = &get_info_video_v1($origen);
 
-    my $libaac = "libfaac"; # por defecto se usa libfaac
+    my $audio_string = "libfaac -ar 44100 -ab 64k"; # por defecto se usa libfaac
     if ($FDK) {
-        $audio_string = "libfdk_aac";
+        $audio_string = "libfdk_aac -ar 44100 -ab 48k";
     }
 
     if ($ancho ne '' && $alto ne '') {
-        print STDERR "Redimencion: ancho[$ancho], alto[$alto]\n";
+        print STDERR "Redimension: ancho[$ancho], alto[$alto]\n";
         if ($acodec =~ /aac/i) {
             return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -s $ancho" . 'x' . "$alto -vcodec libx264 $videoFlags -acodec copy -f mp4 $destino";
         } else {
-            return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -s $ancho" . 'x' . "$alto -vcodec libx264 $videoFlags -acodec $libaac -ar 44100 -ab 48k -f mp4 $destino";
+            return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -s $ancho" . 'x' . "$alto -vcodec libx264 $videoFlags -acodec $audio_string -f mp4 $destino";
         };
 
     } elsif ($acodec =~ /aac/i && $vcodec =~ /h264/i && $vcodec =~ /baseline/i) {
@@ -461,7 +462,7 @@ sub get_cmd_ffmpeg_v1 {
     } elsif ($acodec =~ /aac/i) {
         return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -vcodec libx264 $videoFlags -acodec copy -f mp4 $destino";
     } else {
-        return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -vcodec libx264 $videoFlags -acodec $libaac -ar 44100 -ab 48k -f mp4 $destino";
+        return "$pathnice $prontus_varglb::DIR_FFMPEG/ffmpeg -i $origen -y -vcodec libx264 $videoFlags -acodec $audio_string -f mp4 $destino";
     };
 };
 # -------------------------------END LIBRERIA--------------------

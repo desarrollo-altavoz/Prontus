@@ -88,7 +88,7 @@ main: {
     print "Cache-Control: no-cache, must-revalidate\r\n";
     print "Content-type: application/json\n\n";
 
-    if (keys $data{'data'}) {
+    if (keys %{$data{'data'}}) {
         $data{'status'} = 1;
         print encode_json(\%data);
     } else {
