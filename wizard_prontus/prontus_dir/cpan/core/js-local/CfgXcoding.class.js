@@ -268,6 +268,15 @@ var CfgXcoding = {
      * confirma el guardado y llama el almacenamiento definitivo
      */
     guardar: function() {
+        for (var marca in CfgXcoding.formatos) {
+            if (typeof CfgXcoding.formatos[marca]['VIDEOSIZE'] !== undefined) {
+                if (CfgXcoding.formatos[marca]['VIDEOSIZE'] % 2 == 1) {
+                    var nombre = marca.split('.');
+                    alert('El parametro VIDEOSIZE no puede ser impar, formato incorrecto:\n' + marca);
+                    return false;
+                }
+            }
+        }
         var msg = "¿Estás seguro de modificar los formatos de transcodificación?";
         if (confirm(msg)) {
             CfgXcoding.guardarServidor();
