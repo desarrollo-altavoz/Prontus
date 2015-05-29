@@ -141,7 +141,7 @@
     <br/>
     <div class="botones">
         <div class="boton-gris3 aright">
-            <a onclick="CfgXcoding.init(); return false;" href="#" class="button" title="Cancelar">
+            <a onclick="CfgXcoding.cargaCfg(); return false;" href="#" class="button" title="Cancelar">
                 <span>Cancelar</span>
             </a>
         </div>
@@ -188,7 +188,7 @@
         <tr>
             <td style="width: 300px;" valign="top">
                 Agregar Id de Marca MULTIMEDIA_VIDEO<br>
-                <span class="ayuda">Ingrese un id de marca MULTIMEDIA_VIDEO para la cual se generaran formatos de video alternativos, por ejemplo: 2</span>
+                <span class="ayuda">Ingrese un id de marca MULTIMEDIA_VIDEO para la cual se generaran formatos de video alternativos. Por ejemplo: 2</span>
                 <br />
                 <br />
                 <input style="width: 250px;" type="text" id="nueva_marca_xcoding" class="fieldform xc_numero" value="" />
@@ -199,7 +199,6 @@
             <td style="width: 300px;" valign="top">
                 Agregar Formato de Video<br>
                 <span class="ayuda">Ingrese un identificador para un nuevo formato.<br />Por ejemplo: A</span>
-                <br />
                 <br />
                 <br />
                 <input style="width: 250px;" type="text" id="nuevo_formato_xcoding" class="fieldform xc_letra" value="" />
@@ -238,7 +237,19 @@
                         </td>
                         <td valign="top">AUDIOBITRATE<br>
                                 <span class="ayuda">Bitrate a utilizar al codificar el audio (en kbps).</span></td>
-                        <td valign="top"><input id="AUDIOBITRATE" class="fieldform xcoding_param xc_numero" style="width: 120px;" value="" /></td>
+                        <td valign="top">
+                            <select style="width: 120px;" id="AUDIOBITRATE" class="xcoding_param">
+                                <option value="">Original</option>
+                                <option value="32">32 kbps</option>
+                                <option value="48">48 kbps</option>
+                                <option value="56">56 kbps</option>
+                                <option value="64">64 kbps</option>
+                                <option value="96">96 kbps</option>
+                                <option value="128">128 kbps</option>
+                                <option value="160">160 kbps</option>
+                                <option value="192">192 kbps</option>
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td valign="top">AUDIOSAMPLING<br>
@@ -278,7 +289,7 @@
                 </table>
                 <div class="botones">
                     <div class="boton-gris3 aright">
-                        <a onclick="CfgXcoding.init(); return false;" href="#" class="button" title="Cancelar">
+                        <a onclick="CfgXcoding.cargaCfg(); return false;" href="#" class="button" title="Cancelar">
                             <span>Cancelar</span>
                         </a>
                     </div>

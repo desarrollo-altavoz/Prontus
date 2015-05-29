@@ -25,6 +25,9 @@ var CfgXcoding = {
     init: function () {
         CfgXcoding.cargaCfg();
         $('.xcoding_param').keyup(CfgXcoding.actualizaFormatos);
+        $('.xcoding_param').on("click", function () {
+            CfgXcoding.actualizaFormatos();
+        });
         CfgXcoding.soloNumeros('.xc_numero');
         CfgXcoding.soloLetras('.xc_letra');
     },
@@ -148,7 +151,7 @@ var CfgXcoding = {
         CfgXcoding.formatos[formato].X264          = document.getElementById('X264').value;
         CfgXcoding.formatos[formato].AUDIOBITRATE  = document.getElementById('AUDIOBITRATE').value;
         CfgXcoding.formatos[formato].AUDIOCHANNELS = document.getElementById('AUDIOCHANNELS').value;
-        CfgXcoding.formatos[formato].AUDIOSAMPLING = document.getElementById('VIDEOBITRATE').value;
+        CfgXcoding.formatos[formato].AUDIOSAMPLING = document.getElementById('AUDIOSAMPLING').value;
     },
 
     /**
@@ -291,7 +294,7 @@ var CfgXcoding = {
                         alert(json.msg);
                     }
                 }
-                CfgXcoding.init();
+                CfgXcoding.cargaCfg();
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 alert('Ha ocurrido un error al guardar los formatos: ' + errorThrown);
@@ -300,9 +303,9 @@ var CfgXcoding = {
     },
 
     soloNumeros: function(selector) {
-     // Solo por teclado se puede ingresar números
+     // Por teclado solo se puede ingresar números
         $(selector).keydown(function(event) {
-            if (event.shiftKey) event.preventDefault();
+            //~ if (event.shiftKey) event.preventDefault(); //desactivar shift
             if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39){
                 //se permiten estas teclas
             }else{
@@ -317,9 +320,9 @@ var CfgXcoding = {
     },
 
     soloLetras: function(selector) {
-     // Solo por teclado se puede ingresar números
+     // Por teclado solo se puede ingresar números
         $(selector).keydown(function(event) {
-            if (event.shiftKey) event.preventDefault();
+            //~ if (event.shiftKey) event.preventDefault(); //desactivar shift
             if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39){
                 //se permiten estas teclas
             }else{
