@@ -92,7 +92,8 @@ main: {
         $data{'status'} = 1;
         print encode_json(\%data);
     } else {
-        &glib_html_02::print_json_result(0, "Ha ocurrido un error al cargar los formatos de video", 'exit=1,ctype=0')
+        print '{}';
+        #~ &glib_html_02::print_json_result(0, "Ha ocurrido un error al cargar los formatos de video", 'exit=1,ctype=0')
     }
 }
 # -------------------------------------------------------------------#
