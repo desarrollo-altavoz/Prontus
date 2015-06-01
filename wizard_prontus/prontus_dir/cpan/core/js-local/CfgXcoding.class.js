@@ -295,6 +295,7 @@ var CfgXcoding = {
             },
             type: 'POST',
             dataType: 'json',
+            async: false,
             success: function (json) {
                 if (typeof json.status !== 'undefined') {
                     if (json.status === 1) {
