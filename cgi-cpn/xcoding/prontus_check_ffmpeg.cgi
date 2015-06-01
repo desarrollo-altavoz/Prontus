@@ -118,9 +118,10 @@ sub check_xcoding {
     print STDERR '['.$resp.']';
     if($resp =~ /^FFmpeg (version | |)([^\s,]+)/i) {
         my $x264 = 0;
-        my $aac = 0;
+        my $faac = 0;
         my $fdk = 0;
         my $ver = $2;
+        my $origver = $ver;
         printf(" * %28s %-12s ", 'FFmpeg', "($xcoding_ver)");
 
         # eliminamos el texto '.git' si es una version de git, lo reemplazamos por un 0
@@ -128,7 +129,7 @@ sub check_xcoding {
 
         if($ver =~ /\d+\.\d+\.\d+/) {
             my $vok = (vers_cmp($ver,$xcoding_ver) > -1);
-            print ((($vok) ? "ok (found $ver)\n" : "<span class=\"check-error\">error (found $ver)</span>\n"));
+            print ((($vok) ? "ok (found $origver)\n" : "<span class=\"check-error\">error (found $origver)</span>\n"));
 
         } elsif($resp =~ /(built on .*?) with/) {
             my $built = $1;
@@ -136,7 +137,7 @@ sub check_xcoding {
             printf(" * %42s", '');
             print "<span class=\"check-error\">($built)</span>\n";
         } else {
-            print "<span class=\"check-error\">no se pudo comparar version ($ver)</span>\n";
+            print "<span class=\"check-error\">no se pudo comparar version ($origver)</span>\n";
         }
 
         # Se comprueba soporte para libx264
@@ -156,7 +157,7 @@ sub check_xcoding {
         $test = '';
         $test = `$path_ffmpeg -codecs 2> /dev/null | grep libfaac`;
         if ($test ne '') {
-            $aac = 1;
+            $faac = 1;
             print "ok\n";
         } else {
             print "<span class=\"check-error\">";
@@ -179,11 +180,13 @@ sub check_xcoding {
 
         print "\n\n";
 
-        if ($x264 && ($aac || $fdk)) {
+        if ($x264 && ($faac || $fdk)) {
             if (vers_cmp($ver,'0.9.9') > -1) {
-                print " Se puede activar la transcodificación avanzada, ADVANCED_XCODING. (FFmpeg version: $ver)\n";
+                print " Se puede activar la transcodificación avanzada, ADVANCED_XCODING. (FFmpeg version: $origver)\n";
             }
-            if ($fdk) {
+            if ($fdk && !$faac) {
+                print " <span class=\"check-error\">Se debe activar USAR_LIB_FDK, para usar el codec AAC.</span>\n";
+            } elsif ($fdk) {
                 print " Se puede activar USAR_LIB_FDK, para usar libfdk_aac.\n";
             }
         } else {
