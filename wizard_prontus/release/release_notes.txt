@@ -8322,7 +8322,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se agrega verificacion de codec libfdk_aac de ffmpeg a verificacion de plataforma.
         - Se actualiza libreria javascript validator a 5.1.8.
+    [cambios]
+        - Se elimina cache de listados al borrar una edición.
+        - Se deja configurable dirección del servidor de actualizaciones bajo la variable UPDATE_SERVER.
     [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_edi_borrar.cgi
         /cgi-cpn/prontus_check_platform.cgi
         /wizard_prontus/prontus_dir/cpan/core/js-local/validator.js
 

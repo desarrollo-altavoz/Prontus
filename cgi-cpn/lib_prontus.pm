@@ -2317,6 +2317,12 @@ sub load_config {
     $prontus_varglb::USAR_LIB_FDK = $2;
   };
 
+  # Update.
+  $prontus_varglb::UPDATE_SERVER = 'http://www.prontus.cl';
+  if ($buffer =~ m/\s*UPDATE_SERVER\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::UPDATE_SERVER = $2;
+  };
+
   # Prontus 6.0
   $prontus_varglb::PRONTUS_ID = $prontus_id;
   $prontus_varglb::RELDIR_BASE = $reldir_base;

@@ -15,6 +15,8 @@
 - changes: Se reorganizan las variables de transcodificación en el administrador.
 - changes: Se modifica validación de del directorio de FFmpeg.
 - bugfix: Se corrige el procesamiento de la "endianness" al leer los atoms de los mp4.
+- changes: Se elimina cache de listados al borrar una edición.
+- changes: Se deja configurable dirección del servidor de actualizaciones bajo la variable UPDATE_SERVER.
 
 ====================================================================================================
 11.2.84 - 27/05/2015

@@ -155,6 +155,9 @@ main: {
 
         &glib_fildir_02::borra_dir($dir_borrar) if (-d $dir_borrar);
         &lib_prontus::write_log('Borrar', 'Edicion-Portadas', $dir_borrar);
+
+        # Borra cache listas de articulo
+        &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
     };
 
     &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');

@@ -60,6 +60,7 @@ sub new {
     };
 
     $upd_obj->{update_server} = 'http://www.prontus.cl';
+    $upd_obj->{update_server} = $prontus_varglb::UPDATE_SERVER if ($prontus_varglb::UPDATE_SERVER);
 
     # Establece y chequea dirs
     $upd_obj->{dir_updates} = $upd_obj->{document_root} . "/_prontus_update";
@@ -335,23 +336,23 @@ sub check_before_download {
         cluck $Update::ERR . "\n";
         return 0;
     };
-    
+
     my $content_length = &lib_prontus::get_http_content_length($url); # obtener el tamaño del archivo a descargar.
     $content_length = 0 if (!$content_length);
-    
+
     if ($content_length <= 0) {
         $Update::ERR = "No se pudo determinar el tamaño de la actualización.";
         cluck $Update::ERR . "\n";
         return 0;
     };
-    
+
 
     print STDERR "TGZ content_length[$content_length]\n";
 
     $content_length = ceil($content_length / 1024); # kb.
     my $tgz_size_mb = &lib_quota::format_bytes($content_length);
     my $disponible_mb = &lib_quota::format_bytes($this->{quota_asignado} - $this->{quota_usado});
-    
+
     if ($this->{quota_usado_porc} eq '100%') {
         $Update::ERR = "No hay suficiente espacio libre en disco para descargar la actualización.";
         cluck $Update::ERR . "\n";
@@ -458,7 +459,7 @@ sub descarga_release {
                     if (!$ret) {
                         return 0;
                     };
-                    
+
                     # guardar el .md5 tb, por siaca
                     &glib_fildir_02::write_file("$path_local_tgz.md5", $md5_remoto);
                     # descomprimir en el mismo dir, el .tgz
