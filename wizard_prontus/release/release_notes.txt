@@ -8316,7 +8316,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.85 - 28/05/2015 - EAG
+11.2.85 - 28/05/2015 - EAG/JOR
 ====================================================================================================
 - Prontus en general
     [mejoras]
@@ -8324,7 +8324,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se actualiza libreria javascript validator a 5.1.8.
     [cambios]
         - Se elimina cache de listados al borrar una edición.
-        - Se deja configurable dirección del servidor de actualizaciones bajo la variable UPDATE_SERVER.
+        - Se deja configurable dirección del servidor de actualizaciones bajo la variable UPDATE_SERVER. Por el momento no está
+        disponible en el editor de configuración del cpan.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_edi_borrar.cgi
@@ -8369,3 +8370,26 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
+
+- Portadas taxonómicas
+    [cambios]
+        - Se agrega filtro por "fecha desde".
+        TAXPORT_FECHA_DESDE = '20150602' <- El formato debe ser YYYYMMDD.
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+
+- Portadas tagonómicas
+    [mejoras]
+        - Se agrega filtros a tagport siguiendo el mismo funcionamiento de las taxport.
+            * Crear un directorio en plantillas de tagport /plantillas/tag/port que comience con fil_, por ejemplo /plantillas/tag/port/fil_ejemplo
+            * En este directorio se debe crear un archivo llamado filtros.cfg, el cual acepta la siguiente configuración:
+                TAGPORT_FIDS = 'fid_foto,fid_formulario' <- tipos de fids a considerar en el filtro, separados por comas.
+                TAGPORT_PLANTILLAS = 'taxport.html' <- una o mas plantillas que se usarán para las salidas. Por ejemplo, si en 'all'
+                existen 4 plantillas distintas, solo se usará la indicada en la configuración minimizando el número de archivos creados.
+                TAGPORT_FECHA_DESDE = '20150602' <- El formato debe ser YYYYMMDD.
+            * Si el archivo de configuración no existe, el comportamiento será igual a 'all'.
+            * El uso de las plantillas y la estructura de archivos es igual al resto de las tagport.
+
+    [files]
+        /cgi-cpn/prontus_tags_ports.cgi
+

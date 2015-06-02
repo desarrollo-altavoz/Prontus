@@ -108,6 +108,7 @@ close STDOUT;
 
 my ($LOOP, %FORM, $NOM_PRONTUS, %NOM_TAGS);
 my %NOMBASE_PLTS;
+my %CFG_FIL_TAGPORT;
 # my %HASH_FILES;
 my ($FILASXPAG);
 
@@ -554,6 +555,12 @@ sub write_pag {
             # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
             my $pagina = &get_buffer_plt($tag_id, $fid, $mv, $nombase_plt);
             next if (!$pagina);
+
+            # Solo para filtros. Si estan configuradas las plantillas, solo se consideran esas.
+            if ($fid =~ /^fil_/ && defined $CFG_FIL_TAGPORT{$fid}{'PLANTILLAS'} && !defined $CFG_FIL_TAGPORT{$fid}{'PLANTILLAS'}{$nombase_plt}) {
+                next;
+            };
+
             ($pagina, $MSGS{"$mv|$nombase_plt"}) = &carga_mensajes($pagina); # 1.8
             $pagina =~ s/%%_totartics%%/$tot_artics/ig;
             my $key_hash = "$tag_id|$fid|$mv|$nombase_plt";
@@ -867,9 +874,98 @@ sub get_fids2process {
             };
         };
     };
+
+    # Se agregan como fids los filtros para usar la misma logica.
+    my @listado_filtros = &get_tagport_fil();
+
+    foreach my $fil (@listado_filtros) {
+        $fids{$fil} = $1;
+    };
+
     return %fids;
 
 };
+
+#-----------------------------------------------------------------------
+sub get_tagport_fil {
+    my ($ruta_dir) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP";
+    my @listado = glob("$ruta_dir/fil_*");
+    my @filtros;
+
+    foreach my $dir (@listado) {
+        if ($dir =~ /fil_(.*?)$/) {
+            push @filtros, "fil_" . $1;
+            &cargar_fil_cfg("$dir/filtros.cfg", "fil_" . $1);
+        };
+
+    };
+
+    return @filtros;
+};
+
+#-----------------------------------------------------------------------
+sub cargar_fil_cfg {
+    my $file = $_[0];
+    my $fil = $_[1];
+    my $cfg = &glib_fildir_02::read_file($file);
+
+    return if (exists $CFG_FIL_TAGPORT{$fil}); # para no cargarlo dos veces.
+
+    if ($cfg =~ m/\s*TAGPORT_FIDS\s*=\s*("|')(.*?)("|')/s) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        $value =~ s/[^a-zA-Z0-9_,]//sg; # dejar solo caracteres permitidos
+
+        my @valores = split(',', $value);
+
+        $CFG_FIL_TAGPORT{$fil}{'FIDS'} = \@valores;
+
+        #print STDERR "CFG_FIL_TAGPORT! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAGPORT_PLANTILLAS\s*=\s*("|')(.*?)("|')/s) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        $value =~ s/[^a-zA-Z0-9_\-,\.]//sg; # dejar solo caracteres permitidos
+
+        my @valores = split(',', $value);
+
+        foreach my $tpl (@valores) {
+            $CFG_FIL_TAGPORT{$fil}{'PLANTILLAS'}{$tpl} = 1;
+        };
+
+        #print STDERR "CFG CFG_FIL_TAGPORT! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAGPORT_FECHA_DESDE\s*=\s*("|')(.*?)("|')/s) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        $value =~ s/[^0-9]//sg; # dejar solo caracteres permitidos, numeros.
+
+        $value = '' if ($value !~ /^(\d{8})$/); # formato debe ser YYYYMMDD
+
+        $CFG_FIL_TAGPORT{$fil}{'FECHA_DESDE'} = $value;
+
+        #print STDERR "CFG CFG_FIL_TAGPORT! fil[$fil] value[$value]\n";
+    };
+
+};
+
 #-----------------------------------------------------------------------
 sub stat_arch {
 # Determina si el archivo es mas antiguo que N segundos, de acuerdo a fecha/hora de modificacion.
@@ -887,6 +983,11 @@ sub genera_filtros_tagports {
 # Aplica a portadas tax normales y a portadillas de calendarios taxonomicos
 
     my ($tag_id, $fid, $curr_dtime) = @_;
+    my $fid_fil = $fid;
+
+    if ($fid =~ /^fil_/) {
+        $fid = '';
+    };
 
     $curr_dtime =~ /^(\d{8})(\d\d\d\d)/;
     my $dt_system = $1;
@@ -903,14 +1004,36 @@ sub genera_filtros_tagports {
         $filtros .= " (ART_TIPOFICHA = \"$fid\") ";
     };
 
+    if ($fid_fil && defined $CFG_FIL_TAGPORT{$fid_fil}{'FIDS'}) {
+        my @fidlist = @{$CFG_FIL_TAGPORT{$fid_fil}{'FIDS'}};
+        my $filtro_fids;
+
+        if (scalar @fidlist) {
+            foreach my $filfid (@fidlist) {
+                $filtro_fids .= "ART_TIPOFICHA = '$filfid' OR ";
+            };
+
+            $filtro_fids = substr($filtro_fids, 0, (length($filtro_fids)-3));
+
+            $filtros .= " and " if ($filtros);
+            $filtros .= "($filtro_fids)";
+        };
+    };
+
     $filtros .= " and " if ($filtros);
 
-    $filtros .= " (ART_FECHAPHORAP <= \"$dt_system$hhmm_system\") ";
+    if ($fid_fil && defined $CFG_FIL_TAGPORT{$fid_fil}{'FECHA_DESDE'} && $CFG_FIL_TAGPORT{$fid_fil}{'FECHA_DESDE'} ne '') {
+        $filtros .= " (ART_FECHAP >= \"$CFG_FIL_TAGPORT{$fid_fil}{'FECHA_DESDE'}\") ";
+    } else {
+        $filtros .= " (ART_FECHAPHORAP <= \"$dt_system$hhmm_system\") ";
+    };
+
     $filtros .= " and (ART_ALTA = \"1\") " if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI');
 
     if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
         $filtros .= " and ( (ART_FECHAEHORAE >= \"$dt_system$hhmm_system\") OR ( (ART_FECHAEHORAE < \"$dt_system$hhmm_system\") AND (ART_SOLOPORTADAS = \"1\") ) )";
     };
+
 
     return $filtros;
 

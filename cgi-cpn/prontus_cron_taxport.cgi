@@ -1492,6 +1492,23 @@ sub cargar_fil_cfg {
         #print STDERR "CFG TAXPORT_PLANTILLAS! fil[$fil] value[$value]\n";
     };
 
+    if ($cfg =~ m/\s*TAXPORT_FECHA_DESDE\s*=\s*("|')(.*?)("|')/s) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        $value =~ s/[^0-9]//sg; # dejar solo caracteres permitidos, numeros.
+
+        $value = '' if ($value !~ /^(\d{8})$/); # formato debe ser YYYYMMDD
+
+        $CFG_FIL_TAXPORT{$fil}{'FECHA_DESDE'} = $value;
+
+        #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value]\n";
+    };
+
 };
 
 # ---------------------------------------------------------------
@@ -1632,7 +1649,12 @@ sub genera_filtros_taxports {
 
     $filtros .= " and " if ($filtros);
 
-    $filtros .= " (ART_FECHAPHORAP <= \"$dt_system$hhmm_system\") ";
+    if ($fid_fil && defined $CFG_FIL_TAXPORT{$fid_fil}{'FECHA_DESDE'} & $CFG_FIL_TAXPORT{$fid_fil}{'FECHA_DESDE'} ne '') {
+        $filtros .= " (ART_FECHAP >= \"$CFG_FIL_TAXPORT{$fid_fil}{'FECHA_DESDE'}\") ";
+    } else {
+        $filtros .= " (ART_FECHAPHORAP <= \"$dt_system$hhmm_system\") ";
+    };
+
     $filtros .= " and (ART_ALTA = \"1\") " if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI');
 
     if ($prontus_varglb::CONTROL_FECHA eq 'SI') {

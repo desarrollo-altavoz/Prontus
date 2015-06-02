@@ -1246,6 +1246,9 @@ sub parseaVars {
 
     $pagina =~ s/%%VARNISH_GLOBAL_PURGE%%/$prontus_varglb::VARNISH_GLOBAL_PURGE/ig;
 
+    # Servidor de actualizaciones.
+    $pagina =~ s/%%UPDATE_SERVER%%/$prontus_varglb::UPDATE_SERVER/ig;
+
     # parametros generales transcodificacion
     $pagina =~ s/%%DIR_FFMPEG%%/$prontus_varglb::DIR_FFMPEG/ig;
     $pagina =~ s/%%FFMPEG_PARAMS%%/$prontus_varglb::FFMPEG_PARAMS/ig;
