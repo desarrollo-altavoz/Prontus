@@ -71,6 +71,7 @@
 # 2.4.6 - 11/05/2015 - EAG/JOR - Integracion soporte dropbox
 # 2.4.7 - 12/05/2015 - EAG - Modificaciones por integracion a la release
 # 2.4.8 - 28/05/2015 - EAG - Agrega hora inicio y fin al STDERR
+# 2.4.9 - 01/06/2015 - EAG - Se agregan etiquetas adicionales para las resoluciones "estandar"
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -518,10 +519,17 @@ sub generar_lista_HLS {
             ($ancho, $alto, $vcodec, $acodec, $vbitrate, $abitrate, $fps, $duration) = &lib_xcoding::get_info_video($archivo);
             if ($ult_resolucion ne "$ancho"."x$alto") {
                 $list .= "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=". 1100*($vbitrate +$abitrate).",RESOLUTION=$ancho"."x$alto";
-                if ($ancho == 1280) {
+                # etiquetas para las resoluciones estandar
+                if ($ancho == 1920) {
+                    $list .= ",NAME=\"1080p\"";
+                } elsif ($ancho == 1280) {
                     $list .= ",NAME=\"720p\"";
                 } elsif ($ancho == 854) {
                     $list .= ",NAME=\"480p\"";
+                } elsif ($ancho == 640) {
+                    $list .= ",NAME=\"360p\"";
+                } elsif ($ancho == 426) {
+                    $list .= ",NAME=\"240p\"";
                 }
                 $list .= "\n$hlspath/playlist.m3u8\n";
                 $ult_resolucion = "$ancho"."x$alto";
