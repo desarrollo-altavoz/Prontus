@@ -8347,7 +8347,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [cambios]
         - Se sube el tamaño máximo para transcodificar a 100 MB.
         - Se reorganizan las variables de transcodificación en el administrador.
-        - Se modifica validación de del directorio de FFmpeg.
+        - Se modifica validación del directorio de FFmpeg.
     [bugfixes]
         - Se corrige el procesamiento de la "endianness" al leer los atoms de los mp4.
     [files]

@@ -1397,7 +1397,7 @@ sub load_config {
   $prontus_varglb::RUTA_TEMPORAL_XCODING = ''; # valor por defecto.
   if ($buffer =~ m/\s*RUTA_TEMPORAL_XCODING\s*=\s*("|')(.*?)$1/s) {
     $prontus_varglb::RUTA_TEMPORAL_XCODING = $2;
-    if (substr($prontus_varglb::RUTA_TEMPORAL_XCODING, -1) ne '/') {
+    if ($prontus_varglb::RUTA_TEMPORAL_XCODING ne '' && substr($prontus_varglb::RUTA_TEMPORAL_XCODING, -1) ne '/') {
         $prontus_varglb::RUTA_TEMPORAL_XCODING .= '/';
     }
   };
