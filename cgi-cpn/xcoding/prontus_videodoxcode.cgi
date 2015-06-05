@@ -72,6 +72,8 @@
 # 2.4.7 - 12/05/2015 - EAG - Modificaciones por integracion a la release
 # 2.4.8 - 28/05/2015 - EAG - Agrega hora inicio y fin al STDERR
 # 2.4.9 - 01/06/2015 - EAG - Se agregan etiquetas adicionales para las resoluciones "estandar"
+# 2.4.10 - 03/06/2015 - EAG - Se agrega verificacion al hacer garbage, RUTA_PRONTUS no puede ser vacio
+# 2.5.0 - 04/06/2015 - EAG - Se mejora compatibilidad con ffmpeg 1.x
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -110,7 +112,7 @@ my $GENERAR_VERSIONES = $ARGV[2];
 my $ARTIC_dirfecha;
 my $ARTIC_ts_articulo;
 my $ARTIC_path_xml;
-my $ARTIC_filename;
+my $ARTIC_filename = '';
 my $ARTIC_extension;
 my $RUTA_PRONTUS = '';  # ruta de la carpeta prontus donde esta el video en caso de no usar ruta temporal
 my %FORMATOS_VERSIONES; # hash que guarda los formatos de las versiones del video
@@ -186,12 +188,15 @@ main: {
         # para obtener la carpeta prontus del video
         $destino =~ /(\/.*\/\d{8}\/mmedia\/)multimedia_video.*\d{6}\S?\.\w+$/;
         $RUTA_PRONTUS = $1;
-        print STDERR "RUTA_PRONTUS [$RUTA_PRONTUS]\n";
+        #~ print STDERR "RUTA_PRONTUS [$RUTA_PRONTUS]\n";
 
         # inicializamos los valores de la libreria
         $lib_xcoding::PATHNICE = &lib_prontus::get_path_nice();
         if ($prontus_varglb::GEN_HLS eq 'SI') {
             $lib_xcoding::HLS = 1;
+        }
+        if ($prontus_varglb::PRECISION_HLS eq 'SI') {
+            $lib_xcoding::PRECISION_HLS = 1;
         }
         if ($prontus_varglb::MODO_PARALELO eq 'SI') {
             $lib_xcoding::MODO_PARALELO = 1;
@@ -217,7 +222,7 @@ main: {
         %FORMATOS_VERSIONES = &lib_xcoding::get_formatos($MARCA);
 
         if ($GENERAR_VERSIONES) {
-            print STDERR "generar versiones\n";
+            #~ print STDERR "generar versiones\n";
             if (scalar(keys %FORMATOS_VERSIONES) > 0) {
                 &crear_versiones_video($MARCA, $ORIGEN, $destino);
             }
@@ -277,7 +282,7 @@ main: {
         # cargamos los formatos por defecto si estan redefinidos
         my %formatos = &lib_xcoding::get_formatos($MARCA, 1);
         # realizamos la transcoficacion del original
-        &do_xcode($ORIGEN, $destino, 0, $formatos{uc $MARCA});
+        &do_xcode($ORIGEN, $destino, 0, $formatos{uc $MARCA}, ''); # $key es vacio
 
         # si existe el mp4
         if (-s $destino) {
@@ -390,7 +395,7 @@ sub crear_versiones_video {
             if (-f $new_destino) {
                 unlink $new_destino;
             };
-            &do_xcode($origen, $new_destino, 1, $FORMATOS_VERSIONES{$key});
+            &do_xcode($origen, $new_destino, 1, $FORMATOS_VERSIONES{$key}, $key);
             # para obtener la carpeta prontus relativa del video
             $new_destino =~ /\/.*(\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video.*\d{6}\S?\.\w+)$/;
             # purgeamos el archivo
@@ -409,10 +414,15 @@ sub do_xcode {
     my $destino = $_[1];
     my $no_borr_origen = $_[2];
     my $formato = $_[3];
+    my $key = $_[4];
+
+    # obtenemos y guardamos el nombre de la marca
+    $key =~ /\.(\w+)$/;
+    $key = lc $1;
 
     my ($cmd, $res, $nd_pass, $start, $end, $total, $segundos);
 
-    $destino =~ /\/.*\/\d{8}\/mmedia\/(multimedia_video.*\d{6}\S?\.mp4)$/;
+    $destino =~ /\/\d{8}\/mmedia\/(multimedia_video.*\d{6}\S?\.mp4)$/;
     my $archivo_destino = $1;
     $archivo_destino =~ s/\.mp4$/\.tmp/;
 
@@ -426,9 +436,41 @@ sub do_xcode {
         $stats_file = "$lib_xcoding::RUTA_TEMPORAL$ARTIC_filename.log";
     }
 
+    # cargamos el formato por defecto de la marca para verificar si se cambio el profile
+    # si el profile no es main se debe hacer los 2 pasos al transcodificar
+    my %formato_defecto = &lib_xcoding::get_formatos($MARCA, 1);
+
+    my $perfil_defecto = 'main'; # por defecto se usa main
+    if (defined($formato_defecto{'H264PROFILE'}) && $formato_defecto{'H264PROFILE'} ne 'main')  {
+        $perfil_defecto = $formato_defecto{'H264PROFILE'};
+    }
+
+    # verificamos si es main o no
+    my $perfil_formato = 'main'; # por defecto se usa main
+    if (defined($formato->{'H264PROFILE'}) && $formato->{'H264PROFILE'} ne 'main')  {
+        $perfil_formato = $formato->{'H264PROFILE'};
+    }
+
+    my $paso_1 = 0;
+    # si el perfil de la version principal es distinto al de la version general se debe hacer el paso 1
+    if ($perfil_defecto ne $perfil_formato) {
+        print STDERR "Perfil de version [$MARCA".uc($key)."] es distinto de la version principal [$perfil_defecto] != [$perfil_formato]\n";
+        $paso_1 = 1;
+    }
+
+    my $nuevolog = 0;
     # si no hay que hacer 2 pasos se procesa siempre
     # o si hay que hacer 2 pasos y ya existe el log de estadisticas nos saltamos el paso 1
-    if (!$nd_pass || !($nd_pass && (-s $stats_file))) {
+    # $stats_file-0.log es el log que genera ffmpeg 1
+    #~ if (!$nd_pass || !($nd_pass && (-s $stats_file))) {
+    if ((!$nd_pass || !($nd_pass && (-s $stats_file || -s "$stats_file-0.log"))) || $paso_1) {
+        # si no existe el archivo de estadisticas debemos crear uno unico para este proceso
+        if (!-s $stats_file || $paso_1) {
+            # cambiamos el nombre del log en el comando
+            $cmd =~ s/\.log/\.log$key/g;
+            # hay que usar este log para el paso 2 tambien
+            $nuevolog = 1;
+        }
         print STDERR "* Transcodificacion paso 1 [$cmd]\n";
         $start = time;
         # Ejecuta la transcodificacion redirigiendo stderr to stdout.
@@ -452,9 +494,13 @@ sub do_xcode {
     # se hace el segundo paso si es necesario
     if ($nd_pass) {
         ($cmd,$nd_pass) = &lib_xcoding::get_cmd_ffmpeg($origen, $archivo_destino, 1, \%{$formato});
+        if ($nuevolog) {
+            # cambiamos el nombre del log en el comando
+            $cmd =~ s/\.log/\.log$key/g;
+        }
         print STDERR "* Transcodificacion paso 2 [$cmd]\n";
         $start = time;
-        $res = qx/$cmd 2>&1/;
+        $res = `$cmd 2>&1`;
 
         $end = time;
         $total = $end - $start;
@@ -473,15 +519,16 @@ sub do_xcode {
     if ($lib_xcoding::RUTA_TEMPORAL ne '')  {
         #se ajusta el mp4
         $cmd = "$Bin/qtfaststart.cgi $lib_xcoding::RUTA_TEMPORAL$archivo_destino";
-        $res = qx/$cmd 2>&1/;
+        $res = `$cmd 2>&1`;
 
         &die_stderr("1 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
 
+        # se mueve el mp4 a su destino final
         move("$lib_xcoding::RUTA_TEMPORAL$archivo_destino",$destino);
     } else {
         #se ajusta el mp4
         $cmd = "$Bin/qtfaststart.cgi $RUTA_PRONTUS$archivo_destino";
-        $res = qx/$cmd 2>&1/;
+        $res = `$cmd 2>&1`;
 
         &die_stderr("2 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
 
@@ -554,25 +601,30 @@ sub signal_catch {
 sub garbageTempFiles {
     #borramos los logs de multipasos y archivos temporales que pudieran quedar
     my @logs;
-    if ($lib_xcoding::RUTA_TEMPORAL ne '')  {
-        @logs = glob "$lib_xcoding::RUTA_TEMPORAL$ARTIC_filename*";
-    } else {
-        @logs = glob "$RUTA_PRONTUS$ARTIC_filename*";
-    }
-    foreach my $log (@logs) {
-        # no se borran:
-        # 1.- archivo mp4, es el resultado de la transcodificacion
-        # 2.- directorio con el mismo nombre, es el directorio de HLS
-        # 3.- si es igual al origen, indica problema de trancodificacion
-        if ($log =~ /\.mp4$/ || $log =~ /\.m3u8$/ || -d $log || $log eq $ORIGEN) {
-            #~ print STDERR "no borrar $log\n";
-            next;
+    if ($ARTIC_filename ne '')  {
+        if ($lib_xcoding::RUTA_TEMPORAL ne '')  {
+            @logs = glob "$lib_xcoding::RUTA_TEMPORAL$ARTIC_filename*";
+        } elsif ($RUTA_PRONTUS ne '') {
+            @logs = glob "$RUTA_PRONTUS$ARTIC_filename*";
+        }
+        foreach my $log (@logs) {
+            # no se borran:
+            # 1.- archivo mp4, es el resultado de la transcodificacion
+            # 2.- directorio con el mismo nombre, es el directorio de HLS
+            # 3.- si es igual al origen, indica problema de trancodificacion
+            if ($log =~ /\.mp4$/ || $log =~ /\.m3u8$/ || -d $log || $log eq $ORIGEN) {
+                #~ print STDERR "no borrar $log\n";
+                next;
+            }
+
+            print STDERR "Borrando archivo $log\n";
+            unlink $log;
         }
 
-        print STDERR "Borrando archivo $log\n";
-        unlink $log;
+        #~ print STDERR Dumper(\@logs);
+    } else {
+        print STDERR "ARTIC_filename vacío, no se hace nada \n";
     }
-    #~ print STDERR Dumper(\@logs);
     print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Fin Proceso\n";
 }
 # ---------------------------------------------------------------

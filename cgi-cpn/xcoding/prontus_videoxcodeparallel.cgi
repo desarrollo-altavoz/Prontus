@@ -39,6 +39,7 @@
 # ---------------------------------------------------------------
 # 1.0.0 - 02/12/2014 - EAG - Primera version para transcodificacion en paralelo
 # 1.1.0 - 12/05/2015 - EAG - Modificaciones por integracion a la release
+# 1.2.0 - 04/06/2015 - EAG - Se mejora compatibilidad con ffmpeg 1.x
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -89,7 +90,7 @@ main: {
         &die_stderr("No se obtener la información del artículo asociado al video.", "", 1);
     };
 
-    #obtenemos el nombre de la marca
+    # obtenemos el nombre de la marca
     $ORIGEN =~ /.*?\/((multimedia_video\d+)\d{14})\.(\w+)$/i;
     my $marca = $2;
 
@@ -106,6 +107,9 @@ main: {
     $lib_xcoding::PATHNICE = &lib_prontus::get_path_nice();
     if ($prontus_varglb::GEN_HLS eq 'SI') {
         $lib_xcoding::HLS = 1;
+    }
+    if ($prontus_varglb::PRECISION_HLS eq 'SI') {
+        $lib_xcoding::PRECISION_HLS = 1;
     }
     if ($prontus_varglb::MODO_PARALELO eq 'SI') {
         $lib_xcoding::MODO_PARALELO = 1;
@@ -127,14 +131,14 @@ main: {
     my ($start, $total, $segundos);
     $start = time;
 
-    #se obtienen los datos del video original
+    # se obtienen los datos del video original
     ($lib_xcoding::ANCHO, $lib_xcoding::ALTO, $lib_xcoding::VCODEC, $lib_xcoding::ACODEC, $lib_xcoding::VBITRATE, $lib_xcoding::ABITRATE) = &lib_xcoding::get_info_video($ORIGEN);
 
-    # cargamos los formatos para la marca para saber si hay que generar versiones y
-    # necesitamos conservar el archivo original o no
+    # cargamos los formatos para la marca generar la version
     my %formatos_versiones = &lib_xcoding::get_formatos($marca);
 
-    &crear_versiones_video($marca, $ORIGEN, $destino, \%formatos_versiones, $FORMATO);
+    # generamos la version
+    &crear_version_video($marca, $ORIGEN, $destino, \%formatos_versiones, $FORMATO);
 
     $total = time - $start;
     $segundos = $total % 60;
@@ -144,7 +148,7 @@ main: {
 };
 
 # ---------------------------------------------------------------
-sub crear_versiones_video {
+sub crear_version_video {
     my $marca = $_[0];
     my $origen = $_[1];
     my $destino = $_[2];
@@ -154,23 +158,22 @@ sub crear_versiones_video {
     my $new_name = $key;
     $new_name =~ s/\./$ARTIC_ts_articulo/sg;
     $new_name = lc $new_name;
-    my $new_destino = $destino;
 
-    $new_destino =~ s/\/multimedia_video\d+\d{14}\.(\w+)$/\/$new_name\.mp4/is;
-    print STDERR "Procesando formato [$key] => [$new_destino]\n";
+    $destino =~ s/\/multimedia_video\d+\d{14}\.(\w+)$/\/$new_name\.mp4/is;
+    print STDERR "Procesando formato [$key] => [$destino]\n";
 
-    if (-f $new_destino) {
-        unlink $new_destino;
+    if (-f $destino) {
+        unlink $destino;
     };
 
-    &do_xcode($origen, $new_destino, 1, $formatos{$key}, $key);
+    &do_xcode($origen, $destino, 1, $formatos{$key}, $marca, $key);
     # para obtener la carpeta prontus relativa del video
-    $new_destino =~ /\/.*(\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video.*\d{6}\S?\.\w+)$/;
+    $destino =~ /\/.*(\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video.*\d{6}\S?\.\w+)$/;
     # purgeamos el archivo
     &lib_prontus::purge_cache($1);
     # segmentamos el video para generar HLS
     if ($lib_xcoding::HLS) {
-        &lib_xcoding::generar_HLS($new_destino);
+        &lib_xcoding::generar_HLS($destino);
     }
 };
 
@@ -180,7 +183,8 @@ sub do_xcode {
     my $destino = $_[1];
     my $no_borr_origen = $_[2];
     my $formato = $_[3];
-    my $key = $_[4];
+    my $marca = $_[4];
+    my $key = $_[5];
 
     # obtenemos y guardamos el nombre de la marca
     $key =~ /\.(\w+)$/;
@@ -188,7 +192,7 @@ sub do_xcode {
 
     my ($cmd, $res, $nd_pass, $start, $end, $total, $segundos);
 
-    $destino =~ /\/.*?\/(multimedia_video.*\d{6}\S?\.mp4)$/;
+    $destino =~ /\/\d{8}\/mmedia\/(multimedia_video.*\d{6}\S?\.mp4)$/;
     my $archivo_destino = $1;
     $archivo_destino =~ s/\.mp4$/\.tmp/;
 
@@ -202,14 +206,38 @@ sub do_xcode {
         $stats_file = "$lib_xcoding::RUTA_TEMPORAL$ARTIC_filename.log";
     }
 
+    # cargamos el formato por defecto de la marca para verificar si se cambio el profile
+    # si el profile no es main se debe hacer los 2 pasos al transcodificar
+    my %formato_defecto = &lib_xcoding::get_formatos($marca, 1);
+
+    my $perfil_defecto = 'main'; # por defecto se usa main
+    if (defined($formato_defecto{'H264PROFILE'}) && $formato_defecto{'H264PROFILE'} ne 'main')  {
+        $perfil_defecto = $formato_defecto{'H264PROFILE'};
+    }
+
+    # verificamos si es main o no
+    my $perfil_formato = 'main'; # por defecto se usa main
+    if (defined($formato->{'H264PROFILE'}) && $formato->{'H264PROFILE'} ne 'main')  {
+        $perfil_formato = $formato->{'H264PROFILE'};
+    }
+
+    my $paso_1 = 0;
+    # si el perfil de la version principal es distinto al de la version general se debe hacer el paso 1
+    if ($perfil_defecto ne $perfil_formato) {
+        print STDERR "Perfil de version [".uc("$marca.$key")."] es distinto de la version principal [$perfil_defecto] != [$perfil_formato]\n";
+        $paso_1 = 1;
+    }
+
     my $nuevolog = 0;
     # si no hay que hacer 2 pasos se procesa siempre
     # o si hay que hacer 2 pasos y ya existe el log de estadisticas nos saltamos el paso 1
-    if (!$nd_pass || !($nd_pass && (-s $stats_file))) {
-        # si no existe el archivo de estadisitcas debemos crear uno unico para este proceso
-        if (!-s $stats_file) {
+    # $stats_file-0.log es el log que genera ffmpeg 1
+    # $paso_1 indica nque el paso 1 debe hacerse sin importar las otras condiciones
+    if ((!$nd_pass || !($nd_pass && (-s $stats_file || -s "$stats_file-0.log"))) || $paso_1) {
+        # si no existe el archivo de estadisticas debemos crear uno unico para este proceso
+        if (!-s $stats_file || $paso_1) {
             # cambiamos el nombre del log en el comando
-            $cmd =~ s/\.log:/\.log$key:/;
+            $cmd =~ s/\.log/\.log$key/g;
             # hay que usar este log para el paso 2 tambien
             $nuevolog = 1;
         }
@@ -218,7 +246,7 @@ sub do_xcode {
         $start = time;
         # Ejecuta la transcodificacion redirigiendo stderr to stdout.
         # Por ahora no se analiza la salida del ffmpeg. La redireccion del stderr al stdout es porque ffmpeg imprime su salida al stderr en vez de al stdout
-        $res = qx/$cmd 2>&1/;
+        $res = `$cmd 2>&1`;
 
         $end = time;
         $total = $end - $start;
@@ -233,11 +261,11 @@ sub do_xcode {
         ($cmd,$nd_pass) = &lib_xcoding::get_cmd_ffmpeg($origen, $archivo_destino, 1, \%{$formato});
         if ($nuevolog) {
             # cambiamos el nombre del log en el comando
-            $cmd =~ s/\.log:/\.log$key:/;
+            $cmd =~ s/\.log/\.log$key/g;
         }
         print STDERR "* Transcodificacion paso 2 [$cmd]\n";
         $start = time;
-        $res = qx/$cmd 2>&1/;
+        $res = `$cmd 2>&1`;
 
         $end = time;
         $total = $end - $start;
@@ -256,7 +284,8 @@ sub do_xcode {
     if ($lib_xcoding::RUTA_TEMPORAL ne '')  {
         #se ajusta el mp4
         $cmd = "$Bin/qtfaststart.cgi $lib_xcoding::RUTA_TEMPORAL$archivo_destino";
-        $res = qx/$cmd 2>&1/;
+        $res = `$cmd 2>&1`;
+
         &die_stderr("1 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
 
         # se mueve el mp4 a su destino final
@@ -264,7 +293,8 @@ sub do_xcode {
     } else {
         #se ajusta el mp4
         $cmd = "$Bin/qtfaststart.cgi $RUTA_PRONTUS$archivo_destino";
-        $res = qx/$cmd 2>&1/;
+        $res = `$cmd 2>&1`;
+
         &die_stderr("2 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
 
         #sino se renombra de tmp a mp4
