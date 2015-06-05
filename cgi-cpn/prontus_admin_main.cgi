@@ -1262,6 +1262,14 @@ sub parseaVars {
         $pagina =~ s/%%USAR_LIB_FDK_NO%%/ checked="checked"/ig;
     };
 
+    if ($prontus_varglb::PRECISION_HLS eq 'SI') {
+        $pagina =~ s/%%PRECISION_HLS_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%PRECISION_HLS_NO%%//ig;
+    } else {
+        $pagina =~ s/%%PRECISION_HLS_SI%%//ig;
+        $pagina =~ s/%%PRECISION_HLS_NO%%/ checked="checked"/ig;
+    };
+
     if ($prontus_varglb::ADVANCED_XCODING eq 'SI') {
         $pagina =~ s/%%ADVANCED_XCODING_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%ADVANCED_XCODING_NO%%//ig;

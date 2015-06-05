@@ -1374,6 +1374,11 @@ sub load_config {
     $prontus_varglb::GEN_HLS = $2;
   };
 
+  $prontus_varglb::PRECISION_HLS = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*PRECISION_HLS\s*=\s*("|')(.*?)$1/s) {
+    $prontus_varglb::PRECISION_HLS = $2;
+  };
+
   $prontus_varglb::LIMIT_BITRATE = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*LIMIT_BITRATE\s*=\s*("|')(.*?)$1/s) {
     $prontus_varglb::LIMIT_BITRATE = $2;
