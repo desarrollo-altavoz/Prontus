@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.85 - 28/05/2015
+11.2.85 - 05/06/2015
 ====================================================================================================
 - improvement: Se agrega verificacion de codec libfdk_aac de ffmpeg a la verificacion de plataforma.
 - improvement: Se agrega opción para validar el directorio de ffmpeg, además muestra las capacidades que soporta.

@@ -8316,7 +8316,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.85 - 28/05/2015 - EAG/JOR
+11.2.85 - 05/06/2015 - EAG/JOR
 ====================================================================================================
 - Prontus en general
     [mejoras]
@@ -8364,6 +8364,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videoxcode.cgi
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
         /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodehls.cgi
         /cgi-cpn/xcoding/prontus_xcoding_getformatos.cgi
         /cgi-cpn/xcoding/prontus_xcoding_guardarformatos.cgi
         /wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
