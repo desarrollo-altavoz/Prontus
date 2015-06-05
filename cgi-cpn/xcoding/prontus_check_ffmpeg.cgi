@@ -25,6 +25,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0.0 - 13/05/2015 - EAG - Primera version.
+# 1.1.0 - 04/06/2015 - EAG - Se agregan mensajes de compatibilidad y sugerencias
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
@@ -181,13 +182,20 @@ sub check_xcoding {
         print "\n\n";
 
         if ($x264 && ($faac || $fdk)) {
-            if (vers_cmp($ver,'0.9.9') > -1) {
-                print " Se puede activar la transcodificación avanzada, ADVANCED_XCODING. (FFmpeg version: $origver)\n";
-            }
             if ($fdk && !$faac) {
                 print " <span class=\"check-error\">Se debe activar USAR_LIB_FDK, para usar el codec AAC.</span>\n";
             } elsif ($fdk) {
                 print " Se puede activar USAR_LIB_FDK, para usar libfdk_aac.\n";
+            }
+            if (vers_cmp($ver,'1.0.0') > -1) {
+                print " Se puede activar la transcodificación avanzada, ADVANCED_XCODING. (FFmpeg version: $origver)\n";
+                print " Se puede activar la generación de HLS, GEN_HLS.\n";
+            }
+            if (vers_cmp($ver,'1.2.12') > -1) {
+                print " Se puede activar la mejora de precisión al generar HLS, PRECISION_HLS. (FFmpeg version: $origver)\n";
+            }
+            if (vers_cmp($ver,'2.0.0') < 1) {
+                print "\n Se recomienda usar FFmpeg version 2 o superior. (FFmpeg version: $origver)\n";
             }
         } else {
             print "<span class=\"check-error\">";
