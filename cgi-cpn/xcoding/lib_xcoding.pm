@@ -5,6 +5,7 @@ use POSIX qw(ceil);
 use strict;
 
 our $HLS = 0;
+our $PRECISION_HLS = 0;
 our $MODO_PARALELO = 0;
 our $MAX_PARALELO = 3;
 our $FDK = 0;
@@ -92,21 +93,24 @@ sub get_info_video {
     foreach (@info) {
         # Video: h264 (Baseline), yuv420p, 1920x1080, 20745 kb/s, 29.97 fps, 29.97 tbr, 600 tbn, 1200 tbc
         if ($_ =~ m/(Video): ([^,]+), (.*?), ([0-9]+)x([0-9]+)[^,]*, ([^,]+) kb\/s.*/) {
-            if ($1 eq 'Video') {
-                #~ print STDERR "Video: [$1] [$2] [$3] [$4] [$5] [$6]\n";
-                $vcodec = $2;
-                $width = $4;
-                $height = $5;
-                $vbitrate = $6;
-            };
+            #~ print STDERR "Video: [$1] [$2] [$3] [$4] [$5] [$6]\n";
+            $vcodec = $2;
+            $width = $4;
+            $height = $5;
+            $vbitrate = $6;
+        # Video: mpeg4 (Advanced Simple Profile) (XVID / 0x44495658), yuv420p, 624x352 [SAR 1:1 DAR 39:22], SAR 180224:180219 DAR 8192:4621, 25 tbr, 25 tbn, 25 tbc
+        } elsif ($_ =~ m/(Video): ([^,]+), (.*?), ([0-9]+)x([0-9]+)[^,]*,/) {
+            # ffmpeg no informa bitrate, se asume 0, eso fuerza recodificacion
+            $vcodec = $2;
+            $width = $4;
+            $height = $5;
+            $vbitrate = 0;
         };
         # Audio: aac, 44100 Hz, mono, s16, 62 kb/s
         if ($_ =~ m/(Audio): ([^,]+), ([^,]+), ([^,]+), ([^,]+), ([^,]+) kb\/s.*/) {
-            if ($1 eq 'Audio') {
-                #~ print STDERR "Audio: [$1] [$2] [$3] [$4] [$5] [$6]\n";
-                $acodec = $2;
-                $abitrate = $6;
-            };
+            #~ print STDERR "Audio: [$1] [$2] [$3] [$4] [$5] [$6]\n";
+            $acodec = $2;
+            $abitrate = $6;
         };
     };
     print STDERR "[$origen] [$width] [$height] [$vcodec] [$acodec] [$vbitrate] [$abitrate]\n";
@@ -240,6 +244,9 @@ sub get_cmd_ffmpeg {
         if (!$pass) {
             $videoFlags = 'pass=1:subq=1:frameref=1:' . $videoFlags;
         }
+        # al usar x264 ffmpeg 1.x usa -passlog file, ffmpeg 2.x usa stats=, se indican los 2 para compatibilidad
+        # ya que si no se indica passlogfile en ffmpeg 1, escribe un log con prefijo "ffmpeg2pass" en la misma carpeta de xcoding
+        # y usa el mismo para cada video
         $video_string = "libx264 -x264opts \"stats=$ruta_trabajo$ARTIC_filename.log:$videoFlags";
 
         # se necesitan 2 pasos si se recodifica el video
@@ -275,19 +282,18 @@ sub get_cmd_ffmpeg {
     }
 
     # para HLS se generan key frames alineados
-    if ($HLS) {
+    if ($HLS && $PRECISION_HLS) {
         $force_frames = '-force_key_frames expr:gte\(t,n_forced*10\)';
     }
 
     if ($nd_pass) {
         #si se hacen 2 pasos hay que entregar el string correspondiente a cada paso
         if (!$pass) {
-            # primer paso los datos se envian a /dev/null ya que no se necesitan, no se procesa resize tampoco
-            return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y -pass 1 $force_frames -vcodec $video_string -an -f rawvideo /dev/null", 1);
-            #~ return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y -pass 1 $force_frames -vcodec $video_string -acodec $audio_string -f rawvideo /dev/null", 1);
+            # primer paso los datos se envian a /dev/null ya que no se necesitan, no se procesa resize tampoco $ruta_trabajo$ARTIC_filename
+            return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y $force_frames -vcodec $video_string -pass 1 -an -passlogfile $ruta_trabajo$ARTIC_filename.log -f rawvideo /dev/null", 1);
         } else {
             # segundo paso
-            return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y -pass 2 $resize_string $force_frames -vcodec $video_string -acodec $audio_string -f mp4 $ruta_trabajo$destino", 1);
+            return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y $resize_string $force_frames -vcodec $video_string -pass 2 -acodec $audio_string -passlogfile $ruta_trabajo$ARTIC_filename.log -f mp4 $ruta_trabajo$destino", 1);
         }
     } else {
         #no se necesita segundo paso si no se codifica video
