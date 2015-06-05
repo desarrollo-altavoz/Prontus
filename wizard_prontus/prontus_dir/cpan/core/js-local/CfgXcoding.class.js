@@ -19,7 +19,7 @@ var CfgXcoding = {
     dirCgi: '/cgi-cpn/xcoding/',
     cgiCargaFormatos: 'prontus_xcoding_getformatos.cgi',
     cgiGuardaFormatos: 'prontus_xcoding_guardarformatos.cgi',
-    cgiVerifFFmpeg: 'prontus_check_ffmpeg.cgi',
+    cgiVerificaFFmpeg: 'prontus_check_ffmpeg.cgi',
 
 
     init: function () {
@@ -345,13 +345,13 @@ var CfgXcoding = {
     /**
      * Ejecuta una verificacion de la configuracion del directorio y de ffmpeg si lo encuentra
      */
-    tesFFmpeg: function() {
+    testFFmpeg: function() {
         var path = $('#DIR_FFMPEG').val();
         if (path != '') {
             var obj = Opciones.optsDefault;
             obj.width = '900px';
-            obj.height = '450px';
-            obj.href = CfgXcoding.dirCgi + CfgXcoding.cgiVerifFFmpeg;
+            obj.height = '500px';
+            obj.href = CfgXcoding.dirCgi + CfgXcoding.cgiVerificaFFmpeg;
             obj.href += '?prontus_id=' + Admin.prontus_id;
             obj.href += '&path=' + path;
             $('#DIR_FFMPEG').val();
