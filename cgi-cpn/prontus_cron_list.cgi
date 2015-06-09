@@ -62,6 +62,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0.0 - 06/2012 - CVI - Primera Version.
+# 1.0.1 - 09/06/2015 - EAG - Se corrige deteccion de LOOPs vacios
 #
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -202,7 +203,7 @@ sub procesar_plantilla {
 
     #TODO Queda pendiente el manejo de semáforos
 
-    my (%filas);
+    my %filas = ();
 
     my $filtros = &crear_filtros_list($secc_id, $temas_id, $subtemas_id, $fids, $CURR_DTIME);
     # print STDERR "[$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
@@ -236,7 +237,7 @@ sub procesar_plantilla {
     my $buffer = $CONTENT_PLTS{$nombase_plt};
     my $loop_plt;
 
-    my %LOOPS;
+    my %LOOPS = ();
     my $counter = 1;
     while ($buffer =~ s/%%LOOP%%(.*?)%%\/LOOP%%/##loop$counter##/is) {
         $LOOPS{"##loop$counter##"} = $1;
@@ -244,16 +245,15 @@ sub procesar_plantilla {
     }
     $CONTENT_PLTS{$nombase_plt} = $buffer;
 
-    unless(keys %LOOPS) {
-        &write_pag($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, \%filas);
+    unless(scalar(keys %LOOPS)) {
         print STDERR "Plantilla sin LOOP: $nombase_plt\n";
+        &write_pag($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, \%filas, \%LOOPS);
         return;
     };
 
     while ($salida->fetch) {
         $nro_filas++;
-
-        #print STDERR "nombase_plt[$nombase_plt] art_id[$art_id]\n";
+        # print STDERR "nombase_plt[$nombase_plt] art_id[$art_id]\n";
 
         # parsea esta fila en todas las multivistas
         my ($tem, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$art_idtemas1});
@@ -273,7 +273,7 @@ sub procesar_plantilla {
             $filas{"$nombase_plt|$loopname"} .= $fila_content;
         };
     };
-    #~ print "nombase_plt[$nombase_plt]\n";
+    #~ print STDERR "nombase_plt[$nombase_plt]\n";
     &write_pag($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, \%filas, \%LOOPS);
     $salida->finish;
 };
@@ -313,7 +313,7 @@ sub write_pag {
     my ($secc_nom, $filler1, $filler2) = split (/\t\t/, $TABLA_SECC{$secc_id});
     $pagina =~ s/%%_NOM_SECCION[1-3]%%/$secc_nom/isg;
 
-    my ($temas_nom, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$temas_id});
+    my ($temas_nom, $filler5, $filler6) = split (/\t\t/, $TABLA_TEM{$temas_id});
     $pagina =~ s/%%_NOM_TEMA[1-3]%%/$temas_nom/isg;
 
     my ($subtemas_nom, $filler3, $filler4) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
