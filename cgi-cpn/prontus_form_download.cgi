@@ -20,6 +20,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0.0 - 01/04/2013 - CVI - Primera version.
+# 1.0.1 - 04/06/2015 - EAG - Se restringen archivos a solo ".json"
 #
 # ---------------------------------------------------------------
 # DECLARACIONES GLOBALES.
@@ -125,7 +126,7 @@ main: {
         # print "Total: $#files<br><hr>";
         foreach my $file (sort @files) {
 
-            next unless($file =~ /\d{14}\.json/);
+            next unless($file =~ /\d{14}\.json$/);
             my $json = &glib_fildir_02::read_file("$ROOT$DIRFORM/$file");
             my $jsonhashref;
             if($JSON::VERSION =~ /^1\./) {
