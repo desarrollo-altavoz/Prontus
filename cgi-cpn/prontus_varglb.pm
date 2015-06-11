@@ -46,7 +46,7 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   require 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.85 - 05/06/2015';
+  $VERSION_PRONTUS = '11.2.86 - 12/06/2015';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
