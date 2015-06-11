@@ -8399,14 +8399,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 - Portadas list
     [bugfixes]
-        - Se corrige error al procesar plantillas sin loops en plantillas de listados.
+        - Se corrige error al procesar plantillas sin loops en portadas de list.
     [files]
         /cgi-cpn/prontus_cron_list.cgi
+
 - Configuración
     [bugfixes]
         - Se validación de directorio temporal de transcodificación.
     [files]
         /cgi-cpn/lib_prontus.pm
+
 - Prontus Form
     [cambios]
         - Se limita la lectura a solo archivos .json al armar el archivo de datos recibidos en prontus form.
