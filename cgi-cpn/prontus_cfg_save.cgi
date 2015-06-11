@@ -531,9 +531,9 @@ sub validarXcoding {
 
     # Validar existencia directorio temporal de trabajo para transcodificar. (RUTA_TEMPORAL_XCODING)
     if ($var eq 'RUTA_TEMPORAL_XCODING') {
-        if ($item =~ /[^\w\-\/_]/isg) {
+        if ($item =~ /[^\w\-\/_\.]/isg) {
             my $msg = "El directorio [$item] configurado en la variable RUTA_TEMPORAL_XCODING tiene caracteres inválidos.\n"
-                    . "Solo se permite el uso de caracteres alfanuméricos, guión (-) y guión bajo (_).";
+                    . "Solo se permite el uso de caracteres alfanuméricos, guión (-), guión bajo (_) y punto (.).";
             &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
         } elsif (!-d $item) {
             &glib_html_02::print_json_result(0, "El directorio [$item] configurado en la variable RUTA_TEMPORAL_XCODING no existe.", 'exit=1,ctype=1');
@@ -606,7 +606,7 @@ sub validarVar {
 
     # Validar existencia directorio de FFMPEG. (DIR_FFMPEG)
     if ($var eq 'DIR_FFMPEG') {
-        if ($item =~ /[^\w\-\/_]/isg) {
+        if ($item =~ /[^\w\-\/_\.]/isg) {
             my $msg = "El directorio [$item] configurado en la variable DIR_FFMPEG tiene caracteres inválidos.\n"
                     . "Solo se permite el uso de caracteres alfanuméricos, guión (-) y guión bajo (_).";
             &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
