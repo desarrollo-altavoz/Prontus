@@ -337,7 +337,6 @@ main: {
         system("$prontus_varglb::XCODING_PPROC $PRONTUS_ID $ARTIC_ts_articulo >/dev/null 2>&1 &");
     }
 };
-
 # ---------------------------------------------------------------
 # determina cuantos procesos en paralelo estan corriendo para este video
 sub cuenta_procesos {
@@ -407,7 +406,6 @@ sub crear_versiones_video {
         }
     };
 };
-
 # ---------------------------------------------------------------
 sub do_xcode {
     my $origen = $_[0];
