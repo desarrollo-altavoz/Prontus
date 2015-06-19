@@ -67,28 +67,34 @@ main: {
     $FORM{'purge_all'} = &glib_cgi_04::param('purge_all');
     $FORM{'purge_files'} = &glib_cgi_04::param('purge_files');
 
+    my @zoneArr = split(/[\n\r]/, $prontus_varglb::CLOUDFLARE_ZONE);
+
     if ($FORM{'purge_all'} eq '1') {
         # purge a todo.
-
         my %datos_post;
+        my $zoneStatus;
 
         $datos_post{'a'} = 'fpurge_ts'; # 4.4 - "fpurge_ts" -- Clear CloudFlare's cache
         $datos_post{'tkn'} = $prontus_varglb::CLOUDFLARE_API_KEY;
         $datos_post{'email'} = $prontus_varglb::CLOUDFLARE_EMAIL;
-        $datos_post{'z'} = $prontus_varglb::CLOUDFLARE_ZONE;
         $datos_post{'v'} = '1';
 
-        my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
+        foreach my $zone (@zoneArr) {
+            next if (!$zone);
+            $datos_post{'z'} = $zone;
 
-        print STDERR "cloudflare purge files: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], status[$err] resp[$resp]\n";
+            my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
 
-        if ($err) {
-            &glib_html_02::print_json_result(0, 'Error al hacer purge [' . $prontus_varglb::CLOUDFLARE_ZONE . ']: ' . $err, 'exit=1,ctype=1');
-        } else {
-            if ($resp =~ /"result": "success"/) {
-                &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');
+            print STDERR "cloudflare purge files: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], zone[$zone] status[$err] resp[$resp]\n";
+
+            if ($err) {
+                $zoneStatus .= "[$zone] ERROR: $err\n";
             } else {
-                &glib_html_02::print_json_result(0, 'Error: Respuesta de CloudFlare inválida. Para más detalles revisar log.', 'exit=1,ctype=1');
+                if ($resp =~ /"result": "success"/) {
+                    $zoneStatus .= "[$zone] OK\n";
+                } else {
+                    $zoneStatus .= "[$zone] ERROR: Respuesta de CloudFlare inválida.\n";
+                };
             };
         };
 

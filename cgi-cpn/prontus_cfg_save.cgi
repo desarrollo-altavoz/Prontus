@@ -185,7 +185,7 @@ main: {
     # -cloudflare.cfg
     $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_API_KEY'} = 'CLOUDFLARE_API_KEY;(\w+);;U';
     $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_EMAIL'} = 'CLOUDFLARE_EMAIL;(\w+);;U';
-    $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_ZONE'} = 'CLOUDFLARE_ZONE;(\w+);;U';
+    $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_ZONE'} = 'CLOUDFLARE_ZONE;(.*?);;U';
     $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_API_URL'} = 'CLOUDFLARE_API_URL;(\w+);;U';
     $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_GLOBAL_PURGE'} = 'CLOUDFLARE_GLOBAL_PURGE;(.*?);;U';
 

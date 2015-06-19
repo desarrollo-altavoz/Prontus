@@ -8414,3 +8414,23 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se limita la lectura a solo archivos .json al armar el archivo de datos recibidos en prontus form.
     [files]
         /cgi-bin/prontus_form_download.cgi
+
+====================================================================================================
+11.2.87 - 19/06/2015 - JOR
+====================================================================================================
+
+- Cloudflare
+    [mejoras]
+        - Se permite el ingreso de múltiples zonas.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_cloudflare_purge.cgi
+        /cgi-cpn/prontus_purge_cache.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
+
+- Prontus en general
+    [cambios]
+        - Se cambia la manera de determinar el document root (DIR_SERVER).
+    [files]
+        /cgi-cpn/prontus_varglb.pm

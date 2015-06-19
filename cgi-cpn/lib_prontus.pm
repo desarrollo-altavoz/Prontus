@@ -1341,13 +1341,13 @@ sub load_config {
   $prontus_varglb::CLOUDFLARE_EMAIL = $cloudflare_email;
 
   my $cloudflare_zone = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*("|')(.*?)("|')/) { # SI | NO
+  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*("|')(.*?)$1/s) {
     $cloudflare_zone = $2;
   };
   $prontus_varglb::CLOUDFLARE_ZONE = $cloudflare_zone;
 
   my $cloudflare_api_url = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
+  if ($buffer =~ m/\s*CLOUDFLARE_API_URL\s*=\s*("|')(.*?)("|')/) {
     $cloudflare_api_url = $2;
   };
   $prontus_varglb::CLOUDFLARE_API_URL = $cloudflare_api_url;

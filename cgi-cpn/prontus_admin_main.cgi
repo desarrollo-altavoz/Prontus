@@ -201,6 +201,9 @@ sub parseCustom {
             };
         };
 
+        # Quitar variables de configuración.
+        $pagina_custom =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->//sg;
+
         $pagina_custom =~ s/%%_path_conf%%/$FORM{'path_conf'}/sg;
         $pagina_custom =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/ig;
 
