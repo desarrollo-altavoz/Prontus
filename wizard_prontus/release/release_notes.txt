@@ -8407,7 +8407,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Se validación de directorio temporal de transcodificación.
     [files]
-        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_cfg_save.cgi
 
 - Prontus Form
     [cambios]
