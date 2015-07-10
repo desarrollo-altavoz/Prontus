@@ -1226,12 +1226,29 @@ sub incluir_nrosdepag {
     my $msgs_aux = $MSGS{"$mv|$nombase$extension"};
     my %msgs = %$msgs_aux;
 
-    my ($tpl_nropag) = '<a href="%%lnk%%">%%cnro_pag%%</a>';
-    my ($tpl_nropag2) = '<span class="actual">%%cnro_pag%%</span>';
+    my $tpl_nropag = '<a href="%%lnk%%">%%cnro_pag%%</a>';
+    my $tpl_nropag2 = '<span class="actual">%%cnro_pag%%</span>';
+    my $tpl_separador = '...';
 
     #~ my $cnro_pag = 0;
     my $html_nros_pag = '';
     my $i;
+
+    # Carga configuaración.
+    my %cfg_paginacion;
+    while ($pagina =~ /<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->/sg) {
+        my $name = uc $1;
+        my $value = $2;
+
+        #print STDERR "name[$name] value[$value]\n";
+
+        $tpl_nropag = $value if ($name eq 'HTML_NRO_PAG');
+        $tpl_nropag2 = $value if ($name eq 'HTML_PAG_ACTUAL');
+        $tpl_separador = $value if ($name eq 'HTML_SEPARADOR');
+    };
+
+    # Quitar comentarios de configuración.
+    $pagina =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
 
     use POSIX qw(ceil);
     my $nro_paginas_totales = POSIX::ceil($tot_artics / $FILASXPAG);
@@ -1255,7 +1272,7 @@ sub incluir_nrosdepag {
             my $tpl_nropag_aux = $tpl_nropag;
             $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
             $tpl_nropag_aux =~ s/%%cnro_pag%%/$pag/;
-            $prevlink =  $tpl_nropag_aux . ' ... ';
+            $prevlink =  $tpl_nropag_aux . ' ' . $tpl_separador . ' ';
         };
 
         # Se procesan las páginas hacia arriba
@@ -1274,7 +1291,7 @@ sub incluir_nrosdepag {
             my $tpl_nropag_aux = $tpl_nropag;
             $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
             $tpl_nropag_aux =~ s/%%cnro_pag%%/$pag/;
-            $nextlink =  ' ... ' . $tpl_nropag_aux;
+            $nextlink =  ' ' . $tpl_separador . ' ' . $tpl_nropag_aux;
         };
 
     } else {
@@ -1492,7 +1509,7 @@ sub cargar_fil_cfg {
         #print STDERR "CFG TAXPORT_PLANTILLAS! fil[$fil] value[$value]\n";
     };
 
-    if ($cfg =~ m/\s*TAXPORT_FECHA_DESDE\s*=\s*("|')(.*?)("|')/s) {
+    if ($cfg =~ m/\s*TAXPORT_FECHAP?_DESDE\s*=\s*("|')(.*?)("|')/s) { # fecha de publicacion, ART_FECHAP
         my $value = $2;
 
         # Se limpian los espacios.

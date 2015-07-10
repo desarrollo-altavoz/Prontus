@@ -206,6 +206,7 @@ sub parseCustom {
 
         $pagina_custom =~ s/%%_path_conf%%/$FORM{'path_conf'}/sg;
         $pagina_custom =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/ig;
+        $pagina_custom =~ s/%%_public_server_name%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
 
         $pagina =~ s/%%custom_tab_name%%/$custom_tab_name/sg;
         $pagina =~ s/%%CUSTOM%%/$pagina_custom/sg;
