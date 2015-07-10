@@ -125,9 +125,11 @@ sub purge {
     my ($path_file) = shift;
     my $purge_cloudflare = 0;
     my $only_cloudflare = 0;
+    my @cloudflareZones;
 
     if ($prontus_varglb::CLOUDFLARE eq 'SI' && $prontus_varglb::CLOUDFLARE_API_URL ne '' && $prontus_varglb::CLOUDFLARE_API_KEY ne '' && $prontus_varglb::CLOUDFLARE_EMAIL ne '' && $prontus_varglb::CLOUDFLARE_ZONE ne '') {
         $purge_cloudflare = 1;
+        @cloudflareZones = split(/[\n\r]/, $prontus_varglb::CLOUDFLARE_ZONE);
     };
 
     if ($path_file =~ /_cf\.txt$/i) {
@@ -161,28 +163,32 @@ sub purge {
 
         if ($purge_cloudflare) {
             my %datos_post;
-            my $url_purge = "http://$prontus_varglb::PUBLIC_SERVER_NAME$relpath";
 
             $datos_post{'a'} = 'zone_file_purge';
             $datos_post{'tkn'} = $prontus_varglb::CLOUDFLARE_API_KEY;
             $datos_post{'email'} = $prontus_varglb::CLOUDFLARE_EMAIL;
-            $datos_post{'z'} = $prontus_varglb::CLOUDFLARE_ZONE;
-            $datos_post{'url'} = $url_purge;
 
-            my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
+            foreach my $zone (@cloudflareZones) {
+                next if (!$zone);
+                my $url_purge = "http://$zone$relpath";
 
-            print STDERR "[$$] cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], url_purge[$url_purge], status[$err] resp[$resp]\n";
+                $datos_post{'z'} = $zone;
+                $datos_post{'url'} = $url_purge;
 
-            $counter_cf++;
+                my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
 
-            if ($counter_cf >= 100) {
-                $counter_cf = 0;
-                print STDERR "[$$] api rate limit! sleep 60 segundos...\n";
-                sleep 60; # There is a rate limit for file purges of 100 per minute. Exceeding this limit will return an error in the JSON response.
-            } else {
-                sleep 0.5; # para no bombardear la api.
+                print STDERR "[$$] cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], zone[$zone] url_purge[$url_purge], status[$err] resp[$resp]\n";
+
+                $counter_cf++;
+
+                if ($counter_cf >= 100) {
+                    $counter_cf = 0;
+                    print STDERR "[$$] api rate limit! sleep 60 segundos...\n";
+                    sleep 60; # There is a rate limit for file purges of 100 per minute. Exceeding this limit will return an error in the JSON response.
+                } else {
+                    sleep 0.5; # para no bombardear la api.
+                };
             };
-
         };
     };
 
@@ -205,30 +211,34 @@ sub purge {
     if ($purge_cloudflare && !$only_cloudflare) {
         if ($prontus_varglb::CLOUDFLARE_GLOBAL_PURGE) {
             my @arr = split(/[\n\r]/, $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE);
+            my %datos_post;
+
+            $datos_post{'a'} = 'zone_file_purge';
+            $datos_post{'tkn'} = $prontus_varglb::CLOUDFLARE_API_KEY;
+            $datos_post{'email'} = $prontus_varglb::CLOUDFLARE_EMAIL;
+
             foreach my $path (@arr) {
                 next unless($path);
                 next if ($path !~ /^\//); # debe empezar con /
 
-                my %datos_post;
-                my $url_purge = "http://$prontus_varglb::PUBLIC_SERVER_NAME$path";
+                foreach my $zone (@cloudflareZones) {
+                    my $url_purge = "http://$zone$path";
 
-                $datos_post{'a'} = 'zone_file_purge';
-                $datos_post{'tkn'} = $prontus_varglb::CLOUDFLARE_API_KEY;
-                $datos_post{'email'} = $prontus_varglb::CLOUDFLARE_EMAIL;
-                $datos_post{'z'} = $prontus_varglb::CLOUDFLARE_ZONE;
-                $datos_post{'url'} = $url_purge;
+                    $datos_post{'z'} = $zone;
+                    $datos_post{'url'} = $url_purge;
 
-                my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
-                print STDERR "[$$] global purge cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], url_purge[$url_purge], status[$err] resp[$resp]\n";
+                    my ($resp, $err) = &post_url($prontus_varglb::CLOUDFLARE_API_URL, \%datos_post);
+                    print STDERR "[$$] global purge cloudflare: api_key[$prontus_varglb::CLOUDFLARE_API_KEY], zone[$zone] url_purge[$url_purge], status[$err] resp[$resp]\n";
 
-                $counter_cf++;
+                    $counter_cf++;
 
-                if ($counter_cf >= 100) {
-                    $counter_cf = 0;
-                    print STDERR "[$$] api rate limit! sleep 60 segundos...\n";
-                    sleep 60; # There is a rate limit for file purges of 100 per minute. Exceeding this limit will return an error in the JSON response.
-                } else {
-                    sleep 0.5; # para no bombardear la api.
+                    if ($counter_cf >= 100) {
+                        $counter_cf = 0;
+                        print STDERR "[$$] api rate limit! sleep 60 segundos...\n";
+                        sleep 60; # There is a rate limit for file purges of 100 per minute. Exceeding this limit will return an error in the JSON response.
+                    } else {
+                        sleep 0.5; # para no bombardear la api.
+                    };
                 };
             };
         };

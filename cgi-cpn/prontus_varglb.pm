@@ -338,14 +338,15 @@ sub get_dir_server {
   #   En win queda algo asi como c:/sites/misitio.cl/web
 
     my $dir_server = $ENV{'DOCUMENT_ROOT'};  # Unix y Abyss
-    $dir_server =~ s/\\/\//g; # cambia \ por /, por si win
+    #$dir_server =~ s/\\/\//g; # cambia \ por /, por si win
     if ($dir_server eq '') {
         use FindBin '$Bin';
         $dir_server = $Bin; # por ej /sites/misitio.cl/web/cgi-cpn
-        $dir_server =~ s/\\/\//g; # cambia \ por / por si es win
+        #$dir_server =~ s/\\/\//g; # cambia \ por / por si es win
         # Queda por ej /sites/misitio.cl/web, se asume que el script q use este varglb siempre
         # estara en la carpeta cgi-xxx o similar, pero nunca mas niveles hacia adentro.
         $dir_server =~ s/\/[^\/]+$//;
+        $dir_server =~ s/\/cgi\-\w+$//; # eliminamos cgi-xxx, cgi-bin o cgi-cpn
     };
 
     # cvi - 26/07/2011 - para eliminar los slash del final

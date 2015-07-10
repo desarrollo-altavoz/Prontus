@@ -59,10 +59,12 @@
             <tr>
                 <td style="width: 300px;" valign="top">
                     CLOUDFLARE_ZONE<br>
-                    <span class="ayuda">Dominio inscrito en CloudFlare.</span>
+                    <span class="ayuda">Listado de zonas que utilizan esta instancia de Prontus. Una por línea.<br/>
+                    Tener en cuenta que se hará purge de un mismo archivo en cada zona.
+                    </span>
                 </td>
                 <td>
-                    <input type="text" name="CLOUDFLARE_ZONE" value="%%CLOUDFLARE_ZONE%%" class="fieldform"/>
+                    <textarea name="CLOUDFLARE_ZONE" cols="80" rows="8" class="fieldform">%%CLOUDFLARE_ZONE%%</textarea>
                 </td>
             </tr>
             <tr>
