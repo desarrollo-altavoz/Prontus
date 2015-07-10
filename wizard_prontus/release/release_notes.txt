@@ -8436,7 +8436,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se soluciona problema con calculo de cuota custom.
     [files]
         /cgi-cpn/prontus_varglb.pm
-<<<<<<< HEAD
+        /cgi-cpn/lib_quota.pm.pm
 
 - Transcodificación
     [mejoras]
@@ -8449,8 +8449,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videodoxcode.cgi
         /cgi-cpn/xcoding/prontus_videoxcode.cgi
         /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
-=======
-        /cgi-cpn/lib_quota.pm.pm
 
 - Administración / Pestaña custom
     [cambios]
@@ -8470,4 +8468,3 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
 
->>>>>>> d27f331f4d37a3ea63d6e4525eb4c3395a05bfe8
