@@ -8432,5 +8432,27 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Prontus en general
     [cambios]
         - Se cambia la manera de determinar el document root (DIR_SERVER).
+    [bugfixes]
+        - Se soluciona problema con calculo de cuota custom.
     [files]
         /cgi-cpn/prontus_varglb.pm
+        /cgi-cpn/lib_quota.pm.pm
+
+- Administración / Pestaña custom
+    [cambios]
+        - Se eliminan los comentarios con las variables de configuración luego del parseo.
+        - Se parsea marca %%_public_server_name%%.
+        - Se agrega clase 'tab-custom' a la pestaña para poder manejar el estilo desde css.
+    [files]
+        /cgi-cpn/prontus_admin_main.cgi
+
+- Taxport
+    [mejoras]
+        - Es posible cambiar el html de la páginación, configurable dentro de la misma plantilla de taxport mediante
+        las siguientes variables:
+        HTML de cada número de página: <!-- CONFIG HTML_NRO_PAG = <a class="pag_number" href="%%lnk%%">%%cnro_pag%%</a> -->
+        HTML de la página actual: <!-- CONFIG HTML_PAG_ACTUAL = <span class="current_pag">%%cnro_pag%%</span> -->
+        Separador que aparece al utilizar páginación tipo google: <!-- CONFIG HTML_SEPARADOR = <span>...</span> -->
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+

@@ -144,7 +144,7 @@ sub calcula_unix {
   $nousado_porc .= '%';
 
   if ($custom_result) {
-    return $custom_msg;
+    return ($custom_msg, $usado, $quota_asig, $usado_porc, $nousado_porc);
   } else {
     return ('', $usado, $quota_asig, $usado_porc, $nousado_porc);
   };
