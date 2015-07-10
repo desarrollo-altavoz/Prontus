@@ -68,7 +68,6 @@ use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
 use strict;
-use lib_lock;
 use utf8;
 
 my %FORM;        # Contenido del formulario de invocacion.

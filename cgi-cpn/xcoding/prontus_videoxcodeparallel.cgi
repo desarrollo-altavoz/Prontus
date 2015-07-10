@@ -40,6 +40,7 @@
 # 1.0.0 - 02/12/2014 - EAG - Primera version para transcodificacion en paralelo
 # 1.1.0 - 12/05/2015 - EAG - Modificaciones por integracion a la release
 # 1.2.0 - 04/06/2015 - EAG - Se mejora compatibilidad con ffmpeg 1.x
+# 1.2.1 - 16/06/2015 - EAG - Se ordenan los "use"
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -54,17 +55,16 @@ BEGIN {
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
-use File::Copy qw(copy);
+use strict;
+use utf8;
+use File::Copy;
 use POSIX qw(ceil);
 use lib_prontus;
 use prontus_varglb; &prontus_varglb::init();
 use glib_fildir_02;
 use glib_hrfec_02;
 use lib_xcoding;
-use strict;
-use Artic;
-use File::Copy;
-use utf8;
+
 #~ use Data::Dumper;
 
 my $ORIGEN = $ARGV[0];

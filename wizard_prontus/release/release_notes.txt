@@ -8434,3 +8434,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia la manera de determinar el document root (DIR_SERVER).
     [files]
         /cgi-cpn/prontus_varglb.pm
+
+- Transcodificación
+    [mejoras]
+        - Se ordenan los usos de librerías.
+        - Se reordenan las tareas al terminar la transcodificacion.
+    [bugfixes]
+        - Se corrige el purge de archivos transcodificados.
+    [files]
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi

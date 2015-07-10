@@ -324,8 +324,6 @@ sub generar_HLS {
     my $res = qx/$cmd 2>&1/;
     &die_stderr("Falló generación de HLS", "[$!][$res].", 1) if ($? != 0);
 
-    # purgeamos los archivos creados
-    $path_hls =~ /\/.*(\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video.*\d{6}\S?\.\w+)$/;
     # leemos el directorio para hacer purge
     my @archivos = &glib_fildir_02::lee_dir($path_hls);
     my $filepath = '';
@@ -335,7 +333,7 @@ sub generar_HLS {
         # armamos la ruta completa
         $filepath = "$path_hls/$archivo";
         # dejamos la ruta relativa
-        if($filepath =~ /.*(\/.*?\/site\/mm\/\d{8}\/mmedia\/multimedia_video\d+\S?.*)/) {
+        if($filepath =~ /.*(\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video\d+\S?.*)/) {
             &lib_prontus::purge_cache($1);
         }
     };

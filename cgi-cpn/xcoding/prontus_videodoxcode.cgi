@@ -74,6 +74,8 @@
 # 2.4.9 - 01/06/2015 - EAG - Se agregan etiquetas adicionales para las resoluciones "estandar"
 # 2.4.10 - 03/06/2015 - EAG - Se agrega verificacion al hacer garbage, RUTA_PRONTUS no puede ser vacio
 # 2.5.0 - 04/06/2015 - EAG - Se mejora compatibilidad con ffmpeg 1.x
+# 2.5.1 - 11/06/2015 - EAG - Se ordenan los "use"
+# 2.5.2 - 15/06/2015 - EAG - Se corrige la aplicacion de lower case a key en do_xcode
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -85,25 +87,25 @@ BEGIN {
 # ---------------------------------------------
 END {
     &garbageTempFiles();
+    &tareas_salida();
 };
 
 use sigtrap 'handler' => \&signal_catch, 'INT';
 use sigtrap 'handler' => \&signal_catch, 'TERM';
 
+use utf8;
+use strict;
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
-use File::Copy qw(copy);
+use File::Copy;
 use POSIX qw(ceil);
 use lib_prontus;
 use prontus_varglb; &prontus_varglb::init();
 use glib_fildir_02;
 use glib_hrfec_02;
 use lib_xcoding;
-use strict;
 use Artic;
-use File::Copy;
-use utf8;
 use Data::Dumper;
 
 my $ORIGEN = $ARGV[0];
@@ -122,8 +124,8 @@ my $MARCA; # nombre de la marca prontus del video
 # ---------------------------------------------------------------
 main: {
     &die_stderr("El parámetro 'origen' no es válido.", "", 1) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
+    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
+    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
 
     $GENERAR_VERSIONES = 0 if (!$GENERAR_VERSIONES);
     my ($cmd, $res);
@@ -239,11 +241,6 @@ main: {
             $segundos = $total % 60;
             $segundos = $segundos < 10? '0'.$segundos : $segundos;
             print STDERR "[$ARTIC_filename] Tiempo Total Transcodificacion [".int($total/60) .":". $segundos ."]\n";
-
-            # si esta definido un post proceso lo ejecutamos en segundo plano
-            if ($prontus_varglb::XCODING_PPROC ne '') {
-                system("$prontus_varglb::XCODING_PPROC $PRONTUS_ID $ARTIC_ts_articulo >/dev/null 2>&1 &");
-            }
             exit;
         };
 
@@ -331,11 +328,6 @@ main: {
     $segundos = $total % 60;
     $segundos = $segundos < 10? '0'.$segundos : $segundos;
     print STDERR "[$ARTIC_filename] Tiempo Total Transcodificacion [".int($total/60) .":". $segundos ."]\n";
-
-    # si esta definido un post proceso lo ejecutamos en segundo plano
-    if ($prontus_varglb::XCODING_PPROC ne '') {
-        system("$prontus_varglb::XCODING_PPROC $PRONTUS_ID $ARTIC_ts_articulo >/dev/null 2>&1 &");
-    }
 };
 # ---------------------------------------------------------------
 # determina cuantos procesos en paralelo estan corriendo para este video
@@ -415,8 +407,9 @@ sub do_xcode {
     my $key = $_[4];
 
     # obtenemos y guardamos el nombre de la marca
-    $key =~ /\.(\w+)$/;
-    $key = lc $1;
+    if ($key =~ /\.(\w+)$/) {
+        $key = lc $1;
+    }
 
     my ($cmd, $res, $nd_pass, $start, $end, $total, $segundos);
 
@@ -584,14 +577,14 @@ sub generar_lista_HLS {
 
     my $filename = "$RUTA_PRONTUS$ARTIC_filename.mp4.m3u8";
     glib_fildir_02::write_file($filename, $list);
-    if ($filename =~ /.*(\/.*?\/site\/mm\/\d{8}\/mmedia\/multimedia_video\d+\S?.*)/) {
+    if ($filename =~ /.*(\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video\d+\S?.*)/) {
         &lib_prontus::purge_cache($1);
     }
 }
 # ---------------------------------------------------------------
 # funcion para capturar las señales INT y TERM y logearlas
 sub signal_catch {
-    print STDERR  "Terminado por señal @_\n";
+    print STDERR  "Terminado por signal @_\n";
     exit(0);
 }
 # ---------------------------------------------------------------
@@ -605,6 +598,7 @@ sub garbageTempFiles {
         } elsif ($RUTA_PRONTUS ne '') {
             @logs = glob "$RUTA_PRONTUS$ARTIC_filename*";
         }
+        # print STDERR Dumper(\@logs);
         foreach my $log (@logs) {
             # no se borran:
             # 1.- archivo mp4, es el resultado de la transcodificacion
@@ -618,14 +612,23 @@ sub garbageTempFiles {
             print STDERR "Borrando archivo $log\n";
             unlink $log;
         }
-
-        #~ print STDERR Dumper(\@logs);
     } else {
         print STDERR "ARTIC_filename vacío, no se hace nada \n";
     }
-    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Fin Proceso\n";
 }
 # ---------------------------------------------------------------
+# realiza tareas adicionales al terminar
+sub tareas_salida {
+    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Fin Proceso\n";
+    # si esta definido un post proceso lo ejecutamos en segundo plano
+    if ($prontus_varglb::XCODING_PPROC ne '') {
+        if ($ARTIC_ts_articulo ne '' && $PRONTUS_ID ne '') {
+            system("$prontus_varglb::XCODING_PPROC $PRONTUS_ID $ARTIC_ts_articulo >/dev/null 2>&1 &");
+        }
+    }
+}
+# ---------------------------------------------------------------
+# actualiza el articulo
 sub actualizar_articulo {
     my $marca = $_[0];
     my $generar_actualizar_dam = $_[1];
