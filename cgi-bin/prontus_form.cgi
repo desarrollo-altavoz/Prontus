@@ -131,6 +131,7 @@
 #                        - Elimina la cabecera HTML repetida en algunas invocaciones a &lib_form::aborta()
 #                        - Valida extensiones de archivos a subir, usando lista blanca.
 # 1.11  31/11/2009 - YCC - Cambia a minusculas refrencias a campos prontus, para 10.14.
+# 1.12  15/07/2015 - EAG - Se escribe json valido al guardar el archivo de datos recibidos por primera vez
 # To-Do:
 # - Revisar sensibilidad a las mayusculas.
 
@@ -281,7 +282,7 @@ sub data_management {
     }
     my $filejson = "$backupdir/$TSENVIO.json";
     &glib_fildir_02::check_dir($backupdir);
-    &glib_fildir_02::write_file($filejson, 'lock... :)');
+    &glib_fildir_02::write_file($filejson, '{}');
 
     my $data_json;
     $data_json->{'_fecha'} = $fecha;

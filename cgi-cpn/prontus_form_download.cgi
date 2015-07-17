@@ -21,6 +21,7 @@
 # ---------------------------
 # 1.0.0 - 01/04/2013 - CVI - Primera version.
 # 1.0.1 - 04/06/2015 - EAG - Se restringen archivos a solo ".json"
+# 1.0.2 - 15/07/2015 - EAG - Se agrega verificacion de contenido a archivos json
 #
 # ---------------------------------------------------------------
 # DECLARACIONES GLOBALES.
@@ -128,6 +129,7 @@ main: {
 
             next unless($file =~ /\d{14}\.json$/);
             my $json = &glib_fildir_02::read_file("$ROOT$DIRFORM/$file");
+            next if ($json !~ /^\{.*\}$/);
             my $jsonhashref;
             if($JSON::VERSION =~ /^1\./) {
                 my $jsonobj = new JSON;
