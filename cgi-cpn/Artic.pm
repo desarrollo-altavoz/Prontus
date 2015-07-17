@@ -2177,7 +2177,7 @@ sub _parsing_recursos {
     if($nom_campo =~ /^multimedia_/) {
         my $fullpath = $this->{document_root} . $path;
         my $resp = `$prontus_varglb::DIR_FFMPEG/ffmpeg -i $fullpath 2>&1`;
-        if($resp =~ /Duration\:\s*(\d\d\:\d\d\:\d\d)/i) {
+        if($resp =~ /Duration\:\s*(\d\d\:\d\d\:\d\d)/is) {
             my $duracion = $1;
             $buffer =~ s/%%_D$nom_campo%%/$duracion/isg;
         } else {
