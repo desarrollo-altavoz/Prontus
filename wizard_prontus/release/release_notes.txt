@@ -8434,9 +8434,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia la manera de determinar el document root (DIR_SERVER).
     [bugfixes]
         - Se soluciona problema con calculo de cuota custom.
+        - Se agrega escritura y validacion de contenido json valido en prontus form
     [files]
         /cgi-cpn/prontus_varglb.pm
         /cgi-cpn/lib_quota.pm.pm
+        /cgi-cpn/prontus_form_download.cgi
+        /cgi-cpn/prontus_form_list.cgi
+        /cgi-bin/prontus_form.cgi
 
 - Transcodificación
     [mejoras]
@@ -8467,4 +8471,3 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Separador que aparece al utilizar páginación tipo google: <!-- CONFIG HTML_SEPARADOR = <span>...</span> -->
     [files]
         /cgi-cpn/prontus_cron_taxport.cgi
-

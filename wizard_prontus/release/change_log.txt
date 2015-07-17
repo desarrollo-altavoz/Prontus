@@ -4,9 +4,13 @@
 - improvement: Se permite el ingreso de múltiples zonas.
 - changes: Se cambia la manera de determinar el document root (DIR_SERVER).
 - bugfix: Se soluciona problema con calculo de cuota custom.
+- bugfix: Se agrega escritura y validacion de contenido json valido en prontus form.
 - changes: En pestaña custom, se eliminan los comentarios con las variables de configuración luego del parseo.
 - changes: En pestaña custom, se parsea marca %%_public_server_name%%.
 - changes: En pestaña custom, se agrega clase 'tab-custom' a la pestaña para poder manejar el estilo desde css.
+- improvement: Se ordenan los usos de librerías.
+- improvement: Se reordenan las tareas al terminar la transcodificacion.
+- bugfix: Se corrige el purge de archivos transcodificados.
 
 ====================================================================================================
 11.2.86 - 11/06/2015

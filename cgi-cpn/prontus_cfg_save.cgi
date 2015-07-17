@@ -578,7 +578,6 @@ sub validarTax {
             &glib_html_02::print_json_result(0, "La variable $var no puede superar los $prontus_varglb::TAXPORT_MAXARTICS_SECURITY artículos.", 'exit=1,ctype=1');
         };
     };
-
 };
 
 sub validarSearch { # solo vacios.
