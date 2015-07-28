@@ -63,24 +63,18 @@ main: {
     &glib_fildir_02::check_dir($DIR_SEMAF) if (! -d $DIR_SEMAF);
 
     if (-f "$DIR_SEMAF/dropbox_backup.lck") {
-        my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/dropbox_backup.lck");
+        my $mtime = (stat("$DIR_SEMAF/dropbox_backup.lck"))[9];
+        my $now = time;
+        my $diff = $now - $mtime;
 
-        if ($pid) {
-            print STDERR "[$$] Ya existe un proceso corriendo pid[$pid]\n";
-            my $mtime = (stat("$DIR_SEMAF/dropbox_backup.lck"))[9];
-            my $now = time;
-            my $diff = $now - $mtime;
-            if ($diff > 1800) { # 30 minutos.
-                print STDERR "[$$] Semaforo muy antiguo, eliminando...";
-                unlink "$DIR_SEMAF/dropbox_backup.lck";
-            } else {
-                my $ret = `ps p $pid | grep prontus_dropbox_backup | grep -v grep`;
-                if ($ret) {
-                    print STDERR "[$$] pid[$pid] still runnin, leaving...\n";
-                    exit;
-                } else {
-                    print STDERR "[$$] $pid is dead\n";
-                };
+        if ($diff > 7200) { # 2 hrs.
+            print STDERR "[$$] Semaforo muy antiguo, eliminando...";
+            unlink "$DIR_SEMAF/dropbox_backup.lck";
+        } else {
+            my $res = `ps auxww |grep 'prontus_dropbox_backup.cgi $prontus_varglb::PRONTUS_ID' | grep -v grep | wc -l`;
+            if ($res) {
+                print STDERR "[$$] Ya existe un proceso corriendo.\n";
+                exit;
             };
         };
     };

@@ -2176,14 +2176,37 @@ sub _parsing_recursos {
     # Parsea la duracion de audio y video
     if($nom_campo =~ /^multimedia_/) {
         my $fullpath = $this->{document_root} . $path;
-        my $resp = `$prontus_varglb::DIR_FFMPEG/ffmpeg -i $fullpath 2>&1`;
-        if($resp =~ /Duration\:\s*(\d\d\:\d\d\:\d\d)/is) {
-            my $duracion = $1;
-            $buffer =~ s/%%_D$nom_campo%%/$duracion/isg;
-        } else {
-            print STDERR "[".$this->{ts}."][$path] No se pudo calcular la duracion\n";
-        }
-    }
+        my $fullpath_json = $fullpath;
+        $fullpath_json =~ s/$ext$/json/sg;
+        my $duracion;
+
+        # Se saca la duración del multimedia desde el json con informacion.
+        if (-f $fullpath_json) {
+            my $buffer_json = &glib_fildir_02::read_file($fullpath_json);
+            if ($buffer_json) {
+                my $hashref = &JSON::from_json($buffer_json);
+                if (defined $hashref->{'duracion'}) {
+                    $duracion = $hashref->{'duracion'};
+                };
+            };
+        };
+
+        # Si no existe el archivo o la duracion, se usa ffmpeg.
+        if (!$duracion) {
+            my $resp = `$prontus_varglb::DIR_FFMPEG/ffmpeg -i $fullpath 2>&1`;
+
+            if ($resp =~ /Duration\:\s*(\d\d\:\d\d\:\d\d)/is) {
+                $duracion = $1;
+                my $buffer_json = "{\"duracion\":\"$duracion\"}";
+                &glib_fildir_02::write_file($fullpath_json, $buffer_json);
+            } else {
+                print STDERR "[".$this->{ts}."][$path] No se pudo calcular la duracion\n";
+            };
+        };
+
+        $buffer =~ s/%%_D$nom_campo%%/$duracion/isg;
+    };
+
     return $buffer;
 };
 

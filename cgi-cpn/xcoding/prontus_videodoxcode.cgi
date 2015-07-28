@@ -604,7 +604,7 @@ sub garbageTempFiles {
             # 1.- archivo mp4, es el resultado de la transcodificacion
             # 2.- directorio con el mismo nombre, es el directorio de HLS
             # 3.- si es igual al origen, indica problema de trancodificacion
-            if ($log =~ /\.mp4$/ || $log =~ /\.m3u8$/ || -d $log || $log eq $ORIGEN) {
+            if ($log =~ /\.mp4$/ || $log =~ /\.m3u8$/ || $log =~ /\.json$/ || -d $log || $log eq $ORIGEN) {
                 #~ print STDERR "no borrar $log\n";
                 next;
             }

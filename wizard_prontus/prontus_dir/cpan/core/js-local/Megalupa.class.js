@@ -71,9 +71,12 @@ var Megalupa = {
         var titu = '';
         var baja = '';
         var dia = '';
+        var diahasta = '';
         var autoinc = '';
         var diapub = '';
+        var diapubhasta = '';
         var diaexp = '';
+        var diaexphasta = '';
 
         var alta = '';
         var nom_alta = '';
@@ -103,8 +106,11 @@ var Megalupa = {
         titu = formInp.filter('[name="TITU"]').val();
         baja = formInp.filter('[name="BAJA"]').val();
         dia = formInp.filter('[name="DIA"]').val();
+        diahasta = formInp.filter('[name="DIAHASTA"]').val();
         diapub = formInp.filter('[name="DIAPUB"]').val();
+        diapubhasta = formInp.filter('[name="DIAPUBHASTA"]').val();
         diaexp = formInp.filter('[name="DIAEXP"]').val();
+        diaexphasta = formInp.filter('[name="DIAEXPHASTA"]').val();
 
         // Se verifica el candado
         if(Listartic.cargandoNoPub === true) {
@@ -125,9 +131,12 @@ var Megalupa = {
 
         BuscadorFields.baja = baja;
         BuscadorFields.dia = dia;
+        BuscadorFields.diahasta = diahasta;
         BuscadorFields.autoinc = autoinc;
         BuscadorFields.diapub = diapub;
+        BuscadorFields.diapubhasta = diapubhasta;
         BuscadorFields.diaexp = diaexp;
+        BuscadorFields.diaexphasta = diaexphasta;
 
         BuscadorFields.tipart = tipart;
         BuscadorFields.nom_tipart = nom_tipart;
@@ -252,13 +261,21 @@ var Megalupa = {
         if(typeof BuscadorFields.dia !== 'undefined' && BuscadorFields.dia !== null && BuscadorFields.dia !== '') {
             $('input[name="DIA"]').val(BuscadorFields.dia);
         }
+        if(typeof BuscadorFields.diahasta !== 'undefined' && BuscadorFields.diahasta !== null && BuscadorFields.diahasta !== '') {
+            $('input[name="DIAHASTA"]').val(BuscadorFields.diahasta);
+        }
         if(typeof BuscadorFields.diapub !== 'undefined' && BuscadorFields.diapub !== null && BuscadorFields.diapub !== '') {
             $('input[name="DIAPUB"]').val(BuscadorFields.diapub);
+        }
+        if(typeof BuscadorFields.diapubhasta !== 'undefined' && BuscadorFields.diapubhasta !== null && BuscadorFields.diapubhasta !== '') {
+            $('input[name="DIAPUBHASTA"]').val(BuscadorFields.diapubhasta);
         }
         if(typeof BuscadorFields.diaexp !== 'undefined' && BuscadorFields.diaexp !== null && BuscadorFields.diaexp !== '') {
             $('input[name="DIAEXP"]').val(BuscadorFields.diaexp);
         }
-
+        if(typeof BuscadorFields.diaexphasta !== 'undefined' && BuscadorFields.diaexphasta !== null && BuscadorFields.diaexphasta !== '') {
+            $('input[name="DIAEXPHASTA"]').val(BuscadorFields.diaexphasta);
+        }
         if(typeof BuscadorFields.autoinc !== 'undefined' && BuscadorFields.autoinc !== null && BuscadorFields.autoinc !== '') {
             $('input[name="AUTOINC"]').val(BuscadorFields.autoinc);
         }

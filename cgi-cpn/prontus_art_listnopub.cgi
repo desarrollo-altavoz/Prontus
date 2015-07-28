@@ -540,13 +540,19 @@ sub genera_filtros {
   $FORM{'baja'} = lc &glib_cgi_04::param('baja');
   $FORM{'dia'} = lc &glib_cgi_04::param('dia');
   $FORM{'dia'} = &glib_hrfec_02::normaliza_fecha($FORM{'dia'}) if ($FORM{'dia'} ne '');
+  $FORM{'diahasta'} = lc &glib_cgi_04::param('diahasta');
+  $FORM{'diahasta'} = &glib_hrfec_02::normaliza_fecha($FORM{'diahasta'}) if ($FORM{'diahasta'} ne '');
   $FORM{'autoinc'} = &glib_cgi_04::param('autoinc');
+
   $FORM{'diapub'} = lc &glib_cgi_04::param('diapub');
   $FORM{'diapub'} = &glib_hrfec_02::normaliza_fecha($FORM{'diapub'}) if ($FORM{'diapub'} ne '');
+  $FORM{'diapubhasta'} = lc &glib_cgi_04::param('diapubhasta');
+  $FORM{'diapubhasta'} = &glib_hrfec_02::normaliza_fecha($FORM{'diapubhasta'}) if ($FORM{'diapubhasta'} ne '');
 
   $FORM{'diaexp'} = lc &glib_cgi_04::param('diaexp');
   $FORM{'diaexp'} = &glib_hrfec_02::normaliza_fecha($FORM{'diaexp'}) if ($FORM{'diaexp'} ne '');
-
+  $FORM{'diaexphasta'} = lc &glib_cgi_04::param('diaexphasta');
+  $FORM{'diaexphasta'} = &glib_hrfec_02::normaliza_fecha($FORM{'diaexphasta'}) if ($FORM{'diaexphasta'} ne '');
 
   $FORM{'nom_tipart'} = &glib_cgi_04::param('nom_tipart');
   $FORM{'nom_seccion'} = &glib_cgi_04::param('nom_seccion');
@@ -689,28 +695,55 @@ sub genera_filtros {
       $filtros_texto = "<b>Bajada:</b> $esc_value" if $filtros_texto eq '';
     };
 
-    if ($FORM{'dia'} ne '') {
+    if ($FORM{'dia'} ne '' && $FORM{'diahasta'} eq '') {
       $filtros .= " and ART_DIRFECHA = \"$FORM{'dia'}\"" if $filtros ne '';
       $filtros = "ART_DIRFECHA = \"$FORM{'dia'}\"" if $filtros eq '';
       my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'dia'});
       $filtros_texto .= " | <b>Fec. creaci&oacute;n:</b> $dia_desnorm" if $filtros_texto ne '';
       $filtros_texto = "<b>Fec. creaci&oacute;n:</b> $dia_desnorm" if $filtros_texto eq '';
+    } elsif ($FORM{'dia'} ne '' && $FORM{'diahasta'} ne '') {
+      $filtros .= " and (ART_DIRFECHA between \"$FORM{'dia'}\" and \"$FORM{'diahasta'}\")" if $filtros ne '';
+      $filtros = "(ART_DIRFECHA between \"$FORM{'dia'}\" and \"$FORM{'diahasta'}\")" if $filtros eq '';
+
+      my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'dia'});
+      my $diahasta_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diahasta'});
+
+      $filtros_texto .= " | <b>Fec. creaci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
+      $filtros_texto = "<b>Fec. creaci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
     };
 
-    if ($FORM{'diapub'} ne '') {
+    if ($FORM{'diapub'} ne '' && $FORM{'diapubhasta'} eq '') {
       $filtros .= " and ART_FECHAP = \"$FORM{'diapub'}\"" if $filtros ne '';
       $filtros = "ART_FECHAP = \"$FORM{'diapub'}\"" if $filtros eq '';
       my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diapub'});
       $filtros_texto .= " | <b>Fec. publicaci&oacute;n:</b> $dia_desnorm" if $filtros_texto ne '';
       $filtros_texto = "<b>Fec. publicaci&oacute;n:</b> $dia_desnorm" if $filtros_texto eq '';
+    } elsif ($FORM{'diapub'} ne '' && $FORM{'diapubhasta'} ne '') {
+      $filtros .= " and (ART_FECHAP between \"$FORM{'diapub'}\" and \"$FORM{'diapubhasta'}\")" if $filtros ne '';
+      $filtros = "(ART_FECHAP between \"$FORM{'diapub'}\" and \"$FORM{'diapubhasta'}\")" if $filtros eq '';
+
+      my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diapub'});
+      my $diahasta_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diapubhasta'});
+
+      $filtros_texto .= " | <b>Fec. publicaci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
+      $filtros_texto = "<b>Fec. publicaci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
     };
 
-    if ($FORM{'diaexp'} ne '') {
+    if ($FORM{'diaexp'} ne '' && $FORM{'diaexphasta'} eq '') {
       $filtros .= " and ART_FECHAE = \"$FORM{'diaexp'}\"" if $filtros ne '';
       $filtros = "ART_FECHAE = \"$FORM{'diaexp'}\"" if $filtros eq '';
       my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diaexp'});
       $filtros_texto .= " | <b>Fec. expiraci&oacute;n:</b> $dia_desnorm" if $filtros_texto ne '';
       $filtros_texto = "<b>Fec. expiraci&oacute;n:</b> $dia_desnorm" if $filtros_texto eq '';
+    } elsif ($FORM{'diaexp'} ne '' && $FORM{'diaexphasta'} ne '') {
+      $filtros .= " and (ART_FECHAE between \"$FORM{'diaexp'}\" and \"$FORM{'diaexphasta'}\")" if $filtros ne '';
+      $filtros = "(ART_FECHAE between \"$FORM{'diaexp'}\" and \"$FORM{'diaexphasta'}\")" if $filtros eq '';
+
+      my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diaexp'});
+      my $diahasta_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diaexphasta'});
+
+      $filtros_texto .= " | <b>Fec. expiraci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
+      $filtros_texto = "<b>Fec. expiraci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
     };
 
     if ($FORM{'alta'} ne '') { # Distinto de todos.

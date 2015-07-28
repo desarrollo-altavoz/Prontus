@@ -102,9 +102,7 @@ use lib_tax;
 use lib_maxrunning;
 use strict;
 use DBI;
-use lib_stdlog;
 use Time::HiRes qw(usleep);
-&lib_stdlog::set_stdlog($0, 51200);
 
 close STDOUT;
 # ---------------------------------------------------------------

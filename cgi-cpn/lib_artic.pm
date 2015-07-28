@@ -96,9 +96,28 @@ sub save_artic_with_object {
     # Regen ports que correspondan
     &regen_ports($fullpath_artic);
 
+    my ($s1, $t1, $st1) = ($campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+
+    # Si el articulo tenía s/t/st hay que regenerar los relacionados para que no aparezca.
+    if ($campos_xml_old{'_seccion1'} && !$s1) {
+      $s1 = $campos_xml_old{'_seccion1'};
+    };
+
+    if ($campos_xml_old{'_tema1'} && !$t1) {
+      $t1 = $campos_xml_old{'_tema1'};
+    };
+
+    if ($campos_xml_old{'_subtema1'} && !$st1) {
+      $st1 = $campos_xml_old{'_subtema1'};
+    };
+
+    # Se agregan los relacionados manuales antiguos para tambien regenerarlos.
+    my $tax = $campos_xml{'_tax'};
+    $tax .= "," . $campos_xml_old{'_tax'} if ($campos_xml_old{'_tax'});
+
     # Regen relacionados
-    &generar_relacionados($campos_xml{'_tax'}, $ARTIC_OBJ->{ts}, $base, $ARTIC_OBJ->{dst_pags},
-                          $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});
+    &generar_relacionados($tax, $ARTIC_OBJ->{ts}, $base, $ARTIC_OBJ->{dst_pags},
+                          $s1, $t1, $st1);
 
 
     # genero pa los q tenia el artic. mas los re100 asociados
