@@ -130,7 +130,7 @@ sub post_url {
     my $response = $ua->post( $url, \%data );
 
     if ($response->is_success) {
-        return ($response->content, $response->status_line);
+        return ($response->content, '');
     } else {
         return ('', $response->status_line);
     };

@@ -89,6 +89,8 @@ our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
 
 our $DEBUG_FECHAS = 0;
 
+$DISABLE_PURGE_CACHE = 0;
+
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
 # ---------------------------------------------------------------
@@ -6521,7 +6523,7 @@ sub dropbox_backup {
         my $mtime = (stat($semaf_dropbox))[9];
         my $now = time;
         my $diff = $now - $mtime;
-        if ($diff > 1800) { # 30 minutos.
+        if ($diff > 7200) { # 2 hrs.
           # muy antiguo, eliminar.
           unlink $semaf_dropbox;
         };
@@ -6541,6 +6543,8 @@ sub purge_cache {
     my $path_file = $_[0];
     my $only_cloudflare = $_[1];
     my $servers = (keys %prontus_varglb::VARNISH_SERVER_NAME);
+
+    return if ($lib_prontus::DISABLE_PURGE_CACHE);
 
     return if (!$servers && $prontus_varglb::CLOUDFLARE ne 'SI');
 
@@ -6704,6 +6708,8 @@ sub set_exclude_port_table {
 sub call_purge_proc {
     my $only_cloudflare = $_[0];
     my $file_pend;
+
+    return if ($lib_prontus::DISABLE_PURGE_CACHE);
 
     if ($only_cloudflare) {
       $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$\_cf.txt";

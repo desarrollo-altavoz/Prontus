@@ -109,6 +109,9 @@ if ($ARGV[0]) {
     $| = 1;
 };
 
+# Deshabilitar el purge al regenerar artículos.
+$lib_prontus::DISABLE_PURGE_CACHE = 1;
+
 # Carga variables de configuracion.
 &lib_prontus::load_config($PATH_CONF);
 &lib_prontus::write_log('Actualiz. masiva', 'Articulo', '');

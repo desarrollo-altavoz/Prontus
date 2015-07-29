@@ -70,11 +70,11 @@ main: {
         if ($diff > 7200) { # 2 hrs.
             print STDERR "[$$] Semaforo muy antiguo, eliminando...";
             unlink "$DIR_SEMAF/dropbox_backup.lck";
-        } else {
+            
             my $res = `ps auxww |grep 'prontus_dropbox_backup.cgi $prontus_varglb::PRONTUS_ID' | grep -v grep | wc -l`;
+            
             if ($res) {
-                print STDERR "[$$] Ya existe un proceso corriendo.\n";
-                exit;
+                system('kill -9 `ps -auxww | grep \'prontus_dropbox_backup.cgi ' . $prontus_varglb::PRONTUS_ID . '\' | grep -v grep | awk \'{print $2}\' | grep -v ' . $$ . '`');
             };
         };
     };

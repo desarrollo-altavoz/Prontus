@@ -43,29 +43,24 @@ main: {
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus_id'});
     &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
+
     $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
     &glib_fildir_02::check_dir($dir_semaf) if (!-d $dir_semaf);
 
     if (-f "$dir_semaf/purge_cache.lck") {
-        my $pid = &glib_fildir_02::read_file("$dir_semaf/purge_cache.lck");
+        my $mtime = (stat("$dir_semaf/purge_cache.lck"))[9];
+        my $now = time;
+        my $diff = $now - $mtime;
 
-        if ($pid) {
-            print STDERR "[$$] Ya existe un proceso corriendo pid[$pid]\n";
-            my $mtime = (stat("$dir_semaf/purge_cache.lck"))[9];
-            my $now = time;
-            my $diff = $now - $mtime;
-            if ($diff > 1800) { # 30 minutos.
-                print STDERR "[$$] Semaforo muy antiguo, eliminando...";
-                unlink "$dir_semaf/purge_cache.lck";
-                system("kill -9 $pid"); # matar proceso.
-            } else {
-                my $ret = `ps p $pid | grep prontus_purge_cache | grep -v grep`;
-                if ($ret) {
-                    print STDERR "[$$] pid[$pid] still runnin, leaving...\n";
-                    exit;
-                } else {
-                    print STDERR "[$$] $pid is dead\n";
-                };
+        if ($diff > 1800) { # 30 min.
+            print STDERR "[$$] Semaforo muy antiguo, eliminando...";
+            unlink "$dir_semaf/purge_cache.lck";
+
+            my $res = `ps auxww |grep 'prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID' | grep -v grep | wc -l`;
+            chomp($res);
+
+            if ($res) {
+                system('kill -9 `ps -auxww | grep \'prontus_purge_cache.cgi ' . $prontus_varglb::PRONTUS_ID . '\' | grep -v grep | awk \'{print $2}\' | grep -v ' . $$ . '`');
             };
         };
     };
