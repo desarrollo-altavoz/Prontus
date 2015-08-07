@@ -1343,7 +1343,7 @@ sub load_config {
   $prontus_varglb::CLOUDFLARE_EMAIL = $cloudflare_email;
 
   my $cloudflare_zone = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*("|')(.*?)("|')/) { # SI | NO
+  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*("|')(.*?)("|')/s) { # SI | NO
     $cloudflare_zone = $2;
   };
   $prontus_varglb::CLOUDFLARE_ZONE = $cloudflare_zone;
