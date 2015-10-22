@@ -412,4 +412,15 @@ sub sys_write_file {
     die "syswrite failed on $file_name: $!\n" unless $write_cnt == $size;
 
 }
+
+# Retorna la antiguedad del archivo en segundos con respecto a la fecha de hoy.
+sub get_antiguedad_archivo {
+  my $file = $_[0];
+  my $mtime = (stat($file))[9];
+  my $now = time;
+  my $diff = time - $mtime;
+
+  return $diff;
+};
+
 return 1;

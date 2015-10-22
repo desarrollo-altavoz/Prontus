@@ -620,7 +620,17 @@ sub write_pag {
 
 
             &glib_fildir_02::write_file($k, $pagina);
-            &lib_prontus::purge_cache($k);
+
+            if ($prontus_varglb::CACHE_PURGE_TAGPORT eq 'SI') {
+                if ($prontus_varglb::CACHE_PURGE_TAGPORT_MV eq 'SI') {
+                    &lib_prontus::purge_cache($k);
+                } else {
+                    # Si está desactivada la opción de hacer purge a la vistas, solo se hace a la principal.
+                    if ($mv eq '') {
+                        &lib_prontus::purge_cache($k);
+                    }
+                }
+            }
             # print STDERR "writing [$k]\n";
 
         };

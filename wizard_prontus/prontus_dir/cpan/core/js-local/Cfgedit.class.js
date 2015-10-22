@@ -63,7 +63,17 @@ var Cfgedit = {
                 form_plts = form_plts.substring(0, form_plts.length - 1);
 
                 $('input[name="FORM_PLTS"]').val(form_plts);
+            } else if (cfg === 'cache') {
+                var cache_purge_exclude_fid = '';
+                $('input[name="CACHE_PURGE_EXCLUDE_FID_ARR[]"]:checked').each(function () {
+                    if (!$(this).is(':disabled')) {
+                        if ($(this).val() !== '') {
+                            cache_purge_exclude_fid += $(this).val() + "|";
+                        }
+                    }
+                });
 
+                $('input[name="CACHE_PURGE_EXCLUDE_FID"]').val(cache_purge_exclude_fid);
             } else if (cfg === 'port') {
                 // Actualizar input con lista de valores.
                 var port_plts = '';

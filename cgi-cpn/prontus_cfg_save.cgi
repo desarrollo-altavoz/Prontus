@@ -189,6 +189,15 @@ main: {
     $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_API_URL'} = 'CLOUDFLARE_API_URL;(\w+);;U';
     $hash_defaultvars{'cloudflare'}{'CLOUDFLARE_GLOBAL_PURGE'} = 'CLOUDFLARE_GLOBAL_PURGE;(.*?);;U';
 
+    # -cache.cfg
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_TAXPORT'} = 'CACHE_PURGE_TAXPORT;(SI|NO);SI;U';
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_TAXPORT_MV'} = 'CACHE_PURGE_TAXPORT_MV;(SI|NO);SI;U';
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_TAGPORT'} = 'CACHE_PURGE_TAGPORT;(SI|NO);SI;U';
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_TAGPORT_MV'} = 'CACHE_PURGE_TAGPORT_MV;(SI|NO);SI;U';    
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_MAPA'} = 'CACHE_PURGE_MAPA;(SI|NO);SI;U'; 
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_ART_RELAC'} = 'CACHE_PURGE_ART_RELAC;(SI|NO);SI;U'; 
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_EXCLUDE_FID'} = 'CACHE_PURGE_EXCLUDE_FID;(\w+);;M';
+
     # -dropbox.cfg
     $hash_defaultvars{'dropbox'}{'DROPBOX_ACCESS_TOKEN'} = 'DROPBOX_ACCESS_TOKEN;(\w+);;U';
     $hash_defaultvars{'dropbox'}{'DROPBOX_FILEXT_EXCLUDE'} = 'DROPBOX_FILEXT_EXCLUDE;(\w+);;U';
@@ -247,7 +256,7 @@ main: {
 
     # Verificar tipo de CFG.
     $FORM{'_cfg'} = &glib_cgi_04::param('_cfg');
-    if ($FORM{'_cfg'} !~ /^(id|art|port|var|bd|usr|tax|coment|buscador|tag|list|dropbox|cloudflare|xcoding)$/) {
+    if ($FORM{'_cfg'} !~ /^(id|art|port|var|bd|usr|tax|coment|buscador|tag|list|dropbox|cloudflare|xcoding|cache)$/) {
         &glib_html_02::print_json_result(0, 'Tipo de CFG inválido.', 'exit=1,ctype=1');
     };
 

@@ -9,6 +9,7 @@
 .contenido-config {width:760px; float: left; font-size: 15px; color: #888888; margin-top: 5px; border: 1px solid #f1f1f0; margin-left: 169px;}
 .contenido-config .listado .tableform td {border:1px solid #f0f0f0;}
 .contenido-config .listado .head td {background-color:#e0e0e0;}
+.contenido-config .listado .head2 td {background-color:#c1c1c1;}
 .contenido-config > div {display:none;}
 .tableform td .help {font-size:12px; color:#aaaaaa;}
 .tableform td .ayuda {font-size:12px; color:#aaaaaa;}

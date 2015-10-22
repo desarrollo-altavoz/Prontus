@@ -111,7 +111,7 @@ main: {
             next if ($file !~ /^\//); # debe empezar con /
 
             print STDERR "cloudflare purge file [$file]\n";
-            &lib_prontus::purge_cache($file, 1);
+            &lib_prontus::purge_cache($file); # parametro solo cloudflare.
         };
 
         &lib_prontus::call_purge_proc(1); # solo purge de cloudflare.

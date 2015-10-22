@@ -1229,7 +1229,8 @@ sub load_config {
           . &glib_fildir_02::read_file($nomcfg . '-xcoding.cfg') . "\n" # transcodificacion
           . &glib_fildir_02::read_file($nomcfg . '-clustering.cfg') . "\n"
           . &glib_fildir_02::read_file($nomcfg . '-dropbox.cfg') . "\n" # dropbox.
-          . &glib_fildir_02::read_file($nomcfg . '-cloudflare.cfg') . "\n"; # cloudflare.
+          . &glib_fildir_02::read_file($nomcfg . '-cloudflare.cfg') . "\n" # cloudflare.
+          . &glib_fildir_02::read_file($nomcfg . '-cache.cfg') . "\n"; # cache.
 
   $buffer =~ s/\r/\n/sg;
   # print STDERR "buffer[$buffer]";
@@ -1359,6 +1360,42 @@ sub load_config {
     $cloudflare_global_purge = $2;
   };
   $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE = $cloudflare_global_purge;
+
+  # Cache
+  $prontus_varglb::CACHE_PURGE_TAXPORT = 'SI';
+  if ($buffer =~ m/\s*CACHE_PURGE_TAXPORT\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_TAXPORT = $2;
+  };
+
+  $prontus_varglb::CACHE_PURGE_TAGPORT = 'SI';
+  if ($buffer =~ m/\s*CACHE_PURGE_TAGPORT\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_TAGPORT = $2;
+  };  
+
+  $prontus_varglb::CACHE_PURGE_TAXPORT_MV = 'SI';
+  if ($buffer =~ m/\s*CACHE_PURGE_TAXPORT_MV\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_TAXPORT_MV = $2;
+  };
+
+  $prontus_varglb::CACHE_PURGE_TAGPORT_MV = 'SI';
+  if ($buffer =~ m/\s*CACHE_PURGE_TAGPORT_MV\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_TAGPORT_MV = $2;
+  };
+
+  $prontus_varglb::CACHE_PURGE_MAPA = 'SI';
+  if ($buffer =~ m/\s*CACHE_PURGE_MAPA\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_MAPA = $2;
+  };    
+
+  $prontus_varglb::CACHE_PURGE_ART_RELAC = 'SI';
+  if ($buffer =~ m/\s*CACHE_PURGE_ART_RELAC\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_ART_RELAC = $2;
+  }; 
+
+  while ($buffer =~ m/\s*CACHE_PURGE_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
+     $clave = $2;
+     $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$clave} = 1;
+  };
 
   # Transcodificacion - XCODING
   $prontus_varglb::N_THREADS = 0; # valor por defecto.
@@ -3039,7 +3076,8 @@ sub parser_area {
                 'public_server_name'=>$prontus_varglb::PUBLIC_SERVER_NAME,
                 'cpan_server_name'=>$prontus_varglb::IP_SERVER,
                 'document_root'=>$dir_server,
-                'ts'=>$ts_artic, # si no va, asigna uno nuevo
+                'ts'=>$ts_artic, # si no va, asigna uno nuevo,
+                'no_check_dirs' => 1,
                 'campos'=>{}) || die "Error inicializando objeto articulo: $Artic::ERR\n";
         my %campos_xml = $artic_obj->get_xml_content();
 
@@ -3080,6 +3118,7 @@ sub parser_area {
                 'public_server_name'=>$prontus_varglb::PUBLIC_SERVER_NAME,
                 'cpan_server_name'=>$prontus_varglb::IP_SERVER,
                 'document_root'=>$dir_server,
+                'no_check_dirs' => 1,
                 'ts'=>$ts_artic, # si no va, asigna uno nuevo
                 'campos'=>{}) || die "Error inicializando objeto articulo: $Artic::ERR\n";
         my %campos_xml;
@@ -5414,7 +5453,7 @@ sub make_mapa {
     &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt");
     my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt/$k";
     &glib_fildir_02::write_file($dst_mapa, $mapa_plt);
-    &lib_prontus::purge_cache($dst_mapa);
+    &lib_prontus::purge_cache($dst_mapa) if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI');
 
   };
 
@@ -6506,9 +6545,9 @@ sub add_generator_tag {
 
 sub dropbox_backup {
     my $recurso = $_[0];
-    my $dir_dropbox = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/dropbox";
+    my $dir_dropbox = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/dropbox";
     my $pid = $$;
-    my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
+    my $dir_semaf = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/semaforos";
     my $semaf_dropbox = "$dir_semaf/dropbox_backup.lck";
     my $file = "$dir_dropbox/$^T_$pid.txt";
 
@@ -6541,7 +6580,6 @@ sub dropbox_backup {
 # ---------------------------------------------------------------
 sub purge_cache {
     my $path_file = $_[0];
-    my $only_cloudflare = $_[1];
     my $servers = (keys %prontus_varglb::VARNISH_SERVER_NAME);
 
     return if ($lib_prontus::DISABLE_PURGE_CACHE);
@@ -6550,32 +6588,16 @@ sub purge_cache {
 
     my $relpath = &remove_front_string($path_file, $prontus_varglb::DIR_SERVER);
 
-    # Esto es para hacer purge solo de cloudflare.
-    if ($only_cloudflare) {
-        my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
-        &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);
-        my $pid = $$;
-        open(PURGEFILE, ">>$dir_pend/$^T_$pid\_cf.txt");
-        print PURGEFILE $relpath . "\n";
-        close PURGEFILE;
-
-        return;
-    };
-
     if ($relpath !~ /\/site\/tax\/port\//is) {
-        my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
+        my $dir_pend = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/purgepend";
         &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);
         my $pid = $$;
         open(PURGEFILE, ">>$dir_pend/$^T_$pid.txt");
         print PURGEFILE $relpath . "\n";
         close PURGEFILE;
 
-    # Segun release_notes:
-    #     "Por el momento, no se está considerando el PURGE de las portadas taxonómica.
-    #      Lo cual en un futuro quedará configurable"
-    # Por ahora, hasta nuevo aviso se aplica sólo si la taxport es la primera página
     } elsif($relpath =~ /_1\.\w+$/is) {
-        my $dir_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend";
+        my $dir_pend = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/purgepend";
         &glib_fildir_02::check_dir($dir_pend) if (! -d $dir_pend);
         my $pid = $$;
         open(PURGEFILE, ">>$dir_pend/$^T_$pid.txt");
@@ -6712,30 +6734,14 @@ sub call_purge_proc {
     return if ($lib_prontus::DISABLE_PURGE_CACHE);
 
     if ($only_cloudflare) {
-      $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$\_cf.txt";
+      $file_pend = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/purgepend/$^T_$$\_cf.txt";
     } else {
-      $file_pend = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/purgepend/$^T_$$.txt";
+      $file_pend = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/purgepend/$^T_$$.txt";
     };
 
-    my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
-    my $semaf_purge_cache = "$dir_semaf/purge_cache.lck";
-
-    &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
-
-    if (-f $semaf_purge_cache) {
-        my $mtime = (stat($semaf_purge_cache))[9];
-        my $now = time;
-        my $diff = $now - $mtime;
-        if ($diff > 1800) { # 30 minutos.
-          # muy antiguo, eliminar.
-          unlink $semaf_purge_cache;
-        };
-    };
-
-    if (!-f $semaf_purge_cache && -f $file_pend) {
-        #~ print STDERR "[purge][$$] con archivo\n";
-        my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID $file_pend >/dev/null 2>&1 &";
-        &glib_fildir_02::write_file($semaf_purge_cache, "0");
+    if (-f $file_pend) {
+        #my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID $file_pend >/dev/null 2>&1 &";
+        my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID >/dev/null 2>&1 &";
         print STDERR "purge[$cmd]\n";
         system $cmd;
     };

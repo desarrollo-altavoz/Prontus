@@ -103,6 +103,7 @@ use lib_maxrunning;
 use strict;
 use DBI;
 use Time::HiRes qw(usleep);
+use POSIX qw(strftime);
 
 close STDOUT;
 # ---------------------------------------------------------------
@@ -592,13 +593,14 @@ sub generar_taxports_thislevel {
     }
 
     my $filtros = &genera_filtros_taxports($secc_id, $temas_id, $subtemas_id, $fid, $CURR_DTIME);
+    my $taxport_order = &genera_orden_taxports($fid);
     my $tot_artics = &get_tot_artics($filtros, $base);
     print STDERR "[$pid_padre][$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
     my ($secc_nom, $filler) = split (/\t\t/, $TABLA_SECC{$secc_id});
 
     my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
     . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
-    . "%%FILTRO%% order by $prontus_varglb::TAXPORT_ORDEN LIMIT 0, $prontus_varglb::TAXPORT_MAXARTICS";
+    . "%%FILTRO%% order by $taxport_order LIMIT 0, $prontus_varglb::TAXPORT_MAXARTICS";
 
     if ($filtros ne '') {
         $sql =~ s/%%FILTRO%%/ where $filtros /;
@@ -1108,7 +1110,18 @@ sub write_pag {
             $COUNTER_TOTAL_PAGS++;
 
             &glib_fildir_02::write_file($k, $pagina);
-            &lib_prontus::purge_cache($k);
+
+            # Solo hacer purge de taxport si está habilitado.
+            if ($prontus_varglb::CACHE_PURGE_TAXPORT eq 'SI') {
+                if ($prontus_varglb::CACHE_PURGE_TAXPORT_MV eq 'SI') {
+                    &lib_prontus::purge_cache($k);
+                } else {
+                    # Si está desactivada la opción de hacer purge a la vistas, solo se hace a la principal.
+                    if ($mv eq '') {
+                        &lib_prontus::purge_cache($k);
+                    }
+                }
+            }
             # print STDERR "writing [$k]\n";
 
         };
@@ -1515,13 +1528,41 @@ sub cargar_fil_cfg {
         $value =~ s/^\s//sg;
         $value =~ s/\s$//sg;
 
-        $value =~ s/[^0-9]//sg; # dejar solo caracteres permitidos, numeros.
+        if ($value eq 'now') {
+            $value = strftime "%Y%m%d", localtime;
+        } else {
+            $value =~ s/[^0-9]//sg; # dejar solo caracteres permitidos, numeros.
+        }
 
         $value = '' if ($value !~ /^(\d{8})$/); # formato debe ser YYYYMMDD
 
         $CFG_FIL_TAXPORT{$fil}{'FECHA_DESDE'} = $value;
 
         #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAXPORT_ORDEN\s*=\s*("|')(.*?)("|')/s) { # fecha de publicacion, ART_FECHAP
+        my $value = $2;
+        my $taxport_orden = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        if ($value =~ /^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$/) {
+            if ($1 eq 'PUBLICACION') {
+                $taxport_orden = "ART_FECHAP $2, ART_HORAP $2";
+            } elsif ($1 eq 'TITULAR') {
+                $taxport_orden = "ART_TITU $2";
+            } elsif ($1 eq 'CREACION') {
+                $taxport_orden = "ART_AUTOINC $2";
+            }
+        }
+
+        $CFG_FIL_TAXPORT{$fil}{'TAXPORT_ORDEN'} = $taxport_orden;
+
+        #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value] taxport_orden[$taxport_orden]\n";
     };
 
 };
@@ -1682,5 +1723,19 @@ sub genera_filtros_taxports {
 
 };
 
+sub genera_orden_taxports {
+    my $fid = $_[0];
+
+    if ($fid =~ /^fil_/) {
+        if (defined $CFG_FIL_TAXPORT{$fid}{'TAXPORT_ORDEN'} && $CFG_FIL_TAXPORT{$fid}{'TAXPORT_ORDEN'} ne '' ) {
+            return $CFG_FIL_TAXPORT{$fid}{'TAXPORT_ORDEN'};
+        } else {
+            return $prontus_varglb::TAXPORT_ORDEN;    
+        }
+    } else {
+        return $prontus_varglb::TAXPORT_ORDEN;
+    }
+
+};
 
 # -------------------------END SCRIPT----------------------

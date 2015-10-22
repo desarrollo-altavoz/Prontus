@@ -399,7 +399,7 @@ sub parse_and_write {
     my $dst2write = "$prontus_varglb::DIR_SERVER$reldir_dst_artic_relac/" . $id_secc1 . '_' . $id_tema1 . '_' . $id_subtema1 . '_' . $nomfile;
 
     &glib_fildir_02::write_file($dst2write, $pagina);
-    &lib_prontus::purge_cache($dst2write);
+    &lib_prontus::purge_cache($dst2write) if ($prontus_varglb::CACHE_PURGE_ART_RELAC eq 'SI');
 };
 
 # ---------------------------------------------------------------

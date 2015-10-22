@@ -90,6 +90,7 @@ sub new {
     $artic->{prontus_id}         ||= '';
     $artic->{public_server_name} ||= '';
     $artic->{cpan_server_name}   ||= '';
+    $artic->{no_check_dirs}      ||= '';
     if ( (! &lib_prontus::valida_prontus($artic->{prontus_id})) || ($artic->{public_server_name} eq '')
                                                || ($artic->{cpan_server_name} eq '') ) {
         $Artic::ERR = "Artic::new con params no validos:\n"
@@ -212,7 +213,7 @@ sub _set_dirs {
     $this->{pathdir_plt_pags} = "$this->{pathdir_plt}/pags";
 
 
-    if (! $this->_check_artic_dirs()) {
+    if (! $this->_check_artic_dirs() && !$this->{no_check_dirs}) {
         $Artic::ERR = "No se pueden crear directorios del artículo, dst_base[$this->{dst_base}]";
         cluck $Artic::ERR . "[$!]\n";
         return 0;
@@ -562,19 +563,25 @@ sub _guarda_recursos {
             foreach my $file (@videos) {
                 if( -f "$dst_dir/$file" ) {
                     # print STDERR "Agregando a purge [$dst_dir/$file]\n";
-                    &lib_prontus::purge_cache("$dst_dir/$file");
+                    if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$this->{campos}->{'_fid'}}) {
+                        &lib_prontus::purge_cache("$dst_dir/$file") if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60 && &glib_fildir_02::get_antiguedad_archivo("$dst_dir/$file") <= 60);
+                    }
                 }
                 my $img = $file;
                 $img =~ s/\.mp4/.jpg/;
                 if( -f "$dst_dir/$img") {
                     # print STDERR "Agregando a purge [$dst_dir/$img]\n";
-                    &lib_prontus::purge_cache("$dst_dir/$img");
+                    if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$this->{campos}->{'_fid'}}) {
+                        &lib_prontus::purge_cache("$dst_dir/$img") if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60 && &glib_fildir_02::get_antiguedad_archivo("$dst_dir/$img") <= 60);
+                    }
                 }
             }
         } else {
             if(-f "$dst_dir/$nom_arch") {
                 # print STDERR "Agregando a purge [$dst_dir/$nom_arch]\n";
-                &lib_prontus::purge_cache("$dst_dir/$nom_arch");
+                if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$this->{campos}->{'_fid'}}) {
+                    &lib_prontus::purge_cache("$dst_dir/$nom_arch") if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60 && &glib_fildir_02::get_antiguedad_archivo("$dst_dir/$nom_arch") <= 60);
+                }
             }
         }
 
@@ -817,7 +824,10 @@ sub _guarda_fotosbatch {
         next if ($nom_arch eq '');
         &glib_fildir_02::check_dir($dst_dir);
         &File::Copy::move($path_foto_batch, "$dst_dir/$nom_arch");
-        &lib_prontus::purge_cache("$dst_dir/$nom_arch");
+
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$this->{campos}->{'_fid'}}) {
+            &lib_prontus::purge_cache("$dst_dir/$nom_arch") if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60 && &glib_fildir_02::get_antiguedad_archivo("$dst_dir/$nom_arch") <= 60);
+        }
 
         # medir foto
         ($msg_size, $wfoto, $hfoto) = &lib_prontus::dev_tam_img("$dst_dir/$nom_arch");
@@ -860,7 +870,10 @@ sub _guarda_fotoeditada {
         next if ($nom_arch eq '');
         &glib_fildir_02::check_dir($dst_dir);
         &File::Copy::move($path_fotoeditada, "$dst_dir/$nom_arch");
-        &lib_prontus::purge_cache("$dst_dir/$nom_arch");
+
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$this->{campos}->{'_fid'}}) {
+            &lib_prontus::purge_cache("$dst_dir/$nom_arch") if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60 && &glib_fildir_02::get_antiguedad_archivo("$dst_dir/$nom_arch") <= 60);
+        }
 
         # medir foto
         ($msg_size, $wfoto, $hfoto) = &lib_prontus::dev_tam_img("$dst_dir/$nom_arch");
@@ -906,7 +919,10 @@ sub _guarda_fotofromdir {
         next if ($nom_arch eq '');
         &glib_fildir_02::check_dir($dst_dir);
         &File::Copy::move($path_fotoeditada, "$dst_dir/$nom_arch");
-        &lib_prontus::purge_cache("$dst_dir/$nom_arch");
+        
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$this->{campos}->{'_fid'}}) {
+            &lib_prontus::purge_cache("$dst_dir/$nom_arch") if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60 && &glib_fildir_02::get_antiguedad_archivo("$dst_dir/$nom_arch") <= 60);
+        }
 
         # medir foto
         ($msg_size, $wfoto, $hfoto) = &lib_prontus::dev_tam_img("$dst_dir/$nom_arch");
@@ -1075,25 +1091,39 @@ sub _add_foto_sitioexterno {
 sub _add_foto_sitiolocal_articulolocal {
     my ($this, $nom_campo, $val_campo, $maxw, $maxh, $dx, $dy, $cuadrar, $nom_campo_orig) = @_;
     my $document_root = $this->{document_root};
-
     my $foto_existente = $this->{campos}->{'_hidd_' . $nom_campo_orig};
+    my $actions = $this->{campos}->{'_actions' . $nom_campo};
+    my ($binfoto, $final_dimx, $final_dimy, $nom_arch);
+    
+    print STDERR "actions[$actions] val_campo[$val_campo]\n";
 
-    # si la foto es mas grande lo que debe ser, se redimensiona
-    # y se crea una nueva fotoprontus y esa es asignada a fotofija
-    my ($binfoto, $final_dimx, $final_dimy);
-
-    ($final_dimx, $final_dimy) = ($dx, $dy);
-    if (($dx > $maxw) || ($dy > $maxh)) {
-
-        ($binfoto, $final_dimx, $final_dimy) = &lib_thumb::make_thumbnail($maxw, $maxh, "$document_root$val_campo", $cuadrar);
-
-        my $nom_arch = $this->_guarda_binfoto_prontus($val_campo, $final_dimx, $final_dimy, $binfoto, $foto_existente);
+    # Si hay acciones las aplica sobre la misma imagen, luego continua.
+    if ($actions) {
+        ($nom_arch, $final_dimx, $final_dimy) = $this->_aplica_fotofija_actions($val_campo, $actions, $foto_existente);
         return if ($nom_arch eq '');
+
         $this->_add_foto_prontus_xml($final_dimx, $final_dimy, $nom_arch);
         # Reasigna val_campo para parsear en el artic.
         $val_campo = "$this->{dst_foto}/$nom_arch";
-        $val_campo =~ s/^$document_root//;
-    };
+        $val_campo =~ s/^$document_root//;        
+
+    } else { # Continua normal...
+        # si la foto es mas grande lo que debe ser, se redimensiona
+        # y se crea una nueva fotoprontus y esa es asignada a fotofija
+        ($final_dimx, $final_dimy) = ($dx, $dy);
+
+        if (($dx > $maxw) || ($dy > $maxh)) {
+
+            ($binfoto, $final_dimx, $final_dimy) = &lib_thumb::make_thumbnail($maxw, $maxh, "$document_root$val_campo", $cuadrar);
+
+            my $nom_arch = $this->_guarda_binfoto_prontus($val_campo, $final_dimx, $final_dimy, $binfoto, $foto_existente);
+            return if ($nom_arch eq '');
+            $this->_add_foto_prontus_xml($final_dimx, $final_dimy, $nom_arch);
+            # Reasigna val_campo para parsear en el artic.
+            $val_campo = "$this->{dst_foto}/$nom_arch";
+            $val_campo =~ s/^$document_root//;
+        };        
+    }
 
     # foto local, asi q saca el server name.
     $val_campo =~ s/^https?:\/\/$this->{cpan_server_name}//i;
@@ -1103,6 +1133,41 @@ sub _add_foto_sitiolocal_articulolocal {
     my $parse_as_cdata = 1;
     $this->{xml_data} = &lib_prontus::replace_in_xml($this->{xml_data}, $nom_campo, $val_campo, $parse_as_cdata);
 
+};
+# ---------------------------------------------------------------
+sub _aplica_fotofija_actions {
+    my ($this, $lafoto, $actions, $foto_existente) = @_;
+    my ($maxw, $maxh, $left, $top, $neww, $newh);
+    my $document_root = $this->{document_root};
+    my $nom_arch = $this->_get_nom_foto($lafoto, $foto_existente);
+    my $dst_binfoto = "$this->{dst_foto}/$nom_arch";
+    my ($binfoto, $finalw, $finalh);
+
+    if ($actions =~ /crop\[([^\]]+)/i) { # crop[80x80+388+250!875x656]
+        my $args = $1;
+        if ($args =~ /(\d+)x(\d+)\+(\d+)\+(\d+)!(\d+)x(\d+)/) {
+            ($maxw, $maxh, $left, $top, $neww, $newh) = ($1, $2, $3, $4, $5, $6);
+            print STDERR "maxw[$maxw] maxh[$maxh] left[$left] top[$top] neww[$neww] newh[$newh]\n";
+            # Redimensionar si viene nuevo tamaño.
+            my $resize = 0;
+
+            if ($neww && $newh) {
+                ($binfoto, $finalw, $finalh) = &lib_thumb::make_resize($neww, $newh, "$document_root$lafoto");
+                &lib_thumb::write_image($dst_binfoto, $binfoto); # se escribe la foto.
+                $resize = 1;
+            }
+
+            if ($resize) {
+                ($binfoto, $finalw, $finalh) = &lib_thumb::make_crop($left, $top, $maxw, $maxh, $dst_binfoto);
+            } else {
+                ($binfoto, $finalw, $finalh) = &lib_thumb::make_crop($left, $top, $maxw, $maxh, "$document_root$lafoto");
+            }
+
+            &lib_thumb::write_image($dst_binfoto, $binfoto); # se escribe la foto.
+
+            return ($nom_arch, $finalw, $finalh);
+        }
+    }    
 };
 # ---------------------------------------------------------------
 sub _add_foto_prontus_xml {
@@ -1211,7 +1276,10 @@ sub _guarda_binfoto_prontus {
     # warn "dst_img[$this->{dst_foto}] - nom_arch[$nom_arch]";
     my $dst_binfoto = "$this->{dst_foto}/$nom_arch";
     &lib_thumb::write_image($dst_binfoto, $binfoto);
-    &lib_prontus::purge_cache($dst_binfoto);
+
+    if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$this->{campos}->{'_fid'}}) {
+        &lib_prontus::purge_cache($dst_binfoto) if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60 && &glib_fildir_02::get_antiguedad_archivo($dst_binfoto) <= 60);
+    }
 
     return $nom_arch;
 
@@ -1337,15 +1405,17 @@ sub borra_artic {
     my $pathnice = &lib_prontus::get_path_nice();
     $pathnice = "$pathnice -n19 " if($pathnice);
 
+    # Cargar datos del xml. Necesarios para poder armar friendly url.
+    my %campos_xml = $this->get_xml_content();
+
     # Borra paginas generadas
     my @files2delete = glob("$dirpag/$ts" . '.*');
     foreach my $file2delete (@files2delete) {
         unlink $file2delete;
-        &lib_prontus::purge_cache($file2delete);
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+            &lib_prontus::purge_cache($file2delete);
+        }
     };
-
-    # Cargar datos del xml. Necesarios para poder armar friendly url.
-    my %campos_xml = $this->get_xml_content();
 
     # Incluye friendly.
     my $marca_file = $this->get_fullpath_artic('', $campos_xml{'_plt'});
@@ -1353,13 +1423,17 @@ sub borra_artic {
     my $fileurl = '%%_FILEURL%%';
     $fileurl = &lib_prontus::parse_filef($fileurl, $campos_xml{'_txt_titular'}, $this->{ts}, $this->{prontus_id}, $marca_file, $campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'});
 
-    &lib_prontus::purge_cache($fileurl);
+    if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+        &lib_prontus::purge_cache($fileurl);
+    }
 
     # Borrar paginas paralelas
     @files2delete = glob("$dirpagpar/$ts*" . '.*');
     foreach my $file2delete (@files2delete) {
         unlink $file2delete;
-        &lib_prontus::purge_cache($file2delete);
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+            &lib_prontus::purge_cache($file2delete);
+        }
     };
 
     # Borra paginas de multivistas
@@ -1371,7 +1445,9 @@ sub borra_artic {
         my @files2delete_mv = glob("$dir_art_mv/$ts" . '.*');
         foreach my $file2delete (@files2delete_mv) {
             unlink $file2delete;
-            &lib_prontus::purge_cache($file2delete);
+            if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+                &lib_prontus::purge_cache($file2delete);
+            }
         };
 
         # Paginas paralelas
@@ -1380,7 +1456,9 @@ sub borra_artic {
         @files2delete_mv = glob("$dir_art_mv/$ts*" . '.*');
         foreach my $file2delete (@files2delete_mv) {
             unlink $file2delete;
-            &lib_prontus::purge_cache($file2delete);
+            if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+                &lib_prontus::purge_cache($file2delete);
+            }
         };
     };
 
@@ -1939,7 +2017,9 @@ sub generar_vista_art {
         my $fileurl = '%%_FILEURL%%';
         $fileurl = &lib_prontus::parse_filef($fileurl, $titular_crudo, $this->{ts}, $this->{prontus_id}, $marca_file, $nom_seccion1, $nom_tema1, $nom_subtema1);
 
-        &lib_prontus::purge_cache($fileurl);
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+            &lib_prontus::purge_cache($fileurl) if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60);
+        }
     };
 
     # Solo se entra aqui si el articulo que se esta parseando no es paralelo, ya que se genería

@@ -1,0 +1,150 @@
+<div class="listado">
+
+    <div style="height:37px;">
+        <p style="float: left;"><b>Configuración de Caché</b>: %%_prontus_id%%-cache.cfg</p>
+        <div class="botones">
+            <div class="boton-gris3 aright">
+                <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                    <span>Cancelar</span>
+                </a>
+            </div>
+            <div class="boton-gris3 aright">
+                <a onclick="Cfgedit.guardaCfg('cache'); return false;" href="#" class="button" title="Guardar">
+                    <span>Guardar</span>
+                </a>
+            </div>
+        </div>
+        <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+            <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+
+        </div>
+    </div>
+
+    <form name="frmCFG-CACHE" id="frmCFG-CACHE" method="post">
+        <table class="tableform" width="100%">
+            <input type="hidden" name="_cfg" value="cache"/>
+            <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
+            <input type="hidden" name="_tab" value="cfg-tab15" />
+            <input type="hidden" name="CACHE_PURGE_EXCLUDE_FID" value="" />
+
+            <tr class="head">
+                <td>Variable</td>
+                <td>Valor</td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CACHE_PURGE_TAGPORT<br>
+                    <span class="ayuda">Activa o desactiva la opción de hacer purge a las portadas tagonómicas.</span>
+                </td>
+                <td>
+                    <input type="radio" name="CACHE_PURGE_TAGPORT" id="CACHE_PURGE_TAGPORT_SI" value="SI"%%CACHE_PURGE_TAGPORT_SI%%/> <label for="CACHE_PURGE_TAGPORT_SI">SI</label>
+                    &nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="CACHE_PURGE_TAGPORT" id="CACHE_PURGE_TAGPORT_NO" value="NO"%%CACHE_PURGE_TAGPORT_NO%%/> <label for="CACHE_PURGE_TAGPORT_NO">NO</label>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CACHE_PURGE_TAGPORT_MV<br>
+                    <span class="ayuda">Activa o desactiva la opción de hacer purge a las vistas de las portadas tagonómicas.</span>
+                </td>
+                <td>
+                    <input type="radio" name="CACHE_PURGE_TAGPORT_MV" id="CACHE_PURGE_TAGPORT_MV_SI" value="SI"%%CACHE_PURGE_TAGPORT_MV_SI%%/> <label for="CACHE_PURGE_TAGPORT_MV_SI">SI</label>
+                    &nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="CACHE_PURGE_TAGPORT_MV" id="CACHE_PURGE_TAGPORT_MV_NO" value="NO"%%CACHE_PURGE_TAGPORT_MV_NO%%/> <label for="CACHE_PURGE_TAGPORT_MV_NO">NO</label>
+                </td>
+            </tr>            
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CACHE_PURGE_TAXPORT<br>
+                    <span class="ayuda">Activa o desactiva la opción de hacer purge a las portadas taxonómicas.</span>
+                </td>
+                <td>
+                    <input type="radio" name="CACHE_PURGE_TAXPORT" id="CACHE_PURGE_TAXPORT_SI" value="SI"%%CACHE_PURGE_TAXPORT_SI%%/> <label for="CACHE_PURGE_TAXPORT_SI">SI</label>
+                    &nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="CACHE_PURGE_TAXPORT" id="CACHE_PURGE_TAXPORT_NO" value="NO"%%CACHE_PURGE_TAXPORT_NO%%/> <label for="CACHE_PURGE_TAXPORT_NO">NO</label>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CACHE_PURGE_TAXPORT_MV<br>
+                    <span class="ayuda">Activa o desactiva la opción de hacer purge a las vistas de las portadas taxonómicas.</span>
+                </td>
+                <td>
+                    <input type="radio" name="CACHE_PURGE_TAXPORT_MV" id="CACHE_PURGE_TAXPORT_MV_SI" value="SI"%%CACHE_PURGE_TAXPORT_MV_SI%%/> <label for="CACHE_PURGE_TAXPORT_MV_SI">SI</label>
+                    &nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="CACHE_PURGE_TAXPORT_MV" id="CACHE_PURGE_TAXPORT_MV_NO" value="NO"%%CACHE_PURGE_TAXPORT_MV_NO%%/> <label for="CACHE_PURGE_TAXPORT_MV_NO">NO</label>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CACHE_PURGE_MAPA<br>
+                    <span class="ayuda">Activa o desactiva la opción de hacer purge al mapa del sitio.</span>
+                </td>
+                <td>
+                    <input type="radio" name="CACHE_PURGE_MAPA" id="CACHE_PURGE_MAPA_SI" value="SI"%%CACHE_PURGE_MAPA_SI%%/> <label for="CACHE_PURGE_MAPA_SI">SI</label>
+                    &nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="CACHE_PURGE_MAPA" id="CACHE_PURGE_MAPA_NO" value="NO"%%CACHE_PURGE_MAPA_NO%%/> <label for="CACHE_PURGE_MAPA_NO">NO</label>
+                </td>
+            </tr>   
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CACHE_PURGE_ART_RELAC<br>
+                    <span class="ayuda">Activa o desactiva la opción de hacer purge a los artículos relacionados.</span>
+                </td>
+                <td>
+                    <input type="radio" name="CACHE_PURGE_ART_RELAC" id="CACHE_PURGE_ART_RELAC_SI" value="SI"%%CACHE_PURGE_ART_RELAC_SI%%/> <label for="CACHE_PURGE_ART_RELAC_SI">SI</label>
+                    &nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="CACHE_PURGE_ART_RELAC" id="CACHE_PURGE_ART_RELAC_NO" value="NO"%%CACHE_PURGE_ART_RELAC_NO%%/> <label for="CACHE_PURGE_ART_RELAC_NO">NO</label>
+                </td>
+            </tr>                        
+            <tr>
+                <td style="width: 300px;" valign="top">
+                    CACHE_PURGE_EXCLUDE_FID<br>
+                    <span class="ayuda">Tipos de artículos a excluir al momento de hacer purge.</span>
+                </td>
+                <td>
+                    <table class="tableform" width="100%">
+                        <tr class="head">
+                            <td>Excluir</td>
+                            <td>Nombre</td>
+                            <td>FID</td>
+                        </tr>
+                        <!--loop_cache_purge_fid-->
+                        <tr>
+                            <td align="center">
+                                <input type="checkbox" name="CACHE_PURGE_EXCLUDE_FID_ARR[]" id="CACHE_PURGE_EXCLUDE_FID%%num%%" value="%%archivofid%%" %%checked%%/>
+                            </td>
+                            <td>
+                                <label for="CACHE_PURGE_EXCLUDE_FID%%num%%">%%nombrefid%%</label> 
+                            </td>
+                            <td>
+                                <label for="CACHE_PURGE_EXCLUDE_FID%%num%%">%%archivofid%%</label> 
+                            </td>
+                        </tr>
+                        <!--/loop_cache_purge_fid-->
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <div class="botones">
+        <div class="boton-gris3 aright">
+            <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
+                <span>Cancelar</span>
+            </a>
+        </div>
+        <div class="boton-gris3 aright">
+            <a onclick="Cfgedit.guardaCfg('cache'); return false;" href="#" class="button" title="Guardar">
+                <span>Guardar</span>
+            </a>
+        </div>
+    </div>
+    <div class="aright" id="ajax-loading" style="margin-right: 55px; display: none;">
+        <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
+    </div>
+</div> <!--/listado-->
+

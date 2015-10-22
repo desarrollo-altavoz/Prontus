@@ -5041,7 +5041,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Banco de imágenes
     [mejoras]
         - Se agrega un tamaño máximo en pixels para las fotos, configurable en el editor de cfg gui (opcional).
-        Cuando el tamaño máximo es superado, la foto se redimenciona automaticamente.
+        Cuando el tamaño máximo es superado, la foto se redimensiona automaticamente.
     [files]
         /cgi-cpn/lib_thumb.pm
         /cgi-bin/prontus_art_upfoto_dd.cgi
@@ -8512,3 +8512,94 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_dropbox_backup.cgi
         /cgi-cpn/lib_prontus.pm
+
+====================================================================================================
+11.2.88 - 22/10/2015 - JOR
+====================================================================================================
+
+- Configuración
+    [mejoras]
+        Se agrega configuración de Caché para obtener un seteo más fino en el uso de varnish o cloudflare.
+        CACHE_PURGE_TAGPORT: Activa o desactiva la opción de hacer purge a las portadas tagonómicas.
+        CACHE_PURGE_TAGPORT_MV: Activa o desactiva la opción de hacer purge a las vistas de las portadas tagonómicas.
+        CACHE_PURGE_TAXPORT: Activa o desactiva la opción de hacer purge a las portadas taxonómicas.
+        CACHE_PURGE_TAXPORT_MV: Activa o desactiva la opción de hacer purge a las vistas de las portadas taxonómicas.
+        CACHE_PURGE_MAPA: Activa o desactiva la opción de hacer purge al mapa del sitio.
+        CACHE_PURGE_ART_RELAC: Activa o desactiva la opción de hacer purge a los artículos relacionados.
+        CACHE_PURGE_EXCLUDE_FID: Tipos de artículos a excluir al momento de hacer purge.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cache.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_admin_main.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        /wizard_prontus/prontus_dir/cpan/core/css/cfgedit.css
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/prontus_tags_ports.cgi
+        /cgi-cpn/Artic.pm
+
+- Cloudflare
+    [mejoras]
+        - Se agrega API v4 y se deja versión anterior para compatibilidad.
+        - La API v4 permite enviar hasta 30 urls de manera simulmantea lo cual se traduce en un aumento de la velocidad en la acción de purge.
+        - Se mejora la lógica de purge de archivos para que tome menos tiempo en completarse.
+        - Al definir las zonas, solo se debe poner el dominio. Automaticamente se hará purge a los subdominios www y m.
+    [cambios]
+        - Se ajustan los tiempos de espera entre una petición y otra a la API.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
+        /cgi-cpn/prontus_purge_cache.cgi
+        /cgi-cpn/prontus_cloudflare_purge.cgi
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/glib_fildir_02.pm
+        /cgi-cpn/glib_hrfec_02.pm
+
+- Portadas taxonómicas
+      [mejoras]
+          - Se agrega configuración de orden de los articulos (TAXPORT_ORDEN) en las portadas taxonómica con filtro. Los valores pueden ser:
+            PUBLICACION(ASC o DESC) # Order por fecha de publicacion
+            CREACION(ASC o DESC) # Orden por creacion
+            TITULAR(ASC o DESC) # Orden por titular.
+            Por ejemplo:
+            CREACION(ASC)
+          - Al filtro de "fecha desde" se le puede asignar el valor 'now', el cual será reemplazado por la fecha actual al momento de generar las portadas taxonómicas. Por ejemplo:
+            TAXPORT_FECHA_DESDE = 'now'
+            Cada vez se usará la fecha actual.
+      [files]
+          /cgi-cpn/prontus_cron_taxport.cgi
+
+- FIDs
+    [mejoras]
+        - Se agrega crop de fotos a los campos de foto fija accesible desde botón ubicado en la botonera del campo.
+          Restricciones:
+            - Si la foto es de menor tamaño que el area de foto fija el botón queda deshabilitado.
+            - 
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fotofija.class.js
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_banco_imagenes.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/include_fotofija.html
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /cgi-cpn/Artic.pm
+
+- Wizard
+    [bugfixes]
+        - Al verificar la factibilidad de instalación, no se estaba eliminando por completo el directorio de prueba impidiendo la creación de la instancia de prontus.
+    [files]
+        /cgi-cpn/prontus_check_install.cgi
+
+- Buscador
+    [bugfixes]
+        - Se soluciona problema en el parseo de friendly url con instancias de prontus que tienen guión (-) en el nombre.
+    [files]
+        /cgi-bin/prontus_search.cgi
+
+- Prontus en general
+    [cambios]
+        - Se elimina la verificación persistente de existencia de directorios cada vez que se utiliza el objeto Artic.
+    [files]
+        /cgi-cpn/Artic.pm

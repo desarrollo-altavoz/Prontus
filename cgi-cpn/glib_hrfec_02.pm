@@ -330,6 +330,28 @@ sub hora_human {
     return "$hr\:$min\:$sec";
 }; # hora
 
+# Convierte un ts en epoch.
+sub get_epoch_from_ts {
+    my $ts = $_[0]; #aaaammdd
+
+    #Obtener año, mes, dia, hora min y sec para epoch
+    $ts =~ /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/is;
+    my($year, $mon, $mday, $hour, $min, $sec) = ($1, $2, $3, $4, $5, $6);
+
+    my $time = mktime($sec, $min, $hour, $mday, $mon - 1, $year - 1900);
+
+    return $time;
+};
+
+# Retorna la antiguedad en segundos del ts.
+sub get_antiguedad_ts {
+  my $ts = $_[0];
+  my $epoch = &get_epoch_from_ts($ts);
+  my $diff = time - $epoch;
+
+  return $diff;
+};
+
 #--------------------------------------------------------------------#
 # sub compo_fecha {
 # # Toma una fecha en formato ISO (aaaammdd) devuelve el ano, mes, dia y dia de

@@ -32,10 +32,14 @@
             <tr>
                 <td style="width: 300px;" valign="top">
                     CLOUDFLARE_API_URL<br>
-                    <span class="ayuda">URL de la API de CloudFlare. Por lo general es <a href="https://www.cloudflare.com/api_json.html">https://www.cloudflare.com/api_json.html</a></span>
+                    <span class="ayuda">URL de la API de CloudFlare. Se recomienda el uso de la versión 4.</span>
                 </td>
                 <td>
-                    <input type="text" name="CLOUDFLARE_API_URL" value="%%CLOUDFLARE_API_URL%%" class="fieldform"/>
+                    <!--input type="text" name="CLOUDFLARE_API_URL" value="%%CLOUDFLARE_API_URL%%" class="fieldform"/-->
+                    <select name="CLOUDFLARE_API_URL" class="fieldform">
+                        <option value="https://www.cloudflare.com/api_json.html" %%CLOUDFLARE_API_URL_v1%%>https://www.cloudflare.com/api_json.html (v1)</option>
+                        <option value="https://api.cloudflare.com/client/v4" %%CLOUDFLARE_API_URL_v4%%>https://api.cloudflare.com/client/v4 (v4)</option>
+                    </select>
                 </td>
             </tr>
             <tr>

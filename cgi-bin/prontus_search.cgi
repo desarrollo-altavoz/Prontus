@@ -578,7 +578,7 @@ sub parsea_plantilla2 {
     # $rel = "$numresult $numrepet $yeswords $MAXPALABRAS $rel"; # debug
     # $dir = substr($file,0,8);
     $lnk = $file;
-    if ($lnk =~ /\/(\w+)\/site\/artic\/\d{8}\/pags\/(\d{14})\.\w+$/) { # 1.27 1.27.2
+    if ($lnk =~ /\/([\w\-]+)\/site\/artic\/\d{8}\/pags\/(\d{14})\.\w+$/) { # 1.27 1.27.2
       $prontus_id = $1;
       $ts =  $2;
       if ($CFG{'USEFRIENDLYURLS'} == 1) {

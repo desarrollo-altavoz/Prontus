@@ -727,6 +727,8 @@ sub salida {
         $plantilla =~ s/%%MSG%%/$err/si;
         $plantilla =~ s/%%_referer%%/$ENV{'HTTP_REFERER'};/si;
         $plantilla =~ s/%%_answerpage%%/$ANSWERS_DIR\/$ANSWERID\.$EXT/si;
+        $plantilla =~ s/%_PF_(\w+\(.*?\))%/%%_PF_\1%%/isg;
+        $plantilla = &lib_prontus::parser_custom_function($plantilla);        
 
         # Elimina tags no parseados en la plantilla.
         $plantilla =~ s/%%\w+%%//sg; # 1.2.1

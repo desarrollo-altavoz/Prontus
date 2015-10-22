@@ -59,7 +59,7 @@ main: {
 
     print STDERR "[$$] Inicio\n";
 
-    $DIR_SEMAF = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/semaforos";
+    $DIR_SEMAF = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/semaforos";
     &glib_fildir_02::check_dir($DIR_SEMAF) if (! -d $DIR_SEMAF);
 
     if (-f "$DIR_SEMAF/dropbox_backup.lck") {

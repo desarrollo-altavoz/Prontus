@@ -70,6 +70,8 @@ my ($FIN_OK) = "<BR><B style='color:#008000'>** TEST FINALIZADO OK **</B>";
 main: {
   my ($perfil, $id_usr);
 
+  $lib_prontus::DISABLE_PURGE_CACHE = 1; # deshabilitar purge.
+  
   &lib_prontus::setUtf8();
   # Rescatar parametros recibidos.
   &glib_cgi_04::new();

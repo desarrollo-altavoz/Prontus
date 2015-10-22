@@ -406,6 +406,9 @@ var Fid = {
             esta_foto.contentDocument.designMode = "on"; // restaura este att. q se pierde al borrar.
         }
         Fid.objFormFid[lafoto].value = "";
+
+        // Quita el boton de edición.
+        Fotofija.disableEdit(lafoto);
     },
 
     // -----------------------------------------

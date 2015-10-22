@@ -332,6 +332,82 @@ sub parseaVars {
     };
 
     # -------------------------------------------------------------------------------
+    # -cache.cfg
+
+    if ($prontus_varglb::CACHE_PURGE_TAXPORT eq 'SI') {
+        $pagina =~ s/%%CACHE_PURGE_TAXPORT_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CACHE_PURGE_TAXPORT_NO%%//ig;
+    } else {
+        $pagina =~ s/%%CACHE_PURGE_TAXPORT_SI%%//ig;
+        $pagina =~ s/%%CACHE_PURGE_TAXPORT_NO%%/ checked="checked"/ig;
+    }
+
+    if ($prontus_varglb::CACHE_PURGE_TAGPORT eq 'SI') {
+        $pagina =~ s/%%CACHE_PURGE_TAGPORT_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CACHE_PURGE_TAGPORT_NO%%//ig;
+    } else {
+        $pagina =~ s/%%CACHE_PURGE_TAGPORT_SI%%//ig;
+        $pagina =~ s/%%CACHE_PURGE_TAGPORT_NO%%/ checked="checked"/ig;
+    }    
+
+    if ($prontus_varglb::CACHE_PURGE_TAXPORT_MV eq 'SI') {
+        $pagina =~ s/%%CACHE_PURGE_TAXPORT_MV_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CACHE_PURGE_TAXPORT_MV_NO%%//ig;
+    } else {
+        $pagina =~ s/%%CACHE_PURGE_TAXPORT_MV_SI%%//ig;
+        $pagina =~ s/%%CACHE_PURGE_TAXPORT_MV_NO%%/ checked="checked"/ig;
+    }
+
+    if ($prontus_varglb::CACHE_PURGE_TAGPORT_MV eq 'SI') {
+        $pagina =~ s/%%CACHE_PURGE_TAGPORT_MV_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CACHE_PURGE_TAGPORT_MV_NO%%//ig;
+    } else {
+        $pagina =~ s/%%CACHE_PURGE_TAGPORT_MV_SI%%//ig;
+        $pagina =~ s/%%CACHE_PURGE_TAGPORT_MV_NO%%/ checked="checked"/ig;
+    }   
+
+    if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI') {
+        $pagina =~ s/%%CACHE_PURGE_MAPA_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CACHE_PURGE_MAPA_NO%%//ig;
+    } else {
+        $pagina =~ s/%%CACHE_PURGE_MAPA_SI%%//ig;
+        $pagina =~ s/%%CACHE_PURGE_MAPA_NO%%/ checked="checked"/ig;
+    }   
+
+    if ($prontus_varglb::CACHE_PURGE_ART_RELAC eq 'SI') {
+        $pagina =~ s/%%CACHE_PURGE_ART_RELAC_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CACHE_PURGE_ART_RELAC_NO%%//ig;
+    } else {
+        $pagina =~ s/%%CACHE_PURGE_ART_RELAC_SI%%//ig;
+        $pagina =~ s/%%CACHE_PURGE_ART_RELAC_NO%%/ checked="checked"/ig;
+    }       
+
+    $buffer = '';
+    $pagina =~ /<!--loop_cache_purge_fid-->(.*?)<!--\/loop_cache_purge_fid-->/s;
+    $loop = $1;
+    my $cont = 1;
+
+    foreach my $fid (sort keys %prontus_varglb::FORM_PLTS) {
+      $temp = $loop;
+      my @fid_info = split(/:/, $fid);
+
+      $temp =~ s/%%archivofid%%/$fid_info[0]/isg;
+      $temp =~ s/%%nombrefid%%/$fid_info[1]/isg;
+      $temp =~ s/%%num%%/$cont/isg;
+
+      if (defined $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$fid_info[0]}) {
+        $temp =~ s/%%checked%%/ checked="checked"/isg;
+      } else {
+        $temp =~ s/%%checked%%//isg;
+      }
+
+      $buffer = $buffer . $temp;
+      $cont++;
+    };
+
+    $pagina =~ s/<!--loop_cache_purge_fid-->.*?<!--\/loop_cache_purge_fid-->/$buffer/sig;
+
+    # -------------------------------------------------------------------------------
     # -art.cfg
 
     # Lee directorio de plantillas de artículo.
@@ -1070,7 +1146,18 @@ sub parseaVars {
     $pagina =~ s/%%CLOUDFLARE_API_KEY%%/$prontus_varglb::CLOUDFLARE_API_KEY/ig;
     $pagina =~ s/%%CLOUDFLARE_EMAIL%%/$prontus_varglb::CLOUDFLARE_EMAIL/ig;
     $pagina =~ s/%%CLOUDFLARE_ZONE%%/$prontus_varglb::CLOUDFLARE_ZONE/ig;
-    $pagina =~ s/%%CLOUDFLARE_API_URL%%/$prontus_varglb::CLOUDFLARE_API_URL/ig;
+    
+    if ($prontus_varglb::CLOUDFLARE_API_URL eq 'https://www.cloudflare.com/api_json.html') {
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%/ selected="selected"/ig;
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;
+    } elsif ($prontus_varglb::CLOUDFLARE_API_URL eq 'https://api.cloudflare.com/client/v4') {
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%/ selected="selected"/ig;
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%//ig;
+    } else {
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%/ selected="selected"/ig;
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;      
+    }
+
     $pagina =~ s/%%CLOUDFLARE_GLOBAL_PURGE%%/$prontus_varglb::CLOUDFLARE_GLOBAL_PURGE/ig;
 
     $pagina =~ s/%%FRIENDLY_URLS_LARGO_TITULAR%%/$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR/ig;

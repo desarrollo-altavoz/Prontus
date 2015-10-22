@@ -939,7 +939,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   my %fotos_controls;
   my %fotos_hidden;
   my %fotos_loop;
-
+  my %fotos_size;
 
   my $titular; # se rescata mas abajo
   my $ts = $FORM{'_file'};
@@ -1106,7 +1106,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $pag =~ s/<form (.*?)>/<form \1>\n$valor/is;
       };
 
-
+      $fotos_size{$nom_campo}{'w'} = $wfoto;
+      $fotos_size{$nom_campo}{'h'} = $hfoto;
 
       if ($valor_campo =~ /<(_nom$nom_campo)>(.+?)<\/\1>/i) {
         next if (lc $nom_campo eq 'foto_n'); # --> producto de un prb en la glib es posible que hayan fotos fantasma en el xml
@@ -1129,12 +1130,17 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg =~ s/%%relpath_foto%%/$relpath_foto/ig;
+        $bufferBancoImg =~ s/%%relpath_foto%%/$relpath_foto/ig;
+        $bufferBancoImg =~ s/%%wfoto%%/$wfoto/ig;
+        $bufferBancoImg =~ s/%%hfoto%%/$hfoto/ig;
 
         # Para los campos hidden de las fotos que no se desplegarán
         my $bufferBancoImg2 = $moldeBancoImg2;
         $bufferBancoImg2 =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg2 =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg2 =~ s/%%relpath_foto%%/$relpath_foto/ig;
+        $bufferBancoImg2 =~ s/%%wfoto%%/$wfoto/ig;
+        $bufferBancoImg2 =~ s/%%hfoto%%/$hfoto/ig;        
 
         # Foto iconizada
         # my $alt = "$nom_campo\nW:$wfoto\nH:$hfoto\n$kbytes_foto";
@@ -1238,6 +1244,11 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $pag =~ s/%%_DIV_$nom_campo%%/$foto_fija_aux/ig;
         $pag =~ s/%%$nom_campo%%/$valor_campo/ig; # para el ver imagen
 
+        print STDERR "nom_campo[$nom_campo] nom_foto_fija[$nom_foto_fija] |$fotos_size{$nom_foto_fija}{'w'}\n";
+
+        $pag =~ s/%%_W$nom_campo%%/$fotos_size{$nom_foto_fija}{'w'}/ig;
+        $pag =~ s/%%_H$nom_campo%%/$fotos_size{$nom_foto_fija}{'h'}/ig;
+
       }
       elsif ($valor_campo =~ /^http/i) { # foto externa
         my $img_tag = "<img src=\"$valor_campo\" border=\"0\" name=\"FOTO_EXTERNA\" />";
@@ -1245,10 +1256,12 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         # my $img_tag = $valor_campo;
         $pag =~ s/%%_DIV_$nom_campo%%/$img_tag/ig;
         $pag =~ s/%%$nom_campo%%/$valor_campo/ig; # para el ver imagen
+        $pag =~ s/%%_hide_crop%%/display:none;/ig; # solo edicion de fotos locales.
       }
       else {
         $pag =~ s/%%_DIV_$nom_campo%%//ig;
         $pag =~ s/%%$nom_campo%%/javascript:void\(0\)" onClick="return false/ig; # para el ver imagen
+        $pag =~ s/%%_hide_crop%%/display:none;/ig; # solo edicion de fotos locales.
       };
 
     }
