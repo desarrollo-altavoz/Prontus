@@ -1140,7 +1140,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg2 =~ s/%%nom_foto%%/$nom_foto/ig;
         $bufferBancoImg2 =~ s/%%relpath_foto%%/$relpath_foto/ig;
         $bufferBancoImg2 =~ s/%%wfoto%%/$wfoto/ig;
-        $bufferBancoImg2 =~ s/%%hfoto%%/$hfoto/ig;        
+        $bufferBancoImg2 =~ s/%%hfoto%%/$hfoto/ig;
 
         # Foto iconizada
         # my $alt = "$nom_campo\nW:$wfoto\nH:$hfoto\n$kbytes_foto";
@@ -1256,12 +1256,10 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         # my $img_tag = $valor_campo;
         $pag =~ s/%%_DIV_$nom_campo%%/$img_tag/ig;
         $pag =~ s/%%$nom_campo%%/$valor_campo/ig; # para el ver imagen
-        $pag =~ s/%%_hide_crop%%/display:none;/ig; # solo edicion de fotos locales.
       }
       else {
         $pag =~ s/%%_DIV_$nom_campo%%//ig;
         $pag =~ s/%%$nom_campo%%/javascript:void\(0\)" onClick="return false/ig; # para el ver imagen
-        $pag =~ s/%%_hide_crop%%/display:none;/ig; # solo edicion de fotos locales.
       };
 
     }

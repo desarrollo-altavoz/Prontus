@@ -387,14 +387,7 @@ var Fid = {
 
     // -----------------------------------------
     asignarFotoFija: function(idFoto) {
-
-        var htmlFoto = $('#'+idFoto).parent().html();
-        var currBody = '#'+$('#_curr_body').val();
-        //alert(currBody + ' [id^="FOTOFIJA_"]');
-        //alert($(currBody + ' [id^="FOTOFIJA_"]').length);
-        $(currBody + ' [id^="FOTOFIJA_"]').each(function() {
-            $(this).contents().find('body').html(htmlFoto);
-        });
+        FotoFija.actions.assignFoto(idFoto);
     },
 
     // -----------------------------------------
@@ -744,7 +737,7 @@ var Fid = {
 
         Fechas.fillfechap();
         CombosTax.fillSeccTemStem(); // Taxonomia
-        Fid.guardaFotosFijas();
+        //Fid.guardaFotosFijas();
         Fid.procesarTags();
         // Para la transcodificacion
         if($('#xcodeInput').val() == 1) {

@@ -919,7 +919,7 @@ sub _guarda_fotofromdir {
         next if ($nom_arch eq '');
         &glib_fildir_02::check_dir($dst_dir);
         &File::Copy::move($path_fotoeditada, "$dst_dir/$nom_arch");
-        
+
         if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$this->{campos}->{'_fid'}}) {
             &lib_prontus::purge_cache("$dst_dir/$nom_arch") if (&glib_hrfec_02::get_antiguedad_ts($this->{ts}) > 60 && &glib_fildir_02::get_antiguedad_archivo("$dst_dir/$nom_arch") <= 60);
         }
@@ -1094,7 +1094,7 @@ sub _add_foto_sitiolocal_articulolocal {
     my $foto_existente = $this->{campos}->{'_hidd_' . $nom_campo_orig};
     my $actions = $this->{campos}->{'_actions' . $nom_campo};
     my ($binfoto, $final_dimx, $final_dimy, $nom_arch);
-    
+
     print STDERR "actions[$actions] val_campo[$val_campo]\n";
 
     # Si hay acciones las aplica sobre la misma imagen, luego continua.
@@ -1105,7 +1105,7 @@ sub _add_foto_sitiolocal_articulolocal {
         $this->_add_foto_prontus_xml($final_dimx, $final_dimy, $nom_arch);
         # Reasigna val_campo para parsear en el artic.
         $val_campo = "$this->{dst_foto}/$nom_arch";
-        $val_campo =~ s/^$document_root//;        
+        $val_campo =~ s/^$document_root//;
 
     } else { # Continua normal...
         # si la foto es mas grande lo que debe ser, se redimensiona
@@ -1122,7 +1122,7 @@ sub _add_foto_sitiolocal_articulolocal {
             # Reasigna val_campo para parsear en el artic.
             $val_campo = "$this->{dst_foto}/$nom_arch";
             $val_campo =~ s/^$document_root//;
-        };        
+        };
     }
 
     # foto local, asi q saca el server name.
@@ -1142,32 +1142,41 @@ sub _aplica_fotofija_actions {
     my $nom_arch = $this->_get_nom_foto($lafoto, $foto_existente);
     my $dst_binfoto = "$this->{dst_foto}/$nom_arch";
     my ($binfoto, $finalw, $finalh);
+    my $resize = 0;
+
+    if ($actions =~ /resize\[([^\]]+)/i) { # resize[100x100]
+        my $args = $1;
+        if ($args =~ /(\d+)x(\d+)/) {
+            ($neww, $newh) = ($1, $2);
+            #print STDERR "neww[$neww] newh[$newh]\n";
+            ($binfoto, $finalw, $finalh) = &lib_thumb::make_resize($neww, $newh, "$document_root$lafoto");
+            &lib_thumb::write_image($dst_binfoto, $binfoto); # se escribe la foto.
+            $resize = 1;
+        }
+    }
 
     if ($actions =~ /crop\[([^\]]+)/i) { # crop[80x80+388+250!875x656]
         my $args = $1;
-        if ($args =~ /(\d+)x(\d+)\+(\d+)\+(\d+)!(\d+)x(\d+)/) {
+        if ($args =~ /(\d+)x(\d+)\+(-?\d+)\+(-?\d+)!(\d+)x(\d+)/) {
             ($maxw, $maxh, $left, $top, $neww, $newh) = ($1, $2, $3, $4, $5, $6);
-            print STDERR "maxw[$maxw] maxh[$maxh] left[$left] top[$top] neww[$neww] newh[$newh]\n";
-            # Redimensionar si viene nuevo tamaño.
-            my $resize = 0;
-
-            if ($neww && $newh) {
-                ($binfoto, $finalw, $finalh) = &lib_thumb::make_resize($neww, $newh, "$document_root$lafoto");
-                &lib_thumb::write_image($dst_binfoto, $binfoto); # se escribe la foto.
-                $resize = 1;
-            }
+            #print STDERR "maxw[$maxw] maxh[$maxh] left[$left] top[$top] neww[$neww] newh[$newh]\n";
 
             if ($resize) {
                 ($binfoto, $finalw, $finalh) = &lib_thumb::make_crop($left, $top, $maxw, $maxh, $dst_binfoto);
+                &lib_thumb::write_image($dst_binfoto, $binfoto); # se escribe la foto.
             } else {
                 ($binfoto, $finalw, $finalh) = &lib_thumb::make_crop($left, $top, $maxw, $maxh, "$document_root$lafoto");
+                &lib_thumb::write_image($dst_binfoto, $binfoto); # se escribe la foto.
             }
 
-            &lib_thumb::write_image($dst_binfoto, $binfoto); # se escribe la foto.
+            if ($neww && $newh) {
+                ($binfoto, $finalw, $finalh) = &lib_thumb::make_resize($neww, $newh, $dst_binfoto);
+                &lib_thumb::write_image($dst_binfoto, $binfoto); # se escribe la foto.
+            }
 
             return ($nom_arch, $finalw, $finalh);
         }
-    }    
+    }
 };
 # ---------------------------------------------------------------
 sub _add_foto_prontus_xml {

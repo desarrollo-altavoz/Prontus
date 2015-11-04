@@ -196,7 +196,7 @@
 # 1.29  21/01/2010   YCC - Ahora utiliza lib_maxrunning::myselfRunning() en lugar de lib_search::myself_running()
 # 1.30 28/09/2012    JOR - Lectura de cfg de prontus y uso de parse_filef para friendly url en vez de funcion propia en lib_search.
 # 1.31 11/10/2012    ALD - Detecta si se encuentra bajo NGINX para entregar el header X-Accel-Redirect en lugar de Location.
-
+# 1.32 26/10/2015    JOR - Se aplica entity encode a marcas parseadas en la plantilla para evitar XSS.
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
@@ -445,6 +445,7 @@ sub parsea_plantilla1 {
       $plantilla =~ s/%%chk_$key\_$aux%%/checked=\"checked\"/isg; # 1.25
       $plantilla =~ s/%%sel_$key\_$aux%%/selected=\"selected\"/isg; # 1.25
     };
+    $aux =~ s/([^a-zA-Z0-9 ])/sprintf('&#%s;',ord($1))/ge;
     $plantilla =~ s/%%$key%%/$aux/isg;
   };
   # 1.21 Parsea nombre de la CGI.
@@ -643,6 +644,7 @@ sub parsea_plantilla2 {
       $plantilla =~ s/%%chk_$key\_$aux%%/checked=\"checked\"/isg; # 1.25
       $plantilla =~ s/%%sel_$key\_$aux%%/selected=\"selected\"/isg; # 1.25
     };
+    $aux =~ s/([^a-zA-Z0-9 ])/sprintf('&#%s;',ord($1))/ge;
     $plantilla =~ s/%%$key%%/$aux/isg;
   };
   if ($FORM{'search_orden'} eq 'cro') { # 1.3
@@ -1328,8 +1330,9 @@ sub getFormData {
     $FILTROACTIVO = 0;
   };
   if (length($FORM{'search_texto'}) > 64) {
-    $MSG = 'B&uacute;squeda no v&aacute;lida.';
-    $FORM{'search_texto'} = '';
+    #$MSG = 'B&uacute;squeda no v&aacute;lida.';
+    $FORM{'search_texto'} = &lib_prontus::ajusta_nchars($FORM{'search_texto'}, 64);
+    $FORM{'search_texto'} =~ s/\.\.\.$//sg; # elimina puntos finales.
   };
   if ($FORM{'search_fechaini'} ne '') {
     $FORMfechaini = &lib_search::fecha2iso($FORM{'search_fechaini'});

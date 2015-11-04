@@ -8487,9 +8487,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se agrega filtro de fecha desde-hasta para fecha de publicación, creación y expiración en la Búsqueda Avanzada.
     [files]
         /cgi-cpn/prontus_art_listnopub.cgi
-        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css  
-        /wizard_prontus/prontus_dir/cpan/core/js-local/Megalupa.class.js 
-        /wizard_prontus/prontus_dir/cpan/core/prontus_art_megalupa.html  
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Megalupa.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_megalupa.html
 
 - Artículos
     [mejoras]
@@ -8514,9 +8514,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_prontus.pm
 
 ====================================================================================================
-11.2.88 - 22/10/2015 - JOR
+11.2.88 - 04/11/2015 - JOR
 ====================================================================================================
-
 - Configuración
     [mejoras]
         Se agrega configuración de Caché para obtener un seteo más fino en el uso de varnish o cloudflare.
@@ -8572,19 +8571,29 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - FIDs
     [mejoras]
-        - Se agrega crop de fotos a los campos de foto fija accesible desde botón ubicado en la botonera del campo.
-          Restricciones:
-            - Si la foto es de menor tamaño que el area de foto fija el botón queda deshabilitado.
-            - 
+        - Se agrega preview de fotos y funcionalidad de recorte en el mismo FID. Para habilitarlo agregar
+        la siguiente macro antes de la definición de las fotos (tabla):
+            %%MACRO(_fotos_preview.html)%%
+        - El contenedor de foto trae el nombre y el tamaño de la incluido. Estos datos serán visibles solo si está inclida la macro de preview.
+    [cambios]
+        - Se cambia el iframe de las fotos fijas por drag & drop.
+        - Se ocultan los botones "Ver imagen", "Borrar" y "Recortar" y solo aparecen al hacer "mouseover" sobre el contenedor de la foto, con foto asignada.
     [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fotofija.class.js
         /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_banco_imagenes.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_fotos_preview.html
         /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/imag/edi/cen_of.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/edi/cen_on.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/edi/rec2_of.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/edi/rec2_on.png
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
         /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
         /wizard_prontus/prontus_dir/cpan/core/fid/include_fotofija.html
         /wizard_prontus/prontus_dir/cpan/core/css/fids.css
         /cgi-cpn/Artic.pm
+        /cgi-cpn/prontus_art_ficha.cgi
 
 - Wizard
     [bugfixes]
@@ -8595,11 +8604,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Buscador
     [bugfixes]
         - Se soluciona problema en el parseo de friendly url con instancias de prontus que tienen guión (-) en el nombre.
+        - Se escapean los valores de las marcas antes del parseo para evitar posibles XSS.
+    [cambios]
+        - Cuando un query string tenía más de 64 caracteres se eliminaba. Ahora se corta a 64 caracteres para continuar con la búsqueda.
     [files]
         /cgi-bin/prontus_search.cgi
 
 - Prontus en general
     [cambios]
         - Se elimina la verificación persistente de existencia de directorios cada vez que se utiliza el objeto Artic.
+        - Parseo de Prontus Functions en plantillas de prontus form.
     [files]
         /cgi-cpn/Artic.pm
+        /cgi-bin/prontus_form.cgi
+

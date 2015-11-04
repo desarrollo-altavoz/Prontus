@@ -1,37 +1,45 @@
+<div class="fotofija-container">
+  <div class="name">
+    ##name##
+  </div>
+  <div class="fotofija" data-id="FOTOFIJA_##name##">
+    <div id="FOTOFIJA_##name##" name="FOTOFIJA_##name##" class="foto-recuadro"></div>
 
-
-<iframe id="FOTOFIJA_##name##" name="FOTOFIJA_##name##" class="foto-recuadro"></iframe>
-
-<script type="text/javascript">
-  // Para compatibilidad con chrome
-  $(document).ready(function() { $('iframe#FOTOFIJA_##name##').trigger('load'); });
-  $('iframe#FOTOFIJA_##name##').one('load', function() { Fid.initFotoFija(this, '%%_DIV_FOTOFIJA_##name##%%'); });
-</script>
-
-<input type="hidden" name="FOTOFIJA_##name##" value="" />
-<input type="hidden" name="_WFOTOFIJA_##name##" value="" />
-<!-- solo para urls externas, se cargan autom. con js al guardar -->
-<input type="hidden" name="_HFOTOFIJA_##name##" value="" />
-<input type="hidden" name="_MAXWFOTOFIJA_##name##" value="##w##" />
-<input type="hidden" name="_MAXHFOTOFIJA_##name##" value="##h##" />
-<input type="hidden" name="_UPDFOTOFIJA_##name##" value="" />
-<input type="hidden" name="_ACTIONSFOTOFIJA_##name##" value="" />
-<div class="check_cuadrar" title="Cuadra las dimensiones para que la foto resultante tenga exactamente las mismas dimensiones indicadas en el control de Fotofija.">
-  <input type="checkbox" name="CHK_cuadrar_FOTOFIJA_##name##" id="CHK_cuadrar_FOTOFIJA_##name##" value="si" />
-  <label for="CHK_cuadrar_FOTOFIJA_##name##">Tamaño exacto</label>
+    <input type="hidden" name="FOTOFIJA_##name##" value="%%FOTOFIJA_##name##%%" />
+    <input type="hidden" name="_WFOTOFIJA_##name##" value="" />
+    <!-- solo para urls externas, se cargan autom. con js al guardar -->
+    <input type="hidden" name="_HFOTOFIJA_##name##" value="" />
+    <input type="hidden" name="_MAXWFOTOFIJA_##name##" value="##w##" />
+    <input type="hidden" name="_MAXHFOTOFIJA_##name##" value="##h##" />
+    <input type="hidden" name="_UPDFOTOFIJA_##name##" value="" />
+    <input type="hidden" name="_ACTIONSFOTOFIJA_##name##" value="" />
+    <div class="botones botones_##name##">
+      <a href="#" target="_blank" onclick="FotoFija.actions.show('##name##'); return false;">
+        <img name="lupaFOTOFIJA_##name##" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/lu2_of.png"
+        class="classfotofija cambia-boton" alt="Ver imagen" title="Ver imagen" width="18" height="17" />
+      </a>
+      <a href="#" onclick="FotoFija.actions.remove('##name##');return false;">
+        <img name="borrarFOTOFIJA_##name##"   src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/delete_of.png"
+        class="classfotofija cambia-boton" alt="Borrar" title="Borrar" width="18" height="17"  />
+      </a>
+      <!--crop_fotofija-->
+      <a href="#" onclick="FotoFija.actions.edit('##name##'); return false;" class="crop-editar">
+        <img name="editarFOTOFIJA_##name##"   src="/%%_PRONTUS_ID%%/cpan/core/imag/edi/rec2_of.png"
+        class="classfotofija cambia-boton" alt="Recortar" title="Recortar" width="18" height="17"  />
+      </a>
+      <!--/crop_fotofija-->
+      <div class="cuadrar">
+        <input type="checkbox" name="CHK_cuadrar_FOTOFIJA_##name##" id="CHK_cuadrar_FOTOFIJA_##name##" value="si" />
+        <label for="CHK_cuadrar_FOTOFIJA_##name##" title="Cuadra las dimensiones para que la foto resultante tenga exactamente las mismas dimensiones indicadas en el control de Fotofija.">Cuadrar</label>
+      </div>
+    </div>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        FotoFija.newInstance('##name##', '##w##', '##h##', '%%_WFOTOFIJA_##name##%%', '%%_WFOTOFIJA_##name##%%');
+      });
+    </script>
+  </div>
+  <div class="size">
+    ##w##x##h##
+  </div>
 </div>
-<a href="#" target="_blank" onclick="Fid.showFotoFija('%%FOTOFIJA_##name##%%'); return false;">
-  <img name="lupaFOTOFIJA_##name##" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/lu2_of.png"
-  class="classfotofija cambia-boton" alt="Ver imagen" title="Ver imagen" width="18" height="17" />
-</a>
-
-<a href="#" onclick="Fid.borraFotoFija('FOTOFIJA_##name##');return false;"  >
-  <img name="borrarFOTOFIJA_##name##"   src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/bo2_of.gif"
-  class="classfotofija cambia-boton" alt="Borrar" title="Borrar" width="18" height="17"  />
-</a>
-<!--crop_fotofija-->
-<a href="#" onclick="Fotofija.showCrop('FOTOFIJA_##name##', this); return false;" class="cropFotofija" data-maxw="##w##" data-maxh="##h##" data-w="%%_WFOTOFIJA_##name##%%" data-h="%%_HFOTOFIJA_##name##%%" style="%%_hide_crop%%">
-  <img name="editarFOTOFIJA_##name##"   src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/edi_of.gif"
-  class="classfotofija cambia-boton" alt="Editar" title="Editar" width="18" height="17"  />
-</a>
-<!--/crop_fotofija-->
