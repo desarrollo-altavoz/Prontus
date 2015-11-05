@@ -210,8 +210,9 @@
 .preview-fotofija .work-area .img img {max-height: 100%; max-width: 100%;margin: 0 auto;position: relative;left: 0;right: 0;top: 0;bottom: 0;margin-top: auto;margin-bottom: auto;}
 .preview-fotofija .work-area.cropping .img img {opacity: 0.5;}
 .preview-fotofija .work-area.cropping .img .crop-box .crop-sizer {width: 683px;height: 420px;position: absolute;}
-.preview-fotofija .work-area.cropping .img .crop-box {display: none; position: absolute;z-index: 1000;outline: 1px solid;cursor: move;}
+.preview-fotofija .work-area.cropping .img .crop-box {display: none; position: absolute;z-index: 100;outline: 1px solid;}
 .preview-fotofija .work-area.cropping .img .crop-box .crop-sizer img {opacity: 1;}
+.preview-fotofija .work-area.cropping .img-drag {cursor: move;}
 
 .preview-fotofija .work-area .zoom {display: none;}
 .preview-fotofija .alert {display: none;position: absolute;width: 650px;height: 50px;background-color: #fcf8e3;margin: 15px;color: #8a6d3b;border:1px solid #faebcc;z-index: 1;}
@@ -222,6 +223,13 @@
 .preview-fotofija .work-area .zoom .minus {width: 14px;height: 24px;background: #d4d4d4;top: 270px;position: absolute;left: 5px;font-size: 20px;text-align: center;padding-top: 5px;cursor: pointer;}
 .preview-fotofija .work-area .zoom .range {margin-top: auto;margin-bottom: auto;bottom: 0;top: 0;position: absolute;left: 5px;border: 1px solid #ccc;background: #D4D4D4;height: 120px; overflow: visible; border-radius:0;border:0;}
 .preview-fotofija .work-area .zoom .range .ui-slider-handle {height: 18px; width: 18px;margin-left: 3px;background: #0097fb !important;border-radius: 3px 3px 3px; border: 1px solid #ccc;}
+.preview-fotofija .foto-list-container {top:0px; left:0px; display: none; width: 100%;height: 100%;position: absolute;background-image:
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgOAMAAM8AzbfAeUUAAAAASUVORK5CYII=);z-index: 100;color: #4D4D4D;}
+.preview-fotofija .foto-list-container .foto-list {background-color: #fafafa;width: 300px; height: 300px; overflow: hidden;margin: 40px auto;outline: 5px solid #ccc;}
+.preview-fotofija .foto-list-container h3 {font-size: 15px;padding: 5px;text-align: center;}
+.preview-fotofija .foto-list-container ul {width: 250px;margin: 5px auto;overflow: auto;overflow-x:visible;height: 195px;}
+.preview-fotofija .foto-list-container ul li {list-style: none;}
+.preview-fotofija .foto-list-container .foto-list-botones {width: 140px;margin: 10px auto;}
 
 .fotofija-container {padding: 2px;display: inline-block;}
 .fotofija-container .name {text-align: center;font-size: 12px;color:#aaaaaa;width: 120px;}

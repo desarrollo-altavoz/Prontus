@@ -38,7 +38,6 @@
             $('[id^="FOTOFIJA_"]').each(function(){
               var id = $('[id="'+this.id+'"]');
               if(id.length>1 && id[0]==this) {
-                console.log('Duplicate id '+this.id);
                 duplicados += this.id + "\n";
               }
             });
@@ -66,6 +65,13 @@
                 return html;
             },
             // ---------------------------------------------------------------
+            getFotoListHtml: function (id, nombre) {
+                var html = '<li><input type="checkbox" name="_asignar_%%id%%" id="_asignar_%%id%%" value="%%id%%"/> <label for="_asignar_%%id%%">%%nombre%%</label></li>';
+                html = html.replace(/%%id%%/g, id).replace(/%%nombre%%/g, nombre);
+
+                return html;
+            },
+            // ---------------------------------------------------------------
             getButtonsHtml: function (id) {
                 var html = [
                     '<div class="boton-gris3 aleft crop-aplicar">',
@@ -78,6 +84,9 @@
                     '</a></div>',
                     '<a href="#" onclick="FotoFija.actions.center(\'%%id%%\'); return false;" class="crop-aplicar">',
                     '<img src="/%%_prontus_id%%/cpan/core/imag/edi/cen_of.png" class="cambia-boton" alt="Centrar foto en área de recorte" title="Centrar foto en área de recorte" width="18" height="17">',
+                    '</a>',
+                    '<a href="#" onclick="FotoFija.actions.showRep(\'%%id%%\'); return false;" class="">',
+                    '<img src="/%%_prontus_id%%/cpan/core/imag/edi/rep_of.png" class="cambia-boton" alt="Replicar foto" title="Replicar foto" width="18" height="17">',
                     '</a>'
                 ].join('').replace(/%%_prontus_id%%/g, self.prontus_id).replace(/%%id%%/g, id);
 
@@ -122,10 +131,12 @@
                     $workArea.find('.img').html('<img src="' + imgSrc + '"/>');
                     $preview.find('.botones').html($('.botones_' + id).html() + self.preview.getButtonsHtml(id));
                     $preview.find('.botones').find('.cuadrar').remove();
-                    $preview.find('.botones').show();
+                    $preview.find('.botones').show().find('a').css('opacity', 1);
 
-                    self.foto.instances[id].top = 0.5 * ($workArea.height() - $workArea.find('.img img').height());
-                    self.foto.instances[id].left = 0.5 * ($workArea.width() - $workArea.find('.img img').width());
+                    self.foto.instances[id].preW = $workArea.find('.img img').width();
+                    self.foto.instances[id].preH = $workArea.find('.img img').height();
+                    self.foto.instances[id].top = 0.5 * ($workArea.height() - self.foto.instances[id].preH);
+                    self.foto.instances[id].left = 0.5 * ($workArea.width() - self.foto.instances[id].preW);
 
                     $workArea.find('.img img').css({
                         top: self.foto.instances[id].top,
@@ -138,8 +149,8 @@
                 }
 
                 self.preview.initDroppable(id);
-
                 self.foto.setSelected(id);
+                self.crop.active = false;
             },
             // ---------------------------------------------------------------
             hide: function (id) {
@@ -169,22 +180,40 @@
                         var imgW    = ui.helper.attr("data-w");
                         var imgH    = ui.helper.attr("data-h");
 
-                        self.foto.setFoto(id, imgSrc, imgW, imgH);
+                        self.foto.set(id, imgSrc, imgW, imgH);
                         self.preview.update(id);
+                        //self.preview.showFotoList(id);
+                        self.actions.cancelRep(id);
                     }
                 });
+            },
+            // ---------------------------------------------------------------
+            showFotoList: function (id) {
+                var $preview = self.preview.getPreview(id);
+                var html = '';
+                if (!$preview) return; // si no exite preview, terminar.
+
+                $preview.parent().find('[id^="FOTOFIJA_"]').each(function () {
+                    var idFoto = $(this).attr("id").replace("FOTOFIJA_", "");
+                    if (idFoto !== id) {
+                        html += self.preview.getFotoListHtml(idFoto, idFoto);
+                    }
+                });
+
+                $preview.find('.foto-list-container ul').html(html);
+                $preview.find('.foto-list-container').fadeIn('fast').find('a').attr("data-idFoto", id);
             }
         },
         // ---------------------------------------------------------------
         crop: {
             containment: [0,0,0,0],
-            ui: false,
+            active: false,
             // ---------------------------------------------------------------
             getCropHtml: function (img) {
                 var html = [
-                '<img src="%%img%%" />',
+                '<img class="img-drag" src="%%img%%" />',
                 '<div class="crop-box">',
-                '<div class="crop-sizer"><img src="%%img%%" /></div>',
+                '<div class="crop-sizer"><img class="img-drag" src="%%img%%" /></div>',
                 '</div>',
                 ''
                 ].join('').replace(/%%_prontus_id%%/g, self.prontus_id).replace(/%%img%%/g, img);
@@ -241,7 +270,7 @@
                 self.crop.alignCropImage(id);
                 self.crop.initDraggable(id);
                 self.zoom.init(id);
-
+                self.crop.active = true;
             },
             // ---------------------------------------------------------------
             apply: function (id) {
@@ -297,7 +326,7 @@
 
                 self.crop.containment = self.crop.getContainment(id);
 
-                $crop.find('.crop-sizer img').draggable({
+                $workArea.find('img.img-drag').draggable({
                     scroll: false,
                     containment: self.crop.containment,
                     drag: function (event, ui) {
@@ -357,6 +386,7 @@
             // ---------------------------------------------------------------
             disableCrop: function (id) {
                 var msg = "La foto no se puede editar ya que tiene menor o igual tamaño que el área de recorte.";
+                self.crop.active = false;
                 self.actions.showAlert(id, msg);
             }
         },
@@ -411,7 +441,9 @@
 
                 var properties = {
                     "max-width": newValue + "%",
-                    "max-height": newValue + "%"
+                    "max-height": newValue + "%",
+                    "width": Math.round(self.foto.instances[id].preW * (newValue/100)),
+                    "height": Math.round(self.foto.instances[id].preH * (newValue/100))
                 };
 
                 var antesW = $crop.outerWidth();
@@ -473,6 +505,7 @@
                 $("#FOTOFIJA_" + id).html('');
 
                 self.foto.unBindEvents(id);
+                self.foto.unset(id);
                 self.methods.toggleButtons(id, {lupa:'off',editar:'off',borrar:'off',cuadrar:'off'});
                 self.actions.hideAlert(id);
 
@@ -544,12 +577,52 @@
 
                 $(currBody + ' [id^="FOTOFIJA_"]').each(function() {
                     var id = $(this).attr("id").replace("FOTOFIJA_", "");
-                    self.foto.setFoto(id, imgSrc, imgW, imgH);
+                    self.foto.set(id, imgSrc, imgW, imgH);
 
                     if ($(this).parent().hasClass('active')) {
                         self.preview.update(id);
                     }
                 });
+            },
+
+            showRep: function (id) {
+                if (self.crop.active == true) {
+                    self.preview.update(id);
+                }
+                self.preview.showFotoList(id);
+            },
+
+            cancelRep: function (obj) {
+                var id;
+
+                if (typeof obj === "object") {
+                    id = $(obj).attr("data-idFoto");
+                } else {
+                    id = obj;
+                }
+
+                var $preview = self.preview.getPreview(id);
+                if (!$preview) return; // si no exite preview, terminar.
+
+                $preview.find('.foto-list-container').hide();
+                $preview.find('.foto-list-container ul').html('');
+            },
+
+            doRep: function (obj) {
+                var id = $(obj).attr("data-idFoto");
+                var $preview = self.preview.getPreview(id);
+                if (!$preview) return; // si no exite preview, terminar.
+
+                var fotoList = $preview.find('.foto-list-container .foto-list ul li input:checked');
+
+                if (fotoList.length > 0) {
+                    $.each(fotoList, function (i, v) {
+                        self.foto.set(v.value, self.foto.instances[id].src, self.foto.instances[id].imgW, self.foto.instances[id].imgH);
+                    });
+                }
+
+                $preview.find('.foto-list-container').hide();
+                $preview.find('.foto-list-container ul').html('');
             }
         },
         // ---------------------------------------------------------------
@@ -590,7 +663,9 @@
                     imgH: parseInt(imgH),
                     src: currImgSrc,
                     left: 0,
-                    top: 0
+                    top: 0,
+                    preW: false,
+                    preH: false
                 };
 
                 if (currImgSrc && currImgSrc != 'javascript:void(0)') {
@@ -616,8 +691,10 @@
                         var imgW = ui.helper.attr('data-w');
                         var imgH = ui.helper.attr('data-h');
 
-                        self.foto.setFoto(id, imgSrc, imgW, imgH);
+                        self.foto.set(id, imgSrc, imgW, imgH);
                         self.preview.update(id);
+                        //self.preview.showFotoList(id);
+                        self.actions.cancelRep(id);
                     }
                 });
 
@@ -629,6 +706,21 @@
                     $('[data-id="FOTOFIJA_' + id + '"]').parent().find('.name').hide();
                     $('[data-id="FOTOFIJA_' + id + '"]').parent().find('.size').hide();
                 }
+            },
+            // ---------------------------------------------------------------
+            unset: function (id) {
+                self.foto.instances[id] = {
+                    id: id,
+                    maxW: '',
+                    maxH: '',
+                    imgW: '',
+                    imgH: '',
+                    src: '',
+                    left: 0,
+                    top: 0,
+                    preW: false,
+                    preH: false
+                };
             },
             // ---------------------------------------------------------------
             bindEvents: function (id) {
@@ -649,12 +741,11 @@
             },
             // ---------------------------------------------------------------
             unBindEvents: function (id) {
-                $("#FOTOFIJA_" + id).off('click');
                 $('[data-id="FOTOFIJA_' + id + '"]').off('hover');
                 $('[data-id="FOTOFIJA_' + id + '"]').find('.botones').off('hover').hide();
             },
             // ---------------------------------------------------------------
-            setFoto: function (id, imgSrc, imgW, imgH) {
+            set: function (id, imgSrc, imgW, imgH) {
                 var $preview = self.preview.getPreview(id);
                 var editar = 'on';
 
