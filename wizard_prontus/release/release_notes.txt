@@ -8546,6 +8546,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Al definir las zonas, solo se debe poner el dominio. Automaticamente se hará purge a los subdominios www y m.
     [cambios]
         - Se ajustan los tiempos de espera entre una petición y otra a la API.
+        - Se mejora el conteo de peticiones realizadas.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
@@ -8598,8 +8599,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Wizard
     [bugfixes]
         - Al verificar la factibilidad de instalación, no se estaba eliminando por completo el directorio de prueba impidiendo la creación de la instancia de prontus.
+        - Se mejora la verificación de descarga de los modelos, en algunos casos se producia error al leer el archivo de estado vacío
     [files]
         /cgi-cpn/prontus_check_install.cgi
+        /cgi-cpn/wizard_models_status.cgi
 
 - Buscador
     [bugfixes]
@@ -8614,8 +8617,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [cambios]
         - Se elimina la verificación persistente de existencia de directorios cada vez que se utiliza el objeto Artic.
         - Parseo de Prontus Functions en plantillas de prontus form.
+    [bugfixes]
+        - Se corrige posible error en la obtención de la version del video a procesar en paralelo.
     [files]
         /cgi-cpn/Artic.pm
         /cgi-bin/prontus_form.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
 
-Me falta incluir que modifiquó
