@@ -89,7 +89,7 @@ our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
 
 our $DEBUG_FECHAS = 0;
 
-$DISABLE_PURGE_CACHE = 0;
+our $DISABLE_PURGE_CACHE = 0;
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
