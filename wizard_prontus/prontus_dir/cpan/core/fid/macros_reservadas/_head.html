@@ -68,8 +68,8 @@
     $(document).ready(function () {
       Admin.init('%%_prontus_id%%');
       %%_ishttps%%Fid.setHttps();%%/_ishttps%%
+      FotoFija.init('%%_prontus_id%%'); // Debe ir primero que Fid.
       Fid.init();
-      FotoFija.init('%%_prontus_id%%');
 
       // Se revisa si el articulo es nuevo o no
       if(mainFidJs.TS !== '') {

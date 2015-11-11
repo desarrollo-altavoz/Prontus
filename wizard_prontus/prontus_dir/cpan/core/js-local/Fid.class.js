@@ -353,8 +353,10 @@ var Fid = {
         // Se muestran / ocultan los botones de publicar foto
         if($(thediv).find('[id^="FOTOFIJA_"]').size() > 0) {
             $("#banco-img .botonera .publicar").show();
+            FotoFija.initDraggableBanco();
         } else {
             $("#banco-img .botonera .publicar").hide();
+            FotoFija.destroyDraggableBanco();
         }
 
         // Para la transcodificación

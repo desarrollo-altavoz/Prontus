@@ -1370,7 +1370,7 @@ sub load_config {
   $prontus_varglb::CACHE_PURGE_TAGPORT = 'SI';
   if ($buffer =~ m/\s*CACHE_PURGE_TAGPORT\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $prontus_varglb::CACHE_PURGE_TAGPORT = $2;
-  };  
+  };
 
   $prontus_varglb::CACHE_PURGE_TAXPORT_MV = 'SI';
   if ($buffer =~ m/\s*CACHE_PURGE_TAXPORT_MV\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -1385,12 +1385,12 @@ sub load_config {
   $prontus_varglb::CACHE_PURGE_MAPA = 'SI';
   if ($buffer =~ m/\s*CACHE_PURGE_MAPA\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $prontus_varglb::CACHE_PURGE_MAPA = $2;
-  };    
+  };
 
   $prontus_varglb::CACHE_PURGE_ART_RELAC = 'SI';
   if ($buffer =~ m/\s*CACHE_PURGE_ART_RELAC\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $prontus_varglb::CACHE_PURGE_ART_RELAC = $2;
-  }; 
+  };
 
   while ($buffer =~ m/\s*CACHE_PURGE_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
      $clave = $2;

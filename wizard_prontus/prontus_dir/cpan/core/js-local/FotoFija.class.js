@@ -17,17 +17,13 @@
     var self = null;
     var FotoFija = {
         prontus_id: '',
+        draggableBanco: false,
         // ---------------------------------------------------------------
         init: function (prontus_id) {
             self = this;
             self.prontus_id = prontus_id;
 
-            $('#banco-img .fotodrag').draggable({
-                helper: "clone",
-                containment: "document",
-                zIndex: 9999,
-                appendTo: "body"
-            });
+            self.initDraggableBanco();
 
             $('div[id^="body"]').each(function () {
                 $(this).find('div[id^="FOTOFIJA_"]:eq(0)').attr("data-ini", "1");
@@ -46,12 +42,34 @@
                 alert("Advertencia: los siguientes campos de foto están duplicados y necesitan ser corregidos:\n\n" + duplicados);
             }
         },
+
+        initDraggableBanco: function () {
+            $('#banco-img .fotodrag').draggable({
+                helper: "clone",
+                containment: "document",
+                zIndex: 9999,
+                appendTo: "body"
+            });
+            self.draggableBanco = true;
+        },
+        destroyDraggableBanco: function () {
+            if (self.draggableBanco === true) {
+                $('#banco-img .fotodrag').draggable("destroy");
+                self.draggableBanco = false;
+            }
+        },
+        // ---------------------------------------------------------------
+        // Crea una nueva instancia de un campo de foto.
         // ---------------------------------------------------------------
         newInstance: function (id, maxW, maxH, imgW, imgH) {
             self.foto.init(id, maxW, maxH, imgW, imgH);
         },
         // ---------------------------------------------------------------
+        // Preview de fotos
+        // ---------------------------------------------------------------
         preview: {
+            // ---------------------------------------------------------------
+            // Plantilla del area de trabajo del preview.
             // ---------------------------------------------------------------
             getWorkAreaHtml: function() {
                 var html = [
@@ -65,12 +83,16 @@
                 return html;
             },
             // ---------------------------------------------------------------
+            // Plantilla de listado de fotos (replica)
+            // ---------------------------------------------------------------
             getFotoListHtml: function (id, nombre) {
                 var html = '<li><input type="checkbox" name="_asignar_%%id%%" id="_asignar_%%id%%" value="%%id%%"/> <label for="_asignar_%%id%%">%%nombre%%</label></li>';
                 html = html.replace(/%%id%%/g, id).replace(/%%nombre%%/g, nombre);
 
                 return html;
             },
+            // ---------------------------------------------------------------
+            // Plantilla de botones
             // ---------------------------------------------------------------
             getButtonsHtml: function (id) {
                 var html = [
@@ -93,6 +115,8 @@
                 return html;
             },
             // ---------------------------------------------------------------
+            // Obtiene el DOM del preview de la foto dada.
+            // ---------------------------------------------------------------
             getPreview: function (id) {
                 var $preview = $('#FOTOFIJA_' + id).parents('.cabecera').find('.preview-fotofija');
 
@@ -103,6 +127,8 @@
                 }
             },
             // ---------------------------------------------------------------
+            // Obtiene el DOM del padre del preview de la foto dada.
+            // ---------------------------------------------------------------
             getPreviewParent: function (id) {
                 var $previewParent = $('#FOTOFIJA_' + id).parents('.cabecera');
                 if ($previewParent.length) {
@@ -111,6 +137,8 @@
                     return false;
                 }
             },
+            // ---------------------------------------------------------------
+            // Actualiza el preview con una nueva foto.
             // ---------------------------------------------------------------
             update: function (id) {
                 var $preview = self.preview.getPreview(id);
@@ -153,6 +181,8 @@
                 self.crop.active = false;
             },
             // ---------------------------------------------------------------
+            // Esconde el preview
+            // ---------------------------------------------------------------
             hide: function (id) {
                 var $preview = self.preview.getPreview(id);
                 if (!$preview) return; // si no exite preview, terminar.
@@ -161,6 +191,8 @@
                 $preview.find('.botones .crop-aplicar').hide();
             },
             // ---------------------------------------------------------------
+            // Obtiene el id de la foto que se está visualizando en el preview.
+            // ---------------------------------------------------------------
             getCurrent: function (id) {
                 var $preview = self.preview.getPreview(id);
                 if (!$preview) return; // si no exite preview, terminar.
@@ -168,6 +200,8 @@
 
                 return currentId;
             },
+            // ---------------------------------------------------------------
+            // Inicializa el droppable.
             // ---------------------------------------------------------------
             initDroppable: function (id) {
                 var $preview = self.preview.getPreview(id);
@@ -188,6 +222,8 @@
                 });
             },
             // ---------------------------------------------------------------
+            // Mostrar el listado de campos de foto para replicación.
+            // ---------------------------------------------------------------
             showFotoList: function (id) {
                 var $preview = self.preview.getPreview(id);
                 var html = '';
@@ -205,9 +241,14 @@
             }
         },
         // ---------------------------------------------------------------
+        // Manejo de crop de fotos.
+        // ---------------------------------------------------------------
         crop: {
             containment: [0,0,0,0],
             active: false,
+            drag: false,
+            // ---------------------------------------------------------------
+            // Plantilla para crop.
             // ---------------------------------------------------------------
             getCropHtml: function (img) {
                 var html = [
@@ -221,17 +262,20 @@
                 return html;
             },
             // ---------------------------------------------------------------
+            // Inicializa el crop para una foto.
+            // ---------------------------------------------------------------
             init: function (id) {
                 if (!self.crop.hasValidDimensions(id)) {
                     self.crop.disableCrop(id);
                     return;
                 }
 
+                self.crop.drag = false;
+
                 var $preview = self.preview.getPreview(id);
                 if (!$preview) return; // si no exite preview, terminar.
                 var $workArea = $preview.find('.work-area');
                 var $img = $workArea.find('.img');
-                var $zoom = $workArea.find('.zoom .range');
 
                 $preview.find('.botones .crop-aplicar').show();
                 $preview.find('.botones .crop-editar').hide();
@@ -272,6 +316,8 @@
                 self.zoom.init(id);
                 self.crop.active = true;
             },
+            // ---------------------------------------------------------------
+            // Aplica el crop de la foto.
             // ---------------------------------------------------------------
             apply: function (id) {
                 var $preview = self.preview.getPreview(id);
@@ -314,8 +360,10 @@
                 ].join('');
 
                 self.foto.setActions(id, resize + action); // primero debe ir el resize.
-                Fid.submitir('Guardar', '_self');
+                Fid.submitir('Guardar', '_self'); // Se guarda el artículo.
             },
+            // ---------------------------------------------------------------
+            // Inicializa el drag de la foto que se está editando.
             // ---------------------------------------------------------------
             initDraggable: function (id) {
                 var $preview = self.preview.getPreview(id);
@@ -326,10 +374,21 @@
 
                 self.crop.containment = self.crop.getContainment(id);
 
+
                 $workArea.find('img.img-drag').draggable({
                     scroll: false,
                     containment: self.crop.containment,
                     drag: function (event, ui) {
+                        var props = self.crop.getAlignProps(id);
+
+                        if ($crop.width() > $img.width()) {
+                            ui.position.left = props.left;
+                        }
+
+                        if ($crop.height() > $img.height()) {
+                            ui.position.top = props.top;
+                        }
+
                         self.foto.instances[id].top = ui.position.top;
                         self.foto.instances[id].left = ui.position.left;
 
@@ -340,17 +399,22 @@
                     },
                     stop: function (event, ui) {
                         self.crop.containment = self.crop.getContainment(id);
+                    },
+                    start: function (event, ui) {
+                        self.crop.drag = true; // para saber la primera vez que empezo el drag.
                     }
                 });
             },
+            // ---------------------------------------------------------------
+            // Obtiene las cordenadas de contención para el área de crop.
             // ---------------------------------------------------------------
             getContainment: function (id) {
                 var $preview = self.preview.getPreview(id);
                 if (!$preview) return; // si no exite preview, terminar.
                 var $workArea = $preview.find('.work-area');
                 var $crop = $workArea.find('.img .crop-box');
-
                 var $img = $crop.find('.crop-sizer img');
+
                 var right = $crop.offset().left;
                 var bottom = $crop.offset().top;
                 var left = ($img.outerWidth() > $crop.outerWidth()) ? ($crop.outerWidth() + $crop.offset().left) - $img.outerWidth() : 0;
@@ -359,7 +423,20 @@
                 return [left, top, right, bottom];
             },
             // ---------------------------------------------------------------
+            // Centrar la foto en el área de crop.
+            // ---------------------------------------------------------------
             alignCropImage: function (id) {
+                var props = self.crop.getAlignProps(id);
+                var $preview = self.preview.getPreview(id);
+                if (!$preview) return; // si no exite preview, terminar.
+                var $workArea = $preview.find('.work-area');
+                var $crop = $workArea.find('.crop-box img');
+                var $img = $workArea.find('.img img');
+
+                $img.css(props);
+                $crop.css(props);
+            },
+            getAlignProps: function (id) {
                 var $preview = self.preview.getPreview(id);
                 if (!$preview) return; // si no exite preview, terminar.
                 var $workArea = $preview.find('.work-area');
@@ -370,9 +447,10 @@
                     left: 0.5 * ($workArea.width() - $img.width())
                 };
 
-                $img.css(props);
-                $crop.css(props);
+                return props;
             },
+            // ---------------------------------------------------------------
+            // Validar si la foto tiene dimensiones válidas.
             // ---------------------------------------------------------------
             hasValidDimensions: function (id) {
                 //console.log(self.foto.instances[id]);
@@ -384,6 +462,8 @@
                 return true;
             },
             // ---------------------------------------------------------------
+            // Deshabilita el crop.
+            // ---------------------------------------------------------------
             disableCrop: function (id) {
                 var msg = "La foto no se puede editar ya que tiene menor o igual tamaño que el área de recorte.";
                 self.crop.active = false;
@@ -391,8 +471,13 @@
             }
         },
         // ---------------------------------------------------------------
+        // Manejo del zoom de una imagen.
+        // ---------------------------------------------------------------
         zoom: {
             zoomLimits: {left: 0, top: 0},
+            // ---------------------------------------------------------------
+            // Inicializa el zoom.
+            // ---------------------------------------------------------------
             init: function (id) {
                 var $preview = self.preview.getPreview(id);
                 if (!$preview) return; // si no exite preview, terminar.
@@ -432,10 +517,13 @@
                 $workArea.find('.zoom').show();
             },
             // ---------------------------------------------------------------
+            // Callback para el slider del zoom.
+            // ---------------------------------------------------------------
             sliderCallback: function (id, oldValue, newValue) {
                 var $preview = self.preview.getPreview(id);
                 if (!$preview) return; // si no exite preview, terminar.
                 var $workArea = $preview.find('.work-area');
+                var $cropbox = $workArea.find('.img .crop-box');
                 var $crop = $workArea.find('.img .crop-box img');
                 var $img = $workArea.find('.img img');
 
@@ -482,7 +570,19 @@
                 // Se aplican las modificaciones a la posicion de las imagenes luego de la redimensión.
                 $crop.css(properties);
                 $img.css(properties);
+
+                if (self.crop.drag === false) self.crop.alignCropImage(id);
+
+                if ($cropbox.width() > despuesW) {
+                    self.crop.alignCropImage(id);
+                }
+
+                if ($cropbox.height() > despuesH) {
+                    self.crop.alignCropImage(id);
+                }
             },
+            // ---------------------------------------------------------------
+            // Setea los limites de contención para el zoom.
             // ---------------------------------------------------------------
             setZoomLimits: function (id) {
                 var $preview = self.preview.getPreview(id);
@@ -495,7 +595,11 @@
             }
         },
         // ---------------------------------------------------------------
+        // Acciones
+        // ---------------------------------------------------------------
         actions: {
+            // ---------------------------------------------------------------
+            // Eliminar/quitar una foto de un campo.
             // ---------------------------------------------------------------
             remove: function (id) {
                 $('input[name="FOTOFIJA_' + id + '"]').val('');
@@ -514,6 +618,8 @@
                 }
             },
             // ---------------------------------------------------------------
+            // Editar una foto. Inicia el crop.
+            // ---------------------------------------------------------------
             edit: function (id) {
                 if (self.noCrop === true) return; // crop deshabilitado. (global)
 
@@ -524,9 +630,13 @@
                 self.crop.init(id);
             },
             // ---------------------------------------------------------------
+            // Carga el preview de la foto.
+            // ---------------------------------------------------------------
             preview: function (id) {
                 self.preview.update(id);
             },
+            // ---------------------------------------------------------------
+            // Ver una foto en su tamaño real en un colorbox.
             // ---------------------------------------------------------------
             show: function (id) {
                 var imgSrc = $('input[name="FOTOFIJA_' + id + '"]').val();
@@ -548,9 +658,13 @@
                 }
             },
             // ---------------------------------------------------------------
+            // Centrar una foto.
+            // ---------------------------------------------------------------
             center: function (id) {
                 self.crop.alignCropImage(id);
             },
+            // ---------------------------------------------------------------
+            // Mostrar una alerta.
             // ---------------------------------------------------------------
             showAlert: function (id, msg) {
                 var $preview = self.preview.getPreview(id);
@@ -559,15 +673,22 @@
                 $alert.delay(3500).fadeOut('fast');
             },
             // ---------------------------------------------------------------
+            // Ocultar una alerta
+            // ---------------------------------------------------------------
             hideAlert: function (id) {
                 var $preview = self.preview.getPreview(id);
                 var $alert = $preview.find('.alert');
                 $alert.stop().hide();
             },
             // ---------------------------------------------------------------
+            // Aplicar los cambios hechos a una foto cropeada.
+            // ---------------------------------------------------------------
             applyCrop: function (id) {
                 self.crop.apply(id);
             },
+            // ---------------------------------------------------------------
+            // Asignar una foto del banco de imagenes a todos los campos de foto
+            // Llamada desde Fid.class.js
             // ---------------------------------------------------------------
             assignFoto: function (idFoto) {
                 var imgSrc = $('#' + idFoto).attr("src");
@@ -584,14 +705,18 @@
                     }
                 });
             },
-
+            // ---------------------------------------------------------------
+            // Mostrar las opciones de replicación de la foto.
+            // ---------------------------------------------------------------
             showRep: function (id) {
                 if (self.crop.active == true) {
                     self.preview.update(id);
                 }
                 self.preview.showFotoList(id);
             },
-
+            // ---------------------------------------------------------------
+            // Cerrar las opciones de replicación.
+            // ---------------------------------------------------------------
             cancelRep: function (obj) {
                 var id;
 
@@ -607,7 +732,9 @@
                 $preview.find('.foto-list-container').hide();
                 $preview.find('.foto-list-container ul').html('');
             },
-
+            // ---------------------------------------------------------------
+            // Replicar una foto en los campos seleccionados.
+            // ---------------------------------------------------------------
             doRep: function (obj) {
                 var id = $(obj).attr("data-idFoto");
                 var $preview = self.preview.getPreview(id);
@@ -626,7 +753,11 @@
             }
         },
         // ---------------------------------------------------------------
+        // Métodos varios.
+        // ---------------------------------------------------------------
         methods: {
+            // ---------------------------------------------------------------
+            // Cambiar el estado de los botones.
             // ---------------------------------------------------------------
             toggleButtons: function (id, states) {
                 $.each(states, function (i, v) {
@@ -647,8 +778,15 @@
             }
         },
         // ---------------------------------------------------------------
+        // Manejo de fotos.
+        // ---------------------------------------------------------------
         foto: {
+            // ---------------------------------------------------------------
+            // Lista de instancias de fotos.
+            // ---------------------------------------------------------------
             instances: {},
+            // ---------------------------------------------------------------
+            // Inicializa un campo de foto.
             // ---------------------------------------------------------------
             init: function (id, maxW, maxH, imgW, imgH) {
                 var currImgSrc = $('input[name="FOTOFIJA_' + id + '"]').val();
@@ -708,6 +846,8 @@
                 }
             },
             // ---------------------------------------------------------------
+            // Vacia una instancia de un campo de foto.
+            // ---------------------------------------------------------------
             unset: function (id) {
                 self.foto.instances[id] = {
                     id: id,
@@ -722,6 +862,8 @@
                     preH: false
                 };
             },
+            // ---------------------------------------------------------------
+            // Inicia los eventos asociados a una foto.
             // ---------------------------------------------------------------
             bindEvents: function (id) {
                 $('[data-id="FOTOFIJA_' + id + '"]').hover(
@@ -740,10 +882,14 @@
                 );
             },
             // ---------------------------------------------------------------
+            // Detiene los eventos asociados a una foto.
+            // ---------------------------------------------------------------
             unBindEvents: function (id) {
                 $('[data-id="FOTOFIJA_' + id + '"]').off('hover');
                 $('[data-id="FOTOFIJA_' + id + '"]').find('.botones').off('hover').hide();
             },
+            // ---------------------------------------------------------------
+            // Setea una foto (fuente y tamaño) a una instancia.
             // ---------------------------------------------------------------
             set: function (id, imgSrc, imgW, imgH) {
                 var $preview = self.preview.getPreview(id);
@@ -765,18 +911,26 @@
                 self.foto.bindEvents(id);
             },
             // ---------------------------------------------------------------
+            // Marca como activa la foto dada.
+            // ---------------------------------------------------------------
             setSelected: function (id) {
                 var $previewParent = self.preview.getPreviewParent(id);
                 $previewParent.find('[data-id^="FOTOFIJA_"]').removeClass("active");
                 $previewParent.find('[data-id="FOTOFIJA_' + id + '"]').addClass("active");
             },
             // ---------------------------------------------------------------
+            // Setea las acciones a realizar en una foto.
+            // ---------------------------------------------------------------
             setActions: function (id, actions) {
                 $('input[name="_ACTIONSFOTOFIJA_' + id + '"]').val(actions);
             }
         },
         // ---------------------------------------------------------------
+        // Helpers.
+        // ---------------------------------------------------------------
         helper: {
+            // ---------------------------------------------------------------
+            // Obtener nuevo ancho y alto para los tamaños dados.
             // ---------------------------------------------------------------
             resize: function(w, h, maxw, maxh) {
                 var ratio = maxh/maxw;
@@ -796,12 +950,16 @@
                 return [parseInt(w), parseInt(h)];
             },
             // ---------------------------------------------------------------
+            // Obtener algo nuevo alto proporcional.
+            // ---------------------------------------------------------------
             getHeight: function (newW, imgW, imgH) {
                 var proportion = newW / imgW;
                 var newH = imgH * proportion;
 
                 return Math.round(newH);
             },
+            // ---------------------------------------------------------------
+            // Obtiene el tab actual.
             // ---------------------------------------------------------------
             getCurrentTab: function () {
                 return $('#_curr_body').val();
