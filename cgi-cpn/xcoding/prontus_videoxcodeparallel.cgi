@@ -41,6 +41,7 @@
 # 1.1.0 - 12/05/2015 - EAG - Modificaciones por integracion a la release
 # 1.2.0 - 04/06/2015 - EAG - Se mejora compatibilidad con ffmpeg 1.x
 # 1.2.1 - 16/06/2015 - EAG - Se ordenan los "use"
+# 1.2.2 - 15/06/2015 - EAG - Se corrige la aplicacion de lower case a key en do_xcode
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -187,8 +188,9 @@ sub do_xcode {
     my $key = $_[5];
 
     # obtenemos y guardamos el nombre de la marca
-    $key =~ /\.(\w+)$/;
-    $key = lc $1;
+    if ($key =~ /\.(\w+)$/) {
+        $key = lc $1;
+    }
 
     my ($cmd, $res, $nd_pass, $start, $end, $total, $segundos);
 

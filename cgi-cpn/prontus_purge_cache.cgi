@@ -22,13 +22,13 @@ END {
 $SIG{INT} = \&signal_callback;
 $SIG{TERM} = \&signal_callback;
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
 use prontus_varglb; &prontus_varglb::init();
 use lib_prontus;
-use strict;
 use LWP::UserAgent;
 use LWP::ConnCache;
 use HTTP::Response;
@@ -40,6 +40,7 @@ close STDOUT;
 my %FORM;
 my $ua;
 my $dir_semaf;
+my $counter_cf = 0;
 my %PURGED_FILES;
 my $FILE_LIFE_SEGS = 5;
 my $RUNNING = 0;
@@ -73,7 +74,7 @@ main: {
                 system('kill -9 `ps auxww | grep \'prontus_purge_cache.cgi ' . $prontus_varglb::PRONTUS_ID . '\' | grep -v grep | awk \'{print $2}\' | grep -v ' . $$ . '`');
             };
         } else {
-            exit; # ya existe un proceso.
+            exit(0); # ya existe un proceso.
         };
     };
 
@@ -167,7 +168,6 @@ sub valida_params {
 sub purge {
     my %hash = %{$_[0]};
     my $purge_cloudflare = 0;
-    my $counter_cf = 0;
     my @cloudflareZones;
 
     if ($prontus_varglb::CLOUDFLARE eq 'SI' && $prontus_varglb::CLOUDFLARE_API_URL ne '' && $prontus_varglb::CLOUDFLARE_API_KEY ne '' && $prontus_varglb::CLOUDFLARE_EMAIL ne '' && $prontus_varglb::CLOUDFLARE_ZONE ne '') {
@@ -181,13 +181,13 @@ sub purge {
         # Agregar purge global al listado.
         if ($prontus_varglb::CLOUDFLARE_GLOBAL_PURGE) {
             my @arr = split(/[\n\r]/, $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE);
-            
+
             foreach my $path (@arr) {
                 next unless($path);
                 next if ($path !~ /^\//); # debe empezar con /
 
                 $hash{$path} = time if (!exists $hash{$path});
-            }      
+            }
         }
 
         # v1.
@@ -264,14 +264,14 @@ sub purge {
 
                             my $req_url = "https://api.cloudflare.com/client/v4/zones/$zones_id{$zone}/purge_cache";
                             my ($resp, $http_code) = &http_delete($req_url, \%headers, &JSON::to_json(\%data));
-                        
+
                             if ($http_code ne '200') {
                                 print STDERR "[$$] Error al hacer purge en la zona[$zone] sub[$sub] resp[$resp]\n";
                             } else {
                                 my $msg = &JSON::from_json($resp);
                                 print STDERR "[$$] OK.\n";
                             }
-                        
+
                             sleep(0.25);
                         }
                     }
@@ -309,7 +309,7 @@ sub purge {
                 my ($resp, $err) = &http_purge($url_purge);
                 print STDERR "[$$] varnish: server[$server], url_purge[$url_purge], status[$err]\n";
             }
-        }  
+        }
     }
 
     # Actualiza fecha de modificación del semaforo en caso de que se procesen muchos archivos
@@ -390,7 +390,7 @@ sub http_get {
         $req->header($header => $headers{$header});
     };
 
-    my $response = $ua->request($req);    
+    my $response = $ua->request($req);
 
     return ($response->content, $response->code);
 };
@@ -426,7 +426,7 @@ sub http_delete {
 
     $req->content($data) if ($data);
 
-    my $response = $ua->request($req);    
+    my $response = $ua->request($req);
 
     return ($response->content, $response->code);
 };
