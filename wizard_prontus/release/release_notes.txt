@@ -8514,7 +8514,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_prontus.pm
 
 ====================================================================================================
-11.2.88 - 04/11/2015 - JOR
+11.2.88 - 06/11/2015 - JOR
 ====================================================================================================
 - Configuración
     [mejoras]
@@ -8574,7 +8574,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se agrega preview de fotos y funcionalidad de recorte en el mismo FID. Para habilitarlo agregar
         la siguiente macro antes de la definición de las fotos (tabla):
             %%MACRO(_fotos_preview.html)%%
-        - El contenedor de foto trae el nombre y el tamaño de la incluido. Estos datos serán visibles solo si está inclida la macro de preview.
+        - El contenedor de foto trae el nombre y el tamaño de la foto incluido. Estos datos serán visibles solo si está inclida la macro de preview.
     [cambios]
         - Se cambia el iframe de las fotos fijas por drag & drop.
         - Se ocultan los botones "Ver imagen", "Borrar" y "Recortar" y solo aparecen al hacer "mouseover" sobre el contenedor de la foto, con foto asignada.
