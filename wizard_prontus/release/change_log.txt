@@ -1,7 +1,26 @@
 ====================================================================================================
-11.2.88 - 06/11/2015
+11.2.88 - 13/11/2015
 ====================================================================================================
-
+- improvement: Se agrega configuración de Caché para obtener un seteo más fino en el uso de varnish o cloudflare.
+- improvement: Para CloudFlare, se agrega API v4 y se deja versión anterior para compatibilidad.
+- improvement: La API v4 de CloudFlare permite enviar hasta 30 urls de manera simulmantea lo cual se traduce en un aumento de la velocidad en la acción de purge.
+- improvement: Se mejora la lógica de purge de archivos para que tome menos tiempo en completarse.
+- improvement: Al definir las zonas de CloudFlare, solo se debe poner el dominio. Automaticamente se hará purge a los subdominios www y m.
+- improvement: Se agrega configuración de orden de los articulos (TAXPORT_ORDEN) en las portadas taxonómica con filtro.
+- improvement: Al filtro de "fecha desde" se le puede asignar el valor 'now', el cual será reemplazado por la fecha actual al momento de generar las portadas taxonómicas
+- improvement: Se agrega preview de fotos y funcionalidad de recorte en el mismo FID.
+- changes: Se ajustan los tiempos de espera entre una petición y otra a la API de CloudFlare.
+- changes: Se mejora el conteo de peticiones realizadas al hacer purge de archivos.
+- changes: En el FID, se cambia el iframe de las fotos fijas por drag & drop.
+- changes: En el FID, se ocultan los botones "Ver imagen", "Borrar" y "Recortar" y solo aparecen al hacer "mouseover" sobre el contenedor de la foto, con foto asignada.
+- changes: En el buscador, cuando un query string tenía más de 64 caracteres se eliminaba. Ahora se corta a 64 caracteres para continuar con la búsqueda.
+- changes: Se elimina la verificación persistente de existencia de directorios cada vez que se utiliza el objeto Artic.
+- changes: Se parsean las Prontus Functions en plantillas de prontus form.
+- bugfix: En el Wizard, al verificar la factibilidad de instalación, no se estaba eliminando por completo el directorio de prueba impidiendo la creación de la instancia de prontus.
+- bugfix: En el Wizard, se mejora la verificación de descarga de los modelos, en algunos casos se producia error al leer el archivo de estado vacío
+- bugfix: En el buscador, se soluciona problema en el parseo de friendly url con instancias de prontus que tienen guión (-) en el nombre.
+- bugfix: En el buscador, se escapean los valores de las marcas antes del parseo para evitar posibles XSS.
+- bugfix: Se corrige posible error en la obtención de la version del video a procesar en paralelo.
 
 ====================================================================================================
 11.2.87 - 29/07/2015
