@@ -339,61 +339,6 @@ sub renovar_semaforos {
             &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
         }; # end seccion, tema y subtema.
 
-        # No hay seccion.
-        # Genera todo */*/*
-        if (!$secc_id) {
-           foreach my $seccid (keys %TABLA_SECC) {
-                my $id_level = $seccid . '___' . $fid;
-                #~ print STDERR "level[$id_level]\n";
-                my @files2delete = glob("$dir_semaf/$id_level" . '.*');
-                foreach my $file2delete (@files2delete) {
-                    if ($file2delete !~ /\.$pid_propio$/) {
-                        unlink $file2delete;
-                        print STDERR "[$$] hice abortar al: $file2delete !\n";
-                    };
-                };
-                &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
-                # Todos los temas y subtemas para la seccion.
-                # Temas.
-                my ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas);
-                foreach my $temaid (keys %TABLA_TEM) {
-                    #~ print STDERR "temas_idparent[$temas_idparent] == secc_id[$secc_id]\n";
-                    ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temaid});
-                    if ($temas_idparent == $seccid) {
-                        #~ print STDERR "temas_idparent[$temas_idparent] == secc_id[$secc_id], nom[$temas_nom], temaid[$temaid]\n";
-                        my $id_level = $seccid . '_' . $temaid . '__' . $fid;
-                        #~ print STDERR "level[$id_level]\n";
-                        my @files2delete = glob("$dir_semaf/$id_level" . '.*');
-                        foreach my $file2delete (@files2delete) {
-                            if ($file2delete !~ /\.$pid_propio$/) {
-                                unlink $file2delete;
-                                print STDERR "[$$] hice abortar al: $file2delete !\n";
-                            };
-                        };
-                        &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
-                        # Subtemas.
-                        my ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas);
-                        foreach my $subtemaid (keys %TABLA_STEM) {
-                            ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemaid});
-                            if ($subtemas_idparent == $temaid) {
-                                my $id_level = $seccid . '_' . $temaid . '_' . $subtemaid . '_' . $fid;
-                                #~ print STDERR "level[$id_level]\n";
-                                my @files2delete = glob("$dir_semaf/$id_level" . '.*');
-                                foreach my $file2delete (@files2delete) {
-                                    if ($file2delete !~ /\.$pid_propio$/) {
-                                        unlink $file2delete;
-                                        print STDERR "[$$] hice abortar al: $file2delete !\n";
-                                    };
-                                };
-                                &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
-                            };
-                        };
-                    };
-                };
-            };
-
-        }; # end no hay seccion.
-
         $id_level = '___' . $fid;
         @files2delete = glob("$dir_semaf/$id_level" . '.*');
         foreach my $file2delete (@files2delete) {
@@ -1730,7 +1675,7 @@ sub genera_orden_taxports {
         if (defined $CFG_FIL_TAXPORT{$fid}{'TAXPORT_ORDEN'} && $CFG_FIL_TAXPORT{$fid}{'TAXPORT_ORDEN'} ne '' ) {
             return $CFG_FIL_TAXPORT{$fid}{'TAXPORT_ORDEN'};
         } else {
-            return $prontus_varglb::TAXPORT_ORDEN;    
+            return $prontus_varglb::TAXPORT_ORDEN;
         }
     } else {
         return $prontus_varglb::TAXPORT_ORDEN;
