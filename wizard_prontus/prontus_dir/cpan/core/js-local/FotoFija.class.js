@@ -26,13 +26,13 @@
             self.initDraggableBanco();
 
             $('div[id^="body"]').each(function () {
-                $(this).find('div[id^="FOTOFIJA_"]:eq(0)').attr("data-ini", "1");
+                $(this).find('div[id^="recuadro_FOTOFIJA_"]:eq(0)').attr("data-ini", "1");
             });
 
             // Verificar nombres de fotos duplicados.
             var duplicados = '';
-            $('[id^="FOTOFIJA_"]').each(function(){
-              var id = $('[id="'+this.id+'"]');
+            $('div[id^="recuadro_FOTOFIJA_"]').each(function(){
+              var id = $('div[id="'+this.id+'"]');
               if(id.length>1 && id[0]==this) {
                 duplicados += this.id + "\n";
               }
@@ -41,8 +41,25 @@
             if (duplicados) {
                 alert("Advertencia: los siguientes campos de foto están duplicados y necesitan ser corregidos:\n\n" + duplicados);
             }
-        },
 
+            // Al guardar verificar que todas las fotos fijas esten correctas.
+            // Pueden existir iframes antiguos.
+            $('#_mainFidForm').submit(function() {
+                $('iframe[id^="FOTOFIJA_"]').each(function () {
+                    var id = $(this).attr("id").replace("FOTOFIJA_", "");
+                    var $foto = $(this).contents().find('body').find('img');
+
+                    if ($foto.length) {
+                        if (typeof self.foto.instances[id] == 'object' && self.foto.instances[id].src == '') {
+                            self.foto.set(id, $foto.attr('src'), $foto.attr("data-w"), $foto.attr("data-h"));
+                        }
+                    }
+                });
+            });
+        },
+        // ---------------------------------------------------------------
+        // Inicia drag & drop desde banco de imagenes.
+        // ---------------------------------------------------------------
         initDraggableBanco: function () {
             $('#banco-img .fotodrag').draggable({
                 helper: "clone",
@@ -52,6 +69,9 @@
             });
             self.draggableBanco = true;
         },
+        // ---------------------------------------------------------------
+        // Destruye drag & drop del banco de imagenes.
+        // ---------------------------------------------------------------
         destroyDraggableBanco: function () {
             if (self.draggableBanco === true) {
                 $('#banco-img .fotodrag').draggable("destroy");
@@ -118,7 +138,7 @@
             // Obtiene el DOM del preview de la foto dada.
             // ---------------------------------------------------------------
             getPreview: function (id) {
-                var $preview = $('#FOTOFIJA_' + id).parents('.cabecera').find('.preview-fotofija');
+                var $preview = $('div#recuadro_FOTOFIJA_' + id).parents('.cabecera').find('.preview-fotofija');
 
                 if ($preview.length) {
                     return $preview;
@@ -130,7 +150,7 @@
             // Obtiene el DOM del padre del preview de la foto dada.
             // ---------------------------------------------------------------
             getPreviewParent: function (id) {
-                var $previewParent = $('#FOTOFIJA_' + id).parents('.cabecera');
+                var $previewParent = $('div#recuadro_FOTOFIJA_' + id).parents('.cabecera');
                 if ($previewParent.length) {
                     return $previewParent;
                 } else {
@@ -229,8 +249,8 @@
                 var html = '';
                 if (!$preview) return; // si no exite preview, terminar.
 
-                $preview.parent().find('[id^="FOTOFIJA_"]').each(function () {
-                    var idFoto = $(this).attr("id").replace("FOTOFIJA_", "");
+                $preview.parent().find('div[id^="recuadro_FOTOFIJA_"]').each(function () {
+                    var idFoto = $(this).attr("id").replace("recuadro_FOTOFIJA_", "");
                     if (idFoto !== id) {
                         html += self.preview.getFotoListHtml(idFoto, idFoto);
                     }
@@ -606,7 +626,9 @@
                 $('input[name="_WFOTOFIJA_' + id + '"]').val('');
                 $('input[name="_HFOTOFIJA_' + id + '"]').val('');
                 $('input[name="_ACTIONSFOTOFIJA_' + id + '"]').val('');
-                $("#FOTOFIJA_" + id).html('');
+                $("div#recuadro_FOTOFIJA_" + id).html('');
+                $('iframe[id="FOTOFIJA_' + id + '"]').contents().find('body').html('&nbsp;');
+
 
                 self.foto.unBindEvents(id);
                 self.foto.unset(id);
@@ -696,8 +718,8 @@
                 var imgH = $('#' + idFoto).attr("data-h");
                 var currBody = '#' + $('#_curr_body').val();
 
-                $(currBody + ' [id^="FOTOFIJA_"]').each(function() {
-                    var id = $(this).attr("id").replace("FOTOFIJA_", "");
+                $(currBody + ' div[id^="recuadro_FOTOFIJA_"]').each(function() {
+                    var id = $(this).attr("id").replace("recuadro_FOTOFIJA_", "");
                     self.foto.set(id, imgSrc, imgW, imgH);
 
                     if ($(this).parent().hasClass('active')) {
@@ -810,19 +832,22 @@
                     if (!$preview) editar = 'off';
                     if (self.noCrop === true) editar = 'off';
 
-                    $('#FOTOFIJA_' + id).html('<img src="' + currImgSrc + '" />');
+                    $('div#recuadro_FOTOFIJA_' + id).html('<img src="' + currImgSrc + '" />');
                     self.methods.toggleButtons(id, {lupa:'on',editar:editar,borrar:'on', cuadrar:'on'});
                     self.foto.bindEvents(id);
+                    // Para compatibilidad, se agrega al iframe.
+                    $('iframe[id="FOTOFIJA_' + id + '"]').contents().find('body').html('<img src="' + currImgSrc + '" />');
+
                 } else {
                     self.methods.toggleButtons(id, {lupa:'off',editar:'off',borrar:'off',cuadrar:'off'});
                     self.foto.instances[id].src = ''; // fix
                 }
 
-                if ($("#FOTOFIJA_" + id).attr("data-ini") == 1) {
+                if ($("div#recuadro_FOTOFIJA_" + id).attr("data-ini") == 1) {
                     self.preview.update(id);
                 }
 
-                $("#FOTOFIJA_" + id).droppable({
+                $("div#recuadro_FOTOFIJA_" + id).droppable({
                     accept: '.fotodrag',
                     drop: function (event, ui) {
                         var imgSrc = ui.helper.attr('src');
@@ -836,13 +861,13 @@
                     }
                 });
 
-                $("#FOTOFIJA_" + id).on('click', function () {
+                $("div#recuadro_FOTOFIJA_" + id).on('click', function () {
                     self.preview.update(id);
                 });
 
                 if (!$preview) {
-                    $('[data-id="FOTOFIJA_' + id + '"]').parent().find('.name').hide();
-                    $('[data-id="FOTOFIJA_' + id + '"]').parent().find('.size').hide();
+                    $('div[data-id="FOTOFIJA_' + id + '"]').parent().find('.name').hide();
+                    $('div[data-id="FOTOFIJA_' + id + '"]').parent().find('.size').hide();
                 }
             },
             // ---------------------------------------------------------------
@@ -866,7 +891,7 @@
             // Inicia los eventos asociados a una foto.
             // ---------------------------------------------------------------
             bindEvents: function (id) {
-                $('[data-id="FOTOFIJA_' + id + '"]').hover(
+                $('div[data-id="FOTOFIJA_' + id + '"]').hover(
                     function () {
                         $(this).find('.botones').show();
                     },
@@ -875,7 +900,7 @@
                     }
                 );
 
-                $('[data-id="FOTOFIJA_' + id + '"]').find('.botones').hover(
+                $('div[data-id="FOTOFIJA_' + id + '"]').find('.botones').hover(
                     function () {
                         $(this).show();
                     }
@@ -885,8 +910,8 @@
             // Detiene los eventos asociados a una foto.
             // ---------------------------------------------------------------
             unBindEvents: function (id) {
-                $('[data-id="FOTOFIJA_' + id + '"]').off('hover');
-                $('[data-id="FOTOFIJA_' + id + '"]').find('.botones').off('hover').hide();
+                $('div[data-id="FOTOFIJA_' + id + '"]').off('hover');
+                $('div[data-id="FOTOFIJA_' + id + '"]').find('.botones').off('hover').hide();
             },
             // ---------------------------------------------------------------
             // Setea una foto (fuente y tamaño) a una instancia.
@@ -895,7 +920,7 @@
                 var $preview = self.preview.getPreview(id);
                 var editar = 'on';
 
-                $('#FOTOFIJA_' + id).html('<img src="' + imgSrc + '" />');
+                $('div#recuadro_FOTOFIJA_' + id).html('<img src="' + imgSrc + '" />');
                 $('input[name="FOTOFIJA_' + id + '"]').val(imgSrc);
                 $('input[name="_WFOTOFIJA_' + id + '"]').val(imgW);
                 $('input[name="_HFOTOFIJA_' + id + '"]').val(imgH);
@@ -907,6 +932,9 @@
                 if (!$preview) editar = 'off';
                 if (self.noCrop === true) editar = 'off';
 
+                // Para compatibilidad, se agrega al iframe.
+                $('iframe[id="FOTOFIJA_' + id + '"]').contents().find('body').html('<img src="' + imgSrc + '" />');
+
                 self.methods.toggleButtons(id, {lupa:'on',editar:editar,borrar:'on',cuadrar:'on'});
                 self.foto.bindEvents(id);
             },
@@ -915,8 +943,8 @@
             // ---------------------------------------------------------------
             setSelected: function (id) {
                 var $previewParent = self.preview.getPreviewParent(id);
-                $previewParent.find('[data-id^="FOTOFIJA_"]').removeClass("active");
-                $previewParent.find('[data-id="FOTOFIJA_' + id + '"]').addClass("active");
+                $previewParent.find('div[data-id^="FOTOFIJA_"]').removeClass("active");
+                $previewParent.find('div[data-id="FOTOFIJA_' + id + '"]').addClass("active");
             },
             // ---------------------------------------------------------------
             // Setea las acciones a realizar en una foto.

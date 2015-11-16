@@ -8567,6 +8567,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           - Al filtro de "fecha desde" se le puede asignar el valor 'now', el cual será reemplazado por la fecha actual al momento de generar las portadas taxonómicas. Por ejemplo:
             TAXPORT_FECHA_DESDE = 'now'
             Cada vez se usará la fecha actual.
+      [cambios]
+          - Se quita renegeración total de taxport al no especificar filtro /<fid>/<s>/<t>/<st>/
       [files]
           /cgi-cpn/prontus_cron_taxport.cgi
 
@@ -8619,8 +8621,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Parseo de Prontus Functions en plantillas de prontus form.
     [bugfixes]
         - Se corrige posible error en la obtención de la version del video a procesar en paralelo.
+        - Se corrige eliminación de artículos, no se estaba validando existencia del artículo lo cual permitía borrar un artículo inexistente.
     [files]
         /cgi-cpn/Artic.pm
+        /cgi-cpn/prontus_art_borrar.cgi
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
 

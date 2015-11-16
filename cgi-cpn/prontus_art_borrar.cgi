@@ -114,7 +114,6 @@ main: {
         &glib_html_02::print_json_result(0, "Artículo no puede ser borrado porque se encuentra publicado en las sgtes. portadas:\n\n${ports_ref}", 'exit=1,ctype=1');
 
     } else {
-
         # Conectar a BD
         my $msg_err_bd;
         my $base;
