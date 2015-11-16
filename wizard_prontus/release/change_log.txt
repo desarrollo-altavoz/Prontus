@@ -21,6 +21,8 @@
 - bugfix: En el buscador, se soluciona problema en el parseo de friendly url con instancias de prontus que tienen guión (-) en el nombre.
 - bugfix: En el buscador, se escapean los valores de las marcas antes del parseo para evitar posibles XSS.
 - bugfix: Se corrige posible error en la obtención de la version del video a procesar en paralelo.
+- changes: Se quita renegeración total de taxport al no especificar filtro /<fid>/<s>/<t>/<st>/.
+- bugfix: Se corrige eliminación de artículos, no se estaba validando existencia del artículo lo cual permitía borrar un artículo inexistente.
 
 ====================================================================================================
 11.2.87 - 29/07/2015

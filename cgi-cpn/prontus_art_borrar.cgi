@@ -114,13 +114,16 @@ main: {
         &glib_html_02::print_json_result(0, "Artículo no puede ser borrado porque se encuentra publicado en las sgtes. portadas:\n\n${ports_ref}", 'exit=1,ctype=1');
 
     } else {
-
         # Conectar a BD
         my $msg_err_bd;
         my $base;
         ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
         if (! ref($base)) {
             &glib_html_02::print_pag_result("Error",$msg_err_bd . '<br>No es posible eliminar los artículos seleccionados.',1,'exit=1,ctype=1,link=nolink');
+        };
+
+        if (!&art_existe($FORM{'_ts'}, $base)) {
+            &glib_html_02::print_pag_result("Error",$msg_err_bd . '<br>El articulo no existe.',1,'exit=1,ctype=1,link=nolink');
         };
 
         my $artic_obj = Artic->new(
@@ -151,6 +154,16 @@ main: {
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
 # -------------
+
+sub art_existe {
+    my $ts = shift;
+    my $base = shift;
+    my $sql = "select ART_AUTOINC from ART where ART_ID = '$ts'";
+    my $autoinc = &lib_prontus::existe_registro($sql, $base);
+
+    return $autoinc;
+};
+
 
 sub artic_in_ports {
 # Obtiene las portadas en donde se encuentra publicado un articulo

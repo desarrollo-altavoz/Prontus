@@ -402,8 +402,6 @@ var Fid = {
         }
         Fid.objFormFid[lafoto].value = "";
 
-        // Quita el boton de edición.
-        Fotofija.disableEdit(lafoto);
     },
 
     // -----------------------------------------
