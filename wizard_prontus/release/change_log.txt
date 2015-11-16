@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.88 - 13/11/2015
+11.2.88 - 16/11/2015
 ====================================================================================================
 - improvement: Se agrega configuración de Caché para obtener un seteo más fino en el uso de varnish o cloudflare.
 - improvement: Para CloudFlare, se agrega API v4 y se deja versión anterior para compatibilidad.
