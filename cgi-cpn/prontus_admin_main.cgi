@@ -348,7 +348,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%CACHE_PURGE_TAGPORT_SI%%//ig;
         $pagina =~ s/%%CACHE_PURGE_TAGPORT_NO%%/ checked="checked"/ig;
-    }    
+    }
 
     if ($prontus_varglb::CACHE_PURGE_TAXPORT_MV eq 'SI') {
         $pagina =~ s/%%CACHE_PURGE_TAXPORT_MV_SI%%/ checked="checked"/ig;
@@ -364,7 +364,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%CACHE_PURGE_TAGPORT_MV_SI%%//ig;
         $pagina =~ s/%%CACHE_PURGE_TAGPORT_MV_NO%%/ checked="checked"/ig;
-    }   
+    }
 
     if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI') {
         $pagina =~ s/%%CACHE_PURGE_MAPA_SI%%/ checked="checked"/ig;
@@ -372,7 +372,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%CACHE_PURGE_MAPA_SI%%//ig;
         $pagina =~ s/%%CACHE_PURGE_MAPA_NO%%/ checked="checked"/ig;
-    }   
+    }
 
     if ($prontus_varglb::CACHE_PURGE_ART_RELAC eq 'SI') {
         $pagina =~ s/%%CACHE_PURGE_ART_RELAC_SI%%/ checked="checked"/ig;
@@ -380,7 +380,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%CACHE_PURGE_ART_RELAC_SI%%//ig;
         $pagina =~ s/%%CACHE_PURGE_ART_RELAC_NO%%/ checked="checked"/ig;
-    }       
+    }
 
     $buffer = '';
     $pagina =~ /<!--loop_cache_purge_fid-->(.*?)<!--\/loop_cache_purge_fid-->/s;
@@ -1146,7 +1146,7 @@ sub parseaVars {
     $pagina =~ s/%%CLOUDFLARE_API_KEY%%/$prontus_varglb::CLOUDFLARE_API_KEY/ig;
     $pagina =~ s/%%CLOUDFLARE_EMAIL%%/$prontus_varglb::CLOUDFLARE_EMAIL/ig;
     $pagina =~ s/%%CLOUDFLARE_ZONE%%/$prontus_varglb::CLOUDFLARE_ZONE/ig;
-    
+
     if ($prontus_varglb::CLOUDFLARE_API_URL eq 'https://www.cloudflare.com/api_json.html') {
         $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%/ selected="selected"/ig;
         $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;
@@ -1155,7 +1155,7 @@ sub parseaVars {
         $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%//ig;
     } else {
         $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%/ selected="selected"/ig;
-        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;      
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;
     }
 
     $pagina =~ s/%%CLOUDFLARE_GLOBAL_PURGE%%/$prontus_varglb::CLOUDFLARE_GLOBAL_PURGE/ig;
@@ -1399,6 +1399,21 @@ sub parseaVars {
     $pagina =~ s/%%N_THREADS%%/$prontus_varglb::N_THREADS/ig;
     $pagina =~ s/%%XCODING_PPROC%%/$prontus_varglb::XCODING_PPROC/ig;
     $pagina =~ s/%%XCODE_MAX_PARALELO%%/$prontus_varglb::XCODE_MAX_PARALELO/ig;
+
+    # configuracion de transcodificador externo
+    if ($prontus_varglb::USAR_XCODER_EXTERNO eq 'SI') {
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_NO%%//ig;
+    } else {
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_SI%%//ig;
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_NO%%/ checked="checked"/ig;
+    };
+    $pagina =~ s/%%XCODER_HOST%%/$prontus_varglb::XCODER_HOST/ig;
+    $pagina =~ s/%%XCODER_PORT%%/$prontus_varglb::XCODER_PORT/ig;
+    $pagina =~ s/%%LOCAL_HOST%%/$prontus_varglb::LOCAL_HOST/ig;
+    $pagina =~ s/%%LOCAL_PORT%%/$prontus_varglb::LOCAL_PORT/ig;
+    $pagina =~ s/%%LOCAL_USER%%/$prontus_varglb::LOCAL_USER/ig;
+    $pagina =~ s/%%LOCAL_PASS%%/$prontus_varglb::LOCAL_PASS/ig;
 
     # -clustering.cfg
 
