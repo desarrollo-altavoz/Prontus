@@ -8628,3 +8628,27 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
 
+
+====================================================================================================
+11.2.89 - 17/11/2015 - EAG
+====================================================================================================
+Se agregan variables de configuracion para transcodificador externo
+
+Se mejora la lectura de la configuracion de media externa
+
+cgi-cpn/lib_prontus.pm
+
+Se agregan variables de configuracion de transcodificador externo
+cgi-cpn/prontus_admin_main.cgi
+cgi-cpn/prontus_cfg_save.cgi
+
+Se comenta validacion de antiguedad de la lista HLS vs el video subido
+Si una de las versiones no tiene los atoms necesarios se indica
+que se deben generar las versiones
+cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+
+Se agrega soporte de transcodificacion externa
+cgi-cpn/xcoding/prontus_videodoxcode.cgi
+
+Nueva cgi para obtener los formatos de video configurados
+cgi-cpn/api/xcoding_getformatos.cgi
