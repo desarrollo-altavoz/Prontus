@@ -241,6 +241,7 @@
   url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mO4cO32TAAIFgMbq4lc+QAAAABJRU5ErkJggg==);outline: 1px solid #ccc;}
 .fotofija-container .fotofija .botones a {float: left;display: block;padding: 2px;}
 .fotofija-container .fotofija .botones input {float: left;margin: 4px 2px 0px 2px;display: block;}
-.fotofija-container .fotofija .botones label {font-size: 9px;margin: 4px 1px 1px 0px;display: block;}
+.fotofija-container .fotofija .botones .cuadrar {position: absolute;right: -4px;width:60px;}
+.fotofija-container .fotofija .botones label {font-size: 9px;margin: 4px 0px 0px 0px;display: block;}
 .fotofija-container .fotofija.active {outline: 2px solid #0097fb;}
 .hidde-crop {display: none !important;}

@@ -690,6 +690,7 @@
             // ---------------------------------------------------------------
             showAlert: function (id, msg) {
                 var $preview = self.preview.getPreview(id);
+                if (!$preview) return; // si no exite preview, terminar.
                 var $alert = $preview.find('.alert');
                 $alert.html('<div>' + msg + '</div>').stop().fadeIn('fast');
                 $alert.delay(3500).fadeOut('fast');
@@ -699,6 +700,7 @@
             // ---------------------------------------------------------------
             hideAlert: function (id) {
                 var $preview = self.preview.getPreview(id);
+                if (!$preview) return; // si no exite preview, terminar.
                 var $alert = $preview.find('.alert');
                 $alert.stop().hide();
             },
