@@ -193,9 +193,9 @@ main: {
     $hash_defaultvars{'cache'}{'CACHE_PURGE_TAXPORT'} = 'CACHE_PURGE_TAXPORT;(SI|NO);SI;U';
     $hash_defaultvars{'cache'}{'CACHE_PURGE_TAXPORT_MV'} = 'CACHE_PURGE_TAXPORT_MV;(SI|NO);SI;U';
     $hash_defaultvars{'cache'}{'CACHE_PURGE_TAGPORT'} = 'CACHE_PURGE_TAGPORT;(SI|NO);SI;U';
-    $hash_defaultvars{'cache'}{'CACHE_PURGE_TAGPORT_MV'} = 'CACHE_PURGE_TAGPORT_MV;(SI|NO);SI;U';    
-    $hash_defaultvars{'cache'}{'CACHE_PURGE_MAPA'} = 'CACHE_PURGE_MAPA;(SI|NO);SI;U'; 
-    $hash_defaultvars{'cache'}{'CACHE_PURGE_ART_RELAC'} = 'CACHE_PURGE_ART_RELAC;(SI|NO);SI;U'; 
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_TAGPORT_MV'} = 'CACHE_PURGE_TAGPORT_MV;(SI|NO);SI;U';
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_MAPA'} = 'CACHE_PURGE_MAPA;(SI|NO);SI;U';
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_ART_RELAC'} = 'CACHE_PURGE_ART_RELAC;(SI|NO);SI;U';
     $hash_defaultvars{'cache'}{'CACHE_PURGE_EXCLUDE_FID'} = 'CACHE_PURGE_EXCLUDE_FID;(\w+);;M';
 
     # -dropbox.cfg
@@ -253,6 +253,14 @@ main: {
     $hash_defaultvars{'xcoding'}{'XCODING_PPROC'} = 'XCODING_PPROC;(\w+);;U';
     $hash_defaultvars{'xcoding'}{'XCODE_MAX_PARALELO'} = 'XCODE_MAX_PARALELO;(\d+);3;U';
     $hash_defaultvars{'xcoding'}{'PRECISION_HLS'} = 'PRECISION_HLS;(SI|NO);NO;U';
+    # configuracion transcodificador externo
+    $hash_defaultvars{'xcoding'}{'USAR_XCODER_EXTERNO'} = 'USAR_XCODER_EXTERNO;(SI|NO);NO;U';
+    $hash_defaultvars{'xcoding'}{'XCODER_HOST'} = 'XCODER_HOST;(\w+);;U';
+    $hash_defaultvars{'xcoding'}{'XCODER_PORT'} = 'XCODER_HOST;(\d+);;U';
+    $hash_defaultvars{'xcoding'}{'LOCAL_HOST'} = 'LOCAL_HOST;(\w+);;U';
+    $hash_defaultvars{'xcoding'}{'LOCAL_USER'} = 'LOCAL_USER;(\w+);;U';
+    $hash_defaultvars{'xcoding'}{'LOCAL_PASS'} = 'LOCAL_PASS;(\w+);;U';
+    $hash_defaultvars{'xcoding'}{'LOCAL_PORT'} = 'LOCAL_PORT;(\d+);;U';
 
     # Verificar tipo de CFG.
     $FORM{'_cfg'} = &glib_cgi_04::param('_cfg');
