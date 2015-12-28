@@ -100,17 +100,8 @@ my %FIDS2PROCESS;
 $FORM{'fid2process'} = $ARGV[1];
 
 main:{
-
-    my $ini_t = time; # debug
-
     # Se cargan todos los niveles, de manera inteligente
     &cargar_taxports();
-
-    #~ foreach my $level (sort keys %LEVELS2TRIGGER) {
-    #~     print STDERR "$level\n" if($LEVELS2TRIGGER{$level});
-    #~ };
-
-    # Se gatillan los procesos taxport
     &gatillar_procesos();
 };
 
@@ -199,8 +190,6 @@ sub agregar_taxports_thislevel {
 
 # ---------------------------------------------------------------
 sub gatillar_procesos {
-
-    use FindBin '$Bin';
     my $rutaScript = $Bin;
     my $pathnice = &lib_prontus::get_path_nice();
     $pathnice = "$pathnice -n19 " if($pathnice);
@@ -212,18 +201,17 @@ sub gatillar_procesos {
 
             # Se chequea para descansar con un sleep
             my $safetycounter = 1;
-            while (&check_taxport_running() >= 15) {
-                last if($safetycounter > 5);
+            while (&check_taxport_running() >= 10) {
+                last if($safetycounter > 10);
 
-                print "Muchos procesos, durmiendo por 2 segundos, ciclo $safetycounter de 5... \n";
+                print "Muchos procesos simultaneos... esperando 5 segundos.\n";
                 $safetycounter++;
-                sleep(2);
+                sleep(5);
             };
 
             my $param_especif_taxport = "$fid_name/$levels";
-            #my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
-            my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport";
-            print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+            my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
+            print "[" . &glib_hrfec_02::get_dtime_pack4() . "] $cmd\n";
             system $cmd;
         }
     }

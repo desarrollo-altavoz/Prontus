@@ -149,6 +149,7 @@ main: {
     #~ $hash_defaultvars{'tax'}{'TAXPORT_REFRESH_SEGS'} = 'TAXPORT_REFRESH_SEGS;^(\d+)$;1800;U';
     #~ $hash_defaultvars{'tax'}{'TAXPORT_REFRESH'} = 'TAXPORT_REFRESH;(SI|NO);NO;U';
     $hash_defaultvars{'tax'}{'TAXPORT_MAXARTICS'} = 'TAXPORT_MAXARTICS;^(\d+)$;500;U';
+    $hash_defaultvars{'tax'}{'TAXPORT_MAX_WORKERS'} = 'TAXPORT_MAX_WORKERS;^(\d+)$;4;U';
     $hash_defaultvars{'tax'}{'TAXPORT_ORDEN'} = 'TAXPORT_ORDEN;^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$;PUBLICACION(DESC);U';
     $hash_defaultvars{'tax'}{'TAXPORT_TIPO_PAGINACION'} = 'TAXPORT_TIPO_PAGINACION;(0|1);0;U';
     $hash_defaultvars{'tax'}{'TAXPORT_PAGCORTA_MAXPAGS'} = 'TAXPORT_PAGCORTA_MAXPAGS;^(\d+)$;10;U';
@@ -193,9 +194,9 @@ main: {
     $hash_defaultvars{'cache'}{'CACHE_PURGE_TAXPORT'} = 'CACHE_PURGE_TAXPORT;(SI|NO);SI;U';
     $hash_defaultvars{'cache'}{'CACHE_PURGE_TAXPORT_MV'} = 'CACHE_PURGE_TAXPORT_MV;(SI|NO);SI;U';
     $hash_defaultvars{'cache'}{'CACHE_PURGE_TAGPORT'} = 'CACHE_PURGE_TAGPORT;(SI|NO);SI;U';
-    $hash_defaultvars{'cache'}{'CACHE_PURGE_TAGPORT_MV'} = 'CACHE_PURGE_TAGPORT_MV;(SI|NO);SI;U';    
-    $hash_defaultvars{'cache'}{'CACHE_PURGE_MAPA'} = 'CACHE_PURGE_MAPA;(SI|NO);SI;U'; 
-    $hash_defaultvars{'cache'}{'CACHE_PURGE_ART_RELAC'} = 'CACHE_PURGE_ART_RELAC;(SI|NO);SI;U'; 
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_TAGPORT_MV'} = 'CACHE_PURGE_TAGPORT_MV;(SI|NO);SI;U';
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_MAPA'} = 'CACHE_PURGE_MAPA;(SI|NO);SI;U';
+    $hash_defaultvars{'cache'}{'CACHE_PURGE_ART_RELAC'} = 'CACHE_PURGE_ART_RELAC;(SI|NO);SI;U';
     $hash_defaultvars{'cache'}{'CACHE_PURGE_EXCLUDE_FID'} = 'CACHE_PURGE_EXCLUDE_FID;(\w+);;M';
 
     # -dropbox.cfg

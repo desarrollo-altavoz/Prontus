@@ -137,6 +137,8 @@
 
                 } else if(newnode.attr('type') == 'ssi') {
                     html = '<p class="mceItemInsert" type="ssi" src="'+newnode.attr('src')+'">Include SSI</p>';
+                } else if(newnode.attr('type') == 'ssi2') {
+                    html = '<p class="mceItemInsert" type="ssi2" src="'+newnode.attr('src')+'">Include SSI Virtual</p>';
 
                 } else {
                     node.empty();

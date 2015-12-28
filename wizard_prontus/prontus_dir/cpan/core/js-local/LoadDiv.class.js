@@ -54,7 +54,6 @@ var LoadDiv = {
                 Listartic.instalaDragAndDrop(Listartic.idUlPub);
                 Listartic.procesarListado(Listartic.idUlPub, 'li');
                 Listartic.instalaMouseover();
-                Preview.startPreview();
                 Listartic.cargandoPub = false;
             }
         });

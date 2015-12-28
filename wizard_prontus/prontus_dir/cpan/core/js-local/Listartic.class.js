@@ -4,7 +4,7 @@ var Listartic = {
     TOTAL_PORTS_values: [],
     TOTAL_PORTS_labels: [],
 
-    itemsPerPage: 10,
+    itemsPerPage: 50,
     ordenLista: 'C', // 'F' (fecha public, default)  / 'T' (titular) / 'C' creacion
     searchFlag: 0,
 
@@ -81,9 +81,6 @@ var Listartic = {
 
         // Para reportarse en el server
         Listartic.pingRecurso();
-
-        // Para el Preview
-        Preview.init();
 
         // Para el modificado a las
         Listartic.updateLastMod();
@@ -182,7 +179,6 @@ var Listartic = {
             var cloned = theLi.clone().prependTo('#area-'+Listartic.areaActiva).fadeIn().addClass('moved');
             Listartic.procesarListado(Listartic.idUlPub, 'li');
 
-            Preview.startPreview();
             Admin.displayMessage(Listartic.msgChangePort, 'alert');
             Listartic.instalaPortModProtector();
             Listartic.instalaMouseover();
@@ -213,7 +209,6 @@ var Listartic = {
                 var titlenopub = $(this).attr('title');
                 $(Listartic.idUlNoPub + ' li[title="'+titlenopub+'"]').fadeOut().remove();
                 $(this).prependTo(Listartic.idUlNoPub).fadeIn().addClass('moved');
-                Preview.startPreview();
                 Admin.displayMessage(Listartic.msgChangePort, 'alert');
                 Listartic.instalaPortModProtector();
                 var item = $(this).after();
@@ -268,7 +263,6 @@ var Listartic = {
                 $(ui.item).addClass('moved');
                 Listartic.procesarListado(selector, 'li');
                 if(selector == Listartic.idUlPub) {
-                    Preview.startPreview();
                     Admin.displayMessage(Listartic.msgChangePort, 'alert');
                     Listartic.instalaPortModProtector();
                 }

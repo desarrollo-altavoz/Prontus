@@ -11,6 +11,7 @@ tinyMCE.addI18n('es.insert_dlg',{
         html_type_auto: 'Automatico',
         html_type_php: 'Forzar Include PHP',
         html_type_ssi: 'Forzar Include SSI',
+        html_type_ssi2: 'Forzar Include SSI Virtual',
         html_file: 'Ruta al archivo',
 
         tab_js: 'Insertar código Javascript',

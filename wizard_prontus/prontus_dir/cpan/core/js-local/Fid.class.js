@@ -898,7 +898,9 @@ var Fid = {
                 var curr_body = '#' + $('#_curr_body').val();
                 if($(curr_body).find('[id^="FOTOFIJA_"]').size() > 0) {
                     $("#banco-content .botonera .publicar").show();
+                    FotoFija.initDraggableBanco();
                 }
+
                 Fid.addDragImagenes();
             });
         });

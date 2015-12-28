@@ -61,7 +61,7 @@
         // Inicia drag & drop desde banco de imagenes.
         // ---------------------------------------------------------------
         initDraggableBanco: function () {
-            $('#banco-img .fotodrag').draggable({
+            $('#banco-img .foto-icon').draggable({
                 helper: "clone",
                 containment: "document",
                 zIndex: 9999,
@@ -74,7 +74,7 @@
         // ---------------------------------------------------------------
         destroyDraggableBanco: function () {
             if (self.draggableBanco === true) {
-                $('#banco-img .fotodrag').draggable("destroy");
+                $('#banco-img .foto-icon').draggable("destroy");
                 self.draggableBanco = false;
             }
         },
@@ -186,10 +186,15 @@
                     self.foto.instances[id].top = 0.5 * ($workArea.height() - self.foto.instances[id].preH);
                     self.foto.instances[id].left = 0.5 * ($workArea.width() - self.foto.instances[id].preW);
 
-                    $workArea.find('.img img').css({
-                        top: self.foto.instances[id].top,
-                        left: self.foto.instances[id].left
-                    });
+                    $workArea.find('.img').hide();
+
+                    setTimeout(function () {
+                        $workArea.find('.img img').css({
+                            top: self.foto.instances[id].top,
+                            left: self.foto.instances[id].left
+                        });
+                        $workArea.find('.img').show();
+                    }, 100);
 
                 } else {
                     $workArea.find('.img').html('');
@@ -228,11 +233,12 @@
                 if (!$preview) return; // si no exite preview, terminar.
 
                 $preview.droppable({
-                    accept: '.fotodrag',
+                    accept: '.foto-icon',
                     drop: function (event, ui) {
-                        var imgSrc  = ui.helper.attr('src');
-                        var imgW    = ui.helper.attr("data-w");
-                        var imgH    = ui.helper.attr("data-h");
+                        var $item   = ui.helper.find('.fotodrag');
+                        var imgSrc  = $item.attr('src');
+                        var imgW    = $item.attr("data-w");
+                        var imgH    = $item.attr("data-h");
 
                         self.foto.set(id, imgSrc, imgW, imgH);
                         self.preview.update(id);
@@ -850,11 +856,13 @@
                 }
 
                 $("div#recuadro_FOTOFIJA_" + id).droppable({
-                    accept: '.fotodrag',
+                    accept: '.foto-icon',
+                    hoverClass: 'ui-state-active',
                     drop: function (event, ui) {
-                        var imgSrc = ui.helper.attr('src');
-                        var imgW = ui.helper.attr('data-w');
-                        var imgH = ui.helper.attr('data-h');
+                        var $item   = ui.helper.find('.fotodrag');
+                        var imgSrc  = $item.attr('src');
+                        var imgW    = $item.attr("data-w");
+                        var imgH    = $item.attr("data-h");
 
                         self.foto.set(id, imgSrc, imgW, imgH);
                         self.preview.update(id);

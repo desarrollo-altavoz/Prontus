@@ -2273,7 +2273,15 @@ sub _parsing_recursos {
         if (-f $fullpath_json) {
             my $buffer_json = &glib_fildir_02::read_file($fullpath_json);
             if ($buffer_json) {
-                my $hashref = &JSON::from_json($buffer_json);
+                my $hashref;
+
+                if($JSON::VERSION =~ /^1\./) {
+                    my $json = new JSON;
+                    $hashref = $json->jsonToObj($buffer_json);
+                } else {
+                    $hashref = &JSON::from_json($buffer_json);
+                }
+
                 if (defined $hashref->{'duracion'}) {
                     $duracion = $hashref->{'duracion'};
                 };
@@ -2461,7 +2469,7 @@ sub _parsing_vtxt {
 #~ <prontus:insert type="js" code="var%20myvar%20%3D%20'Hello'%3B%0D%0Aalert(myvar)%3B">Código Javascript</prontus:insert>
 
         my $newnode = '';
-        if($attrs =~ / type="(php|ssi)"/) {
+        if($attrs =~ / type="(php|ssi|ssi2)"/) {
             my $tipo = $1;
             if($attrs =~ / src="(.*?)"/) {
                 my $file = $1;
@@ -2472,6 +2480,8 @@ sub _parsing_vtxt {
                     } else {
                         if($tipo eq 'ssi') {
                             $newnode = '<!--#include file="'.$file.'" -->';
+                        } elsif($tipo eq 'ssi2') {
+                            $newnode = '<!--#include virtual="'.$file.'" -->';
                         } else {
                             $newnode = '<?php include($_SERVER["DOCUMENT_ROOT"] . "'.$file.'"); ?>';
                         }

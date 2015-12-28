@@ -8628,3 +8628,66 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
 
+====================================================================================================
+11.2.89 - 04/12/2015 - JOR
+====================================================================================================
+
+- FID
+    [bugfixes]
+        - Se soluciona problema con el arrastre de fotos al cuerpo desde el banco de imagenes luego de hacer click en el link
+        "Mostrar X imágenes restantes". Quedaba deshabilitada el arrastre luego de esta acción.
+    [mejoras]
+        - Se destaca el campo de "Fotofija" cuando se arrastra una foto hacia esa área.
+    [cambios]
+        - Se agrega otro tipo de include, "Forzar Include SSI Virtual" a "Insertar HTML o Javascript" dentro del VTXT. El cual hace un include ssi virtual en vez de file.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
+        /wizard_prontus/prontus_dir/cpan/core/imag/edi/bg_drop.png
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/dialog.htm
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/editor_plugin.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/js/dialog.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/langs/en_dlg.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/langs/es_dlg.js
+
+
+- Prontus en general
+    [cambios]
+        - Se elimina la ayuda rápida.
+    [bugfixes]
+        - No se estaba validando la versión del módulo JSON en el método que calcula la duración de multimedia.
+    [files]
+        /cgi-cpn/Artic.pm
+        /wizard_prontus/prontus_dir/cpan/core/prontus_help_main.html
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/01.jpg (eliminado)
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/02.jpg (eliminado)
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/03.jpg (eliminado)
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/04.jpg (eliminado)
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/05.jpg (eliminado)
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/06.jpg (eliminado)
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/07.jpg (eliminado)
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/08.jpg (eliminado)
+        /wizard_prontus/prontus_dir/cpan/core/imag/help/slide/09.jpg (eliminado)
+
+- Administrador de artículos
+    [cambios]
+        - Se quita el previsualizador de portada (ubicado a la derecha del listado de artículos no publicados).
+        - Se cambia el número de artículos a mostrar de 10, 25 y 50 a 50, 100 y 150.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/LoadDiv.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Preview.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+
+- Portadas taxonómicas
+    [mejoras]
+    [files]
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/lib_prontus.pm
+

@@ -227,7 +227,6 @@ var Acciones = {
             img2_obj.attr("src", img_src).attr("title", title).attr("alt", title);
             $(vb_input_obj).val(1);
         }
-        Preview.startPreview();
     }
 
 };

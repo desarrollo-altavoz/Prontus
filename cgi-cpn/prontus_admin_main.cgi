@@ -348,7 +348,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%CACHE_PURGE_TAGPORT_SI%%//ig;
         $pagina =~ s/%%CACHE_PURGE_TAGPORT_NO%%/ checked="checked"/ig;
-    }    
+    }
 
     if ($prontus_varglb::CACHE_PURGE_TAXPORT_MV eq 'SI') {
         $pagina =~ s/%%CACHE_PURGE_TAXPORT_MV_SI%%/ checked="checked"/ig;
@@ -364,7 +364,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%CACHE_PURGE_TAGPORT_MV_SI%%//ig;
         $pagina =~ s/%%CACHE_PURGE_TAGPORT_MV_NO%%/ checked="checked"/ig;
-    }   
+    }
 
     if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI') {
         $pagina =~ s/%%CACHE_PURGE_MAPA_SI%%/ checked="checked"/ig;
@@ -372,7 +372,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%CACHE_PURGE_MAPA_SI%%//ig;
         $pagina =~ s/%%CACHE_PURGE_MAPA_NO%%/ checked="checked"/ig;
-    }   
+    }
 
     if ($prontus_varglb::CACHE_PURGE_ART_RELAC eq 'SI') {
         $pagina =~ s/%%CACHE_PURGE_ART_RELAC_SI%%/ checked="checked"/ig;
@@ -380,7 +380,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%CACHE_PURGE_ART_RELAC_SI%%//ig;
         $pagina =~ s/%%CACHE_PURGE_ART_RELAC_NO%%/ checked="checked"/ig;
-    }       
+    }
 
     $buffer = '';
     $pagina =~ /<!--loop_cache_purge_fid-->(.*?)<!--\/loop_cache_purge_fid-->/s;
@@ -913,6 +913,7 @@ sub parseaVars {
     $pagina =~ s/%%TAXPORT_ARTXPAG%%/$prontus_varglb::TAXPORT_ARTXPAG/ig;
     #~ $pagina =~ s/%%TAXPORT_REFRESH_SEGS%%/$prontus_varglb::TAXPORT_REFRESH_SEGS/ig;
     $pagina =~ s/%%TAXPORT_MAXARTICS%%/$prontus_varglb::TAXPORT_MAXARTICS/ig;
+    $pagina =~ s/%%TAXPORT_MAX_WORKERS%%/$prontus_varglb::TAXPORT_MAX_WORKERS/ig;
 
     my $txport_orden = $prontus_varglb::TAXPORT_ORDEN;
     my $direccion = '';
@@ -1146,7 +1147,7 @@ sub parseaVars {
     $pagina =~ s/%%CLOUDFLARE_API_KEY%%/$prontus_varglb::CLOUDFLARE_API_KEY/ig;
     $pagina =~ s/%%CLOUDFLARE_EMAIL%%/$prontus_varglb::CLOUDFLARE_EMAIL/ig;
     $pagina =~ s/%%CLOUDFLARE_ZONE%%/$prontus_varglb::CLOUDFLARE_ZONE/ig;
-    
+
     if ($prontus_varglb::CLOUDFLARE_API_URL eq 'https://www.cloudflare.com/api_json.html') {
         $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%/ selected="selected"/ig;
         $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;
@@ -1155,7 +1156,7 @@ sub parseaVars {
         $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%//ig;
     } else {
         $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%/ selected="selected"/ig;
-        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;      
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;
     }
 
     $pagina =~ s/%%CLOUDFLARE_GLOBAL_PURGE%%/$prontus_varglb::CLOUDFLARE_GLOBAL_PURGE/ig;

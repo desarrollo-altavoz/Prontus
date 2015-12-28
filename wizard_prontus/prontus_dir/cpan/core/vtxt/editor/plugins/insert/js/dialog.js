@@ -129,6 +129,10 @@ var InsertDialog = {
                 node_type = 'ssi';
                 node_text = 'Include SSI';
                 node_src = htmlfile;
+            } else if(tipohtml == 'ssi2') {
+                node_type = 'ssi2';
+                node_text = 'Include SSI Virtual';
+                node_src = htmlfile;
             } else {
                 node_type = 'php';
                 node_text = 'Include PHP';
@@ -195,6 +199,13 @@ var InsertDialog = {
         } else if(tipo == 'ssi') {
             this.displayTab('html_tab','html_panel');
             this.setCombo('insert_html_type', 'ssi');
+            var src = node.getAttribute('src');
+            var input = document.getElementById('insert_file');
+            input.value = src;
+
+        } else if(tipo == 'ssi2') {
+            this.displayTab('html_tab','html_panel');
+            this.setCombo('insert_html_type', 'ssi2');
             var src = node.getAttribute('src');
             var input = document.getElementById('insert_file');
             input.value = src;

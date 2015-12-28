@@ -1811,6 +1811,10 @@ sub load_config {
   $prontus_varglb::TAXPORT_MAXARTICS = $taxport_maxartics;
   $prontus_varglb::TAXPORT_MAXARTICS = $prontus_varglb::TAXPORT_MAXARTICS_SECURITY if ($prontus_varglb::TAXPORT_MAXARTICS > $prontus_varglb::TAXPORT_MAXARTICS_SECURITY);
 
+  $prontus_varglb::TAXPORT_MAX_WORKERS = 4;
+  if ($buffer =~ m/\s*TAXPORT_MAX_WORKERS\s*=\s*("|')([0-9]+?)("|')/) {
+    $prontus_varglb::TAXPORT_MAX_WORKERS = $2;
+  };
 
   my $taxport_tipo_pag = '0'; # valor por defecto.
   if ($buffer =~ m/\s*TAXPORT_TIPO_PAGINACION\s*=\s*("|')(0|1)("|')/) {
@@ -3717,6 +3721,7 @@ sub parser_condicional {
                         my $expresion;
                         if ($operador eq '~') {
                             $expresion = '$esta = 1 if ($claves_lc{$var} =~ /$valor/is);';
+                            print STDERR "[$valor] $expresion\n";
                         } else {
                             $expresion = '$esta = 1 if ($claves_lc{$var} ' . $operador . ' $valor);';
                         };
