@@ -1401,6 +1401,21 @@ sub parseaVars {
     $pagina =~ s/%%XCODING_PPROC%%/$prontus_varglb::XCODING_PPROC/ig;
     $pagina =~ s/%%XCODE_MAX_PARALELO%%/$prontus_varglb::XCODE_MAX_PARALELO/ig;
 
+    # configuracion de transcodificador externo
+    if ($prontus_varglb::USAR_XCODER_EXTERNO eq 'SI') {
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_NO%%//ig;
+    } else {
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_SI%%//ig;
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_NO%%/ checked="checked"/ig;
+    };
+    $pagina =~ s/%%XCODER_HOST%%/$prontus_varglb::XCODER_HOST/ig;
+    $pagina =~ s/%%XCODER_PORT%%/$prontus_varglb::XCODER_PORT/ig;
+    $pagina =~ s/%%LOCAL_HOST%%/$prontus_varglb::LOCAL_HOST/ig;
+    $pagina =~ s/%%LOCAL_PORT%%/$prontus_varglb::LOCAL_PORT/ig;
+    $pagina =~ s/%%LOCAL_USER%%/$prontus_varglb::LOCAL_USER/ig;
+    $pagina =~ s/%%LOCAL_PASS%%/$prontus_varglb::LOCAL_PASS/ig;
+
     # -clustering.cfg
 
     $buffer = '';

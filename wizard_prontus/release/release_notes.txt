@@ -8629,7 +8629,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
 
 ====================================================================================================
-11.2.89 - 04/12/2015 - JOR
+11.2.89 - 28/12/2015 - JOR/EAG
 ====================================================================================================
 
 - FID
@@ -8650,11 +8650,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/js/dialog.js
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/langs/en_dlg.js
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/insert/langs/es_dlg.js
-
+        /cgi-cpn/Artic.pm
 
 - Prontus en general
     [cambios]
         - Se elimina la ayuda rápida.
+        - Se mejora la lectura de la configuracion de media externa
     [bugfixes]
         - No se estaba validando la versión del módulo JSON en el método que calcula la duración de multimedia.
     [files]
@@ -8690,4 +8691,21 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_admin_main.cgi
         /cgi-cpn/prontus_cfg_save.cgi
         /cgi-cpn/lib_prontus.pm
+
+- Transcodificación
+    [mejoras]
+        - Se agregan variables de configuracion para transcodificador externo
+        - Se agregan variables de configuracion de transcodificador externo
+        - Se agrega soporte de transcodificacion externa
+        - Nueva cgi para obtener los formatos de video configurados
+        - Se agregan variables de configuracion para transcodificador externo
+    [files]
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/api/xcoding_getformatos.cgi
+
+    [cambios]
+        - Se comenta validacion de antiguedad de la lista HLS vs el video subido.
+        Si una de las versiones no tiene los atoms necesarios se indica que se deben generar las versiones
+    [files]
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
 

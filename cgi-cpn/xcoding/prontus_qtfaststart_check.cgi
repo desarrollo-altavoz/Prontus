@@ -71,6 +71,8 @@
 # 1.4.0 - 06/10/2014 - EAG - Se agrega chequeo de existencia de HLS
 # 1.5.0 - 04/03/2015 - EAG - Se corrige "endianness" al hacer unpack Q
 # 1.6.0 - 12/05/2015 - EAG - Modificaciones por integracion a la release
+# 1.6.1 - 23/07/2015 - EAG - Se comenta validacion de antiguedad de la lista HLS vs el video subido
+# 1.6.2 - 10/08/2015 - EAG - Si una de las versiones no tiene los atoms necesarios se indica que se deben generar las versiones
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
@@ -97,6 +99,7 @@ use utf8;
 my @INDICES;
 my %FORM;        # Contenido del formulario de invocacion.
 my $FILE;
+my $VERSIONES = 0;
 
 main: {
     # Rescatar parametros recibidos
@@ -166,10 +169,12 @@ main: {
 
             # si el video es mas nuevo que la playlist de hls asociada, es video nuevo y debe ser procesado para generar hls.
             # la playlist hls siempre es mas nueva ya que se genera despues de crear el mp4
-            print STDERR (-M $playlist_hls)." > ".(-M $infile)."\n";
-            if ((-M $playlist_hls) > (-M $infile)) {
-                &glib_html_02::print_json_result(1, 'RECODE', 'exit=1,ctype=1');
-            }
+            # print STDERR (-M $playlist_hls)." > ".(-M $infile)."\n";
+            #~ if ((-M $playlist_hls) > (-M $infile)) {
+                #~ &glib_html_02::print_json_result(1, 'RECODE', 'exit=1,ctype=1');
+            #~ }
+            # Se comenta esta validacion ya que prontus siempre borra el HLS al subir un video nuevo
+            # por lo que este caso nunca se da
         }
     }
 
@@ -190,6 +195,7 @@ main: {
         }
         my $pendiente_xcoding = 0;
         foreach my $key (keys(%formatos)) {
+            $VERSIONES = 1;
             $key =~ s/\./$ts/sg;
             $key = lc $key;
             my $file = "$path$key.$ext";
@@ -328,8 +334,15 @@ sub get_index {
     # Make sure the atoms we need exist
     if($toplevel && ( !($index{"moov"}) || !($index{"mdat"}))) {
         warn("No existe por lo menos uno de los atoms obligatorios");
-        &glib_html_02::print_json_result(0, "Error: No existe por lo menos uno de los atoms obligatorios en el video cargado", 'exit=1,ctype=1');
-        exit;
+        if ($VERSIONES) {
+            print STDERR "Fallo una version del video original\n";
+            # si estamos revisando las versiones y no tienen los atoms necesarios, hay que codificarlas
+            &glib_html_02::print_json_result(1, 'XCODE', 'exit=1,ctype=1');
+            exit;
+        } else {
+            &glib_html_02::print_json_result(0, "Error: No existe por lo menos uno de los atoms obligatorios en el video cargado", 'exit=1,ctype=1');
+            exit;
+        }
     }
 }
 # ------------------------------------------------
