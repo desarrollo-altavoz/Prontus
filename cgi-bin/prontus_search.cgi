@@ -445,7 +445,7 @@ sub parsea_plantilla1 {
       $plantilla =~ s/%%chk_$key\_$aux%%/checked=\"checked\"/isg; # 1.25
       $plantilla =~ s/%%sel_$key\_$aux%%/selected=\"selected\"/isg; # 1.25
     };
-    $aux =~ s/([^a-zA-Z0-9 ])/sprintf('&#%s;',ord($1))/ge;
+    $aux =~ s/(['"\<\>])//g;
     $plantilla =~ s/%%$key%%/$aux/isg;
   };
   # 1.21 Parsea nombre de la CGI.
@@ -644,7 +644,7 @@ sub parsea_plantilla2 {
       $plantilla =~ s/%%chk_$key\_$aux%%/checked=\"checked\"/isg; # 1.25
       $plantilla =~ s/%%sel_$key\_$aux%%/selected=\"selected\"/isg; # 1.25
     };
-    $aux =~ s/([^a-zA-Z0-9 ])/sprintf('&#%s;',ord($1))/ge;
+    $aux =~ s/(['"\<\>])//g;
     $plantilla =~ s/%%$key%%/$aux/isg;
   };
   if ($FORM{'search_orden'} eq 'cro') { # 1.3
