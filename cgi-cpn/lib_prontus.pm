@@ -2872,7 +2872,7 @@ sub generic_parse_port {
     # Parsea el area usando $2 como template parcial.
     $areas{$are} = &parser_area($pure_are,$tmp, $dir_server, $prontus_id,
                                                   $control_fecha, $ts_preview,
-                                                  $controlar_alta_articulos, $users_perfil);
+                                                  $controlar_alta_articulos, $users_perfil, $doblegato_string);
   };
 
 
@@ -3066,7 +3066,7 @@ sub add_macros {
 sub parser_area {
 
     my($area, $theloop, $dir_server, $prontus_id,
-            $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil) = @_;
+            $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil, $doblegato_string) = @_;
 
     # Obtiene lista de articulos de esta area.
     my $num_artics_in_area = 0;
@@ -3161,6 +3161,8 @@ sub parser_area {
         $loopcounter++;
         my $localbuf = $theloop; # Copia sub-template para generar instancia.
 
+        $localbuf = &procesa_loop_artic($localbuf, $doblegato_string); # Genera loop_artic
+
         # ------------- IFVs.
         # Si el contador de articulos para este loop MOD div != res entonces borrar contenido
         my $buf_aux = $localbuf;
@@ -3223,6 +3225,8 @@ sub parser_area {
         $localbuf =~ s/%%\/NIFV%%//isg;
         # ------------- /NIFVs.
 
+        
+
         # Parsea datos del artic
         if ($key eq 'filler') {
             #~ print STDERR "Haciendo filler de la iteracion\n";
@@ -3270,6 +3274,34 @@ sub parser_area {
     return $salida_html;
 
 }; # parserArea
+
+# ---------------------------------------------------------------
+# 
+sub procesa_loop_artic {
+  $buffer = shift;
+  $doblegato_string = shift;
+  # Primero que todo se parsean los loops de de Articulo
+  print STDERR "buffer => $buffer\n";
+  while($buffer =~ /%%_loop_artic\((\d+),(\d+)\)%%(.*?)%%\/_loop_artic%%/is) {
+      my $inicio = $1;
+      my $fin = $2;
+      my $loop = $3;
+      print STDERR "_loop_artic($inicio,$fin)\n";
+      print STDERR "loop[$loop]\n";
+      my $totloop;
+      for(my $i = $inicio; $i <= $fin; $i++) {
+          print STDERR "for($i)\n";
+          my $looptemp = $loop;
+          print STDERR "looptemp = $looptemp\n";
+          $looptemp =~ s/\Q$doblegato_string\Ei\Q$doblegato_string\E/$i/isg;
+          
+          $totloop = $totloop . $looptemp;
+      }
+      print STDERR "totloop[$totloop]\n";
+      $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
+  }
+  return $buffer;
+}; #procesa_loop_artic
 
 # ---------------------------------------------------------------
 sub procesa_condicional {
