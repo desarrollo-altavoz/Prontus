@@ -326,6 +326,7 @@ sub generar_fila {
         $claves_adicionales{_loopcounter} = $loopcounter;
         $claves_adicionales{_totartics} = $tot_artics;
 
+        $fila = &lib_prontus::procesa_loop_artic($fila,'##');
         $fila = &lib_prontus::procesa_condicional($fila, \%campos_xml, \%claves_adicionales);
         $fila = &procesar_condicional_extra($fila, $loopcounter);
         my $art_dirfecha = &lib_prontus::get_dirfecha_by_ts($art_id);
