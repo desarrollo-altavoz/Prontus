@@ -8713,3 +8713,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se soluciona escapeo de los valores de las marcas antes del parseo para evitar posibles XSS.
     [files]
         /cgi-bin/prontus_search.cgi
+
+====================================================================================================
+11.2.90 - 08/01/2016 - NAR
+====================================================================================================
+
+- loop_artic
+    [mejoras]
+        - Se habilita marca loop_artic en portadas, portadas tax y tag
+    [files]
+        - cgi-cpn/lib_prontus.pm
+        - cgi-cpn/lib_tax.pm
