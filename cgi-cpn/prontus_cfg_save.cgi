@@ -13,6 +13,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0 - 08/04/2011 - JOR - Primera versión
+# 1.1 - 03/02/2016 - MPG - Aumenta a 20 los metadatos del buscador
 # ---------------------------------------------------------------
 
 
@@ -237,6 +238,16 @@ main: {
     $hash_defaultvars{'buscador'}{'METADATA8'} = 'METADATA8;(\w+);;U';
     $hash_defaultvars{'buscador'}{'METADATA9'} = 'METADATA9;(\w+);;U';
     $hash_defaultvars{'buscador'}{'METADATA10'} = 'METADATA10;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA11'} = 'METADATA11;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA12'} = 'METADATA12;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA13'} = 'METADATA13;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA14'} = 'METADATA14;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA15'} = 'METADATA15;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA16'} = 'METADATA16;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA17'} = 'METADATA17;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA18'} = 'METADATA18;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA19'} = 'METADATA19;(\w+);;U';
+    $hash_defaultvars{'buscador'}{'METADATA20'} = 'METADATA20;(\w+);;U';
     $hash_defaultvars{'buscador'}{'SEARCHTIPS_MAXRESULT'} = 'SEARCHTIPS_MAXRESULT;(\d+);5;U';
     $hash_defaultvars{'buscador'}{'SEARCHTIPS_MINLEN'} = 'SEARCHTIPS_MINLEN;(\d+);1;U';
     $hash_defaultvars{'buscador'}{'SEARCHTIPS_DURACION_CACHE'} = 'SEARCHTIPS_DURACION_CACHE;(\d+);300;U';

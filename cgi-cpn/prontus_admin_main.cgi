@@ -1599,6 +1599,16 @@ sub parseaVars {
     $pagina =~ s/%%METADATA8%%/$cfg_buscador{'METADATA8'}/ig;
     $pagina =~ s/%%METADATA9%%/$cfg_buscador{'METADATA9'}/ig;
     $pagina =~ s/%%METADATA10%%/$cfg_buscador{'METADATA10'}/ig;
+    $pagina =~ s/%%METADATA11%%/$cfg_buscador{'METADATA11'}/ig;
+    $pagina =~ s/%%METADATA12%%/$cfg_buscador{'METADATA12'}/ig;
+    $pagina =~ s/%%METADATA13%%/$cfg_buscador{'METADATA13'}/ig;
+    $pagina =~ s/%%METADATA14%%/$cfg_buscador{'METADATA14'}/ig;
+    $pagina =~ s/%%METADATA15%%/$cfg_buscador{'METADATA15'}/ig;
+    $pagina =~ s/%%METADATA16%%/$cfg_buscador{'METADATA16'}/ig;
+    $pagina =~ s/%%METADATA17%%/$cfg_buscador{'METADATA17'}/ig;
+    $pagina =~ s/%%METADATA18%%/$cfg_buscador{'METADATA18'}/ig;
+    $pagina =~ s/%%METADATA19%%/$cfg_buscador{'METADATA19'}/ig;
+    $pagina =~ s/%%METADATA20%%/$cfg_buscador{'METADATA20'}/ig;
 
     if ($cfg_buscador{'USEFRIENDLYURLS'} eq '1') {
         $pagina =~ s/%%USEFRIENDLYURLS_SI%%/ checked="checked"/ig;

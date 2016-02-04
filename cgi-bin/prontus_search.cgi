@@ -113,7 +113,7 @@
 #     %%sec%%         Seccion del articulo.
 #     %%tem%%         Tema del articulo.
 #     %%sub%%         Subtema del articulo.
-#     %%metadatai%%   Variable METADATAi definida en el cfg (i = 1..10).
+#     %%metadatai%%   Variable METADATAi definida en el cfg (i = 1..20).
 #     %%if(<var>)%%   Contenido condicionado a la existencia de la variable <var>.
 #     %%/if%%
 #   <!--/resloop-->
@@ -612,7 +612,7 @@ sub parsea_plantilla2 {
     if ($meta3 eq '') {
       $aux =~ s/%%if\(meta3\)%%.+?%%\/if%%//isg;
     };
-    for ($i=1;$i<=10;$i++) { # 1.27.2
+    for ($i=1;$i<=20;$i++) { # 1.27.2
       if ($metadata[$i-1] eq '') {
         $aux =~ s/%%if\(metadata$i\)%%.+?%%\/if%%//isg;
       };
@@ -631,7 +631,7 @@ sub parsea_plantilla2 {
     $aux =~ s/%%sec%%/$sec/isg;
     $aux =~ s/%%tem%%/$tem/isg;
     $aux =~ s/%%sub%%/$sub/isg;
-    for ($i=1;$i<=10;$i++) { # 1.27.2
+    for ($i=1;$i<=20;$i++) { # 1.27.2
       $aux =~ s/%%metadata$i%%/$metadata[$i-1]/isg;
     };
     $num++;
