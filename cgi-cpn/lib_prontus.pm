@@ -1846,6 +1846,12 @@ sub load_config {
     $prontus_varglb::TAXPORT_MAX_WORKERS = $2;
   };
 
+  #TAXPORT_MODALIDAD
+  $prontus_varglb::TAXPORT_MODALIDAD = '1';
+  if ($buffer =~ m/\s*TAXPORT_MODALIDAD\s*=\s*("|')(.*?)("|')/) {
+    $prontus_varglb::TAXPORT_MODALIDAD = $2;
+  };
+
   my $taxport_tipo_pag = '0'; # valor por defecto.
   if ($buffer =~ m/\s*TAXPORT_TIPO_PAGINACION\s*=\s*("|')(0|1)("|')/) {
     $taxport_tipo_pag = $2;
@@ -3225,7 +3231,7 @@ sub parser_area {
         $localbuf =~ s/%%\/NIFV%%//isg;
         # ------------- /NIFVs.
 
-        
+
 
         # Parsea datos del artic
         if ($key eq 'filler') {
@@ -3276,12 +3282,11 @@ sub parser_area {
 }; # parserArea
 
 # ---------------------------------------------------------------
-# 
+#
 sub procesa_loop_artic {
   $buffer = shift;
   $doblegato_string = shift;
   # Primero que todo se parsean los loops de de Articulo
-  print STDERR "buffer => $buffer\n";
   while($buffer =~ /%%_loop_artic\((\d+),(\d+)\)%%(.*?)%%\/_loop_artic%%/is) {
       my $inicio = $1;
       my $fin = $2;
@@ -3294,7 +3299,7 @@ sub procesa_loop_artic {
           my $looptemp = $loop;
           print STDERR "looptemp = $looptemp\n";
           $looptemp =~ s/\Q$doblegato_string\Ei\Q$doblegato_string\E/$i/isg;
-          
+
           $totloop = $totloop . $looptemp;
       }
       print STDERR "totloop[$totloop]\n";

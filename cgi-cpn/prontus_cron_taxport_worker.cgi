@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
@@ -25,7 +34,7 @@ use Time::HiRes qw(usleep);
 use POSIX qw(strftime ceil);
 
 my $BD;
-my (%PARAMS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC, %FIDS, %CFG_FIL_TAXPORT);\
+my (%PARAMS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC, %FIDS, %CFG_FIL_TAXPORT);
 my %NOMBASE_PLTS;
 my $CURR_DTIME;
 my $WORKER;
@@ -72,13 +81,9 @@ main: {
     if ($PARAMS{'params'} =~ /^(\d+)$/) {
         $WORKER = $1;
 
-        if (!$WORKER) {
-            print STDERR "ERROR: Worker no especificado.\n";
-            exit;
-        } else {
-            &procesa_queue_worker($WORKER);
-        }
+        &procesa_queue_worker($WORKER);
     } else {
+        &cargar_fil_cfg($PARAMS{'fid'}) if ($PARAMS{'fid'} =~ /^fil_/);
         &generar_taxports_thislevel($PARAMS{'s'}, $PARAMS{'t'}, $PARAMS{'st'}, $PARAMS{'fid'}, $PARAMS{'pag'}, 1); # solo pagina 1.
     }
 
@@ -111,6 +116,7 @@ sub procesa_queue_worker {
             $tema_id = '' if ($tema_id eq '0');
             $subtema_id = '' if ($subtema_id eq '0');
 
+            &cargar_fil_cfg($fid) if ($fid =~ /^fil_/);
             &generar_taxports_thislevel($secc_id, $tema_id, $subtema_id, $fid, $pagina, 0);
         }
 
@@ -323,96 +329,6 @@ sub genera_filtros_taxports {
     }
 
     return $filtros;
-};
-
-sub cargar_fil_cfg {
-    my $file = $_[0];
-    my $fil = $_[1];
-    my $cfg = &glib_fildir_02::read_file($file);
-
-    return if (exists $CFG_FIL_TAXPORT{$fil}); # para no cargarlo dos veces.
-
-    if ($cfg =~ m/\s*TAXPORT_FIDS\s*=\s*("|')(.*?)("|')/) {
-        my $value = $2;
-
-        # Se limpian los espacios.
-        $value =~ s/\s+/ /sg;
-        $value =~ s/^\s//sg;
-        $value =~ s/\s$//sg;
-
-        $value =~ s/[^a-zA-Z0-9_,]//sg; # dejar solo caracteres permitidos
-
-        my @valores = split(',', $value);
-
-        $CFG_FIL_TAXPORT{$fil}{'FIDS'} = \@valores;
-
-        #print STDERR "CFG TAXPORT_FIDS! fil[$fil] value[$value]\n";
-    };
-
-    if ($cfg =~ m/\s*TAXPORT_PLANTILLAS\s*=\s*("|')(.*?)("|')/) {
-        my $value = $2;
-
-        # Se limpian los espacios.
-        $value =~ s/\s+/ /sg;
-        $value =~ s/^\s//sg;
-        $value =~ s/\s$//sg;
-
-        $value =~ s/[^a-zA-Z0-9_\-,\.]//sg; # dejar solo caracteres permitidos
-
-        my @valores = split(',', $value);
-
-        foreach my $tpl (@valores) {
-            $CFG_FIL_TAXPORT{$fil}{'PLANTILLAS'}{$tpl} = 1;
-        };
-
-        #print STDERR "CFG TAXPORT_PLANTILLAS! fil[$fil] value[$value]\n";
-    };
-
-    if ($cfg =~ m/\s*TAXPORT_FECHAP?_DESDE\s*=\s*("|')(.*?)("|')/s) { # fecha de publicacion, ART_FECHAP
-        my $value = $2;
-
-        # Se limpian los espacios.
-        $value =~ s/\s+/ /sg;
-        $value =~ s/^\s//sg;
-        $value =~ s/\s$//sg;
-
-        if ($value eq 'now') {
-            $value = strftime "%Y%m%d", localtime;
-        } else {
-            $value =~ s/[^0-9]//sg; # dejar solo caracteres permitidos, numeros.
-        }
-
-        $value = '' if ($value !~ /^(\d{8})$/); # formato debe ser YYYYMMDD
-
-        $CFG_FIL_TAXPORT{$fil}{'FECHA_DESDE'} = $value;
-
-        #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value]\n";
-    };
-
-    if ($cfg =~ m/\s*TAXPORT_ORDEN\s*=\s*("|')(.*?)("|')/s) { # fecha de publicacion, ART_FECHAP
-        my $value = $2;
-        my $taxport_orden = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
-
-        # Se limpian los espacios.
-        $value =~ s/\s+/ /sg;
-        $value =~ s/^\s//sg;
-        $value =~ s/\s$//sg;
-
-        if ($value =~ /^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$/) {
-            if ($1 eq 'PUBLICACION') {
-                $taxport_orden = "ART_FECHAP $2, ART_HORAP $2";
-            } elsif ($1 eq 'TITULAR') {
-                $taxport_orden = "ART_TITU $2";
-            } elsif ($1 eq 'CREACION') {
-                $taxport_orden = "ART_AUTOINC $2";
-            }
-        }
-
-        $CFG_FIL_TAXPORT{$fil}{'TAXPORT_ORDEN'} = $taxport_orden;
-
-        #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value] taxport_orden[$taxport_orden]\n";
-    };
-
 };
 
 # ---------------------------------------------------------------
@@ -974,4 +890,99 @@ sub valida_param {
     $PARAMS{'t'} = '' if ($PARAMS{'t'} eq '0');
     $PARAMS{'st'} = '' if ($PARAMS{'st'} eq '0');
     $PARAMS{'pag'} = 1 if ($PARAMS{'pag'} eq '');
+};
+
+sub cargar_fil_cfg {
+    my $fil = $_[0];
+    my $dir = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP/$fil";
+    my $file = "$dir/filtros.cfg";
+
+    return if (!-d $dir); # no se hace nada si no existe el directorio del filtro.
+    return if (!-f $file);
+
+    my $cfg = &glib_fildir_02::read_file($file);
+
+    return if (exists $CFG_FIL_TAXPORT{$fil}); # para no cargarlo dos veces.
+
+    if ($cfg =~ m/\s*TAXPORT_FIDS\s*=\s*("|')(.*?)("|')/) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        $value =~ s/[^a-zA-Z0-9_,]//sg; # dejar solo caracteres permitidos
+
+        my @valores = split(',', $value);
+
+        $CFG_FIL_TAXPORT{$fil}{'FIDS'} = \@valores;
+
+        #print STDERR "CFG TAXPORT_FIDS! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAXPORT_PLANTILLAS\s*=\s*("|')(.*?)("|')/) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        $value =~ s/[^a-zA-Z0-9_\-,\.]//sg; # dejar solo caracteres permitidos
+
+        my @valores = split(',', $value);
+
+        foreach my $tpl (@valores) {
+            $CFG_FIL_TAXPORT{$fil}{'PLANTILLAS'}{$tpl} = 1;
+        };
+
+        #print STDERR "CFG TAXPORT_PLANTILLAS! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAXPORT_FECHAP?_DESDE\s*=\s*("|')(.*?)("|')/s) { # fecha de publicacion, ART_FECHAP
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        if ($value eq 'now') {
+            $value = strftime "%Y%m%d", localtime;
+        } else {
+            $value =~ s/[^0-9]//sg; # dejar solo caracteres permitidos, numeros.
+        }
+
+        $value = '' if ($value !~ /^(\d{8})$/); # formato debe ser YYYYMMDD
+
+        $CFG_FIL_TAXPORT{$fil}{'FECHA_DESDE'} = $value;
+
+        #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAXPORT_ORDEN\s*=\s*("|')(.*?)("|')/s) { # fecha de publicacion, ART_FECHAP
+        my $value = $2;
+        my $taxport_orden = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        if ($value =~ /^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$/) {
+            if ($1 eq 'PUBLICACION') {
+                $taxport_orden = "ART_FECHAP $2, ART_HORAP $2";
+            } elsif ($1 eq 'TITULAR') {
+                $taxport_orden = "ART_TITU $2";
+            } elsif ($1 eq 'CREACION') {
+                $taxport_orden = "ART_AUTOINC $2";
+            }
+        }
+
+        $CFG_FIL_TAXPORT{$fil}{'TAXPORT_ORDEN'} = $taxport_orden;
+
+        #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value] taxport_orden[$taxport_orden]\n";
+    };
+
 };

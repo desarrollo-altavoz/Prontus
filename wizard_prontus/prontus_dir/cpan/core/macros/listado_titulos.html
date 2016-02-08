@@ -7,7 +7,7 @@
               <span>(%%_labelfid%%)</span>
               <span class="ocultar">%%_ts%%</span>
             </div>
-            
+
             <div class="titu-botones">
               <div class="status">
                 <img src="/%%_prontus_id%%/cpan/core/imag/boto/%%_status_pub%%.png" width="18" height="18" alt="%%_status_pub%%licado" title="%%_status_pub%%licado" class="status_pub" />
@@ -34,13 +34,19 @@
                 </span>
                 <!--/borrar fake-->
                 <!--borrar-->
-                <span>
                   <a href="#" onclick="Acciones.borrarArtic(this, '%%_ts%%', 1); return false;" class="borrar_item">
                     <img src="/%%_prontus_id%%/cpan/core/imag/boto/delete_of.png" width="18" height="18" alt="Borrar artículo" title="Borrar artículo" class="cambia-boton" /></a>
                   <img src="/%%_prontus_id%%/cpan/core/imag/loading_button.gif" width="18" height="18" alt="Borrando..." title="Borrando..." class="loading-borrar"/>
-                </span>
                 <!--/borrar-->
-            
+                <!--flecha mover fake-->
+                <span class="flecha_mover_fake">
+                  <img src="/%%_prontus_id%%/cpan/core/imag/boto/mov_of.png" width="18" height="18" alt="Ud no puede despublicar este artículo" title="Ud no puede despublicar este artículo"/></span>
+                <!--/flecha mover fake-->
+                <!--flecha mover-->
+                <a href="#" class="flecha_mover">
+                  <img src="/%%_prontus_id%%/cpan/core/imag/boto/mov_of.png" width="18" height="18" alt="Despublicar de Portada" title="Despublicar de Portada" class="cambia-boton" /></a>
+                <!--/flecha mover-->
+
               </div>
               <div class="autoinc editable%%_editable%%">
                 <span class="editar_item_fake">#%%_autoinc%%</span>
@@ -48,4 +54,4 @@
                 #%%_autoinc%%</a>
               </div>
             </div>
-            
+

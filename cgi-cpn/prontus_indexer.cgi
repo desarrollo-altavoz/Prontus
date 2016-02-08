@@ -1372,7 +1372,6 @@ sub busca_anos {
         if ($day <= $antesdeayer) { # 1.27 En la busqueda de anos no considera los dos ultimos dias.
             if ( $day =~ /^(\d{4})/) {
                 $ano = $1;
-                next if ($ano lt '2014'); # ln 1.0
                 $cc++; # 1.27 Cada 50 directorios descansa 1 segundo.
                 if ($cc >= 50) {
                     sleep(1); # 1.27

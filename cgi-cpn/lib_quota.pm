@@ -177,7 +177,15 @@ sub procesa_command_quota {
       if ( $largo > 10 ) {
         $quota_asig = substr($quota_asig,0,int($largo/2));
       };
-    };
+    } elsif ($quota_out[3] =~ /(\d{2,})\s+(\d{2,})/) {
+      $usado = $1;
+      $quota_asig = $2;
+      # 1.1 Si la cuota asignada es muy grande (o sea, los numeros se pegaron), la parte en dos y toma el primer numero.
+      $largo = length($quota_asig);
+      if ( $largo > 10 ) {
+        $quota_asig = substr($quota_asig,0,int($largo/2));
+      };
+    }
   };
   # return (441856, 512000);
   return ($usado, $quota_asig);

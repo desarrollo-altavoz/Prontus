@@ -194,7 +194,7 @@
                             left: self.foto.instances[id].left
                         });
                         $workArea.find('.img').show();
-                    }, 100);
+                    }, 250);
 
                 } else {
                     $workArea.find('.img').html('');

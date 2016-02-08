@@ -318,6 +318,8 @@ sub actualizar_bd {
         &glib_html_02::print_json_result(0, "El ID unico no se pudo obtener", 'exit=1,ctype=1');
     }
 
+    $artic_obj->tags2bd($base, 1) || return $Artic::ERR;
+
     # Agrega autoinc al XML del artic
     $artic_obj->setear_autoinc($autoinc);
     $base->disconnect;

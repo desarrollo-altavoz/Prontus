@@ -915,6 +915,15 @@ sub parseaVars {
     $pagina =~ s/%%TAXPORT_MAXARTICS%%/$prontus_varglb::TAXPORT_MAXARTICS/ig;
     $pagina =~ s/%%TAXPORT_MAX_WORKERS%%/$prontus_varglb::TAXPORT_MAX_WORKERS/ig;
 
+    #TAXPORT_MODALIDAD
+    if ($prontus_varglb::TAXPORT_MODALIDAD eq '1') {
+      $pagina =~ s/%%TAXPORT_MODALIDAD_V1%%/ checked="checked"/ig;
+      $pagina =~ s/%%TAXPORT_MODALIDAD_V2%%//ig;
+    } else {
+      $pagina =~ s/%%TAXPORT_MODALIDAD_V2%%/ checked="checked"/ig;
+      $pagina =~ s/%%TAXPORT_MODALIDAD_V1%%//ig;
+    }
+
     my $txport_orden = $prontus_varglb::TAXPORT_ORDEN;
     my $direccion = '';
 

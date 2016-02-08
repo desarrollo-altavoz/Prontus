@@ -223,9 +223,9 @@ sub procesa_files {
     # Lee todos los articulos del directorio y agrega la info a la bd.
     my ($ruta_dir_xml) = $_[0];
     my ($base) = $_[1];
-    
+
     # CVI - Se agrega validación por si el directorio no existe
-    return unless(-d $ruta_dir_xml);    
+    return unless(-d $ruta_dir_xml);
     my @lisfile = &glib_fildir_02::lee_dir($ruta_dir_xml);
     @lisfile = grep !/^\./, @lisfile; # Elimina directorios . y ..
 
@@ -246,6 +246,7 @@ sub procesa_files {
             my $regenerar_registro = 1;
             my $ret = $artic_obj->art_insert_bd($base, $regenerar_registro);
             if ($ret) {
+                $artic_obj->tags2bd($base, 0) || return $Artic::ERR;
                 $OK_REGS++;  # Total de reg. insertados normalmente
             }
             else {

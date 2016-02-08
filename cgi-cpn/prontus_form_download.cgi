@@ -22,6 +22,7 @@
 # 1.0.0 - 01/04/2013 - CVI - Primera version.
 # 1.0.1 - 04/06/2015 - EAG - Se restringen archivos a solo ".json"
 # 1.0.2 - 15/07/2015 - EAG - Se agrega verificacion de contenido a archivos json
+# 1.0.3 - 19/01/2016 - JOR - Se soluciona bug en csv, no aparecia ruta a archivos adjuntos.
 #
 # ---------------------------------------------------------------
 # DECLARACIONES GLOBALES.
@@ -123,6 +124,9 @@ main: {
             push(@orderreal, $orderhash{$index});
         };
 
+        my %newheader;
+        my $newheaderorder = 0;
+
         my @files =  &glib_fildir_02::lee_dir("$ROOT$DIRFORM");
         # print "Total: $#files<br><hr>";
         foreach my $file (sort @files) {
@@ -138,6 +142,9 @@ main: {
                 $jsonhashref = &JSON::from_json($json);
             }
             my %jsonhash = %$jsonhashref;
+            my $filesref = $jsonhash{'_files'};
+
+            delete $jsonhash{'_files'};
 
             # Se recorren según el orden
             foreach my $name (@orderreal) {
@@ -151,8 +158,27 @@ main: {
                 push(@orderreal, $name);
                 # undef $jsonhash{$name};
             }
+
+            # Se agregan los archivos si es que hay.
+            if ($filesref) {
+                my %files = %{$filesref};
+
+                foreach my $fieldname (keys %files) {
+                    my $ruta = "http://$prontus_varglb::PUBLIC_SERVER_NAME$files{$fieldname}";
+                    $CSV = $CSV . &lib_form::add_to_csv($ruta);
+                    if (!exists $newheader{$fieldname}) {
+                        $newheaderorder++;
+                        $newheader{$fieldname} = $newheaderorder;
+                    }
+                }
+            }
+
             $CSV =~ s/$lib_form::SEPARADOR$/\n/;
         }
+
+        foreach my $name (sort { $newheader{$a} <=> $newheader{$b} } keys %newheader) {
+            push(@orderreal, $name);
+        };
 
         splice(@orderreal,0,3,'Fecha','Hora','IP');
         my $headers = &lib_form::array_to_csv(@orderreal);

@@ -166,15 +166,17 @@ sub generar_lists {
             my $tema        = $config{'LIST_TEMA'};
             my $subtema     = $config{'LIST_SUBTEMA'};
             my $fids        = $config{'LIST_FIDS'};
+            my $tags        = $config{'LIST_TAGS'};
 
-            if($FORM{'params_especif'}) {
+            if ($FORM{'params_especif'}) {
 
-                next if(!&test_taxo($FORM{'seccion_especif'}, $seccion));
-                next if(!&test_taxo($FORM{'tema_especif'}, $tema));
-                next if(!&test_taxo($FORM{'subtema_especif'}, $subtema));
+                next if (!&test_taxo($FORM{'seccion_especif'}, $seccion));
+                next if (!&test_taxo($FORM{'tema_especif'}, $tema));
+                next if (!&test_taxo($FORM{'subtema_especif'}, $subtema));
 
-                if($FORM{'fid_especif'} eq '' || $fids ne '') {
+                if ($FORM{'fid_especif'} eq '' || $fids ne '') {
                     my $res = grep(/^$FORM{'fid_especif'}$/, split(/,/, $fids));
+
                     unless($res) {
                         next;
                     }
@@ -185,7 +187,7 @@ sub generar_lists {
             my $nom_tabla_exclude = &lib_prontus::set_exclude_port_table($config{'LIST_EXCLUDE_PORT'}, $config{'LIST_EXCLUDE_PORT_AREA'}, $base);
 
             #~ print STDERR "Procesando: $seccion, $tema, $subtema, $fids... \n";
-            &procesar_plantilla($seccion, $tema, $subtema, $fids, $plt, $maxartics, $orden, $base, $nom_tabla_exclude);
+            &procesar_plantilla($seccion, $tema, $subtema, $fids, $tags, $plt, $maxartics, $orden, $base, $nom_tabla_exclude);
         } else {
             print STDERR "Plantilla vacia: $plt\n";
         }
@@ -196,32 +198,37 @@ sub generar_lists {
 
 # ---------------------------------------------------------------
 sub procesar_plantilla {
-# Genera todas las portadas tax (de la 1..n) correspondientes
-# a este nivel taxonomico, para todas las vistas declaradas y fids.
-
-    my ($secc_id, $temas_id, $subtemas_id, $fids, $nombase_plt, $maxartics, $orden, $base, $nom_tabla_exclude) = @_;
-
-    #TODO Queda pendiente el manejo de semáforos
-
+    # Genera todas las portadas tax (de la 1..n) correspondientes
+    # a este nivel taxonomico, para todas las vistas declaradas y fids.
+    my ($secc_id, $temas_id, $subtemas_id, $fids, $tags, $nombase_plt, $maxartics, $orden, $base, $nom_tabla_exclude) = @_;
     my %filas = ();
-
     my $filtros = &crear_filtros_list($secc_id, $temas_id, $subtemas_id, $fids, $CURR_DTIME);
     # print STDERR "[$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
     my ($secc_nom, $filler) = split (/\t\t/, $TABLA_SECC{$secc_id});
-
-    my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
-        . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
-        . "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
+    my $sql;
 
     if ($nom_tabla_exclude) {
         $filtros .= " AND ART_ID NOT IN (SELECT EXCLUDE_ART_ID FROM $nom_tabla_exclude)";
     };
 
+    # Agregar filtros por tag.
+    if ($tags) {
+        $sql = "SELECT ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
+            . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA "
+            . "FROM TAGSART LEFT JOIN ART ON (TAGSART_IDART=ART_ID) WHERE TAGSART_IDTAGS IN ($tags) "
+            . "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
+    } else {
+        $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
+            . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
+            . "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
+    }
+
     if ($filtros ne '') {
         $sql =~ s/%%FILTRO%%/ where $filtros /;
+        $sql =~ s/%%FILTRO%%/ and $filtros / if ($tags);
 
     } else {
-        $sql =~ s/%%FILTRO%%/$filtros/;
+        $sql =~ s/%%FILTRO%%//;
     };
 
     my ($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension,
@@ -439,6 +446,7 @@ sub carga_config {
     $config_default{'LIST_TEMA'} = '';
     $config_default{'LIST_SUBTEMA'} = '';
     $config_default{'LIST_FIDS'} = '';
+    $config_default{'LIST_TAGS'} = ''; # listado de tags, separados por coma.
     $config_default{'LIST_ORDEN'} = $prontus_varglb::LIST_ORDEN;
 
     $config_default{'LIST_EXCLUDE_PORT'} = '';
@@ -451,14 +459,14 @@ sub carga_config {
             my $name = $1;
             my $value = $2;
 
-            if($name eq 'LIST_ORDEN') {
+            if ($name eq 'LIST_ORDEN') {
                 $value = &get_taxport_orden($value);
 
-            } elsif($name eq 'LIST_MAXARTICS') {
+            } elsif ($name eq 'LIST_MAXARTICS') {
                 $value =~ s/[^\d]//ig;
                 $value = $prontus_varglb::LIST_MAXARTICS unless($value);
 
-            } elsif($name eq 'LIST_SECCION' || $name eq 'LIST_TEMA' || $name eq 'LIST_SUBTEMA' || $name eq 'LIST_EXCLUDE_PORT_AREA') {
+            } elsif ($name eq 'LIST_SECCION' || $name eq 'LIST_TEMA' || $name eq 'LIST_SUBTEMA' || $name eq 'LIST_EXCLUDE_PORT_AREA' || $name eq 'LIST_TAGS') {
                 $value =~ s/[^\d,]//isg;
                 $value =~ s/,{2,}/,/g;
                 $value =~ s/^,+//g;
@@ -477,10 +485,10 @@ sub carga_config {
                 } else {
                     $value = $path_xml;
                 };
-            };
+            }
 
             $config{$name} = $value;
-        };
+        }
 
         # Elimina mensajes de la plantilla.
         $plantilla =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
@@ -499,9 +507,8 @@ sub carga_config {
 
 # ---------------------------------------------------------------
 sub crear_filtros_list {
-# Genera segmento variable del sql para encontrar los articulos.
-# Aplica a portadas tax normales y a portadillas de calendarios taxonomicos
-
+    # Genera segmento variable del sql para encontrar los articulos.
+    # Aplica a portadas tax normales y a portadillas de calendarios taxonomicos
     my ($id_secc1, $id_tema1, $id_subtema1, $fid, $curr_dtime) = @_;
 
     $id_secc1 =~ s/"/""/g;
@@ -613,14 +620,17 @@ sub valida_param {
 }
 # ---------------------------------------------------------------
 sub test_taxo {
-
     my ($secc, $strseccs) = @_;
+
     return 1 unless($secc);
-    return 1 if($strseccs eq '');
+    return 1 if ($strseccs eq '');
+
     my $res = grep(/^$secc$/, split(/,/, $strseccs));
-    if($res) {
+
+    if ($res) {
         return 1;
     }
+
     return 0;
 };
 

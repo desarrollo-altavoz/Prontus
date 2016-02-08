@@ -1571,7 +1571,6 @@ sub borra_artic {
                                   . '/' . $tem
                                   . '/' . $stem;
 
-        # Regenera las portadas taxonomicas
         $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;

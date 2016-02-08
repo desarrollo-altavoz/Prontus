@@ -36,6 +36,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0.0 - 15/01/2013 - CVI - Primera Version.
+# 2.0.0 - 15/01/2013 - JOR - Cambia logica del script para hacerlo un poco mas eficiente.
 #
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -45,7 +46,7 @@
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
-    unshift(@INC,$pathLibsProntus);
+    unshift(@INC, $pathLibsProntus);
 };
 
 # Captura STDERR
@@ -61,7 +62,6 @@ use glib_cgi_04;
 use glib_fildir_02;
 use strict;
 use DBI;
-
 use lib_maxrunning;
 
 # Soporta sólo 1 copia andando
@@ -73,56 +73,56 @@ if (&lib_maxrunning::maxExcedido(1)) {
 
 my ($LOOP, %FORM, $NOM_PRONTUS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC);
 my %NOMBASE_PLTS;
-# my %HASH_FILES;
-# cd /sites/prontus_development/web/cgi-cpn
-# perl /sites/prontus_development/web/cgi-cpn/prontus_cron_taxport.cgi prontus_toolbox
 my ($FILASXPAG);
-
-if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
-    print "Error: Document root no valido.\n";
-    exit;
-};
-
-$FORM{'prontus'} = $ARGV[0];
-if ( (! -d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} eq '')  || ($FORM{'prontus'} =~ /^\//) )  {
-    print "\nError: Directorio del publicador no es valido.";
-    print "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como parametro de esta CGI\n";
-    exit;
-};
-
-# Carga variables de configuracion de prontus.
-my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
-&lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
-
 my %LEVELS2TRIGGER;
 my %FIDS2PROCESS;
 
+$FORM{'prontus'} = $ARGV[0];
 $FORM{'fid2process'} = $ARGV[1];
 
-main:{
+main: {
+    if ((!-d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq ''))  {
+        print "Error: Document root no valido.\n";
+
+        exit;
+    }
+
+    if ((!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} eq '')  || ($FORM{'prontus'} =~ /^\//))  {
+        print "\nError: Directorio del publicador no es valido.";
+        print "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como parametro de esta CGI\n";
+
+        exit;
+    }
+
+    # Carga variables de configuracion de prontus.
+    my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
+    &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
+
     # Se cargan todos los niveles, de manera inteligente
     &cargar_taxports();
+
+    # Se gatillan los procesos de regeneracion.
     &gatillar_procesos();
 };
 
 # ---------------------------------------------------------------
 sub conecta_db {
-
     # Conectar a BD
     my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
-    if (! ref($base)) {
+
+    if (!ref($base)) {
         print "ERROR: $msg_err_bd\n";
+
         exit;
-    };
+    }
+
     $base->{mysql_auto_reconnect} = 1;
-    #~ $base->{InactiveDestroy} = 1;
 
     return $base;
 };
 
 # ---------------------------------------------------------------
 sub cargar_taxports {
-
     my $base = &conecta_db();
 
     # precarga tabla de temas en hash global para uso posterior reiterado.
@@ -134,8 +134,6 @@ sub cargar_taxports {
     $base->disconnect;
 
     # secc
-    my $pid;
-    my (@pid) = (); # PIDs de los procesos hijos.
     foreach my $secc_id (keys %TABLA_SECC) {
         my ($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
         &agregar_taxports_thislevel($secc_id, '', '');
@@ -151,41 +149,39 @@ sub cargar_taxports {
                 my ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
                 next unless($temas_id eq $subtemas_idparent);
                 &agregar_taxports_thislevel($secc_id, $temas_id, $subtemas_id);
-            };
-
-        }; # foreach temas
-
-    }; # foreach seccs
+            }
+        } # foreach temas
+    } # foreach seccs
 
     my @levels = keys %LEVELS2TRIGGER;
     my $totartics = (scalar @levels);
-    if($totartics == 0) {
+
+    if ($totartics == 0) {
         &agregar_taxports_thislevel('', '', ''); # todas
-    };
+    }
 };
 
 # ---------------------------------------------------------------
 sub agregar_taxports_thislevel {
-# Genera todas las portadas tax (de la 1..n) correspondientes
-# a este nivel taxonomico, para todas las vistas declaradas y fids.
-
+    # Genera todas las portadas tax (de la 1..n) correspondientes
+    # a este nivel taxonomico, para todas las vistas declaradas y fids.
     my ($secc_id, $temas_id, $subtemas_id) = @_;
 
-    if($subtemas_id) {
+    if ($subtemas_id) {
         $LEVELS2TRIGGER{"$secc_id/$temas_id/$subtemas_id"} = 1;
         $LEVELS2TRIGGER{"$secc_id/$temas_id/"} = 0;
         $LEVELS2TRIGGER{"$secc_id//"} = 0;
 
     } elsif($temas_id) {
-        if(! exists $LEVELS2TRIGGER{"$secc_id/$temas_id/"}) {
+        if (!exists $LEVELS2TRIGGER{"$secc_id/$temas_id/"}) {
             $LEVELS2TRIGGER{"$secc_id/$temas_id/"} = 1;
             $LEVELS2TRIGGER{"$secc_id//"} = 0;
         }
     } else {
-        if(! exists $LEVELS2TRIGGER{"$secc_id//"}) {
+        if (!exists $LEVELS2TRIGGER{"$secc_id//"}) {
             $LEVELS2TRIGGER{"$secc_id//"} = 1;
         }
-    };
+    }
 };
 
 # ---------------------------------------------------------------
@@ -195,7 +191,6 @@ sub gatillar_procesos {
     $pathnice = "$pathnice -n19 " if($pathnice);
 
     foreach my $fid_name (keys %FIDS2PROCESS) { # key = 'fid_general:General(general.php)'
-
         foreach my $levels (sort keys %LEVELS2TRIGGER) {
             next unless($LEVELS2TRIGGER{$levels});
 
@@ -207,30 +202,30 @@ sub gatillar_procesos {
                 print "Muchos procesos simultaneos... esperando 5 segundos.\n";
                 $safetycounter++;
                 sleep(5);
-            };
+            }
 
             my $param_especif_taxport = "$fid_name/$levels";
             my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
+
             print "[" . &glib_hrfec_02::get_dtime_pack4() . "] $cmd\n";
+
             system $cmd;
         }
     }
 }
 # ---------------------------------------------------------------
 sub check_taxport_running {
-
     my($res) = qx/ps axww | grep 'prontus_cron_taxport.cgi' | grep -v ' grep ' | grep -v 'sh -c' | wc -l/;
+
     $res =~ s/\D//gs;
     return $res;
 };
 # ---------------------------------------------------------------
 sub get_fids2process {
-# Obtiene fids para los cuales se generaran portadas taxonomicas.
-# Estos son solo los que cuenten con plantilla taxonomica en el dir correspondiente:
-# /<_prontus_id>/plantillas/tax/port/<_fid>[-<_mv>]/taxport[_<_seccion>][_<_tema>][_<_subtema>].<ext>
-
+    # Obtiene fids para los cuales se generaran portadas taxonomicas.
+    # Estos son solo los que cuenten con plantilla taxonomica en el dir correspondiente:
+    # /<_prontus_id>/plantillas/tax/port/<_fid>[-<_mv>]/taxport[_<_seccion>][_<_tema>][_<_subtema>].<ext>
     my $base = $_[0];
-
     my %fids;
     my %fidswithtax;
     my $fid;
@@ -238,21 +233,22 @@ sub get_fids2process {
     foreach my $key (keys %prontus_varglb::FORM_PLTS) { # key = 'fid_general:General(general.php)'
         my $fid_name;
         next if ($key !~ /^(\w+) *:/);
+
         $fid_name = $1;
         $fids{$fid_name} = 1;
-    };
+    }
 
     my $sql = "select ART_TIPOFICHA from ART where ART_IDSECC1<>0 or ART_IDSECC2<>0 or ART_IDSECC3<>0 group by ART_TIPOFICHA";
     my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($fid));
+
     while ($salida->fetch) {
-        if($fids{$fid}) {
+        if ($fids{$fid}) {
             $fidswithtax{$fid} = 1;
-        };
-    };
+        }
+    }
 
     # Si viene por parametro el fid, se utiliza solo ese.
     if ($FORM{'fid2process'}) {
-
         if (!defined $fids{$FORM{'fid2process'}}) {
             print "ERROR: El FID [$FORM{'fid2process'}] no existe en la configuracion de Prontus.\n";
             exit;

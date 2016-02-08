@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+# ---------------------------------------------------------------
+# Prontus CMS
+# http://www.prontus.cl
+# by Altavoz.net
+#
+# licensed under LGPL license.
+# http://www.prontus.cl/license.html
+# ---------------------------------------------------------------
+
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
@@ -68,6 +77,7 @@ main:{
     my $filter;
 
     foreach my $fid (keys %fids2process) {
+        print STDERR "fid[$fid]\n";
         &queue_procs(0, 0, 0, $fid, $PARAMS{'ts'});
         &queue_procs($PARAMS{'s'}, 0, 0, $fid, $PARAMS{'ts'}) if ($PARAMS{'s'});
         &queue_procs($PARAMS{'s'}, $PARAMS{'t'}, 0, $fid, $PARAMS{'ts'}) if ($PARAMS{'s'} && $PARAMS{'t'});
@@ -114,13 +124,16 @@ sub get_fids2process {
             if (-d "$dir/$item" && $item =~ /^(\w+)-?/) {
                 my $fname = $1;
                 next if ($fname eq 'all');
-                $fids{$fname} = 1 if (exists $FIDS{$fname} || $fname =~ /^fil_/);
-
-                if ($fname =~ /^(fil_.*?)$/) {
-                    &cargar_fil_cfg("$dir/$item/filtros.cfg", $1);
-                }
+                $fids{$fname} = 1 if (exists $FIDS{$fname});
             }
         }
+    };
+
+    # Se agregan como fids los filtros para usar la misma logica.
+    my @listado_filtros = &get_taxport_fil();
+
+    foreach my $fil (@listado_filtros) {
+        $fids{$fil} = $1;
     };
 
     # si se invoca sin fid, considera el filtro sin fid
@@ -199,6 +212,11 @@ sub queue_procs {
     if ($ts) {
         my $nro_pag = &get_pagina_artic($ts, $filtros, $nro_paginas, $taxport_order, $BD);
 
+        if ($prontus_varglb::TAXPORT_MODALIDAD eq '2' && $nro_pag > 1) {
+            print STDERR "Se omite nro_pag[$nro_pag], taxport modalidad 2 activada\n";
+            return;
+        }
+
         if ($nro_pag) {
             print STDERR "Actualiza pagina especifica nro_pag[$nro_pag]\n";
 
@@ -229,7 +247,13 @@ sub queue_procs {
                 my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $fid/$secc_id/$temas_id/$subtemas_id/1 >/dev/null 2>&1 &";
                 system($cmd);
             } else {
-                &put_queue($secc_id, $temas_id, $subtemas_id, $fid, $x);
+                # Solo se ejecuta si esta habilitada la modalidad 1.
+                # Funcionamiento tradicional. Genración de archivos estáticos cada vez que se crea/actualiza/elimina un artículo.
+                if ($prontus_varglb::TAXPORT_MODALIDAD eq '1') {
+                    &put_queue($secc_id, $temas_id, $subtemas_id, $fid, $x);
+                } else {
+                    last;
+                }
             }
         }
     }
@@ -435,6 +459,24 @@ sub get_tot_artics {
     $count_art = $prontus_varglb::TAXPORT_MAXARTICS if ($count_art > $prontus_varglb::TAXPORT_MAXARTICS);
 
     return $count_art;
+};
+
+# -------------------------------------------------------------------------
+# Se buscan los directorios que comiencen con fil_ en las plantillas de taxport.
+sub get_taxport_fil {
+    my ($ruta_dir) = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$RELDIR_PORT_TMP";
+    my @listado = glob("$ruta_dir/fil_*");
+    my @filtros;
+
+    foreach my $dir (@listado) {
+        if ($dir =~ /fil_(.*?)$/) {
+            push @filtros, "fil_" . $1;
+            #&cargar_fil_cfg("$dir/filtros.cfg", "fil_" . $1);
+        };
+
+    };
+
+    return @filtros;
 };
 
 sub cargar_fil_cfg {
