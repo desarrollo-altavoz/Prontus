@@ -197,6 +197,7 @@
 #                          Si no hay cambios en el restio del ano en curso, solo indexa los ultimos 2 dias.
 #                        - El indexado igual se puede forzar usando el ano 7777 o cualquier otro ano.
 #                        - Limpia un poco el codigo.
+# 1.28   03/02/2015  MPG - Aumenta a 20 los metadatos para busqueda
 
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -976,7 +977,7 @@ sub indexa {
 
       # 1.20
       my $strtofile = "$FIDX=$fechap|$filepath|$titular|$meta1|$meta2|$meta3|$descripcion|$seccion|$tema|$subtema";
-      for (my $k=0; $k<10;$k++) {
+      for (my $k=0; $k<20;$k++) {
         $strtofile = $strtofile."|$data[$k]";
       };
       $strtofile = $strtofile."\n";
@@ -1184,7 +1185,7 @@ sub get_contents {
   my($meta1_var) = $CFG{'META1'}; # 1.7
   my($meta2_var) = $CFG{'META2'}; # 1.7
   my($meta3_var) = $CFG{'META3'}; # 1.7
-  for($k=0;$k<10;$k++) {
+  for($k=0;$k<20;$k++) {
     # $metadata_var[$k]=$CFG{'METADATA'.$k};
     $metadata_var[$k]=$CFG{'METADATA'.($k+1)}; # 1.23.3
   }
@@ -1262,7 +1263,7 @@ sub get_contents {
   $meta2 =~ s/[\n\r]/ /sg;
   $meta3 =~ s/[\n\r]/ /sg;
   # METADATAk
-  for($k=0;$k<10;$k++) {
+  for($k=0;$k<20;$k++) {
     my $mdata = $metadata_var[$k];
     next unless($mdata);
     if($mdata eq '_prontus_id') {
