@@ -256,8 +256,8 @@ sub purge {
                         foreach my $sub (@SUBDOMAINS) {
                             my @files = map {"http://$sub.$zone" . $_} @{$chunk}; # agregar la zona al principio.
                             my %data = (
-                                'files' => \@files,
-                                'tags' => []
+                                'files' => \@files
+                                #'tags' => []
                             );
 
                             print STDERR "[$$] cloudflare purge: sub[$sub] name[$zone] id[$zones_id{$zone}] files[" . (join(",", @files)) . "]\n";

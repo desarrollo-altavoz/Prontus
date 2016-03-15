@@ -217,7 +217,7 @@ sub generar_taxports_thislevel {
 
                 my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
 
-                if ($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pagina > 0) {
+                if ($BUF_PLT{$key_hash} =~ /%%_no_paginar%%/ && $nro_pagina > 1) {
                     next;
                 }
 

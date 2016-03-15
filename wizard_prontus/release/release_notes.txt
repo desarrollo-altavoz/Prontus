@@ -8629,7 +8629,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
 
 ====================================================================================================
-11.2.89 - 28/12/2015 - JOR/EAG
+11.2.89 - 30/12/2015 - JOR
 ====================================================================================================
 - FID
     [bugfixes]
@@ -8654,7 +8654,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Prontus en general
     [cambios]
         - Se elimina la ayuda rápida.
-        - Se mejora la lectura de la configuracion de media externa
     [bugfixes]
         - No se estaba validando la versión del módulo JSON en el método que calcula la duración de multimedia.
     [files]
@@ -8681,15 +8680,40 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/js-local/Preview.class.js
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
 
-- Portadas taxonómicas
-    [mejoras]
+- Buscador
+    [bugfixes]
+        - Se soluciona escapeo de los valores de las marcas antes del parseo para evitar posibles XSS.
     [files]
-        /cgi-cpn/prontus_cron_taxport_worker.cgi
-        /cgi-cpn/prontus_cron_taxport.cgi
-        /cgi-cpn/prontus_regenera_taxport.cgi
-        /cgi-cpn/prontus_admin_main.cgi
-        /cgi-cpn/prontus_cfg_save.cgi
-        /cgi-cpn/lib_prontus.pm
+        /cgi-bin/prontus_search.cgi
+
+
+====================================================================================================
+11.2.90 - 08/01/2016 - JOR/NAR/EAG/MPG
+====================================================================================================
+- Prontus en general
+    [cambios]
+        - Se mejora la lectura de la configuracion de media externa
+        - Se agrega chequeo de quota con formato linux.
+        - Se elimina atributo name de las fotos del banco imagenes por causar problemas en el vtxt.
+        - Se agrega flecha mover articulo en mouseover sobre la fila de los articulos publicados.
+        - La API de cloudflare hizo cambios en el llamado al método purge, por lo tanto fue necesario cambiar la ejecución del método.
+    [files]
+      /cgi-cpn/prontus_purge_cache.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_quota.pm
+        /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/listado_titulos.html
+    [bugfixes]
+        - No se estaban agregando los tags al regenerar la tabla de artículos de prontus ni al copiar un artículo.
+    [files]
+        /cgi-cpn/prontus_regenerabd_real.cgi
+        /cgi-cpn/prontus_art_copy.cgi
+
+- Prontus form
+    [bugfixes]
+        - Se soluciona problema con cabecera en archivo de backup. Con adjuntos la cabecera se corría.
+    [files]
+        /cgi-cpn/prontus_form_download.cgi
 
 - Transcodificación
     [mejoras]
@@ -8708,19 +8732,48 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
 
-- Buscador
-    [bugfixes]
-        - Se soluciona escapeo de los valores de las marcas antes del parseo para evitar posibles XSS.
-    [files]
-        /cgi-bin/prontus_search.cgi
-
-====================================================================================================
-11.2.90 - 08/01/2016 - NAR
-====================================================================================================
-
-- loop_artic
+- Artículos
     [mejoras]
         - Se habilita marca loop_artic en portadas, portadas tax y tag
     [files]
-        - cgi-cpn/lib_prontus.pm
-        - cgi-cpn/lib_tax.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_tax.pm
+
+- Buscador
+    [bugfixes]
+        - Se soluciona problema con indexador, había un límite de fecha en duro.
+        - Se aumenta a 20 el número de metadatos. Variable METADATA<i> va del 1 al 20.
+    [files]
+        /cgi-cpn/prontus_indexer.cgi
+        /wizard_prontus/cpan/core/macros/admin_cfg_search.html
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-bin/prontus_search.cgi
+
+- Portadas taxonómicas
+    [mejoras]
+        - Se mejora la ejecución del proceso de generacion de portadas taxonómicas. Se deja de utilizar fork y se adopta la modalidad de proceso maestro y workers. El número de workers es configurable en la variable TAXPORT_MAX_WORKERS disponible en la sección "Categorías" de la configuración.
+        - Se agrega cgi para visualización de taxport de forma dinámica.
+            * Se agrega a la configuración la variable TAXPORT_MODALIDAD, donde se indica la modalidad de la taxport:
+              TRADICIONAL: Funcionamiento tradicional. Genración de archivos estáticos cada vez que se crea/actualiza/elimina un artículo.
+              DINAMICA: Generación de archivos estáticos solo de la primera página de cada combinación. Para lo demás se dispone de una cgi para generar "on demand" las portadas taxonómicas.
+            * http://<public_server_name>/cgi-bin/prontus_taxport.cgi?taxport=/<prontus_id>/<all|fid>/<plantilla>_<seccion>_<tema>_<subtema>_<nro_pagina>.html
+            * Se agrega al manual de desarrollo: http://develop.prontus.cl/taxport-dinamicas/prontus_desarrollo_v11_2/2016-02-05/111517.html
+
+    [files]
+        /cgi-bin/prontus_taxport.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/lib_prontus.pm
+
+- Portadas list
+    [mejoras]
+        - Se agrega filtro por tags. Se debe utilizar la marca LIST_TAGS:
+          <!-- CONFIG LIST_TAGS = 1,2,3 -->
+          Los tags id deben ir separados por comas.
+    [files]
+      /cgi-cpn/prontus_cron_list.cgi
+

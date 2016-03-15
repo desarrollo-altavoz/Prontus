@@ -1,4 +1,16 @@
 ====================================================================================================
+11.2.89 - 30/12/2015
+====================================================================================================
+- bugfix: Se soluciona problema con el arrastre de fotos al cuerpo desde el banco de imagenes luego de hacer click en el link "Mostrar X imágenes restantes". Quedaba deshabilitada el arrastre luego de esta acción.
+- bugfix: No se estaba validando la versión del módulo JSON en el método que calcula la duración de multimedia.
+- bugfix: Se soluciona escapeo de los valores de las marcas antes del parseo para evitar posibles XSS.
+- improvement: Se destaca el campo de "Fotofija" cuando se arrastra una foto hacia esa área.
+- changes: Se agrega otro tipo de include, "Forzar Include SSI Virtual" a "Insertar HTML o Javascript" dentro del VTXT. El cual hace un include ssi virtual en vez de file.
+- changes: Se elimina la ayuda rápida por estar desactualizada.
+- changes: Se quita el previsualizador de portada (ubicado a la derecha del listado de artículos no publicados).
+- changes: Se cambia el número de artículos a mostrar de 10, 25 y 50 a 50, 100 y 150.
+
+====================================================================================================
 11.2.88 - 16/11/2015
 ====================================================================================================
 - improvement: Se agrega configuración de Caché para obtener un seteo más fino en el uso de varnish o cloudflare.
