@@ -19,6 +19,7 @@
 # HISTORIAL DE VERSIONES.
 #-----------------------
 # 1.0.0 - 05/2011 - CVI - Primera version.
+# 1.1.0 - 05/2011 - MPG - Agrega funciones para regeneración masiva.
 
 #-------------------------------BEGIN LIBRERIA------------------
 #---------------------------------------------------------------
@@ -231,7 +232,27 @@ sub clear_cache {
     }
 };
 
+# ---------------------------------------------------------------
+sub get_tag_noms {
+    my $base = shift;
+    my $tag_id = shift;
+    my %tag_noms;
 
+    my $sql = "select TAGS_TAG, TAGS_NOM4VISTAS from TAGS where TAGS_ID = '$tag_id'";
+    my $tag;
+    my $nom4vistas;
+    my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($tag, $nom4vistas));
+    while ($salida->fetch) {
+        $tag_noms{''} = &lib_prontus::escape_html($tag); # nombre en la vista default o ppal
+        while ($nom4vistas =~ /(^|\n)(\w+)\t(.*?)($|\n)/sg) {
+            my $vista = $2;
+            my $nom = $3;
+            $tag_noms{$vista} = &lib_prontus::escape_html($nom); # nombre en cada vista
+        };
+    };
+    $salida->finish;
+    return %tag_noms;
+};
 
 
 
