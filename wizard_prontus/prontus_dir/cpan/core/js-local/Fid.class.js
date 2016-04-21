@@ -167,6 +167,7 @@ var Fid = {
                                 '<div>' + realNomFile + labelSize + '</div>' +
                                 '<img src="' + relPath + '" id="' + idFoto  + '" width="' + wFoto + '">' +
                                 '</div>' +
+                                '<input type="hidden" name="_fotoreal" value="' + realNomFile + '">' +
                                 '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">');
                     }
                 },
@@ -243,12 +244,13 @@ var Fid = {
                     return true;
                 } else {
                     var arrResp = [];
-                    arrResp = data.split(","); // $idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile
+                    arrResp = data.split(","); // $idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile,$nomReal
                     var idFoto = arrResp[0];
                     var wFoto = arrResp[1];
                     var hFoto = arrResp[2];
                     var relPath = arrResp[3];
                     var nomFile = arrResp[4];
+                    var nomReal = arrResp[5];
                     var labelSize = '<br/><span class="ST">(' + wFoto + ' x ' + hFoto + ')</span>';
                     if (wFoto > 100) {
                         wFoto = 100;
@@ -258,6 +260,7 @@ var Fid = {
                             '<div>' + fileObj.name + labelSize + '</div>' +
                             '<img src="' + relPath + '" id="' + idFoto  + '" width="' + wFoto + '">' +
                             '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">' +
+                            '<input type="hidden" name="_fotoreal" value="' + nomReal + '">' +
                             '</div>');
                     return true;
                 }
