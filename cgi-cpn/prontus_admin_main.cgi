@@ -1180,6 +1180,16 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URLS_NO%%/ checked="checked"/ig;
     };
 
+
+    if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
+        $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%//ig;
+    } else {
+        $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%//ig;
+        $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%/ checked="checked"/ig;
+    };
+
+
     if ($prontus_varglb::BLOQUEO_EDICION eq '0' || $prontus_varglb::BLOQUEO_EDICION eq '') {
         $pagina =~ s/%%BLOQUEO_EDICION_V0%%/ checked="checked"/ig;
         $pagina =~ s/%%BLOQUEO_EDICION_V1%%//ig;
