@@ -41,6 +41,11 @@
 # PLANTILLAS HTML UTILIZADAS.
 # ------------------------
 # No registra.
+# ---------------------------------------------------------------
+# HISTORIAL DE VERSIONES.
+# ---------------------------
+# 1.0 - XXX - xx/xx/xxxx - primera version
+# 1.1 - SCT - 21/04/2016 - Se agrega el nombre de la foto original para ser procesado: $FORM{'filename'}
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
 # DECLARACIONES GLOBALES.
@@ -105,7 +110,7 @@ main: {
     # Carga variables de configuracion de prontus.
     &lib_prontus::load_config($path_conf);
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
-    
+
 
     # print STDERR "PASA OK\ntrace_info[$trace_info]\n\n";
 
@@ -142,6 +147,7 @@ main: {
 
     my $src_path = $FORM{'filedata'};
     $trace_info .= "src_path[$src_path] dst_path[$dst_path] \n";
+
     &File::Copy::move($src_path, $dst_path);
 
 
@@ -170,7 +176,7 @@ main: {
             };
         };
 
-        print "$idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile"; # se devuelve para presntarlo en la pagina y tb. para guardarlo en hiddens
+        print "$idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile,$FORM{'filename'}"; # se devuelve para presntarlo en la pagina y tb. para guardarlo en hiddens
                              # y luego tomar desde ahi la imagen para crearla.
     } else {
         print STDERR "error al subir imagen:\n$trace_info";
