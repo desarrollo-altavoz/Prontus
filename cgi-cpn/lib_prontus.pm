@@ -1282,6 +1282,12 @@ sub load_config {
   };
   $friendly_urls_largo_titular = '75' if (!$friendly_urls_largo_titular);
 
+  my $friendly_url_images = 'NO'; # valor por defecto.
+  if ($buffer =~ m/\s*FRIENDLY_URL_IMAGES\s*=\s*("|')(.*?)("|')/) { # SI | NO
+    $friendly_url_images = $2;
+  };
+
+
   my $comentarios = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*COMENTARIOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $comentarios = $2;
@@ -2431,6 +2437,7 @@ sub load_config {
   $prontus_varglb::PRONTUS_LOG = $prontus_log;
 
   $prontus_varglb::FRIENDLY_URLS = $friendly_urls;
+  $prontus_varglb::FRIENDLY_URL_IMAGES = $friendly_url_images;
   $prontus_varglb::FRIENDLY_URLS_VERSION = $friendly_urls_version;
   $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $friendly_urls_largo_titular;
 
