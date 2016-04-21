@@ -597,6 +597,7 @@ sub _get_newnom_arch {
     my ($nom_campo) = shift;
     my ($val_campo) = shift;
     my ($arch_existente) = shift;
+    my ($nom_foto_orig) = shift;
 
     my $nom_arch;
 
@@ -611,7 +612,7 @@ sub _get_newnom_arch {
 
     if ($type eq 'foto') {
         $this->_check_ext_foto($val_campo) || return '';
-        $nom_arch = $this->_get_nom_foto($val_campo, $arch_existente);
+        $nom_arch = $this->_get_nom_foto($val_campo, $arch_existente,$nom_foto_orig);
     };
 
     if ($type eq 'asocfile') {
@@ -626,6 +627,7 @@ sub _get_newnom_arch {
 
 # ---------------------------------------------------------------
 sub _check_ext_foto {
+
     my ($this) = shift;
     my ($path_foto) = shift;
 
@@ -741,13 +743,28 @@ sub _get_nom_foto {
 # Dicho nombre comenzara con el correlativo sgte al ultimo ingresado
 # 10/03/2011 - CVI - Ahora se hará un random para minimizar que el nombre no se repita
 # 20/02/2012 - CVI - Se corrige random, y se cambia a un esquema mejor
+# 21/04/2016 - SCT - Se procesa el nombre original de la foto para agregarlo al path final
+
     my $this = shift;
 
     my $path_foto = shift;
     my $foto_existente = shift;
+    my $nom_foto_orig = shift;
 
-    #~ print STDERR "foto_existente[$foto_existente]\n";
-    my $regexp = "--regexp='".$this->{ts}.'\.[a-zA-Z]\{1,\}$'."'";
+    if($nom_foto_orig) {
+        $nom_foto_orig =~ s/\_/ /sig;
+        $nom_foto_orig =~ s/^\s+//;
+
+        $nom_foto_orig = &lib_prontus::ajusta_nchars($nom_foto_orig, 50);
+        $nom_foto_orig =~ s/ /\_/sig;
+        $nom_foto_orig =~ s/\.\.\.//si;
+        $nom_foto_orig =~ s/\s*$//;
+
+        $nom_foto_orig = "_".$nom_foto_orig;
+    };
+
+    my $regexp = "--regexp='".$this->{ts}.'\_*[a-zA-Z0-9\_\-]\{0,\}\.[a-zA-Z]\{1,\}$'."'";
+    #~ my $regexp = "--regexp='".$this->{ts}.'\.[a-zA-Z]\{1,\}$'."'"; -> ANTES
     my $res = `ls $this->{dst_foto} | grep $regexp`;
 
     my @files = split(/\s+/, $res);
@@ -763,7 +780,8 @@ sub _get_nom_foto {
     }
     my $num = $max + 1;
     $num = &glib_str_02::format_n($num, 8) if(length($num) < 8);
-    my $nomfile = 'foto_' . $num . $this->{ts};
+    my $nomfile = 'foto_' . $num . $this->{ts} . $nom_foto_orig;
+    print STDERR "NOMFILE[$nomfile]\n";
 
     my $ext;
     if ($path_foto =~ /(\/|\\)?([^\/\\]+?)(\.\w+)$/) {
@@ -805,14 +823,17 @@ sub _guarda_fotosbatch {
     my $prontus_id = $this->{prontus_id};
     my $dst_dir = $this->{'dst_foto'};
 
+
     my $rel_dir_uploadify = "/$prontus_id/cpan/procs/uploadify";
     my $dir_uploadify = "$document_root$rel_dir_uploadify";
     &glib_fildir_02::check_dir($dir_uploadify);
 
     foreach my $nom_campo (keys %{$this->{campos}}) {
+
         next if ($nom_campo !~ /^_fotobatch\d+/);
         my $val_campo = $this->{campos}->{$nom_campo}; # path de la foto, pero s/doc. root
         my $path_foto_batch = "$document_root$val_campo";
+
         next if ((!-f $path_foto_batch) || (!-s $path_foto_batch));
 
         my $nom_arch;
@@ -820,7 +841,15 @@ sub _guarda_fotosbatch {
         # Variables especiales solo para FOTOs
         my ($msg_size, $wfoto, $hfoto);
 
-        $nom_arch = $this->_get_newnom_arch('foto', '', $path_foto_batch, '');
+        my $nom_foto_real = "";
+        if($this->{campos}->{"_fotoreal"}) {
+            $nom_foto_real = $this->{campos}->{"_fotoreal"};
+            if ($nom_foto_real =~ /(.*?)\.(.*?)/) {
+                $nom_foto_real = $1;
+                $nom_foto_real = &lib_prontus::strip_text($nom_foto_real);
+            }
+        }
+        $nom_arch = $this->_get_newnom_arch('foto', '', $path_foto_batch, '', $nom_foto_real);
         next if ($nom_arch eq '');
         &glib_fildir_02::check_dir($dst_dir);
         &File::Copy::move($path_foto_batch, "$dst_dir/$nom_arch");
@@ -993,13 +1022,22 @@ sub _guarda_fotosfijas {
         # Solo procede si viene ancho o alto
         if (($maxw =~ /^\d+$/) || ($maxh =~ /^\d+$/)) {
             # si la FOTO es externa al articulo pero local al server:
-            if ($val_campo =~ /\/(foto_\w+)$this->{ts}\.\w+/) {
+            #~ if ($val_campo =~ /\/(foto_\w+)$this->{ts}\.\w+/) {
+            # 1.1 Se hace match del nombre de la foto
+            # 1.2 Se agrega if para fotos que mantengan el nombre con el que se sube - SCT
+            my $nom_foto_orig = "";
+            if ($val_campo =~ /\/(foto_\w+)$this->{ts}(.*?)\.\w+/) {
+                # foto local al articulo
+                my $nom_campo_orig = $1;
+                my $nom_foto_orig = $2;
+                # print STDERR "add foto local, artic local [$prontus_varglb::DIR_SERVER$val_campo]\n";
+                $this->_add_foto_sitiolocal_articulolocal($nom_campo, $val_campo, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar, $nom_campo_orig, $nom_foto_orig);
+            } elsif ($val_campo =~ /\/(foto_\w+)$this->{ts}\.\w+/) {
                 # foto local al articulo
                 my $nom_campo_orig = $1;
                 # print STDERR "add foto local, artic local [$prontus_varglb::DIR_SERVER$val_campo]\n";
-                $this->_add_foto_sitiolocal_articulolocal($nom_campo, $val_campo, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar, $nom_campo_orig);
-            }
-            else {
+                $this->_add_foto_sitiolocal_articulolocal($nom_campo, $val_campo, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar, $nom_campo_orig, $nom_foto_orig);
+            } else {
                 # print STDERR "add_foto_sitiolocal_articuloexterno\n";
                 $this->_add_foto_sitiolocal_articuloexterno($nom_campo, $val_campo, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar);
             };
@@ -1009,7 +1047,6 @@ sub _guarda_fotosfijas {
 };
 # ---------------------------------------------------------------
 sub _guarda_fotos_posting {
-
     my ($this, $nom_campo_foto, $nom_foto) = @_;
     my $cpan_server_name = $this->{cpan_server_name};
     my $document_root = $this->{document_root};
@@ -1089,17 +1126,16 @@ sub _add_foto_sitioexterno {
 
 # ---------------------------------------------------------------
 sub _add_foto_sitiolocal_articulolocal {
-    my ($this, $nom_campo, $val_campo, $maxw, $maxh, $dx, $dy, $cuadrar, $nom_campo_orig) = @_;
+    my ($this, $nom_campo, $val_campo, $maxw, $maxh, $dx, $dy, $cuadrar, $nom_campo_orig, $nom_foto_orig) = @_;
     my $document_root = $this->{document_root};
     my $foto_existente = $this->{campos}->{'_hidd_' . $nom_campo_orig};
     my $actions = $this->{campos}->{'_actions' . $nom_campo};
     my ($binfoto, $final_dimx, $final_dimy, $nom_arch);
 
-    print STDERR "actions[$actions] val_campo[$val_campo]\n";
 
     # Si hay acciones las aplica sobre la misma imagen, luego continua.
     if ($actions) {
-        ($nom_arch, $final_dimx, $final_dimy) = $this->_aplica_fotofija_actions($val_campo, $actions, $foto_existente);
+        ($nom_arch, $final_dimx, $final_dimy) = $this->_aplica_fotofija_actions($val_campo, $actions, $foto_existente, $nom_foto_orig);
         return if ($nom_arch eq '');
 
         $this->_add_foto_prontus_xml($final_dimx, $final_dimy, $nom_arch);
@@ -1116,7 +1152,7 @@ sub _add_foto_sitiolocal_articulolocal {
 
             ($binfoto, $final_dimx, $final_dimy) = &lib_thumb::make_thumbnail($maxw, $maxh, "$document_root$val_campo", $cuadrar);
 
-            my $nom_arch = $this->_guarda_binfoto_prontus($val_campo, $final_dimx, $final_dimy, $binfoto, $foto_existente);
+            my $nom_arch = $this->_guarda_binfoto_prontus($val_campo, $final_dimx, $final_dimy, $binfoto, $foto_existente, $nom_foto_orig);
             return if ($nom_arch eq '');
             $this->_add_foto_prontus_xml($final_dimx, $final_dimy, $nom_arch);
             # Reasigna val_campo para parsear en el artic.
@@ -1136,10 +1172,10 @@ sub _add_foto_sitiolocal_articulolocal {
 };
 # ---------------------------------------------------------------
 sub _aplica_fotofija_actions {
-    my ($this, $lafoto, $actions, $foto_existente) = @_;
+    my ($this, $lafoto, $actions, $foto_existente, $nom_foto_orig) = @_;
     my ($maxw, $maxh, $left, $top, $neww, $newh);
     my $document_root = $this->{document_root};
-    my $nom_arch = $this->_get_nom_foto($lafoto, $foto_existente);
+    my $nom_arch = $this->_get_nom_foto($lafoto, $foto_existente, $nom_foto_orig);
     my $dst_binfoto = "$this->{dst_foto}/$nom_arch";
     my ($binfoto, $finalw, $finalh);
     my $resize = 0;
@@ -1241,7 +1277,7 @@ sub _add_foto_sitiolocal_articuloexterno {
 sub _add_foto_filesystem {
 # Recibe como parametro el Path de la imagen sin el document_root
 
-    my ($this, $path_foto) = @_;
+    my ($this, $path_foto, $nom_foto_orig) = @_;
     my $cpan_server_name = $this->{cpan_server_name};
     my $document_root = $this->{document_root};
     my $ts = $this->{ts};
@@ -1252,7 +1288,7 @@ sub _add_foto_filesystem {
     my $new_full_path_foto = $this->{dst_foto};
     my $new_path_foto = &lib_prontus::remove_front_string($new_full_path_foto, $this->{document_root});
 
-    my $nom_foto = $this->_get_nom_foto($new_path_foto, '');
+    my $nom_foto = $this->_get_nom_foto($new_path_foto, '', $nom_foto_orig);
     my $foto_ext = &lib_prontus::get_file_extension($path_foto);
 
 #    print "copiando... $document_root$path_foto  -->  $document_root$new_path_foto$nom_foto.$foto_ext";
@@ -1271,11 +1307,11 @@ sub _add_foto_filesystem {
 
 # ---------------------------------------------------------------
 sub _guarda_binfoto_prontus {
-    my ($this, $val_campo, $final_dimx, $final_dimy, $binfoto, $arch_existente) = @_;
+    my ($this, $val_campo, $final_dimx, $final_dimy, $binfoto, $arch_existente, $nom_foto_orig) = @_;
     return '' if (!$binfoto || !$final_dimx || !$final_dimy);
     $this->_check_ext_foto($val_campo) || return '';
 
-    my $nom_arch = $this->_get_nom_foto($val_campo, $arch_existente);
+    my $nom_arch = $this->_get_nom_foto($val_campo, $arch_existente, $nom_foto_orig);
 
     # si es gif , se genera png
     if ($val_campo =~ /\.gif$/i) {
@@ -1599,7 +1635,7 @@ sub borrar_artic_files {
     my $dir_fecha = $this->{fechac};
 
     $dir_aux =~ s/%%DIR_FECHA%%/$dir_fecha/is;
-    my @files2delete = glob($dir_aux . '/*' . $ts . '.*');
+    my @files2delete = glob($dir_aux . '/*' . $ts . '*');
     unlink @files2delete;
 };
 
@@ -2318,6 +2354,21 @@ sub _parsing_fotos {
     my %campos = $this->get_xml_content();
 
     #~ return $buffer unless(index($buffer, $nom_campo) > -1);
+
+    #~ Se agrega proceso para friendly image - 2016-04-15 - SCT
+    if($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
+        my $procesa_path = "";
+        my $path_friendly = "";
+
+        $procesa_path = $val_campo;
+
+        if($procesa_path =~ /(foto_\d+)\_(.*?)$/i) {
+            $path_friendly = "$1/$2";
+            $val_campo =~ s/(foto_\d+)\_(.*?)$/$path_friendly/si;
+        };
+    };
+    #~ FIN
+
     $buffer =~ s/%%$nom_campo%%/$val_campo/isg;
     #~ $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
 
@@ -2326,7 +2377,7 @@ sub _parsing_fotos {
     if ($val_campo =~ /$este_prontus/i) { # val_campo es del tipo: /prontus_dev/site/artic/20060410/imag/FOTO_0120060410165548.jpg
         my $ts = $this->{ts};
         # parseo ademas las dimensiones de la foto en el articulo
-        if ($val_campo =~ /(foto_\d+)$ts\.\w+$/i) {
+        if ($val_campo =~ /(foto_\d+)$ts(\_*?)?\.\w+$/i) {
             my $nom_foto_original = lc $1;
             $foto_dimx = $campos{"_w$nom_foto_original"};
             $foto_dimy = $campos{"_h$nom_foto_original"};
