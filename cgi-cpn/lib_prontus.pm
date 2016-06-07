@@ -1461,36 +1461,6 @@ sub load_config {
   if ($buffer =~ m/\s*XCODE_MAX_PARALELO\s*=\s*("|')(.*?)$1/s) {
     $prontus_varglb::XCODE_MAX_PARALELO = $2;
   };
-
-    # configuracion de transcodificacion externa
-    $prontus_varglb::USAR_XCODER_EXTERNO = 'NO'; # valor por defecto.
-    if ($buffer =~ m/\s*USAR_XCODER_EXTERNO\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::USAR_XCODER_EXTERNO = $2;
-    };
-    $prontus_varglb::LOCAL_HOST = ''; # valor por defecto.
-    if ($buffer =~ m/\s*LOCAL_HOST\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::LOCAL_HOST = $2;
-    };
-    $prontus_varglb::LOCAL_USER = ''; # valor por defecto.
-    if ($buffer =~ m/\s*LOCAL_USER\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::LOCAL_USER = $2;
-    };
-    $prontus_varglb::LOCAL_PASS = ''; # valor por defecto.
-    if ($buffer =~ m/\s*LOCAL_PASS\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::LOCAL_PASS = $2;
-    };
-    $prontus_varglb::LOCAL_PORT = ''; # valor por defecto.
-    if ($buffer =~ m/\s*LOCAL_PORT\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::LOCAL_PORT = $2;
-    };
-    $prontus_varglb::XCODER_HOST = ''; # valor por defecto.
-    if ($buffer =~ m/\s*XCODER_HOST\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::XCODER_HOST = $2;
-    };
-    $prontus_varglb::XCODER_PORT = ''; # valor por defecto.
-    if ($buffer =~ m/\s*XCODER_PORT\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::XCODER_PORT = $2;
-    };
   # /XCODING
 
   # extensiones permitidas para uploads
@@ -3238,8 +3208,6 @@ sub parser_area {
         $localbuf =~ s/%%\/NIFV%%//isg;
         # ------------- /NIFVs.
 
-
-
         # Parsea datos del artic
         if ($key eq 'filler') {
             #~ print STDERR "Haciendo filler de la iteracion\n";
@@ -3790,7 +3758,6 @@ sub parser_condicional {
                         my $expresion;
                         if ($operador eq '~') {
                             $expresion = '$esta = 1 if ($claves_lc{$var} =~ /$valor/is);';
-                            print STDERR "[$valor] $expresion\n";
                         } else {
                             $expresion = '$esta = 1 if ($claves_lc{$var} ' . $operador . ' $valor);';
                         };
