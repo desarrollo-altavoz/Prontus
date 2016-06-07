@@ -169,6 +169,74 @@
           <!-- / COLUMNA DERECHA-->
         </div>
       </div>
+      <div class="main-right" id="preview">
+        <div class="cont">
+            <table class="table-preview" cellspacing="0" cellpadding="0">
+              <tr>
+                <td class="tab">
+                  <a href="#" class="abrir"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview.png" width="19" height="536" alt="Previsualizar Portada" title="Previsualizar Portada" /></a>
+                  <a href="#" class="cerrar"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview_ocultar.png" width="19" height="536" alt="Ocultar Previsualizar" title="Ocultar Previsualizar" /></a>
+                </td>
+                <td>
+                  <div class="preview-box">
+                    <div class="aright">
+                      <div class="botones">
+                        <a href="#" onclick="Preview.changeZoom('+'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/zoo_of.gif" width="76" height="20" alt="Zoom In" title="Zoom In" class="cambia-boton" /></a>
+                        <span id="zoom-actual">100%</span> &nbsp;
+                        <a href="#" onclick="Preview.changeZoom('-'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/zo2_of.gif" width="76" height="20" alt="Zoom Out" title="Zoom Out" class="cambia-boton" /></a>
+                      </div>
+                      <div class="datos">
+                        <table width="100%" class="tableform">
+                          <tr>
+                            <td valign="middle" align="left">
+                              <div class="titulo">Fecha</div>
+                              <input type="text" name="fecha_preview" id="fecha_preview" class="fieldform" maxlength="10" onchange="Preview.startPreview();" />
+                            </td>
+                            <td valign="middle" align="left">
+                              <div class="titulo">Hora</div>
+                              <input type="text" name="hora_preview" id="hora_preview" class="fieldform" maxlength="5" onchange="Preview.startPreview();" />
+                            </td>
+                            <td valign="middle" align="left">
+                              <div class="titulo">Vista</div>
+                              <select name="seccion" id="cmb_vista" onchange="Preview.fastPreview();">
+                                <option value="">-- Default --</option>
+                              </select>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+
+                      <div class="datos">
+                        <table width="180" class="tableform timeleft">
+                          <tr>
+                            <td width="90" align="right"><div class="titulo">Refrescando: &nbsp;</div></td>
+                            <td class="timeleft"><div id="inner-timeleft">&nbsp;</div></td>
+                          </tr>
+                        </table>
+                      </div>
+                      <div class="preview-now">
+                        <table width="100%" class="tableform">
+                          <tr>
+                            <td valign="middle" align="right">
+                              <div class=""><a href="#" onclick="Preview.fastPreview(); return false;">&raquo; Actualizar Preview Ahora</a></div>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                      <div class="preview-foto">
+                        <div>
+                          <div class="list-loading loading-preview"></div>
+                          <iframe src="/%%_prontus_id%%/cpan/core/prontus_preview_blank.html" id="theIframe" name="theIframe" width="440" height="419" frameborder="0"></iframe>
+                        </div>
+                        <div>Nota: El preview se Actualizará sólo cuando ud. haga cambios en el listado.</div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+        </div>
+      </div>
       <!--/FIN CONTENIDO-->
     </div>
 
