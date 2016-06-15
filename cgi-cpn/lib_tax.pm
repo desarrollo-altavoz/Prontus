@@ -21,7 +21,7 @@
 # 01   : 12/2003 - YCH - Primera version.
 # 1.1   : 01/2004 - YCH - Adaptaciones DRs.
 # 1.2.0 - 28/07/2015 - JOR - Ordena codigo
-#                          - Se agrega total de articulos a relacionados.                    
+#                          - Se agrega total de articulos a relacionados.
 
 #-------------------------------BEGIN LIBRERIA------------------
 #---------------------------------------------------------------
@@ -354,7 +354,7 @@ sub generar_fila {
 # ---------------------------------------------------------------
 sub parse_and_write {
     my ($id_secc1, $id_tema1, $id_subtema1, $lista, $pagina, $loop, $nomfile, $hay_mas, $mv) = @_;
-    
+
     if ($lista eq '')  {
         $pagina =~ s/%%_VERMAS%%.*?%%\/_VERMAS%%//isg;
         $lista = 'Sin art&iacute;culos relacionados.';
@@ -421,7 +421,7 @@ sub genera_filtros {
 
         $filtros .= " and (ART_FECHAPHORAP <= '$dt_system$hhmm_system') ";
         $filtros .= " and (ART_ALTA = '1') " if ($CONTROLAR_ALTA_ARTICULOS eq 'SI');
-        
+
         if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
             $filtros .= " and ( (ART_FECHAEHORAE >= '$dt_system$hhmm_system') OR ( (ART_FECHAEHORAE < '$dt_system$hhmm_system') AND (ART_SOLOPORTADAS = '1') ) )";
         };
@@ -520,6 +520,9 @@ sub genera_filtros_manualtax {
     $filtros = '(ART_AUTOINC = 0';
 
     foreach $autoinc (@autoincs) {
+        if ($autoinc !~ /^\d+$/) {
+            next;
+        }
         $filtros .= " or ART_AUTOINC = $autoinc ";
     };
 
@@ -536,17 +539,17 @@ sub genera_filtros_manualtax {
 sub make_lista_manualtax {
     my ($tax, $loop, $base) = @_;
     my ($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha);
-    
+
     my $dthr_system = &glib_hrfec_02::get_dtime_pack4();
     $dthr_system =~ /^(\d{8})(\d\d\d\d)/;
     my $hhmm_system = $2;
     my $dt_system = $1;
-    
+
     my ($filtros) = &genera_filtros_manualtax($tax, $dt_system, $hhmm_system);
     my ($sql) = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA from ART %%FILTRO%% order by ART_FECHAP desc, ART_HORAP desc  LIMIT $MAX_LIMIT";
-    
+
     $sql =~ s/%%FILTRO%%/ where $filtros  /;
-        
+
     my $tot_artics = &get_tot_artics($filtros, $base, $MAX_LIMIT);
     my ($salida) = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha));
     my ($nro_filas) = 0;
@@ -557,7 +560,7 @@ sub make_lista_manualtax {
         $loopcounter++;
         # print STDERR "\n$art_fecha $art_horap Y $dt_system $hhmm_system\n";
         my ($una_fila, $filler) = &generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop, $loopcounter, $tot_artics);
-        
+
         $filas .= $una_fila;
         $nro_filas++;
     };
@@ -590,7 +593,7 @@ sub carga_tabla_subtemas {
     my %tabla_stem;
     $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM, SUBTEMAS_PORT, SUBTEMAS_IDTEMAS, SUBTEMAS_NOM4VISTAS from SUBTEMAS ";
     $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($id, $nom, $port, $idparent, $nom4vistas));
-    
+
     while ($salida->fetch) {
         $tabla_stem{$id} = "$nom\t\t$port\t\t$idparent\t\t$nom4vistas";
     };
@@ -606,7 +609,7 @@ sub carga_tabla_seccion {
     my %tabla_secc;
     $sql = "select SECC_ID, SECC_NOM, SECC_PORT, SECC_NOM4VISTAS from SECC ";
     $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($id, $nom, $port, $nom4vistas));
-    
+
     while ($salida->fetch) {
         $tabla_secc{$id} = "$nom\t\t$port\t\t$nom4vistas";
     };
