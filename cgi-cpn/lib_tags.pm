@@ -18,8 +18,8 @@
 #---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 #-----------------------
-# 1.0.0 - 05/2011 - CVI - Primera version.
-# 1.1.0 - 05/2011 - MPG - Agrega funciones para regeneración masiva.
+# 1.0.0 - XX/05/2011 - CVI - Primera version.
+# 1.1.0 - 18/04/2016 - MPG - Agrega funciones para regeneración masiva.
 
 #-------------------------------BEGIN LIBRERIA------------------
 #---------------------------------------------------------------
