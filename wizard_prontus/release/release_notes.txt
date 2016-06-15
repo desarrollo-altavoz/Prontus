@@ -8688,7 +8688,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.90 - 08/01/2016 - JOR/NAR/EAG/MPG/SCT
+11.2.90 - 15/06/2016 - JOR/NAR/EAG/MPG/SCT
 ====================================================================================================
 - Prontus en general
     [cambios]
@@ -8747,10 +8747,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Buscador
     [cambios]
         -Se quita debug del nombre del prontus usado al buscar.
-
+    [mejoras]
+        - Se aumenta a 20 el número de metadatos. Variable METADATA<i> va del 1 al 20.
     [bugfixes]
         - Se soluciona problema con indexador, había un límite de fecha en duro.
-        - Se aumenta a 20 el número de metadatos. Variable METADATA<i> va del 1 al 20.
     [files]
         /cgi-cpn/prontus_indexer.cgi
         /wizard_prontus/cpan/core/macros/admin_cfg_search.html
@@ -8763,7 +8763,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se mejora la ejecución del proceso de generacion de portadas taxonómicas. Se deja de utilizar fork y se adopta la modalidad de proceso maestro y workers. El número de workers es configurable en la variable TAXPORT_MAX_WORKERS disponible en la sección "Categorías" de la configuración.
         - Se agrega cgi para visualización de taxport de forma dinámica.
             * Se agrega a la configuración la variable TAXPORT_MODALIDAD, donde se indica la modalidad de la taxport:
-              TRADICIONAL: Funcionamiento tradicional. Genración de archivos estáticos cada vez que se crea/actualiza/elimina un artículo.
+              TRADICIONAL: Funcionamiento tradicional. Generación de archivos estáticos cada vez que se crea/actualiza/elimina un artículo.
               DINAMICA: Generación de archivos estáticos solo de la primera página de cada combinación. Para lo demás se dispone de una cgi para generar "on demand" las portadas taxonómicas.
             * http://<public_server_name>/cgi-bin/prontus_taxport.cgi?taxport=/<prontus_id>/<all|fid>/<plantilla>_<seccion>_<tema>_<subtema>_<nro_pagina>.html
             * Se agrega al manual de desarrollo: http://develop.prontus.cl/taxport-dinamicas/prontus_desarrollo_v11_2/2016-02-05/111517.html
