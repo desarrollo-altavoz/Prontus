@@ -1822,12 +1822,6 @@ sub load_config {
     $prontus_varglb::TAXPORT_MAX_WORKERS = $2;
   };
 
-  #TAXPORT_MODALIDAD
-  $prontus_varglb::TAXPORT_MODALIDAD = '1';
-  if ($buffer =~ m/\s*TAXPORT_MODALIDAD\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::TAXPORT_MODALIDAD = $2;
-  };
-
   my $taxport_tipo_pag = '0'; # valor por defecto.
   if ($buffer =~ m/\s*TAXPORT_TIPO_PAGINACION\s*=\s*("|')(0|1)("|')/) {
     $taxport_tipo_pag = $2;

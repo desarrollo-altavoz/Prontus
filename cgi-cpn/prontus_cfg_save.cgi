@@ -156,8 +156,6 @@ main: {
     $hash_defaultvars{'tax'}{'TAXPORT_TIPO_PAGINACION'} = 'TAXPORT_TIPO_PAGINACION;(0|1);0;U';
     $hash_defaultvars{'tax'}{'TAXPORT_PAGCORTA_MAXPAGS'} = 'TAXPORT_PAGCORTA_MAXPAGS;^(\d+)$;10;U';
 
-    $hash_defaultvars{'tax'}{'TAXPORT_MODALIDAD'} = 'TAXPORT_MODALIDAD;^(\d+)$;1;U';
-
     # -tag.cfg
     $hash_defaultvars{'tag'}{'TAGPORT_ARTXPAG'} = 'TAGPORT_ARTXPAG;^(\d+)$;20;U';
     $hash_defaultvars{'tag'}{'TAGPORT_MAXARTICS'} = 'TAGPORT_MAXARTICS;^(\d+)$;500;U';
