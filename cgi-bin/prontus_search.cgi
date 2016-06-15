@@ -689,7 +689,6 @@ sub parsea_marcas_prontus {
 
   # Parsea el nombre del prontus
   $plantilla =~ s/%%_prontus_id%%/$PRONTUS/isg; # 1.21
-  print STDERR "search_prontus[$PRONTUS]\n";
 
   return $plantilla;
 }
