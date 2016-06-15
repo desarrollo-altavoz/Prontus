@@ -8692,6 +8692,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 - Prontus en general
     [cambios]
+        - Se cambia la eliminacion de saltos de líneas y espacios seguidos en los fids.
         - Se mejora la lectura de la configuracion de media externa
         - Se agrega chequeo de quota con formato linux.
         - Se elimina atributo name de las fotos del banco imagenes por causar problemas en el vtxt.
@@ -8710,6 +8711,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_quota.pm
         /cgi-cpn/prontus_admin_main.cgi
         /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
         /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
@@ -8727,30 +8729,25 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_form_download.cgi
 
 - Transcodificación
-    [mejoras]
-        - Se agregan variables de configuracion para transcodificador externo
-        - Se agregan variables de configuracion de transcodificador externo
-        - Se agrega soporte de transcodificacion externa
-        - Nueva cgi para obtener los formatos de video configurados
-        - Se agregan variables de configuracion para transcodificador externo
-    [files]
-        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
-        /cgi-cpn/api/xcoding_getformatos.cgi
-
     [cambios]
         - Se comenta validacion de antiguedad de la lista HLS vs el video subido.
-        Si una de las versiones no tiene los atoms necesarios se indica que se deben generar las versiones
+        - Si una de las versiones no tiene los atoms necesarios se indica que se deben generar las versiones
     [files]
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
 
 - Artículos
     [mejoras]
         - Se habilita marca loop_artic en portadas, portadas tax y tag
+    [bugfixes]
+        - Se corrige error al parsear taxonomia manual si se ingresan ids no numéricos
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/lib_tax.pm
 
 - Buscador
+    [cambios]
+        -Se quita debug del nombre del prontus usado al buscar.
+
     [bugfixes]
         - Se soluciona problema con indexador, había un límite de fecha en duro.
         - Se aumenta a 20 el número de metadatos. Variable METADATA<i> va del 1 al 20.
@@ -8780,6 +8777,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cfg_save.cgi
         /cgi-cpn/lib_prontus.pm
 
+- Portadas tagonómicas
+    [mejoras]
+        - Se agrega proceso para regenerar las portadas tagonómicas
+    [files]
+        /cgi-cpn/prontus_regenera_tagport.cgi
+        /cgi-cpn/lib_tags.pm
+
 - Portadas list
     [mejoras]
         - Se agrega filtro por tags. Se debe utilizar la marca LIST_TAGS:
@@ -8787,4 +8791,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Los tags id deben ir separados por comas.
     [files]
       /cgi-cpn/prontus_cron_list.cgi
+
+- Administrador de artículos
+    [cambios]
+        - Se reincorpora el previsualizador de portada (ubicado a la derecha del listado de artículos no publicados).
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/LoadDiv.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Preview.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
 
