@@ -8761,15 +8761,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Portadas taxonómicas
     [mejoras]
         - Se mejora la ejecución del proceso de generacion de portadas taxonómicas. Se deja de utilizar fork y se adopta la modalidad de proceso maestro y workers. El número de workers es configurable en la variable TAXPORT_MAX_WORKERS disponible en la sección "Categorías" de la configuración.
-        - Se agrega cgi para visualización de taxport de forma dinámica.
-            * Se agrega a la configuración la variable TAXPORT_MODALIDAD, donde se indica la modalidad de la taxport:
-              TRADICIONAL: Funcionamiento tradicional. Generación de archivos estáticos cada vez que se crea/actualiza/elimina un artículo.
-              DINAMICA: Generación de archivos estáticos solo de la primera página de cada combinación. Para lo demás se dispone de una cgi para generar "on demand" las portadas taxonómicas.
-            * http://<public_server_name>/cgi-bin/prontus_taxport.cgi?taxport=/<prontus_id>/<all|fid>/<plantilla>_<seccion>_<tema>_<subtema>_<nro_pagina>.html
-            * Se agrega al manual de desarrollo: http://develop.prontus.cl/taxport-dinamicas/prontus_desarrollo_v11_2/2016-02-05/111517.html
-
     [files]
-        /cgi-bin/prontus_taxport.cgi
         /cgi-cpn/prontus_cron_taxport_worker.cgi
         /cgi-cpn/prontus_cron_taxport.cgi
         /cgi-cpn/prontus_regenera_taxport.cgi
