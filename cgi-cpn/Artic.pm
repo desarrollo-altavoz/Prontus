@@ -780,8 +780,14 @@ sub _get_nom_foto {
     }
     my $num = $max + 1;
     $num = &glib_str_02::format_n($num, 8) if(length($num) < 8);
-    my $nomfile = 'foto_' . $num . $this->{ts} . $nom_foto_orig;
-    print STDERR "NOMFILE[$nomfile]\n";
+
+    my $nomfile = "";
+
+    if($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
+        $nomfile = 'foto_' . $num . $this->{ts} . $nom_foto_orig;
+    } else {
+        $nomfile = 'foto_' . $num . $this->{ts};
+    };
 
     my $ext;
     if ($path_foto =~ /(\/|\\)?([^\/\\]+?)(\.\w+)$/) {
