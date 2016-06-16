@@ -1,22 +1,22 @@
 ====================================================================================================
-11.2.90 - 15/06/2016 - JOR/NAR/EAG/MPG/SCT
+11.2.90 - 16/06/2016 - JOR/NAR/EAG/MPG/SCT
 ====================================================================================================
-- changes: Se cambia la eliminacion de saltos de líneas y espacios seguidos en los fids.
-- changes: Se mejora la lectura de la configuracion de media externa
+- changes: Al parsear lo fids, quita la eliminación de saltos de líneas y espacios seguidos en los fids.
+- changes: Se mejora la lectura de la configuración de media externa
 - changes: Se agrega chequeo de quota con formato linux.
 - changes: Se elimina atributo name de las fotos del banco imagenes por causar problemas en el vtxt.
 - changes: Se agrega flecha mover articulo en mouseover sobre la fila de los articulos publicados.
 - changes: La API de cloudflare hizo cambios en el llamado al método purge, por lo tanto fue necesario cambiar la ejecución del método.
 - changes: Se agrega la opción de generar fotos con friendly del tipo: foto_0000000320160421131452/auto10.jpg
-- bugfix: No se estaban agregando los tags al regenerar la tabla de artículos de prontus ni al copiar un artículo.
-- bugfix: Se soluciona problema con cabecera en archivo de backup. Con adjuntos la cabecera se corría.
-- changes: Se comenta validacion de antiguedad de la lista HLS vs el video subido.
-- changes: Si una de las versiones no tiene los atoms necesarios se indica que se deben generar las versiones
+- bugfix: Al regenerar no se estaban agregando los tags al regenerar la tabla de artículos de prontus, ni al copiar un artículo.
+- bugfix: En prontus form se soluciona problema con cabecera en archivo de backup. Con adjuntos la cabecera se corría.
+- changes: Al transcodificar no se realiza la validacion de antiguedad de la lista HLS vs el video subido.
+- changes: Al transcodificar si una de las versiones del video no tiene los atoms necesarios se indica que se deben generar las versiones
 - improvement: Se habilita marca loop_artic en portadas, portadas tax y tag.
-- changes: Se quita debug del nombre del prontus usado al buscar.
-- improvement: Se aumenta a 20 el número de metadatos.
+- changes: En el buscador prontus se quita debug del nombre del prontus usado al buscar.
+- improvement: Se aumenta a 20 el número de metadatos para la indexación del buscador
 - bugfix: Se soluciona problema con indexador, había un límite de fecha en duro.
-- improvement: Se mejora la ejecución del proceso de generacion de portadas taxonómicas. Se adopta la modalidad de proceso maestro y workers
+- improvement: Se mejora la ejecución del proceso de generacion de portadas taxonómicas. Se adopta la modalidad de proceso maestro y workers.
 - improvement: Se agrega proceso para regenerar las portadas tagonómicas
 - improvement: Se agrega filtro por tags. Se debe utilizar la marca LIST_TAGS.
 - changes: Se reincorpora el previsualizador de portada.
