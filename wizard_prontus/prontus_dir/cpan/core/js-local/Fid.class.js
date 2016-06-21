@@ -211,9 +211,7 @@ var Fid = {
 
         /* Uploadify */
         var cgiuploadify = '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi';
-        if(Fid.ishttps) {
-            cgiuploadify = 'https://' + cgiuploadify;
-        }
+
         $('#fileInput').uploadify({
             //debug:          true,
             removeCompleted: false,
@@ -903,7 +901,6 @@ var Fid = {
                     $("#banco-content .botonera .publicar").show();
                     FotoFija.initDraggableBanco();
                 }
-
                 Fid.addDragImagenes();
             });
         });
