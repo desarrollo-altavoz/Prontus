@@ -136,6 +136,7 @@ sub set_preview_artic {
     # Permite establecer que el ts para todos los efectos es 'preview'
     my $this = shift;
     $this->{ts} = 'preview';
+    $this->{'campos'}->{'_alta'} = 1;
     # Re-asigna el path xml
     $this->{fullpath_xml} = "$this->{dst_xml}/$this->{ts}" . '.xml';
 };
