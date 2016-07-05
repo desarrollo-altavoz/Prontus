@@ -212,11 +212,6 @@ sub queue_procs {
     if ($ts) {
         my $nro_pag = &get_pagina_artic($ts, $filtros, $nro_paginas, $taxport_order, $BD);
 
-        if ($prontus_varglb::TAXPORT_MODALIDAD eq '2' && $nro_pag > 1) {
-            print STDERR "Se omite nro_pag[$nro_pag], taxport modalidad 2 activada\n";
-            return;
-        }
-
         if ($nro_pag) {
             print STDERR "Actualiza pagina especifica nro_pag[$nro_pag]\n";
 
@@ -247,13 +242,7 @@ sub queue_procs {
                 my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $fid/$secc_id/$temas_id/$subtemas_id/1 >/dev/null 2>&1 &";
                 system($cmd);
             } else {
-                # Solo se ejecuta si esta habilitada la modalidad 1.
-                # Funcionamiento tradicional. Genración de archivos estáticos cada vez que se crea/actualiza/elimina un artículo.
-                if ($prontus_varglb::TAXPORT_MODALIDAD eq '1') {
-                    &put_queue($secc_id, $temas_id, $subtemas_id, $fid, $x);
-                } else {
-                    last;
-                }
+                &put_queue($secc_id, $temas_id, $subtemas_id, $fid, $x);
             }
         }
     }
