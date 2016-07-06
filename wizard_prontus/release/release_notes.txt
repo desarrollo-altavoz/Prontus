@@ -8812,9 +8812,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Portadas taxonómicas
     [bugfixes]
-        - Se corrige bug al regenerar las páginas posteriores a la 1, no se estaban procesando.
-    [mejoras]
-        - Al hacer una regeneración se llama secuencialmente la generación de cada taxonomía
+        - Se corrige bug al regenerar, las páginas posteriores a la 1 no se estaban procesando.
+    [cambios]
+        - Se reduce a 3 el maximo de procesos simultáneos al regenerar.
     [files]
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_cron_taxport.cgi

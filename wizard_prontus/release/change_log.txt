@@ -1,4 +1,12 @@
 ====================================================================================================
+11.2.91 - 06/07/2016 - JOR/EAG
+====================================================================================================
+- bugfixes: Se soluciona problema al activar el uso de https en cpan de prontus, no se podían subir imagenes con uploadify.
+- bugfixes: Se corrige error al previsualizar artículos sin alta, no se aplicaba alta al generar la vista previa.
+- bugfixes: Se corrige bug al regenerar, las páginas posteriores a la 1 no se estaban procesando.
+- changes: Se reduce a 3 el maximo de procesos simultáneos al regenerar.
+
+====================================================================================================
 11.2.90 - 16/06/2016 - JOR/NAR/EAG/MPG/SCT
 ====================================================================================================
 - changes: Al parsear lo fids, quita la eliminación de saltos de líneas y espacios seguidos en los fids.
@@ -20,6 +28,7 @@
 - improvement: Se agrega proceso para regenerar las portadas tagonómicas
 - improvement: Se agrega filtro por tags. Se debe utilizar la marca LIST_TAGS.
 - changes: Se reincorpora el previsualizador de portada.
+
 ====================================================================================================
 11.2.89 - 30/12/2015
 ====================================================================================================
