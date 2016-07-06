@@ -8794,3 +8794,27 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/js-local/Preview.class.js
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
 
+
+====================================================================================================
+11.2.91 - 06/07/2016 - JOR/EAG
+====================================================================================================
+
+- Fid
+    [bugfixes]
+        - Se soluciona problema al activar el uso de https en cpan de prontus, no se podían subir imagenes con uploadify.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+- Prontus en general
+    [bugfixes]
+        - Se corrige error al previsualizar artículos sin alta, no se aplicaba alta al generar la vista previa.
+    [files]
+        /cgi-cpn/Artic.pm
+
+- Portadas taxonómicas
+    [bugfixes]
+        - Se corrige bug al regenerar las páginas posteriores a la 1, no se estaban procesando.
+    [mejoras]
+        - Al hacer una regeneración se llama secuencialmente la generación de cada taxonomía
+    [files]
+        /cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_cron_taxport.cgi

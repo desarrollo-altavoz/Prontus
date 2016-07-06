@@ -195,17 +195,17 @@ sub gatillar_procesos {
             next unless($LEVELS2TRIGGER{$levels});
 
             # Se chequea para descansar con un sleep
-            my $safetycounter = 1;
-            while (&check_taxport_running() >= 10) {
-                last if($safetycounter > 10);
+            #~ my $safetycounter = 1;
+            while (&check_taxport_running() >= 3) {
+                #~ last if($safetycounter > 10);
 
                 print "Muchos procesos simultaneos... esperando 5 segundos.\n";
-                $safetycounter++;
+                #~ $safetycounter++;
                 sleep(5);
             }
 
             my $param_especif_taxport = "$fid_name/$levels";
-            my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1";
+            my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
 
             print "[" . &glib_hrfec_02::get_dtime_pack4() . "] $cmd\n";
 
