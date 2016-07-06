@@ -8799,7 +8799,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.91 - 06/07/2016 - JOR/EAG
 ====================================================================================================
 
-- Fid
+- FID
     [bugfixes]
         - Se soluciona problema al activar el uso de https en cpan de prontus, no se podían subir imagenes con uploadify.
     [files]
