@@ -181,9 +181,9 @@ sub generar_taxports_thislevel {
     my ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
     my ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
 
-    $tax_fixedurl = $secc_port if ($secc_port);
-    $tax_fixedurl = $temas_port if ($temas_port);
-    $tax_fixedurl = $subtemas_port if ($subtemas_port);
+    $tax_fixedurl = $secc_port if ($secc_id && !$temas_id && !$subtemas_id);
+    $tax_fixedurl = $temas_port if ($secc_id && $temas_id && !$subtemas_id);
+    $tax_fixedurl = $subtemas_port if ($secc_id && $temas_id && $subtemas_id);
 
     my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
     . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
