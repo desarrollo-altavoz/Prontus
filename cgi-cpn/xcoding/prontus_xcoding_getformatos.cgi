@@ -30,6 +30,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0.0 - 27/04/2015 - EAG - Primera version.
+# 1.0.1 - 19/07/2016 - EAG - Se cambia el uso de JSON para mejorar compatibilidad
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
     use FindBin '$Bin';
