@@ -181,9 +181,9 @@ main: {
         }
         # datos del trabajo
         # valores limite
-        my %max = ( "max_video_bitrate" => $prontus_varglb::XCODE_MAX_PIXEL,
-                    "max_audio_bitrate" => $prontus_varglb::MAX_VIDEO_BITRATE,
-                    "max_videosize"     => $prontus_varglb::MAX_AUDIO_BITRATE );
+        my %max = ( "max_video_bitrate" => $prontus_varglb::MAX_VIDEO_BITRATE,
+                    "max_audio_bitrate" => $prontus_varglb::MAX_AUDIO_BITRATE,
+                    "max_videosize"     => $prontus_varglb::XCODE_MAX_PIXEL );
 
         my %versions = &lib_xcoding::get_all_formatos($MARCA, $ARTIC_ts_articulo, 1);
 
@@ -235,7 +235,7 @@ main: {
                     # consultamos el estado del trabajo
                     $respuesta = &postUrl("$xcoder_host/cgi-cpn/xcoding/xcoder_check_job.cgi", \%post_data);
 
-                    print STDERR $respuesta;
+                    #~ print STDERR $respuesta;
                     if ($respuesta ne 'ERROR') {
                         $result = ();
                         if ($JSON::VERSION =~ /^1\./) {
@@ -250,7 +250,7 @@ main: {
                             last;
                         }
                     } else {
-                        &die_stderr("Error al llamar al servidor remoto: [$respuesta].\n", "", 0);
+                        &die_stderr("Error al llamar al servidor remoto al verificar: [$respuesta].\n", "", 0);
                     }
                     sleep($SLEEP);
                 }
@@ -261,7 +261,7 @@ main: {
                 print STDERR "Trabajo Terminado\n";
             }
         } else {
-            &die_stderr("Error al llamar al servidor remoto: [$respuesta].\n", "", 0);
+            &die_stderr("Error al llamar al servidor remoto al agregar: [$respuesta].\n", "", 0);
         }
         # terminamos la cgi
         exit;
