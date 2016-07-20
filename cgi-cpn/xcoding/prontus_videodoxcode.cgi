@@ -224,7 +224,6 @@ main: {
         %FORMATOS_VERSIONES = &lib_xcoding::get_formatos($MARCA);
 
         if ($GENERAR_VERSIONES) {
-            #~ print STDERR "generar versiones\n";
             if (scalar(keys %FORMATOS_VERSIONES) > 0) {
                 &crear_versiones_video($MARCA, $ORIGEN, $destino);
             }
