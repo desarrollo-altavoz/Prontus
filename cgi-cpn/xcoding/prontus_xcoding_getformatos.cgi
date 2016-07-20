@@ -90,7 +90,12 @@ main: {
 
     if (keys %{$data{'data'}}) {
         $data{'status'} = 1;
-        print encode_json(\%data);
+        if ($JSON::VERSION =~ /^1\./) {
+            my $json = new JSON;
+            print $json->objToJson(\%data);
+        } else {
+            print encode_json(\%data);
+        }
     } else {
         print '{}';
         #~ &glib_html_02::print_json_result(0, "Ha ocurrido un error al cargar los formatos de video", 'exit=1,ctype=0')

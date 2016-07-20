@@ -91,7 +91,13 @@ main: {
     };
 
     # los datos se obtienen en json, se descodifican y dejan como hash
-    my $data = decode_json($FORM{'formatos'});
+    my $data;
+    if($JSON::VERSION =~ /^1\./) {
+        my $json = new JSON;
+        $data = $json->jsonToObj($FORM{'formatos'});
+    } else {
+        $data = decode_json($FORM{'formatos'});
+    }
 
     # se arma el string de los formatos para guardarlos
     my $formatos = '';
