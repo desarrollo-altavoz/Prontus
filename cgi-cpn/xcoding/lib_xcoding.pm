@@ -56,9 +56,9 @@ sub get_formatos {
     my %formatos;
     my $file_formatos = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$XCODING_DATA_PATH$FORMATS_FILE";
 
-    if (-f $file_formatos) {
-        my $buffer_formatos = &glib_fildir_02::read_file($file_formatos);
-        if ($marca ne '') {
+    if ($marca ne '') {
+        if (-f $file_formatos) {
+            my $buffer_formatos = &glib_fildir_02::read_file($file_formatos);
             if ($por_defecto != 1) {
                 while ($buffer_formatos =~ /\s*($marca\.\w+)\.(\w+)\s*=\s*'(.*?)'/ig) {
                     #~ print STDERR "{$1}{$2} = $3;\n";
