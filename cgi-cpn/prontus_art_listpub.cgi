@@ -230,13 +230,13 @@ main: {
             #~ my $today = &glib_hrfec_02::fecha_human();
             #~
             #~ h    Formato de 12 horas de una hora con ceros iniciales 01 hasta 12
-#~ H    Formato de 24 horas de una hora con ceros iniciales 00 hasta 23
-#~ i    Minutos, con ceros iniciales    00 hasta 59
-#~ s
-#~
-#~ <input type="hidden" name="_fecha_mod" value="%%_fecha_mod%%" />
-#~ <input type="hidden" name="_hora_mod" value="%%_hora_mod%%" />
-#~
+            #~ H    Formato de 24 horas de una hora con ceros iniciales 00 hasta 23
+            #~ i    Minutos, con ceros iniciales    00 hasta 59
+            #~ s
+            #~
+            #~ <input type="hidden" name="_fecha_mod" value="%%_fecha_mod%%" />
+            #~ <input type="hidden" name="_hora_mod" value="%%_hora_mod%%" />
+            #~
                         #~
             #~ my ($)
         #~ }

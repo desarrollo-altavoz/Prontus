@@ -245,7 +245,7 @@ sub crear_tabla_coment {
                 COMENT_OBJID      varchar(64) not null default '',
                 COMENT_OBJTIT     varchar(64) not null default '',
                 COMENT_DATETIME   char(14) not null default '',
-                COMENT_TEXTO      text not null default '',
+                COMENT_TEXTO      text,
                 COMENT_NICK       varchar(80) not null default '',
                 COMENT_STATUS     int(1) not null default 0,
                 COMENT_EMAIL      varchar(100) not null default '',
