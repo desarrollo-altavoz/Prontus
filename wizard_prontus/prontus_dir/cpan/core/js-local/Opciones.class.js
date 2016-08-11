@@ -68,7 +68,7 @@ var Opciones = {
     accionListarTablas: function() {
         var obj = Opciones.optsDefault;
         obj.href = Opciones.urlBD + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg' +
-                '&sbm_accion=Listar';
+                '&sbm_accion=Listar'+ '&_'+ new Date().getTime();
         obj.onLoad = function() {
             Admin.mostrarBarraColorbox();
         };
@@ -79,7 +79,7 @@ var Opciones = {
     accionCrearTablas: function() {
         var obj = Opciones.optsDefault;
         obj.href = Opciones.urlBD + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg' +
-                '&sbm_accion=Crear';
+                '&sbm_accion=Crear'+ '&_'+ new Date().getTime();
         obj.onLoad = function() {
             Admin.mostrarBarraColorbox();
         };
@@ -91,7 +91,7 @@ var Opciones = {
 
         if (confirm('¿Está seguro de regenerar la tabla de artículos?')) {
             var obj = Opciones.optsDefault;
-            obj.href = Opciones.urlRegenBD + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg';
+            obj.href = Opciones.urlRegenBD + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg'+ '&epoch='+ new Date().getTime();
             obj.height = '360';
             obj.onLoad = function() {
                 Admin.ocultarBarraColorbox();
@@ -105,7 +105,7 @@ var Opciones = {
 
         if (confirm('¿Está seguro de regenerar la tabla de multimedia?')) {
             var obj = Opciones.optsDefault;
-            obj.href = Opciones.urlRegenDamBD + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg';
+            obj.href = Opciones.urlRegenDamBD + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg'+ '&_'+ new Date().getTime();
             obj.height = '360';
             obj.onLoad = function() {
                 Admin.ocultarBarraColorbox();
@@ -181,7 +181,7 @@ var Opciones = {
 
             if (confirm('¿Está seguro de ejecutar la actualización masiva de artículos?')) {
                 var obj = Opciones.optsDefault;
-                obj.href = href;
+                obj.href = href + '&_' + new Date().getTime();
                 obj.height = '360';
                 $.fn.colorbox(obj);
             }
@@ -207,7 +207,7 @@ var Opciones = {
 
         if (confirm('¿Está seguro de ejecutar la actualización masiva de portadas?')) {
             var obj = Opciones.optsDefault;
-            obj.href = href;
+            obj.href = href + '&_' + new Date().getTime();
             obj.height = '360';
             $.fn.colorbox(obj);
         }
