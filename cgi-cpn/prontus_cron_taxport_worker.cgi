@@ -86,8 +86,6 @@ main: {
         &cargar_fil_cfg($PARAMS{'fid'}) if ($PARAMS{'fid'} =~ /^fil_/);
         &generar_taxports_thislevel($PARAMS{'s'}, $PARAMS{'t'}, $PARAMS{'st'}, $PARAMS{'fid'}, $PARAMS{'pag'}, 1); # solo pagina 1.
     }
-
-    $BD->disconnect;
 };
 
 sub procesa_queue_worker {
@@ -234,6 +232,8 @@ sub generar_taxports_thislevel {
     $salida->finish;
 
     &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pagina, $secc_id, $temas_id, $subtemas_id, \%filas);
+
+    $BD->disconnect;
 
     unlink "$DIR_SEMAF/$id_level" if ($semaf);
 };
