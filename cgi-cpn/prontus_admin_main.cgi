@@ -1085,6 +1085,24 @@ sub parseaVars {
         $pagina =~ s/%%CONTROLAR_ALTA_ARTICULOS_NO%%/ checked="checked"/ig;
     };
 
+    if ($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'SI') {
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_S%%/ selected="selected"/ig;
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_N%%//ig;
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_P%%//ig;
+    } elsif ($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'NO') {
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_S%%//ig;
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_N%%/ selected="selected"/ig;
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_P%%//ig;
+    } elsif ($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT') {
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_S%%//ig;
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_N%%//ig;
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_P%%/ selected="selected"/ig;
+    } else {
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_S%%//ig;
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_N%%//ig;
+        $pagina =~ s/%%COMPORTAMIENTO_ALTA_ARTICULOS_P%%//ig;
+    };
+
     if ($prontus_varglb::ACTUALIZACIONES eq 'SI') {
         $pagina =~ s/%%ACTUALIZACIONES_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%ACTUALIZACIONES_NO%%//ig;

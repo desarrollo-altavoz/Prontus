@@ -1837,12 +1837,15 @@ sub load_config {
   $prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS = $taxport_PAGCORTA_MAXPAGS;
 
 
-  my ($tax_niv, $control_alta);
+  my ($tax_niv, $control_alta, $comportamiento_alta);
   if ($buffer =~ m/\s*TAXONOMIA_NIVELES\s*=\s*("|')([0-3])("|')/) {
    $tax_niv = $2;
   };
   if ($buffer =~ m/\s*CONTROLAR_ALTA_ARTICULOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
    $control_alta = $2;
+  };
+  if ($buffer =~ m/\s*COMPORTAMIENTO_ALTA_ARTICULOS\s*=\s*("|')(.*?)("|')/) { # SI | NO | PLT
+   $comportamiento_alta = $2;
   };
 
   my $artic_actualiza_ports = 'NO';
@@ -1852,6 +1855,7 @@ sub load_config {
 
   $prontus_varglb::TAXONOMIA_NIVELES = $tax_niv;
   $prontus_varglb::CONTROLAR_ALTA_ARTICULOS = $control_alta;
+  $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS = $comportamiento_alta;
   $prontus_varglb::ARTIC_ACTUALIZA_PORTS = $artic_actualiza_ports;
 
   # tagonomicas
