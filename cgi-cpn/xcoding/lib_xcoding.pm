@@ -30,19 +30,36 @@ our $XCODING_DATA_PATH = '/cpan/data/xcoding/';
 # ---------------------------------------------------------------
 # Se leen todas las configuraciones disponibles
 sub get_all_formatos {
+    my $marca = $_[0];
+    my $ts = $_[1];
+    my $xcoderFormat = $_[2];
     my %formatos = ();
     my $file_formatos = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$XCODING_DATA_PATH$FORMATS_FILE";
 
     if (-f $file_formatos) {
         my $buffer_formatos = &glib_fildir_02::read_file($file_formatos);
-        while ($buffer_formatos =~ /\s*(\S+\.\w+)\.(\w+)\s*=\s*'(.*?)'/ig) {
+        while ($buffer_formatos =~ /\s*(\S+\.?\w*\.)(\w+)\s*=\s*'(.*?)'/ig) {
             if ($3 ne '') {
-                $formatos{$1}{$2} = $3;
-            }
-        };
-        while ($buffer_formatos =~ /\s*(\S+)\.(\w+)\s*=\s*'(.*?)'/ig) {
-            if ($3 ne '') {
-                $formatos{$1}{$2} = $3;
+                my $formatName = $1;
+                my $paramName = $2;
+                my $value = $3;
+                if ($marca ne '') {
+                    if ($formatName !~ /^$marca\./i ) {
+                        next;
+                    }
+                }
+                if ($xcoderFormat) {
+                    $formatName =~ s/\./$ts/;
+                    $formatName = lc($formatName);
+                    $paramName = lc($paramName);
+                    $value = lc($value);
+                }
+                $formatName =~ s/\.$//;
+
+                if ($xcoderFormat) {
+                    $formatName .= '.mp4';
+                }
+                $formatos{$formatName}{$paramName} = $value;
             }
         };
     };

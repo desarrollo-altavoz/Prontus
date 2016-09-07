@@ -1462,6 +1462,20 @@ sub load_config {
   if ($buffer =~ m/\s*XCODE_MAX_PARALELO\s*=\s*("|')(.*?)$1/s) {
     $prontus_varglb::XCODE_MAX_PARALELO = $2;
   };
+
+    # configuracion de transcodificacion externa
+    $prontus_varglb::USAR_XCODER_EXTERNO = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*USAR_XCODER_EXTERNO\s*=\s*("|')(.*?)$1/s) {
+        $prontus_varglb::USAR_XCODER_EXTERNO = $2;
+    };
+    $prontus_varglb::XCODER_HOST = ''; # valor por defecto.
+    if ($buffer =~ m/\s*XCODER_HOST\s*=\s*("|')(.*?)$1/s) {
+        $prontus_varglb::XCODER_HOST = $2;
+    };
+    $prontus_varglb::XCODER_PORT = ''; # valor por defecto.
+    if ($buffer =~ m/\s*XCODER_PORT\s*=\s*("|')(.*?)$1/s) {
+        $prontus_varglb::XCODER_PORT = $2;
+    };
   # /XCODING
 
   # extensiones permitidas para uploads

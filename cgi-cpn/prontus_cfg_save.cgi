@@ -267,6 +267,11 @@ main: {
     $hash_defaultvars{'xcoding'}{'XCODE_MAX_PARALELO'} = 'XCODE_MAX_PARALELO;(\d+);3;U';
     $hash_defaultvars{'xcoding'}{'PRECISION_HLS'} = 'PRECISION_HLS;(SI|NO);NO;U';
 
+    # configuracion transcodificador externo
+    $hash_defaultvars{'xcoding'}{'USAR_XCODER_EXTERNO'} = 'USAR_XCODER_EXTERNO;(SI|NO);NO;U';
+    $hash_defaultvars{'xcoding'}{'XCODER_HOST'} = 'XCODER_HOST;(\w+);;U';
+    $hash_defaultvars{'xcoding'}{'XCODER_PORT'} = 'XCODER_HOST;(\d+);;U';
+
     # Verificar tipo de CFG.
     $FORM{'_cfg'} = &glib_cgi_04::param('_cfg');
     if ($FORM{'_cfg'} !~ /^(id|art|port|var|bd|usr|tax|coment|buscador|tag|list|dropbox|cloudflare|xcoding|cache)$/) {

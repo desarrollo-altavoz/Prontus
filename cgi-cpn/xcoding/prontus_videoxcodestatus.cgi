@@ -155,7 +155,9 @@ sub xcode_status {
         };
 
         return (1, 'ready');
-    } else {
+    } elsif ((not -s $destino) && ($esta_en_xml )){
+        &glib_html_02::print_json_result(0, "Error: no se pudo transcodificar el video", 'exit=1,ctype=1');
+    }else {
         # Si no esta el archivo en disco ni en el xml, se gatillará de nuevo la transcodificación.
         return (1, 'none');
     };

@@ -76,6 +76,9 @@
 # 2.5.0 - 04/06/2015 - EAG - Se mejora compatibilidad con ffmpeg 1.x
 # 2.5.1 - 11/06/2015 - EAG - Se ordenan los "use"
 # 2.5.2 - 15/06/2015 - EAG - Se corrige la aplicacion de lower case a key en do_xcode
+# 2.6.0 - 07/07/2015 - EAG - Se implementa soporte para transcodificador externo.
+# 2.6.1 - 12/11/2015 - EAG - Se incluye informacion de  control de acceso basico al enviar los datos al transcodificador externo.
+# 2.6.2 - 13/11/2015 - EAG - Se integra transcodificacion externa a la release
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -105,7 +108,11 @@ use prontus_varglb; &prontus_varglb::init();
 use glib_fildir_02;
 use glib_hrfec_02;
 use lib_xcoding;
+use JSON;
 use Artic;
+use LWP::UserAgent;
+use LWP::ConnCache;
+
 use Data::Dumper;
 
 my $ORIGEN = $ARGV[0];
@@ -120,6 +127,8 @@ my $RUTA_PRONTUS = '';  # ruta de la carpeta prontus donde esta el video en caso
 my %FORMATOS_VERSIONES; # hash que guarda los formatos de las versiones del video
 my $VERSIONS_FILE = ''; # archivo temporal para crear las versiones del video original
 my $MARCA; # nombre de la marca prontus del video
+my $CLIENT; # user agent para hacer consultas remotas
+my $SLEEP = 5; # tiempo de espera entre peticiones remotas
 
 # ---------------------------------------------------------------
 main: {
@@ -146,6 +155,117 @@ main: {
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
     print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Inicio Proceso\n";
+    if ($prontus_varglb::USAR_XCODER_EXTERNO eq 'SI') {
+        print STDERR "Usando transcodificador externo\n";
+        my ($content, $archivo, $result, $respuesta);
+
+        &die_stderr("El parámetro 'XCODER_HOST' no es válido.", "", 0) if ( $prontus_varglb::XCODER_HOST eq '');
+
+        # inicializamos el user agent
+        &initUA();
+        # armamos los datos de la peticion
+        #~ my $host = $prontus_varglb::LOCAL_HOST;
+        my $host = $prontus_varglb::PUBLIC_SERVER_NAME;
+        my $xcoder_host = 'http://' . $prontus_varglb::XCODER_HOST;
+        if ($prontus_varglb::XCODER_PORT ne '') {
+            $xcoder_host .= ':'.$prontus_varglb::XCODER_PORT;
+        }
+
+        if ($ORIGEN !~ s/.*?(\/[^\/]+\/site\/\w+\/\d+\/mmedia\/multimedia_video\d+\d{14}\.\w+)$/$1/) {
+            &die_stderr("Error al adaptar path de origen [$ORIGEN].", "", 0)
+        };
+
+        my $hls = 0;
+        if ($prontus_varglb::GEN_HLS eq 'SI') {
+            $hls = 1;
+        }
+        # datos del trabajo
+        # valores limite
+        my %max = ( "max_video_bitrate" => $prontus_varglb::MAX_VIDEO_BITRATE,
+                    "max_audio_bitrate" => $prontus_varglb::MAX_AUDIO_BITRATE,
+                    "max_videosize"     => $prontus_varglb::XCODE_MAX_PIXEL );
+
+        my %versions = &lib_xcoding::get_all_formatos($MARCA, $ARTIC_ts_articulo, 1);
+
+        my %profiles = (
+                    'max'=> \%max,
+                    'versions' => \%versions);
+
+        my %data = ('host' => $host,
+                    'prontus_id' => $PRONTUS_ID,
+                    'path' => $ORIGEN,
+                    'tag' => $MARCA,
+                    'ts' => $ARTIC_ts_articulo,
+                    'multi_version' => $GENERAR_VERSIONES,
+                    'profiles' => \%profiles,
+                    'hls' => $hls );
+
+        my %post_data;
+        if ($JSON::VERSION =~ /^1\./) {
+            my $json = new JSON;
+            %post_data = ('data'   => $json->objToJson(\%data));
+        } else {
+            %post_data = ('data'   => encode_json(\%data));
+        }
+
+        # registramos el trabajo con el servidor de xcoding
+        $respuesta = &postUrl("$xcoder_host/cgi-cpn/xcoding/xcoder_add_job.cgi", \%post_data);
+
+        if ($respuesta ne 'ERROR') {
+            if ($JSON::VERSION =~ /^1\./) {
+                my $json = new JSON;
+                $result = $json->jsonToObj($respuesta);
+            } else {
+                $result = decode_json($respuesta);
+            }
+
+            # si el estado es 1 el trabajo se agrego correctamente
+            # se entra en modo de espera que termine
+            if (defined($$result{'status'}) && $$result{'status'}) {
+                print STDERR "Trabajo Agregado\n";
+                my $pendiente = 1;
+                # esperamos ante sde consultar por primera vez
+                sleep($SLEEP);
+                while ($pendiente) {
+                    %post_data = ('prontus_id' => $PRONTUS_ID,
+                            'tag' => $MARCA,
+                            'host' => $host,
+                            'ts' => $ARTIC_ts_articulo);
+
+                    # consultamos el estado del trabajo
+                    $respuesta = &postUrl("$xcoder_host/cgi-cpn/xcoding/xcoder_check_job.cgi", \%post_data);
+
+                    #~ print STDERR $respuesta;
+                    if ($respuesta ne 'ERROR') {
+                        $result = ();
+                        if ($JSON::VERSION =~ /^1\./) {
+                            my $json = new JSON;
+                            $result = $json->jsonToObj($respuesta);
+                        } else {
+                            $result = decode_json($respuesta);
+                        }
+                        # si el trabajo esta listo, terminamos el bucle y finalizamos el articulo
+                        if ($$result{'trabajo'} == 2) {
+                            $pendiente = 0;
+                            last;
+                        }
+                    } else {
+                        &die_stderr("Error al llamar al servidor remoto al verificar: [$respuesta].\n", "", 0);
+                    }
+                    sleep($SLEEP);
+                }
+                # Actualizar articulo.
+                &actualizar_articulo($MARCA, 1);
+                # se purgean los archivos generados
+                &purgeExterno();
+                print STDERR "Trabajo Terminado\n";
+            }
+        } else {
+            &die_stderr("Error al llamar al servidor remoto al agregar: [$respuesta].\n", "", 0);
+        }
+        # terminamos la cgi
+        exit;
+    }
 
     # se inicializa el uso de libfdk_aac, es comun para ambos metodos
     if ($prontus_varglb::USAR_LIB_FDK eq 'SI') {
@@ -775,4 +895,84 @@ sub do_xcode_v1 {
         &die_stderr("El archivo de destino no se genero correctamente.", "", 1);
     };
 
+};
+# ---------------------------------------------------------------
+# Funciones para usar transcodificador externo
+# ---------------------------------------------------------------
+# realiza una peticion a una url externa
+sub postUrl {
+    my ($url,$content) = @_;
+    #~ print STDERR "llamando [$url]\n";
+    my($respuesta,$request,$response,$ready);
+    $ready = 0;
+    while (!$ready) {
+        $response = $CLIENT->post($url, [$content]);
+        #~ print Dumper($response);
+        my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+        $mon++;
+        $year += 1900;
+        $hour = $hour<10?'0'.$hour:$hour;
+        $min = $min<10?'0'.$min:$min;
+        $sec = $sec<10?'0'.$sec:$sec;
+        $mon = $mon<10?'0'.$mon:$mon;
+        $mday = $mday<10?'0'.$mday:$mday;
+        #~ print STDERR "[$hour:$min:$sec $year/$mon/$mday] [" .$response->status_line ."]\n";
+        if ($response->is_success) {
+            return $response->content;
+        } else {
+            if ($response->status_line =~ /5\d{2}/) {
+                print STDERR "\nSe ha producido un error en el servidor\n";
+                return 'ERROR';
+            }
+            print STDERR "Error en la ejecución $!\n";
+            return 'ERROR';
+        };
+    };
+}; # getUrl.
+# ---------------------------------------------------------------
+# Inicializa el user-agent.
+sub initUA {
+    # Inicializa el UA.
+    $CLIENT = LWP::UserAgent->new();
+    $CLIENT->agent('Prontus CMS');
+    my $conn_cache = LWP::ConnCache->new;
+    $CLIENT->conn_cache($conn_cache);
+}; # initUA
+# ---------------------------------------------------------------
+# purgea el cache de los archivos generados por el transcodificador externo
+sub purgeExterno {
+    my $path_files = '';
+    my $filepath = '';
+    my @entrys;
+    # Deduce ubicacion de los archivos generados desde el archivo origen
+    if ($ORIGEN =~ /(\/.*\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video.*\d{6}\S?)\.\w+$/) {
+        $path_files = $1;
+        # print STDERR "[$path_files]\n";
+        @entrys = glob "$path_files*";
+        foreach my $entry (@entrys) {
+            # no se borran:
+            # 1.- archivo mp4, es el resultado de la transcodificacion
+            # 2.- directorio con el mismo nombre, es el directorio de HLS
+            # 3.- si es igual al origen, indica problema de trancodificacion
+            if (-d $entry) {
+                my @archivos = &glib_fildir_02::lee_dir($entry);
+                # hacemos purge de los archivos generados
+                foreach my $archivo (@archivos) {
+                    next if($archivo eq '.' || $archivo eq '..');
+                    # armamos la ruta completa
+                    $filepath = "$entry/$archivo";
+                    # obtenemos la ruta relativa
+                    if($filepath =~ /.*(\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video\d+\S?.*)/) {
+                        #~ print STDERR "$1\n";
+                        &lib_prontus::purge_cache($1);
+                    }
+                }
+            } else {
+                if($entry =~ /.*(\/.*?\/site\/\w+\/\d{8}\/mmedia\/multimedia_video\d+\S?.*)/) {
+                    #~ print STDERR "$1\n";
+                    &lib_prontus::purge_cache($1);
+                }
+            }
+        }
+    }
 };
