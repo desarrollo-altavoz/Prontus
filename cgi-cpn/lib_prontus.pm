@@ -82,6 +82,7 @@ use XML::Parser; # rotulos tax
 use Artic;
 use lib_cookies;
 use Session;
+use Digest::MD5 qw(md5_hex);
 
 our $CRLF = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # usar asi: $buffer =~ s/$CRLF/<p>/sg;
 our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
@@ -2770,20 +2771,34 @@ sub write_xml_port {
     $dest_xml =~ s/\/port\/(\w+)(\.\w+)?$/\/xml\/\1\.xml/;
   };
   # antes de escribir el nuevo xml, saca una copia de respaldo.
+  $newXml = "<?xml version='1.0' encoding='iso-8859-1'?>\n<PORT_DATA>\n$rowartics_xml</PORT_DATA>";
+  my $md5_newXml = md5_hex($newXml);
+
+  my $dobackup = 0;
+  my $nomxml;
+  my $dirxml = $1;
   if ($dest_xml =~ /^(.*\/xml)\/(.*\.xml)$/) {
-    my $dirxml = $1;
-    my $nomxml = $2;
+    $dirxml = $1;
+    $nomxml = $2;
     &glib_fildir_02::check_dir("$dirxml/bak");
 
-    unlink "$dirxml/bak/$nomxml.9" if(-f "$dirxml/bak/$nomxml.9");
-    for(my $i = 9; $i > 0; $i--) {
-      &File::Copy::copy("$dirxml/bak/$nomxml.".($i-1), "$dirxml/bak/$nomxml.".($i));
+    $curXmlPath = "$dirxml/bak/$nomxml";
+    $curXml = &glib_fildir_02::read_file($curXmlPath);
+    my $md5_curXml = md5_hex($curXml);
+    $dobackup = 1 if($md5_newXml ne $md5_curXml);
+
+    # el respaldo se realiza sólo si los xml encodeados son distintos, es decir, sólo si lo que se guarda es distinto a lo respaldado
+    if($dobackup){
+      unlink "$dirxml/bak/$nomxml.9" if(-f "$dirxml/bak/$nomxml.9");
+      for(my $i = 9; $i > 0; $i--) {
+        &File::Copy::copy("$dirxml/bak/$nomxml.".($i-1), "$dirxml/bak/$nomxml.".($i));
+      }
+      &File::Copy::copy("$dirxml/bak/$nomxml", "$dirxml/bak/$nomxml.0");
     }
-    &File::Copy::copy("$dirxml/bak/$nomxml", "$dirxml/bak/$nomxml.0");
-    &File::Copy::copy($dest_xml, "$dirxml/bak/$nomxml");
   };
   # escribe el nuevo xml
-  &glib_fildir_02::write_file($dest_xml, "<?xml version='1.0' encoding='iso-8859-1'?>\n<PORT_DATA>\n$rowartics_xml</PORT_DATA>");
+  &glib_fildir_02::write_file($dest_xml, $newXml);
+  &File::Copy::copy($dest_xml, "$dirxml/bak/$nomxml") if($dobackup);
 };
 
 # ---------------------------------------------------------------
