@@ -1,4 +1,21 @@
 ====================================================================================================
+11.2.92 - 08/09/2016 - JOR/MPG/EAG/EON
+====================================================================================================
+- bugfixes: Se corrige parseo de fixed url en taxports
+- changes: Se aumenta el ancho del contenedor en el buscador de tags para que no queden superpuestos los elementos.
+- changes: Se cambia el orden de los botones para despublicar y editar articulos en portada.
+- changes: Se aumenta a 2000 el limite de condicionales a procesar.
+- changes: Se agrega parámetro a acciones masivas de capn para evitar el cache de los navegadores.
+- improvement: Se mejora compatibilidad con mysql version 5.7, campos text no pueden tener valor por default.
+- improvement: Se agrega cgi para checkeo de plataforma por linea de comando.
+- improvement: Se mejora el sistema de respaldo de portadas, si la portada se vuelve a guadar sin cambios no se hace respaldo del xml.
+- improvement: Se cambia de lugar la desconexión de la base de datos para evitar carrera critica con semaforo de worker.
+- improvement: Se agrega soporte para transcodificador externo
+- improvement: Se mejora chequeo de marca al cargar formatos
+- improvement: Se verifica la version de JSON disponible, para mejorar compatibilidad con sistemas antiguos.
+- improvement: Se agrega verificación al estado de transcodificacion, si el archivo no existe y esta en el xml se lanza error para no seguir intentando transcodificar
+
+====================================================================================================
 11.2.91 - 06/07/2016 - JOR/EAG
 ====================================================================================================
 - bugfixes: Se soluciona problema al activar el uso de https en cpan de prontus, no se podían subir imagenes con uploadify.
