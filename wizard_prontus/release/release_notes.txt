@@ -8818,3 +8818,52 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_cron_taxport.cgi
+
+====================================================================================================
+11.2.92 - 08/09/2016 - JOR/MPG/EAG/EON
+====================================================================================================
+
+- Prontus en general
+    [cambios]
+        - Se aumenta el ancho del contenedor en el buscador de tags para que no queden superpuestos los elementos.
+        - Se cambia el orden de los botones para despublicar y editar articulos en portada.
+        - Se aumenta a 2000 el limite de condicionales a procesar.
+        - Se agrega parámetro a acciones masivas de capn para evitar el cache de los navegadores.
+    [mejoras]
+        - Se mejora compatibilidad con mysql version 5.7, campos text no pueden tener valor por default.
+        - Se agrega cgi para checkeo de plataforma por linea de comando.
+        - Se mejora el sistema de respaldo de portadas, si la portada se vuelve a guadar sin cambios no se hace respaldo del xml.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_setbd.pm
+        /cgi-cpn/check_platform.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/tax.css
+        /wizard_prontus/prontus_dir/cpan/core/macros/listado_titulos.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Opciones.class.js
+
+- Portadas taxonómicas
+    [bugfixes]
+        - Se corrige parseo de fixed url en taxports
+    [mejoras]
+        - Se cambia de lugar la desconexión de la base de datos para evitar carrera critica con semaforo de worker.
+    [files]
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+
+- Transcodificación
+    [mejoras]
+        - Se agrega soporte para transcodificador externo
+        - Se mejora chequeo de marca al cargar formatos
+        - Se verifica la version de JSON disponible, para mejorar compatibilidad con sistemas antiguos.
+        - Se agrega verificación al estado de transcodificacion, si el archivo no existe y esta en el xml se lanza error para no seguir intentando transcodificar
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+        /cgi-cpn/xcoding/prontus_xcoding_getformatos.cgi
+        /cgi-cpn/xcoding/prontus_xcoding_guardarformatos.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
