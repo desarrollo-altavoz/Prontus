@@ -34,6 +34,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0.0 - 06/04/2016 - MPG - Primera Version, basado en prontus_regenera_taxport_jor.cgi
+# 1.0.1 - 09/07/2016 - SCT - Se agrega paginación custom
 #
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -112,14 +113,14 @@ main:{
     $base = &conecta_db();
 
     $FILASXPAG = $prontus_varglb::TAGPORT_ARTXPAG;
-    
+
     # Se cargan todos los tags, de manera inteligente
     &cargar_tagports();
 
     # Se cargan las plantillas
     &carga_nombase_plts();
 
-    # Se gegeneran las tagport    
+    # Se gegeneran las tagport
     &generar_tagonomicas();
 
     $base->disconnect;
@@ -135,7 +136,7 @@ sub conecta_db {
         exit;
     };
     $base->{mysql_auto_reconnect} = 1;
-    
+
     return $base;
 };
 # ---------------------------------------------------------------
@@ -152,7 +153,7 @@ sub cargar_tagports {
         if(! exists $TAGS2PROCESS{"$tag_id"}) {
             $TAGS2PROCESS{"$tag_id"} = 1;
         };
-    }; 
+    };
 };
 # ---------------------------------------------------------------
 # Obtiene fids para los cuales se generaran portadas tagonomicas.
@@ -233,7 +234,7 @@ sub generar_tagonomicas {
         &generar_tagonomicas_thislevel($tag_id);
     };
 
-    
+
 
 };
 # ---------------------------------------------------------------
@@ -242,7 +243,7 @@ sub generar_tagonomicas {
 sub generar_tagonomicas_thislevel {
 
     my ($tag_id) = @_;
-    
+
     # si se invoca sin fid, considera el filtro sin fid
     $FIDS2PROCESS{''} = 1 if ($FORM{'fid2process'} eq '');
 
@@ -255,7 +256,7 @@ sub generar_tagonomicas_thislevel {
 
     my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/tagport_smf";
     &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
-    my $pid_propio = $$;    
+    my $pid_propio = $$;
 
     foreach my $fid (keys %FIDS2PROCESS) {
         # Escribe los semaforos de los id levels q va a utilizar (en realidad solo cambia el fid)
@@ -744,10 +745,33 @@ sub incluir_nrosdepag {
 
     my ($tpl_nropag) = '<a href="%%lnk%%">%%cnro_pag%%</a>';
     my ($tpl_nropag2) = '<span class="actual">%%cnro_pag%%</span>';
+    my ($tpl_separador) = '...';
 
     my $cnro_pag = 0;
     my $html_nros_pag = '';
     my $i;
+
+    # Carga configuaracion.
+    my %cfg_paginacion;
+    while ($pagina =~ /<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->/sg) {
+        my $name = uc $1;
+        my $value = $2;
+
+        #print STDERR "name[$name] value[$value]\n";
+
+        $tpl_nropag = $value if ($name eq 'HTML_NRO_PAG');
+        $tpl_nropag2 = $value if ($name eq 'HTML_PAG_ACTUAL');
+        $tpl_separador = $value if ($name eq 'HTML_SEPARADOR');
+    };
+
+    # Quitar comentarios de configuración.
+    $pagina =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
+
+    my $nro_paginas_totales = ceil($tot_artics / $prontus_varglb::TAGPORT_ARTXPAG);
+    my ($ini, $fin, $nextlink, $prevlink);
+
+    $ini = 1;
+    $fin = $nro_paginas_totales;
 
     for ($i=0;$i<$tot_artics;$i++) {
         if (((($i % $FILASXPAG) == 0) && ($i >= $FILASXPAG)) || ($i == 0)) {
