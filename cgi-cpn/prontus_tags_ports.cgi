@@ -753,11 +753,8 @@ sub incluir_nrosdepag {
     # Carga configuaracion.
     my %cfg_paginacion;
     while ($pagina =~ /<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->/sg) {
-        print STDERR "ENTRO AL WHILE \n";
         my $name = uc $1;
-        print STDERR "NAME: $name \n";
         my $value = $2;
-        print STDERR "VALUE: $value \n";
 
         #print STDERR "name[$name] value[$value]\n";
 
