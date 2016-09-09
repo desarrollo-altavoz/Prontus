@@ -75,6 +75,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0 - 05/2007 - YCH - Primera Version.
+# 1.1 - 09/2016 - SCT - Se agrega paginación custom, basado en paginación de taxport.
 
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -100,6 +101,7 @@ use Artic;
 use lib_tax;
 use strict;
 use DBI;
+use POSIX qw(strftime ceil);
 
 close STDOUT;
 # ---------------------------------------------------------------
@@ -742,10 +744,37 @@ sub incluir_nrosdepag {
 
     my ($tpl_nropag) = '<a href="%%lnk%%">%%cnro_pag%%</a>';
     my ($tpl_nropag2) = '<span class="actual">%%cnro_pag%%</span>';
+    my $tpl_separador = '...';
 
     my $cnro_pag = 0;
     my $html_nros_pag = '';
     my $i;
+
+    # Carga configuaracion.
+    my %cfg_paginacion;
+    while ($pagina =~ /<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->/sg) {
+        print STDERR "ENTRO AL WHILE \n";
+        my $name = uc $1;
+        print STDERR "NAME: $name \n";
+        my $value = $2;
+        print STDERR "VALUE: $value \n";
+
+        #print STDERR "name[$name] value[$value]\n";
+
+        $tpl_nropag = $value if ($name eq 'HTML_NRO_PAG');
+        $tpl_nropag2 = $value if ($name eq 'HTML_PAG_ACTUAL');
+        $tpl_separador = $value if ($name eq 'HTML_SEPARADOR');
+    };
+
+    # Quitar comentarios de configuración.
+    $pagina =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
+
+    my $nro_paginas_totales = ceil($tot_artics / $prontus_varglb::TAGPORT_ARTXPAG);
+    my ($ini, $fin, $nextlink, $prevlink);
+
+    $ini = 1;
+    $fin = $nro_paginas_totales;
+
 
     for ($i=0;$i<$tot_artics;$i++) {
         if (((($i % $FILASXPAG) == 0) && ($i >= $FILASXPAG)) || ($i == 0)) {
