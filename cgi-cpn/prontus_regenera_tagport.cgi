@@ -61,6 +61,7 @@ use glib_cgi_04;
 use glib_fildir_02;
 use strict;
 use DBI;
+use POSIX qw(strftime ceil);
 
 # Soporta sólo 1 copia andando
 use lib_maxrunning;
