@@ -1248,9 +1248,9 @@ sub load_config {
   };
 
   $tipo_prontus = 'PRONTUS-04'; # AL FINAL SON TODOS PRONTUS 4 !!
-#  if ($buffer =~ m/\s*TIPO\_PRONTUS\s*=\s*("|')(PRONTUS-\d\d)("|')/) { # 1.6
-#    $tipo_prontus = $2;
-#  };
+  #  if ($buffer =~ m/\s*TIPO\_PRONTUS\s*=\s*("|')(PRONTUS-\d\d)("|')/) { # 1.6
+  #    $tipo_prontus = $2;
+  #  };
 
 
   # Directorio relativo al sitio web donde se instalara el publicador.
@@ -1579,56 +1579,56 @@ sub load_config {
       $oct_dig = $1;
     };
     $nro_prontus = '4'; # al final son todos prontus 4 !
-#    $nro_prontus = '0';
-#    if ($tipo_prontus =~ /PRONTUS-\d(\d)/) {
-#      $nro_prontus = $1;
-#    };
-    $rtext_enabled = '';
-    ($oct_dig_tipoprontus, $oct_dig, $rtext_enabled)  = &get_oct_dig($oct_dig);
+  #    $nro_prontus = '0';
+  #    if ($tipo_prontus =~ /PRONTUS-\d(\d)/) {
+  #      $nro_prontus = $1;
+  #    };
+      $rtext_enabled = '';
+      ($oct_dig_tipoprontus, $oct_dig, $rtext_enabled)  = &get_oct_dig($oct_dig);
 
-    if ($oct_dig_tipoprontus ne $nro_prontus) {
-      print STDERR "Requerimiento de Versión PRONTUS no autorizada, contáctese con AltaVoz SA.\n";
-      print "Content-Type: text/html\n\n";
-      print "<P>Requerimiento de Versión PRONTUS no autorizada, contáctese con AltaVoz SA.";
-      exit;
-    };
+      if ($oct_dig_tipoprontus ne $nro_prontus) {
+        print STDERR "Requerimiento de Versión PRONTUS no autorizada, contáctese con AltaVoz SA.\n";
+        print "Content-Type: text/html\n\n";
+        print "<P>Requerimiento de Versión PRONTUS no autorizada, contáctese con AltaVoz SA.";
+        exit;
+      };
 
-    # Validar autenticidad del serial. # 8.0
-    $sept_dig = 'OC'; # random en el que se baso la key
-    if ($prontus_key =~ /\w\w\w\w\w\w(\w)\w/) {
-      $sept_dig = $1;
-    };
-    $sept_dig = &get_sept_dig($sept_dig);
+      # Validar autenticidad del serial. # 8.0
+      $sept_dig = 'OC'; # random en el que se baso la key
+      if ($prontus_key =~ /\w\w\w\w\w\w(\w)\w/) {
+        $sept_dig = $1;
+      };
+      $sept_dig = &get_sept_dig($sept_dig);
 
-    my ($k_name, $k_ip, $k_saddr, $k_laddr) = '';
-    $k_name = &check_prontus_key(lc $ENV{'SERVER_NAME'}, $oct_dig, $sept_dig);
-    $k_name =~ s/[^0-9A-Z]//g;
+      my ($k_name, $k_ip, $k_saddr, $k_laddr) = '';
+      $k_name = &check_prontus_key(lc $ENV{'SERVER_NAME'}, $oct_dig, $sept_dig);
+      $k_name =~ s/[^0-9A-Z]//g;
 
-    $k_ip = &check_prontus_key($ENV{'HTTP_HOST'}, $oct_dig, $sept_dig);
-    $k_ip =~ s/[^0-9A-Z]//g;
+      $k_ip = &check_prontus_key($ENV{'HTTP_HOST'}, $oct_dig, $sept_dig);
+      $k_ip =~ s/[^0-9A-Z]//g;
 
-    if ($ENV{'SERVER_ADDR'} ne '') { # Solo Apache
-      $k_saddr = &check_prontus_key($ENV{'SERVER_ADDR'}, $oct_dig, $sept_dig);
-      $k_saddr =~ s/[^0-9A-Z]//g;
-    };
+      if ($ENV{'SERVER_ADDR'} ne '') { # Solo Apache
+        $k_saddr = &check_prontus_key($ENV{'SERVER_ADDR'}, $oct_dig, $sept_dig);
+        $k_saddr =~ s/[^0-9A-Z]//g;
+      };
 
-    if ($ENV{'LOCAL_ADDR'} ne '') {
-      $k_laddr = &check_prontus_key($ENV{'LOCAL_ADDR'}, $oct_dig, $sept_dig); # Solo IIS
-      $k_laddr =~ s/[^0-9A-Z]//g;
-    };
+      if ($ENV{'LOCAL_ADDR'} ne '') {
+        $k_laddr = &check_prontus_key($ENV{'LOCAL_ADDR'}, $oct_dig, $sept_dig); # Solo IIS
+        $k_laddr =~ s/[^0-9A-Z]//g;
+      };
 
-#    print STDERR "\n prontus_key[$prontus_key]";
-#    print STDERR "\n k_name[$k_name]";
-#    print STDERR "\n k_ip[$k_ip]";
+  #    print STDERR "\n prontus_key[$prontus_key]";
+  #    print STDERR "\n k_name[$k_name]";
+  #    print STDERR "\n k_ip[$k_ip]";
 
-    if (($k_name ne $prontus_key) and ($k_ip ne $prontus_key) and ($k_saddr ne $prontus_key) and ($k_laddr ne $prontus_key)) {
-      $novalid_key = 1;
-    }
-    else {
-      # print STDERR "valid\n";
-      # clave valida
-      $novalid_key = 0;
-    };
+      if (($k_name ne $prontus_key) and ($k_ip ne $prontus_key) and ($k_saddr ne $prontus_key) and ($k_laddr ne $prontus_key)) {
+        $novalid_key = 1;
+      }
+      else {
+        # print STDERR "valid\n";
+        # clave valida
+        $novalid_key = 0;
+      };
 
   }; # while p.key
 
@@ -1648,13 +1648,13 @@ sub load_config {
       $prontus_varglb::STAMP_DEMO_RSS = '';
 
       # 8.0
-#      $prontus_varglb::STAMP_DEMO = 'Prontus X - ';
-#
-#      $prontus_varglb::STAMP_DEMO_RSS = "<item>\n"
-#                                       . "<title>Prontus CMS (r)</title>\n"
-#                                       . "<link>http://www.prontus.cl</link>\n"
-#                                       . "<description>Contenido generado por Prontus</description>\n"
-#                                       . "</item>\n";
+  #      $prontus_varglb::STAMP_DEMO = 'Prontus X - ';
+  #
+  #      $prontus_varglb::STAMP_DEMO_RSS = "<item>\n"
+  #                                       . "<title>Prontus CMS (r)</title>\n"
+  #                                       . "<link>http://www.prontus.cl</link>\n"
+  #                                       . "<description>Contenido generado por Prontus</description>\n"
+  #                                       . "</item>\n";
       # print STDERR "No se encontro ninguna PK valida para este sitio. SERVER_NAME[$ENV{'SERVER_NAME'}] HTTP_HOST[$ENV{'HTTP_HOST'}]\n";
   }
   else {
@@ -2317,15 +2317,15 @@ sub load_config {
   };
   $prontus_varglb::FORM_CSV_CHARSET = $form_csv_charset;
 
-#  my $pp;
-#  my $pp_tipo;
-#  while ($buffer =~ m/\s*POST\_PROCESO\s*=\s*("|')(.*?)(\((.*?)\))?\((.*?)\)("|')/g) {
-#     $pp_tipo = $2; # ART-BORRAR | ART-GUARDAR | ART-EDITAR | PORT_GUARDAR | etc
-#     $pp_context = $4;
-#     $pp = $5;
-#
-#     $prontus_varglb::POST_PROCESO{$pp_tipo}{} = $pp;
-#  };
+  #  my $pp;
+  #  my $pp_tipo;
+  #  while ($buffer =~ m/\s*POST\_PROCESO\s*=\s*("|')(.*?)(\((.*?)\))?\((.*?)\)("|')/g) {
+  #     $pp_tipo = $2; # ART-BORRAR | ART-GUARDAR | ART-EDITAR | PORT_GUARDAR | etc
+  #     $pp_context = $4;
+  #     $pp = $5;
+  #
+  #     $prontus_varglb::POST_PROCESO{$pp_tipo}{} = $pp;
+  #  };
 
   my $pp;
   my $pp_tipo;
@@ -2461,18 +2461,18 @@ sub load_config {
 
   # Solo ambiente web.
 
-#   if ($ENV{'SERVER_NAME'} ne '') {
-#
-#     my $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
-#     my $js_buf = &glib_fildir_02::read_file("$core_dir/secciones_tmp.js");
-#     my $secciones_js;
-#     while ($buffer =~ m/\s*SECCIONES\s*=\s*("|')(.*?)("|')/g) {
-#        $valor = $2;
-#        $secciones_js .= ",'$valor'";
-#     };
-#     $js_buf =~ s/%%secciones%%/$secciones_js/g;
-#     &glib_fildir_02::write_file("$core_dir/secciones.js", $js_buf);
-#   };
+  #   if ($ENV{'SERVER_NAME'} ne '') {
+  #
+  #     my $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
+  #     my $js_buf = &glib_fildir_02::read_file("$core_dir/secciones_tmp.js");
+  #     my $secciones_js;
+  #     while ($buffer =~ m/\s*SECCIONES\s*=\s*("|')(.*?)("|')/g) {
+  #        $valor = $2;
+  #        $secciones_js .= ",'$valor'";
+  #     };
+  #     $js_buf =~ s/%%secciones%%/$secciones_js/g;
+  #     &glib_fildir_02::write_file("$core_dir/secciones.js", $js_buf);
+  #   };
 
   &check_dirs();
 

@@ -518,9 +518,14 @@ sub get_artic_parsed {
 
     my $path_artic = $artic_obj->get_fullpath_artic('', $campos_xml{'_plt'});
 
+    # No se checkea el path si no se desea generar la vista
+    my $check_artic_path = 1;
+    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
+        $check_artic_path = 0 if($campos_xml{'_alta'} ne '1' && $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'NO');
+    }
 
     # Art. inexistente
-    if (! -f $path_artic) {
+    if (!(-f $path_artic) && $check_artic_path) {
         $loop_art_tpl =~ s/%%_ts%%/$ts/g;
         $loop_art_tpl =~ s/%%_artic_sin_file%%/_artic_sin_file/g;
         $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo_disabled/g;

@@ -1935,14 +1935,21 @@ sub generar_vista_art {
         &glib_fildir_02::check_dir($pagspar_dir);
     };
 
+    # No se genera vista si está definido de esa manera
+    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
+        return 1 if($campos_xml{'_alta'} ne '1' && $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'NO');
+    }
+
     # Carga plantilla
     my ($fullpath_plt) = "$this->{pathdir_plt_pags}/$plt";
+    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
+        ($fullpath_plt) = "$this->{pathdir_plt_pags}/plt_sin_alta.html" if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT');
+    }
     my ($pathdir_plt_macros) = $this->{pathdir_plt_macros};
 
     my $buffer = &lib_prontus::carga_buffer_plt($fullpath_plt, $pathdir_plt_macros, $mv);
 
     if ($buffer) {
-
         # Primero que todo se parsean los loops de de Articulo
         while($buffer =~ /%%_loop_artic\((\d+),(\d+)\)%%(.*?)%%\/_loop_artic%%/is) {
             my $inicio = $1;
@@ -1983,7 +1990,6 @@ sub generar_vista_art {
                 } else {
                     $claves_adicionales{"$video.$version"} = $campos_xml{$video}; # si no existe, poner el video original.
                 };
-
                 # print STDERR "file_version[$file_version]\n";
             };
         };
@@ -2008,7 +2014,6 @@ sub generar_vista_art {
 
         # Borra marcas no sustituidas
         $buffer =~ s/%%.+?%%//g;
-
         $buffer =~ s/&#37;&#37;/%%/sg; # restituyo los %% escritos por el usuario al interior de los campos
 
         # aprovecha de rescatar el post_proceso
