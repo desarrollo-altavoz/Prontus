@@ -1937,7 +1937,10 @@ sub generar_vista_art {
 
     # No se genera vista si está definido de esa manera
     if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
-        return 1 if($campos_xml{'_alta'} ne '1' && $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'NO');
+        if($campos_xml{'_alta'} ne '1' && $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'NO'){
+            unlink "$fullpath_vista" if(-f $fullpath_vista);
+            return 1;
+        }
     }
 
     # Carga plantilla
