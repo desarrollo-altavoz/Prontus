@@ -8820,7 +8820,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cron_taxport.cgi
 
 ====================================================================================================
-11.2.92 - 08/09/2016 - JOR/MPG/EAG/EON
+11.2.92 - 08/09/2016 - JOR/MPG/EAG/EON/SCT
 ====================================================================================================
 
 - Prontus en general
@@ -8839,13 +8839,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/check_platform.cgi
         /cgi-cpn/prontus_art_listpub.cgi
         /wizard_prontus/prontus_dir/cpan/core/css/tax.css
-<<<<<<< HEAD
         /wizard_prontus/prontus_dir/cpan/core/js-local/Opciones.class.js
         /wizard_prontus/prontus_dir/cpan/core/macros/listado_titulos.html
-=======
-        /wizard_prontus/prontus_dir/cpan/core/macros/listado_titulos.html
-        /wizard_prontus/prontus_dir/cpan/core/js-local/Opciones.class.js
->>>>>>> eb08db210fa9cbfa3d8d2b5a7197cbe86a3db4aa
 
 - Portadas taxonómicas
     [bugfixes]
@@ -8854,6 +8849,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia de lugar la desconexión de la base de datos para evitar carrera critica con semaforo de worker.
     [files]
         /cgi-cpn/prontus_cron_taxport_worker.cgi
+
+- Portadas tagonómicas
+    [mejoras]
+        - Se agrega paginación custom para tagport, basado en la paginación de las taxport. Es posible cambiar el html de la páginación, configurable dentro de la misma plantilla de taxport mediante las siguientes variables:
+
+        HTML de cada número de página: <!-- CONFIG HTML_NRO_PAG = <a class="pag_number" href="%%lnk%%">%%cnro_pag%%</a> -->
+        HTML de la página actual: <!-- CONFIG HTML_PAG_ACTUAL = <span class="current_pag">%%cnro_pag%%</span> -->
+    [files]
+        - /cgi-cpn/prontus_regenera_tagport.cgi
+        - /cgi-cpn/prontus_tags_ports.cgi
 
 - Transcodificación
     [mejoras]
