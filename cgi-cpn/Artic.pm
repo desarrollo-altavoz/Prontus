@@ -1917,6 +1917,9 @@ sub generar_vista_art {
     };
 
     $plt = $campos_xml{'_plt'} if (!$plt);
+    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI' && $campos_xml{'_alta'} ne '1') {
+        $plt = "plt_default.html" if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT');
+    }
 
     # Path completo al articulo a generar
     my $fullpath_vista = $this->get_fullpath_artic($mv, $plt);
@@ -1936,8 +1939,8 @@ sub generar_vista_art {
     };
 
     # No se genera vista si está definido de esa manera
-    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
-        if($campos_xml{'_alta'} ne '1' && $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'NO'){
+    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI' && $campos_xml{'_alta'} ne '1') {
+        if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'NO'){
             unlink "$fullpath_vista" if(-f $fullpath_vista);
             return 1;
         }
@@ -1945,11 +1948,12 @@ sub generar_vista_art {
 
     # Carga plantilla
     my ($fullpath_plt) = "$this->{pathdir_plt_pags}/$plt";
-    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
-        ($fullpath_plt) = "$this->{pathdir_plt_pags}/plt_sin_alta.html" if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT');
+    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI' && $campos_xml{'_alta'} ne '1') {
+        $fullpath_plt = "$this->{pathdir_plt}/404/$plt" if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT');
+        $mv = "" if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT');
     }
-    my ($pathdir_plt_macros) = $this->{pathdir_plt_macros};
 
+    my ($pathdir_plt_macros) = $this->{pathdir_plt_macros};
     my $buffer = &lib_prontus::carga_buffer_plt($fullpath_plt, $pathdir_plt_macros, $mv);
 
     if ($buffer) {
@@ -2035,8 +2039,13 @@ sub generar_vista_art {
         utf8::decode($titular);
 
         my $vista;
-        $vista = "<br/>Vista asociada[$mv]\n" if($mv);
-        $Artic::ERR = 'Plantilla de artículo vacia o no existe, el art. ' . $this->{ts} . ' (' . $titular . ") se creó en blanco.<br/>Archivo de plantilla con problemas [".$campos_xml{'_plt'}."]".$vista;
+        my $vista = "<br/>Vista asociada[$mv]\n" if($mv);
+
+        if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI' && $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT') {
+            $Artic::ERR = 'Plantilla de artículo vacia o no existe, el art. ' . $this->{ts} . ' (' . $titular . ") se creó en blanco.<br/>Archivo de plantilla con problemas [".$fullpath_plt."]".$vista;
+        } else {
+            $Artic::ERR = 'Plantilla de artículo vacia o no existe, el art. ' . $this->{ts} . ' (' . $titular . ") se creó en blanco.<br/>Archivo de plantilla con problemas [".$plt."]".$vista;
+        }
         warn "$Artic::ERR fullpath_plt[$fullpath_plt]";
         return 0;
     };
