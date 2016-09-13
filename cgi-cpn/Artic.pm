@@ -1918,7 +1918,12 @@ sub generar_vista_art {
 
     $plt = $campos_xml{'_plt'} if (!$plt);
     if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI' && $campos_xml{'_alta'} ne '1') {
-        $plt = "plt_default.html" if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT');
+        if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT'){
+            $plt =~ /(.*?)\.(\w+)$/;
+            my $ext_plt = $2;
+            $plt = "pag.$ext_plt";
+            $plt = "pag-$mv.$ext_plt" if(-f "$this->{pathdir_plt}/404/pag-$mv.$ext_plt");
+        }
     }
 
     # Path completo al articulo a generar
@@ -1950,11 +1955,16 @@ sub generar_vista_art {
     my ($fullpath_plt) = "$this->{pathdir_plt_pags}/$plt";
     if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI' && $campos_xml{'_alta'} ne '1') {
         $fullpath_plt = "$this->{pathdir_plt}/404/$plt" if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT');
-        $mv = "" if($prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT');
     }
 
     my ($pathdir_plt_macros) = $this->{pathdir_plt_macros};
-    my $buffer = &lib_prontus::carga_buffer_plt($fullpath_plt, $pathdir_plt_macros, $mv);
+
+    my $buffer = '';
+    if($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI' && $campos_xml{'_alta'} ne '1' && $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT'){
+        $buffer = &lib_prontus::carga_buffer_plt($fullpath_plt, $pathdir_plt_macros, '');
+    } else {
+        $buffer = &lib_prontus::carga_buffer_plt($fullpath_plt, $pathdir_plt_macros, $mv);
+    }
 
     if ($buffer) {
         # Primero que todo se parsean los loops de de Articulo
@@ -2040,7 +2050,6 @@ sub generar_vista_art {
 
         my $vista;
         my $vista = "<br/>Vista asociada[$mv]\n" if($mv);
-
         if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI' && $prontus_varglb::COMPORTAMIENTO_ALTA_ARTICULOS eq 'PLT') {
             $Artic::ERR = 'Plantilla de artículo vacia o no existe, el art. ' . $this->{ts} . ' (' . $titular . ") se creó en blanco.<br/>Archivo de plantilla con problemas [".$fullpath_plt."]".$vista;
         } else {
