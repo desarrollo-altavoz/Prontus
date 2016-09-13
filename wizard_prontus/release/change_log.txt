@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.92 - 08/09/2016 - JOR/MPG/EAG/EON
+11.2.92 - 12/09/2016 - JOR/MPG/EAG/EON/SCT
 ====================================================================================================
 - bugfixes: Se corrige parseo de fixed url en taxports
 - changes: Se aumenta el ancho del contenedor en el buscador de tags para que no queden superpuestos los elementos.

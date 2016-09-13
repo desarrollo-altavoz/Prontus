@@ -8820,7 +8820,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cron_taxport.cgi
 
 ====================================================================================================
-11.2.92 - 08/09/2016 - JOR/MPG/EAG/EON/SCT
+11.2.92 - 12/09/2016 - JOR/MPG/EAG/EON/SCT
 ====================================================================================================
 
 - Prontus en general
