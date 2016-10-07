@@ -1614,18 +1614,18 @@ sub borra_artic {
                                   . '/' . $tem
                                   . '/' . $stem;
 
-        $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
+        $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
 
         # Regenera las salidas List
-        $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
+        $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
     };
 
     # Regenera la tabla del DAM
-    $cmd = "$pathnice $rutaScript/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME &";
+    $cmd = "$pathnice $rutaScript/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME  >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 
