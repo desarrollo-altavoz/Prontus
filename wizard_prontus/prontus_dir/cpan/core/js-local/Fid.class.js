@@ -1,6 +1,7 @@
 
 // -----------------------------------------
 var Fid = {
+    friendlyVer: 1,
 
     showDragDrop: false,
     ishttps: false,
@@ -750,6 +751,12 @@ var Fid = {
             }
         }
 
+        if (Fid.friendlyVer == 4 && (bot_press == 'save' || bot_press == 'save_new')) {
+                Fid.validaTitular(bot_press);
+                console.log('llamar validar url');
+                return false;
+        }
+
         // se submite el formulario
         $('#_mainFidForm').trigger('submit');
 
@@ -757,7 +764,43 @@ var Fid = {
             Fid.setGUIProcesando(false);
         }
     },
+    // -------------------------------------------------------------------------
+    // Valida si la url friendly correspondiente a este articulo ya existe
+    // gatilla guardado del articulo si corresponde
+    // save y save_new, gatillan guardado, check solo verifica y genera alerta
+    validaTitular: function(bot_press) {
+        $.ajax({
+            type: 'POST',
+            url: 'prontus_art_check_url.cgi',
+            data: { _prontus_id: mainFidJs.PRONTUS_ID,
+                    _txt_titular: $('#_txt_titular').val(),
+                    _ts: mainFidJs.TS,
+                    _path_conf: $('[name=_path_conf]').val()
+                },
+            dataType: 'json',
+            success: function (data) {
+                    console.log(data);
+                    if (data.status == 'OK') {
+                        $('#_url').val(data.uri_titular);
+                        if (bot_press == 'save' || bot_press == 'save_new') {
+                            // se submite el formulario
+                            $('#_mainFidForm').trigger('submit');
+                        }
+                    } else {
+                        alert(data.msg);
+                        Fid.setGUIProcesando(false);
+                    }
+                }
+        });
 
+        return false;
+    },
+
+    // -------------------------------------------------------------------------
+    // Funcion usada en los formularios para eliminar archivos de respaldos
+    abrirEditor: function() {
+        //window.open('prontus_art_ficha.cgi?_path_conf='+Admin.path_conf+'&_file='+resp.file+'&_fid='+resp.fid+'&fotosvtxt=/1/2/3/4');
+    },
 
     // -------------------------------------------------------------------------
     //Funcion usada en los formularios para eliminar archivos de respaldos

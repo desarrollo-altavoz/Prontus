@@ -203,6 +203,20 @@ my ($dir);
     };
   };
 
+    # Directorio de destino de los includes friendly v4
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        $dir = $prontus_varglb::DIR_SERVER .
+                $prontus_varglb::DIR_CONTENIDO .
+                $prontus_varglb::DIR_FRIENLY;
+
+        if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de destino de urls friendly v4 no es válido");
+            exit;
+        };
+    };
+
+
   # DIRS. DE USO INTERNO  -----------------------------
   # Dir de los dbm
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_DBM)) ) {
@@ -1273,7 +1287,7 @@ sub load_config {
   };
 
   my $friendly_urls_version = '1'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(.*?)("|')/) { # SI | NO
+  if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(\d)("|')/) { # Es un digito, valor 1 a 4
     $friendly_urls_version = $2;
   };
 
@@ -5146,94 +5160,99 @@ sub borra_taxport {
 # ---------------------------------------------------------------
 # 20120723 - JOR - Los ultimos 3 parametros corresponden al nombre de la seccion, tema y subtema para construir la version 2.0 de las friendly url.
 sub parse_filef {
-  my ($buffer, $titular, $ts, $prontus_id, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1) = @_;
+    my ($buffer, $titular, $ts, $prontus_id, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1) = @_;
 
-  return $buffer if (!$ts || !$prontus_id || !$titular);
-  return $buffer unless($buffer =~ /%%_FILEURL%%/i);
+    return $buffer if (!$ts || !$prontus_id || !$titular);
+    return $buffer unless($buffer =~ /%%_FILEURL%%/i);
 
-  # Ajusta largo de titular para friendly.
-  $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
-  $titular =~ s/\.\.\.$//sg;
+    # Ajusta largo de titular para friendly.
+    $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
+    $titular =~ s/\.\.\.$//sg;
 
-  my $ext;
-  $ext = $1 if ($relpath_artic =~ /\.(\w+)$/);
-  $titular = &saca_tags_rets($titular);
-  $titular = &notildes($titular);
-  $titular = lc $titular;
-  $titular =~ s/[^a-z0-9]/-/sg;
-  $titular =~ s/-+/-/g;
-  $titular =~ s/^-//sg;
-  $titular =~ s/-$//sg;
-  my $fecha4friendly;
-  my $fecha;
-  my $hora;
-  if ($ts =~ /^(\d{4})(\d{2})(\d{2})(\d{6})/) {
-    $fecha4friendly = $1 . '-' . $2 . '-' . $3;
-    $fecha = "$1$2$3";
-    $hora = $4;
-  };
-
-  if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-    my $fileurl = '';
-    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '1') {
-        $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
-    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
-        # Formato: /prontus/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
-        $fileurl = "/$prontus_id/";
-
-        if ($nom_seccion1 ne '') {
-            $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
-            $fileurl .= "$nom_seccion1/";
-        };
-
-        if ($nom_tema1 ne '') {
-            $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
-            $fileurl .= "$nom_tema1/";
-        };
-
-        if ($nom_subtema1 ne '') {
-            $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
-            $fileurl .= "$nom_subtema1/";
-        };
-
-        $fileurl .= "$titular/$fecha4friendly/$hora.$ext";
-    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '3') {
-        # Formato: www.<prontus_id>.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
-        $fileurl = "/";
-
-        if ($nom_seccion1 ne '') {
-            $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
-            $fileurl .= "$nom_seccion1/";
-        };
-
-        if ($nom_tema1 ne '') {
-            $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
-            $fileurl .= "$nom_tema1/";
-        };
-
-        if ($nom_subtema1 ne '') {
-            $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
-            $fileurl .= "$nom_subtema1/";
-        };
-
-        $fileurl .= "$titular/$fecha4friendly/$hora.$ext";
-    } else {
-        # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
-        $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
+    my $ext;
+    $ext = $1 if ($relpath_artic =~ /\.(\w+)$/);
+    $titular = &saca_tags_rets($titular);
+    $titular = &notildes($titular);
+    $titular = lc $titular;
+    $titular =~ s/[^a-z0-9]/-/sg;
+    $titular =~ s/-+/-/g;
+    $titular =~ s/^-//sg;
+    $titular =~ s/-$//sg;
+    my $fecha4friendly;
+    my $fecha;
+    my $hora;
+    if ($ts =~ /^(\d{4})(\d{2})(\d{2})(\d{6})/) {
+        $fecha4friendly = $1 . '-' . $2 . '-' . $3;
+        $fecha = "$1$2$3";
+        $hora = $4;
     };
 
-    #~ print STDERR "fileurl[$fileurl]\n";
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+        my $fileurl = '';
+        if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1') {
+            my $tax = '';
+            if ($nom_seccion1 ne '') {
+                $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
+                $tax .= "$nom_seccion1";
+            };
 
-      $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
+            if ($nom_tema1 ne '') {
+                $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
+                $tax .= "/$nom_tema1";
+            };
 
-  } else {
-      my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
-      $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
-  };
+            if ($nom_subtema1 ne '') {
+                $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
+                $tax .= "/$nom_subtema1";
+            };
+            if ($tax ne '') {
+                $tax = '/' . $tax;
+            }
 
-  return $buffer;
+            if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
+                # Formato: /prontus/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
+                $fileurl = "/$prontus_id$tax/$titular/$fecha4friendly/$hora.$ext";
+
+            } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '3') {
+                # Formato: www.<prontus_id>.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
+                $fileurl = "$tax/$titular/$fecha4friendly/$hora.$ext";
+
+            } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+                # Formato: /prontus/seccion/tema/subtema/titular.extension
+                $titular = &ajusta_titular_f4($_[1]);
+                $fileurl = "/$prontus_id$tax/$titular";
+            }
+        } else {
+            # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
+            $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
+        };
+
+        #~ print STDERR "fileurl[$fileurl]\n";
+
+        $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
+
+    } else {
+        my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
+        $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
+    };
+
+    return $buffer;
 };
-
+# ---------------------------------------------------------------
+# 20161004 Funcion para ajustar el titular a friendly4
+sub ajusta_titular_f4 {
+    my $titular = $_[0];
+    $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
+    $titular =~ s/\.*$//sg; # elimina todos los puntos al final del titular
+    $titular = &saca_tags_rets($titular);
+    $titular = &notildes($titular);
+    $titular = lc $titular;
+    $titular =~ s/[^a-z0-9]/-/sg;
+    $titular =~ s/-+/-/g;
+    $titular =~ s/^-*//sg; # elimina todos los guiones al principio
+    $titular =~ s/-*$//sg; # elimina todos los guiones al final
+    return $titular;
+}
 # ---------------------------------------------------------------
 sub despulgar_texto_friendly {
     my $texto = $_[0];

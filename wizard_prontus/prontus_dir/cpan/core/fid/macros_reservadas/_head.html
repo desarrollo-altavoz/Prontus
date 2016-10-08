@@ -3,7 +3,7 @@
 
   <!-- CSS de Prontus -->
   <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
-  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/fids.css?v2" />
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/fids.css?v3" />
   <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
   <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
   <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/tags_input/jquery.tagsinput.css" />
@@ -45,7 +45,7 @@
 
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Admin.class.js"></script>
-  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Fid.class.js?v2"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Fid.class.js?v3"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/FotoFija.class.js?v2"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Tags.class.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Botones.class.js"></script>
@@ -56,6 +56,8 @@
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/validator.js"></script>
   %%_tax4fids%%
   <script type="text/javascript">
+    Fid.friendlyVer = %%_friendly_urls_ver%%;
+
     var mainFidJs = {
         ID_TEMA_SELECTED: new Array(%%_TEMA1%%, %%_TEMA2%%, %%_TEMA3%%),
         ID_SUBTEMA_SELECTED: new Array(%%_SUBTEMA1%%, %%_SUBTEMA2%%, %%_SUBTEMA3%%),

@@ -203,7 +203,7 @@ sub reparsea_artic {
             &messageLoading('Directorios Procesados: <b>' . $dircounter . '</b>');
             &lib_logproc::add_to_log_count("Procesando DIR [$dirfecha/xml]");
             # print STDERR "Procesando DIR [$dirfecha/xml]\n";
-            &procesa_files("$ruta_dir/$dirfecha/xml", $dirfecha);
+            &procesa_files("$ruta_dir/$dirfecha/xml", $dirfecha, $base);
         };
     };
 
@@ -226,7 +226,7 @@ sub procesa_files {
     my ($nom_campo, $val_campo, $dir_adjunto, $estilo);
     my ($ruta_dir_xml) = $_[0];
     my ($art_dirfecha) = $_[1];
-    # my ($mv) = $_[2];
+    my $base = $_[2];
 
     my @lisfile = &glib_fildir_02::lee_dir($ruta_dir_xml);
     @lisfile = grep !/^\./, @lisfile; # Elimina directorios . y ..
@@ -273,6 +273,10 @@ sub procesa_files {
                         # Generar vista (a partir del xml)
                         $artic_obj->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
                                 || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
+                    }
+
+                    if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+                        $artic_obj->genera_friendly_v4($base, 0);
                     }
 
                     my $secc4tax = $campos_xml{'_seccion1'};

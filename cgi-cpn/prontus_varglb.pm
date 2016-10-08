@@ -170,6 +170,11 @@ sub init { # Prontus 6.0
 
   $DIR_FSET_PAG = '/fset';   # Dir. donde se almacenaran los framesets apuntando al indice y a la pagina, cuando se trate de Menu de subtitulos en pag aparte.
 
+    # variables para friendly url v4
+    $DIR_FRIENDLY = '/friendly/links'; #directorio donde se almacenaran los includes de friendly urls
+    $DIR_PLT_FRIENDLY = '/friendly'; #subdirectorio donde se almacenaran los includes de friendly urls por vista
+    $prontus_varglb::FRIENDLY_URLS_PLANTILLA_INCLUDE = '<!--#include virtual="%%_FILE%%"-->';
+
   # Directorios correspondientes a los templates, relativos al publicador
   $DIR_TEMP = '/plantillas';
 

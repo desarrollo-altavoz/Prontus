@@ -51,6 +51,12 @@
 #info_artic .tableform .nombre {width:210px;}
 #info_artic .tableform .campo {width:470px; text-align:left; font-weight:normal;}
 
+/* informacion del articulo en conflicto */
+#info_url_conflict .col685 .titulo {color:#FFFFFF; font-size:14px; font-weight:bold; padding-top:5px;}
+#info_url_conflict .col685 .box-gris {width:685px;}
+#info_url_conflict .tableform .nombre {width:210px;}
+#info_url_conflict .tableform .campo {width:470px; text-align:left; font-weight:normal;}
+
 /* oculta los elementos con class hide-new-artic cuando el articulo es nuevo */
 .hide-new-artic {display:none;}
 

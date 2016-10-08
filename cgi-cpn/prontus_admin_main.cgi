@@ -1195,23 +1195,12 @@ sub parseaVars {
         $pagina =~ s/%%BLOQUEO_EDICION_V2%%/ checked="checked"/ig;
     };
 
-    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '1') {
-        $pagina =~ s/%%FRIENDLY_URLS_V1%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V3%%//ig;
-    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
-        $pagina =~ s/%%FRIENDLY_URLS_V2%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V1%%//ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V3%%//ig;
-    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '3') {
-        $pagina =~ s/%%FRIENDLY_URLS_V3%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V1%%//ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
-    } else {
-        # Dejar la versión 1 por defecto.
-        $pagina =~ s/%%FRIENDLY_URLS_V1%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
-    };
+    my $friendlyVer = '%%FRIENDLY_URLS_V'.$prontus_varglb::FRIENDLY_URLS_VERSION.'%%';
+    $pagina =~ s/$friendlyVer/ checked="checked"/ig;
+    $pagina =~ s/%%FRIENDLY_URLS_V1%%//ig;
+    $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
+    $pagina =~ s/%%FRIENDLY_URLS_V3%%//ig;
+    $pagina =~ s/%%FRIENDLY_URLS_V4%%//ig;
 
     if ($prontus_varglb::PRONTUS_LOG eq 'SI') {
         $pagina =~ s/%%PRONTUS_LOG%%/ checked="checked"/ig;
@@ -1283,7 +1272,6 @@ sub parseaVars {
         $pagina =~ s/%%FORM_CSV_CHARSET_1%%/ selected="selected"/ig;
         $pagina =~ s/%%FORM_CSV_CHARSET_2%%//ig;
     };
-
 
 
     my $post_proceso = $prontus_varglb::POST_PROCESO{'ART-BORRAR'};

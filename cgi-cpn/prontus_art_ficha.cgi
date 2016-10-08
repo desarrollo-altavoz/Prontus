@@ -460,6 +460,13 @@ if ($FORM{'_upd_port_dd'}) {
     $pagina =~ s/%%_upd_port_dd%%.*?%%\/_upd_port_dd%%//isg;
 };
 
+# se parsea el numero de version de friendly urls en uso
+if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+    $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig
+} else {
+    $pagina =~ s/%%_friendly_urls_ver%%/0/ig
+}
+
 $pagina =~ s/%%.+?%%//g;
 
 # Restituir las marcas especiales de las fotos y tablas y htmlfiles embebidas en el texto..
@@ -472,11 +479,6 @@ $pagina =~ s/<!-- *\/[^\/]+?-->//sg;
 
 my ($crlf) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
 $pagina =~ s/>($crlf| )+</>\x0a</sg;
-
-# Se comentan lineas para evitar reemplazar saltos de lineas o espacios ingresados intencionalmente por el usuario
-#~ $pagina =~ s/ +/ /sg;
-#~ $pagina =~ s/($crlf)+/\x0a/sg;
-
 
 print $pagina;
 

@@ -96,7 +96,7 @@ main: {
     #$hash_defaultvars{'var'}{'ACTUALIZACION_MASIVA'} = 'ACTUALIZACION_MASIVA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URL_IMAGES'} = 'FRIENDLY_URL_IMAGES;(SI|NO);NO;U';
-    $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3);1;U';
+    $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3|4);1;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_LARGO_TITULAR'} = 'FRIENDLY_URLS_LARGO_TITULAR;^(\d+)$;1;U';
     $hash_defaultvars{'var'}{'COMENTARIOS'} = 'COMENTARIOS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'DROPBOX'} = 'DROPBOX;(SI|NO);NO;U';
@@ -669,8 +669,12 @@ sub validarVar {
         };
     };
 
-
-
+    if ($var eq 'FRIENDLY_URLS_LARGO_TITULAR') {
+        $item += 0; # forzamos conversion a numero
+        if ($item >= 90) {
+            &glib_html_02::print_json_result(0, "El largo máximo del titular en la URL es 100 caracteres", 'exit=1,ctype=1');
+        };
+    };
 };
 
 sub validarArt {

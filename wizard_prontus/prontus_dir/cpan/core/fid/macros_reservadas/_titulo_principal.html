@@ -1,7 +1,15 @@
                   <!--TITULO PRINCIPAL-->
                   <div class="aleft">
                     <div class="numero-id">#%%_ART_AUTOINC%%</div>
-                    <div class="aleft"><input type="text" name="_txt_titular"  id="_txt_titular" class="fieldform-top" value="%%_txt_titular%%" onclick="if($(this).val()=='Sin t&iacute;tulo') {$(this).val('');}" /></div>
+                    <div class="aleft">
+                        <div>
+                            <input type="text" name="_txt_titular"  id="_txt_titular" class="fieldform-top" value="%%_txt_titular%%" onclick="if($(this).val()=='Sin t&iacute;tulo') {$(this).val('');}" onblur="Fid.validaTitular('check'); return false;";/>
+                        </div>
+                        <div class="aleft">
+                            <div class="numero-id">Url</div>
+                            <input type="text" id="_url" name="_url" class="fieldform-top" value="%%_url%%" readonly="readonly"/>
+                        </div>
+                    </div>
                     <div class="numero-id hide-new-artic">
                       <a href="#" id="link_info_artic" title="Información del Artículo">
                         <img src="/%%_prontus_id%%/cpan/core/imag/boto/inf_of.png" width="21" height="21" alt="Ver más información" title="Ver más información" class="cambia-boton" />
@@ -64,3 +72,38 @@
   </div>
 </div>
 <div id="tooltip-copiar">&nbsp;</div>
+
+
+<div class="info_artic">
+    <div id="info_url_conflict">
+        <div class="col685">
+            <div class="rotulo">
+                <div class="titulo">Información del Artículo en Conflicto</div>
+            </div>
+            <div class="box-gris">
+                <div class="box-auxi">
+                  <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform">
+                    <tr>
+                      <td class="nombre">Timestamp:</td><td class="campo" id="url_art_ts"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Id</td><td class="campo" id="url_art_id"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Titular:</td><td class="campo" id="url_art_titu"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Editar</td><td class="campo"><a href="#" target="_blank" onclick="return false;">Abrir para editar</a></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Path del Art&iacute;culo:</td><td class="campo" id="url_art_path"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Titular en URL:</td><td class="campo" id="url_art_url"></td>
+                    </tr>
+                  </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
