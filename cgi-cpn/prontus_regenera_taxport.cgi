@@ -194,13 +194,12 @@ sub gatillar_procesos {
         foreach my $levels (sort keys %LEVELS2TRIGGER) {
             next unless($LEVELS2TRIGGER{$levels});
 
-            # Se chequea para descansar con un sleep
-            #~ my $safetycounter = 1;
             while (&check_taxport_running() >= 3) {
-                #~ last if($safetycounter > 10);
-
                 print "Muchos procesos simultaneos... esperando 5 segundos.\n";
-                #~ $safetycounter++;
+                sleep(5);
+            }
+            while (&check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
+                print "Muchos procesos worker simultaneos... esperando 5 segundos.\n";
                 sleep(5);
             }
 
@@ -218,6 +217,15 @@ sub check_taxport_running {
     my($res) = qx/ps axww | grep 'prontus_cron_taxport.cgi' | grep -v ' grep ' | grep -v 'sh -c' | wc -l/;
 
     $res =~ s/\D//gs;
+    $res += 0; # para forzar el casteo a numero
+    return $res;
+};
+# ---------------------------------------------------------------
+sub check_worker_running {
+    my($res) = qx/ps axww | grep 'prontus_cron_taxport_worker.cgi' | grep -v ' grep ' | grep -v 'sh -c' | wc -l/;
+
+    $res =~ s/\D//gs;
+    $res += 0; # para forzar el casteo a numero
     return $res;
 };
 # ---------------------------------------------------------------
