@@ -258,8 +258,6 @@ sub procesa_files {
     };
 };
 
-
-
 # ---------------------------------------------------------------
 sub registra_artic_error {
     my $msg = $_[0];
@@ -271,7 +269,7 @@ sub finishLoading {
 
     my $msg = $_[0];
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_bd_regen.js";
-    my $msg = '{"status":1, "msg":"'.$msg.'"}';
+    $msg = '{"status":1, "msg":"'.$msg.'"}';
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
 };
 

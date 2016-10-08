@@ -1406,10 +1406,8 @@ sub get_xml_content {
 sub tags2bd {
 # puebla nub de art con tags
 # Se invoca al momento de guardar un articulo.
-
     my ($this, $base, $is_new) = @_;
 
-    my $motor_bd = &lib_prontus::get_motor_from_bdhandler($base);
     my %campos = $this->get_xml_content();
     my @tags = split(/,/, $campos{'_tags'});
 

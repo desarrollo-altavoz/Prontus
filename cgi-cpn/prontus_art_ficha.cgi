@@ -473,11 +473,6 @@ $pagina =~ s/<!-- *\/[^\/]+?-->//sg;
 my ($crlf) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
 $pagina =~ s/>($crlf| )+</>\x0a</sg;
 
-# Se comentan lineas para evitar reemplazar saltos de lineas o espacios ingresados intencionalmente por el usuario
-#~ $pagina =~ s/ +/ /sg;
-#~ $pagina =~ s/($crlf)+/\x0a/sg;
-
-
 print $pagina;
 
 

@@ -1285,7 +1285,6 @@ sub parseaVars {
     };
 
 
-
     my $post_proceso = $prontus_varglb::POST_PROCESO{'ART-BORRAR'};
     $post_proceso =~ s/^\((.*?)\)$//ig;
     $post_proceso = $1;
