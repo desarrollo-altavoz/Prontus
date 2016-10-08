@@ -48,16 +48,6 @@ sub save_artic_with_object {
     my $autoinc = 0;
     my $post_proceso_lista;
 
-    # si es editar, antes de guardar rescata el xml previo.
-    # solo para efectos de la nube de tags
-#    my %campos_xml_old;
-#    my $tags_old;
-#    if (!$is_new) {
-#        %campos_xml_old = $ARTIC_OBJ->get_xml_content();
-#        $tags_old = $campos_xml_old{'_tags'};
-#    };
-
-
     # regenera los <tag>.txt para los tags q tenía el artículo antes de ser modificado
     my %campos_xml_old;
     my $tags_old;
@@ -75,7 +65,6 @@ sub save_artic_with_object {
     };
 
     # Guardar articulo.
-    # my $msg_err_save = &do_save($base, $is_new, $tags_old);
     my $msg_err_save = &do_save($base, $is_new);
     if ($msg_err_save) {
         &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
@@ -228,7 +217,7 @@ sub do_save {
 # Actualiza registro de bd en base a info que carga del xml
     my $base = shift;
     my $is_new = shift; # 1 | 0
-    # my $tags_old = shift; # tags q tenia el artic antes de guardar
+
     my $autoinc = 0;
     if ($is_new) {
         $autoinc = $ARTIC_OBJ->art_insert_bd($base);
@@ -257,7 +246,6 @@ sub do_save {
                 || return $Artic::ERR;
     };
 
-    # $ARTIC_OBJ->tags2bd($base, $tags_old, $is_new) || return $Artic::ERR;
     $ARTIC_OBJ->tags2bd($base, $is_new) || return $Artic::ERR;
     # print STDERR "fin save con autoinc[$autoinc]\n";
 

@@ -369,8 +369,7 @@ sub get_dir_server {
 };
 # ---------------------------------------------------------------
 sub set_info_version_prontus {
-    my ($version_prontus) = $prontus_varglb::VERSION_PRONTUS;
-    if ($version_prontus =~ /([0-9]+\.[0-9]+)\.([0-9]+)(\.beta)?/) {
+    if ($prontus_varglb::VERSION_PRONTUS =~ /([0-9]+\.[0-9]+)\.([0-9]+)(\.beta)?/) {
         $RAMA_INSTALADA = $1;
         $NRO_REVISION_INSTALADA = $2;
         $BETA_REVISION_INSTALADA = $3;

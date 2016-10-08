@@ -282,136 +282,6 @@ my ($dir);
   };
 
 
-#  # Archivos del CORE
-#  my ($core_file) = "$core_dir/prontus_edi_admin.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de Administrador de Ediciones no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_edi_ficha.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de Ficha de Edición no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_edi_otras.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de Ediciones anteriores no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_art_admin.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de lista de artículos no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_art_fset.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Frameset de lista de artículos no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_art_head.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Head de lista de artículos no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_index.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de control de acceso no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_menu.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de Menu principal no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_copy_spare_confirm.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de confirmación de copia de port. recambio no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_show_spares.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de despliegue de port. recambio no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_usr_admin.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de Adm. de usuarios no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_usr_ficha.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de Ficha de usuario no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_waiting.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de espera no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_detect.js";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","JS no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/popup_port.js";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","JS no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/popup_tipart.js";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","JS no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/fechas.js";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","JS no existe");
-#    exit;
-#  };
-#
-#
-#
-#  # Dir imag
-#  if ( ! (&glib_fildir_02::check_dir("$core_dir/imag")) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","El directorio de imagenes no es válido");
-#    exit;
-#  };
-
-
   # TEMPLATES DE PORTADAS
   $dir = $prontus_varglb::DIR_SERVER .
          $prontus_varglb::DIR_TEMP .
@@ -445,8 +315,6 @@ my ($dir);
   };
 
 
-
-
   # Tpls. repetidos.
   if (&tpls_duplicados($dir)) {
     print "Content-Type: text/html\n\n";
@@ -476,10 +344,6 @@ my ($dir);
   };
 
 
-
-
-
-
   # DESTINO EDICIONES
   $dir = $prontus_varglb::DIR_SERVER .
          $prontus_varglb::DIR_CONTENIDO .
@@ -492,14 +356,12 @@ my ($dir);
   };
 
 
-
   # Pagina de inicializacion para las portadas en construccion.
   if ( ! (-f "$prontus_varglb::DIR_SERVER$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/$prontus_varglb::PAG_WORKING") ) {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("Error","Pagina para portada 'en construcción' no existe");
     exit;
   };
-
 
 
   # Dir. destino de Edicion unica
@@ -1301,7 +1163,6 @@ sub load_config {
   if ($buffer =~ m/\s*FRIENDLY_URL_IMAGES\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $friendly_url_images = $2;
   };
-
 
   my $comentarios = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*COMENTARIOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -2121,14 +1982,6 @@ sub load_config {
   $num_relac_default = 5; # valor default
   if ($buffer =~ m/\s*NUM_RELAC_DEFAULT\s*=\s*("|')(\d+?)("|')/) {
    $num_relac_default = $2;
-
-   if (($num_relac_default =~ /\d+/) && (! $tax_niv)) {
-       #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
-        #~ print STDERR "Error en CFG: seteo de variable NUM_RELAC_DEFAULT='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-        #~ print "Content-Type: text/html\n\n";
-        #~ print "<P>Error en CFG: seteo de variable NUM_RELAC_DEFAULT='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-        #~ exit;
-   };
   };
   $prontus_varglb::NUM_RELAC_DEFAULT = $num_relac_default;
 
@@ -2136,29 +1989,8 @@ sub load_config {
   my $taxport_artxpag = 20; # valor default
   if ($buffer =~ m/\s*TAXPORT_ARTXPAG\s*=\s*("|')(\d+?)("|')/) {
     $taxport_artxpag = $2;
-    if (($taxport_artxpag =~ /\d+/) && (! $tax_niv)) {
-      #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
-      #~ print STDERR "Error en CFG: seteo de variable TAXPORT_ARTXPAG='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-      #~ print "Content-Type: text/html\n\n";
-      #~ print "<P>Error en CFG: seteo de variable TAXPORT_ARTXPAG='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-      #~ exit;
-    };
   };
   $prontus_varglb::TAXPORT_ARTXPAG = $taxport_artxpag;
-
-  # CVI - DEPRECATED - Esta marca ya no se usa
-  #~ my $taxport_refresh_segs = 1800; # valor default  media hora
-  #~ if ($buffer =~ m/\s*TAXPORT_REFRESH_SEGS\s*=\s*("|')(\d+?)("|')/) {
-    #~ $taxport_refresh_segs = $2;
-    #~ if (($taxport_refresh_segs =~ /\d+/) && (! $tax_niv)) {
-      # 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
-      # print STDERR "Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-      # print "Content-Type: text/html\n\n";
-      # print "<P>Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-      # exit;
-    #~ };
-  #~ };
-  #~ $prontus_varglb::TAXPORT_REFRESH_SEGS = $taxport_refresh_segs;
 
   # TAXPORT_ORDEN
   $prontus_varglb::TAXPORT_ORDEN = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
@@ -2468,15 +2300,7 @@ sub load_config {
   $prontus_varglb::PORT_INI_SELECTED = $port_ini_selected;
   $prontus_varglb::PORT_HOME = $port_home;
 
-
   $prontus_varglb::ORDEN_LISTA_ARTICULOS = $orden_lista_articulos;     # 8.0
-
-  #~ 13/08/2013 - CVI - Se comenta esto porque tiene toda la pinta de ser codigo basura
-  #~ my $path = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/imag";
-  #~ $prontus_varglb::WMEDIA_LINK =~ s/%%path%%/$path/; # 8.1
-  #~ $prontus_varglb::RMEDIA_LINK =~ s/%%path%%/$path/;
-  #~ $prontus_varglb::ASOCFILE_LINK =~ s/%%path%%/$path/;
-  #~ $prontus_varglb::LINK_MAS =~ s/%%path%%/$path/;
 
   $prontus_varglb::FECHA_HOY = &glib_hrfec_02::get_date_pack4();
 
@@ -2498,7 +2322,7 @@ sub load_config {
 #     &glib_fildir_02::write_file("$core_dir/secciones.js", $js_buf);
 #   };
 
-  &check_dirs();
+    &check_dirs();
 
     #~ Para configurar la externalizacion de la multimedia
     my $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/mmedia.cfg");
@@ -4707,7 +4531,7 @@ sub check_dirs_edic() {
     exit;
   }
   else {
-    # Escribe htaccess en el dir de xml para prhibir acceso http a este.
+    # Escribe htaccess en el dir de xml para prohibir acceso http a este.
     &glib_fildir_02::write_file("$dir/.htaccess", "Order Allow,Deny\nDeny from all");
   };
 
@@ -6100,7 +5924,7 @@ sub artic_parser_fechas {
 sub escapea_bd {
   # Escapea asumiendo que los valores de los campos estan encerrados entre comillas dobles, no simples.
   # Se prefiere esto en vez de quote(), ya que este ultimo encierra entre comillas simples y las simples
-  # las tranasforma en tildes
+  # las transforma en tildes
   my $refhash_campos = $_[0]; # hash con nombres de campos y sus valores
   my $base = $_[1];
   my %campos = %$refhash_campos;

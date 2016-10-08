@@ -79,6 +79,7 @@
 # 2.6.0 - 07/07/2015 - EAG - Se implementa soporte para transcodificador externo.
 # 2.6.1 - 12/11/2015 - EAG - Se incluye informacion de  control de acceso basico al enviar los datos al transcodificador externo.
 # 2.6.2 - 13/11/2015 - EAG - Se integra transcodificacion externa a la release
+# 2.6.3 - 09/09/2016 - EAG - Se verifica que esten activadas las opciones avanzadas para usar transcodificacion externa
 # ---------------------------------------------------------------
 BEGIN {
     use FindBin '$Bin';
@@ -155,7 +156,7 @@ main: {
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
     print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Inicio Proceso\n";
-    if ($prontus_varglb::USAR_XCODER_EXTERNO eq 'SI') {
+    if ($prontus_varglb::ADVANCED_XCODING eq 'SI' && $prontus_varglb::USAR_XCODER_EXTERNO eq 'SI') {
         print STDERR "Usando transcodificador externo\n";
         my ($content, $archivo, $result, $respuesta);
 
