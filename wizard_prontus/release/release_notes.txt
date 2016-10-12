@@ -8889,6 +8889,7 @@ rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"        
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/cgi-cpn/prontus_set_bd.cgi
 /var/www/prontus_release/cgi-cpn/wizard_deploy.cgi
@@ -8900,6 +8901,7 @@ rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"        
 /var/www/prontus_release/cgi-cpn/prontus_varglb.pm
 /var/www/prontus_release/cgi-cpn/lib_artic.pm
 /var/www/prontus_release/cgi-cpn/lib_prontus.pm
+
 
 limpieza de codigo
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
