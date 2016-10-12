@@ -1279,6 +1279,11 @@ sub load_config {
      $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$clave} = 1;
   };
 
+  while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
+     $clave = $2;
+     $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
+  };
+
   # Transcodificacion - XCODING
   $prontus_varglb::N_THREADS = 0; # valor por defecto.
   if ($buffer =~ m/\s*N_THREADS\s*=\s*("|')(.*?)$1/s) {

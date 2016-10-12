@@ -37,6 +37,8 @@ our $XML_BASE =
 <_private>
 <_txt_titular>
 </_txt_titular>
+<_url>
+</_url>
 <_art_autoinc></_art_autoinc>
 <_users_id></_users_id>
 <_fid></_fid>
@@ -1448,24 +1450,26 @@ sub friendly_v4_2bd {
 # Se invoca al momento de guardar un articulo.
     my ($this, $base, $is_new) = @_;
 
-    # Primero elimina la url del artic actual:
-    my $sql = "delete from URL where URL_ART_ID='$this->{ts}'";
-    my $res = $base->do($sql);
-    if (!$res) {
-        $Artic::ERR = "Error actualizando tabla de urls, ts[$this->{ts}]\n";
-        cluck $Artic::ERR . "sql[$sql][$!]";
-        return 0;
-    };
+    if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
+        # Primero elimina la url del artic actual:
+        my $sql = "delete from URL where URL_ART_ID='$this->{ts}'";
+        my $res = $base->do($sql);
+        if (!$res) {
+            $Artic::ERR = "Error actualizando tabla de urls, ts[$this->{ts}]\n";
+            cluck $Artic::ERR . "sql[$sql][$!]";
+            return 0;
+        };
 
-    my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
 
-    $sql = "insert into URL set URL_ART_ID='$this->{ts}', URL_ART_URI ='$titularV4'";
-    $res = $base->do($sql);
-    if (!$res) {
-        $Artic::ERR = "Error actualizando tabla de urls, ts[$this->{ts}]\n";
-        cluck $Artic::ERR . "sql[$sql][$!]";
-        return 0;
-    };
+        $sql = "insert into URL set URL_ART_ID='$this->{ts}', URL_ART_URI ='$titularV4'";
+        $res = $base->do($sql);
+        if (!$res) {
+            $Artic::ERR = "Error actualizando tabla de urls, ts[$this->{ts}]\n";
+            cluck $Artic::ERR . "sql[$sql][$!]";
+            return 0;
+        };
+    }
     return 1;
 };
 # ---------------------------------------------------------------
@@ -1474,37 +1478,41 @@ sub genera_friendly_v4 {
 # guarda el titular formateado en la BD
 # genera el archivo con el include en el filesystem
     my ($this, $base, $is_new) = @_;
-    my ($mv, $buffer);
-    my ($salida, $artID, $friendlyAntigua);
 
-    my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+    if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
+        print STDERR "genera_friendly_v4\n";
+        my ($mv, $buffer);
+        my ($salida, $artID, $friendlyAntigua);
 
-    # se busca el titular friendly si existe, para borrar el archivo actual
-    # antes de generar uno nuevo
-    # si esta asociado un ts a una url, nunca es vacio
-    my $sql = "select URL_ART_URI from URL where URL_ART_ID = \"$this->{ts}\" ";
+        my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
 
-    $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
-    $salida->bind_columns(undef, \($friendlyAntigua));
-    $salida->fetch;
+        # se busca el titular friendly si existe, para borrar el archivo actual
+        # antes de generar uno nuevo
+        # si esta asociado un ts a una url, nunca es vacio
+        my $sql = "select URL_ART_URI from URL where URL_ART_ID = \"$this->{ts}\" ";
 
-    # si hay friendly asociada al ts, se debe eliminar el archivo
-    # conservamos los directorios ya que pueden haber mas archivos y si no hay
-    # en algun momento se reutilizara la ruta
-    my $filepath;
+        $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
+        $salida->bind_columns(undef, \($friendlyAntigua));
+        $salida->fetch;
 
-    # si la friendly antigua es distinta a la anterior se deben generar nuevos archivos
-    if ($friendlyAntigua ne $titularV4) {
-        # si la friendly antigua no es vacia se debe borrar
-        if ($friendlyAntigua ne '') {
-            $filepath = '/'.substr($friendlyAntigua, 0, 2).'/'.substr($friendlyAntigua, 2, 2) . "/$friendlyAntigua.html";
-            if (!unlink($this->{dst_links_url}.$filepath)) {
-                print STDERR "Error borrando archivo [$this->{dst_links_url}$filepath/]\n";
-            }
-            # se eliminan los archivos de las multivistas
-            foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
-                if (!unlink($this->{dst_links_url}."-$mv".$filepath)) {
-                    print STDERR "Error borrando archivo [$this->{dst_links_url}-$mv$filepath/]\n";
+        # si hay friendly asociada al ts, se debe eliminar el archivo
+        # conservamos los directorios ya que pueden haber mas archivos y si no hay
+        # en algun momento se reutilizara la ruta
+        my $filepath;
+
+        # si la friendly antigua es distinta a la anterior se deben generar nuevos archivos
+        if ($friendlyAntigua ne $titularV4) {
+            # si la friendly antigua no es vacia se debe borrar
+            if ($friendlyAntigua ne '') {
+                $filepath = '/'.substr($friendlyAntigua, 0, 2).'/'.substr($friendlyAntigua, 2, 2) . "/$friendlyAntigua.html";
+                if (!unlink($this->{dst_links_url}.$filepath)) {
+                    print STDERR "Error borrando archivo [$this->{dst_links_url}$filepath/]\n";
+                }
+                # se eliminan los archivos de las multivistas
+                foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+                    if (!unlink($this->{dst_links_url}."-$mv".$filepath)) {
+                        print STDERR "Error borrando archivo [$this->{dst_links_url}-$mv$filepath/]\n";
+                    }
                 }
             }
         }

@@ -387,7 +387,13 @@ sub parseaVars {
     $loop = $1;
     my $cont = 1;
 
+    my $buffer_friendly = '';
+    $pagina =~ /<!--loop_friendly_exclude_fid-->(.*?)<!--\/loop_friendly_exclude_fid-->/s;
+    my $loop_friendly = $1;
+    my $cont = 1;
+
     foreach my $fid (sort keys %prontus_varglb::FORM_PLTS) {
+      my $temp_friendly = $loop_friendly;
       $temp = $loop;
       my @fid_info = split(/:/, $fid);
 
@@ -395,17 +401,29 @@ sub parseaVars {
       $temp =~ s/%%nombrefid%%/$fid_info[1]/isg;
       $temp =~ s/%%num%%/$cont/isg;
 
+      $temp_friendly =~ s/%%archivofid%%/$fid_info[0]/isg;
+      $temp_friendly =~ s/%%nombrefid%%/$fid_info[1]/isg;
+      $temp_friendly =~ s/%%num%%/$cont/isg;
+
       if (defined $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$fid_info[0]}) {
         $temp =~ s/%%checked%%/ checked="checked"/isg;
       } else {
         $temp =~ s/%%checked%%//isg;
       }
 
+      if (defined $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$fid_info[0]}) {
+        $temp_friendly =~ s/%%checked%%/ checked="checked"/isg;
+      } else {
+        $temp_friendly =~ s/%%checked%%//isg;
+      }
+
       $buffer = $buffer . $temp;
+      $buffer_friendly = $buffer_friendly . $temp_friendly;
       $cont++;
     };
 
     $pagina =~ s/<!--loop_cache_purge_fid-->.*?<!--\/loop_cache_purge_fid-->/$buffer/sig;
+    $pagina =~ s/<!--loop_friendly_exclude_fid-->.*?<!--\/loop_friendly_exclude_fid-->/$buffer_friendly/sig;
 
     # -------------------------------------------------------------------------------
     # -art.cfg
