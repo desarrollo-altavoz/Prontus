@@ -677,7 +677,7 @@ sub crear_objeto_artic {
         };
     };
 
-    my ($ts, $ext, $propietario);
+    my ($ts, $ext);
     my $propietario = $prontus_varglb::USERS_ID;
     if ($FORM{'_file'} ne '') {
         ($ts, $ext) = &lib_prontus::split_nom_y_extension($FORM{'_file'});
@@ -697,7 +697,7 @@ sub crear_objeto_artic {
 
     # cvi - Para guardar los nombres de los tags tambien
     my $tagnames = '';
-    my $tags4fid = &glib_cgi_04::param('_tags4fid');
+    #~ my $tags4fid = &glib_cgi_04::param('_tags4fid');
     my @tagscomp = split(/,/, $tags4fid);
     foreach my $idandname (@tagscomp) {
       if($idandname =~ /^\d+\|(.+?)$/) {
