@@ -779,14 +779,14 @@ var Fid = {
                 },
             dataType: 'json',
             success: function (data) {
-                    console.log(data);
                     if (data.status == 'OK') {
-                        $('#_url').val(data.uri_titular);
+                        $('#_slug').val(data.uri_titular);
                         if (bot_press == 'save' || bot_press == 'save_new') {
                             // se submite el formulario
                             $('#_mainFidForm').trigger('submit');
                         }
                     } else {
+                        $('#_slug').val('');
                         alert(data.msg);
                         Fid.setGUIProcesando(false);
                     }
