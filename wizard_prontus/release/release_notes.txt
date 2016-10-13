@@ -8901,6 +8901,7 @@ rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"        
 /var/www/prontus_release/cgi-cpn/prontus_varglb.pm
 /var/www/prontus_release/cgi-cpn/lib_artic.pm
 /var/www/prontus_release/cgi-cpn/lib_prontus.pm
+/var/www/prontus_release/cgi-cpn/prontus_art_check_url.cgi
 
 
 limpieza de codigo
