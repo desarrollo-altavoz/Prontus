@@ -224,7 +224,7 @@ sub procesar_plantilla {
     }
 
     if ($filtros ne '') {
-        $sql =~ s/%%FILTRO%%/ where $filtros /;
+        $sql =~ s/%%FILTRO%%/ where $filtros / if (!$tags);
         $sql =~ s/%%FILTRO%%/ and $filtros / if ($tags);
 
     } else {
