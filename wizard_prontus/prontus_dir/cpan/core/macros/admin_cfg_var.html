@@ -222,6 +222,34 @@
                                             <br/>
                                         </td>
                                     </tr>
+                                        <tr>
+                                            <td style="width: 300px;" valign="top">
+                                                FRIENDLY_V4_EXCLUDE_FID<br>
+                                                <span class="ayuda">Tipos de artículos para los que no se debe generar friendly url version 4, por ejemplo: fid_link.</span>
+                                            </td>
+                                            <td>
+                                                <table class="tableform" width="100%">
+                                                    <tr class="head">
+                                                        <td>Excluir</td>
+                                                        <td>Nombre</td>
+                                                        <td>FID</td>
+                                                    </tr>
+                                                    <!--loop_friendly_exclude_fid-->
+                                                    <tr>
+                                                        <td align="center">
+                                                            <input type="checkbox" name="FRIENDLY_V4_EXCLUDE_FID_ARR[]" id="FRIENDLY_V4_EXCLUDE_FID%%num%%" value="%%archivofid%%" %%checked%%/>
+                                                        </td>
+                                                        <td>
+                                                            <label for="FRIENDLY_V4_EXCLUDE_FID%%num%%">%%nombrefid%%</label>
+                                                        </td>
+                                                        <td>
+                                                            <label for="FRIENDLY_V4_EXCLUDE_FID%%num%%">%%archivofid%%</label>
+                                                        </td>
+                                                    </tr>
+                                                    <!--/loop_friendly_exclude_fid-->
+                                                </table>
+                                            </td>
+                                        </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             FRIENDLY_URLS_LARGO_TITULAR<br>

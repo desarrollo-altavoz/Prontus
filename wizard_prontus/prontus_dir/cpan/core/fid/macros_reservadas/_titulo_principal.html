@@ -78,7 +78,7 @@
     <div id="info_url_conflict">
         <div class="col685">
             <div class="rotulo">
-                <div class="titulo">Información del Artículo en Conflicto</div>
+                <div class="titulo">Se ha encontrado un art&iacute;culo que tiene el mismo titular ingresado</div>
             </div>
             <div class="box-gris">
                 <div class="box-auxi">
@@ -93,13 +93,13 @@
                       <td class="nombre">Titular:</td><td class="campo" id="url_art_titu"></td>
                     </tr>
                     <tr>
-                      <td class="nombre">Editar</td><td class="campo"><a href="#" target="_blank" onclick="return false;">Abrir para editar</a></td>
+                      <td class="nombre">Editar</td><td class="campo"><a href="#" target="_blank" onclick="Fid.abrirEditor($(this));return false;" id="url_art_editar" >Click para editar</a></td>
                     </tr>
                     <tr>
                       <td class="nombre">Path del Art&iacute;culo:</td><td class="campo" id="url_art_path"></td>
                     </tr>
                     <tr>
-                      <td class="nombre">Titular en URL:</td><td class="campo" id="url_art_url"></td>
+                      <td class="nombre">Titular en URL:</td><td class="campo" id="url_art_slug"></td>
                     </tr>
                   </table>
                 </div>

@@ -769,6 +769,12 @@ var Fid = {
     // gatilla guardado del articulo si corresponde
     // save y save_new, gatillan guardado, check solo verifica y genera alerta
     validaTitular: function(bot_press) {
+        $('#url_art_ts').html('');
+        $('#url_art_id').html('');
+        $('#url_art_titu').html('');
+        $('#url_art_editar').attr("href", '#');
+        $('#url_art_path').html('');
+        $('#url_art_slug').html('');
         $.ajax({
             type: 'POST',
             url: 'prontus_art_check_url.cgi',
@@ -787,7 +793,26 @@ var Fid = {
                         }
                     } else {
                         $('#_slug').val('');
-                        alert(data.msg);
+                        if (typeof data.ts === 'undefined' || data.ts == '') {
+                            alert(data.msg);
+                        } else {
+                            $('#url_art_ts').html(data.ts);
+                            $('#url_art_id').html(data.id);
+                            $('#url_art_titu').html(data.titular);
+                            var link = 'prontus_art_ficha.cgi?_path_conf='+Admin.path_conf+'&_file='+data.ts + '.' + data.ext+'&_fid='+data.fid+'&fotosvtxt=/1/2/3/4';
+                            $('#url_art_editar').attr("href", link);
+                            var path = '/' + mainFidJs.PRONTUS_ID + '/site/artic/' + data.ts.substr(0,8) + '/pags/' + data.ts + '.' + data.ext;
+                            $('#url_art_path').html(path);
+                            $('#url_art_slug').html(data.uri_titular);
+                            $.fn.colorbox({
+                                open: true,
+                                href: '#info_url_conflict',
+                                inline: true,
+                                width: 720,
+                                height: 230,
+                                opacity: 0.8
+                            });
+                        }
                         Fid.setGUIProcesando(false);
                     }
                 }
@@ -798,8 +823,8 @@ var Fid = {
 
     // -------------------------------------------------------------------------
     // Funcion usada en los formularios para eliminar archivos de respaldos
-    abrirEditor: function() {
-        //window.open('prontus_art_ficha.cgi?_path_conf='+Admin.path_conf+'&_file='+resp.file+'&_fid='+resp.fid+'&fotosvtxt=/1/2/3/4');
+    abrirEditor: function(elemento) {
+        window.open(elemento.attr('href'));
     },
 
     // -------------------------------------------------------------------------

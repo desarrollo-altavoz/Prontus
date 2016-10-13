@@ -37,8 +37,8 @@ our $XML_BASE =
 <_private>
 <_txt_titular>
 </_txt_titular>
-<_url>
-</_url>
+<_slug>
+</_slug>
 <_art_autoinc></_art_autoinc>
 <_users_id></_users_id>
 <_fid></_fid>
@@ -1480,7 +1480,6 @@ sub genera_friendly_v4 {
     my ($this, $base, $is_new) = @_;
 
     if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
-        print STDERR "genera_friendly_v4\n";
         my ($mv, $buffer);
         my ($salida, $artID, $friendlyAntigua);
 

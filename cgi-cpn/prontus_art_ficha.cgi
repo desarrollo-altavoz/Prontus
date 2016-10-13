@@ -843,7 +843,7 @@ sub cargar_campos {
 # Retorna la ficha con todas las marcas reemplazadas.
 
 my ($dir_tpl_pags) = $_[0];
-my ($html_tpag, $path_paso, $buf, $pag, $marca, %hash_val, $path_artic, @campos, $nom_campo, $valor_campo, $text_artic, $text_artic_aux, $estilo, $delimitador_ini, $delimitador_fin, $head_artic, $relpath_foto, $nom_foto);
+my ($html_tpag, $path_paso, $buf, $pag, $marca, %hash_val, $path_artic, @campos, $nom_campo, $valor_campo, $valor_campo_original, $text_artic, $text_artic_aux, $estilo, $delimitador_ini, $delimitador_fin, $head_artic, $relpath_foto, $nom_foto);
 my ($base_path, $relbase_path, $campo, $nom);
 my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
@@ -1064,16 +1064,16 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     }
     elsif ($nom_campo =~ /^_?TXT_/i) {
       if ($valor_campo =~ /<!\[CDATA\[(.*?)\]\]>/isg) {
-        $valor_campo = $1;
+        $valor_campo_original = $1;
         # Dentro del buffer se sustituyen los segmentos html por marcas del tipo %%HTML[1]%%
         # las que despues de los 'unformats' seran sustituidas por los contenidos reales. # 1.8
         # $pag = &parse_text($pag, $nom_campo, $valor_campo);
-        $valor_campo = &lib_prontus::escape_html($valor_campo); # para preservar entidades html
+        $valor_campo = &lib_prontus::escape_html($valor_campo_original); # para preservar entidades html
 
         # print STDERR "[$nom_campo]: $valor_campo\n";
         $valor_campo =~ s/%%/&#37;&#37;/sg; # Enmascara para preservar %%
         $pag =~ s/%%$nom_campo%%/$valor_campo/ig;
-        $titular = $valor_campo if (lc $nom_campo eq '_txt_titular');
+        $titular = $valor_campo_original if (lc $nom_campo eq '_txt_titular'); # se guarda el titular original sin escapear para generar la frinedly url correctamente
 
       };
     }
@@ -1081,15 +1081,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       # ----------
     # Rescatar Fotografias.
     elsif ($nom_campo =~ /^(foto_\w+)/i) {
-#       # Rescata loop para fotos
-#       my ($loop_fotos, $loop_fotos_result);
-#       if ($pag =~ /<!--LOOP_FOTOS-->(.*?)<!--\/LOOP_FOTOS-->/is) {
-#         $loop_fotos = $1;
-#       };
-#
-#       $loop_fotos_result = "$loop_fotos\n";
-#       $loop_fotos_result =~ s/FOTO_N/$nom_campo/ig;
-#       $pag =~ s/<!--LOOP_FOTOS-->$loop_fotos<!--\/LOOP_FOTOS-->/$loop_fotos_result<!--LOOP_FOTOS-->$loop_fotos<!--\/LOOP_FOTOS-->/is;
 
       my $wfoto;
       my $hfoto;
@@ -1180,18 +1171,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
           $fotoSinUsar = '(sin usar)';
         }
         $bufferBancoImg =~ s/%%fotoSinUsar%%/$fotoSinUsar/ig;
-
-#        # ---- 1.4 Imprime advertencia en rojo en caso de que el peso de la foto exceda el limite establecido.
-#        # El limite se establece por c/foto en el formulario, de la forma <!--FOTO1_MAXBYTES=1500-->.
-#        my $alertPesoMax = '<br/><span color="#CC0000">¡Advertencia! Peso de imagen excede límite permitido</span>';
-#        my $maxbytes = 0;
-#        if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
-#          $maxbytes = $1;
-#          if ($bytes_foto > $maxbytes) {
-#            $bufferBancoImg =~ s/%%alertPesoMax%%/$alertPesoMax/ig;
-#          };
-#        };
-#        # ----------
 
         # Se guarda el loop
         $fotos_controls{$nom_campo} = $bufferBancoImg;

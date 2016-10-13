@@ -111,10 +111,10 @@ main: {
         my %data;
         # si encontramos un articulo necesitamos el titular real
         if ($artId ne '') {
-            $sql = "select ART_TITU, ART_AUTOINC, ART_TIPOFICHA from ART where ART_ID = \"$artId\"";
-            my ($artTitu, $artAutoInc, $artFid);
+            $sql = "select ART_TITU, ART_AUTOINC, ART_TIPOFICHA, ART_EXTENSION from ART where ART_ID = \"$artId\"";
+            my ($artTitu, $artAutoInc, $artFid, $artExt);
             $salida = &glib_dbi_02::ejecutar_sql($BD, $sql);
-            $salida->bind_columns(undef, \($artTitu, $artAutoInc, $artFid));
+            $salida->bind_columns(undef, \($artTitu, $artAutoInc, $artFid,$artExt));
             $salida->fetch;
             $salida->finish;
 
@@ -124,6 +124,7 @@ main: {
                         'id' => $artAutoInc,
                         'fid' => $artFid,
                         'uri_titular' => $artUri,
+                        'ext' => $artExt,
                         'titular' => $artTitu);
         } else {
             %data = ('msg' => "Titular nuevo",
