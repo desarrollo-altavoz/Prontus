@@ -467,6 +467,12 @@ if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
     $pagina =~ s/%%_friendly_urls_ver%%/0/ig
 }
 
+if($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+  $pagina =~ s/%%_friendly4%%(.*?)%%\/_friendly4%%/$1/isg;
+} else {
+  $pagina =~ s/%%_friendly4%%.*?%%\/_friendly4%%//isg;
+}
+
 $pagina =~ s/%%.+?%%//g;
 
 # Restituir las marcas especiales de las fotos y tablas y htmlfiles embebidas en el texto..
@@ -1500,16 +1506,13 @@ sub parse_text {
   my $conten = '';
   my @html_puro = ();
   my $valor_campo_aux = $valor_campo;
-  my ($conten, $marca);
-
 
   # Sustituir valor en la ficha.
 
-  $marca ='%%' . $nom_campo . '%%';
+  my $marca ='%%' . $nom_campo . '%%';
   $pag =~ s/$marca/$valor_campo/ig;
 
   return $pag;
-
 };
 
 

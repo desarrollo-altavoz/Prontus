@@ -39,6 +39,8 @@ our $XML_BASE =
 </_txt_titular>
 <_slug>
 </_slug>
+<_custom_slug>
+</_custom_slug>
 <_art_autoinc></_art_autoinc>
 <_users_id></_users_id>
 <_fid></_fid>
@@ -1460,7 +1462,12 @@ sub friendly_v4_2bd {
             return 0;
         };
 
-        my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        my $titularV4;
+        if ($this->{'xml_content'}{'_custom_slug'} eq 'SI') {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        } else {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_slug'});
+        }
 
         $sql = "insert into URL set URL_ART_ID='$this->{ts}', URL_ART_URI ='$titularV4'";
         $res = $base->do($sql);
@@ -1483,7 +1490,12 @@ sub genera_friendly_v4 {
         my ($mv, $buffer);
         my ($salida, $artID, $friendlyAntigua);
 
-        my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        my $titularV4;
+        if ($this->{'xml_content'}{'_custom_slug'} eq 'SI') {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        } else {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_slug'});
+        }
 
         # se busca el titular friendly si existe, para borrar el archivo actual
         # antes de generar uno nuevo

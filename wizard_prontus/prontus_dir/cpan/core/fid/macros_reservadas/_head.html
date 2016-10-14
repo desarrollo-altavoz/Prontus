@@ -56,8 +56,6 @@
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/validator.js"></script>
   %%_tax4fids%%
   <script type="text/javascript">
-    Fid.friendlyVer = %%_friendly_urls_ver%%;
-
     var mainFidJs = {
         ID_TEMA_SELECTED: new Array(%%_TEMA1%%, %%_TEMA2%%, %%_TEMA3%%),
         ID_SUBTEMA_SELECTED: new Array(%%_SUBTEMA1%%, %%_SUBTEMA2%%, %%_SUBTEMA3%%),
@@ -67,6 +65,8 @@
         DIR_CGI_PUBLIC: '%%_DIR_CGI_PUBLIC%%',
         TS: '%%_TS%%'
     };
+    Fid.friendlyVer = %%_friendly_urls_ver%%;
+
     $(document).ready(function () {
       Admin.init('%%_prontus_id%%');
       %%_ishttps%%Fid.setHttps();%%/_ishttps%%

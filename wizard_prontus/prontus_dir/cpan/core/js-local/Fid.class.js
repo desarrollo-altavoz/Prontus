@@ -323,6 +323,14 @@ var Fid = {
 
         // Para el drag and drop de Fotofijas en Chrome de Mac
         Fid.addDragImagenes();
+
+        // Para la edicion de friendly v4
+        if (Fid.friendlyVer == 4) {
+            if ($('#_custom_slug').val() == '') {
+                $('#_custom_slug').val('NO');
+                Fid.validaTitular('check');
+            }
+        }
     },
 
     // -------------------------------------------------------------------------
@@ -753,7 +761,6 @@ var Fid = {
 
         if (Fid.friendlyVer == 4 && (bot_press == 'save' || bot_press == 'save_new')) {
                 Fid.validaTitular(bot_press);
-                console.log('llamar validar url');
                 return false;
         }
 
@@ -765,58 +772,78 @@ var Fid = {
         }
     },
     // -------------------------------------------------------------------------
+    // habilita la edicion manual del campo de url
+    slugEditable: function(editar) {
+        if (editar == true) {
+            $('#_custom_slug').val('SI');
+            $("#_slug").attr("readonly", false);
+        } else {
+            $('#_custom_slug').val('NO');
+            $("#_slug").attr("readonly", true);
+            Fid.validaTitular('check');
+        }
+    },
+    // -------------------------------------------------------------------------
     // Valida si la url friendly correspondiente a este articulo ya existe
     // gatilla guardado del articulo si corresponde
     // save y save_new, gatillan guardado, check solo verifica y genera alerta
     validaTitular: function(bot_press) {
-        $('#url_art_ts').html('');
-        $('#url_art_id').html('');
-        $('#url_art_titu').html('');
-        $('#url_art_editar').attr("href", '#');
-        $('#url_art_path').html('');
-        $('#url_art_slug').html('');
-        $.ajax({
-            type: 'POST',
-            url: 'prontus_art_check_url.cgi',
-            data: { _prontus_id: mainFidJs.PRONTUS_ID,
-                    _txt_titular: $('#_txt_titular').val(),
-                    _ts: mainFidJs.TS,
-                    _path_conf: $('[name=_path_conf]').val()
-                },
-            dataType: 'json',
-            success: function (data) {
-                    if (data.status == 'OK') {
-                        $('#_slug').val(data.uri_titular);
-                        if (bot_press == 'save' || bot_press == 'save_new') {
-                            // se submite el formulario
-                            $('#_mainFidForm').trigger('submit');
-                        }
-                    } else {
-                        $('#_slug').val('');
-                        if (typeof data.ts === 'undefined' || data.ts == '') {
-                            alert(data.msg);
+        if (Fid.friendlyVer == 4) {
+            $('#url_art_ts').html('');
+            $('#url_art_id').html('');
+            $('#url_art_titu').html('');
+            $('#url_art_editar').attr("href", '#');
+            $('#url_art_path').html('');
+            $('#url_art_slug').html('');
+
+            var element_id = '#_txt_titular';
+            if ($('#_custom_slug').val() == 'SI') {
+                element_id = '#_slug';
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: 'prontus_art_check_url.cgi',
+                data: { _prontus_id: mainFidJs.PRONTUS_ID,
+                        _txt_titular: $(element_id).val(),
+                        _ts: mainFidJs.TS,
+                        _path_conf: $('[name=_path_conf]').val()
+                    },
+                dataType: 'json',
+                success: function (data) {
+                        if (data.status == 'OK') {
+                            $('#_slug').val(data.uri_titular);
+                            if (bot_press == 'save' || bot_press == 'save_new') {
+                                // se submite el formulario
+                                $('#_mainFidForm').trigger('submit');
+                            }
                         } else {
-                            $('#url_art_ts').html(data.ts);
-                            $('#url_art_id').html(data.id);
-                            $('#url_art_titu').html(data.titular);
-                            var link = 'prontus_art_ficha.cgi?_path_conf='+Admin.path_conf+'&_file='+data.ts + '.' + data.ext+'&_fid='+data.fid+'&fotosvtxt=/1/2/3/4';
-                            $('#url_art_editar').attr("href", link);
-                            var path = '/' + mainFidJs.PRONTUS_ID + '/site/artic/' + data.ts.substr(0,8) + '/pags/' + data.ts + '.' + data.ext;
-                            $('#url_art_path').html(path);
-                            $('#url_art_slug').html(data.uri_titular);
-                            $.fn.colorbox({
-                                open: true,
-                                href: '#info_url_conflict',
-                                inline: true,
-                                width: 720,
-                                height: 230,
-                                opacity: 0.8
-                            });
+                            $('#_slug').val('');
+                            if (typeof data.ts === 'undefined' || data.ts == '') {
+                                alert(data.msg);
+                            } else {
+                                $('#url_art_ts').html(data.ts);
+                                $('#url_art_id').html(data.id);
+                                $('#url_art_titu').html(data.titular);
+                                var link = 'prontus_art_ficha.cgi?_path_conf='+Admin.path_conf+'&_file='+data.ts + '.' + data.ext+'&_fid='+data.fid+'&fotosvtxt=/1/2/3/4';
+                                $('#url_art_editar').attr("href", link);
+                                var path = '/' + mainFidJs.PRONTUS_ID + '/site/artic/' + data.ts.substr(0,8) + '/pags/' + data.ts + '.' + data.ext;
+                                $('#url_art_path').html(path);
+                                $('#url_art_slug').html(data.uri_titular);
+                                $.fn.colorbox({
+                                    open: true,
+                                    href: '#info_url_conflict',
+                                    inline: true,
+                                    width: 720,
+                                    height: 230,
+                                    opacity: 0.8
+                                });
+                            }
+                            Fid.setGUIProcesando(false);
                         }
-                        Fid.setGUIProcesando(false);
                     }
-                }
-        });
+            });
+        }
 
         return false;
     },
