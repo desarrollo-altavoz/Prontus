@@ -5048,7 +5048,7 @@ sub parse_filef {
 
             } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
                 # Formato: /prontus/seccion/tema/subtema/titular.extension
-                my $xml_art = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER/$prontus_id/site/artic/$fecha/xml/$ts.$ext");
+                my $xml_art = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER/$prontus_id/site/artic/$fecha/xml/$ts.xml");
                 # rescatamos el titular original sin cambios
                 $titular = $_[1];
                 # si se debe usar url custom

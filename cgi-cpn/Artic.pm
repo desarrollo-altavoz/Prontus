@@ -1464,9 +1464,9 @@ sub friendly_v4_2bd {
 
         my $titularV4;
         if ($this->{'xml_content'}{'_custom_slug'} eq 'SI') {
-            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
-        } else {
             $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_slug'});
+        } else {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
         }
 
         $sql = "insert into URL set URL_ART_ID='$this->{ts}', URL_ART_URI ='$titularV4'";
@@ -1492,10 +1492,13 @@ sub genera_friendly_v4 {
 
         my $titularV4;
         if ($this->{'xml_content'}{'_custom_slug'} eq 'SI') {
-            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
-        } else {
             $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_slug'});
+        } else {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
         }
+
+        $this->{'xml_content'}{'_plt'} =~ /\.(\w+)$/;
+        my $ext = $1;
 
         # se busca el titular friendly si existe, para borrar el archivo actual
         # antes de generar uno nuevo
@@ -1515,7 +1518,7 @@ sub genera_friendly_v4 {
         if ($friendlyAntigua ne $titularV4) {
             # si la friendly antigua no es vacia se debe borrar
             if ($friendlyAntigua ne '') {
-                $filepath = '/'.substr($friendlyAntigua, 0, 2).'/'.substr($friendlyAntigua, 2, 2) . "/$friendlyAntigua.html";
+                $filepath = '/'.substr($friendlyAntigua, 0, 2).'/'.substr($friendlyAntigua, 2, 2) . "/$friendlyAntigua.$ext";
                 if (!unlink($this->{dst_links_url}.$filepath)) {
                     print STDERR "Error borrando archivo [$this->{dst_links_url}$filepath/]\n";
                 }
@@ -1535,9 +1538,9 @@ sub genera_friendly_v4 {
             # escribimos el nuevo archivo de include
             my $buffer = $prontus_varglb::FRIENDLY_URLS_PLANTILLA_INCLUDE;
             my $realPath = $prontus_varglb::DIR_CONTENIDO.$prontus_varglb::DIR_ARTIC . '/'.
-                $this->{fechac} . $prontus_varglb::DIR_PAG . '/'.$this->{ts} . '.html';
+                $this->{fechac} . $prontus_varglb::DIR_PAG . '/'.$this->{ts} . ".$ext";
             $buffer =~ s/%%_FILE%%/$realPath/;
-            &glib_fildir_02::write_file("$this->{dst_links_url}$filepath/$titularV4.html", $buffer);
+            &glib_fildir_02::write_file("$this->{dst_links_url}$filepath/$titularV4.$ext", $buffer);
         } else {
             cluck "Error creando path [$this->{dst_links_url}$filepath/]\n";
             return 0;
@@ -1567,9 +1570,9 @@ sub genera_friendly_v4 {
                 # escribimos el nuevo archivo de include
                 $buffer = $prontus_varglb::FRIENDLY_URLS_PLANTILLA_INCLUDE;
                 my $realPath = $prontus_varglb::DIR_CONTENIDO.$prontus_varglb::DIR_ARTIC . '/'.
-                    $this->{fechac} .  $prontus_varglb::DIR_PAG . "-$mv/".$this->{ts} . '.html';
+                    $this->{fechac} .  $prontus_varglb::DIR_PAG . "-$mv/".$this->{ts} . ".$ext";
                 $buffer =~ s/%%_FILE%%/$realPath/;
-                &glib_fildir_02::write_file("$this->{dst_links_url}-$mv$filepath/$titularV4.html", $buffer);
+                &glib_fildir_02::write_file("$this->{dst_links_url}-$mv$filepath/$titularV4.$ext", $buffer);
             } else {
                 print STDERR "Error creando path [$this->{dst_links_url}-$mv$filepath/]\n";
             }
