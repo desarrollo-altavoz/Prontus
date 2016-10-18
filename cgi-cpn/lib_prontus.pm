@@ -5054,7 +5054,7 @@ sub parse_filef {
                 # si se debe usar url custom
                 if ($xml_art =~ /<_custom_slug>SI<\/_custom_slug>/) {
                     # rescatamos el slug, si no existe usamos el titular de forma normal
-                    if ($xml_art =~ /<_slug>([a-z0-9]+)<\/_slug>/) {
+                    if ($xml_art =~ /<_slug>([a-z0-9\-]+)<\/_slug>/) {
                         $titular = $1;
                     }
                 }
