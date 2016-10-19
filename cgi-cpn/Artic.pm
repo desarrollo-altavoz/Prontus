@@ -252,7 +252,7 @@ sub _check_artic_dirs {
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
         &glib_fildir_02::check_dir($this->{dst_links_url}) || return 0;
     }
-
+    return 1;
 };
 
 # --------------------------------------------------------------------
