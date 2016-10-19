@@ -1536,11 +1536,12 @@ sub genera_friendly_v4 {
 
         if (&glib_fildir_02::check_dir($this->{dst_links_url}.$filepath)) {
             # escribimos el nuevo archivo de include
-            my $buffer = $prontus_varglb::FRIENDLY_URLS_PLANTILLA_INCLUDE;
-            my $realPath = $prontus_varglb::DIR_CONTENIDO.$prontus_varglb::DIR_ARTIC . '/'.
+            my $realPath = $prontus_varglb::DIR_SERVER.$prontus_varglb::DIR_CONTENIDO.$prontus_varglb::DIR_ARTIC . '/'.
                 $this->{fechac} . $prontus_varglb::DIR_PAG . '/'.$this->{ts} . ".$ext";
-            $buffer =~ s/%%_FILE%%/$realPath/;
-            &glib_fildir_02::write_file("$this->{dst_links_url}$filepath/$titularV4.$ext", $buffer);
+            my $friendly_path = "$this->{dst_links_url}$filepath/$titularV4.$ext";
+            my $cmd = "ln -s $realPath $friendly_path";
+
+            system($cmd) if (!-l $friendly_path);
         } else {
             cluck "Error creando path [$this->{dst_links_url}$filepath/]\n";
             return 0;
@@ -1568,11 +1569,11 @@ sub genera_friendly_v4 {
             $filepath = '/'.substr($titularV4, 0, 2).'/'.substr($titularV4, 2, 2);
             if (&glib_fildir_02::check_dir($this->{dst_links_url}."-$mv".$filepath)) {
                 # escribimos el nuevo archivo de include
-                $buffer = $prontus_varglb::FRIENDLY_URLS_PLANTILLA_INCLUDE;
-                my $realPath = $prontus_varglb::DIR_CONTENIDO.$prontus_varglb::DIR_ARTIC . '/'.
+                my $realPath = $prontus_varglb::DIR_SERVER.$prontus_varglb::DIR_CONTENIDO.$prontus_varglb::DIR_ARTIC . '/'.
                     $this->{fechac} .  $prontus_varglb::DIR_PAG . "-$mv/".$this->{ts} . ".$ext";
-                $buffer =~ s/%%_FILE%%/$realPath/;
-                &glib_fildir_02::write_file("$this->{dst_links_url}-$mv$filepath/$titularV4.$ext", $buffer);
+                my $friendly_path = "$this->{dst_links_url}-$mv$filepath/$titularV4.$ext";
+                my $cmd = "ln -s $realPath $friendly_path";
+                system($cmd) if (!-l $friendly_path);
             } else {
                 print STDERR "Error creando path [$this->{dst_links_url}-$mv$filepath/]\n";
             }
