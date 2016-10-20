@@ -8891,3 +8891,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 /var/www/prontus_release/cgi-cpn/prontus_art_view_xml.cgi
 /var/www/prontus_release/cgi-cpn/prontus_regenerabd_real.cgi
 /var/www/prontus_release/cgi-cpn/prontus_varglb.pm
+
+- Portadas list
+    [bugfixes]
+      - Se corrige query al momento de generar una lista con tags configurados.
+    [files]
+      - /cgi-cpn/prontus_cron_list.cgi
