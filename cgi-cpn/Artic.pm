@@ -1514,16 +1514,19 @@ sub genera_friendly_v4 {
         # en algun momento se reutilizara la ruta
         my $filepath;
 
-        # si la friendly antigua es distinta a la anterior se deben generar nuevos archivos
-        if ($friendlyAntigua ne $titularV4) {
-            # si la friendly antigua no es vacia se debe borrar
-            if ($friendlyAntigua ne '') {
-                $filepath = '/'.substr($friendlyAntigua, 0, 2).'/'.substr($friendlyAntigua, 2, 2) . "/$friendlyAntigua.$ext";
+        # si la friendly antigua no es vacia se debe borrar
+        if ($friendlyAntigua ne '') {
+            $filepath = '/'.substr($friendlyAntigua, 0, 2).'/'.substr($friendlyAntigua, 2, 2) . "/$friendlyAntigua.$ext";
+            # si el archivo existe intentamos borrarlo
+            if (-e $this->{dst_links_url}.$filepath) {
                 if (!unlink($this->{dst_links_url}.$filepath)) {
                     print STDERR "Error borrando archivo [$this->{dst_links_url}$filepath/]\n";
                 }
-                # se eliminan los archivos de las multivistas
-                foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+            }
+            # se eliminan los archivos de las multivistas
+            foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+                # si el archivo existe intentamos borrarlo
+                if (-e $this->{dst_links_url}."-$mv".$filepath) {
                     if (!unlink($this->{dst_links_url}."-$mv".$filepath)) {
                         print STDERR "Error borrando archivo [$this->{dst_links_url}-$mv$filepath/]\n";
                     }
@@ -1535,12 +1538,12 @@ sub genera_friendly_v4 {
         $filepath = '/'.substr($titularV4, 0, 2).'/'.substr($titularV4, 2, 2);
 
         if (&glib_fildir_02::check_dir($this->{dst_links_url}.$filepath)) {
-            # escribimos el nuevo archivo de include
-            my $realPath = $prontus_varglb::DIR_SERVER.$prontus_varglb::DIR_CONTENIDO.$prontus_varglb::DIR_ARTIC . '/'.
+            # escribimos el nuevo symlink relativo, ej:
+            # ../../../../../artic/20161011/pags/20161011142332.html
+            my $realPath = '../../../..'.$prontus_varglb::DIR_ARTIC . '/'.
                 $this->{fechac} . $prontus_varglb::DIR_PAG . '/'.$this->{ts} . ".$ext";
             my $friendly_path = "$this->{dst_links_url}$filepath/$titularV4.$ext";
             my $cmd = "ln -s $realPath $friendly_path";
-
             system($cmd) if (!-l $friendly_path);
         } else {
             cluck "Error creando path [$this->{dst_links_url}$filepath/]\n";
@@ -1568,8 +1571,9 @@ sub genera_friendly_v4 {
             # se genera el path de destino del archivo para crear los directorios
             $filepath = '/'.substr($titularV4, 0, 2).'/'.substr($titularV4, 2, 2);
             if (&glib_fildir_02::check_dir($this->{dst_links_url}."-$mv".$filepath)) {
-                # escribimos el nuevo archivo de include
-                my $realPath = $prontus_varglb::DIR_SERVER.$prontus_varglb::DIR_CONTENIDO.$prontus_varglb::DIR_ARTIC . '/'.
+                # escribimos el nuevo symlink relativo, ej:
+                # ../../../../../artic/20161011/pags/20161011142332.html
+                my $realPath = '../../../..'.$prontus_varglb::DIR_ARTIC . '/'.
                     $this->{fechac} .  $prontus_varglb::DIR_PAG . "-$mv/".$this->{ts} . ".$ext";
                 my $friendly_path = "$this->{dst_links_url}-$mv$filepath/$titularV4.$ext";
                 my $cmd = "ln -s $realPath $friendly_path";
