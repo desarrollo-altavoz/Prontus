@@ -8882,6 +8882,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.93 - 12/09/2016 -
 ====================================================================================================
 
+/var/www/prontus_release/cgi-cpn/xcoding/prontus_videodoxcode.cgi
+Se comenta codigo que solo se usa para debug
+
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/cgi-cpn/Artic.pm
 /var/www/prontus_release/cgi-cpn/lib_artic.pm

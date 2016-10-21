@@ -909,14 +909,14 @@ sub postUrl {
     while (!$ready) {
         $response = $CLIENT->post($url, [$content]);
         #~ print Dumper($response);
-        my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-        $mon++;
-        $year += 1900;
-        $hour = $hour<10?'0'.$hour:$hour;
-        $min = $min<10?'0'.$min:$min;
-        $sec = $sec<10?'0'.$sec:$sec;
-        $mon = $mon<10?'0'.$mon:$mon;
-        $mday = $mday<10?'0'.$mday:$mday;
+        #~ my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+        #~ $mon++;
+        #~ $year += 1900;
+        #~ $hour = $hour<10?'0'.$hour:$hour;
+        #~ $min = $min<10?'0'.$min:$min;
+        #~ $sec = $sec<10?'0'.$sec:$sec;
+        #~ $mon = $mon<10?'0'.$mon:$mon;
+        #~ $mday = $mday<10?'0'.$mday:$mday;
         #~ print STDERR "[$hour:$min:$sec $year/$mon/$mday] [" .$response->status_line ."]\n";
         if ($response->is_success) {
             return $response->content;
