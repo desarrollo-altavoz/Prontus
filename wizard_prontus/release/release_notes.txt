@@ -8915,3 +8915,9 @@ limpieza de codigo
 /var/www/prontus_release/cgi-cpn/prontus_art_view_xml.cgi
 /var/www/prontus_release/cgi-cpn/prontus_regenerabd_real.cgi
 /var/www/prontus_release/cgi-cpn/prontus_varglb.pm
+
+Se puede indicar un remitente fijo en el fid con el nombre
+"form_remitente", se deja con preferencia el forzar el from al marcar el
+check "chk_form_force_from", que utiliza el campo "form_from" como
+remitente.
+/var/www/prontus_release/cgi-bin/prontus_form.cgi
