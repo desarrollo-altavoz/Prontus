@@ -132,6 +132,7 @@
 #                        - Valida extensiones de archivos a subir, usando lista blanca.
 # 1.11  31/11/2009 - YCC - Cambia a minusculas refrencias a campos prontus, para 10.14.
 # 1.12  15/07/2015 - EAG - Se escribe json valido al guardar el archivo de datos recibidos por primera vez
+# 1.12  18/03/2016 - NAR - Se agrega campo de correo fijo de remitente
 # To-Do:
 # - Revisar sensibilidad a las mayusculas.
 
@@ -335,6 +336,9 @@ sub data_management {
     # Envia mail a el o los administradores.
     if($PRONTUS_VARS{'chk_form_force_from'}) {
         $from = $PRONTUS_VARS{'form_from'};
+    #Se agrega campo para correo remitente fijo
+    } elsif ($PRONTUS_VARS{'form_remitente'} ne '') {
+        $from = $PRONTUS_VARS{'form_remitente'};
     } elsif (&glib_cgi_04::param('email') ne '') {
         $from = &glib_cgi_04::param('email');
     } else {
@@ -728,7 +732,7 @@ sub salida {
         $plantilla =~ s/%%_referer%%/$ENV{'HTTP_REFERER'};/si;
         $plantilla =~ s/%%_answerpage%%/$ANSWERS_DIR\/$ANSWERID\.$EXT/si;
         $plantilla =~ s/%_PF_(\w+\(.*?\))%/%%_PF_\1%%/isg;
-        $plantilla = &lib_prontus::parser_custom_function($plantilla);        
+        $plantilla = &lib_prontus::parser_custom_function($plantilla);
 
         # Elimina tags no parseados en la plantilla.
         $plantilla =~ s/%%\w+%%//sg; # 1.2.1
