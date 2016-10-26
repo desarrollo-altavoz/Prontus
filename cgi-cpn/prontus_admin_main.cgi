@@ -1190,6 +1190,15 @@ sub parseaVars {
     };
 
 
+    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_TAX eq 'SI') {
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_TAX_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_TAX_NO%%//ig;
+    } else {
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_TAX_SI%%//ig;
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_TAX_NO%%/ checked="checked"/ig;
+    };
+
+
     if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%//ig;

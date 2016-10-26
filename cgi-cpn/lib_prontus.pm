@@ -71,15 +71,16 @@
 
 package lib_prontus;
 
+use strict;
 use glib_html_02; # Prontus 6.0
 use glib_fildir_02;
 use glib_hrfec_02;
 use glib_str_02;
 use glib_dbi_02;
-use prontus_varglb;
+require prontus_varglb;
 use File::Copy;
 use XML::Parser; # rotulos tax
-use Artic;
+require Artic;
 use lib_cookies;
 use Session;
 use Digest::MD5 qw(md5_hex);
@@ -274,7 +275,7 @@ my ($dir);
 
 
   # Dir CORE
-  $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
+  my $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
   if ( ! (&glib_fildir_02::check_dir($core_dir)) ) {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("Error","El directorio cpan no es válido");
@@ -435,7 +436,7 @@ my (@lisdir, $k, %existentes);
 
   foreach $k (@lisdir) {
     if (-f "$ruta_dir/$k") {
-      $nombre = '';
+      my $nombre = '';
       if ($k =~ /(.+)\..+$/) {
         $nombre = $1;
         $existentes{$nombre}++;
@@ -872,7 +873,7 @@ sub load_artic_pubs {
 
         # print STDERR "edic[$edic]\n";
         # Dir destino de las portadas de la ed.
-        $pathdir_seccs = $prontus_varglb::DIR_SERVER .
+        my $pathdir_seccs = $prontus_varglb::DIR_SERVER .
                         $prontus_varglb::DIR_CONTENIDO .
                         $prontus_varglb::DIR_EDIC .
                         "/$edic" .
@@ -881,7 +882,7 @@ sub load_artic_pubs {
         my @entries = &glib_fildir_02::lee_dir($pathdir_seccs);
 
         # Para cada port.
-        foreach $port (@entries) {
+        foreach my $port (@entries) {
             next if ($port =~ /^\./);
 
             # No se toman en cuenta las que no esten en el CFG
@@ -892,7 +893,7 @@ sub load_artic_pubs {
             }
 
             # portada en el site
-            $arch_seccion = "$pathdir_seccs/$port";
+            my $arch_seccion = "$pathdir_seccs/$port";
 
             my ($arch_xml) = $arch_seccion;
             no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
@@ -900,7 +901,7 @@ sub load_artic_pubs {
 
             next if ((! -f $arch_xml) || ($port =~ /^preview/i));
 
-            $text_seccion = &glib_fildir_02::read_file($arch_xml);
+            my $text_seccion = &glib_fildir_02::read_file($arch_xml);
             $text_seccion = &lib_prontus::ajusta_crlf($text_seccion);
 
             # Rescatar la info de c/artic de la port actual
@@ -1164,6 +1165,12 @@ sub load_config {
     $friendly_url_images = $2;
   };
 
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_TAX = 'SI'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_TAX\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_TAX = $2;
+    };
+
+
   my $comentarios = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*COMENTARIOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $comentarios = $2;
@@ -1275,12 +1282,12 @@ sub load_config {
   };
 
   while ($buffer =~ m/\s*CACHE_PURGE_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
-     $clave = $2;
+     my $clave = $2;
      $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$clave} = 1;
   };
 
   while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
-     $clave = $2;
+     my $clave = $2;
      $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
   };
 
@@ -1380,15 +1387,15 @@ sub load_config {
   };
 
   while ($buffer =~ m/\s*MULTIVISTA\s*=\s*("|')(.+?)("|')/g) {
-     $clave = $2;
+     my $clave = $2;
      $prontus_varglb::MULTIVISTAS{$clave} = 1;
   };
 
 
   while ($buffer =~ m/\s*FORM\_PLTS\s*=\s*("|')((.+?):.+?)(\((.+?)\))(\((.*?)\))?("|')/g) {
-     $clave = $2;
+     my $clave = $2;
      my $fid = $3;
-     $valor = $5;
+     my $valor = $5;
      my $plt_paralelas = $7;
 
      $prontus_varglb::FORM_PLTS{$clave} = $valor;
@@ -1398,8 +1405,8 @@ sub load_config {
 
   # PORT_PLTS = 'inicio.html(vacante para portadas intercambiables, aca antes iba las spare, deprecatear eso)(plantillas paralelas)(portada para preview)'
   while ($buffer =~ m/\s*PORT\_PLTS\s*=\s*("|')(.+?)(\((.*?)\))?(\((.*?)\))?(\((.*?)\))?("|')/g) {
-     $clave = $2;
-     $valor = $4; # contenido del primer parentesis de la linea del cfg, donde iban las spare y ahora las intercambiables, NO SE USA POR MIENTRAS
+     my $clave = $2;
+     my $valor = $4; # contenido del primer parentesis de la linea del cfg, donde iban las spare y ahora las intercambiables, NO SE USA POR MIENTRAS
      my $extra_ports = $6; # segundo (): portadas paralelas, ej: inicio2.php;inicio3.php
      my $port4preview = $8; # tercer (): portada para preview, por ejemplo, si la portada ppal es footer.html, entonces la port para preview podria ser inicio.html
      if ($clave !~ /^\w+\.\w+$/) {
@@ -1423,13 +1430,13 @@ sub load_config {
   };
 
   while ($buffer =~ m/\s*BASE\_PORTS\s*=\s*("|')(.*?)("|')/g) {
-     $valor = $2;
+     my $valor = $2;
      push @prontus_varglb::BASE_PORTS, $valor;
   };
 
   # ports dd habilitadas.
   while ($buffer =~ m/\s*PORT\_DRAGANDROP\s*=\s*("|')(.*?)("|')/g) {
-     $valor = $2;
+     my $valor = $2;
      $prontus_varglb::PORT_DRAGANDROP{$valor} = 1;
   };
 
@@ -1902,6 +1909,7 @@ sub load_config {
   # si no se detecta ninguno, asigna el primero que se probo, para que la var no quede en blanco
   $default_dir_ffmpeg = $paths_ffmpeg[0] if (!$default_dir_ffmpeg);
 
+  my $dir_ffmpeg = '';
   # si el dir se define por cfg, usa ese en lugar del por defecto
   if ($buffer =~ m/\s*DIR_FFMPEG\s*=\s*("|')(.*?)("|')/) {
    $dir_ffmpeg = $2;
@@ -1984,12 +1992,10 @@ sub load_config {
   };
   $prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC = $usar_public_server_name_ver_artic;
 
-  $num_relac_default = 5; # valor default
+  $prontus_varglb::NUM_RELAC_DEFAULT = 5; # valor default
   if ($buffer =~ m/\s*NUM_RELAC_DEFAULT\s*=\s*("|')(\d+?)("|')/) {
-   $num_relac_default = $2;
+   $prontus_varglb::NUM_RELAC_DEFAULT = $2;
   };
-  $prontus_varglb::NUM_RELAC_DEFAULT = $num_relac_default;
-
 
   my $taxport_artxpag = 20; # valor default
   if ($buffer =~ m/\s*TAXPORT_ARTXPAG\s*=\s*("|')(\d+?)("|')/) {
@@ -2628,7 +2634,7 @@ sub write_xml_port {
     $dest_xml =~ s/\/port\/(\w+)(\.\w+)?$/\/xml\/\1\.xml/;
   };
   # antes de escribir el nuevo xml, saca una copia de respaldo.
-  $newXml = "<?xml version='1.0' encoding='iso-8859-1'?>\n<PORT_DATA>\n$rowartics_xml</PORT_DATA>";
+  my $newXml = "<?xml version='1.0' encoding='iso-8859-1'?>\n<PORT_DATA>\n$rowartics_xml</PORT_DATA>";
   my $md5_newXml = md5_hex($newXml);
 
   my $dobackup = 0;
@@ -2639,8 +2645,8 @@ sub write_xml_port {
     $nomxml = $2;
     &glib_fildir_02::check_dir("$dirxml/bak");
 
-    $curXmlPath = "$dirxml/bak/$nomxml";
-    $curXml = &glib_fildir_02::read_file($curXmlPath);
+    my $curXmlPath = "$dirxml/bak/$nomxml";
+    my $curXml = &glib_fildir_02::read_file($curXmlPath);
     my $md5_curXml = md5_hex($curXml);
     $dobackup = 1 if($md5_newXml ne $md5_curXml);
 
@@ -2721,7 +2727,7 @@ sub generic_parse_port {
     # Parsea el area usando $2 como template parcial.
     $areas{$are} = &parser_area($pure_are,$tmp, $dir_server, $prontus_id,
                                                   $control_fecha, $ts_preview,
-                                                  $controlar_alta_articulos, $users_perfil, $doblegato_string);
+                                                  $controlar_alta_articulos, $users_perfil, $doblegato_string, $mv);
   };
 
 
@@ -2821,6 +2827,7 @@ sub parse_globals {
 sub get_nom_prontus {
     # prontus_xxx -->Prontus Xxx
     my $prontus_id = shift;
+    my $prontus_nom;
 
     while ($prontus_id =~ /( |^)([a-z])/g) {
         my $inicial = $2;
@@ -2915,7 +2922,7 @@ sub add_macros {
 sub parser_area {
 
     my($area, $theloop, $dir_server, $prontus_id,
-            $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil, $doblegato_string) = @_;
+            $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil, $doblegato_string, $mv) = @_;
 
     # Obtiene lista de articulos de esta area.
     my $num_artics_in_area = 0;
@@ -3084,7 +3091,7 @@ sub parser_area {
             $localbuf =~ s/%%.*?%%//g;
         } else {
             # Recupera marcas externas (desde /xdata)
-            my %claves_adicionales = $artic_obj->get_xdata($buffer);
+            my %claves_adicionales = $artic_obj->get_xdata();
 
             # Procesa condicionales mas algunas variables adicionales
             if ($localbuf ne '') {
@@ -3096,6 +3103,7 @@ sub parser_area {
                 # warn $localbuf;
                 $localbuf = &procesa_condicional($localbuf, \%campos_xml, \%claves_adicionales);
             };
+
             my $fullpath_vista = $artic_obj->get_fullpath_artic($mv, $campos_xml{'_plt'});
             $localbuf = $artic_obj->parse_artic_data($fullpath_vista, $localbuf, \%campos_xml, \%claves_adicionales);
         };
@@ -3125,25 +3133,25 @@ sub parser_area {
 # ---------------------------------------------------------------
 #
 sub procesa_loop_artic {
-  $buffer = shift;
-  $doblegato_string = shift;
+  my $buffer = shift;
+  my $doblegato_string = shift;
   # Primero que todo se parsean los loops de de Articulo
   while($buffer =~ /%%_loop_artic\((\d+),(\d+)\)%%(.*?)%%\/_loop_artic%%/is) {
       my $inicio = $1;
       my $fin = $2;
       my $loop = $3;
-      print STDERR "_loop_artic($inicio,$fin)\n";
-      print STDERR "loop[$loop]\n";
+      #~ print STDERR "_loop_artic($inicio,$fin)\n";
+      #~ print STDERR "loop[$loop]\n";
       my $totloop;
       for(my $i = $inicio; $i <= $fin; $i++) {
-          print STDERR "for($i)\n";
+          #~ print STDERR "for($i)\n";
           my $looptemp = $loop;
-          print STDERR "looptemp = $looptemp\n";
+          #~ print STDERR "looptemp = $looptemp\n";
           $looptemp =~ s/\Q$doblegato_string\Ei\Q$doblegato_string\E/$i/isg;
 
           $totloop = $totloop . $looptemp;
       }
-      print STDERR "totloop[$totloop]\n";
+      #~ print STDERR "totloop[$totloop]\n";
       $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
   }
   return $buffer;
@@ -3199,7 +3207,7 @@ sub replace_hash_fields {
     foreach my $k (keys %$vars2replace) {
         my $marca = $k;
         $marca = '%%' . $k . '%%' if ($prontus_style);
-        $value = $$vars2replace{$k};
+        my $value = $$vars2replace{$k};
         $buffer =~ s/$marca/$value/isg;
     };
     return $buffer;
@@ -3488,7 +3496,7 @@ sub get_status_pub {
     # Obtener datos necesarios del articulo DE LA bd
     my $id = $art;
     $id =~ s/\.\w*$//; # saca extension
-    $sql = "select ART_ALTA, ART_FECHAP, ART_HORAP, ART_FECHAE, ART_HORAE from ART where ART_ID = \"$id\"";
+    my $sql = "select ART_ALTA, ART_FECHAP, ART_HORAP, ART_FECHAE, ART_HORAE from ART where ART_ID = \"$id\"";
     my ($alta, $fechap, $horap, $fechae, $horae);
     my $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
     $salida->bind_columns(undef, \($alta, $fechap, $horap, $fechae, $horae));
@@ -4629,9 +4637,6 @@ sub generar_popupdirs_from_dir {
            $seleccionado = 'selected="selected"';
         }
         $lista = $lista . '<option value="' . $nom_arch . '" ' . $seleccionado . '>';
-        if ($ind_extension eq 'SIN_EXT') {
-          $nom_arch =~ s/\..*//; # borrar extension en el display.
-        }
         $lista = $lista . $nom_arch . '</option>'; # 01.i
         $nro_elem = $nro_elem + 1;
       }
@@ -4773,6 +4778,7 @@ sub ancho_alto_gif {
 sub ancho_alto_bmp {
   my ($file) = $_[0];
   my ($a,$b,$c,$d,$e,$f,$g,$h, $s, $type);
+  my $bmp;
   (open $bmp, "<$file") || return ("No se puede abrir archivo BMP!", 0, 0);
   binmode $bmp;
   read($bmp, $type, 2);
@@ -4875,7 +4881,7 @@ sub actualizar_portadas_byartic {
 
     # Para cada seccion.
     foreach $entry (@entries) {
-      $requiere_actualizar = 0;
+      my $requiere_actualizar = 0;
 
       next if ($entry =~ /^\./);
 
@@ -5059,7 +5065,11 @@ sub parse_filef {
                     }
                 }
                 $titular = &ajusta_titular_f4($titular);
-                $fileurl = "/$prontus_id$tax/$titular";
+                if ($prontus_varglb::FRIENDLY_V4_INCLUDE_TAX eq 'SI') {
+                    $fileurl = "/$prontus_id$tax/$titular";
+                } else {
+                    $fileurl = "/$prontus_id/$titular";
+                }
             }
         } else {
             # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
@@ -5481,8 +5491,6 @@ sub get_arbol_mapa {
         $mapa_st =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
         $mapa_st =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
         $mapa_st =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
-
-        $mapa_st = &lib_prontus::parser_condicional('IF', $mapa_st, \%claves);
 
         $mapa_st_total = $mapa_st_total . $mapa_st;
       };
@@ -6342,11 +6350,9 @@ sub handle_internal_error {
     my $msg_internal = shift;
     my $msg_external = shift;
     my $options = shift;
-    my $exit;
-    $exit = 1 if ($options =~ /(^|,) *exit *= *1 *(,|$)/);
-    print STDERR $msg;
-    exit if ($exit);
-    return 'Error actualizando posiciones en la base de datos';
+    print STDERR $msg_external ." - " . $msg_internal;
+    exit if ($options =~ /(^|,) *exit *= *1 *(,|$)/);
+    return $msg_external;
 };
 # ---------------------------------------------------------------
 sub set_coreplt_ppal {

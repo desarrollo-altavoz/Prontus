@@ -16,8 +16,8 @@ use warnings;
 no warnings 'uninitialized';
 
 use DBI;
-use lib_prontus;
-use lib_thumb;
+require lib_prontus;
+require lib_thumb;
 use glib_fildir_02;
 use glib_str_02;
 use glib_hrfec_02;

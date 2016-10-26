@@ -30,7 +30,7 @@
 package lib_thumb;
 
 use strict;
-use lib_prontus;
+require lib_prontus;
 use glib_fildir_02;
 
 my $JPEG_COMPRESSION = 85;

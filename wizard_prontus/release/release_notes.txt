@@ -8888,6 +8888,7 @@ Se comenta codigo que solo se usa para debug
 friendly 4
 rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"          /$1/site/friendly/links/$2/$3/$2$3$4.html;
 
+Se puede indicar si se incluye la taxonomia como parte de la url o no, con la variable FRIENDLY_V4_INCLUDE_TAX
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/css/fids.css
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/css/estilos.css
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_form_fields.html
@@ -8909,11 +8910,11 @@ rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"        
 /var/www/prontus_release/cgi-cpn/prontus_art_check_url.cgi
 /var/www/prontus_release/cgi-cpn/wizard_deploy.cgi
 
-limpieza de codigo
-/var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
+limpieza de codigo y correcciones generales
 /var/www/prontus_release/cgi-cpn/Artic.pm
 /var/www/prontus_release/cgi-cpn/lib_artic.pm
 /var/www/prontus_release/cgi-cpn/lib_prontus.pm
+/var/www/prontus_release/cgi-cpn/lib_thumb.pm
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_sbmit.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_view_xml.cgi

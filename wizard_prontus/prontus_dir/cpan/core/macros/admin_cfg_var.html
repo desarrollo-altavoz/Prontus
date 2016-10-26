@@ -222,34 +222,48 @@
                                             <br/>
                                         </td>
                                     </tr>
-                                        <tr>
-                                            <td style="width: 300px;" valign="top">
-                                                FRIENDLY_V4_EXCLUDE_FID<br>
-                                                <span class="ayuda">Tipos de artículos para los que no se debe generar friendly url version 4, por ejemplo: fid_link.</span>
-                                            </td>
-                                            <td>
-                                                <table class="tableform" width="100%">
-                                                    <tr class="head">
-                                                        <td>Excluir</td>
-                                                        <td>Nombre</td>
-                                                        <td>FID</td>
-                                                    </tr>
-                                                    <!--loop_friendly_exclude_fid-->
-                                                    <tr>
-                                                        <td align="center">
-                                                            <input type="checkbox" name="FRIENDLY_V4_EXCLUDE_FID_ARR[]" id="FRIENDLY_V4_EXCLUDE_FID%%num%%" value="%%archivofid%%" %%checked%%/>
-                                                        </td>
-                                                        <td>
-                                                            <label for="FRIENDLY_V4_EXCLUDE_FID%%num%%">%%nombrefid%%</label>
-                                                        </td>
-                                                        <td>
-                                                            <label for="FRIENDLY_V4_EXCLUDE_FID%%num%%">%%archivofid%%</label>
-                                                        </td>
-                                                    </tr>
-                                                    <!--/loop_friendly_exclude_fid-->
-                                                </table>
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FRIENDLY_V4_EXCLUDE_FID<br>
+                                            <span class="ayuda">Tipos de artículos para los que no se debe generar friendly url version 4, por ejemplo: fid_link.</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%">
+                                                <tr class="head">
+                                                    <td>Excluir</td>
+                                                    <td>Nombre</td>
+                                                    <td>FID</td>
+                                                </tr>
+                                                <!--loop_friendly_exclude_fid-->
+                                                <tr>
+                                                    <td align="center">
+                                                        <input type="checkbox" name="FRIENDLY_V4_EXCLUDE_FID_ARR[]" id="FRIENDLY_V4_EXCLUDE_FID%%num%%" value="%%archivofid%%" %%checked%%/>
+                                                    </td>
+                                                    <td>
+                                                        <label for="FRIENDLY_V4_EXCLUDE_FID%%num%%">%%nombrefid%%</label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="FRIENDLY_V4_EXCLUDE_FID%%num%%">%%archivofid%%</label>
+                                                    </td>
+                                                </tr>
+                                                <!--/loop_friendly_exclude_fid-->
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FRIENDLY_V4_INCLUDE_TAX<br>
+                                            <span class="ayuda">Habilita o deshabilita la inclusi&oacute;n de la taxonomia en la url.<br/><br/>
+                                            SI, genera la forma: /prontus_id/seccion/tema/subtema/titular<br/>
+                                            NO, genera la forma: /prontus_id/titular
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="FRIENDLY_V4_INCLUDE_TAX" id="FRIENDLY_V4_INCLUDE_TAX_SI" value="SI"%%FRIENDLY_V4_INCLUDE_TAX_SI%%/> <label for="FRIENDLY_V4_INCLUDE_TAX_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="FRIENDLY_V4_INCLUDE_TAX" id="FRIENDLY_V4_INCLUDE_TAX_NO" value="NO"%%FRIENDLY_V4_INCLUDE_TAX_NO%%/> <label for="FRIENDLY_V4_INCLUDE_TAX_NO">NO</label>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             FRIENDLY_URLS_LARGO_TITULAR<br>
