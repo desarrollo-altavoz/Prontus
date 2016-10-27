@@ -8856,6 +8856,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
         HTML de cada número de página: <!-- CONFIG HTML_NRO_PAG = <a class="pag_number" href="%%lnk%%">%%cnro_pag%%</a> -->
         HTML de la página actual: <!-- CONFIG HTML_PAG_ACTUAL = <span class="current_pag">%%cnro_pag%%</span> -->
+        Separador que aparece al utilizar páginación tipo google: <!-- CONFIG HTML_SEPARADOR = <span>...</span> -->
     [files]
         - /cgi-cpn/prontus_regenera_tagport.cgi
         - /cgi-cpn/prontus_tags_ports.cgi
