@@ -8900,3 +8900,12 @@ Se comenta codigo que solo se usa para debug
       - Se corrige query al momento de generar una lista con tags configurados.
     [files]
       - /cgi-cpn/prontus_cron_list.cgi
+
+
+Se agrega la opcion para configurar de forma independiente a todos los prontus de un servidor, el numero global de procesos de taxport que se ejecutaran concurentemente
+
+/var/www/prontus_release/cgi-cpn/lib_tax.pm
+/var/www/prontus_release/cgi-cpn/prontus_cron_taxport.cgi
+/var/www/prontus_release/cgi-cpn/prontus_regenera_taxport.cgi
+/var/www/prontus_release/cgi-cpn/prontus_taxport_conf-sample.cfg
+/var/www/prontus_release/cgi-cpn/prontus_varglb.pm
