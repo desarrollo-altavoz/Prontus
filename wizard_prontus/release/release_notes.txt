@@ -8916,6 +8916,8 @@ limpieza de codigo y correcciones generales
 /var/www/prontus_release/cgi-cpn/lib_artic.pm
 /var/www/prontus_release/cgi-cpn/lib_prontus.pm
 /var/www/prontus_release/cgi-cpn/lib_thumb.pm
+
+Se cambia la forma en que se rescata el titular anterior al cambiar el tipo de fid
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_sbmit.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_view_xml.cgi

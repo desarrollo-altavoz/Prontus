@@ -262,10 +262,16 @@ sub procesa_files {
             my $regenerar_registro = 1;
             my $ret = $artic_obj->art_insert_bd($base, $regenerar_registro);
             if ($ret) {
-                $artic_obj->tags2bd($base, 0) || return $Artic::ERR;
+                if (!$artic_obj->tags2bd($base, 0)) {
+                    &lib_logproc::add_to_log("\t\t\tError: $Artic::ERR");
+                    next;
+                }
 
                 if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
-                    $artic_obj->friendly_v4_2bd($base, 0) || return $Artic::ERR;
+                    if (!$artic_obj->friendly_v4_2bd($base, 0)) {
+                        &lib_logproc::add_to_log("\t\t\tError: $Artic::ERR");
+                        next;
+                    }
                 }
                 $OK_REGS++;  # Total de reg. insertados normalmente
             }
