@@ -319,7 +319,7 @@ sub generar_xml_artic {
     };
 
     if ($this->{campos}->{'_txt_titular'} eq '') {
-        $this->{campos}->{'_txt_titular'} = 'SIN TITULO';
+        $this->{campos}->{'_txt_titular'} = 'SIN TITULO ' . (time - $prontus_varglb::URL_NUMBER);
     };
 
 
@@ -1449,7 +1449,7 @@ sub tags2bd {
 # ---------------------------------------------------------------
 sub friendly_v4_2bd {
 # puebla tabal de urls friendly v4
-# Se invoca al momento de guardar un articulo.
+# Se invoca al regenerar la DB de prontus
     my ($this, $base, $is_new) = @_;
 
     if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
@@ -1463,10 +1463,16 @@ sub friendly_v4_2bd {
         };
 
         my $titularV4;
-        if ($this->{'xml_content'}{'_custom_slug'} eq 'SI') {
+        if ($this->{'xml_content'}{'_custom_slug'} eq 'SI' && $this->{'xml_content'}{'_slug'} ne '') {
             $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_slug'});
         } else {
             $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        }
+
+        my $ts = $this->verifica_colision_url_titular($base, $titularV4);
+        if ($ts) {
+            $Artic::ERR = "Error actualizando tabla de URLs, Conflicto de titular entre [$this->{ts}] y [$ts]\n";
+            return 0;
         }
 
         $sql = "insert into URL set URL_ART_ID='$this->{ts}', URL_ART_URI ='$titularV4'";
@@ -1488,10 +1494,10 @@ sub genera_friendly_v4 {
 
     if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
         my ($mv, $buffer);
-        my ($salida, $artID, $friendlyAntigua);
+        my ($salida, $artTs, $friendlyAntigua, $sql);
 
         my $titularV4;
-        if ($this->{'xml_content'}{'_custom_slug'} eq 'SI') {
+        if ($this->{'xml_content'}{'_custom_slug'} eq 'SI' && $this->{'xml_content'}{'_slug'} ne '') {
             $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_slug'});
         } else {
             $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
@@ -1500,18 +1506,24 @@ sub genera_friendly_v4 {
         $this->{'xml_content'}{'_plt'} =~ /\.(\w+)$/;
         my $ext = $1;
 
-        # se busca el titular friendly si existe, para borrar el archivo actual
+        my $ts = $this->verifica_colision_url_titular($base, $titularV4);
+        if ($ts) {
+            $Artic::ERR = "Error actualizando tabla de URLs, Conflicto de titular entre [$this->{ts}] y [$ts]\n";
+            return 0;
+        }
+
+        # se busca el titular friendly de este articulo, si existe, para borrar el archivo actual
         # antes de generar uno nuevo
-        # si esta asociado un ts a una url, nunca es vacio
-        my $sql = "select URL_ART_URI from URL where URL_ART_ID = \"$this->{ts}\" ";
+        # nunca es vacio si esta asociado un ts a una url, ya que no se permiten titulares vacios
+        $sql = "select URL_ART_URI, URL_ART_ID from URL where URL_ART_ID = \"$this->{ts}\" ";
 
         $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
-        $salida->bind_columns(undef, \($friendlyAntigua));
+        $salida->bind_columns(undef, \($friendlyAntigua, $artTs));
         $salida->fetch;
 
         # si hay friendly asociada al ts, se debe eliminar el archivo
-        # conservamos los directorios ya que pueden haber mas archivos y si no hay
-        # en algun momento se reutilizara la ruta
+        # conservamos los directorios ya que pueden haber mas archivos
+        # si no hay en algun momento se reutilizara la ruta
         my $filepath;
 
         # si la friendly antigua no es vacia se debe borrar
@@ -1550,18 +1562,18 @@ sub genera_friendly_v4 {
             return 0;
         }
 
-        $sql = '';
         # actualizamos la DB con este articulo
-        # si la friendly antigua es vacia este articulo no esta en db
-        if ($friendlyAntigua eq '') {
+        # si el art id es vacio, es articulo nuevo
+        if ($artTs eq '') {
             $sql = "insert into URL set URL_ART_ID='$this->{ts}', URL_ART_URI ='$titularV4'";
         } else {
             # si no es vacia se debe actualizar el registro
             $sql = "update URL set URL_ART_URI ='$titularV4' where URL_ART_ID='$this->{ts}'";
         }
+
         my $res = $base->do($sql);
         if (!$res) {
-            $Artic::ERR = "Error actualizando tabla de URLs, ts[$this->{ts}]\n";
+            $Artic::ERR = "Error actualizando tabla de URLs, 11 ts[$this->{ts}]\n";
             cluck $Artic::ERR . "sql[$sql][$!]";
             return 0;
         }
@@ -1585,6 +1597,23 @@ sub genera_friendly_v4 {
     }
     return 1;
 };
+# ---------------------------------------------------------------
+sub verifica_colision_url_titular {
+    my ($this, $base, $titularV4) = @_;
+    my $artTs;
+    # revisamos si existe otro articulo con el mismo titular (las urls son unicas)
+    my $sql = "select URL_ART_ID from URL where URL_ART_URI = \"$titularV4\"";
+    my $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
+    $salida->bind_columns(undef, \($artTs));
+    $salida->fetch;
+
+    # si existe un articulo con la misma url que no es este
+    # no se continua el proceso y se arroja error
+    if ($artTs ne '' && $artTs ne $this->{ts}) {
+        return $artTs;
+    }
+    return 0;
+}
 # ---------------------------------------------------------------
 sub borra_artic {
 

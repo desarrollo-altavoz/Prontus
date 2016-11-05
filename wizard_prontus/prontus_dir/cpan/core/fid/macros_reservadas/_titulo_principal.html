@@ -3,7 +3,7 @@
                     <div class="numero-id">#%%_ART_AUTOINC%%</div>
                     <div class="aleft">
                         <div>
-                            <input type="text" name="_txt_titular"  id="_txt_titular" class="fieldform-top" value="%%_txt_titular%%" onclick="if($(this).val()=='Sin t&iacute;tulo') {$(this).val('');}" onblur="Fid.validaTitular('check');";/>
+                            <input type="text" name="_txt_titular"  id="_txt_titular" class="fieldform-top" value="%%_txt_titular%%" onclick="Fid.limpiaTitular($(this));" %%_friendly4%% onblur="Fid.validaTitular('check-titular');" %%/_friendly4%%/>
                         </div>
                     </div>
                     <div class="numero-id hide-new-artic">
@@ -20,7 +20,7 @@
                     %%_friendly4%%
                     <div class="aleft">
                         <div class="numero-id">Slug</div>
-                        <input type="text" id="_slug" name="_slug" class="fieldform-top" value="%%_slug%%" readonly="readonly" maxlength="75" onblur="Fid.validaTitular('check');"/>
+                        <input type="text" id="_slug" name="_slug" class="fieldform-top" value="%%_slug%%" readonly="readonly" maxlength="75" onblur="Fid.validaTitular('check-slug');"/>
                         <img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar Url" title="Editar Url" class="cambia-boton" onclick="Fid.slugEditable(true);" />
                         <img src="/%%_prontus_id%%/cpan/core/imag/boto/delete_of.png" width="18" height="18" alt="Resetear Url" title="Resetear Url" class="cambia-boton" onclick="Fid.slugEditable(false);"/>
                     </div>
@@ -97,13 +97,13 @@
                       <td class="nombre">Titular:</td><td class="campo" id="url_art_titu"></td>
                     </tr>
                     <tr>
-                      <td class="nombre">Editar</td><td class="campo"><a href="#" target="_blank" onclick="Fid.abrirEditor($(this));return false;" id="url_art_editar" >Click para editar</a></td>
+                      <td class="nombre">Path en URL:</td><td class="campo" id="url_art_slug"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Editar</td><td class="campo"><a href="#" target="_blank" onclick="Fid.abrirEditor($(this));return false;" id="url_art_editar" >Click para editar el art&iacute;culo en conflicto</a></td>
                     </tr>
                     <tr>
                       <td class="nombre">Path del Art&iacute;culo:</td><td class="campo" id="url_art_path"></td>
-                    </tr>
-                    <tr>
-                      <td class="nombre">Titular en URL:</td><td class="campo" id="url_art_slug"></td>
                     </tr>
                   </table>
                 </div>

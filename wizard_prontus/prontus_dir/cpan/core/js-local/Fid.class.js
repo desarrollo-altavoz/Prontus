@@ -325,12 +325,7 @@ var Fid = {
         Fid.addDragImagenes();
 
         // Para la edicion de friendly v4
-        if (Fid.friendlyVer == 4) {
-            if ($('#_custom_slug').val() == '') {
-                $('#_custom_slug').val('NO');
-                Fid.validaTitular('check');
-            }
-        }
+        Fid.iniciaSlug();
     },
 
     // -------------------------------------------------------------------------
@@ -784,11 +779,29 @@ var Fid = {
         }
     },
     // -------------------------------------------------------------------------
+    // Inicia el valor del slug y comportamiento del fid al cargar el articulo
+    iniciaSlug: function() {
+        if (Fid.friendlyVer == 4) {
+            if ($('#_custom_slug').val() == '' || $('#_slug').val() == '') {
+                $('#_custom_slug').val('NO');
+                Fid.slugEditable(false);
+            } else if ($('#_custom_slug').val() == 'SI') {
+                Fid.slugEditable(true);
+            }
+        }
+    },
+    // -------------------------------------------------------------------------
     // Valida si la url friendly correspondiente a este articulo ya existe
     // gatilla guardado del articulo si corresponde
     // save y save_new, gatillan guardado, check solo verifica y genera alerta
     validaTitular: function(bot_press) {
         if (Fid.friendlyVer == 4) {
+            if (bot_press == 'check-slug' && $('#_custom_slug').val() == 'NO') {
+                return false;
+            }
+            if (bot_press == 'check-titular' && $('#_custom_slug').val() == 'SI') {
+                return false;
+            }
             $('#url_art_ts').html('');
             $('#url_art_id').html('');
             $('#url_art_titu').html('');
@@ -818,9 +831,13 @@ var Fid = {
                                 $('#_mainFidForm').trigger('submit');
                             }
                         } else {
-                            $('#_slug').val('');
                             if (typeof data.ts === 'undefined' || data.ts == '') {
                                 alert(data.msg);
+                                if ($('#_custom_slug').val() == 'SI') {
+                                    $('#_slug').focus();
+                                } else {
+                                    $('#_txt_titular').focus();
+                                }
                             } else {
                                 $('#url_art_ts').html(data.ts);
                                 $('#url_art_id').html(data.id);
@@ -836,7 +853,14 @@ var Fid = {
                                     inline: true,
                                     width: 720,
                                     height: 230,
-                                    opacity: 0.8
+                                    opacity: 0.8,
+                                    onClosed:function(){
+                                        if ($('#_custom_slug').val() == 'SI') {
+                                            $('#_slug').focus();
+                                        } else {
+                                            $('#_txt_titular').focus();
+                                        }
+                                    }
                                 });
                             }
                             Fid.setGUIProcesando(false);
@@ -849,7 +873,17 @@ var Fid = {
     },
 
     // -------------------------------------------------------------------------
-    // Funcion usada en los formularios para eliminar archivos de respaldos
+    // Funcion usada para vaciar el titular en caso que sea "sin titulo \d+"
+    limpiaTitular: function(elemento) {
+        console.log(elemento);
+        console.log(elemento.val());
+        if (/^Sin título \d+$/.test($(elemento).val())) {
+            $(elemento).val('');
+        }
+    },
+
+    // -------------------------------------------------------------------------
+    // Funcion usada para abrir el editor de un articulo en otra ventana
     abrirEditor: function(elemento) {
         window.open(elemento.attr('href'));
     },

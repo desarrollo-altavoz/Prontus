@@ -154,7 +154,7 @@ $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
 &lib_prontus::load_config($FORM{'_path_conf'});  # Prontus 6.0
 $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
-# Se lee el titular que habÃ­a antes, para no perderlo
+# Se lee el titular que habí­a antes, para no perderlo
 $FORM{'_txt_titular'} = &lib_prontus::get_codetext_value(&glib_cgi_04::param('_txt_titular'));
 
 # Control de usuarios obligatorio chequeando la cookie contra el dbm.
@@ -410,8 +410,13 @@ $pagina = &lib_prontus::replace_tsdata($pagina, $ts_artic);
 
 
 # Borrar marcas sobrantes
-# Antes , si no se parseo el titular, parseo algo de relleno
-$pagina =~ s/%%_TXT_TITULAR%%/Sin t&iacute;tulo/isg;
+# si no se parseo el titular intentamos el titular anterior
+if ($FORM{'_txt_titular'} ne '' ) {
+    $pagina =~ s/%%_TXT_TITULAR%%/$FORM{'_txt_titular'}/isg;
+}
+# si aun no se parseo el titular, parseo algo de relleno
+my $placeholder = 'Sin t&iacute;tulo '. (time - $prontus_varglb::URL_NUMBER);
+$pagina =~ s/%%_TXT_TITULAR%%/$placeholder/isg;
 
 # parsear SERVER_NAME
 $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
@@ -467,7 +472,7 @@ if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
     $pagina =~ s/%%_friendly_urls_ver%%/0/ig
 }
 
-if($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && !exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$FORM{'_fid'}}) {
   $pagina =~ s/%%_friendly4%%(.*?)%%\/_friendly4%%/$1/isg;
 } else {
   $pagina =~ s/%%_friendly4%%.*?%%\/_friendly4%%//isg;

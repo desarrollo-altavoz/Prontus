@@ -72,12 +72,11 @@ main: {
     print "Cache-Control: no-cache, must-revalidate\r\n";
     print "Cache-Control: max-age=0\n";
     print "Cache-Control: no-store\n";
-    #~ print "Content-Type: text/html\n\n";
     print "Content-type: application/json;charset=utf-8\n\n";
 
     if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
         if ($FORM{'_txt_titular'} eq '') {
-            &glib_html_02::print_json_result('Error','Titular no es válido', 'exit=1,ctype=0');
+            &glib_html_02::print_json_result('Error','El campo no puede ser vacío', 'exit=1,ctype=0');
         };
         if ($FORM{'_ts'} !~ /^\d+$/ && $FORM{'_ts'} ne '') {
             &glib_html_02::print_json_result('Error','TS no es válido', 'exit=1,ctype=0');
@@ -106,12 +105,10 @@ main: {
         $salida->fetch;
         $salida->finish;
 
-        #~ print "($id, $artId, $artUri)\n";
-
         my %data;
         # si encontramos un articulo necesitamos el titular real
         if ($artId ne '') {
-            $sql = "select ART_TITU, ART_AUTOINC, ART_TIPOFICHA, ART_EXTENSION from ART where ART_ID = \"$artId\"";
+            $sql = "select convert(cast(convert(ART_TITU using latin1) as binary) using utf8), ART_AUTOINC, ART_TIPOFICHA, ART_EXTENSION from ART where ART_ID = \"$artId\"";
             my ($artTitu, $artAutoInc, $artFid, $artExt);
             $salida = &glib_dbi_02::ejecutar_sql($BD, $sql);
             $salida->bind_columns(undef, \($artTitu, $artAutoInc, $artFid,$artExt));
