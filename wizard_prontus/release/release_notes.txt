@@ -8935,3 +8935,12 @@ Se puede indicar un remitente fijo en el fid con el nombre
 check "chk_form_force_from", que utiliza el campo "form_from" como
 remitente.
 /var/www/prontus_release/cgi-bin/prontus_form.cgi
+
+
+Se agrega la opcion para configurar de forma independiente a todos los prontus de un servidor, el numero global de procesos de taxport que se ejecutaran concurentemente
+
+/var/www/prontus_release/cgi-cpn/lib_tax.pm
+/var/www/prontus_release/cgi-cpn/prontus_cron_taxport.cgi
+/var/www/prontus_release/cgi-cpn/prontus_regenera_taxport.cgi
+/var/www/prontus_release/cgi-cpn/prontus_taxport_conf-sample.cfg
+/var/www/prontus_release/cgi-cpn/prontus_varglb.pm
