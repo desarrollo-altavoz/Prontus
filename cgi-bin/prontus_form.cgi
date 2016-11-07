@@ -28,7 +28,7 @@
 # 4.Se construye la pagina de respuesta unica para el visitante y se envian los correos electronicos de datos y autorrespuesta.
 # 5.Si es pertinente, se respaldan los datos.
 # 6.Se redirige el browser hacia la pagina de respuesta a traves de un header Location.
-# 7.Se limpia el directorio de paginas de respuesta eliminando las que tienen mas de 10 minutos de antig¸edad.
+# 7.Se limpia el directorio de paginas de respuesta eliminando las que tienen mas de 10 minutos de antig√ºedad.
 #
 # Configuracion
 # -------------
@@ -68,7 +68,7 @@
 # form_msg_error<_vista> Mensaje de error del sistema, en formato html.
 #
 # CHK_form_required_<nombre>   Indica que el dato <nombre> es obligatorio en el formulario.
-# CHK_form_captcha_enable      Indica si se validar· el captcha o no
+# CHK_form_captcha_enable      Indica si se validar√° el captcha o no
 # CHK_form_backup_datos        Si existe, realiza una copia de los datos recibidos en
 #                                el directorio de respaldo, incluyendo los archivos adjuntos.
 # Validacion de datos
@@ -125,13 +125,14 @@
 # 1.6   03/01/2008 - ALD - Permite dato _admin numerico para indicar uno de los mails de administracion.
 #                        - Permite que el mail del remitente sea vacio. En ese caso no se envia mail de autorrespuesta.
 # 1.7   25/01/2008 - ALD - Hace que los datos CHK_form_required y CHK_form_backup_datos no sean enviados ni respaldados.
-# 1.8   21/11/2008 - CVI - Se agrega variable form_signature<vista> para la firma de los mails. Por omisiÛn va la antigua.
-# 1.9   29/05/2009 - CVI - Se agrega validaciÛn de captcha
+# 1.8   21/11/2008 - CVI - Se agrega variable form_signature<vista> para la firma de los mails. Por omisi√≥n va la antigua.
+# 1.9   29/05/2009 - CVI - Se agrega validaci√≥n de captcha
 # 1.10  05/11/2009 - YCC - Elimina vulnerabilidades XSS
 #                        - Elimina la cabecera HTML repetida en algunas invocaciones a &lib_form::aborta()
 #                        - Valida extensiones de archivos a subir, usando lista blanca.
 # 1.11  31/11/2009 - YCC - Cambia a minusculas refrencias a campos prontus, para 10.14.
 # 1.12  15/07/2015 - EAG - Se escribe json valido al guardar el archivo de datos recibidos por primera vez
+# 2.0.0 04/11/2016 - SCT - Se agrega validaci√≥n contra reCaptcha de google.
 # To-Do:
 # - Revisar sensibilidad a las mayusculas.
 
@@ -171,6 +172,9 @@ use lib_validator;
 use lib_mail;
 use lib_maxrunning;
 use lib_prontus;
+use strict;
+use LWP::UserAgent;
+use JSON;
 
 my $DEBUG = 0;    # 1.6 Flag para debug.
 
@@ -195,6 +199,10 @@ my $FECHA;        # Fecha de creacion del formulario. Usada para acceder a los d
 my $EXT;          # Extension usada por Prontus. Se deduce del path del formulario.
 my %MSGS;         # Mensajes de error.
 
+my $URL_CAPTCHA = "https://www.google.com/recaptcha/api/siteverify"; # Para conectarse a la API de reCaptcha
+my $SECRECT_CODE_CAPTCHA = "6LdAyyQTAAAAACMN0iTuEYSHuNx6UH7iIyXZGmQd"; # Codigo secreto de la aplicaci√≥n
+my $RECAPTCHA_RESPONSE = ""; # Captura la respuesta por POST del formulario
+
 # Para mostrar de inmediato la pagina de resultados.
 $|=1;
 # Una sola \n porque despues viene un header location.
@@ -209,7 +217,7 @@ binmode(STDOUT, ":utf8");
 $MSGS{'out_of_service'} = 'Sistema fuera de servicio. Intente otra vez m&aacute;s tarde ...';
 $MSGS{'required_data'} = 'Este dato es obligatorio:';
 $MSGS{'wrong_data'} = 'Este dato es incorrecto:';
-$MSGS{'wrong_captcha'} = 'El c&oacute;digo de validaci&oacute;n ingresado no es v&aacute;lido';
+$MSGS{'wrong_captcha'} = 'Debes completar la validaci&oacuten antes de enviar el formulario.';
 $MSGS{'wrong_vista'} = 'La vista ingresada no es v&aacute;lida: ';
 
 #~ &lib_form::max_running(5); # Soporta un maximo de 5 copias corriendo.
@@ -275,7 +283,7 @@ sub data_management {
 
     $backupdir = "$ROOTDIR/$PRONTUS_ID/$DATA_DIR/$TS";
     &glib_fildir_02::check_dir($backupdir);
-    # Se obtiene el TS del envÌo
+    # Se obtiene el TS del env√≠o
     my $TSENVIO = &glib_hrfec_02::get_dtime_pack4();
     while(-f $backupdir.'/'.$TSENVIO.'.json') {
         $TSENVIO = &glib_hrfec_02::suma_segs($TSENVIO, 1);
@@ -298,7 +306,7 @@ sub data_management {
     $backupheaders .= "\"Fecha\"$SEPARADOR\"Hora\"$SEPARADOR\"IP\"$SEPARADOR";
     $backupdata .= "\"$fecha\"$SEPARADOR\"$hora\"$SEPARADOR\"$ip\"$SEPARADOR";
     foreach my $key (sort{index($buffer,"\"$a\"") <=> index($buffer,"\"$b\"")} @DATOS) {
-        next if (($key =~ /^_/) || ($key =~ /CHK_form_required/) || ($key =~ /CHK_form_backup_datos/)); # 1.7
+        next if (($key =~ /^_/) || ($key =~ /CHK_form_required/) || ($key =~ /CHK_form_backup_datos/) || ($key =~ /g-recaptcha-response/));
         $backupheaders .= '"' . $key . '"' . $SEPARADOR;
         # Determino si el dato es un archivo o no.
         # Si son varios, se adjuntara el ultimo.
@@ -348,7 +356,7 @@ sub data_management {
         $data = &glib_str_02::trim(&glib_cgi_04::param($key));
         # 1.1 Reemplaza datos en subject.
         utf8::decode($data);
-        $data =~ s/[^\w\-·ÈÌÛ˙¸Ò¡…Õ”⁄‹—\, ]//g; # Elimina todo caracter extrano.
+        $data =~ s/[^\w\-√°√©√≠√≥√∫√º√±√Å√â√ç√ì√ö√ú√ë\, ]//g; # Elimina todo caracter extrano.
         utf8::encode($data);
         $subj =~ s/\%$key\%/$data/sg;
     };
@@ -402,7 +410,7 @@ sub data_management {
             $result .= ' 5 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
         };
     };
-    # SÛlo se incluyen los archivos en el JSON, si hay respaldo
+    # S√≥lo se incluyen los archivos en el JSON, si hay respaldo
     my $files_json;
 
     # Genera el backup, si es pertinente.
@@ -522,13 +530,6 @@ sub valida_data {
         };
     };
 
-  # YCC: esto se comenta porque esta demas, el p.form escribe en la raiz de site/cache/form
-  # if (! (-d "$ROOTDIR/$ANSWERS_DIR/pags") ) {
-    # if (&crea_dir("$ROOTDIR/$ANSWERS_DIR/pags") == 0) {
-      # &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR/pags].");
-    # };
-  # };
-
     $ANSWERID = $PRONTUS_ID . $TS . time . $$; # rand(1000000000);
     # Lee el servidor SMTP definido para Prontus.
     # SERVER_SMTP= 'localhost'
@@ -559,18 +560,41 @@ sub valida_data {
     # Chequea Captcha si es que es requerido
     if($PRONTUS_VARS{'chk_form_captcha_enable'} ne '') {
 
-        # Usando la nueva lib_captcha se manejan ambos formatos
-        my $captcha_input = &glib_cgi_04::param('_CAPTCHA_FORM');
-        my $captcha_type = 'form'; # custom
-        my $captcha_img = &glib_cgi_04::param('_captcha_img');
-        my $captcha_code = &glib_cgi_04::param('_captcha_code');
-        $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
-        #~ require 'dir_cgi.pm';
-        &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
-        my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
-        if ($msg_err_captcha ne '') {
-            &salida($MSGS{'wrong_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
-        };
+        if (!&glib_cgi_04::param('g-recaptcha-response')) {
+            # Usando la nueva lib_captcha se manejan ambos formatos
+            my $captcha_input = &glib_cgi_04::param('_CAPTCHA_FORM');
+            my $captcha_type = 'form'; # custom
+            my $captcha_img = &glib_cgi_04::param('_captcha_img');
+            my $captcha_code = &glib_cgi_04::param('_captcha_code');
+            $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
+            #~ require 'dir_cgi.pm';
+            &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
+            my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
+            if ($msg_err_captcha ne '') {
+                &salida($MSGS{'wrong_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+            };
+        } else {
+            # Se valida re-captcha para continuar
+            $RECAPTCHA_RESPONSE = &glib_cgi_04::param('g-recaptcha-response');
+
+            my %form = (
+                secret => $SECRECT_CODE_CAPTCHA,
+                response => $RECAPTCHA_RESPONSE
+            );
+
+            my $strjson = &post_http($URL_CAPTCHA, \%form);
+
+            if ($strjson) {
+                my $hashtemp = &JSON::from_json($strjson);
+                if (defined $hashtemp->{'success'}) {
+                    if(!$hashtemp->{'success'}){
+                        &salida($hashtemp->{'error-codes'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                        exit;
+                    };
+                };
+            };
+
+        }
     };
 
     # Chequea campos requeridos.
@@ -590,7 +614,7 @@ sub valida_data {
             print STDERR "vistavar: [$VISTAVAR]\n";
             print STDERR "nombre: [$nombre]\n";
 
-            # Estamos en una vista, por lo tanto se valida sÛlo si el nombre termina en esa vista
+            # Estamos en una vista, por lo tanto se valida s√≥lo si el nombre termina en esa vista
             if($VISTAVAR) {
 
                 if($nombre =~ /${VISTAVAR}$/) {
@@ -667,6 +691,27 @@ sub valida_data {
 }; # validaData
 
 # ------------------------------------------------------------------------- #
+sub post_http {
+    my $url = $_[0];
+    my $form = $_[1];
+    my $ua = LWP::UserAgent->new(keep_alive=>1);
+
+    $ua->default_header('Content-Type' => 'application/x-www-form-urlencoded');
+
+    $ua->timeout(60);
+
+    my $response = $ua->post($url, $form);
+
+    if ($response->is_success) {
+        return $response->decoded_content;  # or whatever
+    } else {
+        &lib_form::aborta("Ha ocurrido un error. Intente nuevamente.");
+        return '';
+    };
+
+};
+
+# ------------------------------------------------------------------------- #
 # Inicializa las variables de invocacion.
 sub get_form_data {
     my($xmlpath);
@@ -728,7 +773,7 @@ sub salida {
         $plantilla =~ s/%%_referer%%/$ENV{'HTTP_REFERER'};/si;
         $plantilla =~ s/%%_answerpage%%/$ANSWERS_DIR\/$ANSWERID\.$EXT/si;
         $plantilla =~ s/%_PF_(\w+\(.*?\))%/%%_PF_\1%%/isg;
-        $plantilla = &lib_prontus::parser_custom_function($plantilla);        
+        $plantilla = &lib_prontus::parser_custom_function($plantilla);
 
         # Elimina tags no parseados en la plantilla.
         $plantilla =~ s/%%\w+%%//sg; # 1.2.1
