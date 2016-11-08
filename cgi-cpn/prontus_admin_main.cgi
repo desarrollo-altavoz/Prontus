@@ -1192,6 +1192,10 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%/ checked="checked"/ig;
     };
 
+    # variables para configurar recaptcha google
+    $pagina =~ s/%%RECAPTCHA_API_URL%%/$prontus_varglb::RECAPTCHA_API_URL/ig;
+    $pagina =~ s/%%RECAPTCHA_SECRET_CODE%%/$prontus_varglb::RECAPTCHA_SECRET_CODE/ig;
+
 
     if ($prontus_varglb::BLOQUEO_EDICION eq '0' || $prontus_varglb::BLOQUEO_EDICION eq '') {
         $pagina =~ s/%%BLOQUEO_EDICION_V0%%/ checked="checked"/ig;

@@ -1168,8 +1168,16 @@ sub load_config {
     $prontus_varglb::FRIENDLY_V4_INCLUDE_TAX = 'SI'; # valor por defecto.
     if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_TAX\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::FRIENDLY_V4_INCLUDE_TAX = $2;
+
+    $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
+    if ($buffer =~ m/\s*RECAPTCHA_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::RECAPTCHA_API_URL = $2;
     };
 
+    $prontus_varglb::RECAPTCHA_SECRET_CODE = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*RECAPTCHA_SECRET_CODE\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::RECAPTCHA_SECRET_CODE = $2;
+    };
 
   my $comentarios = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*COMENTARIOS\s*=\s*("|')(.*?)("|')/) { # SI | NO

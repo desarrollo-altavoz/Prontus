@@ -128,6 +128,8 @@ main: {
     $hash_defaultvars{'var'}{'ADVANCED_XCODING'} = 'ADVANCED_XCODING;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'USAR_LIB_FDK'} = 'USAR_LIB_FDK;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'UPDATE_SERVER'} = 'UPDATE_SERVER;(.*?);http://www.prontus.cl;U';
+    $hash_defaultvars{'var'}{'RECAPTCHA_API_URL'} = 'RECAPTCHA_API_URL;(.*?);;U';
+    $hash_defaultvars{'var'}{'RECAPTCHA_SECRET_CODE'} = 'RECAPTCHA_SECRET_CODE;(.*?);;U';
 
     # -port.cfg
     $hash_defaultvars{'port'}{'MULTI_EDICION'} = 'MULTI_EDICION;(SI|NO);NO;U';
