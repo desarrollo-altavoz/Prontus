@@ -1168,6 +1168,7 @@ sub load_config {
     $prontus_varglb::FRIENDLY_V4_INCLUDE_TAX = 'SI'; # valor por defecto.
     if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_TAX\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::FRIENDLY_V4_INCLUDE_TAX = $2;
+    };
 
     $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
     if ($buffer =~ m/\s*RECAPTCHA_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
