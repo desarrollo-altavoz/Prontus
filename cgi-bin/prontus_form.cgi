@@ -199,8 +199,6 @@ my $FECHA;        # Fecha de creacion del formulario. Usada para acceder a los d
 my $EXT;          # Extension usada por Prontus. Se deduce del path del formulario.
 my %MSGS;         # Mensajes de error.
 
-my $URL_CAPTCHA = "https://www.google.com/recaptcha/api/siteverify"; # Para conectarse a la API de reCaptcha
-my $SECRECT_CODE_CAPTCHA = "6LdAyyQTAAAAACMN0iTuEYSHuNx6UH7iIyXZGmQd"; # Codigo secreto de la aplicación
 my $RECAPTCHA_RESPONSE = ""; # Captura la respuesta por POST del formulario
 
 # Para mostrar de inmediato la pagina de resultados.
@@ -220,7 +218,6 @@ $MSGS{'wrong_data'} = 'Este dato es incorrecto:';
 $MSGS{'wrong_captcha'} = 'Debes completar la validaci&oacuten antes de enviar el formulario.';
 $MSGS{'wrong_vista'} = 'La vista ingresada no es v&aacute;lida: ';
 
-#~ &lib_form::max_running(5); # Soporta un maximo de 5 copias corriendo.
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(5)) {
     &aborta("Error: Servidor ocupado. Intente otra vez m&aacute;s tarde."); # 1.3.1 # 1.10
@@ -330,9 +327,14 @@ sub data_management {
         };
     };
 
-    &glib_fildir_02::write_file("$backupdir/order.json", &JSON::to_json($order_data));
+    if($JSON::VERSION =~ /^1\./) {
+        my $json = new JSON;
+        &glib_fildir_02::write_file("$backupdir/order.json", &json->objToJson($order_data));
+    } else {
+        &glib_fildir_02::write_file("$backupdir/order.json", &JSON::to_json($order_data));
+    }
 
-    # 1.8 - firma configureable CVI
+    # 1.8 - firma configurable CVI
     my $msg_signature = "\r\nRecibido el $fecha a las $hora desde el IP $ip\n";
     $msg_signature .= "\nAtentamente,\nProntus CMS\r\n\r\n";
     if($PRONTUS_VARS{'form_signature'.$VISTAVAR}) {
@@ -443,7 +445,13 @@ sub data_management {
         if (keys %{$files_json}) {
             $resp->{'_files'} = $files_json;;
         }
-        &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
+
+        if($JSON::VERSION =~ /^1\./) {
+            my $json = new JSON;
+            &glib_fildir_02::write_file($filejson, &json->objToJson($resp));
+        } else {
+            &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
+        }
 
     } else {
         unlink($filejson);
@@ -578,14 +586,21 @@ sub valida_data {
             $RECAPTCHA_RESPONSE = &glib_cgi_04::param('g-recaptcha-response');
 
             my %form = (
-                secret => $SECRECT_CODE_CAPTCHA,
+                secret => $prontus_varglb::RECAPTCHA_SECRET_CODE,
                 response => $RECAPTCHA_RESPONSE
             );
 
-            my $strjson = &post_http($URL_CAPTCHA, \%form);
+            my $strjson = &post_http($prontus_varglb::RECAPTCHA_API_URL, \%form);
 
             if ($strjson) {
-                my $hashtemp = &JSON::from_json($strjson);
+                my $hashtemp;
+                if($JSON::VERSION =~ /^1\./) {
+                    my $json = new JSON;
+                    $hashtemp = &json->jsonToObj($strjson);
+                } else {
+                    $hashtemp = &JSON::from_json($strjson);
+                }
+
                 if (defined $hashtemp->{'success'}) {
                     if(!$hashtemp->{'success'}){
                         &salida($hashtemp->{'error-codes'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
