@@ -390,7 +390,6 @@ sub parseaVars {
     my $buffer_friendly = '';
     $pagina =~ /<!--loop_friendly_exclude_fid-->(.*?)<!--\/loop_friendly_exclude_fid-->/s;
     my $loop_friendly = $1;
-    my $cont = 1;
 
     foreach my $fid (sort keys %prontus_varglb::FORM_PLTS) {
       my $temp_friendly = $loop_friendly;
@@ -437,7 +436,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_fid_item-->(.*?)<!--\/loop_fid_item-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
     my $fid_default = '';
 
     if ($prontus_varglb::FID_DEFAULT =~ /^([\w@-]+) *: *.+/) {
@@ -664,7 +663,7 @@ sub parseaVars {
 
     # $prontus_varglb::PORT_PLTS_EXTRA{$port}
     # $prontus_varglb::PORT_PLTS_PREVIEW{$port}
-    my $cont = 1;
+    $cont = 1;
 
     # Se revisan las portadas que estan siendo utilizadas
     my %ports_utilizadas;
@@ -718,8 +717,8 @@ sub parseaVars {
 
         $temp =~ s/%%paralelas%%/$option_select/isg;
 
-        my $option_select = '';
-        my $num_options_selected = 0;
+        $option_select = '';
+        $num_options_selected = 0;
 
         # Portadas preview.
         foreach my $prev_file (sort @preview_listado) {
@@ -760,7 +759,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_base_ports-->(.*?)<!--\/loop_base_ports-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
 
     my %baseports_utilizadas;
     foreach my $port (sort @prontus_varglb::BASE_PORTS) {
@@ -779,22 +778,8 @@ sub parseaVars {
         };
     };
 
-
     $pagina =~ s/<!--loop_base_ports-->.*?<!--\/loop_base_ports-->/$buffer/sig;
 
-    # Listado de portadas, para agregar una.
-    # %%listado_portadas%%
-    #~ my $option_select = '';
-    #~ my $option_select_paralelas = '';
-    #~ my $option_select_base = '';
-    #~ foreach my $port_file (sort @ports_listado) {
-        #~ if ($port_file =~ /(.*?)\.(.*?)/ && $port_file ne '.' && $port_file ne '..') {
-            #~ if (!exists $ports_utilizadas{$port_file}) {
-                #~ $option_select = $option_select . '<option value="' . $port_file . '">' . $port_file . '</option>';
-            #~ };
-            #~ $option_select_paralelas = $option_select_paralelas . '<option value="' . $port_file . '">' . $port_file . '</option>';
-        #~ };
-    #~ };
     my $option_select_paralelas = $strcombo;
     my $option_select = $strcombo;
     my $option_select_base = '';
@@ -826,7 +811,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_ports_dragnadndrop-->(.*?)<!--\/loop_ports_dragnadndrop-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
 
     my %portdd_habilitadas;
     foreach my $port (keys (%prontus_varglb::PORT_DRAGANDROP)) {
@@ -994,7 +979,7 @@ sub parseaVars {
     $pagina =~ s/%%TAGPORT_MAXARTICS%%/$prontus_varglb::TAGPORT_MAXARTICS/ig;
     $pagina =~ s/%%MAX_LAST_TAGS_4FID%%/$prontus_varglb::MAX_LAST_TAGS_4FID/ig;
     my $tgport_orden = $prontus_varglb::TAGPORT_ORDEN;
-    my $direccion = '';
+    $direccion = '';
 
     if ($tgport_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
         $direccion = $1;
@@ -1313,7 +1298,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_multivista-->(.*?)<!--\/loop_multivista-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         $temp = $loop;
         $temp =~ s/%%mv_valor%%/$mv/isg;
@@ -1541,7 +1526,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_rawfiletypes-->(.*?)<!--\/loop_rawfiletypes-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
     my @rawfiletypes = split(/ +/, $cfg_buscador{'RAW_FILETYPES'});
     foreach my $ftype (@rawfiletypes) {
         $temp = $loop;
@@ -1557,8 +1542,8 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_urlfiletypes-->(.*?)<!--\/loop_urlfiletypes-->/s;
     $loop = $1;
-    my $cont = 1;
-    my @rawfiletypes = split(/ +/, $cfg_buscador{'URL_FILETYPES'});
+    $cont = 1;
+    @rawfiletypes = split(/ +/, $cfg_buscador{'URL_FILETYPES'});
     foreach my $ftype (@rawfiletypes) {
         $temp = $loop;
         $temp =~ s/%%filetype_valor%%/$ftype/isg;
@@ -1570,9 +1555,9 @@ sub parseaVars {
     $pagina =~ s/<!--loop_urlfiletypes-->.*?<!--\/loop_urlfiletypes-->/$buffer/sig;
 
     $buffer = '';
-    my $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
+    $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
     &glib_fildir_02::check_dir($dir_fid);
-    my @fids_listado = &glib_fildir_02::lee_dir($dir_fid);
+    @fids_listado = &glib_fildir_02::lee_dir($dir_fid);
 
     # Generar arreglo de hash para checkboxs.
     my @fidlist;
@@ -1642,8 +1627,8 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_textvars-->(.*?)<!--\/loop_textvars-->/s;
     $loop = $1;
-    my $cont = 1;
-    my @rawfiletypes = split(/ +/, $cfg_buscador{'TEXTVARS'});
+    $cont = 1;
+    @rawfiletypes = split(/ +/, $cfg_buscador{'TEXTVARS'});
     foreach my $ftype (@rawfiletypes) {
         $temp = $loop;
         $temp =~ s/%%textvar_valor%%/$ftype/isg;

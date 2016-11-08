@@ -97,6 +97,7 @@ main: {
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URL_IMAGES'} = 'FRIENDLY_URL_IMAGES;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_INCLUDE_TAX'} = 'FRIENDLY_V4_INCLUDE_TAX;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'FRIENDLY_V4_EXCLUDE_FID'} = 'FRIENDLY_V4_EXCLUDE_FID;(\w+);;M';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3|4);1;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_LARGO_TITULAR'} = 'FRIENDLY_URLS_LARGO_TITULAR;^(\d+)$;1;U';
     $hash_defaultvars{'var'}{'COMENTARIOS'} = 'COMENTARIOS;(SI|NO);NO;U';
@@ -127,7 +128,6 @@ main: {
     $hash_defaultvars{'var'}{'ADVANCED_XCODING'} = 'ADVANCED_XCODING;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'USAR_LIB_FDK'} = 'USAR_LIB_FDK;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'UPDATE_SERVER'} = 'UPDATE_SERVER;(.*?);http://www.prontus.cl;U';
-    $hash_defaultvars{'var'}{'FRIENDLY_V4_EXCLUDE_FID'} = 'FRIENDLY_V4_EXCLUDE_FID;(\w+);;M';
 
     # -port.cfg
     $hash_defaultvars{'port'}{'MULTI_EDICION'} = 'MULTI_EDICION;(SI|NO);NO;U';
