@@ -239,7 +239,7 @@ sub _check_artic_dirs {
     &glib_fildir_02::check_dir($this->{dst_foto})       || return 0;
     &glib_fildir_02::check_dir($this->{dst_swf})        || return 0;
     &glib_fildir_02::check_dir($this->{dst_multimedia}) || return 0;
-
+    return 1;
 };
 
 # --------------------------------------------------------------------
