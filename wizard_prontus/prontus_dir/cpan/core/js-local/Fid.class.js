@@ -772,9 +772,11 @@ var Fid = {
         if (editar == true) {
             $('#_custom_slug').val('SI');
             $("#_slug").attr("readonly", false);
+            $("#_slug").addClass('active');
         } else {
             $('#_custom_slug').val('NO');
             $("#_slug").attr("readonly", true);
+            $("#_slug").removeClass('active');
             Fid.validaTitular('check');
         }
     },

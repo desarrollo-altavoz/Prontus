@@ -6,11 +6,19 @@
 .content .top-fid {width:100%; margin:0 0 20px 0; padding:0; float:left;}
 .content .top-fid .botones {float:right; margin:5px;}
 .content .top-fid .botones img {float:left; margin:0 3px 0 0;}
-.content .top-fid .fieldform-top {width:540px; margin:0 10px; padding:7px 5px; font-size:22px; font-weight:normal; color:#000000; background-color:#fafaf9; border:1px solid #CCC;}
-.content .top-fid .numero-id {float:left; font-family:Georgia, Arial,Helvetica,Sans-Serif,Tahoma,Verdana; font-style:italic; font-size:16px; color:#999999; margin:8px 0;}
+.content .top-fid .fieldform-top {width:540px; margin:0 10px 0 0; padding:7px 5px; font-size:22px; font-weight:normal; color:#000000; background-color:#fafaf9; border:1px solid #CCC;}
+.content .top-fid .numero-id {min-width:45px; float:left; font-family:Georgia, Arial,Helvetica,Sans-Serif,Tahoma,Verdana; font-style:italic; font-size:16px; color:#999999; margin:8px 0;}
 .content .top-fid .numero-id .copiar {width:24px; height:24px;}
 .content .top-fid .numero-id .copiar-url {width:24px; height:24px; cursor:pointer; position:absolute; background:url(../imag/boto/copylink_of.png) no-repeat left top;}
 .content .top-fid .numero-id .copiar-url.hover {background:url(../imag/boto/copylink_on.png) no-repeat left top;}
+/* slug */
+.content .top-fid .slug {margin-top:4px;}
+.content .top-fid .slug .numero-id {font-size:12px; margin:6px 0;}
+.content .top-fid .slug .fieldform-top {width:542px; float:left; margin:0 7px 0 0; padding:4px; font-size:13px; font-style:italic; font-weight:normal; color:#999999; background-color:#f4f4f4; border:1px solid #f0f0f0;}
+.content .top-fid .slug .fieldform-top.active {
+    background-color: #ffffff; color:#000000; border:1px solid #CCC;
+}
+.content .top-fid .slug img {margin-top:4px; opacity: .7;}
 .content .col685 .tabs ul li {clear:none;}
 .content .col685 .tabs ul {list-style:none;}
 
