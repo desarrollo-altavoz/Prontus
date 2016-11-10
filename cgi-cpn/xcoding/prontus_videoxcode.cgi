@@ -115,14 +115,13 @@ main: {
 sub start_xcode {
     my $prontus_id = $FORM{'prontus_id'};
     my $origen = "$prontus_varglb::DIR_SERVER$FORM{'video'}";
-    # use FindBin '$Bin';
-    my $pathnice = &lib_prontus::get_path_nice();
-    my $cmd = "$pathnice /usr/bin/perl $Bin/prontus_videodoxcode.cgi $origen $prontus_id";
 
-    if ($FORM{'generar_versiones'} eq '1') {
-        print STDERR "gatillando[$cmd 1] generar versiones.\n";
-        system("$cmd 1 >/dev/null 2>&1 &");
-        return (1, 'Transcodificación en proceso...');
+    # Verifica que no haya otro transcoding identico en ejecucion.
+    my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep/;
+    # print STDERR "Execution test = [$res][ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep]\n";
+
+    if ($res ne '') {
+        return (0, 'Error: Se detectó un proceso activo de transcodificación para el video indicado.');
     };
 
     if ($prontus_varglb::ADVANCED_XCODING eq 'NO') {
@@ -132,13 +131,13 @@ sub start_xcode {
         };
     }
 
-    # Verifica que no haya otro transcoding identico en ejecucion.
-    my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep/;
+    my $pathnice = &lib_prontus::get_path_nice();
+    my $cmd = "$pathnice /usr/bin/perl $Bin/prontus_videodoxcode.cgi $origen $prontus_id";
 
-    # print STDERR "Execution test = [$res][ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep]\n";
-
-    if ($res ne '') {
-        return (0, 'Error: Se detectó un proceso activo de transcodificación para el video indicado.');
+    if ($FORM{'generar_versiones'} eq '1') {
+        print STDERR "gatillando[$cmd 1] generar versiones.\n";
+        system("$cmd 1 >/dev/null 2>&1 &");
+        return (1, 'Transcodificación en proceso...');
     };
 
     # Gatilla la transcodificacion en background.

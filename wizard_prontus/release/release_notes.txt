@@ -8913,3 +8913,6 @@ Se agrega la opcion para configurar de forma independiente a todos los prontus d
 
 Al regenerar articulos se regeneran relacionados manuales
 /var/www/prontus_release/cgi-cpn/prontus_art_regen_real.cgi
+
+Se corrige secuencia en la que se verifica si ya esta corriendo el proceso de transcodificación
+/var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
