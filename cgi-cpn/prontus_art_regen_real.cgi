@@ -287,6 +287,24 @@ sub procesa_files {
                     $stem4tax = '0' if ($stem4tax eq '');
                     $TAXONOMIAS_TO_REGEN{$secc4tax . '_' . $tem4tax . '_' . $stem4tax} = '1';
 
+                    &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO,
+                                        $prontus_varglb::DIR_ARTIC,
+                                        $prontus_varglb::DIR_PAG,
+                                        $prontus_varglb::DIR_TEMP,
+                                        $prontus_varglb::DIR_TAXONOMIA,
+                                        $prontus_varglb::NUM_RELAC_DEFAULT,
+                                        $prontus_varglb::CONTROLAR_ALTA_ARTICULOS);
+
+                    my $mv;
+                    # Genera taxonomia manual.
+                    if ($campos_xml{'_tax'} ne '') {
+                        &lib_tax::generar_relacionados_manualtax($campos_xml{'_tax'}, $artic_obj->{'dst_pags'}, $ts, $base, '');
+                        # Ahora parsea art relacionados para MVs
+                        foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+                            &lib_tax::generar_relacionados_manualtax($campos_xml{'_tax'}, $artic_obj->{'dst_pags'}, $ts, $base, $mv);
+                        };
+                    }
+
                     # $TOT_REGS++ if (!$mv);  # Total de articulos procesados, las iteraciones de multivista no se cuentan.
                     $TOT_REGS++;
                 }
