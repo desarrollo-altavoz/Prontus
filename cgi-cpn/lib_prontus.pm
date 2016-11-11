@@ -1165,9 +1165,9 @@ sub load_config {
     $friendly_url_images = $2;
   };
 
-    $prontus_varglb::FRIENDLY_V4_INCLUDE_TAX = 'SI'; # valor por defecto.
-    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_TAX\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $prontus_varglb::FRIENDLY_V4_INCLUDE_TAX = $2;
+    while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
+        my $clave = $2;
+        $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
     };
 
     $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
@@ -1293,11 +1293,6 @@ sub load_config {
   while ($buffer =~ m/\s*CACHE_PURGE_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
      my $clave = $2;
      $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$clave} = 1;
-  };
-
-  while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
-     my $clave = $2;
-     $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
   };
 
   # Transcodificacion - XCODING
@@ -1709,17 +1704,6 @@ sub load_config {
     print "<P>Error en CFG: Debe indicar Motor de base de datos, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.";
     exit;
   };
-
-
-
-  # Taxonomia
-  # CVI - Deprecated - Ya no se usa esto
-  #~ my $taxport_refresh = 'SI'; # valor por defecto. Si es NO, entonces no se regenera el cache de las taxports, sino que se actualizan masivamente via CRON
-  #~ if ($buffer =~ m/\s*TAXPORT_REFRESH\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    #~ $taxport_refresh = $2;
-  #~ };
-  #~ $prontus_varglb::TAXPORT_REFRESH = $taxport_refresh;
-
 
   my $taxport_maxartics = '500'; # valor por defecto.
   if ($buffer =~ m/\s*TAXPORT_MAXARTICS\s*=\s*("|')([0-9]+?)("|')/) {
@@ -5074,11 +5058,8 @@ sub parse_filef {
                     }
                 }
                 $titular = &ajusta_titular_f4($titular);
-                if ($prontus_varglb::FRIENDLY_V4_INCLUDE_TAX eq 'SI') {
-                    $fileurl = "/$prontus_id$tax/$titular";
-                } else {
-                    $fileurl = "/$prontus_id/$titular";
-                }
+                $fileurl = "/$prontus_id$tax/$titular";
+
             }
         } else {
             # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
