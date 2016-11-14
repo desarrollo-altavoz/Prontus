@@ -1,6 +1,7 @@
 
 // -----------------------------------------
 var Fid = {
+    friendlyVer: 1,
 
     showDragDrop: false,
     ishttps: false,
@@ -322,6 +323,9 @@ var Fid = {
 
         // Para el drag and drop de Fotofijas en Chrome de Mac
         Fid.addDragImagenes();
+
+        // Para la edicion de friendly v4
+        Fid.iniciaSlug();
     },
 
     // -------------------------------------------------------------------------
@@ -750,6 +754,11 @@ var Fid = {
             }
         }
 
+        if (Fid.friendlyVer == 4 && (bot_press == 'save' || bot_press == 'save_new')) {
+                Fid.validaTitular(bot_press);
+                return false;
+        }
+
         // se submite el formulario
         $('#_mainFidForm').trigger('submit');
 
@@ -757,7 +766,129 @@ var Fid = {
             Fid.setGUIProcesando(false);
         }
     },
+    // -------------------------------------------------------------------------
+    // habilita la edicion manual del campo de url
+    slugEditable: function(editar) {
+        if (editar == true) {
+            $('#_custom_slug').val('SI');
+            $("#_slug").attr("readonly", false);
+            $("#_slug").addClass('active');
+        } else {
+            $('#_custom_slug').val('NO');
+            $("#_slug").attr("readonly", true);
+            $("#_slug").removeClass('active');
+            Fid.validaTitular('check');
+        }
+    },
+    // -------------------------------------------------------------------------
+    // Inicia el valor del slug y comportamiento del fid al cargar el articulo
+    iniciaSlug: function() {
+        if (Fid.friendlyVer == 4) {
+            if ($('#_custom_slug').val() == '' || $('#_slug').val() == '') {
+                $('#_custom_slug').val('NO');
+                Fid.slugEditable(false);
+            } else if ($('#_custom_slug').val() == 'SI') {
+                Fid.slugEditable(true);
+            }
+        }
+    },
+    // -------------------------------------------------------------------------
+    // Valida si la url friendly correspondiente a este articulo ya existe
+    // gatilla guardado del articulo si corresponde
+    // save y save_new, gatillan guardado, check solo verifica y genera alerta
+    validaTitular: function(bot_press) {
+        if (Fid.friendlyVer == 4) {
+            if (bot_press == 'check-slug' && $('#_custom_slug').val() == 'NO') {
+                return false;
+            }
+            if (bot_press == 'check-titular' && $('#_custom_slug').val() == 'SI') {
+                return false;
+            }
+            $('#url_art_ts').html('');
+            $('#url_art_id').html('');
+            $('#url_art_titu').html('');
+            $('#url_art_editar').attr("href", '#');
+            $('#url_art_path').html('');
+            $('#url_art_slug').html('');
 
+            var element_id = '#_txt_titular';
+            if ($('#_custom_slug').val() == 'SI') {
+                element_id = '#_slug';
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: 'prontus_art_check_url.cgi',
+                data: { _prontus_id: mainFidJs.PRONTUS_ID,
+                        _txt_titular: $(element_id).val(),
+                        _ts: mainFidJs.TS,
+                        _path_conf: $('[name=_path_conf]').val()
+                    },
+                dataType: 'json',
+                success: function (data) {
+                        if (data.status == 'OK') {
+                            $('#_slug').val(data.uri_titular);
+                            if (bot_press == 'save' || bot_press == 'save_new') {
+                                // se submite el formulario
+                                $('#_mainFidForm').trigger('submit');
+                            }
+                        } else {
+                            if (typeof data.ts === 'undefined' || data.ts == '') {
+                                alert(data.msg);
+                                if ($('#_custom_slug').val() == 'SI') {
+                                    $('#_slug').focus();
+                                } else {
+                                    $('#_txt_titular').focus();
+                                }
+                            } else {
+                                $('#url_art_ts').html(data.ts);
+                                $('#url_art_id').html(data.id);
+                                $('#url_art_titu').html(data.titular);
+                                var link = 'prontus_art_ficha.cgi?_path_conf='+Admin.path_conf+'&_file='+data.ts + '.' + data.ext+'&_fid='+data.fid+'&fotosvtxt=/1/2/3/4';
+                                $('#url_art_editar').attr("href", link);
+                                var path = '/' + mainFidJs.PRONTUS_ID + '/site/artic/' + data.ts.substr(0,8) + '/pags/' + data.ts + '.' + data.ext;
+                                $('#url_art_path').html(path);
+                                $('#url_art_slug').html(data.uri_titular);
+                                $.fn.colorbox({
+                                    open: true,
+                                    href: '#info_url_conflict',
+                                    inline: true,
+                                    width: 720,
+                                    height: 230,
+                                    opacity: 0.8,
+                                    onClosed:function(){
+                                        if ($('#_custom_slug').val() == 'SI') {
+                                            $('#_slug').focus();
+                                        } else {
+                                            $('#_txt_titular').focus();
+                                        }
+                                    }
+                                });
+                            }
+                            Fid.setGUIProcesando(false);
+                        }
+                    }
+            });
+        }
+
+        return false;
+    },
+
+    // -------------------------------------------------------------------------
+    // Funcion usada para vaciar el titular en caso que sea "sin titulo \d+"
+    limpiaTitular: function(elemento) {
+        console.log(elemento);
+        console.log(elemento.val());
+        if (/^Sin título \d+$/.test($(elemento).val())) {
+            $(elemento).val('');
+        }
+    },
+
+    // -------------------------------------------------------------------------
+    // Funcion usada para abrir el editor de un articulo en otra ventana
+    abrirEditor: function(elemento) {
+        window.open(elemento.attr('href'));
+    },
 
     // -------------------------------------------------------------------------
     //Funcion usada en los formularios para eliminar archivos de respaldos

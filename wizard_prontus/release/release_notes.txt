@@ -8856,6 +8856,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
         HTML de cada número de página: <!-- CONFIG HTML_NRO_PAG = <a class="pag_number" href="%%lnk%%">%%cnro_pag%%</a> -->
         HTML de la página actual: <!-- CONFIG HTML_PAG_ACTUAL = <span class="current_pag">%%cnro_pag%%</span> -->
+        Separador que aparece al utilizar páginación tipo google: <!-- CONFIG HTML_SEPARADOR = <span>...</span> -->
     [files]
         - /cgi-cpn/prontus_regenera_tagport.cgi
         - /cgi-cpn/prontus_tags_ports.cgi
@@ -8885,10 +8886,40 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 /var/www/prontus_release/cgi-cpn/xcoding/prontus_videodoxcode.cgi
 Se comenta codigo que solo se usa para debug
 
-/var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
+friendly 4
+rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"          /$1/site/friendly/links/$2/$3/$2$3$4.html;
+
+Se puede indicar si se incluye la taxonomia como parte de la url o no, con la variable FRIENDLY_V4_INCLUDE_TAX
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/css/fids.css
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_form_fields.html
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 /var/www/prontus_release/cgi-cpn/Artic.pm
 /var/www/prontus_release/cgi-cpn/lib_artic.pm
 /var/www/prontus_release/cgi-cpn/lib_prontus.pm
+/var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
+/var/www/prontus_release/cgi-cpn/prontus_set_bd.cgi
+/var/www/prontus_release/cgi-cpn/prontus_regenerabd_real.cgi
+/var/www/prontus_release/cgi-cpn/prontus_admin_main.cgi
+/var/www/prontus_release/cgi-cpn/prontus_cfg_save.cgi
+/var/www/prontus_release/cgi-cpn/prontus_art_regen_real.cgi
+/var/www/prontus_release/cgi-cpn/prontus_varglb.pm
+/var/www/prontus_release/cgi-cpn/prontus_art_check_url.cgi
+/var/www/prontus_release/cgi-cpn/wizard_deploy.cgi
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/imag/boto/refresh2_of.png
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/imag/boto/refresh2_on.png
+
+limpieza de codigo y correcciones generales
+/var/www/prontus_release/cgi-cpn/Artic.pm
+/var/www/prontus_release/cgi-cpn/lib_artic.pm
+/var/www/prontus_release/cgi-cpn/lib_prontus.pm
+/var/www/prontus_release/cgi-cpn/lib_thumb.pm
+
+Se cambia la forma en que se rescata el titular anterior al cambiar el tipo de fid
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_sbmit.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_view_xml.cgi
@@ -8900,6 +8931,12 @@ Se comenta codigo que solo se usa para debug
       - Se corrige query al momento de generar una lista con tags configurados.
     [files]
       - /cgi-cpn/prontus_cron_list.cgi
+
+Se puede indicar un remitente fijo en el fid con el nombre
+"form_remitente", se deja con preferencia el forzar el from al marcar el
+check "chk_form_force_from", que utiliza el campo "form_from" como
+remitente.
+/var/www/prontus_release/cgi-bin/prontus_form.cgi
 
 
 Se agrega la opcion para configurar de forma independiente a todos los prontus de un servidor, el numero global de procesos de taxport que se ejecutaran concurentemente

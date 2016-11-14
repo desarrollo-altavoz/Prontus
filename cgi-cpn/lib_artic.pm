@@ -249,6 +249,11 @@ sub do_save {
     $ARTIC_OBJ->tags2bd($base, $is_new) || return $Artic::ERR;
     # print STDERR "fin save con autoinc[$autoinc]\n";
 
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        # guardamos el titular friendly v4 en la base de datos
+        $ARTIC_OBJ->genera_friendly_v4($base, $is_new) || return $Artic::ERR;
+    }
+
     return '';
 
 };

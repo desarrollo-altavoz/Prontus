@@ -186,6 +186,9 @@ sub crear_tablas {
     ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_art($base, $prontus_varglb::MOTOR_BD);
     &add2result($msg_ret, $hay_err);
 
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_url($base, $prontus_varglb::MOTOR_BD);
+    &add2result($msg_ret, $hay_err);
+
     &add_html2result('</div></span></body></html>');
 
 };

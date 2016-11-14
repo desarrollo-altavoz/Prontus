@@ -211,6 +211,9 @@ sub deploy {
     ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_art($base, 'MYSQL');
     return ($msg_ret, '') if ($hay_err ne '');
 
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_url($base, 'MYSQL');
+    return ($msg_ret, '') if ($hay_err ne '');
+
     $base->disconnect;
 
 
