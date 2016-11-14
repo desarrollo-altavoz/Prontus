@@ -8882,74 +8882,92 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 11.2.93 - 12/09/2016 -
 ====================================================================================================
+- Transcodificación
+    [mejoras]
+        - Se comenta codigo que solo se usa para debug
+        - Se corrige secuencia en la que se verifica si ya esta corriendo el proceso de transcodificación
+    [files]
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
 
-/var/www/prontus_release/cgi-cpn/xcoding/prontus_videodoxcode.cgi
-Se comenta codigo que solo se usa para debug
+- Prontus en general
+    [mejoras]
+        - Se agrega versión 4.0 de friendly url, que utiliza el siguiente formato:
+            /prontus_id/seccion/tema/subtema/titular
+            En caso de que un artículo no tenga sección, tema o subtema estos se omiten y no
+            se agregan a la url.
 
-friendly 4
-rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"          /$1/site/friendly/links/$2/$3/$2$3$4.html;
+        Para utilizarlas se debe agregar la siguiente configuración al servidor web:
+            Nginx: rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"          /$1/site/friendly/links/$2/$3/$2$3$4.html;
 
-Se puede indicar si se incluye la taxonomia como parte de la url o no, con la variable FRIENDLY_V4_INCLUDE_TAX
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/css/fids.css
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/css/estilos.css
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_form_fields.html
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
-/var/www/prontus_release/cgi-cpn/Artic.pm
-/var/www/prontus_release/cgi-cpn/lib_artic.pm
-/var/www/prontus_release/cgi-cpn/lib_prontus.pm
-/var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
-/var/www/prontus_release/cgi-cpn/prontus_set_bd.cgi
-/var/www/prontus_release/cgi-cpn/prontus_regenerabd_real.cgi
-/var/www/prontus_release/cgi-cpn/prontus_admin_main.cgi
-/var/www/prontus_release/cgi-cpn/prontus_cfg_save.cgi
-/var/www/prontus_release/cgi-cpn/prontus_art_regen_real.cgi
-/var/www/prontus_release/cgi-cpn/prontus_varglb.pm
-/var/www/prontus_release/cgi-cpn/prontus_art_check_url.cgi
-/var/www/prontus_release/cgi-cpn/wizard_deploy.cgi
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/imag/boto/refresh2_of.png
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/imag/boto/refresh2_on.png
+            Se pueden configurar los fids que seran excluidos de la generación de friendly url 4
+            Nuevas variables de configuracion:  FRIENDLY_V4_EXCLUDE_FID
 
-limpieza de codigo y correcciones generales
-/var/www/prontus_release/cgi-cpn/Artic.pm
-/var/www/prontus_release/cgi-cpn/lib_artic.pm
-/var/www/prontus_release/cgi-cpn/lib_prontus.pm
-/var/www/prontus_release/cgi-cpn/lib_thumb.pm
+            Las urls de los artículos deben ser únicas, por lo que no se permite el uso de titulares
+             o slug iguales, ya que provoca un un conflicto.
+            Para evitar esto Prontus avisará si esto ocurre para permitir al usuario cambiarla.
+            En el caso de los artículos nuevos, "Sin título", ahora se agrega un número creciente
+            para evitar duplicados.
 
-Se cambia la forma en que se rescata el titular anterior al cambiar el tipo de fid
-/var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
-/var/www/prontus_release/cgi-cpn/prontus_art_sbmit.cgi
-/var/www/prontus_release/cgi-cpn/prontus_art_view_xml.cgi
-/var/www/prontus_release/cgi-cpn/prontus_regenerabd_real.cgi
-/var/www/prontus_release/cgi-cpn/prontus_varglb.pm
+        - Se hace limpieza de codigo y correcciones generales.
+        - Se cambia la forma en que se rescata el titular anterior al cambiar el tipo de fid
+    [bugfixes]
+        - Al regenerar articulos se regeneran relacionados manuales
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /cgi-cpn/prontus_art_view_xml.cgi
+        /cgi-cpn/prontus_art_regen_real.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_set_bd.cgi
+        /cgi-cpn/prontus_regenerabd_real.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /cgi-cpn/prontus_art_check_url.cgi
+        /cgi-cpn/wizard_deploy.cgi
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/refresh2_of.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/refresh2_on.png
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_form_fields.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 
 - Portadas list
     [bugfixes]
-      - Se corrige query al momento de generar una lista con tags configurados.
+        - Se corrige query al momento de generar una lista con tags configurados.
     [files]
-      - /cgi-cpn/prontus_cron_list.cgi
+        - /cgi-cpn/prontus_cron_list.cgi
 
-Se puede indicar un remitente fijo en el fid con el nombre
-"form_remitente", se deja con preferencia el forzar el from al marcar el
-check "chk_form_force_from", que utiliza el campo "form_from" como
-remitente.
-/var/www/prontus_release/cgi-bin/prontus_form.cgi
+- Prontus form
+    [mejoras]
+        - Se puede indicar un remitente fijo en el fid con el nombre  "form_remitente"
+         Se deja con preferencia el campo "form_from" como remitente, al marcar
+         el check "chk_form_force_from"
+         - Se agrega sporte para recaptcha de google https://www.google.com/recaptcha/intro/index.html
+         Nuevas variables de configuracion: RECAPTCHA_API_URL, RECAPTCHA_SECRET_CODE
+         Se debe enviar el parámetro g-recaptcha-response para hacer uso del recaptcha de google
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/lib_prontus.pm
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 
-
-Se agrega la opcion para configurar de forma independiente a todos los prontus de un servidor, el numero global de procesos de taxport que se ejecutaran concurentemente
-
-/var/www/prontus_release/cgi-cpn/lib_tax.pm
-/var/www/prontus_release/cgi-cpn/prontus_cron_taxport.cgi
-/var/www/prontus_release/cgi-cpn/prontus_regenera_taxport.cgi
-/var/www/prontus_release/cgi-cpn/prontus_taxport_conf-sample.cfg
-/var/www/prontus_release/cgi-cpn/prontus_varglb.pm
-
-
-Al regenerar articulos se regeneran relacionados manuales
-/var/www/prontus_release/cgi-cpn/prontus_art_regen_real.cgi
-
-Se corrige secuencia en la que se verifica si ya esta corriendo el proceso de transcodificación
-/var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
+- Portadas taxonómicas
+    [mejoras]
+        - Se agrega la opcion para configurar de forma independiente, a todos los prontus de un servidor,
+         el numero global de procesos de taxport que se ejecutaran co1ncurentemente
+    [files]
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_taxport_conf-sample.cfg
+        /cgi-cpn/prontus_varglb.pm
