@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.93 - 13/10/2016 - SCT/EAG/NAR
+11.2.93 - 15/11/2016 - SCT/EAG/NAR
 ====================================================================================================
 - bugfixes: Portadas list, Se corrige query al momento de generar una lista con tags configurados.
 - bugfixes: Al regenerar artículos se regeneran relacionados manuales
