@@ -2,17 +2,17 @@
 11.2.93 - 13/10/2016 - SCT/EAG/NAR
 ====================================================================================================
 - bugfixes: Portadas list, Se corrige query al momento de generar una lista con tags configurados.
-- bugfixes: Al regenerar articulos se regeneran relacionados manuales
-- changes: Transcodificacion: Se comenta codigo que solo se usa para debug
-- changes: Transcodificacion: Se corrige secuencia en la que se verifica si ya esta corriendo el proceso de transcodificación
+- bugfixes: Al regenerar artículos se regeneran relacionados manuales
+- changes: Transcodificación: Se comenta código que solo se usa para debug
+- changes: Transcodificación: Se corrige secuencia en la que se verifica si ya esta corriendo el proceso de transcodificación
 - changes: Prontus: Se hace limpieza de codigo y correcciones generales.
 - improvement: Se agrega versión 4.0 de friendly url con el formato: /prontus_id/seccion/tema/subtema/titular
 Los articulos deben tener titular o slug único.
 - improvement: Se puede indicar un remitente fijo en el fid con el nombre  "form_remitente"
  Se deja con preferencia el campo "form_from" como remitente, al marcar el check "chk_form_force_from"
 - improvement: Se agrega soporte para recaptcha de google https://www.google.com/recaptcha/intro/index.html
-- improvement: Se agrega la opcion para configurar de forma independiente, a todos los prontus de un servidor,
- el numero global de procesos de taxport que se ejecutaran concurentemente
+- improvement: Se agrega la opción para configurar de forma independiente, a todos los prontus de un servidor,
+ el numero global de procesos de taxport que se ejecutaran concurrentemente
 
 ====================================================================================================
 11.2.92 - 12/09/2016 - JOR/MPG/EAG/EON/SCT

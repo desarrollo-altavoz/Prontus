@@ -8884,7 +8884,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 - Transcodificación
     [mejoras]
-        - Se comenta codigo que solo se usa para debug
+        - Se comenta código que solo se usa para debug
         - Se corrige secuencia en la que se verifica si ya esta corriendo el proceso de transcodificación
     [files]
         /cgi-cpn/xcoding/prontus_videodoxcode.cgi
@@ -8954,7 +8954,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
          Se deja con preferencia el campo "form_from" como remitente, al marcar
          el check "chk_form_force_from"
          - Se agrega soporte para recaptcha de google https://www.google.com/recaptcha/intro/index.html
-         Nuevas variables de configuracion: RECAPTCHA_API_URL, RECAPTCHA_SECRET_CODE
+         Nuevas variables de configuración: RECAPTCHA_API_URL, RECAPTCHA_SECRET_CODE
          Se debe enviar el parámetro g-recaptcha-response para hacer uso del recaptcha de google
     [files]
         /cgi-bin/prontus_form.cgi
@@ -8965,8 +8965,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Portadas taxonómicas
     [mejoras]
-        - Se agrega la opcion para configurar de forma independiente, a todos los prontus de un servidor,
-         el numero global de procesos de taxport que se ejecutaran concurentemente
+        - Se agrega la opción para configurar de forma independiente, a todos los prontus de un servidor,
+         el numero global de procesos de taxport que se ejecutaran concurrentemente
     [files]
         /cgi-cpn/lib_tax.pm
         /cgi-cpn/prontus_cron_taxport.cgi
