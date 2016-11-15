@@ -8911,6 +8911,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
         - Se hace limpieza de codigo y correcciones generales.
         - Se cambia la forma en que se rescata el titular anterior al cambiar el tipo de fid
+    [cambio]
+        - El respaldo de xmls de portadas ahora se hace moviendo los archivos en vez de copiarlos.
     [bugfixes]
         - Al regenerar articulos se regeneran relacionados manuales
     [files]

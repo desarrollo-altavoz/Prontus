@@ -2647,9 +2647,9 @@ sub write_xml_port {
     if($dobackup){
       unlink "$dirxml/bak/$nomxml.9" if(-f "$dirxml/bak/$nomxml.9");
       for(my $i = 9; $i > 0; $i--) {
-        &File::Copy::copy("$dirxml/bak/$nomxml.".($i-1), "$dirxml/bak/$nomxml.".($i));
+        &File::Copy::move("$dirxml/bak/$nomxml.".($i-1), "$dirxml/bak/$nomxml.".($i));
       }
-      &File::Copy::copy("$dirxml/bak/$nomxml", "$dirxml/bak/$nomxml.0");
+      &File::Copy::move("$dirxml/bak/$nomxml", "$dirxml/bak/$nomxml.0");
     }
   };
   # escribe el nuevo xml
