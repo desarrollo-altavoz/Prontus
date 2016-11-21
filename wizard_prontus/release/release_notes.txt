@@ -8973,3 +8973,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_taxport_conf-sample.cfg
         /cgi-cpn/prontus_varglb.pm
+
+====================================================================================================
+11.2.94 - xx/xx/2016 - SCT
+====================================================================================================
+    [bugfixes]
+        - Se corrige consulta SQL al momento de obtener cantidad de artículos con fotos para la paginación.
+    [files]
+        /cgi-cpn/dam/prontus_dam_search.cgi
