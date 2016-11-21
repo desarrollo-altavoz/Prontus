@@ -237,14 +237,14 @@ sub make_lista {
         };
     };
 
+    # Paginacion
+    my $filasxpag = $dam_varglb::FILASXPAG;
+    my ($tot_artics, $limit, $desde_nroreg, $page) = &activa_paginacion($filasxpag, $filtros, 'ASSET');
+
     # Si es foto, aplicar group by al filtro... para que el conteo de resultados sea correcto.
     if ($FORM{'asset_search_type'} eq 'foto') {
         $filtros .= " GROUP BY ASSET_ART_ID";
     };
-
-    # Paginacion
-    my $filasxpag = $dam_varglb::FILASXPAG;
-    my ($tot_artics, $limit, $desde_nroreg, $page) = &activa_paginacion($filasxpag, $filtros, 'ASSET');
 
     # Si el tipo es foto, se debe usar un query especial, donde el listado de fotos se agrupe.
     # Por defecto, solo se mostrarán 4 fotos como máximo.
@@ -470,7 +470,7 @@ sub get_tot_artics {
   my ($from) = $_[1];
   my ($sql, $salida, $tot, $count_art);
 
-  $sql = 'select count(ASSET_ART_ID) from ' . $from . ' ' . $filtros;
+  $sql = 'select count(DISTINCT(ASSET_ART_ID)) from ' . $from . ' ' . $filtros;
 
   $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($count_art));
   $salida->fetch;
