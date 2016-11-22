@@ -1175,7 +1175,7 @@ sub load_config {
         $prontus_varglb::RECAPTCHA_API_URL = $2;
     };
 
-    $prontus_varglb::RECAPTCHA_SECRET_CODE = 'NO'; # valor por defecto.
+    $prontus_varglb::RECAPTCHA_SECRET_CODE = ''; # valor por defecto.
     if ($buffer =~ m/\s*RECAPTCHA_SECRET_CODE\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::RECAPTCHA_SECRET_CODE = $2;
     };
