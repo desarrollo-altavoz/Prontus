@@ -218,7 +218,7 @@ main: {
     $hash_defaultvars{'buscador'}{'FIDS'} = 'FIDS;(\w+);;U';
     $hash_defaultvars{'buscador'}{'RESUMEN'} = 'RESUMEN;^(\d+)$;200;U';
     $hash_defaultvars{'buscador'}{'MAXCARS'} = 'MAXCARS;^(\d+)$;100000;U';
-    $hash_defaultvars{'buscador'}{'RATIO'} = 'RATIO;^(\d+)$;98;U';
+    $hash_defaultvars{'buscador'}{'RATIO'} = 'RATIO;^(\d+)$;100;U';
     $hash_defaultvars{'buscador'}{'MINTEXT'} = 'MINTEXT;^(\d+)$;5;U';
     $hash_defaultvars{'buscador'}{'TITLEVAR'} = 'TITLEVAR;(\w+);_TXT_TITULAR;U';
     $hash_defaultvars{'buscador'}{'TEXTVARS'} = 'TEXTVARS;(\w+);_TXT_bajada VTXT_CUERPO;U';
