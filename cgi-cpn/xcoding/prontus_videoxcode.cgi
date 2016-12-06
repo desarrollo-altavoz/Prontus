@@ -116,6 +116,7 @@ sub start_xcode {
     my $prontus_id = $FORM{'prontus_id'};
     my $origen = "$prontus_varglb::DIR_SERVER$FORM{'video'}";
 
+    sleep(rand(5));
     # Verifica que no haya otro transcoding identico en ejecucion.
     my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep/;
     # print STDERR "Execution test = [$res][ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep]\n";
