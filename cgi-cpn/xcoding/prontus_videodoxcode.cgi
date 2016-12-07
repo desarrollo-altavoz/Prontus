@@ -114,7 +114,7 @@ use Artic;
 use LWP::UserAgent;
 use LWP::ConnCache;
 
-use Data::Dumper;
+#~ use Data::Dumper;
 
 my $ORIGEN = $ARGV[0];
 my $PRONTUS_ID = $ARGV[1];
