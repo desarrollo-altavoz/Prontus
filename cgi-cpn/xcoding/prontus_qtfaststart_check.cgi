@@ -100,12 +100,19 @@ my @INDICES;
 my %FORM;        # Contenido del formulario de invocacion.
 my $FILE;
 my $VERSIONES = 0;
+my $MODO_CLI = 0;
 
 main: {
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     &glib_cgi_04::set_formvar('video', \%FORM);
     &glib_cgi_04::set_formvar('prontus_id', \%FORM);
+
+    if ($ENV{'SERVER_NAME'} eq '') {
+        $MODO_CLI = 1;
+        $FORM{'video'} = $ARGV[0];
+        $FORM{'prontus_id'} = $ARGV[1];
+    }
 
     # Valida datos de entrada
     my $msg_err;
@@ -121,11 +128,13 @@ main: {
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
+    if (!$MODO_CLI) {
     # User check
-    ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
-    if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
-    };
+        ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
+        if ($prontus_varglb::USERS_ID eq '') {
+            &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
+        };
+    }
 
     my $infile = $FORM{'video'};
     if ($infile !~ /\.mp4$/i) {
@@ -166,15 +175,6 @@ main: {
             if (! -s $playlist_hls) {
                 &glib_html_02::print_json_result(1, 'RECODE', 'exit=1,ctype=1');
             }
-
-            # si el video es mas nuevo que la playlist de hls asociada, es video nuevo y debe ser procesado para generar hls.
-            # la playlist hls siempre es mas nueva ya que se genera despues de crear el mp4
-            # print STDERR (-M $playlist_hls)." > ".(-M $infile)."\n";
-            #~ if ((-M $playlist_hls) > (-M $infile)) {
-                #~ &glib_html_02::print_json_result(1, 'RECODE', 'exit=1,ctype=1');
-            #~ }
-            # Se comenta esta validacion ya que prontus siempre borra el HLS al subir un video nuevo
-            # por lo que este caso nunca se da
         }
     }
 
