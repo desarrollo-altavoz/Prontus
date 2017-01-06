@@ -8977,7 +8977,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 11.2.94 - xx/xx/2016 - SCT
 ====================================================================================================
+- Biblioteca multimedia
     [bugfixes]
         - Se corrige consulta SQL al momento de obtener cantidad de artículos con fotos para la paginación.
     [files]
         /cgi-cpn/dam/prontus_dam_search.cgi
+
+- Wizard Prontus
+    [bugfixes]
+        - Se corrige validación js al momento de crear un prontus que comience con números ya que obligaba a que
+          comenzara con letras.
+    [files]
+        - /wizard_prontus/core/js/Wizard.class.js
