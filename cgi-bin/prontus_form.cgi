@@ -199,6 +199,7 @@ my $ANSWERID;     # Identificacion de la respuesta.
 my $FECHA;        # Fecha de creacion del formulario. Usada para acceder a los datos xml.
 my $EXT;          # Extension usada por Prontus. Se deduce del path del formulario.
 my %MSGS;         # Mensajes de error.
+my $BUFFER_ART = ''; # Buffer para cargar el contenido de articulo
 
 my $RECAPTCHA_RESPONSE = ""; # Captura la respuesta por POST del formulario
 
@@ -268,7 +269,7 @@ main: {
 # ------------------------------------------------------------------------- #
 # Envia mails y guarda datos si es pertinente.
 sub data_management {
-    my($body,$data,$backupdir,$backupdata,$backupheaders,$buffer);
+    my($body,$data,$backupdir,$backupdata,$backupheaders);
     my ($to,$from,$subj,$filename,$filedata,$fecha,$hora,$ip);
     # my (@datos) = &glib_cgi_04::param();
     my ($result);
@@ -299,11 +300,11 @@ sub data_management {
     my $counter = 1;
     # Forma cuerpo para el administrador.
     # Lee formulario para determinar el orden de los datos.
-    $buffer = &glib_fildir_02::read_file($ROOTDIR.&glib_cgi_04::param('_FILE'));
+    $BUFFER_ART = &glib_fildir_02::read_file($ROOTDIR.&glib_cgi_04::param('_FILE'));
     $body = "Los datos recibidos son los siguientes:\n\n";
     $backupheaders .= "\"Fecha\"$SEPARADOR\"Hora\"$SEPARADOR\"IP\"$SEPARADOR";
     $backupdata .= "\"$fecha\"$SEPARADOR\"$hora\"$SEPARADOR\"$ip\"$SEPARADOR";
-    foreach my $key (sort{index($buffer,"\"$a\"") <=> index($buffer,"\"$b\"")} @DATOS) {
+    foreach my $key (sort {ordenar_campos($a,$b)} @DATOS) {
         next if (($key =~ /^_/) || ($key =~ /CHK_form_required/) || ($key =~ /CHK_form_backup_datos/) || ($key =~ /g-recaptcha-response/));
         $backupheaders .= '"' . $key . '"' . $SEPARADOR;
         # Determino si el dato es un archivo o no.
@@ -463,6 +464,20 @@ sub data_management {
     return $result; # $result es solo para debug.
 }; # dataManagement
 
+# ------------------------------------------------------------------------- #
+# ordena los campos segun los encuentra en el html
+sub ordenar_campos {
+    my ($a, $b) = @_;
+    my $index_a = index($BUFFER_ART,"\"$a\"");
+    my $index_b = index($BUFFER_ART,"\"$b\"");
+    if ($index_a < 0) {
+        return 1;
+    }
+    if ($index_b < 0) {
+        return -1
+    }
+    return $index_a <=> $index_b;
+}
 # ------------------------------------------------------------------------- #
 # Valida las variables Prontus y las del formulario.
 sub valida_data {
