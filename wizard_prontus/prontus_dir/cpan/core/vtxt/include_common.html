@@ -92,6 +92,25 @@ tinyMCE.init({
         o.content = content;
     },
 
+    oninit: function () {
+        $('iframe[id^="VTXT_"]').load(function () {
+            var id = $(this).attr('id').replace('_ifr', '');
+            var iframe = $(this);
+            var iframe_content = $(this).contents();
+
+            iframe_content.find('#tinymce').droppable({
+                drop: function (e, ui) {
+                    // Sobrepasa los limites.
+                    if (ui.helper.position().top > (iframe.position().top + iframe.height())) {
+                        return false;
+                    }
+
+                    tinyMCE.getInstanceById(id).execCommand('mceInsertContent', false, $(ui.helper).html());
+                }
+            });
+        });
+    },
+
     setup : function(ed) {
 
         ed.onInit.add(function(ed) {
