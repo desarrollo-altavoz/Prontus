@@ -46,7 +46,7 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   require 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.91 - 06/07/2016';
+  $VERSION_PRONTUS = '11.2.93 - 15/11/2016';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
@@ -98,6 +98,9 @@ sub init { # Prontus 6.0
 
   # VALIDACION DE SEGURIDAD PARA TAXPORT_MAXARTICS
   $TAXPORT_MAXARTICS_SECURITY = 100000;
+
+  # MAXIMO DE PROCESOS DE CRON TAXPORT SIMULTANEOS AL REGENERAR
+  $TAXPORT_MAX_MASTERS = 3;
 
   # [CANTIDAD DE SEGUNDOS DE ANTIGUEDAD MAXIMA QUE TENDRAN LAS TAXPORTS]
   #~ $TAXPORT_REFRESH_SEGS;
@@ -169,6 +172,10 @@ sub init { # Prontus 6.0
   $DIR_EXMEDIA = '/artic';  # Para cuando se configuran los multimedia en una carpeta aparte
 
   $DIR_FSET_PAG = '/fset';   # Dir. donde se almacenaran los framesets apuntando al indice y a la pagina, cuando se trate de Menu de subtitulos en pag aparte.
+
+    # variables para friendly url v4
+    $DIR_FRIENDLY = '/friendly/links'; # directorio donde se almacenaran los includes de friendly urls
+    $URL_NUMBER = 1478228400; # numero base de epoch para restar de forma de no generar ids adicionales muy grandes pero siempre crecientes para diferenciar las urls
 
   # Directorios correspondientes a los templates, relativos al publicador
   $DIR_TEMP = '/plantillas';
@@ -364,8 +371,7 @@ sub get_dir_server {
 };
 # ---------------------------------------------------------------
 sub set_info_version_prontus {
-    my ($version_prontus) = $prontus_varglb::VERSION_PRONTUS;
-    if ($version_prontus =~ /([0-9]+\.[0-9]+)\.([0-9]+)(\.beta)?/) {
+    if ($prontus_varglb::VERSION_PRONTUS =~ /([0-9]+\.[0-9]+)\.([0-9]+)(\.beta)?/) {
         $RAMA_INSTALADA = $1;
         $NRO_REVISION_INSTALADA = $2;
         $BETA_REVISION_INSTALADA = $3;

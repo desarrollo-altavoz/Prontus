@@ -28,6 +28,7 @@
                                     <input type="hidden" name="MULTIVISTA" value="" />
                                     <input type="hidden" name="VARNISH_SERVER_NAME" value="" />
                                     <input type="hidden" name="UPDATE_SERVER" value="%%UPDATE_SERVER%%" />
+                                    <input type="hidden" name="FRIENDLY_V4_EXCLUDE_FID" value="" />
 
                                     <tr class="head">
                                         <td>Variable</td>
@@ -61,6 +62,20 @@
                                             <span class="ayuda">Se debe indicar el nombre del servidor, necesario para la ejecución de los crons.</span>
                                         </td>
                                         <td><input type="text" name="PUBLIC_SERVER_NAME" class="fieldform" value="%%PUBLIC_SERVER_NAME%%"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            RECAPTCHA_API_URL<br>
+                                            <span class="ayuda">Por lo general: https://www.google.com/recaptcha/api/siteverify</span>
+                                        </td>
+                                        <td><input type="text" name="RECAPTCHA_API_URL" class="fieldform" value="%%RECAPTCHA_API_URL%%"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            RECAPTCHA_SECRET_CODE<br>
+                                            <span class="ayuda">Se obtiene al momento de crear una aplicación.</span>
+                                        </td>
+                                        <td><input type="text" name="RECAPTCHA_SECRET_CODE" class="fieldform" value="%%RECAPTCHA_SECRET_CODE%%"/></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
@@ -213,6 +228,40 @@
                                                 Nota: El prontus_id no puede tener guión bajo (_).
                                             </span>
                                             <br/>
+                                            <br/>
+                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V4" value="4"%%FRIENDLY_URLS_V4%%/> <label for="FRIENDLY_URLS_V4">Versión 4</label>
+                                            <br/>
+                                            <span class="help">De la forma: /prontus_id/seccion/tema/subtema/titular</span>
+                                            <br/>
+                                            <br/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FRIENDLY_V4_EXCLUDE_FID<br>
+                                            <span class="ayuda">Tipos de artículos para los que no se debe generar friendly url version 4, por ejemplo: fid_link.</span>
+                                        </td>
+                                        <td>
+                                            <table class="tableform" width="100%">
+                                                <tr class="head">
+                                                    <td>Excluir</td>
+                                                    <td>Nombre</td>
+                                                    <td>FID</td>
+                                                </tr>
+                                                <!--loop_friendly_exclude_fid-->
+                                                <tr>
+                                                    <td align="center">
+                                                        <input type="checkbox" name="FRIENDLY_V4_EXCLUDE_FID_ARR[]" id="FRIENDLY_V4_EXCLUDE_FID%%num%%" value="%%archivofid%%" %%checked%%/>
+                                                    </td>
+                                                    <td>
+                                                        <label for="FRIENDLY_V4_EXCLUDE_FID%%num%%">%%nombrefid%%</label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="FRIENDLY_V4_EXCLUDE_FID%%num%%">%%archivofid%%</label>
+                                                    </td>
+                                                </tr>
+                                                <!--/loop_friendly_exclude_fid-->
+                                            </table>
                                         </td>
                                     </tr>
                                     <tr>

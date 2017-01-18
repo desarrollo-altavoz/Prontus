@@ -62,6 +62,9 @@ main:{
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($PARAMS{'prontus'});
     &lib_prontus::load_config(  &lib_prontus::ajusta_pathconf($relpath_conf) );
 
+    # Se carga la configuracion local si existe
+    &lib_tax::carga_configuracion_local();
+
     $DIR_SEMAF = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/taxport_smf";
 
     &glib_fildir_02::check_dir($DIR_SEMAF) if (! -d $DIR_SEMAF); # ¿necesario?

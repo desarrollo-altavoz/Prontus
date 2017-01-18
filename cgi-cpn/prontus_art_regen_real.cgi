@@ -203,7 +203,7 @@ sub reparsea_artic {
             &messageLoading('Directorios Procesados: <b>' . $dircounter . '</b>');
             &lib_logproc::add_to_log_count("Procesando DIR [$dirfecha/xml]");
             # print STDERR "Procesando DIR [$dirfecha/xml]\n";
-            &procesa_files("$ruta_dir/$dirfecha/xml", $dirfecha);
+            &procesa_files("$ruta_dir/$dirfecha/xml", $dirfecha, $base);
         };
     };
 
@@ -226,7 +226,7 @@ sub procesa_files {
     my ($nom_campo, $val_campo, $dir_adjunto, $estilo);
     my ($ruta_dir_xml) = $_[0];
     my ($art_dirfecha) = $_[1];
-    # my ($mv) = $_[2];
+    my $base = $_[2];
 
     my @lisfile = &glib_fildir_02::lee_dir($ruta_dir_xml);
     @lisfile = grep !/^\./, @lisfile; # Elimina directorios . y ..
@@ -275,6 +275,10 @@ sub procesa_files {
                                 || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
                     }
 
+                    if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+                        $artic_obj->genera_friendly_v4($base, 0);
+                    }
+
                     my $secc4tax = $campos_xml{'_seccion1'};
                     my $tem4tax = $campos_xml{'_tema1'};
                     my $stem4tax = $campos_xml{'_subtema1'};
@@ -282,6 +286,24 @@ sub procesa_files {
                     $tem4tax = '0' if ($tem4tax eq '');
                     $stem4tax = '0' if ($stem4tax eq '');
                     $TAXONOMIAS_TO_REGEN{$secc4tax . '_' . $tem4tax . '_' . $stem4tax} = '1';
+
+                    &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO,
+                                        $prontus_varglb::DIR_ARTIC,
+                                        $prontus_varglb::DIR_PAG,
+                                        $prontus_varglb::DIR_TEMP,
+                                        $prontus_varglb::DIR_TAXONOMIA,
+                                        $prontus_varglb::NUM_RELAC_DEFAULT,
+                                        $prontus_varglb::CONTROLAR_ALTA_ARTICULOS);
+
+                    my $mv;
+                    # Genera taxonomia manual.
+                    if ($campos_xml{'_tax'} ne '') {
+                        &lib_tax::generar_relacionados_manualtax($campos_xml{'_tax'}, $artic_obj->{'dst_pags'}, $ts, $base, '');
+                        # Ahora parsea art relacionados para MVs
+                        foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+                            &lib_tax::generar_relacionados_manualtax($campos_xml{'_tax'}, $artic_obj->{'dst_pags'}, $ts, $base, $mv);
+                        };
+                    }
 
                     # $TOT_REGS++ if (!$mv);  # Total de articulos procesados, las iteraciones de multivista no se cuentan.
                     $TOT_REGS++;

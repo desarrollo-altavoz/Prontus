@@ -71,15 +71,16 @@
 
 package lib_prontus;
 
+use strict;
 use glib_html_02; # Prontus 6.0
 use glib_fildir_02;
 use glib_hrfec_02;
 use glib_str_02;
 use glib_dbi_02;
-use prontus_varglb;
+require prontus_varglb;
 use File::Copy;
 use XML::Parser; # rotulos tax
-use Artic;
+require Artic;
 use lib_cookies;
 use Session;
 use Digest::MD5 qw(md5_hex);
@@ -203,6 +204,20 @@ my ($dir);
     };
   };
 
+    # Directorio de destino de los includes friendly v4
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        $dir = $prontus_varglb::DIR_SERVER .
+                $prontus_varglb::DIR_CONTENIDO .
+                $prontus_varglb::DIR_FRIENLY;
+
+        if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de destino de urls friendly v4 no es válido");
+            exit;
+        };
+    };
+
+
   # DIRS. DE USO INTERNO  -----------------------------
   # Dir de los dbm
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_DBM)) ) {
@@ -260,142 +275,12 @@ my ($dir);
 
 
   # Dir CORE
-  $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
+  my $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
   if ( ! (&glib_fildir_02::check_dir($core_dir)) ) {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("Error","El directorio cpan no es válido");
     exit;
   };
-
-
-#  # Archivos del CORE
-#  my ($core_file) = "$core_dir/prontus_edi_admin.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de Administrador de Ediciones no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_edi_ficha.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de Ficha de Edición no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_edi_otras.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de Ediciones anteriores no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_art_admin.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Form. de lista de artículos no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_art_fset.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Frameset de lista de artículos no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_art_head.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Head de lista de artículos no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_index.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de control de acceso no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_menu.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de Menu principal no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_copy_spare_confirm.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de confirmación de copia de port. recambio no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_show_spares.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de despliegue de port. recambio no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_usr_admin.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de Adm. de usuarios no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_usr_ficha.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de Ficha de usuario no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_waiting.html";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","Página de espera no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/prontus_detect.js";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","JS no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/popup_port.js";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","JS no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/popup_tipart.js";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","JS no existe");
-#    exit;
-#  };
-#
-#  $core_file = "$core_dir/fechas.js";
-#  if ( ! (-f $core_file) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","JS no existe");
-#    exit;
-#  };
-#
-#
-#
-#  # Dir imag
-#  if ( ! (&glib_fildir_02::check_dir("$core_dir/imag")) ) {
-#    print "Content-Type: text/html\n\n";
-#    &glib_html_02::print_pag_result("Error","El directorio de imagenes no es válido");
-#    exit;
-#  };
 
 
   # TEMPLATES DE PORTADAS
@@ -431,8 +316,6 @@ my ($dir);
   };
 
 
-
-
   # Tpls. repetidos.
   if (&tpls_duplicados($dir)) {
     print "Content-Type: text/html\n\n";
@@ -462,10 +345,6 @@ my ($dir);
   };
 
 
-
-
-
-
   # DESTINO EDICIONES
   $dir = $prontus_varglb::DIR_SERVER .
          $prontus_varglb::DIR_CONTENIDO .
@@ -478,14 +357,12 @@ my ($dir);
   };
 
 
-
   # Pagina de inicializacion para las portadas en construccion.
   if ( ! (-f "$prontus_varglb::DIR_SERVER$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/$prontus_varglb::PAG_WORKING") ) {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("Error","Pagina para portada 'en construcción' no existe");
     exit;
   };
-
 
 
   # Dir. destino de Edicion unica
@@ -559,7 +436,7 @@ my (@lisdir, $k, %existentes);
 
   foreach $k (@lisdir) {
     if (-f "$ruta_dir/$k") {
-      $nombre = '';
+      my $nombre = '';
       if ($k =~ /(.+)\..+$/) {
         $nombre = $1;
         $existentes{$nombre}++;
@@ -996,7 +873,7 @@ sub load_artic_pubs {
 
         # print STDERR "edic[$edic]\n";
         # Dir destino de las portadas de la ed.
-        $pathdir_seccs = $prontus_varglb::DIR_SERVER .
+        my $pathdir_seccs = $prontus_varglb::DIR_SERVER .
                         $prontus_varglb::DIR_CONTENIDO .
                         $prontus_varglb::DIR_EDIC .
                         "/$edic" .
@@ -1005,7 +882,7 @@ sub load_artic_pubs {
         my @entries = &glib_fildir_02::lee_dir($pathdir_seccs);
 
         # Para cada port.
-        foreach $port (@entries) {
+        foreach my $port (@entries) {
             next if ($port =~ /^\./);
 
             # No se toman en cuenta las que no esten en el CFG
@@ -1016,7 +893,7 @@ sub load_artic_pubs {
             }
 
             # portada en el site
-            $arch_seccion = "$pathdir_seccs/$port";
+            my $arch_seccion = "$pathdir_seccs/$port";
 
             my ($arch_xml) = $arch_seccion;
             no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
@@ -1024,7 +901,7 @@ sub load_artic_pubs {
 
             next if ((! -f $arch_xml) || ($port =~ /^preview/i));
 
-            $text_seccion = &glib_fildir_02::read_file($arch_xml);
+            my $text_seccion = &glib_fildir_02::read_file($arch_xml);
             $text_seccion = &lib_prontus::ajusta_crlf($text_seccion);
 
             # Rescatar la info de c/artic de la port actual
@@ -1273,7 +1150,7 @@ sub load_config {
   };
 
   my $friendly_urls_version = '1'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(.*?)("|')/) { # SI | NO
+  if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(\d)("|')/) { # Es un digito, valor 1 a 4
     $friendly_urls_version = $2;
   };
 
@@ -1288,6 +1165,20 @@ sub load_config {
     $friendly_url_images = $2;
   };
 
+    while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
+        my $clave = $2;
+        $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
+    };
+
+    $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
+    if ($buffer =~ m/\s*RECAPTCHA_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::RECAPTCHA_API_URL = $2;
+    };
+
+    $prontus_varglb::RECAPTCHA_SECRET_CODE = ''; # valor por defecto.
+    if ($buffer =~ m/\s*RECAPTCHA_SECRET_CODE\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::RECAPTCHA_SECRET_CODE = $2;
+    };
 
   my $comentarios = 'NO'; # valor por defecto.
   if ($buffer =~ m/\s*COMENTARIOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -1400,7 +1291,7 @@ sub load_config {
   };
 
   while ($buffer =~ m/\s*CACHE_PURGE_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
-     $clave = $2;
+     my $clave = $2;
      $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$clave} = 1;
   };
 
@@ -1462,6 +1353,20 @@ sub load_config {
   if ($buffer =~ m/\s*XCODE_MAX_PARALELO\s*=\s*("|')(.*?)$1/s) {
     $prontus_varglb::XCODE_MAX_PARALELO = $2;
   };
+
+    # configuracion de transcodificacion externa
+    $prontus_varglb::USAR_XCODER_EXTERNO = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*USAR_XCODER_EXTERNO\s*=\s*("|')(.*?)$1/s) {
+        $prontus_varglb::USAR_XCODER_EXTERNO = $2;
+    };
+    $prontus_varglb::XCODER_HOST = ''; # valor por defecto.
+    if ($buffer =~ m/\s*XCODER_HOST\s*=\s*("|')(.*?)$1/s) {
+        $prontus_varglb::XCODER_HOST = $2;
+    };
+    $prontus_varglb::XCODER_PORT = ''; # valor por defecto.
+    if ($buffer =~ m/\s*XCODER_PORT\s*=\s*("|')(.*?)$1/s) {
+        $prontus_varglb::XCODER_PORT = $2;
+    };
   # /XCODING
 
   # extensiones permitidas para uploads
@@ -1486,15 +1391,15 @@ sub load_config {
   };
 
   while ($buffer =~ m/\s*MULTIVISTA\s*=\s*("|')(.+?)("|')/g) {
-     $clave = $2;
+     my $clave = $2;
      $prontus_varglb::MULTIVISTAS{$clave} = 1;
   };
 
 
   while ($buffer =~ m/\s*FORM\_PLTS\s*=\s*("|')((.+?):.+?)(\((.+?)\))(\((.*?)\))?("|')/g) {
-     $clave = $2;
+     my $clave = $2;
      my $fid = $3;
-     $valor = $5;
+     my $valor = $5;
      my $plt_paralelas = $7;
 
      $prontus_varglb::FORM_PLTS{$clave} = $valor;
@@ -1504,8 +1409,8 @@ sub load_config {
 
   # PORT_PLTS = 'inicio.html(vacante para portadas intercambiables, aca antes iba las spare, deprecatear eso)(plantillas paralelas)(portada para preview)'
   while ($buffer =~ m/\s*PORT\_PLTS\s*=\s*("|')(.+?)(\((.*?)\))?(\((.*?)\))?(\((.*?)\))?("|')/g) {
-     $clave = $2;
-     $valor = $4; # contenido del primer parentesis de la linea del cfg, donde iban las spare y ahora las intercambiables, NO SE USA POR MIENTRAS
+     my $clave = $2;
+     my $valor = $4; # contenido del primer parentesis de la linea del cfg, donde iban las spare y ahora las intercambiables, NO SE USA POR MIENTRAS
      my $extra_ports = $6; # segundo (): portadas paralelas, ej: inicio2.php;inicio3.php
      my $port4preview = $8; # tercer (): portada para preview, por ejemplo, si la portada ppal es footer.html, entonces la port para preview podria ser inicio.html
      if ($clave !~ /^\w+\.\w+$/) {
@@ -1529,13 +1434,13 @@ sub load_config {
   };
 
   while ($buffer =~ m/\s*BASE\_PORTS\s*=\s*("|')(.*?)("|')/g) {
-     $valor = $2;
+     my $valor = $2;
      push @prontus_varglb::BASE_PORTS, $valor;
   };
 
   # ports dd habilitadas.
   while ($buffer =~ m/\s*PORT\_DRAGANDROP\s*=\s*("|')(.*?)("|')/g) {
-     $valor = $2;
+     my $valor = $2;
      $prontus_varglb::PORT_DRAGANDROP{$valor} = 1;
   };
 
@@ -1800,17 +1705,6 @@ sub load_config {
     exit;
   };
 
-
-
-  # Taxonomia
-  # CVI - Deprecated - Ya no se usa esto
-  #~ my $taxport_refresh = 'SI'; # valor por defecto. Si es NO, entonces no se regenera el cache de las taxports, sino que se actualizan masivamente via CRON
-  #~ if ($buffer =~ m/\s*TAXPORT_REFRESH\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    #~ $taxport_refresh = $2;
-  #~ };
-  #~ $prontus_varglb::TAXPORT_REFRESH = $taxport_refresh;
-
-
   my $taxport_maxartics = '500'; # valor por defecto.
   if ($buffer =~ m/\s*TAXPORT_MAXARTICS\s*=\s*("|')([0-9]+?)("|')/) {
     $taxport_maxartics = $2;
@@ -2008,6 +1902,7 @@ sub load_config {
   # si no se detecta ninguno, asigna el primero que se probo, para que la var no quede en blanco
   $default_dir_ffmpeg = $paths_ffmpeg[0] if (!$default_dir_ffmpeg);
 
+  my $dir_ffmpeg = '';
   # si el dir se define por cfg, usa ese en lugar del por defecto
   if ($buffer =~ m/\s*DIR_FFMPEG\s*=\s*("|')(.*?)("|')/) {
    $dir_ffmpeg = $2;
@@ -2090,47 +1985,16 @@ sub load_config {
   };
   $prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC = $usar_public_server_name_ver_artic;
 
-  $num_relac_default = 5; # valor default
+  $prontus_varglb::NUM_RELAC_DEFAULT = 5; # valor default
   if ($buffer =~ m/\s*NUM_RELAC_DEFAULT\s*=\s*("|')(\d+?)("|')/) {
-   $num_relac_default = $2;
-
-   if (($num_relac_default =~ /\d+/) && (! $tax_niv)) {
-       #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
-        #~ print STDERR "Error en CFG: seteo de variable NUM_RELAC_DEFAULT='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-        #~ print "Content-Type: text/html\n\n";
-        #~ print "<P>Error en CFG: seteo de variable NUM_RELAC_DEFAULT='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-        #~ exit;
-   };
+   $prontus_varglb::NUM_RELAC_DEFAULT = $2;
   };
-  $prontus_varglb::NUM_RELAC_DEFAULT = $num_relac_default;
-
 
   my $taxport_artxpag = 20; # valor default
   if ($buffer =~ m/\s*TAXPORT_ARTXPAG\s*=\s*("|')(\d+?)("|')/) {
     $taxport_artxpag = $2;
-    if (($taxport_artxpag =~ /\d+/) && (! $tax_niv)) {
-      #~ 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
-      #~ print STDERR "Error en CFG: seteo de variable TAXPORT_ARTXPAG='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-      #~ print "Content-Type: text/html\n\n";
-      #~ print "<P>Error en CFG: seteo de variable TAXPORT_ARTXPAG='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-      #~ exit;
-    };
   };
   $prontus_varglb::TAXPORT_ARTXPAG = $taxport_artxpag;
-
-  # CVI - DEPRECATED - Esta marca ya no se usa
-  #~ my $taxport_refresh_segs = 1800; # valor default  media hora
-  #~ if ($buffer =~ m/\s*TAXPORT_REFRESH_SEGS\s*=\s*("|')(\d+?)("|')/) {
-    #~ $taxport_refresh_segs = $2;
-    #~ if (($taxport_refresh_segs =~ /\d+/) && (! $tax_niv)) {
-      # 12/12/2012 - CVI - Para evitar el error al guardar TAXONOMIA_NIVELES = 0
-      # print STDERR "Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)\n";
-      # print "Content-Type: text/html\n\n";
-      # print "<P>Error en CFG: seteo de variable TAXPORT_REFRESH_SEGS='n' requiere de seteo de variable TAXONOMIA_NIVELES='N' (N=1,2,3)";
-      # exit;
-    #~ };
-  #~ };
-  #~ $prontus_varglb::TAXPORT_REFRESH_SEGS = $taxport_refresh_segs;
 
   # TAXPORT_ORDEN
   $prontus_varglb::TAXPORT_ORDEN = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
@@ -2440,15 +2304,7 @@ sub load_config {
   $prontus_varglb::PORT_INI_SELECTED = $port_ini_selected;
   $prontus_varglb::PORT_HOME = $port_home;
 
-
   $prontus_varglb::ORDEN_LISTA_ARTICULOS = $orden_lista_articulos;     # 8.0
-
-  #~ 13/08/2013 - CVI - Se comenta esto porque tiene toda la pinta de ser codigo basura
-  #~ my $path = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/imag";
-  #~ $prontus_varglb::WMEDIA_LINK =~ s/%%path%%/$path/; # 8.1
-  #~ $prontus_varglb::RMEDIA_LINK =~ s/%%path%%/$path/;
-  #~ $prontus_varglb::ASOCFILE_LINK =~ s/%%path%%/$path/;
-  #~ $prontus_varglb::LINK_MAS =~ s/%%path%%/$path/;
 
   $prontus_varglb::FECHA_HOY = &glib_hrfec_02::get_date_pack4();
 
@@ -2470,7 +2326,7 @@ sub load_config {
 #     &glib_fildir_02::write_file("$core_dir/secciones.js", $js_buf);
 #   };
 
-  &check_dirs();
+    &check_dirs();
 
     #~ Para configurar la externalizacion de la multimedia
     my $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/mmedia.cfg");
@@ -2771,7 +2627,7 @@ sub write_xml_port {
     $dest_xml =~ s/\/port\/(\w+)(\.\w+)?$/\/xml\/\1\.xml/;
   };
   # antes de escribir el nuevo xml, saca una copia de respaldo.
-  $newXml = "<?xml version='1.0' encoding='iso-8859-1'?>\n<PORT_DATA>\n$rowartics_xml</PORT_DATA>";
+  my $newXml = "<?xml version='1.0' encoding='iso-8859-1'?>\n<PORT_DATA>\n$rowartics_xml</PORT_DATA>";
   my $md5_newXml = md5_hex($newXml);
 
   my $dobackup = 0;
@@ -2782,8 +2638,8 @@ sub write_xml_port {
     $nomxml = $2;
     &glib_fildir_02::check_dir("$dirxml/bak");
 
-    $curXmlPath = "$dirxml/bak/$nomxml";
-    $curXml = &glib_fildir_02::read_file($curXmlPath);
+    my $curXmlPath = "$dirxml/bak/$nomxml";
+    my $curXml = &glib_fildir_02::read_file($curXmlPath);
     my $md5_curXml = md5_hex($curXml);
     $dobackup = 1 if($md5_newXml ne $md5_curXml);
 
@@ -2791,9 +2647,9 @@ sub write_xml_port {
     if($dobackup){
       unlink "$dirxml/bak/$nomxml.9" if(-f "$dirxml/bak/$nomxml.9");
       for(my $i = 9; $i > 0; $i--) {
-        &File::Copy::copy("$dirxml/bak/$nomxml.".($i-1), "$dirxml/bak/$nomxml.".($i));
+        &File::Copy::move("$dirxml/bak/$nomxml.".($i-1), "$dirxml/bak/$nomxml.".($i));
       }
-      &File::Copy::copy("$dirxml/bak/$nomxml", "$dirxml/bak/$nomxml.0");
+      &File::Copy::move("$dirxml/bak/$nomxml", "$dirxml/bak/$nomxml.0");
     }
   };
   # escribe el nuevo xml
@@ -2864,7 +2720,7 @@ sub generic_parse_port {
     # Parsea el area usando $2 como template parcial.
     $areas{$are} = &parser_area($pure_are,$tmp, $dir_server, $prontus_id,
                                                   $control_fecha, $ts_preview,
-                                                  $controlar_alta_articulos, $users_perfil, $doblegato_string);
+                                                  $controlar_alta_articulos, $users_perfil, $doblegato_string, $mv);
   };
 
 
@@ -2964,6 +2820,7 @@ sub parse_globals {
 sub get_nom_prontus {
     # prontus_xxx -->Prontus Xxx
     my $prontus_id = shift;
+    my $prontus_nom;
 
     while ($prontus_id =~ /( |^)([a-z])/g) {
         my $inicial = $2;
@@ -3058,7 +2915,7 @@ sub add_macros {
 sub parser_area {
 
     my($area, $theloop, $dir_server, $prontus_id,
-            $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil, $doblegato_string) = @_;
+            $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil, $doblegato_string, $mv) = @_;
 
     # Obtiene lista de articulos de esta area.
     my $num_artics_in_area = 0;
@@ -3227,7 +3084,7 @@ sub parser_area {
             $localbuf =~ s/%%.*?%%//g;
         } else {
             # Recupera marcas externas (desde /xdata)
-            my %claves_adicionales = $artic_obj->get_xdata($buffer);
+            my %claves_adicionales = $artic_obj->get_xdata();
 
             # Procesa condicionales mas algunas variables adicionales
             if ($localbuf ne '') {
@@ -3239,6 +3096,7 @@ sub parser_area {
                 # warn $localbuf;
                 $localbuf = &procesa_condicional($localbuf, \%campos_xml, \%claves_adicionales);
             };
+
             my $fullpath_vista = $artic_obj->get_fullpath_artic($mv, $campos_xml{'_plt'});
             $localbuf = $artic_obj->parse_artic_data($fullpath_vista, $localbuf, \%campos_xml, \%claves_adicionales);
         };
@@ -3268,25 +3126,25 @@ sub parser_area {
 # ---------------------------------------------------------------
 #
 sub procesa_loop_artic {
-  $buffer = shift;
-  $doblegato_string = shift;
+  my $buffer = shift;
+  my $doblegato_string = shift;
   # Primero que todo se parsean los loops de de Articulo
   while($buffer =~ /%%_loop_artic\((\d+),(\d+)\)%%(.*?)%%\/_loop_artic%%/is) {
       my $inicio = $1;
       my $fin = $2;
       my $loop = $3;
-      print STDERR "_loop_artic($inicio,$fin)\n";
-      print STDERR "loop[$loop]\n";
+      #~ print STDERR "_loop_artic($inicio,$fin)\n";
+      #~ print STDERR "loop[$loop]\n";
       my $totloop;
       for(my $i = $inicio; $i <= $fin; $i++) {
-          print STDERR "for($i)\n";
+          #~ print STDERR "for($i)\n";
           my $looptemp = $loop;
-          print STDERR "looptemp = $looptemp\n";
+          #~ print STDERR "looptemp = $looptemp\n";
           $looptemp =~ s/\Q$doblegato_string\Ei\Q$doblegato_string\E/$i/isg;
 
           $totloop = $totloop . $looptemp;
       }
-      print STDERR "totloop[$totloop]\n";
+      #~ print STDERR "totloop[$totloop]\n";
       $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
   }
   return $buffer;
@@ -3342,7 +3200,7 @@ sub replace_hash_fields {
     foreach my $k (keys %$vars2replace) {
         my $marca = $k;
         $marca = '%%' . $k . '%%' if ($prontus_style);
-        $value = $$vars2replace{$k};
+        my $value = $$vars2replace{$k};
         $buffer =~ s/$marca/$value/isg;
     };
     return $buffer;
@@ -3631,7 +3489,7 @@ sub get_status_pub {
     # Obtener datos necesarios del articulo DE LA bd
     my $id = $art;
     $id =~ s/\.\w*$//; # saca extension
-    $sql = "select ART_ALTA, ART_FECHAP, ART_HORAP, ART_FECHAE, ART_HORAE from ART where ART_ID = \"$id\"";
+    my $sql = "select ART_ALTA, ART_FECHAP, ART_HORAP, ART_FECHAE, ART_HORAE from ART where ART_ID = \"$id\"";
     my ($alta, $fechap, $horap, $fechae, $horae);
     my $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
     $salida->bind_columns(undef, \($alta, $fechap, $horap, $fechae, $horae));
@@ -3715,7 +3573,7 @@ sub parser_condicional {
         my $marca_fin = '%%/' . $sentencia . '%%';
         $fin = index $buffer, $marca_fin;
 
-        if ($cont1 >= 1000) {
+        if ($cont1 >= 2000) {
             #~ print STDERR "[1] $sentencia : condicionales_begin[$cont_condicionales_begin] condicionales_end[$cont_condicionales_end]\n";
             #~ print STDERR "inicio[$inicio] fin[$fin] elif[$elif]\n";
             return $buffer;
@@ -3733,7 +3591,7 @@ sub parser_condicional {
             my $otro;
             do {
                 $cont2++;
-                if ($cont2 >= 1000) {
+                if ($cont2 >= 2000) {
                     return $buffer;
                 };
                 $otro = index $buffer, $marca_ini, $inicio + 1;
@@ -4679,7 +4537,7 @@ sub check_dirs_edic() {
     exit;
   }
   else {
-    # Escribe htaccess en el dir de xml para prhibir acceso http a este.
+    # Escribe htaccess en el dir de xml para prohibir acceso http a este.
     &glib_fildir_02::write_file("$dir/.htaccess", "Order Allow,Deny\nDeny from all");
   };
 
@@ -4772,9 +4630,6 @@ sub generar_popupdirs_from_dir {
            $seleccionado = 'selected="selected"';
         }
         $lista = $lista . '<option value="' . $nom_arch . '" ' . $seleccionado . '>';
-        if ($ind_extension eq 'SIN_EXT') {
-          $nom_arch =~ s/\..*//; # borrar extension en el display.
-        }
         $lista = $lista . $nom_arch . '</option>'; # 01.i
         $nro_elem = $nro_elem + 1;
       }
@@ -4916,6 +4771,7 @@ sub ancho_alto_gif {
 sub ancho_alto_bmp {
   my ($file) = $_[0];
   my ($a,$b,$c,$d,$e,$f,$g,$h, $s, $type);
+  my $bmp;
   (open $bmp, "<$file") || return ("No se puede abrir archivo BMP!", 0, 0);
   binmode $bmp;
   read($bmp, $type, 2);
@@ -5018,7 +4874,7 @@ sub actualizar_portadas_byartic {
 
     # Para cada seccion.
     foreach $entry (@entries) {
-      $requiere_actualizar = 0;
+      my $requiere_actualizar = 0;
 
       next if ($entry =~ /^\./);
 
@@ -5132,94 +4988,110 @@ sub borra_taxport {
 # ---------------------------------------------------------------
 # 20120723 - JOR - Los ultimos 3 parametros corresponden al nombre de la seccion, tema y subtema para construir la version 2.0 de las friendly url.
 sub parse_filef {
-  my ($buffer, $titular, $ts, $prontus_id, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1) = @_;
+    my ($buffer, $titular, $ts, $prontus_id, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1) = @_;
 
-  return $buffer if (!$ts || !$prontus_id || !$titular);
-  return $buffer unless($buffer =~ /%%_FILEURL%%/i);
+    return $buffer if (!$ts || !$prontus_id || !$titular);
+    return $buffer unless($buffer =~ /%%_FILEURL%%/i);
 
-  # Ajusta largo de titular para friendly.
-  $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
-  $titular =~ s/\.\.\.$//sg;
+    # Ajusta largo de titular para friendly.
+    $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
+    $titular =~ s/\.\.\.$//sg;
 
-  my $ext;
-  $ext = $1 if ($relpath_artic =~ /\.(\w+)$/);
-  $titular = &saca_tags_rets($titular);
-  $titular = &notildes($titular);
-  $titular = lc $titular;
-  $titular =~ s/[^a-z0-9]/-/sg;
-  $titular =~ s/-+/-/g;
-  $titular =~ s/^-//sg;
-  $titular =~ s/-$//sg;
-  my $fecha4friendly;
-  my $fecha;
-  my $hora;
-  if ($ts =~ /^(\d{4})(\d{2})(\d{2})(\d{6})/) {
-    $fecha4friendly = $1 . '-' . $2 . '-' . $3;
-    $fecha = "$1$2$3";
-    $hora = $4;
-  };
-
-  if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-    my $fileurl = '';
-    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '1') {
-        $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
-    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
-        # Formato: /prontus/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
-        $fileurl = "/$prontus_id/";
-
-        if ($nom_seccion1 ne '') {
-            $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
-            $fileurl .= "$nom_seccion1/";
-        };
-
-        if ($nom_tema1 ne '') {
-            $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
-            $fileurl .= "$nom_tema1/";
-        };
-
-        if ($nom_subtema1 ne '') {
-            $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
-            $fileurl .= "$nom_subtema1/";
-        };
-
-        $fileurl .= "$titular/$fecha4friendly/$hora.$ext";
-    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '3') {
-        # Formato: www.<prontus_id>.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
-        $fileurl = "/";
-
-        if ($nom_seccion1 ne '') {
-            $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
-            $fileurl .= "$nom_seccion1/";
-        };
-
-        if ($nom_tema1 ne '') {
-            $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
-            $fileurl .= "$nom_tema1/";
-        };
-
-        if ($nom_subtema1 ne '') {
-            $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
-            $fileurl .= "$nom_subtema1/";
-        };
-
-        $fileurl .= "$titular/$fecha4friendly/$hora.$ext";
-    } else {
-        # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
-        $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
+    my $ext;
+    $ext = $1 if ($relpath_artic =~ /\.(\w+)$/);
+    $titular = &saca_tags_rets($titular);
+    $titular = &notildes($titular);
+    $titular = lc $titular;
+    $titular =~ s/[^a-z0-9]/-/sg;
+    $titular =~ s/-+/-/g;
+    $titular =~ s/^-//sg;
+    $titular =~ s/-$//sg;
+    my $fecha4friendly;
+    my $fecha;
+    my $hora;
+    if ($ts =~ /^(\d{4})(\d{2})(\d{2})(\d{6})/) {
+        $fecha4friendly = $1 . '-' . $2 . '-' . $3;
+        $fecha = "$1$2$3";
+        $hora = $4;
     };
 
-    #~ print STDERR "fileurl[$fileurl]\n";
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+        my $fileurl = '';
+        if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1') {
+            my $tax = '';
+            if ($nom_seccion1 ne '') {
+                $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
+                $tax .= "$nom_seccion1";
+            };
 
-      $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
+            if ($nom_tema1 ne '') {
+                $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
+                $tax .= "/$nom_tema1";
+            };
 
-  } else {
-      my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
-      $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
-  };
+            if ($nom_subtema1 ne '') {
+                $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
+                $tax .= "/$nom_subtema1";
+            };
+            if ($tax ne '') {
+                $tax = '/' . $tax;
+            }
 
-  return $buffer;
+            if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
+                # Formato: /prontus/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
+                $fileurl = "/$prontus_id$tax/$titular/$fecha4friendly/$hora.$ext";
+
+            } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '3') {
+                # Formato: www.<prontus_id>.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.extension
+                $fileurl = "$tax/$titular/$fecha4friendly/$hora.$ext";
+
+            } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+                # Formato: /prontus/seccion/tema/subtema/titular.extension
+                my $xml_art = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER/$prontus_id/site/artic/$fecha/xml/$ts.xml");
+                # rescatamos el titular original sin cambios
+                $titular = $_[1];
+                # si se debe usar url custom
+                if ($xml_art =~ /<_custom_slug>SI<\/_custom_slug>/) {
+                    # rescatamos el slug, si no existe usamos el titular de forma normal
+                    if ($xml_art =~ /<_slug>([a-z0-9\-]+)<\/_slug>/) {
+                        $titular = $1;
+                    }
+                }
+                $titular = &ajusta_titular_f4($titular);
+                $fileurl = "/$prontus_id$tax/$titular";
+
+            }
+        } else {
+            # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
+            $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
+        };
+
+        #~ print STDERR "fileurl[$fileurl]\n";
+
+        $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
+
+    } else {
+        my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
+        $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
+    };
+
+    return $buffer;
 };
-
+# ---------------------------------------------------------------
+# 20161004 Funcion para ajustar el titular a friendly4
+sub ajusta_titular_f4 {
+    my $titular = $_[0];
+    $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
+    $titular =~ s/\.*$//sg; # elimina todos los puntos al final del titular
+    $titular = &saca_tags_rets($titular);
+    $titular = &notildes($titular);
+    $titular = lc $titular;
+    $titular =~ s/[^a-z0-9]/-/sg;
+    $titular =~ s/-+/-/g;
+    $titular =~ s/^-*//sg; # elimina todos los guiones al principio
+    $titular =~ s/-*$//sg; # elimina todos los guiones al final
+    return $titular;
+}
 # ---------------------------------------------------------------
 sub despulgar_texto_friendly {
     my $texto = $_[0];
@@ -5609,8 +5481,6 @@ sub get_arbol_mapa {
         $mapa_st =~ s/%%_SECCION[1-3]%%/$secc_id/isg;
         $mapa_st =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
         $mapa_st =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
-
-        $mapa_st = &lib_prontus::parser_condicional('IF', $mapa_st, \%claves);
 
         $mapa_st_total = $mapa_st_total . $mapa_st;
       };
@@ -6067,7 +5937,7 @@ sub artic_parser_fechas {
 sub escapea_bd {
   # Escapea asumiendo que los valores de los campos estan encerrados entre comillas dobles, no simples.
   # Se prefiere esto en vez de quote(), ya que este ultimo encierra entre comillas simples y las simples
-  # las tranasforma en tildes
+  # las transforma en tildes
   my $refhash_campos = $_[0]; # hash con nombres de campos y sus valores
   my $base = $_[1];
   my %campos = %$refhash_campos;
@@ -6470,11 +6340,9 @@ sub handle_internal_error {
     my $msg_internal = shift;
     my $msg_external = shift;
     my $options = shift;
-    my $exit;
-    $exit = 1 if ($options =~ /(^|,) *exit *= *1 *(,|$)/);
-    print STDERR $msg;
-    exit if ($exit);
-    return 'Error actualizando posiciones en la base de datos';
+    print STDERR $msg_external ." - " . $msg_internal;
+    exit if ($options =~ /(^|,) *exit *= *1 *(,|$)/);
+    return $msg_external;
 };
 # ---------------------------------------------------------------
 sub set_coreplt_ppal {

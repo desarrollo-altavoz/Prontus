@@ -129,7 +129,7 @@ var Wizard = {
 
         var validator = new Validador('form1','one','#FDF8C1');
         validator.addconstraint('PRONTUS_ID','obligatorio','','Debe indicar el nombre del publicador.');
-        validator.addconstraint('PRONTUS_ID','regex',new RegExp(/^[a-z][a-z0-9\_\-]+$/),'Nombre de publicador no válido. Debe comenzar con letra minúscula sin tilde y seguirle letras del mismo tipo o números, guión o underscore.');
+        validator.addconstraint('PRONTUS_ID','regex',new RegExp(/^[a-z0-9\_\-]+$/),'Nombre de publicador no válido. Debe contener letras minúsculas sin tilde, números, guión o underscore.');
         validator.addconstraint('NEW_TITLE_SITE_NAME','obligatorio','','Debe indicar el Nombre del Sitio Prontus.');
         validator.addconstraint('SERVER_BD','obligatorio','','Debe indicar el Servidor de BD');
         validator.addconstraint('SERVER_BD','regex',new RegExp(/^[\w\-\.]{1,128}$/),"Servidor de BD no es válido.\nCaracteres permitidos:letras minúsculas o mayúsculas, dígitos, punto, guión y underscore, máximo 128.");

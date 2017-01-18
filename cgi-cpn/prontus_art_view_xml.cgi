@@ -35,29 +35,12 @@ use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
 use prontus_varglb; &prontus_varglb::init();
-# use glib_fildir_02;
-# use glib_str_02;
 use lib_prontus;
-# use glib_html_02;
-
 use glib_cgi_04;
-
-# use DBI;
-# use glib_dbi_02;
-# use lib_secc;
-# use lib_tags;
-# use lib_waitlock; # Bloqueos tipo espera.
-# use lib_quota;
-# use Session;
-
-my $ART_AUTOINC;
-my $BD;
-my (%ID_SECCIONES, %ID_TEMAS, %ID_SUBTEMAS);
 
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
-
 
 # Rescatar parametros recibidos.
 &glib_cgi_04::new();
@@ -91,7 +74,7 @@ my $path_final_xml =   $prontus_varglb::DIR_SERVER .
                     $prontus_varglb::DIR_ARTIC .
                     '/' . $fechac .
                     '/xml/' .
-                    $FORM{'_ts'} . 
+                    $FORM{'_ts'} .
                     '.xml';
 
 if (! -f $path_final_xml) {

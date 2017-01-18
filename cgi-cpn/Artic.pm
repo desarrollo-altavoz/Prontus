@@ -16,8 +16,8 @@ use warnings;
 no warnings 'uninitialized';
 
 use DBI;
-use lib_prontus;
-use lib_thumb;
+require lib_prontus;
+require lib_thumb;
 use glib_fildir_02;
 use glib_str_02;
 use glib_hrfec_02;
@@ -37,6 +37,10 @@ our $XML_BASE =
 <_private>
 <_txt_titular>
 </_txt_titular>
+<_slug>
+</_slug>
+<_custom_slug>
+</_custom_slug>
 <_art_autoinc></_art_autoinc>
 <_users_id></_users_id>
 <_fid></_fid>
@@ -207,6 +211,12 @@ sub _set_dirs {
     $this->{dst_swf}        = "$this->{dst_base}/swf";
     $this->{dst_multimedia} = "$this->{dst_base_mm}/mmedia";
 
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        $this->{dst_links_url} = $this->{document_root}
+                          . "/$this->{prontus_id}"
+                          . "/site/friendly/links";
+    }
+
     $this->{pathdir_plt} = $this->{document_root}
                           . "/$this->{prontus_id}"
                           . "/plantillas/artic/fecha";
@@ -239,7 +249,10 @@ sub _check_artic_dirs {
     &glib_fildir_02::check_dir($this->{dst_foto})       || return 0;
     &glib_fildir_02::check_dir($this->{dst_swf})        || return 0;
     &glib_fildir_02::check_dir($this->{dst_multimedia}) || return 0;
-
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        &glib_fildir_02::check_dir($this->{dst_links_url}) || return 0;
+    }
+    return 1;
 };
 
 # --------------------------------------------------------------------
@@ -306,7 +319,7 @@ sub generar_xml_artic {
     };
 
     if ($this->{campos}->{'_txt_titular'} eq '') {
-        $this->{campos}->{'_txt_titular'} = 'SIN TITULO';
+        $this->{campos}->{'_txt_titular'} = 'SIN TITULO ' . (time - $prontus_varglb::URL_NUMBER);
     };
 
 
@@ -1406,10 +1419,8 @@ sub get_xml_content {
 sub tags2bd {
 # puebla nub de art con tags
 # Se invoca al momento de guardar un articulo.
-
     my ($this, $base, $is_new) = @_;
 
-    my $motor_bd = &lib_prontus::get_motor_from_bdhandler($base);
     my %campos = $this->get_xml_content();
     my @tags = split(/,/, $campos{'_tags'});
 
@@ -1435,6 +1446,174 @@ sub tags2bd {
 
     return 1;
 };
+# ---------------------------------------------------------------
+sub friendly_v4_2bd {
+# puebla tabal de urls friendly v4
+# Se invoca al regenerar la DB de prontus
+    my ($this, $base, $is_new) = @_;
+
+    if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
+        # Primero elimina la url del artic actual:
+        my $sql = "delete from URL where URL_ART_ID='$this->{ts}'";
+        my $res = $base->do($sql);
+        if (!$res) {
+            $Artic::ERR = "Error actualizando tabla de urls, ts[$this->{ts}]\n";
+            cluck $Artic::ERR . "sql[$sql][$!]";
+            return 0;
+        };
+
+        my $titularV4;
+        if ($this->{'xml_content'}{'_custom_slug'} eq 'SI' && $this->{'xml_content'}{'_slug'} ne '') {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_slug'});
+        } else {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        }
+
+        my $ts = $this->verifica_colision_url_titular($base, $titularV4);
+        if ($ts) {
+            $Artic::ERR = "Error actualizando tabla de URLs, Conflicto de titular entre [$this->{ts}] y [$ts]\n";
+            return 0;
+        }
+
+        $sql = "insert into URL set URL_ART_ID='$this->{ts}', URL_ART_URI ='$titularV4'";
+        $res = $base->do($sql);
+        if (!$res) {
+            $Artic::ERR = "Error actualizando tabla de urls, ts[$this->{ts}]\n";
+            cluck $Artic::ERR . "sql[$sql][$!]";
+            return 0;
+        };
+    }
+    return 1;
+};
+# ---------------------------------------------------------------
+sub genera_friendly_v4 {
+# genera todo lo que necesita la friendly v4 para funcionar
+# guarda el titular formateado en la BD
+# genera el archivo con el include en el filesystem
+    my ($this, $base, $is_new) = @_;
+
+    if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
+        my ($mv, $buffer);
+        my ($salida, $artTs, $friendlyAntigua, $sql);
+
+        my $titularV4;
+        if ($this->{'xml_content'}{'_custom_slug'} eq 'SI' && $this->{'xml_content'}{'_slug'} ne '') {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_slug'});
+        } else {
+            $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        }
+
+        $this->{'xml_content'}{'_plt'} =~ /\.(\w+)$/;
+        my $ext = $1;
+
+        my $ts = $this->verifica_colision_url_titular($base, $titularV4);
+        if ($ts) {
+            $Artic::ERR = "Error actualizando tabla de URLs, Conflicto de titular entre [$this->{ts}] y [$ts]\n";
+            return 0;
+        }
+
+        # se busca el titular friendly de este articulo, si existe, para borrar el archivo actual
+        # antes de generar uno nuevo
+        # nunca es vacio si esta asociado un ts a una url, ya que no se permiten titulares vacios
+        $sql = "select URL_ART_URI, URL_ART_ID from URL where URL_ART_ID = \"$this->{ts}\" ";
+
+        $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
+        $salida->bind_columns(undef, \($friendlyAntigua, $artTs));
+        $salida->fetch;
+
+        # si hay friendly asociada al ts, se debe eliminar el archivo
+        # conservamos los directorios ya que pueden haber mas archivos
+        # si no hay en algun momento se reutilizara la ruta
+        my $filepath;
+
+        # si la friendly antigua no es vacia se debe borrar
+        if ($friendlyAntigua ne '') {
+            $filepath = '/'.substr($friendlyAntigua, 0, 2).'/'.substr($friendlyAntigua, 2, 2) . "/$friendlyAntigua.$ext";
+            # si el archivo existe intentamos borrarlo
+            if (-e $this->{dst_links_url}.$filepath) {
+                if (!unlink($this->{dst_links_url}.$filepath)) {
+                    print STDERR "Error borrando archivo [$this->{dst_links_url}$filepath/]\n";
+                }
+            }
+            # se eliminan los archivos de las multivistas
+            foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+                # si el archivo existe intentamos borrarlo
+                if (-e $this->{dst_links_url}."-$mv".$filepath) {
+                    if (!unlink($this->{dst_links_url}."-$mv".$filepath)) {
+                        print STDERR "Error borrando archivo [$this->{dst_links_url}-$mv$filepath/]\n";
+                    }
+                }
+            }
+        }
+
+        # se genera el path de destino del archivo para crear los directorios
+        $filepath = '/'.substr($titularV4, 0, 2).'/'.substr($titularV4, 2, 2);
+
+        if (&glib_fildir_02::check_dir($this->{dst_links_url}.$filepath)) {
+            # escribimos el nuevo symlink relativo, ej:
+            # ../../../../../artic/20161011/pags/20161011142332.html
+            my $realPath = '../../../..'.$prontus_varglb::DIR_ARTIC . '/'.
+                $this->{fechac} . $prontus_varglb::DIR_PAG . '/'.$this->{ts} . ".$ext";
+            my $friendly_path = "$this->{dst_links_url}$filepath/$titularV4.$ext";
+            my $cmd = "ln -s $realPath $friendly_path";
+            system($cmd) if (!-l $friendly_path);
+        } else {
+            cluck "Error creando path [$this->{dst_links_url}$filepath/]\n";
+            return 0;
+        }
+
+        # actualizamos la DB con este articulo
+        # si el art id es vacio, es articulo nuevo
+        if ($artTs eq '') {
+            $sql = "insert into URL set URL_ART_ID='$this->{ts}', URL_ART_URI ='$titularV4'";
+        } else {
+            # si no es vacia se debe actualizar el registro
+            $sql = "update URL set URL_ART_URI ='$titularV4' where URL_ART_ID='$this->{ts}'";
+        }
+
+        my $res = $base->do($sql);
+        if (!$res) {
+            $Artic::ERR = "Error actualizando tabla de URLs, 11 ts[$this->{ts}]\n";
+            cluck $Artic::ERR . "sql[$sql][$!]";
+            return 0;
+        }
+
+        # Se generan las multivistas
+        foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+            # se genera el path de destino del archivo para crear los directorios
+            $filepath = '/'.substr($titularV4, 0, 2).'/'.substr($titularV4, 2, 2);
+            if (&glib_fildir_02::check_dir($this->{dst_links_url}."-$mv".$filepath)) {
+                # escribimos el nuevo symlink relativo, ej:
+                # ../../../../../artic/20161011/pags/20161011142332.html
+                my $realPath = '../../../..'.$prontus_varglb::DIR_ARTIC . '/'.
+                    $this->{fechac} .  $prontus_varglb::DIR_PAG . "-$mv/".$this->{ts} . ".$ext";
+                my $friendly_path = "$this->{dst_links_url}-$mv$filepath/$titularV4.$ext";
+                my $cmd = "ln -s $realPath $friendly_path";
+                system($cmd) if (!-l $friendly_path);
+            } else {
+                print STDERR "Error creando path [$this->{dst_links_url}-$mv$filepath/]\n";
+            }
+        };
+    }
+    return 1;
+};
+# ---------------------------------------------------------------
+sub verifica_colision_url_titular {
+    my ($this, $base, $titularV4) = @_;
+    my $artTs;
+    # revisamos si existe otro articulo con el mismo titular (las urls son unicas)
+    my $sql = "select URL_ART_ID from URL where URL_ART_URI = \"$titularV4\"";
+    my $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
+    $salida->bind_columns(undef, \($artTs));
+    $salida->fetch;
+
+    # si existe un articulo con la misma url que no es este
+    # no se continua el proceso y se arroja error
+    if ($artTs ne '' && $artTs ne $this->{ts}) {
+        return $artTs;
+    }
+    return 0;
+}
 # ---------------------------------------------------------------
 sub borra_artic {
 
@@ -1513,6 +1692,22 @@ sub borra_artic {
             }
         };
     };
+
+    # borramos archivos de friendly v4
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        my $filepath = '/'.substr($titularV4, 0, 2).'/'.substr($titularV4, 2, 2) . "/$titularV4.html";
+        unlink $this->{dst_links_url}.$filepath;
+
+        # se eliminan los archivos de las multivistas
+        foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+            unlink $this->{dst_links_url}."-$mv".$filepath;
+        }
+        # se borra el articulo de la tabla
+        my $sql_delurl = "delete from URL where URL_ART_ID='$ts'";
+        $base->do($sql_delurl);
+    }
+
 
     my $path_artic_xml = $this->{dst_xml} . "/$ts.xml";
 
@@ -1614,18 +1809,18 @@ sub borra_artic {
                                   . '/' . $tem
                                   . '/' . $stem;
 
-        $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
+        $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
 
         # Regenera las salidas List
-        $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif &";
+        $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
     };
 
     # Regenera la tabla del DAM
-    $cmd = "$pathnice $rutaScript/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME &";
+    $cmd = "$pathnice $rutaScript/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME  >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 

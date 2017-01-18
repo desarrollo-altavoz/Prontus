@@ -1,7 +1,11 @@
                   <!--TITULO PRINCIPAL-->
-                  <div class="aleft">
+                  <div class="aleft col700">
                     <div class="numero-id">#%%_ART_AUTOINC%%</div>
-                    <div class="aleft"><input type="text" name="_txt_titular"  id="_txt_titular" class="fieldform-top" value="%%_txt_titular%%" onclick="if($(this).val()=='Sin t&iacute;tulo') {$(this).val('');}" /></div>
+                    <div class="aleft">
+                        <div>
+                            <input type="text" name="_txt_titular"  id="_txt_titular" class="fieldform-top" value="%%_txt_titular%%" onclick="Fid.limpiaTitular($(this));" %%_friendly4%% onblur="Fid.validaTitular('check-titular');" %%/_friendly4%%/>
+                        </div>
+                    </div>
                     <div class="numero-id hide-new-artic">
                       <a href="#" id="link_info_artic" title="Información del Artículo">
                         <img src="/%%_prontus_id%%/cpan/core/imag/boto/inf_of.png" width="21" height="21" alt="Ver más información" title="Ver más información" class="cambia-boton" />
@@ -13,6 +17,13 @@
                       </div>
                       <a href="%%_fileurl%%" id="copy-artic-url"></a>
                     </div>
+                    %%_friendly4%%
+                    <div class="aleft slug">
+                        <div class="numero-id">Slug</div>
+                        <input type="text" id="_slug" name="_slug" class="fieldform-top" value="%%_slug%%" readonly="readonly" maxlength="75" onblur="Fid.validaTitular('check-slug');" onclick="Fid.slugEditable(true);"/>
+                        <img src="/%%_prontus_id%%/cpan/core/imag/boto/refresh2_of.png" width="18" height="18" alt="Resetear Url" title="Resetear Url" class="cambia-boton" onclick="Fid.slugEditable(false);"/>
+                    </div>
+                    %%/_friendly4%%
                   </div>
                   <!-- / TITULO PRINCIPAL-->
 
@@ -64,3 +75,39 @@
   </div>
 </div>
 <div id="tooltip-copiar">&nbsp;</div>
+
+%%_friendly4%%
+<div class="info_artic">
+    <div id="info_url_conflict">
+        <div class="col685">
+            <div class="rotulo">
+                <div class="titulo">Se ha encontrado un art&iacute;culo que tiene el mismo titular ingresado</div>
+            </div>
+            <div class="box-gris">
+                <div class="box-auxi">
+                  <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform">
+                    <tr>
+                      <td class="nombre">Timestamp:</td><td class="campo" id="url_art_ts"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Id</td><td class="campo" id="url_art_id"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Titular:</td><td class="campo" id="url_art_titu"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Path en URL:</td><td class="campo" id="url_art_slug"></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Editar</td><td class="campo"><a href="#" target="_blank" onclick="Fid.abrirEditor($(this));return false;" id="url_art_editar" >Click para editar el art&iacute;culo en conflicto</a></td>
+                    </tr>
+                    <tr>
+                      <td class="nombre">Path del Art&iacute;culo:</td><td class="campo" id="url_art_path"></td>
+                    </tr>
+                  </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+%%/_friendly4%%

@@ -387,7 +387,12 @@ sub parseaVars {
     $loop = $1;
     my $cont = 1;
 
+    my $buffer_friendly = '';
+    $pagina =~ /<!--loop_friendly_exclude_fid-->(.*?)<!--\/loop_friendly_exclude_fid-->/s;
+    my $loop_friendly = $1;
+
     foreach my $fid (sort keys %prontus_varglb::FORM_PLTS) {
+      my $temp_friendly = $loop_friendly;
       $temp = $loop;
       my @fid_info = split(/:/, $fid);
 
@@ -395,17 +400,29 @@ sub parseaVars {
       $temp =~ s/%%nombrefid%%/$fid_info[1]/isg;
       $temp =~ s/%%num%%/$cont/isg;
 
+      $temp_friendly =~ s/%%archivofid%%/$fid_info[0]/isg;
+      $temp_friendly =~ s/%%nombrefid%%/$fid_info[1]/isg;
+      $temp_friendly =~ s/%%num%%/$cont/isg;
+
       if (defined $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$fid_info[0]}) {
         $temp =~ s/%%checked%%/ checked="checked"/isg;
       } else {
         $temp =~ s/%%checked%%//isg;
       }
 
+      if (defined $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$fid_info[0]}) {
+        $temp_friendly =~ s/%%checked%%/ checked="checked"/isg;
+      } else {
+        $temp_friendly =~ s/%%checked%%//isg;
+      }
+
       $buffer = $buffer . $temp;
+      $buffer_friendly = $buffer_friendly . $temp_friendly;
       $cont++;
     };
 
     $pagina =~ s/<!--loop_cache_purge_fid-->.*?<!--\/loop_cache_purge_fid-->/$buffer/sig;
+    $pagina =~ s/<!--loop_friendly_exclude_fid-->.*?<!--\/loop_friendly_exclude_fid-->/$buffer_friendly/sig;
 
     # -------------------------------------------------------------------------------
     # -art.cfg
@@ -419,7 +436,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_fid_item-->(.*?)<!--\/loop_fid_item-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
     my $fid_default = '';
 
     if ($prontus_varglb::FID_DEFAULT =~ /^([\w@-]+) *: *.+/) {
@@ -646,7 +663,7 @@ sub parseaVars {
 
     # $prontus_varglb::PORT_PLTS_EXTRA{$port}
     # $prontus_varglb::PORT_PLTS_PREVIEW{$port}
-    my $cont = 1;
+    $cont = 1;
 
     # Se revisan las portadas que estan siendo utilizadas
     my %ports_utilizadas;
@@ -700,8 +717,8 @@ sub parseaVars {
 
         $temp =~ s/%%paralelas%%/$option_select/isg;
 
-        my $option_select = '';
-        my $num_options_selected = 0;
+        $option_select = '';
+        $num_options_selected = 0;
 
         # Portadas preview.
         foreach my $prev_file (sort @preview_listado) {
@@ -742,7 +759,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_base_ports-->(.*?)<!--\/loop_base_ports-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
 
     my %baseports_utilizadas;
     foreach my $port (sort @prontus_varglb::BASE_PORTS) {
@@ -761,22 +778,8 @@ sub parseaVars {
         };
     };
 
-
     $pagina =~ s/<!--loop_base_ports-->.*?<!--\/loop_base_ports-->/$buffer/sig;
 
-    # Listado de portadas, para agregar una.
-    # %%listado_portadas%%
-    #~ my $option_select = '';
-    #~ my $option_select_paralelas = '';
-    #~ my $option_select_base = '';
-    #~ foreach my $port_file (sort @ports_listado) {
-        #~ if ($port_file =~ /(.*?)\.(.*?)/ && $port_file ne '.' && $port_file ne '..') {
-            #~ if (!exists $ports_utilizadas{$port_file}) {
-                #~ $option_select = $option_select . '<option value="' . $port_file . '">' . $port_file . '</option>';
-            #~ };
-            #~ $option_select_paralelas = $option_select_paralelas . '<option value="' . $port_file . '">' . $port_file . '</option>';
-        #~ };
-    #~ };
     my $option_select_paralelas = $strcombo;
     my $option_select = $strcombo;
     my $option_select_base = '';
@@ -808,7 +811,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_ports_dragnadndrop-->(.*?)<!--\/loop_ports_dragnadndrop-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
 
     my %portdd_habilitadas;
     foreach my $port (keys (%prontus_varglb::PORT_DRAGANDROP)) {
@@ -976,7 +979,7 @@ sub parseaVars {
     $pagina =~ s/%%TAGPORT_MAXARTICS%%/$prontus_varglb::TAGPORT_MAXARTICS/ig;
     $pagina =~ s/%%MAX_LAST_TAGS_4FID%%/$prontus_varglb::MAX_LAST_TAGS_4FID/ig;
     my $tgport_orden = $prontus_varglb::TAGPORT_ORDEN;
-    my $direccion = '';
+    $direccion = '';
 
     if ($tgport_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
         $direccion = $1;
@@ -1171,7 +1174,6 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URLS_NO%%/ checked="checked"/ig;
     };
 
-
     if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%//ig;
@@ -1179,6 +1181,10 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%//ig;
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%/ checked="checked"/ig;
     };
+
+    # variables para configurar recaptcha google
+    $pagina =~ s/%%RECAPTCHA_API_URL%%/$prontus_varglb::RECAPTCHA_API_URL/ig;
+    $pagina =~ s/%%RECAPTCHA_SECRET_CODE%%/$prontus_varglb::RECAPTCHA_SECRET_CODE/ig;
 
 
     if ($prontus_varglb::BLOQUEO_EDICION eq '0' || $prontus_varglb::BLOQUEO_EDICION eq '') {
@@ -1195,23 +1201,12 @@ sub parseaVars {
         $pagina =~ s/%%BLOQUEO_EDICION_V2%%/ checked="checked"/ig;
     };
 
-    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '1') {
-        $pagina =~ s/%%FRIENDLY_URLS_V1%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V3%%//ig;
-    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
-        $pagina =~ s/%%FRIENDLY_URLS_V2%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V1%%//ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V3%%//ig;
-    } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '3') {
-        $pagina =~ s/%%FRIENDLY_URLS_V3%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V1%%//ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
-    } else {
-        # Dejar la versión 1 por defecto.
-        $pagina =~ s/%%FRIENDLY_URLS_V1%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
-    };
+    my $friendlyVer = '%%FRIENDLY_URLS_V'.$prontus_varglb::FRIENDLY_URLS_VERSION.'%%';
+    $pagina =~ s/$friendlyVer/ checked="checked"/ig;
+    $pagina =~ s/%%FRIENDLY_URLS_V1%%//ig;
+    $pagina =~ s/%%FRIENDLY_URLS_V2%%//ig;
+    $pagina =~ s/%%FRIENDLY_URLS_V3%%//ig;
+    $pagina =~ s/%%FRIENDLY_URLS_V4%%//ig;
 
     if ($prontus_varglb::PRONTUS_LOG eq 'SI') {
         $pagina =~ s/%%PRONTUS_LOG%%/ checked="checked"/ig;
@@ -1285,7 +1280,6 @@ sub parseaVars {
     };
 
 
-
     my $post_proceso = $prontus_varglb::POST_PROCESO{'ART-BORRAR'};
     $post_proceso =~ s/^\((.*?)\)$//ig;
     $post_proceso = $1;
@@ -1298,7 +1292,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_multivista-->(.*?)<!--\/loop_multivista-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         $temp = $loop;
         $temp =~ s/%%mv_valor%%/$mv/isg;
@@ -1411,6 +1405,17 @@ sub parseaVars {
     $pagina =~ s/%%XCODING_PPROC%%/$prontus_varglb::XCODING_PPROC/ig;
     $pagina =~ s/%%XCODE_MAX_PARALELO%%/$prontus_varglb::XCODE_MAX_PARALELO/ig;
 
+    # configuracion de transcodificador externo
+    if ($prontus_varglb::USAR_XCODER_EXTERNO eq 'SI') {
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_NO%%//ig;
+    } else {
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_SI%%//ig;
+        $pagina =~ s/%%USAR_XCODER_EXTERNO_NO%%/ checked="checked"/ig;
+    };
+    $pagina =~ s/%%XCODER_HOST%%/$prontus_varglb::XCODER_HOST/ig;
+    $pagina =~ s/%%XCODER_PORT%%/$prontus_varglb::XCODER_PORT/ig;
+
     # -clustering.cfg
 
     $buffer = '';
@@ -1515,7 +1520,7 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_rawfiletypes-->(.*?)<!--\/loop_rawfiletypes-->/s;
     $loop = $1;
-    my $cont = 1;
+    $cont = 1;
     my @rawfiletypes = split(/ +/, $cfg_buscador{'RAW_FILETYPES'});
     foreach my $ftype (@rawfiletypes) {
         $temp = $loop;
@@ -1531,8 +1536,8 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_urlfiletypes-->(.*?)<!--\/loop_urlfiletypes-->/s;
     $loop = $1;
-    my $cont = 1;
-    my @rawfiletypes = split(/ +/, $cfg_buscador{'URL_FILETYPES'});
+    $cont = 1;
+    @rawfiletypes = split(/ +/, $cfg_buscador{'URL_FILETYPES'});
     foreach my $ftype (@rawfiletypes) {
         $temp = $loop;
         $temp =~ s/%%filetype_valor%%/$ftype/isg;
@@ -1544,9 +1549,9 @@ sub parseaVars {
     $pagina =~ s/<!--loop_urlfiletypes-->.*?<!--\/loop_urlfiletypes-->/$buffer/sig;
 
     $buffer = '';
-    my $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
+    $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
     &glib_fildir_02::check_dir($dir_fid);
-    my @fids_listado = &glib_fildir_02::lee_dir($dir_fid);
+    @fids_listado = &glib_fildir_02::lee_dir($dir_fid);
 
     # Generar arreglo de hash para checkboxs.
     my @fidlist;
@@ -1616,8 +1621,8 @@ sub parseaVars {
     $buffer = '';
     $pagina =~ /<!--loop_textvars-->(.*?)<!--\/loop_textvars-->/s;
     $loop = $1;
-    my $cont = 1;
-    my @rawfiletypes = split(/ +/, $cfg_buscador{'TEXTVARS'});
+    $cont = 1;
+    @rawfiletypes = split(/ +/, $cfg_buscador{'TEXTVARS'});
     foreach my $ftype (@rawfiletypes) {
         $temp = $loop;
         $temp =~ s/%%textvar_valor%%/$ftype/isg;

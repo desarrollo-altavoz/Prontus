@@ -6369,7 +6369,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Wizard Prontus
     [bugfixes]
         - Error en el Wizard, tenía mal el directorio de los modelos y llegaba solo al paso 2 en la instalacion de cero
-        - En caso de que el problema anterior se repita, se agregaron varias validaciones y chqueos para evitarlo
+        - En caso de que el problema anterior se repita, se agregaron varias validaciones y chequeos para evitarlo
     [files]
         /cgi-cpn/wizard_lib.pm
         /cgi-cpn/wizard_models_download.cgi
@@ -8818,3 +8818,181 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_cron_taxport.cgi
+
+====================================================================================================
+11.2.92 - 12/09/2016 - JOR/MPG/EAG/EON/SCT
+====================================================================================================
+
+- Prontus en general
+    [cambios]
+        - Se aumenta el ancho del contenedor en el buscador de tags para que no queden superpuestos los elementos.
+        - Se cambia el orden de los botones para despublicar y editar articulos en portada.
+        - Se aumenta a 2000 el limite de condicionales a procesar.
+        - Se agrega parámetro a acciones masivas de capn para evitar el cache de los navegadores.
+    [mejoras]
+        - Se mejora compatibilidad con mysql version 5.7, campos text no pueden tener valor por default.
+        - Se agrega cgi para checkeo de plataforma por linea de comando.
+        - Se mejora el sistema de respaldo de portadas, si la portada se vuelve a guadar sin cambios no se hace respaldo del xml.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_setbd.pm
+        /cgi-cpn/check_platform.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/tax.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Opciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/listado_titulos.html
+
+- Portadas taxonómicas
+    [bugfixes]
+        - Se corrige parseo de fixed url en taxports
+    [mejoras]
+        - Se cambia de lugar la desconexión de la base de datos para evitar carrera critica con semaforo de worker.
+    [files]
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+
+- Portadas tagonómicas
+    [mejoras]
+        - Se agrega paginación custom para tagport, basado en la paginación de las taxport. Es posible cambiar el html de la páginación, configurable dentro de la misma plantilla de taxport mediante las siguientes variables:
+
+        HTML de cada número de página: <!-- CONFIG HTML_NRO_PAG = <a class="pag_number" href="%%lnk%%">%%cnro_pag%%</a> -->
+        HTML de la página actual: <!-- CONFIG HTML_PAG_ACTUAL = <span class="current_pag">%%cnro_pag%%</span> -->
+        Separador que aparece al utilizar páginación tipo google: <!-- CONFIG HTML_SEPARADOR = <span>...</span> -->
+    [files]
+        - /cgi-cpn/prontus_regenera_tagport.cgi
+        - /cgi-cpn/prontus_tags_ports.cgi
+
+- Transcodificación
+    [mejoras]
+        - Se agrega soporte para transcodificador externo
+        - Se mejora chequeo de marca al cargar formatos
+        - Se verifica la version de JSON disponible, para mejorar compatibilidad con sistemas antiguos.
+        - Se agrega verificación al estado de transcodificacion, si el archivo no existe y esta en el xml se lanza error para no seguir intentando transcodificar
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+        /cgi-cpn/xcoding/prontus_xcoding_getformatos.cgi
+        /cgi-cpn/xcoding/prontus_xcoding_guardarformatos.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
+
+
+====================================================================================================
+11.2.93 - 15/11/2016 - SCT/EAG/NAR
+====================================================================================================
+- Transcodificación
+    [mejoras]
+        - Se comenta código que solo se usa para debug
+        - Se corrige secuencia en la que se verifica si ya esta corriendo el proceso de transcodificación
+    [files]
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+
+- Prontus en general
+    [mejoras]
+        - Se agrega versión 4.0 de friendly url, que utiliza el siguiente formato:
+            /prontus_id/seccion/tema/subtema/titular
+            En caso de que un artículo no tenga sección, tema o subtema estos se omiten y no
+            se agregan a la url.
+
+        Para utilizarlas se debe agregar la siguiente configuración al servidor web:
+            Nginx: rewrite     "^\/([^\/]+)\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"          /$1/site/friendly/links/$2/$3/$2$3$4.html;
+
+            Se pueden configurar los fids que seran excluidos de la generación de friendly url 4
+            Nuevas variables de configuracion:  FRIENDLY_V4_EXCLUDE_FID
+
+            Las urls de los artículos deben ser únicas, por lo que no se permite el uso de titulares
+             o slug iguales, ya que provoca un un conflicto.
+            Para evitar esto Prontus avisará si esto ocurre para permitir al usuario cambiarla.
+            En el caso de los artículos nuevos, "Sin título", ahora se agrega un número creciente
+            para evitar duplicados.
+
+        - Se hace limpieza de codigo y correcciones generales.
+        - Se cambia la forma en que se rescata el titular anterior al cambiar el tipo de fid
+    [cambio]
+        - El respaldo de xmls de portadas ahora se hace moviendo los archivos en vez de copiarlos.
+    [bugfixes]
+        - Al regenerar articulos se regeneran relacionados manuales
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /cgi-cpn/prontus_art_view_xml.cgi
+        /cgi-cpn/prontus_art_regen_real.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_set_bd.cgi
+        /cgi-cpn/prontus_regenerabd_real.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /cgi-cpn/prontus_art_check_url.cgi
+        /cgi-cpn/wizard_deploy.cgi
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/refresh2_of.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/refresh2_on.png
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_form_fields.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Cfgedit.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Portadas list
+    [bugfixes]
+        - Se corrige query al momento de generar una lista con tags configurados.
+    [files]
+        - /cgi-cpn/prontus_cron_list.cgi
+
+- Prontus form
+    [mejoras]
+        - Se puede indicar un remitente fijo en el fid con el nombre  "form_remitente"
+         Se deja con preferencia el campo "form_from" como remitente, al marcar
+         el check "chk_form_force_from"
+         - Se agrega soporte para recaptcha de google https://www.google.com/recaptcha/intro/index.html
+         Nuevas variables de configuración: RECAPTCHA_API_URL, RECAPTCHA_SECRET_CODE
+         Se debe enviar el parámetro g-recaptcha-response para hacer uso del recaptcha de google
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/lib_prontus.pm
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Portadas taxonómicas
+    [mejoras]
+        - Se agrega la opción para configurar de forma independiente, a todos los prontus de un servidor,
+         el numero global de procesos de taxport que se ejecutaran concurrentemente
+    [files]
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+        /cgi-cpn/prontus_taxport_conf-sample.cfg
+        /cgi-cpn/prontus_varglb.pm
+
+====================================================================================================
+11.2.94 - xx/xx/2016 - SCT/EAG
+====================================================================================================
+- Prontus en general
+    [bugfixes]
+        - Se corrige ordenamiento de campos recibidos en prontus form, los campos que no estan en el html
+        quedan siempre al final
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Biblioteca multimedia
+    [bugfixes]
+        - Se corrige consulta SQL al momento de obtener cantidad de artículos con fotos para la paginación.
+    [files]
+        /cgi-cpn/dam/prontus_dam_search.cgi
+
+- Wizard Prontus
+    [bugfixes]
+        - Se corrige validación js al momento de crear un prontus que comience con números ya que obligaba a que
+          comenzara con letras.
+    [files]
+        - /wizard_prontus/core/js/Wizard.class.js

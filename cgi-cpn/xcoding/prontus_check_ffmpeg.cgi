@@ -48,7 +48,7 @@ use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
 #~ use utf8;
-use Data::Dumper;
+#~ use Data::Dumper;
 
 my %FORM;        # Contenido del formulario de invocacion.
 

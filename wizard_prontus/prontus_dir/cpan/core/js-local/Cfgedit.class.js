@@ -157,6 +157,17 @@ var Cfgedit = {
                     varnish += $(this).val() + "|";
                 });
                 $('input[name="VARNISH_SERVER_NAME"]').val(varnish);
+
+                var friendly_v4_exclude_fid = '';
+                $('input[name="FRIENDLY_V4_EXCLUDE_FID_ARR[]"]:checked').each(function () {
+                    if (!$(this).is(':disabled')) {
+                        if ($(this).val() !== '') {
+                            friendly_v4_exclude_fid += $(this).val() + "|";
+                        }
+                    }
+                });
+
+                $('input[name="FRIENDLY_V4_EXCLUDE_FID"]').val(friendly_v4_exclude_fid);
             } else if (cfg === 'dropbox') {
                 var dropbox = '';
                 $('input[name="INPUT_DROPBOX_CUSTOM_DIR[]"]').each(function () {

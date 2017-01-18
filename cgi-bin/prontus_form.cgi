@@ -132,6 +132,8 @@
 #                        - Valida extensiones de archivos a subir, usando lista blanca.
 # 1.11  31/11/2009 - YCC - Cambia a minusculas refrencias a campos prontus, para 10.14.
 # 1.12  15/07/2015 - EAG - Se escribe json valido al guardar el archivo de datos recibidos por primera vez
+# 1.12  18/03/2016 - NAR - Se agrega campo de correo fijo de remitente
+# 2.0.0 04/11/2016 - SCT - Se agrega validación contra reCaptcha de google.
 # To-Do:
 # - Revisar sensibilidad a las mayusculas.
 
@@ -171,6 +173,9 @@ use lib_validator;
 use lib_mail;
 use lib_maxrunning;
 use lib_prontus;
+use strict;
+use LWP::UserAgent;
+use JSON;
 
 my $DEBUG = 0;    # 1.6 Flag para debug.
 
@@ -194,6 +199,9 @@ my $ANSWERID;     # Identificacion de la respuesta.
 my $FECHA;        # Fecha de creacion del formulario. Usada para acceder a los datos xml.
 my $EXT;          # Extension usada por Prontus. Se deduce del path del formulario.
 my %MSGS;         # Mensajes de error.
+my $BUFFER_ART = ''; # Buffer para cargar el contenido de articulo
+
+my $RECAPTCHA_RESPONSE = ""; # Captura la respuesta por POST del formulario
 
 # Para mostrar de inmediato la pagina de resultados.
 $|=1;
@@ -209,10 +217,9 @@ binmode(STDOUT, ":utf8");
 $MSGS{'out_of_service'} = 'Sistema fuera de servicio. Intente otra vez m&aacute;s tarde ...';
 $MSGS{'required_data'} = 'Este dato es obligatorio:';
 $MSGS{'wrong_data'} = 'Este dato es incorrecto:';
-$MSGS{'wrong_captcha'} = 'El c&oacute;digo de validaci&oacute;n ingresado no es v&aacute;lido';
+$MSGS{'wrong_captcha'} = 'Debes completar la validaci&oacuten antes de enviar el formulario.';
 $MSGS{'wrong_vista'} = 'La vista ingresada no es v&aacute;lida: ';
 
-#~ &lib_form::max_running(5); # Soporta un maximo de 5 copias corriendo.
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(5)) {
     &aborta("Error: Servidor ocupado. Intente otra vez m&aacute;s tarde."); # 1.3.1 # 1.10
@@ -262,7 +269,7 @@ main: {
 # ------------------------------------------------------------------------- #
 # Envia mails y guarda datos si es pertinente.
 sub data_management {
-    my($body,$data,$backupdir,$backupdata,$backupheaders,$buffer);
+    my($body,$data,$backupdir,$backupdata,$backupheaders);
     my ($to,$from,$subj,$filename,$filedata,$fecha,$hora,$ip);
     # my (@datos) = &glib_cgi_04::param();
     my ($result);
@@ -293,12 +300,12 @@ sub data_management {
     my $counter = 1;
     # Forma cuerpo para el administrador.
     # Lee formulario para determinar el orden de los datos.
-    $buffer = &glib_fildir_02::read_file($ROOTDIR.&glib_cgi_04::param('_FILE'));
+    $BUFFER_ART = &glib_fildir_02::read_file($ROOTDIR.&glib_cgi_04::param('_FILE'));
     $body = "Los datos recibidos son los siguientes:\n\n";
     $backupheaders .= "\"Fecha\"$SEPARADOR\"Hora\"$SEPARADOR\"IP\"$SEPARADOR";
     $backupdata .= "\"$fecha\"$SEPARADOR\"$hora\"$SEPARADOR\"$ip\"$SEPARADOR";
-    foreach my $key (sort{index($buffer,"\"$a\"") <=> index($buffer,"\"$b\"")} @DATOS) {
-        next if (($key =~ /^_/) || ($key =~ /CHK_form_required/) || ($key =~ /CHK_form_backup_datos/)); # 1.7
+    foreach my $key (sort {ordenar_campos($a,$b)} @DATOS) {
+        next if (($key =~ /^_/) || ($key =~ /CHK_form_required/) || ($key =~ /CHK_form_backup_datos/) || ($key =~ /g-recaptcha-response/));
         $backupheaders .= '"' . $key . '"' . $SEPARADOR;
         # Determino si el dato es un archivo o no.
         # Si son varios, se adjuntara el ultimo.
@@ -322,9 +329,14 @@ sub data_management {
         };
     };
 
-    &glib_fildir_02::write_file("$backupdir/order.json", &JSON::to_json($order_data));
+    if($JSON::VERSION =~ /^1\./) {
+        my $json = new JSON;
+        &glib_fildir_02::write_file("$backupdir/order.json", &json->objToJson($order_data));
+    } else {
+        &glib_fildir_02::write_file("$backupdir/order.json", &JSON::to_json($order_data));
+    }
 
-    # 1.8 - firma configureable CVI
+    # 1.8 - firma configurable CVI
     my $msg_signature = "\r\nRecibido el $fecha a las $hora desde el IP $ip\n";
     $msg_signature .= "\nAtentamente,\nProntus CMS\r\n\r\n";
     if($PRONTUS_VARS{'form_signature'.$VISTAVAR}) {
@@ -335,6 +347,9 @@ sub data_management {
     # Envia mail a el o los administradores.
     if($PRONTUS_VARS{'chk_form_force_from'}) {
         $from = $PRONTUS_VARS{'form_from'};
+    #Se agrega campo para correo remitente fijo
+    } elsif ($PRONTUS_VARS{'form_remitente'} ne '') {
+        $from = $PRONTUS_VARS{'form_remitente'};
     } elsif (&glib_cgi_04::param('email') ne '') {
         $from = &glib_cgi_04::param('email');
     } else {
@@ -435,7 +450,13 @@ sub data_management {
         if (keys %{$files_json}) {
             $resp->{'_files'} = $files_json;;
         }
-        &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
+
+        if($JSON::VERSION =~ /^1\./) {
+            my $json = new JSON;
+            &glib_fildir_02::write_file($filejson, &json->objToJson($resp));
+        } else {
+            &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
+        }
 
     } else {
         unlink($filejson);
@@ -443,6 +464,20 @@ sub data_management {
     return $result; # $result es solo para debug.
 }; # dataManagement
 
+# ------------------------------------------------------------------------- #
+# ordena los campos segun los encuentra en el html
+sub ordenar_campos {
+    my ($a, $b) = @_;
+    my $index_a = index($BUFFER_ART,"\"$a\"");
+    my $index_b = index($BUFFER_ART,"\"$b\"");
+    if ($index_a < 0) {
+        return 1;
+    }
+    if ($index_b < 0) {
+        return -1
+    }
+    return $index_a <=> $index_b;
+}
 # ------------------------------------------------------------------------- #
 # Valida las variables Prontus y las del formulario.
 sub valida_data {
@@ -522,13 +557,6 @@ sub valida_data {
         };
     };
 
-  # YCC: esto se comenta porque esta demas, el p.form escribe en la raiz de site/cache/form
-  # if (! (-d "$ROOTDIR/$ANSWERS_DIR/pags") ) {
-    # if (&crea_dir("$ROOTDIR/$ANSWERS_DIR/pags") == 0) {
-      # &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR/pags].");
-    # };
-  # };
-
     $ANSWERID = $PRONTUS_ID . $TS . time . $$; # rand(1000000000);
     # Lee el servidor SMTP definido para Prontus.
     # SERVER_SMTP= 'localhost'
@@ -559,18 +587,48 @@ sub valida_data {
     # Chequea Captcha si es que es requerido
     if($PRONTUS_VARS{'chk_form_captcha_enable'} ne '') {
 
-        # Usando la nueva lib_captcha se manejan ambos formatos
-        my $captcha_input = &glib_cgi_04::param('_CAPTCHA_FORM');
-        my $captcha_type = 'form'; # custom
-        my $captcha_img = &glib_cgi_04::param('_captcha_img');
-        my $captcha_code = &glib_cgi_04::param('_captcha_code');
-        $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
-        #~ require 'dir_cgi.pm';
-        &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
-        my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
-        if ($msg_err_captcha ne '') {
-            &salida($MSGS{'wrong_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
-        };
+        if (!&glib_cgi_04::param('g-recaptcha-response')) {
+            # Usando la nueva lib_captcha se manejan ambos formatos
+            my $captcha_input = &glib_cgi_04::param('_CAPTCHA_FORM');
+            my $captcha_type = 'form'; # custom
+            my $captcha_img = &glib_cgi_04::param('_captcha_img');
+            my $captcha_code = &glib_cgi_04::param('_captcha_code');
+            $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
+            #~ require 'dir_cgi.pm';
+            &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
+            my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
+            if ($msg_err_captcha ne '') {
+                &salida($MSGS{'wrong_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+            };
+        } else {
+            # Se valida re-captcha para continuar
+            $RECAPTCHA_RESPONSE = &glib_cgi_04::param('g-recaptcha-response');
+
+            my %form = (
+                secret => $prontus_varglb::RECAPTCHA_SECRET_CODE,
+                response => $RECAPTCHA_RESPONSE
+            );
+
+            my $strjson = &post_http($prontus_varglb::RECAPTCHA_API_URL, \%form);
+
+            if ($strjson) {
+                my $hashtemp;
+                if($JSON::VERSION =~ /^1\./) {
+                    my $json = new JSON;
+                    $hashtemp = &json->jsonToObj($strjson);
+                } else {
+                    $hashtemp = &JSON::from_json($strjson);
+                }
+
+                if (defined $hashtemp->{'success'}) {
+                    if(!$hashtemp->{'success'}){
+                        &salida($hashtemp->{'error-codes'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                        exit;
+                    };
+                };
+            };
+
+        }
     };
 
     # Chequea campos requeridos.
@@ -667,6 +725,27 @@ sub valida_data {
 }; # validaData
 
 # ------------------------------------------------------------------------- #
+sub post_http {
+    my $url = $_[0];
+    my $form = $_[1];
+    my $ua = LWP::UserAgent->new(keep_alive=>1);
+
+    $ua->default_header('Content-Type' => 'application/x-www-form-urlencoded');
+
+    $ua->timeout(60);
+
+    my $response = $ua->post($url, $form);
+
+    if ($response->is_success) {
+        return $response->decoded_content;  # or whatever
+    } else {
+        &lib_form::aborta("Ha ocurrido un error. Intente nuevamente.");
+        return '';
+    };
+
+};
+
+# ------------------------------------------------------------------------- #
 # Inicializa las variables de invocacion.
 sub get_form_data {
     my($xmlpath);
@@ -728,7 +807,7 @@ sub salida {
         $plantilla =~ s/%%_referer%%/$ENV{'HTTP_REFERER'};/si;
         $plantilla =~ s/%%_answerpage%%/$ANSWERS_DIR\/$ANSWERID\.$EXT/si;
         $plantilla =~ s/%_PF_(\w+\(.*?\))%/%%_PF_\1%%/isg;
-        $plantilla = &lib_prontus::parser_custom_function($plantilla);        
+        $plantilla = &lib_prontus::parser_custom_function($plantilla);
 
         # Elimina tags no parseados en la plantilla.
         $plantilla =~ s/%%\w+%%//sg; # 1.2.1

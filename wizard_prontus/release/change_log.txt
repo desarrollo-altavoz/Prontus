@@ -1,4 +1,43 @@
 ====================================================================================================
+11.2.94 - xx/xx/2016 - SCT
+====================================================================================================
+- bugfixes: Se corrige consulta SQL al momento de obtener cantidad de artículos con fotos para la paginación.
+- bugfixes: Se corrige validación js al momento de crear un prontus que comience con números ya que obligaba a que comenzara con letras.
+====================================================================================================
+11.2.93 - 15/11/2016 - SCT/EAG/NAR
+====================================================================================================
+- bugfixes: Portadas list, Se corrige query al momento de generar una lista con tags configurados.
+- bugfixes: Al regenerar artículos se regeneran relacionados manuales
+- changes: Transcodificación: Se comenta código que solo se usa para debug
+- changes: Transcodificación: Se corrige secuencia en la que se verifica si ya esta corriendo el proceso de transcodificación
+- changes: Prontus: Se hace limpieza de codigo y correcciones generales.
+- improvement: Se agrega versión 4.0 de friendly url con el formato: /prontus_id/seccion/tema/subtema/titular
+Los articulos deben tener titular o slug único.
+- improvement: Se puede indicar un remitente fijo en el fid con el nombre  "form_remitente"
+ Se deja con preferencia el campo "form_from" como remitente, al marcar el check "chk_form_force_from"
+- improvement: Se agrega soporte para recaptcha de google https://www.google.com/recaptcha/intro/index.html
+- improvement: Se agrega la opción para configurar de forma independiente, a todos los prontus de un servidor,
+ el numero global de procesos de taxport que se ejecutaran concurrentemente
+
+====================================================================================================
+11.2.92 - 12/09/2016 - JOR/MPG/EAG/EON/SCT
+====================================================================================================
+- bugfixes: Se corrige parseo de fixed url en taxports
+- changes: Se aumenta el ancho del contenedor en el buscador de tags para que no queden superpuestos los elementos.
+- changes: Se cambia el orden de los botones para despublicar y editar articulos en portada.
+- changes: Se aumenta a 2000 el limite de condicionales a procesar.
+- changes: Se agrega parámetro a acciones masivas de capn para evitar el cache de los navegadores.
+- improvement: Se mejora compatibilidad con mysql version 5.7, campos text no pueden tener valor por default.
+- improvement: Se agrega cgi para checkeo de plataforma por linea de comando.
+- improvement: Se mejora el sistema de respaldo de portadas, si la portada se vuelve a guadar sin cambios no se hace respaldo del xml.
+- improvement: Se cambia de lugar la desconexión de la base de datos para evitar carrera critica con semaforo de worker.
+- improvement: Se agrega soporte para transcodificador externo
+- improvement: Se mejora chequeo de marca al cargar formatos
+- improvement: Se verifica la version de JSON disponible, para mejorar compatibilidad con sistemas antiguos.
+- improvement: Se agrega verificación al estado de transcodificacion, si el archivo no existe y esta en el xml se lanza error para no seguir intentando transcodificar
+- improvement: Se agrega personalización de la páginación a tagports, con el mismo funcionamiento que en taxports
+
+====================================================================================================
 11.2.91 - 06/07/2016 - JOR/EAG
 ====================================================================================================
 - bugfixes: Se soluciona problema al activar el uso de https en cpan de prontus, no se podían subir imagenes con uploadify.

@@ -157,6 +157,22 @@ main:{
                 &finishLoading("Error creando la estructura de la tabla de artículos, proceso abortado.");
                 &lib_logproc::handle_error("Error creando la estructura de la tabla de artículos, proceso abortado.");
             };
+
+            if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+                # URL
+                $sql = 'drop table URL';
+                $ret = $base->do($sql);
+
+                if ($ret) {
+                    # Re-crear estructura de la tabla URL
+                    my ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_url($base, $prontus_varglb::MOTOR_BD);
+                    &lib_logproc::add_to_log($msg_ret);
+                    if ($hay_err) {
+                        &finishLoading("Error creando la estructura de la tabla de urls, proceso abortado.");
+                        &lib_logproc::handle_error("Error creando la estructura de la tabla de urls, proceso abortado.");
+                    }
+                }
+            }
         };
 
         # Repoblarla
@@ -246,7 +262,17 @@ sub procesa_files {
             my $regenerar_registro = 1;
             my $ret = $artic_obj->art_insert_bd($base, $regenerar_registro);
             if ($ret) {
-                $artic_obj->tags2bd($base, 0) || return $Artic::ERR;
+                if (!$artic_obj->tags2bd($base, 0)) {
+                    &lib_logproc::add_to_log("\t\t\tError: $Artic::ERR");
+                    next;
+                }
+
+                if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+                    if (!$artic_obj->friendly_v4_2bd($base, 0)) {
+                        &lib_logproc::add_to_log("\t\t\tError: $Artic::ERR");
+                        next;
+                    }
+                }
                 $OK_REGS++;  # Total de reg. insertados normalmente
             }
             else {
@@ -257,8 +283,6 @@ sub procesa_files {
         };
     };
 };
-
-
 
 # ---------------------------------------------------------------
 sub registra_artic_error {
@@ -271,7 +295,7 @@ sub finishLoading {
 
     my $msg = $_[0];
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_bd_regen.js";
-    my $msg = '{"status":1, "msg":"'.$msg.'"}';
+    $msg = '{"status":1, "msg":"'.$msg.'"}';
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
 };
 

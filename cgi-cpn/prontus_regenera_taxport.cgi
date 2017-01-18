@@ -98,6 +98,9 @@ main: {
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus'});
     &lib_prontus::load_config( &lib_prontus::ajusta_pathconf($relpath_conf) );
 
+    # Se carga la configuracion local si existe
+    &lib_tax::carga_configuracion_local();
+
     # Se cargan todos los niveles, de manera inteligente
     &cargar_taxports();
 
@@ -189,18 +192,18 @@ sub gatillar_procesos {
     my $rutaScript = $Bin;
     my $pathnice = &lib_prontus::get_path_nice();
     $pathnice = "$pathnice -n19 " if($pathnice);
-
+    print "TAXPORT_MAX_MASTERS [$prontus_varglb::TAXPORT_MAX_MASTERS]\n";
+    print "TAXPORT_MAX_WORKERS [$prontus_varglb::TAXPORT_MAX_WORKERS]\n";
     foreach my $fid_name (keys %FIDS2PROCESS) { # key = 'fid_general:General(general.php)'
         foreach my $levels (sort keys %LEVELS2TRIGGER) {
             next unless($LEVELS2TRIGGER{$levels});
 
-            # Se chequea para descansar con un sleep
-            #~ my $safetycounter = 1;
-            while (&check_taxport_running() >= 3) {
-                #~ last if($safetycounter > 10);
-
+            while (&check_taxport_running() >= $prontus_varglb::TAXPORT_MAX_MASTERS) {
                 print "Muchos procesos simultaneos... esperando 5 segundos.\n";
-                #~ $safetycounter++;
+                sleep(5);
+            }
+            while (&check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
+                print "Muchos procesos worker simultaneos... esperando 5 segundos.\n";
                 sleep(5);
             }
 
@@ -218,6 +221,15 @@ sub check_taxport_running {
     my($res) = qx/ps axww | grep 'prontus_cron_taxport.cgi' | grep -v ' grep ' | grep -v 'sh -c' | wc -l/;
 
     $res =~ s/\D//gs;
+    $res += 0; # para forzar el casteo a numero
+    return $res;
+};
+# ---------------------------------------------------------------
+sub check_worker_running {
+    my($res) = qx/ps axww | grep 'prontus_cron_taxport_worker.cgi' | grep -v ' grep ' | grep -v 'sh -c' | wc -l/;
+
+    $res =~ s/\D//gs;
+    $res += 0; # para forzar el casteo a numero
     return $res;
 };
 # ---------------------------------------------------------------

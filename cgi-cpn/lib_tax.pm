@@ -646,5 +646,19 @@ sub procesar_condicional_extra {
     return $localbuf;
 };
 
+# ---------------------------------------------------------------
+# carga configuracion propia del servidor si esta disponible
+# sobreescribe los valores definidos en el cpan de prontus
+sub carga_configuracion_local {
+    my $buffer = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_taxport_conf.cfg");
+    if ($buffer ne '') {
+        if ($buffer =~ m/\s*TAXPORT_MAX_WORKERS\s*=\s*["']([0-9]+?)["']/) {
+            $prontus_varglb::TAXPORT_MAX_WORKERS = $1;
+        }
+        if ($buffer =~ m/\s*TAXPORT_MAX_MASTERS\s*=\s*["']([0-9]+?)["']/) {
+            $prontus_varglb::TAXPORT_MAX_MASTERS = $1;
+        }
+    }
+}
 
 return 1;

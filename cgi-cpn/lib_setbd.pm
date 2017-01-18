@@ -397,6 +397,45 @@ sub crear_tabla_art {
   return ($msg_ret, $hay_error);
 };
 
+#---------------------------------------------------------------
+sub crear_tabla_url {
+  my $base = $_[0];
+  my $motor = $_[1]; # PRONTUS | MYSQL
+  my ($msg_ret, $hay_error);
+  my $sql;
+
+  if (!&existe_tabla($base, 'URL', $motor)) {
+
+    # MYSQL
+    if ($motor eq 'MYSQL') {
+      $sql = "
+            create table URL (
+                URL_ID int(18) auto_increment not null,
+                URL_ART_ID char(14) not null default '' ,
+                URL_ART_URI varchar(100) not null default '',
+
+                PRIMARY KEY (URL_ID),
+                UNIQUE INDEX TS (URL_ART_ID),
+                UNIQUE (URL_ART_URI),
+                FULLTEXT UA (URL_ART_URI)
+            )
+                CHARACTER SET utf8
+                COLLATE utf8_general_ci
+                ENGINE = MYISAM;
+
+      ";
+      $base->do($sql) || return("Error al crear la tabla URL:" . $base->errstr, 1);
+      $msg_ret = "- Tabla URL creada OK.";
+    };
+
+  }
+  else {
+    $msg_ret = '- Error: La tabla URL ya existe.';
+    $hay_error = 1;
+  };
+  return ($msg_ret, $hay_error);
+};
+
 # ---------------------------------------------------------------
 sub existe_tabla {
   # SQLITE

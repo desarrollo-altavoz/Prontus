@@ -39,7 +39,8 @@
 
 # 1.0.1 - 01/06/2010 - ??? - Primera version.
 # 1.1.1 - 13/08/2013 - JOR - Cambia respuesta a formato json.
-# 1.1.1 - 03/10/2014 - EAG - Se agrega use utf8
+# 1.1.2 - 03/10/2014 - EAG - Se agrega use utf8
+# 1.1.3 - 06/09/2016 - EON - Se agrega validación de que exista el archivo
 
 # -------------------------------BEGIN SCRIPT--------------------
 BEGIN {
@@ -59,19 +60,25 @@ use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
+use glib_fildir_02;
 use strict;
 use utf8;
 
 my %FORM;        # Contenido del formulario de invocacion.
 my $RES;
-
-use glib_fildir_02;
+my $MODO_CLI = 0;
 
 main: {
 
     &glib_cgi_04::new();
     &glib_cgi_04::set_formvar('video', \%FORM);
     &glib_cgi_04::set_formvar('prontus_id', \%FORM);
+
+    if ($ENV{'SERVER_NAME'} eq '') {
+        $MODO_CLI = 1;
+        $FORM{'video'} = $ARGV[0];
+        $FORM{'prontus_id'} = $ARGV[1];
+    }
 
     # Valida datos de entrada
     my $msg_err;
@@ -90,11 +97,14 @@ main: {
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
+
+    if (!$MODO_CLI) {
     # User check
-    ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
-    if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
-    };
+        ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
+        if ($prontus_varglb::USERS_ID eq '') {
+            &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
+        };
+    }
 
     my ($status, $msg) = &xcode_status();
 
@@ -155,7 +165,9 @@ sub xcode_status {
         };
 
         return (1, 'ready');
-    } else {
+    } elsif ((not -s $destino) && ($esta_en_xml)){
+        &glib_html_02::print_json_result(0, "Error: no se pudo transcodificar el video", 'exit=1,ctype=1');
+    }else {
         # Si no esta el archivo en disco ni en el xml, se gatillará de nuevo la transcodificación.
         return (1, 'none');
     };

@@ -578,21 +578,6 @@ sub main {
         $dir_fecha = '';
     };
 
-    # ---------------
-#    my $resp_xml = "<response>"
-#                 . "<res>ok</res>"
-#                 . "<uid>$lib_artic::ARTIC_OBJ->{ts}</uid>"
-#                 . "<tipo>nuevo</tipo>"
-#                 . "<redirURL>"
-#                 . "prontus_art_ficha.$prontus_varglb::EXTENSION_CGI?_CURR_BODY=$FORM{'_CURR_BODY'}&amp;_CMB_EDIC=$EDIC" . '&amp;_DIR_FECHA=' . $dir_fecha . '&amp;_ART=' . $nom_file_artic . '&amp;_CMB_TIPO=' . $FORM{'_FID'} . '&amp;_PATH_CONF=' . $FORM{'_path_conf'} . '&amp;fotosvtxt=/1/2/3/4'
-#                 . "</redirURL>"
-#                 . "</response>";
-#    # DE REPNTE MANDAR DESDE ACA LISTO EL TR PA AGREGAR.
-#    print "Content-Type: text/xml\n\n";
-#    print $resp_xml;
-
-    # ---------------
-
     my $upd_port_preview;
     if ($FORM{'_port_dd'}) {
         # decirle a prontus_art_ficha que actualice la portada en el parent.
@@ -692,7 +677,7 @@ sub crear_objeto_artic {
         };
     };
 
-    my ($ts, $ext, $propietario);
+    my ($ts, $ext);
     my $propietario = $prontus_varglb::USERS_ID;
     if ($FORM{'_file'} ne '') {
         ($ts, $ext) = &lib_prontus::split_nom_y_extension($FORM{'_file'});
@@ -700,15 +685,6 @@ sub crear_objeto_artic {
     };
     # agrega item extra para guardar el user
     $hash_datos{'_users_id'} = $propietario;
-
-    # tags: deja los idtags en el xml, separados por coma.
-#    $hash_datos{'_tags'} = '';
-#    my @tagList = &glib_cgi_04::param('_tags');
-#    foreach my $tag (@tagList) {
-#        $tag =~ s/[^0-9]//g;
-#        $hash_datos{'_tags'} .= "$tag,"
-#    };
-#    $hash_datos{'_tags'} =~ s/,$//s;
 
     # cvi - Para la nueva forma de controlar los tags
     my $tags = &glib_cgi_04::param('_tags');
@@ -721,7 +697,7 @@ sub crear_objeto_artic {
 
     # cvi - Para guardar los nombres de los tags tambien
     my $tagnames = '';
-    my $tags4fid = &glib_cgi_04::param('_tags4fid');
+    #~ my $tags4fid = &glib_cgi_04::param('_tags4fid');
     my @tagscomp = split(/,/, $tags4fid);
     foreach my $idandname (@tagscomp) {
       if($idandname =~ /^\d+\|(.+?)$/) {

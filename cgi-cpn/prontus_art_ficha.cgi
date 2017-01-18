@@ -154,7 +154,7 @@ $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
 &lib_prontus::load_config($FORM{'_path_conf'});  # Prontus 6.0
 $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
-# Se lee el titular que habÃ­a antes, para no perderlo
+# Se lee el titular que habí­a antes, para no perderlo
 $FORM{'_txt_titular'} = &lib_prontus::get_codetext_value(&glib_cgi_04::param('_txt_titular'));
 
 # Control de usuarios obligatorio chequeando la cookie contra el dbm.
@@ -410,8 +410,13 @@ $pagina = &lib_prontus::replace_tsdata($pagina, $ts_artic);
 
 
 # Borrar marcas sobrantes
-# Antes , si no se parseo el titular, parseo algo de relleno
-$pagina =~ s/%%_TXT_TITULAR%%/Sin t&iacute;tulo/isg;
+# si no se parseo el titular intentamos el titular anterior
+if ($FORM{'_txt_titular'} ne '' ) {
+    $pagina =~ s/%%_TXT_TITULAR%%/$FORM{'_txt_titular'}/isg;
+}
+# si aun no se parseo el titular, parseo algo de relleno
+my $placeholder = 'Sin t&iacute;tulo '. (time - $prontus_varglb::URL_NUMBER);
+$pagina =~ s/%%_TXT_TITULAR%%/$placeholder/isg;
 
 # parsear SERVER_NAME
 $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
@@ -460,6 +465,19 @@ if ($FORM{'_upd_port_dd'}) {
     $pagina =~ s/%%_upd_port_dd%%.*?%%\/_upd_port_dd%%//isg;
 };
 
+# se parsea el numero de version de friendly urls en uso
+if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+    $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig
+} else {
+    $pagina =~ s/%%_friendly_urls_ver%%/0/ig
+}
+
+if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && !exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$FORM{'_fid'}}) {
+  $pagina =~ s/%%_friendly4%%(.*?)%%\/_friendly4%%/$1/isg;
+} else {
+  $pagina =~ s/%%_friendly4%%.*?%%\/_friendly4%%//isg;
+}
+
 $pagina =~ s/%%.+?%%//g;
 
 # Restituir las marcas especiales de las fotos y tablas y htmlfiles embebidas en el texto..
@@ -472,11 +490,6 @@ $pagina =~ s/<!-- *\/[^\/]+?-->//sg;
 
 my ($crlf) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
 $pagina =~ s/>($crlf| )+</>\x0a</sg;
-
-# Se comentan lineas para evitar reemplazar saltos de lineas o espacios ingresados intencionalmente por el usuario
-#~ $pagina =~ s/ +/ /sg;
-#~ $pagina =~ s/($crlf)+/\x0a/sg;
-
 
 print $pagina;
 
@@ -841,7 +854,7 @@ sub cargar_campos {
 # Retorna la ficha con todas las marcas reemplazadas.
 
 my ($dir_tpl_pags) = $_[0];
-my ($html_tpag, $path_paso, $buf, $pag, $marca, %hash_val, $path_artic, @campos, $nom_campo, $valor_campo, $text_artic, $text_artic_aux, $estilo, $delimitador_ini, $delimitador_fin, $head_artic, $relpath_foto, $nom_foto);
+my ($html_tpag, $path_paso, $buf, $pag, $marca, %hash_val, $path_artic, @campos, $nom_campo, $valor_campo, $valor_campo_original, $text_artic, $text_artic_aux, $estilo, $delimitador_ini, $delimitador_fin, $head_artic, $relpath_foto, $nom_foto);
 my ($base_path, $relbase_path, $campo, $nom);
 my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
@@ -1062,16 +1075,16 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     }
     elsif ($nom_campo =~ /^_?TXT_/i) {
       if ($valor_campo =~ /<!\[CDATA\[(.*?)\]\]>/isg) {
-        $valor_campo = $1;
+        $valor_campo_original = $1;
         # Dentro del buffer se sustituyen los segmentos html por marcas del tipo %%HTML[1]%%
         # las que despues de los 'unformats' seran sustituidas por los contenidos reales. # 1.8
         # $pag = &parse_text($pag, $nom_campo, $valor_campo);
-        $valor_campo = &lib_prontus::escape_html($valor_campo); # para preservar entidades html
+        $valor_campo = &lib_prontus::escape_html($valor_campo_original); # para preservar entidades html
 
         # print STDERR "[$nom_campo]: $valor_campo\n";
         $valor_campo =~ s/%%/&#37;&#37;/sg; # Enmascara para preservar %%
         $pag =~ s/%%$nom_campo%%/$valor_campo/ig;
-        $titular = $valor_campo if (lc $nom_campo eq '_txt_titular');
+        $titular = $valor_campo_original if (lc $nom_campo eq '_txt_titular'); # se guarda el titular original sin escapear para generar la frinedly url correctamente
 
       };
     }
@@ -1079,15 +1092,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       # ----------
     # Rescatar Fotografias.
     elsif ($nom_campo =~ /^(foto_\w+)/i) {
-#       # Rescata loop para fotos
-#       my ($loop_fotos, $loop_fotos_result);
-#       if ($pag =~ /<!--LOOP_FOTOS-->(.*?)<!--\/LOOP_FOTOS-->/is) {
-#         $loop_fotos = $1;
-#       };
-#
-#       $loop_fotos_result = "$loop_fotos\n";
-#       $loop_fotos_result =~ s/FOTO_N/$nom_campo/ig;
-#       $pag =~ s/<!--LOOP_FOTOS-->$loop_fotos<!--\/LOOP_FOTOS-->/$loop_fotos_result<!--LOOP_FOTOS-->$loop_fotos<!--\/LOOP_FOTOS-->/is;
 
       my $wfoto;
       my $hfoto;
@@ -1178,18 +1182,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
           $fotoSinUsar = '(sin usar)';
         }
         $bufferBancoImg =~ s/%%fotoSinUsar%%/$fotoSinUsar/ig;
-
-#        # ---- 1.4 Imprime advertencia en rojo en caso de que el peso de la foto exceda el limite establecido.
-#        # El limite se establece por c/foto en el formulario, de la forma <!--FOTO1_MAXBYTES=1500-->.
-#        my $alertPesoMax = '<br/><span color="#CC0000">Â¡Advertencia! Peso de imagen excede lÃ­mite permitido</span>';
-#        my $maxbytes = 0;
-#        if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
-#          $maxbytes = $1;
-#          if ($bytes_foto > $maxbytes) {
-#            $bufferBancoImg =~ s/%%alertPesoMax%%/$alertPesoMax/ig;
-#          };
-#        };
-#        # ----------
 
         # Se guarda el loop
         $fotos_controls{$nom_campo} = $bufferBancoImg;
@@ -1519,16 +1511,13 @@ sub parse_text {
   my $conten = '';
   my @html_puro = ();
   my $valor_campo_aux = $valor_campo;
-  my ($conten, $marca);
-
 
   # Sustituir valor en la ficha.
 
-  $marca ='%%' . $nom_campo . '%%';
+  my $marca ='%%' . $nom_campo . '%%';
   $pag =~ s/$marca/$valor_campo/ig;
 
   return $pag;
-
 };
 
 
