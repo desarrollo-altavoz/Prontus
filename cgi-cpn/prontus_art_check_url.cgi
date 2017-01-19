@@ -18,6 +18,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0.0 - 04/10/2016 - EAG - Primera version
+# 1.0.1 - 18/01/2017 - EAG - Se cambia mensaje sobre titular o slug vacío
 #
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
@@ -76,7 +77,7 @@ main: {
 
     if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
         if ($FORM{'_txt_titular'} eq '') {
-            &glib_html_02::print_json_result('Error','El campo no puede ser vacío', 'exit=1,ctype=0');
+            &glib_html_02::print_json_result('Error','El campo titular o slug no pueden ser vacíos', 'exit=1,ctype=0');
         };
         if ($FORM{'_ts'} !~ /^\d+$/ && $FORM{'_ts'} ne '') {
             &glib_html_02::print_json_result('Error','TS no es válido', 'exit=1,ctype=0');

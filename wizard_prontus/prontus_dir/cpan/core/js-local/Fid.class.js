@@ -828,13 +828,14 @@ var Fid = {
                 success: function (data) {
                         if (data.status == 'OK') {
                             $('#_slug').val(data.uri_titular);
+                            Fid.alertaTitular();
                             if (bot_press == 'save' || bot_press == 'save_new') {
                                 // se submite el formulario
                                 $('#_mainFidForm').trigger('submit');
                             }
                         } else {
                             if (typeof data.ts === 'undefined' || data.ts == '') {
-                                alert(data.msg);
+                                Fid.alertaTitular(data.msg);
                                 if ($('#_custom_slug').val() == 'SI') {
                                     $('#_slug').focus();
                                 } else {
@@ -877,13 +878,20 @@ var Fid = {
     // -------------------------------------------------------------------------
     // Funcion usada para vaciar el titular en caso que sea "sin titulo \d+"
     limpiaTitular: function(elemento) {
-        console.log(elemento);
-        console.log(elemento.val());
         if (/^Sin título \d+$/.test($(elemento).val())) {
             $(elemento).val('');
         }
     },
-
+    // -------------------------------------------------------------------------
+    // alerta para indicar que el titular o slug estan incorrectos
+    alertaTitular: function(msg) {
+        if(typeof msg !== 'undefined' && msg !== '') {
+            var str = '<img src="/'+Admin.prontus_id+'/cpan/core/imag/boto/msg-error.png" width="24" height="24" alt="Concurrecia" title="Concurrecia" /> <span>' + msg + '</span>';
+            $('#slug-alert').html(str).fadeIn();
+        } else {
+            $('#slug-alert').hide();
+        }
+    },
     // -------------------------------------------------------------------------
     // Funcion usada para abrir el editor de un articulo en otra ventana
     abrirEditor: function(elemento) {
