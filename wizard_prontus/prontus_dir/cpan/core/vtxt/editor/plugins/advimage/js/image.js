@@ -36,6 +36,10 @@ var ImageDialog = {
 			nl.usemap.value = dom.getAttrib(n, 'usemap');
 			nl.longdesc.value = dom.getAttrib(n, 'longdesc');
 			nl.insert.value = ed.getLang('update');
+			
+			// jor.
+			nl.dataW.value = dom.getAttrib(n, 'data-w');
+			nl.dataH.value = dom.getAttrib(n, 'data-h');
 
 			if (/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/.test(dom.getAttrib(n, 'onmouseover')))
 				nl.onmouseoversrc.value = dom.getAttrib(n, 'onmouseover').replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
@@ -457,6 +461,33 @@ var ImageDialog = {
 			tinyMCEPopup.dom.setHTML('prev', '<img id="previewImg" src="' + u + '" border="0" onload="ImageDialog.updateImageData(this);" onerror="ImageDialog.resetImageData();" />');
 		else
 			tinyMCEPopup.dom.setHTML('prev', '<img id="previewImg" src="' + u + '" border="0" onload="ImageDialog.updateImageData(this, 1);" />');
+	},
+
+	// jor.
+	setResponsiveStyles: function () {
+		var dom = tinyMCEPopup.dom;
+		var f = document.forms[0]
+		var style = f.style.value;
+		var styles = (style.replace(/\s+/g, "")).split(';');
+		var newStyle = "";
+
+		for (var i = 0; i < styles.length; i++) {
+			var items = (styles[i].replace(/\s+/g, "")).split(':');
+			if (items[0] != 'max-width' && items[0] != 'width' && items[0] != 'height') {
+				if (styles[i] != "") {
+					newStyle += styles[i] + ';';
+				}
+			}
+		}
+
+		if (f.styleResponsive.checked) { // is checked.
+			newStyle += 'max-width:' + f.dataW.value + 'px;';
+			newStyle += 'width:100%;';
+			newStyle += 'height:auto;';
+		}
+
+		f.style.value = newStyle;
+
 	}
 };
 
