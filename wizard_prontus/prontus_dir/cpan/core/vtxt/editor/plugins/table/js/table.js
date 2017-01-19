@@ -16,7 +16,14 @@ function insertTable() {
 		return false;
 	}
 
+	var isTableResponsive = true;
+
 	elm = dom.getParent(inst.selection.getNode(), 'table');
+	var elm_div_responsive = dom.getParent(inst.selection.getNode(), 'div');
+
+	if (!dom.getAttrib(elm_div_responsive, 'data-responsive')) {
+		isTableResponsive = false;
+	}
 
 	// Get form data
 	cols = formObj.elements['cols'].value;
@@ -58,6 +65,8 @@ function insertTable() {
 		return false;
 	}
 
+	if (!classNameResponsive) classNameResponsive = 'table-responsive'
+
 	// Update table
 	if (action == "update") {
 		dom.setAttrib(elm, 'cellPadding', cellpadding, true);
@@ -67,6 +76,21 @@ function insertTable() {
 			dom.setAttrib(elm, 'border', border);
 		} else {
 			dom.setAttrib(elm, 'border', '');
+		}
+
+		if (responsive) { // check.
+			if (isTableResponsive) { // ya tenia el div.
+				dom.setAttrib(elm_div_responsive, 'class', classNameResponsive); // cambio la clase.
+			} else {
+				var classResponsive = dom.getAttrib(elm_div_responsive, 'class');
+
+				// agrego el div.
+				dom.setOuterHTML(elm, '<div class="' + classNameResponsive + '" data-responsive="yes">' + elm.outerHTML + '</div>');
+				selectByValue(formObj, 'class_responsive', classResponsive, true, true);
+			}
+		} else {
+			// si tiene el div pero no el check, quito el div.
+			dom.replace(elm, elm_div_responsive);
 		}
 
 		if (border == '') {
@@ -317,9 +341,11 @@ function init() {
 	var elm2 = dom.getParent(inst.selection.getNode(), "div"); // jor.
 	var classResponsive = ''; // jor.
 
+
 	// jor.
 	if (elm2 && dom.getAttrib(elm2, 'data-responsive') == 'yes') {
 		classResponsive = dom.getAttrib(elm2, 'class');
+		formObj.responsive.checked = true;
 	}
 
 	// Hide advanced fields that isn't available in the schema
@@ -388,7 +414,6 @@ function init() {
 		selectByValue(formObj, 'class_responsive', classResponsive, true, true);
 		formObj.responsive.checked = true;
 	}
-
 
 	formObj.cols.value = cols;
 	formObj.rows.value = rows;
@@ -519,6 +544,18 @@ function changedStyle() {
 	if (st['border-color']) {
 		formObj.bordercolor.value = st['border-color'];
 		updateColor('bordercolor_pick','bordercolor');
+	}
+}
+
+// jor
+function toggleResponsive() {
+	var formObj = document.forms[0];
+	var responsive = formObj.elements['responsive'].checked;
+
+	if (responsive) {
+		selectByValue(formObj, 'class_responsive', 'table-responsive', true, true);
+	} else {
+		selectByValue(formObj, 'class_responsive', '', true, true);
 	}
 }
 
