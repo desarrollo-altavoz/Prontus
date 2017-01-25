@@ -1,10 +1,12 @@
 ====================================================================================================
-11.2.94 - 19/01/2016 - SCT/EAG/JOR
+11.2.94 - 25/01/2016 - SCT/EAG/JOR
 ====================================================================================================
 - bugfixes: Se corrige consulta SQL al momento de obtener cantidad de artículos con fotos para la paginación.
 - bugfixes: Se corrige validación js al momento de crear un prontus que comience con números ya que obligaba a que comenzara con letras.
 - bugfixes: Se corrige ordenamiento de campos recibidos en prontus form, los campos que no estan en el html quedan siempre al final
-- improvement: Se agrega opción para hacer tablas e imagenes responsivas.
+- improvement: En VTXT, se agrega opción para hacer tablas e imagenes responsivas.
+- improvement: en VTXT, se agrega estilo para tablas transparentes.
+
 ====================================================================================================
 11.2.93 - 15/11/2016 - SCT/EAG/NAR
 ====================================================================================================
