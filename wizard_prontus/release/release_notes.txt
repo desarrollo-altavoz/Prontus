@@ -8967,6 +8967,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se agrega la opción para configurar de forma independiente, a todos los prontus de un servidor,
          el numero global de procesos de taxport que se ejecutaran concurrentemente
+         El archivo debe llamarse /cgi-cpn/prontus_taxport_conf.cfg, se incluye un sample de ejemplo
     [files]
         /cgi-cpn/lib_tax.pm
         /cgi-cpn/prontus_cron_taxport.cgi
