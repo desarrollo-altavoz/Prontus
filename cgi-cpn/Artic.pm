@@ -271,6 +271,8 @@ sub exec_post_proceso_art {
     use FindBin '$Bin';
     my $rutaScript = $Bin;
 
+    $rutaScript =~ s/\/[^\/]+$/\/$prontus_varglb::DIR_CGI_CPAN/;
+
     my $newOrEdit = 'E';
     $newOrEdit = 'N' if ($isNew);
 

@@ -44,7 +44,7 @@ sub init { # Prontus 6.0
   # dir_cgi.pm trae algo como:
   # $DIR_CGI_CPAN = 'cgi-cpn';
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
-  require 'dir_cgi.pm';
+  do 'dir_cgi.pm';
 
   $VERSION_PRONTUS = '11.2.94 - 19/01/2017';
   $RAMA_INSTALADA = '';
