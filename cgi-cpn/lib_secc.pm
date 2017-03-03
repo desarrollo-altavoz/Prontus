@@ -90,7 +90,7 @@ sub salir {
 # ---------------------------------------------------------------
 sub basic_escape_html {
   my $toencode = $_[0];
-  $toencode=~s/&([^#][^0-9]+)/&amp;\1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
+  $toencode=~s/&([^#][^0-9]+)/&amp;$1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
   $toencode=~s/>/&gt;/g;              # >
   $toencode=~s/"/&quot;/g;            # " # 8.0
   $toencode=~s/'/&#39;/g;
@@ -375,7 +375,7 @@ sub parse_seccion {
     $sql = "select SECC_ID, SECC_NOM from SECC order by SECC_ORDEN";
   };
   $combo = &gen_popup_from_sql_escaped($base, $sql, '_SECCION%%i%%', 1, '', '');
-  $combo =~ s/<(select .*?)>/<\1 class="P-DATATABLA" onchange="CombosTax.generaTemas(%%i%%);">/is;
+  $combo =~ s/<(select .*?)>/<$1 class="P-DATATABLA" onchange="CombosTax.generaTemas(%%i%%);">/is;
   $combo = &add_items_adicionales($combo, 'Secci&oacute;n');
 
   $combo_aux = $combo;

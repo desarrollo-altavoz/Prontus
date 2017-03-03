@@ -2526,7 +2526,7 @@ sub make_portada {
         my $ext_clon = $port_ext_clones{$path_tpl_clon};
         # Si es un clon el que se esta previsualizando, le pongo preview_<nomclon>_<port>.<ext>
         if (($dest_file_clon =~ /\/port(-$mv)?\/preview_/) && ($path_tpl ne $path_tpl_clon)) {
-            $dest_file_clon =~ s/\/port(-$mv)?\/preview_/\/port\1\/preview_$nom_clon\_/;
+            $dest_file_clon =~ s/\/port(-$mv)?\/preview_/\/port$1\/preview_$nom_clon\_/;
         };
 
         # print STDERR "dest_file_clon[$dest_file_clon]\n";
@@ -2556,9 +2556,9 @@ sub make_portada {
             if($buffer =~ /(<body[^>]*?>)/) {
               my $first = $1;
               if($first =~ /</) {
-                $buffer =~ s/(<div)/$info_string\1/;
+                $buffer =~ s/(<div)/$info_string$1/;
               } else {
-                $buffer =~ s/(<body[^>]*?>)/\1$info_string/;
+                $buffer =~ s/(<body[^>]*?>)/$1$info_string/;
               }
             } else {
               $buffer = $info_string . $buffer;
@@ -2580,7 +2580,7 @@ sub make_portada {
     # Lee archivo de template rss.
     # Se llama igual a la portada pero esta en vez de /port en /rss y tiene extension .xml
     # $path_tpl =~ s/\/port\/(\w+)\.\w+?$/\/rss\/\1\.xml/;
-    $path_tpl =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss\1\/\2\.xml/;
+    $path_tpl =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/;
 
     if ((-s $path_tpl) && (-f $path_tpl)) {
         my $buffer = &generic_parse_port($path_tpl, $dir_server, $prontus_id, $public_server_name, $nom_edic,
@@ -2605,7 +2605,7 @@ sub write_rss_port {
 
   my ($destrss, $nom_edic, $buffer) = @_;
   # $destrss =~ s/\/port\/(\w+)\.\w+?$/\/rss\/\1\.xml/; # Deduce del path completo de la portada, el del rss.
-  $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss\1\/\2\.xml/; # Deduce del path completo de la portada, el del rss.
+  $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/; # Deduce del path completo de la portada, el del rss.
 
   $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual no mas escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija: toma cachito e goma!
   #~ $buffer = &mini_unescape_html($buffer); # parche heredado de subsecmar para el flash
@@ -2624,7 +2624,7 @@ sub write_xml_port {
   my $dest_xml = $_[0]; # Deduce del path completo de la portada, el del xml.
   my $rowartics_xml = $_[1];
   if ($dest_xml !~ /\.xml$/) {
-    $dest_xml =~ s/\/port\/(\w+)(\.\w+)?$/\/xml\/\1\.xml/;
+    $dest_xml =~ s/\/port\/(\w+)(\.\w+)?$/\/xml\/$1\.xml/;
   };
   # antes de escribir el nuevo xml, saca una copia de respaldo.
   my $newXml = "<?xml version='1.0' encoding='iso-8859-1'?>\n<PORT_DATA>\n$rowartics_xml</PORT_DATA>";
@@ -2665,7 +2665,7 @@ sub carga_buffer_plt {
     my $pathdir_plt_macros = shift;
     my $mv = shift;
 
-    $fullpath_plt =~ s/(.+)\/([^\/]+)$/\1-$mv\/\2/  if ($mv ne '');
+    $fullpath_plt =~ s/(.+)\/([^\/]+)$/$1-$mv\/$2/  if ($mv ne '');
     # warn "cargando plantilla[$fullpath_plt]";
     my $buffer = &glib_fildir_02::read_file($fullpath_plt);
     if ($buffer !~ /\w/) {
@@ -3037,7 +3037,7 @@ sub parser_area {
                 #~ print STDERR "ultimo[$ultimo]\n";
                 $hash_ifvs{$loopcounter} = $ultimo;
 
-                $localbuf =~ s/%%(IFV$ifvc\($div\, *$res\))%%(.+?)%%\/(IFV$ifvc)%%/##\1##\2##\/\3##/is; # try again (enmascarar)
+                $localbuf =~ s/%%(IFV$ifvc\($div\, *$res\))%%(.+?)%%\/(IFV$ifvc)%%/##$1##$2##\/$3##/is; # try again (enmascarar)
                 last; # try
 
             };
@@ -3806,7 +3806,7 @@ sub get_xml_data {
   # Cargar xml del articulo a partir del path a su html o bien del mismo xml.
   my ($path_final_xml) = $_[0];
   if ($path_final_xml !~ /\.xml$/) {
-    $path_final_xml =~ s/\/pags\/(\w+)(\.\w+)?$/\/xml\/\1\.xml/;
+    $path_final_xml =~ s/\/pags\/(\w+)(\.\w+)?$/\/xml\/$1\.xml/;
   };
 
   my $xml = &glib_fildir_02::read_file($path_final_xml);
@@ -3853,31 +3853,31 @@ sub formatea_texto_simple {
     if ($LINEAS[$i] ne '&nbsp;') {
       # Formatea parrafo reconociendo patrones estandar.
 
-      $LINEAS[$i] =~ s/%b%(.*?)%b%/<b>\1<\/b>/igs; # 1.1 Bold. %b%hola%b%mmmmmm%b%hola%b% 8.0 se realiza 1o. este parseo antes del estilo.
-      $LINEAS[$i] =~ s/%i%(.*?)%i%/<i>\1<\/i>/igs; # 1.1 Italic. %i%hola%i%mmmmmm%i%hola%i% 8.0 se realiza 1o. este parseo antes del estilo.
+      $LINEAS[$i] =~ s/%b%(.*?)%b%/<b>$1<\/b>/igs; # 1.1 Bold. %b%hola%b%mmmmmm%b%hola%b% 8.0 se realiza 1o. este parseo antes del estilo.
+      $LINEAS[$i] =~ s/%i%(.*?)%i%/<i>$1<\/i>/igs; # 1.1 Italic. %i%hola%i%mmmmmm%i%hola%i% 8.0 se realiza 1o. este parseo antes del estilo.
 
       # estilo cualquiera menos %t% que se reserva para subtitulos y %b% que se reserva para el bold.
-      $LINEAS[$i] =~ s/%([^tbi%].+?)%(.*?)%\1%/<span class=\1>\2<\/span>/gs;
+      $LINEAS[$i] =~ s/%([^tbi%].+?)%(.*?)%\1%/<span class=$1>$2<\/span>/gs;
 
-      $LINEAS[$i] =~ s/<span class=(d|D)(.*?)>(.*?)<\/span>/<div class=\1\2>\3<\/div>/isg;
+      $LINEAS[$i] =~ s/<span class=(d|D)(.*?)>(.*?)<\/span>/<div class=$1$2>$3<\/div>/isg;
 
       # Linkea urls. Linkea el conjunto de palabras ubicadas dentro del parentesis anterior al de la url.
       # Si no se especifica parentesis antes de la url, linkea la palabra inmediatamente anterior.
       # 1.8 Si la URL comienza con _http implica target = self, si no se pone el '_' implica target='_blank'.
 
       # 1.1 modificado en # 1.8
-      if ($LINEAS[$i] !~ s/\(([^)]+?)\)\s*?[(](https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2" target="_blank">\1<\/A>/igs) { # 7.0
-        $LINEAS[$i] =~ s/([\w¿\-ÿ\?]+?)\s*?[(](https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2" target="_blank">\1<\/A>/igs;  # 7.0
+      if ($LINEAS[$i] !~ s/\(([^)]+?)\)\s*?[(](https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="$2" target="_blank">$1<\/A>/igs) { # 7.0
+        $LINEAS[$i] =~ s/([\w¿\-ÿ\?]+?)\s*?[(](https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="$2" target="_blank">$1<\/A>/igs;  # 7.0
       };
 
       # 1.2 modificado en # 1.8
-      if ($LINEAS[$i] !~ s/\(([^)]+?)\)\s*?[(]\_(https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2">\1<\/A>/igs) { # 7.0
-        $LINEAS[$i] =~ s/([\w¿\-ÿ\?]+?)\s*?[(]\_(https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="\2">\1<\/A>/igs;   # 7.0
+      if ($LINEAS[$i] !~ s/\(([^)]+?)\)\s*?[(]\_(https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="$2">$1<\/A>/igs) { # 7.0
+        $LINEAS[$i] =~ s/([\w¿\-ÿ\?]+?)\s*?[(]\_(https?:\/\/[^ )<]+[\w\/])[)]*/<A HREF="$2">$1<\/A>/igs;   # 7.0
       };
 
 
-      $LINEAS[$i] =~ s/([^ ]+@[^ ]+)/<A HREF="mailto:\1">\1<\/A>/igs; # Linkea emails.
-      $LINEAS[$i] =~ s/(<A HREF="mailto:)(.+?)\.?(">)/\1\2\3/igs; # sacar posible ultimo punto.
+      $LINEAS[$i] =~ s/([^ ]+@[^ ]+)/<A HREF="mailto:$1">$1<\/A>/igs; # Linkea emails.
+      $LINEAS[$i] =~ s/(<A HREF="mailto:)(.+?)\.?(">)/$1$2$3/igs; # sacar posible ultimo punto.
     };
 
     $salida .= $LINEAS[$i];
@@ -3901,9 +3901,9 @@ my($buffer) = $_[0];
 
   # 1.2
   # Si no resulta el parseo con target, aplicar el sin target.
-  $buffer =~ s/<A HREF="(https?:\/\/[^"]+?)" *>(.+?)<\/A>/\(\2\)\(\_\1\)/igs; # 1.8 # 7.0
+  $buffer =~ s/<A HREF="(https?:\/\/[^"]+?)" *>(.+?)<\/A>/\($2\)\(\_$1\)/igs; # 1.8 # 7.0
 
-  $buffer =~ s/<A HREF=\"(https?:\/\/[^"]+?)\" *target=\"(\_)blank\".*?>(.+?)<\/A>/\(\3\)\(\1\)/igs;
+  $buffer =~ s/<A HREF=\"(https?:\/\/[^"]+?)\" *target=\"(\_)blank\".*?>(.+?)<\/A>/\($3\)\($1\)/igs;
 
   # Cambiar subtitulos a %t%...%t%. Dejo un espacio para que no se peguen los tags de sustitucion y formen un'%%xxx%%' que depues sera borrado.
   # $buffer =~ s/<A NAME=T\d+?>\s*?([^\s].*?)\s*?<\/A>/%t% $1 %t%/igs;
@@ -3911,12 +3911,12 @@ my($buffer) = $_[0];
 
 
   # 1.1 Bold.
-  $buffer =~ s/<B>([^<].*?)<\/B>/%b%\1%b%/igs;
-  $buffer =~ s/<I>([^<].*?)<\/I>/%i%\1%i%/igs;
+  $buffer =~ s/<B>([^<].*?)<\/B>/%b%$1%b%/igs;
+  $buffer =~ s/<I>([^<].*?)<\/I>/%i%$1%i%/igs;
 
   # Cambiar estilo.
-  $buffer =~ s/<span class=(.+?)>(.*?)<\/span>/%\1%\2%\1%/igs;
-  $buffer =~ s/<div class=(.+?)>(.*?)<\/div>/%\1%\2%\1%/igs;
+  $buffer =~ s/<span class=(.+?)>(.*?)<\/span>/%$1%$2%$1%/igs;
+  $buffer =~ s/<div class=(.+?)>(.*?)<\/div>/%$1%$2%$1%/igs;
 
 
 
@@ -3924,7 +3924,7 @@ my($buffer) = $_[0];
   $buffer =~ s/<HR.*?>/-----/isg;
 
   # Cambia mailto:...
-  $buffer =~ s/<A HREF="mailto:.+?".*?>(.+?)<\/A>/\1/igs;
+  $buffer =~ s/<A HREF="mailto:.+?".*?>(.+?)<\/A>/$1/igs;
 
   return $buffer;
 
@@ -3953,7 +3953,7 @@ sub escape_html {
 #    };
 
     if($prontus_varglb::VTXT_ENCODE_CHARS eq 'SI') {
-      $toencode=~s/&([^#][^0-9]+)/&amp;\1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
+      $toencode=~s/&([^#][^0-9]+)/&amp;$1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
     } else {
       $toencode=~s/&/&amp;/g;             # CVI - Esto no estaba funcionando
     }
@@ -4882,7 +4882,7 @@ sub actualizar_portadas_byartic {
       $arch_seccion = "$pathdir_seccs/$entry";
 
       my ($arch_xml) = $arch_seccion;
-      $arch_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/\1\.xml/;
+      $arch_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/$1\.xml/;
 
       # template de la portada
       $path_tsec = $prontus_varglb::DIR_SERVER .
@@ -5584,9 +5584,9 @@ sub parser_custom_function {
 
           $keys =~ s/%%(.*?)%%//g;
           my $security = 0;
-          while($keys =~ s/([^\\])"/\1\\"/) {
+          while($keys =~ s/([^\\])"/$1\\"/) {
             if($security >= 500) {
-                $keys =~ s/([^\\])"/\1\\"/g;
+                $keys =~ s/([^\\])"/$1\\"/g;
                 last;
             }
             $security++;
@@ -5599,7 +5599,7 @@ sub parser_custom_function {
         # print STDERR "\nPARAMS: $params\n\n";
         $params =~ s/\$/\\\$/sg; # escapea $.
         $params =~ s/\@/\\\@/sg; # escapea @.
-        $newfunction =~ s/^(\w+)\((.*?)\)$/\1($params)/s;
+        $newfunction =~ s/^(\w+)\((.*?)\)$/$1($params)/s;
       };
 
       my $result;
