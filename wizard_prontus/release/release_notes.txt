@@ -8976,7 +8976,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_varglb.pm
 
 ====================================================================================================
-11.2.94 - 19/01/2016 - SCT/EAG/JOR
+11.2.94 - 25/01/2016 - SCT/EAG/JOR
 ====================================================================================================
 - Prontus en general
     [bugfixes]
@@ -9000,11 +9000,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - VTXT
     [mejoras]
       - Se agrega opción para hacer tablas e imagenes responsivas.
+      - Se agrega estilo para tablas transparentes.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/js/table.js
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/table.htm
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/advimage/image.htm
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/advimage/js/image.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/content.css
 
 
 
