@@ -9013,3 +9013,10 @@ manejo de imagenes
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/css/fids.css
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
+
+
+General
+/var/www/prontus_release/cgi-cpn/glib_cgi_04.pm
+/var/www/prontus_release/cgi-cpn/glib_html_02.pm
+/var/www/prontus_release/cgi-cpn/lib_prontus.pm
+/var/www/prontus_release/cgi-cpn/lib_secc.pm
