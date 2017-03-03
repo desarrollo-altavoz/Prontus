@@ -473,9 +473,15 @@ if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
 }
 
 if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && !exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$FORM{'_fid'}}) {
-  $pagina =~ s/%%_friendly4%%(.*?)%%\/_friendly4%%/$1/isg;
+    $pagina =~ s/%%_friendly4%%(.*?)%%\/_friendly4%%/$1/isg;
 } else {
-  $pagina =~ s/%%_friendly4%%.*?%%\/_friendly4%%//isg;
+    $pagina =~ s/%%_friendly4%%.*?%%\/_friendly4%%//isg;
+}
+
+if ($prontus_varglb::MULTITAG eq 'SI') {
+    $pagina =~ s/%%_multitag%%(.*?)%%\/_multitag%%/$1/isg;
+} else {
+    $pagina =~ s/%%_multitag%%.*?%%\/_multitag%%//isg;
 }
 
 $pagina =~ s/%%.+?%%//g;

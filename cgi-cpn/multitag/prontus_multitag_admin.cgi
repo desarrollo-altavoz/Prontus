@@ -11,66 +11,43 @@
 
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
-# SCRIPT.
-# -----------
-# prontus_secc_admin.pl.
-#
-# ---------------------------------------------------------------
-# UBICACION.
-# -----------
-# /prontus/.
-#
-# ---------------------------------------------------------------
 # PROPOSITO.
 # -----------
-# Administrador de Secciones de noticias.
-#
+# Mostrar el administrador de multitag
 # ---------------------------------------------------------------
-# LLAMADAS A SCRIPTS.
+# LLAMADAS A ARCHIVOS EXTERNOS.
 # ------------------------------
-# prontus_temas_admin.pl (link Ver en columna Temas).
 #
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-# Desde /prontus4_nots/cpan/core/prontus_menu.html
-#
+# solo web
 # ---------------------------------------------------------------
-# ARCHIVOS DE ENTRADA.
-# ------------------------
-# Plantillas:
-#   /prontus4_nots/cpan/core/mant_seccs/prontus_secc_admin.html.
-#   /prontus4_nots/cpan/core/mant_seccs/mensajes.html (para mensajes de error).
-#
+# PLANTILLAS HTML UTILIZADAS.
+# ----------------------------
+# <dir_publicador>/cpan/core/prontus_multitag_admin.html
 # ---------------------------------------------------------------
-# ARCHIVOS DE SALIDA.
-# ------------------------
-# Paginas web: No registra. El resultado se imprime directamente hacia el browser.
-#
 # ---------------------------------------------------------------
-# Tablas.
+# TABLAS UTILIZADAS.
 # -------------------
-# SECC - # PERSEMP.
+# NO
 # ---------------------------------------------------------------
-
-
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 # ---------------------------
-# 1.0 - 16/10/2003 - YCH - Primera version.
-# 1.1 - 16/10/2007 - YCH - Elimina link mapa del sitio (segun instruccion de ald).
-# ---------------------------------------------------------------
-
-
+# 1.0.0 - 23/02/2017 - EAG - Primera version.
+#
 # -------------------------------BEGIN SCRIPT---------------
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
-# ------------------------
+# ---------------------------
 
 BEGIN {
     use FindBin '$Bin';
-    $pathLibsProntus = $Bin;
+    my $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
+    $pathLibsProntus =~ s/\/[^\/]+$//;
+    unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
 
 # Captura STDERR
@@ -97,9 +74,10 @@ $| = 1; # Sin buffer. Despliega a medida que va leyendo.
 my ($BD, %FORM,);
 my (%XML_VISTAS, %HASH_FS_TAG);
 
-my $RELPATH_TEMPL = '/cpan/core/prontus_tags_admin.html';
+my $RELPATH_TEMPL = '/cpan/core/prontus_multitag_admin.html';
 
 main:{
+
     my $tags_max_display = $lib_tags::MAX_TAGS_SEARCH_RESULT;
 
     &glib_cgi_04::new();
@@ -137,6 +115,15 @@ main:{
     };
 
     print "Content-Type: text/html\n\n";
+
+    # chequeamos que exista el directorio de cache de multitag
+    my $dir = $prontus_varglb::DIR_SERVER .
+            $prontus_varglb::DIR_CONTENIDO .
+            $prontus_varglb::DIR_MULTITAG;
+
+    if (!(&glib_fildir_02::check_dir($dir)) ) {
+        &glib_html_02::print_pag_result("Error","No se puede crear el directorio de cache para multitag: [$dir]",1,'exit=1');
+    }
 
     # Conectar a BD
     my $msg_err_bd;
@@ -215,13 +202,6 @@ main:{
     $pagina = &parse_multivistas($pagina, '', 'vista_loop_new');
     $pagina = &parse_multivistas($pagina, '', 'vista_loop_hidden1');
     $pagina = &parse_multivistas($pagina, '', 'vista_loop_hidden2');
-
-    if ($prontus_varglb::MULTITAG eq 'SI') {
-        $pagina =~ s/<!--multitag-->//isg;
-        $pagina =~ s/<!--\/multitag-->//isg;
-    } else {
-        $pagina =~ s/<!--multitag-->.*?<!--\/multitag-->//isg;
-    }
 
     print $pagina;
 }; # main

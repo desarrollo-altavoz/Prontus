@@ -260,3 +260,19 @@
 .fotofija-container .fotofija .botones label {font-size: 9px;margin: 4px 0px 0px 0px;display: block;}
 .fotofija-container .fotofija.active {outline: 2px solid #0097fb;}
 .hidde-crop {display: none !important;}
+
+/* seleccion de multitag */
+#multitag {width: 100%;}
+#multitag .col {width: 33.3%;float: left;height: 200px;}
+#multitag .col .box {width: 95%;height: 95%; padding: 2px;margin: 3px;border: 1px solid #ccc;}
+#multitag .col .box h3 {text-align: center;font-size: 13px; margin-bottom: 5px;border-bottom: 1px solid #ccc;}
+#multitag .col .box .lista {height: 170px;overflow-y: scroll;}
+#multitag .col .box .lista .item {padding: 2px 5px;}
+#multitag .col .box .lista .item input {float: left;margin: 2px 4px;}
+#multitag .col .box .lista .item label {font-weight: normal;float: left;width: 80%;}
+#divCombinaciones {height: 100%;background-color: #fafafa;overflow-y: visible !important;position: relative;}
+#divCombinaciones table {padding: 10px;}
+#divCombinaciones h3 {color: #4D4D4D;}
+#divCombinaciones table tr th {text-align: left;font-size: 12px;text-align: left;font-weight: bold;}
+#divCombinaciones table tr td {text-align: left;font-size: 12px;text-align: left;}
+#divCombinaciones table tr td .copiar-link-mtag {}

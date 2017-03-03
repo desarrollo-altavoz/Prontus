@@ -16,13 +16,14 @@ var CfgXcoding = {
     marca_defecto: 'MULTIMEDIA_VIDEO1',
     prefijo_marca: 'MULTIMEDIA_VIDEO',
 
-    dirCgi: '/cgi-cpn/xcoding/',
+    dirCgi: '/'+Admin.dir_cgi_cpn+'/xcoding/',
     cgiCargaFormatos: 'prontus_xcoding_getformatos.cgi',
     cgiGuardaFormatos: 'prontus_xcoding_guardarformatos.cgi',
     cgiVerificaFFmpeg: 'prontus_check_ffmpeg.cgi',
 
 
     init: function () {
+        CfgXcoding.dirCgi = '/'+Admin.dir_cgi_cpn+'/xcoding/';
         CfgXcoding.cargaCfg();
         $('.xcoding_param').keyup(CfgXcoding.actualizaFormatos);
         $('.xcoding_param').on("click", function () {

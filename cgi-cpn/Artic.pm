@@ -74,8 +74,10 @@ our $XML_BASE =
 <_tax></_tax>
 <_tags></_tags>
 <_tagnames></_tagnames>
+<_multitag_seccion></_multitag_seccion>
+<_multitag_tema></_multitag_tema>
+<_multitag_subtema></_multitag_subtema>
 </_private>
-
 <_public>
 </_public>
 </artic_data>";
@@ -1449,6 +1451,37 @@ sub tags2bd {
     return 1;
 };
 # ---------------------------------------------------------------
+sub multitag2db {
+# puebla tabla de multitag
+# Se invoca al momento de guardar un articulo.
+    my ($this, $base, $is_new) = @_;
+    my %tipos = ('S' => '_multitag_seccion','T' => '_multitag_tema','ST' => '_multitag_subtema');
+
+    foreach my $type (keys %tipos) {
+        # Primero elimina los tags del artic actual:
+        my $sql = "delete from MULTITAG_ART_$type where MULTITAG_ART_$type\_ART_ID = '$this->{ts}'";
+        my $res = $base->do($sql);
+        if (!$res) {
+            $Artic::ERR = "Error actualizando tabla de Multitag, ts[$this->{ts}]\n";
+            cluck $Artic::ERR . "sql[$sql][$!]";
+            return 0;
+        };
+
+        # Asocia los TAGS al artic
+        my @multittags = split(/,/, $this->{'xml_content'}->{$tipos{$type}});
+        foreach my $id (@multittags) {
+            $sql = "insert into MULTITAG_ART_$type set MULTITAG_ART_$type\_ART_ID = '$this->{ts}', MULTITAG_ART_$type\_ID = $id, MULTITAG_ART_$type\_FRIENDLY = (SELECT MULTITAG_$type\_FRIENDLY FROM MULTITAG_$type where MULTITAG_$type\_ID = $id)";
+            my $res = $base->do($sql);
+            if (!$res) {
+                $Artic::ERR = "Error actualizando tabla de Multitag, ts[$this->{ts}]\n";
+                cluck $Artic::ERR . "sql[$sql][$!]";
+                return 0;
+            };
+        }
+    }
+    return 1;
+};
+# ---------------------------------------------------------------
 sub friendly_v4_2bd {
 # puebla tabal de urls friendly v4
 # Se invoca al regenerar la DB de prontus
@@ -1618,7 +1651,6 @@ sub verifica_colision_url_titular {
 }
 # ---------------------------------------------------------------
 sub borra_artic {
-
     my ($this, $base) = @_;
 
     my $ts = $this->{ts};
@@ -1710,6 +1742,17 @@ sub borra_artic {
         $base->do($sql_delurl);
     }
 
+    # borramos multitags asociados al articulo
+    if ($prontus_varglb::MULTITAG eq 'SI') {
+        # se borra el articulo de las tablas multitag
+        my @tipos = ('S', 'T','ST');
+
+        foreach my $type (@tipos) {
+            # Primero elimina los tags del artic actual:
+            my $sql = "delete from MULTITAG_ART_$type where MULTITAG_ART_$type\_ART_ID = '$ts'";
+            $base->do($sql);
+        }
+    }
 
     my $path_artic_xml = $this->{dst_xml} . "/$ts.xml";
 
@@ -2557,9 +2600,8 @@ sub _parsing_fotos {
     my ($msg, $foto_dimx, $foto_dimy);
     my %campos = $this->get_xml_content();
 
-    #~ return $buffer unless(index($buffer, $nom_campo) > -1);
 
-    #~ Se agrega proceso para friendly image - 2016-04-15 - SCT
+    # Se agrega proceso para friendly image - 2016-04-15 - SCT
     if($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
         my $procesa_path = "";
         my $path_friendly = "";
@@ -2571,10 +2613,9 @@ sub _parsing_fotos {
             $val_campo =~ s/(foto_\d+)\_(.*?)$/$path_friendly/si;
         };
     };
-    #~ FIN
+    # FIN
 
     $buffer =~ s/%%$nom_campo%%/$val_campo/isg;
-    #~ $buffer = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer);
 
     my $este_prontus = &lib_prontus::remove_front_string($this->{dst_foto}, $this->{document_root});
 

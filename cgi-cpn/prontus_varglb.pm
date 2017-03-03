@@ -46,7 +46,7 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   do 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.94 - 19/01/2017';
+  $VERSION_PRONTUS = '11.2.93 - 15/11/2016';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
@@ -177,6 +177,9 @@ sub init { # Prontus 6.0
     $DIR_FRIENDLY = '/friendly/links'; # directorio donde se almacenaran los includes de friendly urls
     $URL_NUMBER = 1478228400; # numero base de epoch para restar de forma de no generar ids adicionales muy grandes pero siempre crecientes para diferenciar las urls
 
+    # directorio cache multitag
+    $DIR_MULTITAG = '/cache/multitag';
+
   # Directorios correspondientes a los templates, relativos al publicador
   $DIR_TEMP = '/plantillas';
 
@@ -261,20 +264,6 @@ sub init { # Prontus 6.0
   # definir los estilos de texto de la 1a. fila, 1a. columna, resto de las celdas, y celdas
   # con colspan > 1, respectivamente.
 
-
-  #~ 13/08/2013 - CVI - Se comenta esto porque tiene toda la pinta de ser codigo basura
-  # 8.1
-  #~ $WMEDIA_LINK = '<img src="%%path%%/wmedia.gif" border="0" alt="Reproducir">'; # Cod. html que se linkeara con el arch. windows media en el Articulo. (En la portada, esto se pone en el template.)
-  # 1.1
-  #~ $RMEDIA_LINK = '<img src="%%path%%/rmedia.gif" border="0" alt="Reproducir">'; # Cod. html que se linkeara con el arch. realmedia en el Articulo. (En la portada, esto se pone en el template.)
-  # 1.2
-  #~ $ASOCFILE_LINK = '<img src="%%path%%/afile.gif" border="0" alt="Ver / Bajar Archivo">'; # Cod. html que se linkeara con el arch. asociado en el Articulo. (En la portada, esto se pone en el template.)
-  # 1.3
-  # $LINK_MAS = '<img src="%%path%%/mas.gif" border="0" alt="Más información...">'; # Cod. html que se linkeara con el link 'mas' que va al detalle del articulo.
-  #~ $LINK_MAS = ''; # Cod. html que se linkeara con el link 'mas' que va al detalle del articulo.
-  # Las marcas %%path%% se reemplazan al momento de cargar el cfg del prontus.
-
-
   $USERS_PERFIL = ''; # 1.4
 
   $DIR_DBM = '';  # 1.4
@@ -320,7 +309,6 @@ sub init { # Prontus 6.0
 #   </NOTAS>
 #
 
-
 # "<?xml version='1.0' encoding='iso-8859-1'?>
 # <PORT_DATA>
 #      <rowartic>
@@ -333,9 +321,7 @@ sub init { # Prontus 6.0
 #      </rowartic>
 # </PORT_DATA>";
 
-
 };
-
 
 
 #------------------------------------------------------------------------#

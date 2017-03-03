@@ -208,11 +208,24 @@ my ($dir);
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
         $dir = $prontus_varglb::DIR_SERVER .
                 $prontus_varglb::DIR_CONTENIDO .
-                $prontus_varglb::DIR_FRIENLY;
+                $prontus_varglb::DIR_FRIENDLY;
 
         if ( ! (&glib_fildir_02::check_dir($dir)) ) {
             print "Content-Type: text/html\n\n";
             &glib_html_02::print_pag_result("Error","El directorio de destino de urls friendly v4 no es válido");
+            exit;
+        };
+    };
+
+    # Directorio de cache de multitag
+    if ($prontus_varglb::MULTITAG eq 'SI') {
+        $dir = $prontus_varglb::DIR_SERVER .
+                $prontus_varglb::DIR_CONTENIDO .
+                $prontus_varglb::DIR_MULTITAG;
+
+        if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de cache de multitag no es válido");
             exit;
         };
     };
@@ -233,18 +246,11 @@ my ($dir);
     exit;
   };
 
-  # Escribe htaccess en el dir de los LOGs para permitir listar directorio
-  # &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/log/.htaccess", "Options +Indexes");
-
-
-
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/procs')) ) {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("Error","El directorio de logs de procesos masivos de Prontus no es válido");
     exit;
   };
-
-
 
   # Dir cpan
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN)) ) {
@@ -929,9 +935,6 @@ sub load_artic_pubs {
 
     return %hash_artics;
 };
-
-
-
 # ---------------------------------------------------------------
 sub port_asoc {
   # Ve si la portada esta asignada al usuario.
@@ -1168,6 +1171,11 @@ sub load_config {
     while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
         my $clave = $2;
         $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
+    };
+
+    $prontus_varglb::MULTITAG = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*MULTITAG\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::MULTITAG = $2;
     };
 
     $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
