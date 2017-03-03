@@ -25,5 +25,7 @@ print "<br> <b>The script is located in $Bin<br><hr>\n";
              print "<br> <b>$key</b> = $ENV{$key} <br><hr>\n";
          };
 
+print "<br> <b>TIME</b> = ".time." <br><hr>\n";
+print "<br> <b>LOCALTIME</b> = ".localtime." <br><hr>\n";
 
 
