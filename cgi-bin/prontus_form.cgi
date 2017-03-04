@@ -134,6 +134,7 @@
 # 1.12  15/07/2015 - EAG - Se escribe json valido al guardar el archivo de datos recibidos por primera vez
 # 1.12  18/03/2016 - NAR - Se agrega campo de correo fijo de remitente
 # 2.0.0 04/11/2016 - SCT - Se agrega validación contra reCaptcha de google.
+# 2.0.1 13/01/2017 - EAG - Se agrega función custom para el ordenamiento de campos
 # To-Do:
 # - Revisar sensibilidad a las mayusculas.
 

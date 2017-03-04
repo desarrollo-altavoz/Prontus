@@ -546,16 +546,19 @@ sub garbage_dirs_leave3 {
 
 # ---------------------------------------------------------------
 sub crea_respaldos {
-
     my ($this) = shift;
 
     # Copiar /cgi-cpn --> a dir de respaldo
-    &glib_fildir_02::copy_tree($this->{document_root}, $this->{nom_cgicpn_current},
-                               $this->{dir_backup}, $this->{nom_cgicpn_current});
+    &glib_fildir_02::copy_tree_exclude_ext($this->{document_root}, $this->{nom_cgicpn_current},
+                                $this->{dir_backup}, $this->{nom_cgicpn_current},
+                                'prontus_error_log,wizard_error_log,prontus_temp,_unused',
+                                '.error.log,.log');
 
     # Copiar /cgi-bin --> a dir de respaldo
-    &glib_fildir_02::copy_tree($this->{document_root}, $this->{nom_cgibin_current},
-                               $this->{dir_backup}, $this->{nom_cgibin_current});
+    &glib_fildir_02::copy_tree_exclude_ext($this->{document_root}, $this->{nom_cgibin_current},
+                                $this->{dir_backup}, $this->{nom_cgibin_current},
+                                'prontus_error_log,wizard_error_log,prontus_temp,_unused',
+                                '.error.log,.log');
 
     # Chequear integridad de respaldo - cgi-cpn.
     if (! -d "$this->{dir_backup}/$this->{nom_cgicpn_current}") {
@@ -591,8 +594,10 @@ sub crea_respaldos {
         next if (!-d "$this->{document_root}/$prontus_dir");
         # respaldar core antes de pisarlo.
         &glib_fildir_02::check_dir("$this->{dir_backup}/$prontus_dir/cpan");
-        &glib_fildir_02::copy_tree("$this->{document_root}/$prontus_dir/cpan", 'core',
-                                   "$this->{dir_backup}/$prontus_dir/cpan", 'core');
+        &glib_fildir_02::copy_tree_exclude_ext("$this->{document_root}/$prontus_dir/cpan", 'core',
+                                    "$this->{dir_backup}/$prontus_dir/cpan", 'core',
+                                    'prontus_error_log,wizard_error_log,prontus_temp,_unused',
+                                    '.error.log,.log');
 
         # Chequear integridad de respaldo de core.
         if (! -d "$this->{dir_backup}/$prontus_dir/cpan/core") {
@@ -612,8 +617,10 @@ sub crea_respaldos {
     if(-d "$this->{document_root}/wizard_prontus") {
         # Se respalda el core del prontus_dir
         &glib_fildir_02::check_dir("$this->{dir_backup}/wizard_prontus/prontus_dir/cpan");
-        &glib_fildir_02::copy_tree("$this->{document_root}/wizard_prontus/prontus_dir/cpan", 'core',
-                                   "$this->{dir_backup}/wizard_prontus/prontus_dir/cpan", 'core');
+        &glib_fildir_02::copy_tree_exclude_ext("$this->{document_root}/wizard_prontus/prontus_dir/cpan", 'core',
+                                    "$this->{dir_backup}/wizard_prontus/prontus_dir/cpan", 'core',
+                                    'prontus_error_log,wizard_error_log,prontus_temp,_unused',
+                                    '.error.log,.log');
         $cmpResult = $this->compareDirs("$this->{document_root}/wizard_prontus/prontus_dir/cpan/core", "$this->{dir_backup}/wizard_prontus/prontus_dir/cpan/core");
         if ($cmpResult ne '') {
             $Update::ERR = "Error al respaldar el core Prontus dir del Wizard: el dir. origen (actual wizard) y el de destino presentan diferencias en sus archivos:\n$cmpResult";
@@ -622,8 +629,10 @@ sub crea_respaldos {
         };
 
         # Se respalda el core del wizard
-        &glib_fildir_02::copy_tree("$this->{document_root}/wizard_prontus", 'core',
-                                   "$this->{dir_backup}/wizard_prontus", 'core');
+        &glib_fildir_02::copy_tree_exclude_ext("$this->{document_root}/wizard_prontus", 'core',
+                                    "$this->{dir_backup}/wizard_prontus", 'core',
+                                    'prontus_error_log,wizard_error_log,prontus_temp,_unused',
+                                    '.error.log,.log');
         $cmpResult = $this->compareDirs("$this->{document_root}/wizard_prontus/core", "$this->{dir_backup}/wizard_prontus/core");
         if ($cmpResult ne '') {
             $Update::ERR = "Error al actualizar Core del Wizard: el dir. origen (nueva release) y el de destino presentan diferencias en sus archivos:\n$cmpResult";

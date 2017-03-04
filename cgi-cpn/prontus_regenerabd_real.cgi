@@ -148,7 +148,7 @@ main:{
                 $sql = 'VACUUM';
                 $base->do($sql);
             };
-            &lib_logproc::add_to_log("- Tabla De Articulos Eliminada");
+            &lib_logproc::add_to_log("- Tablas de Artículos Eliminadas");
 
             # Re-crear estructura de la tabla ART
             my ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_art($base, $prontus_varglb::MOTOR_BD);
@@ -157,6 +157,21 @@ main:{
                 &finishLoading("Error creando la estructura de la tabla de artículos, proceso abortado.");
                 &lib_logproc::handle_error("Error creando la estructura de la tabla de artículos, proceso abortado.");
             };
+
+            # borramos la tabla de TAGSART
+            $sql = 'drop table TAGSART';
+            $ret = $base->do($sql);
+
+            if ($ret) {
+                # Re-crear estructura de la tabla TAGSART
+                my ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_tagsart($base, $prontus_varglb::MOTOR_BD);
+                &lib_logproc::add_to_log($msg_ret);
+                if ($hay_err) {
+                    &finishLoading("Error creando la estructura de la tabla TAGSART, proceso abortado.");
+                    &lib_logproc::handle_error("Error creando la estructura de la tabla TAGSART, proceso abortado.");
+                }
+            }
+
 
             if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
                 # URL
@@ -173,10 +188,54 @@ main:{
                     }
                 }
             }
+
+            if ($prontus_varglb::MULTITAG eq 'SI') {
+                # se dropea la tabla de multitag, MULTITAG_ART_S
+                $sql = 'drop table MULTITAG_ART_S';
+                $ret = $base->do($sql);
+
+                if ($ret) {
+                    # Re-crear estructura de la tabla
+                    my ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_s($base, $prontus_varglb::MOTOR_BD);
+                    &lib_logproc::add_to_log($msg_ret);
+                    if ($hay_err) {
+                        &finishLoading("Error creando la estructura de la tabla MULTITAG_ART_S, proceso abortado.");
+                        &lib_logproc::handle_error("Error creando la estructura de la tabla MULTITAG_ART_S, proceso abortado.");
+                    }
+                }
+
+                # se dropea la tabla de multitag, MULTITAG_ART_T
+                $sql = 'drop table MULTITAG_ART_T';
+                $ret = $base->do($sql);
+
+                if ($ret) {
+                    # Re-crear estructura de la tabla
+                    my ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_t($base, $prontus_varglb::MOTOR_BD);
+                    &lib_logproc::add_to_log($msg_ret);
+                    if ($hay_err) {
+                        &finishLoading("Error creando la estructura de la tabla MULTITAG_ART_T, proceso abortado.");
+                        &lib_logproc::handle_error("Error creando la estructura de la tabla MULTITAG_ART_T, proceso abortado.");
+                    }
+                }
+
+                # se dropea la tabla de multitag, MULTITAG_ART_ST
+                $sql = 'drop table MULTITAG_ART_ST';
+                $ret = $base->do($sql);
+
+                if ($ret) {
+                    # Re-crear estructura de la tabla
+                    my ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_st($base, $prontus_varglb::MOTOR_BD);
+                    &lib_logproc::add_to_log($msg_ret);
+                    if ($hay_err) {
+                        &finishLoading("Error creando la estructura de la tabla MULTITAG_ART_ST, proceso abortado.");
+                        &lib_logproc::handle_error("Error creando la estructura de la tabla MULTITAG_ART_ST, proceso abortado.");
+                    }
+                }
+            }
         };
 
         # Repoblarla
-        &lib_logproc::add_to_log("- Repoblando la tabla");
+        &lib_logproc::add_to_log("- Repoblando las tablas");
         &lib_logproc::writeRule();
 
         &regenera_base($base);
@@ -269,6 +328,12 @@ sub procesa_files {
 
                 if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
                     if (!$artic_obj->friendly_v4_2bd($base, 0)) {
+                        &lib_logproc::add_to_log("\t\t\tError: $Artic::ERR");
+                        next;
+                    }
+                }
+                if ($prontus_varglb::MULTITAG eq 'SI') {
+                    if (!$artic_obj->multitag2db($base, 0)) {
                         &lib_logproc::add_to_log("\t\t\tError: $Artic::ERR");
                         next;
                     }

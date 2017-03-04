@@ -9009,6 +9009,49 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/content.css
 
 
+Multitag
+/cgi-bin/multitag/prontus_multitag_list.cgi
+/cgi-bin/prontus_form.cgi
+/cgi-cpn/Artic.pm
+/cgi-cpn/lib_artic.pm
+/cgi-cpn/lib_prontus.pm
+/cgi-cpn/lib_setbd.pm
+/cgi-cpn/multitag/prontus_multitag_admin.cgi
+/cgi-cpn/multitag/prontus_multitag_limpia_cache.cgi
+/cgi-cpn/multitag/prontus_multitag_load_data.cgi
+/cgi-cpn/multitag/prontus_multitag_mant_borrar.cgi
+/cgi-cpn/multitag/prontus_multitag_mant_guardar.cgi
+/cgi-cpn/multitag/prontus_multitag_mant_limpia_cache.cgi
+/cgi-cpn/prontus_admin_main.cgi
+/cgi-cpn/prontus_art_ficha.cgi
+/cgi-cpn/prontus_cfg_save.cgi
+/cgi-cpn/prontus_regenerabd_real.cgi
+/cgi-cpn/prontus_set_bd.cgi
+/cgi-cpn/prontus_tags_admin.cgi
+/cgi-cpn/prontus_tax_admin.cgi
+/cgi-cpn/prontus_varglb.pm
+/cgi-cpn/wizard_deploy.cgi
+/wizard_prontus/prontus_dir/cpan/core/css/fids.css
+/wizard_prontus/prontus_dir/cpan/core/css/multitag.css
+/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_form_fields.html
+/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_multitag.html
+/wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
+/wizard_prontus/prontus_dir/cpan/core/js-local/MantenedorMultiTag.class.js
+/wizard_prontus/prontus_dir/cpan/core/js-local/MultiTag.class.js
+/wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.js
+/wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.swf
+/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
+/wizard_prontus/prontus_dir/cpan/core/macros/menu_head2b.html
+/wizard_prontus/prontus_dir/cpan/core/mant_seccs/prontus_seccion_admin.html
+/wizard_prontus/prontus_dir/cpan/core/prontus_multitag_admin.html
+/wizard_prontus/prontus_dir/cpan/core/prontus_tags_admin.html
+
+Update
+/cgi-cpn/Update.pm
+/cgi-cpn/dir_cgi.pm
+/cgi-cpn/glib_fildir_02.pm
 
 VTXT
 manejo de imagenes

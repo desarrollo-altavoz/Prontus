@@ -1182,6 +1182,14 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%/ checked="checked"/ig;
     };
 
+    if ($prontus_varglb::MULTITAG eq 'SI') {
+        $pagina =~ s/%%MULTITAG_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%MULTITAG_NO%%//ig;
+    } else {
+        $pagina =~ s/%%MULTITAG_SI%%//ig;
+        $pagina =~ s/%%MULTITAG_NO%%/ checked="checked"/ig;
+    };
+
     # variables para configurar recaptcha google
     $pagina =~ s/%%RECAPTCHA_API_URL%%/$prontus_varglb::RECAPTCHA_API_URL/ig;
     $pagina =~ s/%%RECAPTCHA_SECRET_CODE%%/$prontus_varglb::RECAPTCHA_SECRET_CODE/ig;

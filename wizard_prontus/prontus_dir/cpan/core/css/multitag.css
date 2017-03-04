@@ -1,0 +1,26 @@
+.borrar-cache {margin-bottom: 10px;}
+.mantenedor-multitag {}
+.mantenedor-multitag ul {}
+.mantenedor-multitag ul li {padding: 2px 5px 2px 5px;}
+.mantenedor-multitag ul li .fila {border: 1px solid #e6e6e6;background-color: #E0E0E0;padding: 5px;}
+.mantenedor-multitag ul li .fila.data {font-size: 13px;}
+.mantenedor-multitag ul li .fila.cabecera {font-size: 13px;}
+.mantenedor-multitag ul li .fila .campo {float: left;margin-right: 10px;height: 21px;}
+.mantenedor-multitag ul li .fila .campo-handler {width: 20px;}
+.mantenedor-multitag ul li .fila .campo-handler img {cursor: move;}
+.mantenedor-multitag ul li .fila .campo-id {width: 45px;}
+.mantenedor-multitag ul li .fila .campo-nombre {width: 300px;}
+.mantenedor-multitag ul li .fila .campo-nombre input {width: 280px;}
+.mantenedor-multitag ul li .fila .campo-friendly {width: 215px;}
+.mantenedor-multitag ul li .fila .campo-friendly input {width: 200px;}
+.mantenedor-multitag ul li .fila .boton-guardar {}
+.mantenedor-multitag ul li .fila .campo.botones {float: right;}
+.mantenedor-multitag ul li .fila .campo.loading {display: none;}
+.mantenedor-multitag ul li .fila .campo.loading img {display: block;float: left;}
+.mantenedor-multitag ul li .fila .campo.botones.edicion {display: none;}
+.mantenedor-multitag ul li .fila.cabecera {font-weight: bold;}
+.mantenedor-multitag ul li .fila.data .campo input {border: 0;font-size: 13px;outline: 1px solid #ccc;margin: 1px 0px 0px 1px;}
+.mantenedor-multitag ul li .fila.data .campo input:focus {outline-offset: 0;outline: 2px solid #ccc;}
+.mantenedor-multitag ul li .fila.data .campo p {margin: 1px 0px 0px 1px;}
+.aleft {float: left !important;}
+.aright {float: right !important;}

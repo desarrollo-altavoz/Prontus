@@ -29,10 +29,7 @@ sub save_artic_with_object {
 # Realiza todo lo necesario para crear o updatear un articulo, excepto clustering.
 # Incluye semaforo.
 # To-Do: Incluir hash de conf para indicar si tal operacion se realiza o no.
-
-
     my $is_new = $_[0]; # 1 | 0
-
 
     &lib_waitlock::lock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf"); # se le pasa el path completo al arch. semaforo.
 
@@ -55,7 +52,6 @@ sub save_artic_with_object {
         %campos_xml_old = $ARTIC_OBJ->get_xml_content();
         $tags_old = $campos_xml_old{'_tags'};
     };
-
 
     # Generar y guardar xml.
     # Esto es comun para nuevo y actualizar
@@ -252,6 +248,11 @@ sub do_save {
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
         # guardamos el titular friendly v4 en la base de datos
         $ARTIC_OBJ->genera_friendly_v4($base, $is_new) || return $Artic::ERR;
+    }
+
+    if ($prontus_varglb::MULTITAG eq 'SI') {
+        # guardamos los campos de multitag en la db
+        $ARTIC_OBJ->multitag2db($base, $is_new) || return $Artic::ERR;
     }
 
     return '';

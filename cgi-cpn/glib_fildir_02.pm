@@ -33,8 +33,6 @@ package glib_fildir_02;
 
 use File::Copy; # este paquete viene con Perl
 
-
-
 #---------------------------------------------------------------
 # SUB-RUTINAS.
 # ---------------------------------------------------------------
@@ -80,45 +78,106 @@ sub copy_tree {
 # 3) Nuevo nombre que se le va a poner al Dir. al copiarlo, sin path. Este param. tiene
 #        efecto solo la primera vez que se invoca a la rutina.
 
-my ($padre_origen) = $_[0];
-my ($df_origen) = $_[1];
-my ($df_destino) = $_[2];
-my ($nom_destino) = $_[3];
+    my ($padre_origen) = $_[0];
+    my ($df_origen) = $_[1];
+    my ($df_destino) = $_[2];
+    my ($nom_destino) = $_[3];
 
-my ($ret, @list_dir, $item);
+    my ($ret, @list_dir, $item);
 
-
-        $ret = opendir (dir_handle, $padre_origen . '/' . $df_origen);
-        # si es un directorio
-        if ($ret) {
-                if ($nom_destino ne '') {
-                        mkdir($df_destino . '/' . $nom_destino, 0777);
-                        # print "mkdir [$df_destino/$nom_destino]\n\n";
-                }
-                else {
-                        mkdir($df_destino . '/' . $df_origen, 0777);
-                        # print "mkdir [$df_destino/$df_origen]\n\n";
-                }
-
-                @list_dir = readdir dir_handle;
-                close dir_handle;
-                foreach $item (@list_dir) {
-                        next if (($item eq '.') || ($item eq '..'));
-                        if ($nom_destino ne '') {
-                                &copy_tree($padre_origen . '/' . $df_origen, $item, $df_destino . '/' . $nom_destino);
-                        }
-                        else {
-                                &copy_tree($padre_origen . '/' . $df_origen, $item, $df_destino . '/' . $df_origen);
-
-                        }
-
-                }
-        }
-        else { # Es un archivo
-                File::Copy::copy($padre_origen . '/' . $df_origen, $df_destino . '/' . $df_origen);
-                # print "copy [$df_destino/$df_origen]\n\n";
+    $ret = opendir (dir_handle, $padre_origen . '/' . $df_origen);
+    # si es un directorio
+    if ($ret) {
+        if ($nom_destino ne '') {
+            mkdir($df_destino . '/' . $nom_destino, 0777);
+            # print "mkdir [$df_destino/$nom_destino]\n\n";
+        } else {
+            mkdir($df_destino . '/' . $df_origen, 0777);
+            # print "mkdir [$df_destino/$df_origen]\n\n";
         }
 
+        @list_dir = readdir dir_handle;
+        close dir_handle;
+        foreach $item (@list_dir) {
+            next if (($item eq '.') || ($item eq '..'));
+            if ($nom_destino ne '') {
+                &copy_tree($padre_origen . '/' . $df_origen, $item, $df_destino . '/' . $nom_destino);
+            } else {
+                &copy_tree($padre_origen . '/' . $df_origen, $item, $df_destino . '/' . $df_origen);
+            }
+
+        }
+    } else { # Es un archivo
+        File::Copy::copy($padre_origen . '/' . $df_origen, $df_destino . '/' . $df_origen);
+        # print "copy [$df_destino/$df_origen]\n\n";
+    }
+}
+#-------------------------------------------------------------------------#
+sub copy_tree_exclude_ext {
+# Rutina RECURSIVA. Copia un directorio completo con archivos y subdirs.
+
+# Param. de entrada :
+# 0) Dir padre del dir origen, path completo sin / al final
+# 1) Nombre del Dir. a copiar sin path (este es el dir origen).
+# 2) Dir donde en su interior se creara el dir a copiar, path completo sin / al final
+# 3) Nuevo nombre que se le va a poner al Dir. al copiarlo, sin path. Este param. tiene
+#        efecto solo la primera vez que se invoca a la rutina.
+# 4) patron de directorios para excluir, no deben llevar / o .
+# 5) patron de extensiones de archivo a excluir, solo pueden llevar .
+
+    my $padre_origen = $_[0];
+    my $df_origen    = $_[1];
+    my $df_destino   = $_[2];
+    my $nom_destino  = $_[3];
+    my $dir_excluir  = $_[4];
+    my $ext_excluir  = $_[5];
+
+    my ($ret, @list_dir, $item);
+    $ret = opendir (dir_handle, $padre_origen . '/' . $df_origen);
+    # si es un directorio
+    if ($ret) {
+        my @exlude_dir = split(',',$dir_excluir);
+
+        if ($nom_destino ne '') {
+            foreach my $excluir (@exlude_dir) {
+                if ($nom_destino =~ /$excluir/) {
+                    return;
+                }
+            }
+            mkdir($df_destino . '/' . $nom_destino, 0777);
+            # print "mkdir [$df_destino/$nom_destino]\n\n";
+        } else {
+            foreach my $excluir (@exlude_dir) {
+                if ($df_origen =~ /$excluir/) {
+                    return;
+                }
+            }
+            mkdir($df_destino . '/' . $df_origen, 0777);
+            # print "mkdir [$df_destino/$df_origen]\n\n";
+        }
+
+        @list_dir = readdir dir_handle;
+        close dir_handle;
+        foreach $item (@list_dir) {
+            next if (($item eq '.') || ($item eq '..'));
+            if ($nom_destino ne '') {
+                &copy_tree_exclude_ext($padre_origen . '/' . $df_origen, $item, $df_destino . '/' . $nom_destino, '', $dir_excluir, $ext_excluir);
+            } else {
+                &copy_tree_exclude_ext($padre_origen . '/' . $df_origen, $item, $df_destino . '/' . $df_origen,  '', $dir_excluir, $ext_excluir);
+            }
+        }
+    } else { # Es un archivo
+        my @exlude_file = split(',',$ext_excluir);
+        foreach my $excluir (@exlude_file) {
+            # escapeamos los caracteres "meta" que pueda tener el patron
+            $excluir = quotemeta $excluir;
+            if ($df_origen =~ /$excluir/) {
+                return;
+            }
+        }
+        File::Copy::copy($padre_origen . '/' . $df_origen, $df_destino . '/' . $df_origen);
+        # print "copy [$df_destino/$df_origen]\n\n";
+    }
 }
 #-------------------------------------------------------------------------#
 sub crea_dir {
@@ -284,12 +343,8 @@ sub check_dir {
 #    };
     mkdir($dir3, 493) || return 0;
 
-
-
   };
-
   return 1;
-
 };
 
 #-----------------------------------------------------------------------#

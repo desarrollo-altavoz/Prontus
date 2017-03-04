@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Administrar Tags &laquo; %%_PRONTUS_ID%% &laquo; %%_SERVER_NAME%%</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/multitag.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
+
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.idTabs.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.js"></script>
+
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Url.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/MantenedorMultiTag.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Botones.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Opciones.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Utiles.class.js"></script>
+
+  </head>
+  <body class="bodysite">
+
+    <div id="main">
+        %%MACRO(menu_head2b.html)%%
+
+        <!--INICIO CONTENIDO-->
+          <div class="main-left">
+            <div class="content col960b">
+              <!--TITULO PRINCIPAL-->
+              <div class="boton-gris1">
+                <a class="button" href="../prontus_tax_admin.cgi?_entidad=seccion&amp;_path_conf=/%%_PRONTUS_ID%%/cpan/%%_PRONTUS_ID%%.cfg"><span>Administrar Categorías</span></a>
+                <a class="button" href="../prontus_tags_admin.cgi?_path_conf=/%%_PRONTUS_ID%%/cpan/%%_PRONTUS_ID%%.cfg"><span>Administrar Tags</span></a>
+                <a class="button selected" href="javascript:void(0);"><span>Administrar MultiTag</span></a>
+              </div>
+              <!-- / TITULO PRINCIPAL-->
+              <div class="auxi">
+                <div class="separa"></div>
+
+                <div class="boton-gris3 aright borrar-cache">
+                    <a href="#" class="button" id="borrar-cache-mtag"><span>Borrar caché</span></a>
+                </div>
+                <div class="boton-gris1" id="multitag-tabs">
+                    <a class="button" href="#multitag_tab1"><span>Secciones</span></a>
+                    <a class="button" href="#multitag_tab2"><span>Temas</span></a>
+                    <a class="button" href="#multitag_tab3"><span>Subtemas</span></a>
+                </div>
+                <div class="mantenedor-multitag">
+                    <!--Seccion-->
+                    <div class="auxi" id="multitag_tab1">
+                        <ul id="multitag_seccion">
+                            <li class="ignore-sortable">
+                                <div class="fila cabecera">
+                                    <div class="campo campo-handler"></div>
+                                    <div class="campo campo-id">ID</div>
+                                    <div class="campo campo-nombre">NOMBRE SECCION</div>
+                                    <div class="campo campo-friendly">FRIENDLY URL</div>
+                                </div>
+                            </li>
+                            <li class="ignore-sortable form" id="form-seccion">
+                                <div class="fila">
+                                    <div class="campo campo-handler"></div>
+                                    <div class="campo campo-id"></div>
+                                    <div class="campo campo-nombre">
+                                        <input type="text" maxlength="64" />
+                                    </div>
+                                    <div class="campo campo-friendly">
+                                        <input type="text" maxlength="32" />
+                                    </div>
+                                    <div class="campo boton-guardar">
+                                        <div class="boton-gris3 aleft">
+                                            <a href="#" class="button agrega-item" data-type="seccion"><span>Agregar nueva sección</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="campo loading aleft">
+                                        <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loader/ajax-loader.gif">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--Tema-->
+                    <div class="auxi" id="multitag_tab2">
+                        <ul id="multitag_tema">
+                            <li class="ignore-sortable">
+                                <div class="fila cabecera">
+                                    <div class="campo campo-handler"></div>
+                                    <div class="campo campo-id">ID</div>
+                                    <div class="campo campo-nombre">NOMBRE TEMA</div>
+                                    <div class="campo campo-friendly">FRIENDLY URL</div>
+                                </div>
+                            </li>
+                            <li class="ignore-sortable form" id="form-tema">
+                                <div class="fila">
+                                    <div class="campo campo-handler"></div>
+                                    <div class="campo campo-id"></div>
+                                    <div class="campo campo-nombre">
+                                        <input type="text" maxlength="64" />
+                                    </div>
+                                    <div class="campo campo-friendly">
+                                        <input type="text" maxlength="32" />
+                                    </div>
+                                    <div class="campo boton-guardar">
+                                        <div class="boton-gris3 aleft">
+                                            <a href="#" class="button agrega-item" data-type="tema"><span>Agregar nuevo tema</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--Subtema-->
+                    <div class="auxi" id="multitag_tab3">
+                        <ul id="multitag_subtema">
+                            <li class="ignore-sortable">
+                                <div class="fila cabecera">
+                                    <div class="campo campo-handler"></div>
+                                    <div class="campo campo-id">ID</div>
+                                    <div class="campo campo-nombre">NOMBRE SUBTEMA</div>
+                                    <div class="campo campo-friendly">FRIENDLY URL</div>
+                                </div>
+                            </li>
+                            <li class="ignore-sortable form" id="form-subtema">
+                                <div class="fila">
+                                    <div class="campo campo-handler"></div>
+                                    <div class="campo campo-id"></div>
+                                    <div class="campo campo-nombre">
+                                        <input type="text" maxlength="64" />
+                                    </div>
+                                    <div class="campo campo-friendly">
+                                        <input type="text" maxlength="32" />
+                                    </div>
+                                    <div class="campo boton-guardar">
+                                        <div class="boton-gris3 aleft">
+                                            <a href="#" class="button agrega-item" data-type="subtema"><span>Agregar nuevo subtema</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/Fin Contenido-->
+    <script type="text/javascript">
+    $(document).ready(function() {
+        Admin.init('%%_PRONTUS_ID%%');
+        if(Admin.dir_cgi_cpn !== '') {
+            MantenedorMultiTag.init('%%_PRONTUS_ID%%');
+        } else {
+            MantenedorMultiTag.idInterval = setInterval(function() {
+                if(Admin.dir_cgi_cpn !== '') {
+                    clearInterval(MantenedorMultiTag.idInterval);
+                    MantenedorMultiTag.init('%%_PRONTUS_ID%%');
+                }
+            }, 100);
+        }
+    });
+    </script>
+  </body>
+</html>
