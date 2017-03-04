@@ -59,7 +59,7 @@ BEGIN {
     $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
     do 'dir_cgi.pm';
-    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
 };
 
