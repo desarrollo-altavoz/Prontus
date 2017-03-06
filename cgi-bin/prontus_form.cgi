@@ -268,7 +268,7 @@ main: {
     &lib_form::garbage_collection("$ROOTDIR$ANSWERS_DIR");
 
     # Finaliza mostrando la pagina de exito.
-    &salida('',$PRONTUS_VARS{'form_msg_exito'.$VISTAVAR},$TMP_EXITO);
+    &salida('', $PRONTUS_VARS{'form_msg_exito'.$VISTAVAR}, $TMP_EXITO, 0);
 }; # main
 
 # ###################################################
@@ -557,15 +557,7 @@ sub valida_data {
         &lib_form::aborta("No existe plantilla de error.");
     };
     &inicializaMensajes(\$TMP_ERROR);
-    # Define directorio de las respuestas y la identificacion de esta.
-    $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR";
-    if (! (-d "$ROOTDIR/$ANSWERS_DIR") ) {
-        if (&glib_fildir_02::check_dir("$ROOTDIR/$ANSWERS_DIR") == 0) {
-            &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
-        };
-    };
 
-    $ANSWERID = $PRONTUS_ID . $TS . time . $$; # rand(1000000000);
     # Lee el servidor SMTP definido para Prontus.
     # SERVER_SMTP= 'localhost'
     $buffer = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/cpan/$PRONTUS_ID-var.cfg");
@@ -574,7 +566,7 @@ sub valida_data {
         $server_smtp = $1;
     };
     if ($server_smtp eq '') {
-        &salida($MSGS{'out_of_service'},$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR);
+        &salida($MSGS{'out_of_service'},$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
     };
     $lib_form::SERVER_SMTP = $server_smtp;
 
@@ -588,7 +580,7 @@ sub valida_data {
     my $FORM_VISTA = &glib_cgi_04::param('_form_vista');
     if($FORM_VISTA ne '' && $lib_form::MULTIVISTAS{$FORM_VISTA} != 1) {
         $MSGS{$FORM_VISTA} = &glib_html_02::text2html($FORM_VISTA) unless($MSGS{$FORM_VISTA});
-        &salida($MSGS{'wrong_vista'} . ' ' . $MSGS{$FORM_VISTA}, $PRONTUS_VARS{'form_msg_error'}, $TMP_ERROR);
+        &salida($MSGS{'wrong_vista'} . ' ' . $MSGS{$FORM_VISTA}, $PRONTUS_VARS{'form_msg_error'}, $TMP_ERROR,1);
     };
 
     # 1.9
@@ -605,7 +597,7 @@ sub valida_data {
             &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
             my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
             if ($msg_err_captcha ne '') {
-                &salida($MSGS{'wrong_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                &salida($MSGS{'wrong_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
             };
         } else {
             # Se valida re-captcha para continuar
@@ -630,7 +622,7 @@ sub valida_data {
                 if (defined $hashtemp->{'success'}) {
                     if(!$hashtemp->{'success'}){
                         print STDERR "Error al validar recapcha google: [$hashtemp->{'error-codes'}]\n";
-                        &salida($MSGS{'wrong_google_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                        &salida($MSGS{'wrong_google_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
                         exit;
                     };
                 };
@@ -661,7 +653,7 @@ sub valida_data {
                 if($nombre =~ /${VISTAVAR}$/) {
                     $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
                     if (&glib_cgi_04::param($nombre) eq '') {
-                        &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                        &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
                     };
                 };
 
@@ -674,7 +666,7 @@ sub valida_data {
                 if(! $lib_form::MULTIVISTAS{$posiblevista}) {
                     $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
                     if (&glib_cgi_04::param($nombre) eq '') {
-                        &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                        &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
                     };
                 };
             };
@@ -686,7 +678,7 @@ sub valida_data {
                 $nombre = $1;
                 $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
                 if (&glib_cgi_04::param($nombre) eq '') {
-                    &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR);
+                    &salida($MSGS{'required_data'} .' '. $MSGS{$nombre}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
                 };
             };
         };
@@ -701,7 +693,7 @@ sub valida_data {
             if (! &lib_validator::chequea_rut($dato)) {
                 my $nombre_dato = $MSGS{$nombre};
                 $nombre_dato = &glib_html_02::text2html($nombre) unless($nombre_dato);
-                &salida($MSGS{'wrong_data'} .' '. $nombre_dato,$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR);
+                &salida($MSGS{'wrong_data'} .' '. $nombre_dato,$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
             };
         };
         if (($nombre =~ /^telefono/i) || ($nombre =~ /^fono/i)
@@ -710,14 +702,14 @@ sub valida_data {
             if (! &lib_validator::chequea_telefono($dato)) {
                 my $nombre_dato = $MSGS{$nombre};
                 $nombre_dato = &glib_html_02::text2html($nombre) unless($nombre_dato);
-                &salida($MSGS{'wrong_data'} .' '. $nombre_dato,$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR);
+                &salida($MSGS{'wrong_data'} .' '. $nombre_dato,$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
             };
         };
         if (($nombre =~ /^email/i) || ($nombre =~ /^e-mail/i)) { # Valida emails.
             if (! &lib_validator::chequea_email($dato)) {
                 my $nombre_dato = $MSGS{$nombre};
                 $nombre_dato = &glib_html_02::text2html($nombre) unless($nombre_dato);
-                &salida($MSGS{'wrong_data'} .' '. $nombre_dato,$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR);
+                &salida($MSGS{'wrong_data'} .' '. $nombre_dato,$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
             };
         };
 
@@ -725,7 +717,7 @@ sub valida_data {
         if (&glib_cgi_04::real_paths($nombre) ne '') { # Es un archivo.
             my $upload_filename = &glib_cgi_04::real_paths($nombre);
             if ($upload_filename !~ /(\.pdf|\.doc|\.docx|\.rtf|\.xls|\.xlsx|\.csv|\.zip|\.rar|\.jpg|\.jpeg|\.gif|\.png|\.bmp|\.txt|\.ppt|\.pptx|\.swf)$/i) {
-                &salida('El tipo de archivo que est&aacute; intentando subir no es v&aacute;lido',$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR);
+                &salida('El tipo de archivo que est&aacute; intentando subir no es v&aacute;lido',$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
             };
         };
     };
@@ -787,7 +779,21 @@ sub get_prontus_vars {
 # de exito o error.
 # Los parametros son: mensaje, plantilla de mensaje y plantilla de pagina.
 sub salida {
-    my ($msg,$string_error,$plantilla) = @_;
+    my ($msg,$string_error,$plantilla,$hay_error) = @_;
+
+    # Define directorio de las respuestas y la identificacion de esta.
+    $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/exito";
+    if ($hay_error) {
+        # CVI - 02/06/2014 - Para el error_log
+        print STDERR "[prontus_form] Error: $msg\n";
+        $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/error";
+    }
+    if (! (-d "$ROOTDIR$ANSWERS_DIR") ) {
+        if (&glib_fildir_02::check_dir("$ROOTDIR$ANSWERS_DIR") == 0) {
+            &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
+        };
+    };
+    $ANSWERID = $PRONTUS_ID . $TS . time . $$; # rand(1000000000);
 
     # 1.2 Procesa IFs y NIFs.
     $plantilla = &procesaIFs($plantilla,2);
@@ -814,8 +820,9 @@ sub salida {
     $plantilla =~ s/%%\w+%%//sg; # 1.2.1
     $plantilla =~ s/%\w+%//sg;
     # Verifica que existe el directorios de cache y los crea si no es asi.
+    print STDERR "$ROOTDIR$ANSWERS_DIR\n";
     if (! (-d "$ROOTDIR/$ANSWERS_DIR") ) {
-        if (&glib_fildir_02::check_dir("$ROOTDIR/$ANSWERS_DIR") == 0) {
+        if (&glib_fildir_02::check_dir("$ROOTDIR$ANSWERS_DIR") == 0) {
             &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
         };
     };
@@ -827,9 +834,6 @@ sub salida {
     #binmode(ARCHIVO, ":utf8");
     print ARCHIVO $plantilla; #Escribe buffer completo
     close ARCHIVO;
-
-    # CVI - 02/06/2014 - Para el error_log
-    print STDERR "[prontus_form] Error: $msg\n";
 
     # Redirige al visitante hacia la pagina de respuesta.
     # print "Location: /$ANSWERS_DIR/$ANSWERID\.$EXT\n\n";

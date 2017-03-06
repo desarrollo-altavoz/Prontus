@@ -9065,3 +9065,15 @@ General
 /var/www/prontus_release/cgi-cpn/glib_html_02.pm
 /var/www/prontus_release/cgi-cpn/lib_prontus.pm
 /var/www/prontus_release/cgi-cpn/lib_secc.pm
+
+cgi-cpn/lib_tax.pm
+cgi-cpn/lib_mail.pm
+cgi-cpn/lib_form.pm
+
+cgi-bin/prontus_art_posting.cgi
+
+Se agrega a la url de respuesta de prontus form, exito o error según corresponda.
+Se agrega texto descriptivo por defecto para los campos nombre, apellidos, email, telefono, celular, fax, rut.
+Se reordenan algunos procesos.
+
+cgi-bin/prontus_form.cgi

@@ -1399,8 +1399,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $pag =~ s/<!--list_pagspar-->.*?<!--\/list_pagspar-->//isg;
   };
 
-  print STDERR "$titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic\n";
   my $fileurl = &lib_prontus::parse_filef('%%_fileurl%%', $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1);
+  print STDERR "$titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $fileurl\n";
   $pag =~ s/%%_fileurl%%/$fileurl/ig;
   if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
     $pag =~ s/%%_fileurlinfo%%/$fileurl/ig;
