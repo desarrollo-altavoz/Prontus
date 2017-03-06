@@ -282,9 +282,6 @@ sub print_json_result {
     } else {
         print &JSON::to_json($resp);
     }
-    #~ my $json = new JSON;
-    # print $json->to_json($resp);
-    #~ print &JSON::to_json($resp);
     exit if ($exit);
 }
 #--------------------------------------------------------------------#

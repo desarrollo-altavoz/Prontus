@@ -96,6 +96,7 @@ main: {
 
     # Se chequean los permisos
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
+    # print STDERR "($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL)\n";
 
     print "Content-type: text/html\n\n";
 
@@ -108,6 +109,13 @@ main: {
         &glib_html_02::print_pag_result("Listado de Datos", 'La Plantilla no existe', 1, '');
         exit;
     };
+
+    if ($prontus_varglb::USERS_ID eq '' || $prontus_varglb::USERS_PERFIL ne 'A') {
+        $PLANTILLA =~ s/<!--admin-->.*?<!--\/admin-->//s;
+    } else {
+        $PLANTILLA =~ s/<!--admin-->//s;
+        $PLANTILLA =~ s/<!--\/admin-->//s;
+    }
 
     # Se revisa que el archivo de "orden" exista
     $DIRFORM     = "/$PRONTUS/cpan/procs/form/$TS";
