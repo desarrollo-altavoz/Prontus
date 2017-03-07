@@ -320,6 +320,17 @@ sub data_management {
         if (&glib_cgi_04::real_paths($key) ne '') { # Es un archivo.
             $filename = &glib_cgi_04::real_paths($key);
             $filename =~ s/.+[\/\\]([^\/\\]+)/$1/; # 1.3 Extrae path por si lo trae.
+            utf8::decode($filename);
+            my $nomfile = '';
+            my $ext = '';
+            if ($filename =~ /(.+?)(\.\w+|)$/) {
+                $nomfile = lc $1;
+                $ext = lc $2; # ext con punto si viene
+            };
+            $nomfile =~ tr/\xe1\xe9\xed\xf3\xfa\xc1\xc9\xcd\xd3\xda\xd1\xf1\x20\xfc\xdc/aeiouaeiounn_uu/;
+            $nomfile =~ s/\W/_/sg;
+
+            $filename = $nomfile.$ext;
             $filedata = &glib_cgi_04::param($key);
             $files{$key}{'_name'} = 'file_' . $random.'--'.$filename;
             $files{$key}{'_temp'} = $filedata;
