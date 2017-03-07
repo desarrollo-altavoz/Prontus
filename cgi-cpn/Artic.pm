@@ -715,10 +715,10 @@ sub _get_nom_asocfile {
     my $af_existente = shift;
 
 
-    my $nomfile;
-    my $ext;
+    my $nomfile = '';
+    my $ext = '';
     # print STDERR "texto[$texto] - af_existente[$af_existente]\n";
-    if ($texto =~ /(\/|\\)?([^\/\\]+?)(\.\w+)$/) {
+    if ($texto =~ /(\/|\\)?([^\/\\]+?)(\.\w+|)$/) {
         $nomfile = lc $2;
         $ext = lc $3; # ext con punto
     };
