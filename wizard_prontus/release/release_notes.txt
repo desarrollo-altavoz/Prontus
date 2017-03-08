@@ -9061,7 +9061,11 @@ manejo de imagenes
 
 
 General
+Mejoras generales en las cgis
 /var/www/prontus_release/cgi-cpn/glib_cgi_04.pm
 /var/www/prontus_release/cgi-cpn/glib_html_02.pm
 /var/www/prontus_release/cgi-cpn/lib_prontus.pm
 /var/www/prontus_release/cgi-cpn/lib_secc.pm
+
+Se mejora la busqueda del administrador de articulos, para palabras compuestas que usen - o caracteres especiales
+/var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
