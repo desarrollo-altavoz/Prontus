@@ -462,9 +462,7 @@ sub data_management {
     if($data_json) {
         my $resp;
         foreach my $llave (keys %{$data_json}) {
-            # $data = &glib_str_02::trim(&glib_cgi_04::param($llave));
             $resp->{$llave} = $data_json->{$llave};
-            # print $json->to_json($resp);
         };
         if (keys %{$files_json}) {
             $resp->{'_files'} = $files_json;;

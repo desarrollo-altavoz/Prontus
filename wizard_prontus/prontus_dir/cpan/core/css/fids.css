@@ -137,6 +137,12 @@
 .formbackup .head td {padding:2px; text-align:left; font-weight:bold; vertical-align:middle; background-color:#E6E6E6;}
 .formbackup .valor td {padding:2px; text-align:left; border:1px solid #E6E6E6; }
 
+.formbackup .msg {font-size:14px; font-weight:normal; padding:4px 2px; width:400px; margin: auto;}
+.formbackup .msg .icon {display: none;}
+.formbackup .msg .icon span {margin:4px 0px; float:left; font-size:18px; color:#003366; font-weight:bold; width: 360px;}
+.formbackup .msg .icon a img {margin-right:10px; border:0px;}
+.formbackup .msg .icon img {float:left; margin-right:10px; border:0px;}
+
 /* Para los archivos multiples */
 .cabecera .tabs-alt {width:100%}
 .cabecera .tabs-alt ul li {float:left; clear:none; margin:2px 10px; list-style: none;}
