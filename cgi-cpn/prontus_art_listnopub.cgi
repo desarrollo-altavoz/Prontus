@@ -645,6 +645,7 @@ sub genera_filtros {
     $FORM{'titu'} =~ s/ {2,}/ /g;
     if ($FORM{'titu'} ne '') {
       my $titu4query = $FORM{'titu'};
+      print STDERR $titu4query."\n";
 
       if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
         if($titu4query =~ /".*?"/) {
@@ -652,10 +653,11 @@ sub genera_filtros {
             $filtros = " MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
 
         } else {
+            $titu4query =~ s/([^ ]+)/"$1"/g;  # mysql
             $titu4query =~ s/ / \+/g;  # mysql
             $titu4query =~ s/^/+/;     # mysql
-            $filtros .= " and MATCH (ART_TITU) AGAINST (\"$titu4query\" IN BOOLEAN MODE)" if $filtros ne ''; # mysql
-            $filtros = " MATCH (ART_TITU) AGAINST (\"$titu4query\" IN BOOLEAN MODE)" if $filtros eq '';      # mysql
+            $filtros .= " and MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros ne ''; # mysql
+            $filtros = " MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
         };
       };
 
