@@ -8976,7 +8976,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_varglb.pm
 
 ====================================================================================================
-11.2.94 - 25/01/2016 - SCT/EAG/JOR
+11.2.94 - 09/03/2017 - SCT/EAG/JOR
 ====================================================================================================
 - Prontus en general
     [bugfixes]
@@ -9008,8 +9008,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/advimage/js/image.js
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/content.css
 
-
 Multitag
+Se integra el sistema de multitag a Prontus. Provee una funcionalidad similar a las taxonomia para clasificar artículos pero con mayor flexibilidad.
+Para utilizarlas se debe activar la opcion en Administración > Configuración > Variables Generales > MULTITAG. Si es un Prontus existente, se deben crear las tablas de base de datos necesarias, en Administración > Base de Datos > Crear Tablas.
+Para integrar el sistema a un artículo se provee la macro reservada "_multitag.html"
 /cgi-bin/multitag/prontus_multitag_list.cgi
 /cgi-bin/prontus_form.cgi
 /cgi-cpn/Artic.pm
@@ -9049,40 +9051,48 @@ Multitag
 /wizard_prontus/prontus_dir/cpan/core/prontus_tags_admin.html
 
 Update
+Se modifica el update de prontus para no incluir logs y carpetas con respaldos.
 /cgi-cpn/Update.pm
 /cgi-cpn/dir_cgi.pm
 /cgi-cpn/glib_fildir_02.pm
 
 VTXT
-manejo de imagenes
-/var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/css/fids.css
-/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
-
+Se cambia la publicación de imágenes en el vtxt, ahora se insertan a tamaño completo.
+/cgi-cpn/prontus_art_ficha.cgi
+/wizard_prontus/prontus_dir/cpan/core/css/fids.css
+/wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
 
 General
-/var/www/prontus_release/cgi-cpn/glib_cgi_04.pm
-/var/www/prontus_release/cgi-cpn/glib_html_02.pm
-/var/www/prontus_release/cgi-cpn/lib_prontus.pm
-/var/www/prontus_release/cgi-cpn/lib_secc.pm
+Se realizan mejoras y correciones generales en las librerias de prontus.
+/cgi-cpn/glib_cgi_04.pm
+/cgi-cpn/glib_html_02.pm
+/cgi-cpn/lib_prontus.pm
+/cgi-cpn/lib_secc.pm
+/cgi-cpn/lib_tax.pm
+/cgi-cpn/lib_mail.pm
+/cgi-cpn/lib_form.pm
 
-cgi-cpn/lib_tax.pm
-cgi-cpn/lib_mail.pm
-cgi-cpn/lib_form.pm
+Se mejora la busqueda del administrador de articulos para palabras compuestas que usen '-' ,'+' o caracteres especiales.
+/cgi-cpn/prontus_art_listnopub.cgi
 
-cgi-bin/prontus_art_posting.cgi
+Los fids excluidos de la generación de friendly 4, generan link directo al usar %%_FILEURL%%.
+/cgi-cpn/lib_prontus.pm
+/cgi-bin/prontus_art_posting.cgi
 
-Se agrega a la url de respuesta de prontus form, exito o error según corresponda.
+Prontus Form
+Se agrega a la url de respuesta del formulario, "exito" o "error" según corresponda.
 Se agrega texto descriptivo por defecto para los campos nombre, apellidos, email, telefono, celular, fax, rut.
+Se cambia a segundo plano la descarga del csv con los datos consolidados.
+Se agrega logeo de acciones: listar, descargar y borrar.
+Se modifica el borrado de datos recibidos por Prontus Form, solo el usuario admin podrá borrarlos. A los demás usuarios no les aparecerá la opción
 Se reordenan algunos procesos.
 
-cgi-bin/prontus_form.cgi
-
-Se cambia a segundo plano la descarga del csv con los datos consolidados
-cgi-bin/prontus_form.cgi
-cgi-cpn/lib_form.pm
-cgi-cpn/prontus_form_download.cgi
-cgi-cpn/prontus_form_download_real.cgi
-wizard_prontus/prontus_dir/cpan/core/css/fids.css
-wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
-wizard_prontus/prontus_dir/cpan/core/prontus_form_list.html
+/cgi-bin/prontus_form.cgi
+/cgi-cpn/lib_form.pm
+/cgi-cpn/prontus_form_delete.cgi
+/cgi-cpn/prontus_form_download.cgi
+/cgi-cpn/prontus_form_download_real.cgi
+/cgi-cpn/prontus_form_list.cgi
+/wizard_prontus/prontus_dir/cpan/core/css/fids.css
+/wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+/wizard_prontus/prontus_dir/cpan/core/prontus_form_list.html

@@ -5019,28 +5019,32 @@ sub parse_filef {
             } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
                 # Formato: /prontus/seccion/tema/subtema/titular.extension
                 my $xml_art = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER/$prontus_id/site/artic/$fecha/xml/$ts.xml");
-                # rescatamos el titular original sin cambios
-                $titular = $_[1];
-                # si se debe usar url custom
-                if ($xml_art =~ /<_custom_slug>SI<\/_custom_slug>/) {
-                    # rescatamos el slug, si no existe usamos el titular de forma normal
-                    if ($xml_art =~ /<_slug>([a-z0-9\-]+)<\/_slug>/) {
-                        $titular = $1;
+                $xml_art =~ /<_fid>(.*?)<\/_fid>/;
+                my $fid = $1;
+                # si el fid esta excluido de friendly 4, se genera url directa
+                if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$fid}) {
+                    # rescatamos el titular original sin cambios
+                    $titular = $_[1];
+                    # si se debe usar url custom
+                    if ($xml_art =~ /<_custom_slug>SI<\/_custom_slug>/) {
+                        # rescatamos el slug, si no existe usamos el titular de forma normal
+                        if ($xml_art =~ /<_slug>([a-z0-9\-]+)<\/_slug>/) {
+                            $titular = $1;
+                        }
                     }
+                    $titular = &ajusta_titular_f4($titular);
+                    $fileurl = "/$prontus_id$tax/$titular";
+                } else {
+                    $fileurl = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
                 }
-                $titular = &ajusta_titular_f4($titular);
-                $fileurl = "/$prontus_id$tax/$titular";
-
             }
         } else {
             # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
             $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
         };
-
         #~ print STDERR "fileurl[$fileurl]\n";
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
-
     } else {
         my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
         $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
