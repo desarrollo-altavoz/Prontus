@@ -8976,7 +8976,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_varglb.pm
 
 ====================================================================================================
-11.2.94 - 09/03/2017 - SCT/EAG/JOR
+11.2.94 - 09/03/2017 - SCT/EAG/JOR/ALD
 ====================================================================================================
 - Biblioteca multimedia
     [bugfixes]
@@ -9055,19 +9055,20 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Actualización de Prontus
     [mejoras]
-        - Se modifica el update de prontus para no incluir logs y carpetas con respaldos.
+        - Se modifica el sistema de actualización de prontus para no respaldar logs y carpetas con archivos que no corresponden.
     [files]
         /cgi-cpn/Update.pm
         /cgi-cpn/dir_cgi.pm
         /cgi-cpn/glib_fildir_02.pm
 
 - Prontus en general
-
-
-- Prontus en general
     [mejoras]
+        - Se aumenta a 100 el posible valor de RATIO en la configuracion del buscador prontus,
+        de esta forma no omiten palabras poco relevantes.
         - Se realizan mejoras y correciones generales en las librerias de prontus.
         - Los fids excluidos de la generación de friendly 4, generan link directo al usar %%_FILEURL%%.
+        - Se mejora la forma de informar que el titular o slug es vacío, ahora aparece un mensaje
+         emergente en vez de un alert.
     [files]
         /cgi-cpn/glib_cgi_04.pm
         /cgi-cpn/glib_html_02.pm
@@ -9076,10 +9077,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_tax.pm
         /cgi-cpn/lib_mail.pm
         /cgi-cpn/lib_form.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_art_check_url.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_search.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_publicacion_directa.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
 
 - Administrador de artículos
     [mejoras]
-        - Se mejora la busqueda del administrador de articulos para palabras compuestas que usen '-' ,'+' o caracteres especiales.
+        - Se mejora la búsqueda del administrador de articulos para palabras compuestas que usen '-' ,'+' o caracteres especiales.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_art_listnopub.cgi
@@ -9111,8 +9117,21 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Dropbox
     [mejoras]
-        - Se actualizan las librerias para usar la v2 de la api de dropbox
+        - Se actualizan las librerías para usar la v2 de la api de dropbox
         - Se eliminan forks y se rediseña funcionamiento general
     [files]
         /cgi-cpn/lib_dropbox.pm
         /cgi-cpn/prontus_dropbox_backup.cgi
+
+- Transcodificación
+    [mejoras]
+        - Se habilitan las cgis de transcodificacion para poder ser ejecutadas a través de línea de comando,
+        esto para poder transcodificar todos los videos de un sitio web sin tener que revisar cada artículo
+        manualmente. Se incluye utilidad en al release.
+        - Se agrega una espera aleatoria antes de iniciar una transcodificación para prevenir que puedan
+         ejecutarse 2 procesos sobre el mismo video.
+    [files]
+        /cgi-cpn/xcoding/prontus_procesar_videos.pl
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
