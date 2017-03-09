@@ -9126,8 +9126,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Transcodificación
     [mejoras]
         - Se habilitan las cgis de transcodificacion para poder ser ejecutadas a través de línea de comando,
-        esto para poder transcodificar todos los videos de un sitio web sin tener que revisar cada artículo
-        manualmente. Se incluye utilidad en al release.
+        esto para poder transcodificar todos los videos de un sitio web sin tener que abrir cada artículo
+        manualmente. Se incluye utilidad en la release.
         - Se agrega una espera aleatoria antes de iniciar una transcodificación para prevenir que puedan
          ejecutarse 2 procesos sobre el mismo video.
     [files]
