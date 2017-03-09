@@ -22,6 +22,8 @@
 #                            ya que siempre procesa todos los archivos en /dropbox.
 # 2.0.1 - 28/02/2017 - ALD - Elimina el fork, ya que es penalizado por la API 2 de dropbox.
 #                          - Valida hash de los archivos antes de subirlos.
+# 2.0.2 - 09/03/2017 - EAG - Se agrega funcion de salida para no dejar tomado el semaforo en caso de error.
+#                            Se modifica opcion para no tener problemas al dejar en segundo plano
 # ---------------------------------------------------------------
 # 2do:
 # - Perfeccionar el sistema de semaforo: si hay un proceso corriendo estaria ok,
@@ -34,6 +36,12 @@ BEGIN {
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
 };
+END {
+    &tareas_salida();
+};
+
+use sigtrap 'handler' => \&signal_catch, 'INT';
+use sigtrap 'handler' => \&signal_catch, 'TERM';
 
 # Captura STDERR
 use lib_stdlog;
@@ -45,10 +53,6 @@ use Time::Local;
 use prontus_varglb; &prontus_varglb::init();
 use lib_prontus;
 use lib_dropbox;
-
-$|=1;
-
-close STDOUT;
 
 my %FORM;
 my $DIR_SEMAF;
@@ -82,9 +86,9 @@ main: {
         if ($diff > 7200) { # 2 hrs.
             print STDERR "[$$] Semaforo muy antiguo, eliminando...";
             unlink "$DIR_SEMAF/dropbox_backup.lck";
-            
+
             my $res = `ps auxww |grep 'prontus_dropbox_backup.cgi $prontus_varglb::PRONTUS_ID' | grep -v grep | wc -l`;
-            
+
             if ($res) {
                 system('kill -9 `ps -auxww | grep \'prontus_dropbox_backup.cgi ' . $prontus_varglb::PRONTUS_ID . '\' | grep -v grep | awk \'{print $2}\' | grep -v ' . $$ . '`');
             };
@@ -92,7 +96,7 @@ main: {
     };
 
     &glib_fildir_02::write_file("$DIR_SEMAF/dropbox_backup.lck", $$);
-    
+
     # Inicializa modulo dropbox.
     &lib_dropbox::init($prontus_varglb::DROPBOX_ACCESS_TOKEN);
 
@@ -100,7 +104,7 @@ main: {
     my $dir_dropbox = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/dropbox";
     my ($file,$recurso);
     my %days; # 2.0.0 Dias a procesar (un dia especial es 'port', que procesa las portadas).
-    
+
     my @files = glob("$dir_dropbox/*.txt");
     while (scalar @files > 0) {
         print STDERR "[$$] Buscando si hay archivos...\n";
@@ -110,7 +114,7 @@ main: {
             next if (!-s $file);
             &procesar_archivo($file,\%days);
             # print STDERR "[$$] Se termino de procesar [$file].\n";
-    
+
         };
         # Respalda los contenidos correspondientes.
         foreach $recurso (keys %days) {
@@ -123,21 +127,30 @@ main: {
             # Actualiza fecha modificacion semaforo, para que no lo vayan a matar!
             utime time, time, "$DIR_SEMAF/dropbox_backup.lck";
         };
-        
+
         @files = glob("$dir_dropbox/*.txt");
     };
-    
+
     # Respalda la taxonomia.
     &procesa_tax();
-    
-    # &procesa_ejemplo(); # debug
 
-    unlink "$DIR_SEMAF/dropbox_backup.lck";
+    # &procesa_ejemplo(); # debug
 
     print STDERR "[$$] Fin.\n";
 
 }; # main
 
+# ----------------------------------------------------------------------------- #
+# tareas que se deben realizar al terminar el script
+sub tareas_salida {
+    unlink "$DIR_SEMAF/dropbox_backup.lck";
+}
+# ---------------------------------------------------------------
+# funcion para capturar las señales INT y TERM y logearlas
+sub signal_catch {
+    print STDERR  "Terminado por signal @_\n";
+    exit(0);
+}
 # ----------------------------------------------------------------------------- #
 sub procesar_archivo {
     my ($file,$days) = @_;
@@ -156,7 +169,7 @@ sub procesar_archivo {
         };
     };
     close FILE;
-    
+
     unlink $file;
 
 }; # procesar_archivo
@@ -221,17 +234,17 @@ sub recurseDirs {
     my %dropboxFileSizes;
     my %dropboxFileTimes;
     my %dropboxFileHashes;
-    
+
     # Si el directorio es cpan/data/search o es /cache o /bak, sale sin hacer nada.
     if (($source =~ /cpan\/data\/search/) || ($source =~ /\/cache$/) || ($source =~ /\/bak$/)) {
         # print "    Banned Dir: $source\n"; # debug
         return;
     };
-  
+
     opendir(DIR, $source) || die "Can't opendir " . $source . $!;
     @entries = readdir(DIR);
     closedir DIR;
-    
+
     # 2.1.0 Si el directorio esta vacio, sale sin hacer nada.
     $numEntries = scalar(@entries);
     if ($numEntries <= 2) {
@@ -240,7 +253,7 @@ sub recurseDirs {
     };
 
     print STDERR "[$$] Inicio: $source [$numEntries] -> $destination\n"; # debug
-    
+
     # Lee las entradas de dropbox en el destino. <path>\t<es dir>\t<tamano en bytes>
     @dropboxEntries = &lib_dropbox::getDir($destination);
     # Obtiene los tamanos de archivo. Si es un directorio asigna el tamano -1.
@@ -272,13 +285,13 @@ sub recurseDirs {
         # # 1.1.0 Solo procesa si la fecha es posterior a 20161201
         # if ($entry =~ /^\d{8}$/) {
         #     next if ($entry < 20161201);
-        # }; 
+        # };
         # Si es un directorio, entonces aplica de nuevo la rutina en forma recursiva.
         # No copia los directorios que empiezan con un punto.
         if ((-d "$source/$entry") && ($entry !~ /^\./)) {
             &recurseDirs("$source/$entry","$destination/$entry");
         };
-        
+
         if (-f "$source/$entry") {
             # 2.1.0 No considera los archivos que contengan 'preview.' en su nombre,
             # o sean nombres baneados por dropbox.
@@ -328,7 +341,7 @@ sub recurseDirs {
             };
         };
     };
-    
+
 }; # recurseDirs
 
 # ----------------------------------------------------------------------------- #

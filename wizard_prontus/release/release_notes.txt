@@ -9112,6 +9112,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Dropbox
     [mejoras]
         - Se actualizan las librerias para usar la v2 de la api de dropbox
+        - Se eliminan forks y se rediseña funcionamiento general
     [files]
         /cgi-cpn/lib_dropbox.pm
         /cgi-cpn/prontus_dropbox_backup.cgi
