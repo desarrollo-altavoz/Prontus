@@ -78,8 +78,8 @@
 # Prontus 6.0 - 29/10/2001 - Revision/modificaciones para Prontus 6.0
 
 # 7.0 - 20/12/2001 - Extensiones p7 :
-#   . "- Agrega marca a la portada para que inserte los men√∫s de p√°ginas con subt√≠tulos.<br>"
-#     . "- Perfilaci√≥n de periodistas en lista de art√≠culos para permitir art√≠culos personales<br>"
+#   . "- Agrega marca a la portada para que inserte los men˙s de p·ginas con subtÌ≠tulos.<br>"
+#     . "- PerfilaciÛn de periodistas en lista de artÌculos para permitir art√Ìculos personales<br>"
 #     . "- Capacidad para borrar fotos, asocfile y realmedia<br>"
 #     . "- Linkeo de URLs https<br>"
 # Prontus 8.0 - 01/08/2002 - YCH. Ver Extensiones y correcciones en /release_prontus80.txt
@@ -100,6 +100,8 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
+use utf8;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -120,379 +122,377 @@ use lib_waitlock; # Bloqueos tipo espera.
 use lib_quota;
 use Session;
 
+# variables globales del script
 my $ART_AUTOINC;
 my $BD;
-my (%ID_SECCIONES, %ID_TEMAS, %ID_SUBTEMAS);
+my (%ID_SECCIONES, %ID_TEMAS, %ID_SUBTEMAS, %FORM);
+my $PATH_FICHA;
 
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
 
+main: {
+    # Rescatar parametros recibidos.
+    &glib_cgi_04::new();
+    $FORM{'_file'} = &glib_cgi_04::param('_file');
+    $FORM{'_fid'} = &glib_cgi_04::param('_fid'); # fid_general
+    $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
+    $FORM{'_dir_fecha'} = '';
+    $FORM{'_dir_fecha'} = &lib_prontus::get_dirfecha_by_ts($FORM{'_file'}) if ($FORM{'_file'} =~ /^\d{14}\.\w+$/);
+    $FORM{'_curr_body'} = &glib_cgi_04::param('_curr_body');
+    $FORM{'_curr_body'} = 'body1' if ($FORM{'_curr_body'} !~ /^body\d+$/);
 
-# Rescatar parametros recibidos.
-&glib_cgi_04::new();
-$FORM{'_file'} = &glib_cgi_04::param('_file');
-$FORM{'_fid'} = &glib_cgi_04::param('_fid'); # fid_general
-$FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
-$FORM{'_dir_fecha'} = '';
-$FORM{'_dir_fecha'} = &lib_prontus::get_dirfecha_by_ts($FORM{'_file'}) if ($FORM{'_file'} =~ /^\d{14}\.\w+$/);
-$FORM{'_curr_body'} = &glib_cgi_04::param('_curr_body');
-$FORM{'_curr_body'} = 'body1' if ($FORM{'_curr_body'} !~ /^body\d+$/);
+    $FORM{'_edic'} = &glib_cgi_04::param('_edic');
+    $FORM{'_port'} = &glib_cgi_04::param('_port');
+    $FORM{'_area'} = &glib_cgi_04::param('_area');
 
-$FORM{'_edic'} = &glib_cgi_04::param('_edic');
-$FORM{'_port'} = &glib_cgi_04::param('_port');
-$FORM{'_area'} = &glib_cgi_04::param('_area');
+    $FORM{'_popup'} = &glib_cgi_04::param('_popup');
+    $FORM{'_port_dd'} = &glib_cgi_04::param('_port_dd');
+    $FORM{'_upd_port_dd'} = &glib_cgi_04::param('_upd_port_dd');
 
-$FORM{'_popup'} = &glib_cgi_04::param('_popup');
-$FORM{'_port_dd'} = &glib_cgi_04::param('_port_dd');
-$FORM{'_upd_port_dd'} = &glib_cgi_04::param('_upd_port_dd');
+    # Ajusta path_conf para completar path y/o cambiar \ por /
+    $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
 
-# Ajusta path_conf para completar path y/o cambiar \ por /
-$FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
+    # Carga variables de configuracion.
+    &lib_prontus::load_config($FORM{'_path_conf'});  # Prontus 6.0
+    $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
-# Carga variables de configuracion.
-&lib_prontus::load_config($FORM{'_path_conf'});  # Prontus 6.0
-$FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
+    # Se lee el titular que habÌ≠a antes, para no perderlo
+    $FORM{'_txt_titular'} = &lib_prontus::get_codetext_value(&glib_cgi_04::param('_txt_titular'));
 
-# Se lee el titular que habÌ≠a antes, para no perderlo
-$FORM{'_txt_titular'} = &lib_prontus::get_codetext_value(&glib_cgi_04::param('_txt_titular'));
-
-# Control de usuarios obligatorio chequeando la cookie contra el dbm.
-($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
-if ($prontus_varglb::USERS_ID eq '') {
-    &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
-};
-
-
-# Validar quota
-my $msg_err_quota = &lib_quota::check_quota_suficiente();
-&glib_html_02::print_pag_result('Error',$msg_err_quota, 1, 'exit=1,ctype=1') if ($msg_err_quota);
-
-
-print "Cache-Control: no-cache\n";
-print "Cache-Control: max-age=0\n";
-print "Cache-Control: no-store\n";
-print "Content-Type: text/html\n\n";
-
-
-
-$dir_tpl_pags = $prontus_varglb::DIR_SERVER
-                . $prontus_varglb::DIR_TEMP
-                . $prontus_varglb::DIR_ARTIC
-                . $prontus_varglb::DIR_FECHA
-                . $prontus_varglb::DIR_PAG;
-
-# Nuevo
-my $ts;   # rc15
-my $pagina;
-if ($FORM{'_file'} eq '') {
-    my $popup_tipos = &generar_popup_tipos();
-    # print STDERR "fid1[$FORM{'_fid'}]\n";
-    $FORM{'_fid'} = &get_first_fid($popup_tipos) if (!$FORM{'_fid'});
-    $popup_tipos = &posicionar_popup_tipos($popup_tipos, $FORM{'_fid'});
-    # print STDERR "fid2[$FORM{'_fid'}]\n";
-    # print STDERR "popup_tipos[$popup_tipos]\n";
-
-    $PATH_FICHA = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . "/fid/$FORM{'_fid'}.html";
-
-
-    # Validar tipo de articulo.
-    if (!-f $PATH_FICHA) {
-        &glib_html_02::print_pag_result('Error','Tipo de art&iacute;≠culo no v&aacute;lido o indeterminado.',1,'exit=1,ctype=0');
+    # Control de usuarios obligatorio chequeando la cookie contra el dbm.
+    ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
+    if ($prontus_varglb::USERS_ID eq '') {
+        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
+    # Validar quota
+    my $msg_err_quota = &lib_quota::check_quota_suficiente();
+    &glib_html_02::print_pag_result('Error',$msg_err_quota, 1, 'exit=1,ctype=1') if ($msg_err_quota);
 
-    # Cod html correspondiente a la combo de templates de articulos
-    my($javascript_tpls) =  " onchange=\"Fid.objFormFid.action='prontus_art_ficha.$prontus_varglb::EXTENSION_CGI';Fid.objFormFid.target='_self'; on_submit('actualiza');\"";
-    $html_tpag = &glib_html_02::generar_popup_from_dir($dir_tpl_pags, '_PLT', '', 1, '', 'SIN_EXT', '', '', 1000000, 'STRASC');
+    print "Cache-Control: no-cache\n";
+    print "Cache-Control: max-age=0\n";
+    print "Cache-Control: no-store\n";
+    print "Content-Type: text/html\n\n";
 
-    # Filtrar lista de templates de acuerdo a los soportados por el tipo de ficha de articulo.
-    # print STDERR "html_tpag1[$html_tpag] fid[$FORM{'_fid'}]\n";
-    $html_tpag = &filtrar_templates($html_tpag, $FORM{'_fid'});
-    # print STDERR "html_tpag2[$html_tpag]\n";
+    my $dir_tpl_pags = $prontus_varglb::DIR_SERVER
+                    . $prontus_varglb::DIR_TEMP
+                    . $prontus_varglb::DIR_ARTIC
+                    . $prontus_varglb::DIR_FECHA
+                    . $prontus_varglb::DIR_PAG;
 
-    # Generar combo con tipos de articulos
-    my $tipos_art = 'FID:<br/>' . $popup_tipos . '&nbsp;';
-    my $cmb_multivistas;
-    if (keys(%prontus_varglb::MULTIVISTAS)) {
-        $cmb_multivistas = 'Vista: ' . &lib_prontus::generar_popup_multivistas();
-    };
+    # Nuevo
+    my $ts;   # rc15
+    my $pagina;
+    if ($FORM{'_file'} eq '') {
+        my $popup_tipos = &generar_popup_tipos();
+        # print STDERR "fid1[$FORM{'_fid'}]\n";
+        $FORM{'_fid'} = &get_first_fid($popup_tipos) if (!$FORM{'_fid'});
+        $popup_tipos = &posicionar_popup_tipos($popup_tipos, $FORM{'_fid'});
+        # print STDERR "fid2[$FORM{'_fid'}]\n";
+        # print STDERR "popup_tipos[$popup_tipos]\n";
 
-
-    $pagina = &carga_buffer_fid($PATH_FICHA);
-
-
-    # Reemplazar marcas privadas
-    $pagina =~ s/%%_FID%%/$tipos_art/ig;
-    $pagina =~ s/%%_ART_AUTOINC%%/0/ig;
-    $pagina =~ s/%%_CURR_BODY%%/$FORM{'_curr_body'}/ig;
-    $pagina =~ s/%%_PLT%%/Plantilla :<br\/> $html_tpag/ig;
-    $pagina =~ s/%%_CMB_MV%%/$cmb_multivistas/ig;
-    $pagina =~ s/%%_port_dd%%/$FORM{'_port_dd'}/ig;
-
-    # Para no perder el titular
-    $pagina =~ s/%%_saved_titular%%/$FORM{'_txt_titular'}/ig;
-
-    my $fid = $FORM{'_fid'};
-    $fid =~ s/\.\w+$//; # borra extension
-    my $hiddens = "<input type=\"hidden\" name=\"_file\" value=\"\" />\n"
-                . "<input type=\"hidden\" name=\"_path_conf\" value=\"$FORM{'_path_conf'}\" />\n";
+        my $PATH_FICHA = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . "/fid/$FORM{'_fid'}.html";
 
 
-    $pagina =~ s/<form (.*?)>/<form \1>\n$hiddens/is;
-
-    # Agrega el vtxt
-    $html_tpag =~ /value *= *"(\w.*?)" *>/i;
-    my $tpl_artic = $1;
-    $pagina = &add_vtxt($pagina, $tpl_artic);
+        # Validar tipo de articulo.
+        if (!-f $PATH_FICHA) {
+            &glib_html_02::print_pag_result('Error','Tipo de art&iacute;≠culo no v&aacute;lido o indeterminado.',1,'exit=1,ctype=0');
+        };
 
 
-    $pagina = &incluye_fechahora($pagina);
-    $pagina = &incluye_nomseccs($pagina);
-    $pagina = &incluye_fotosfijas($pagina);
+        # Cod html correspondiente a la combo de templates de articulos
+        my($javascript_tpls) =  " onchange=\"Fid.objFormFid.action='prontus_art_ficha.$prontus_varglb::EXTENSION_CGI';Fid.objFormFid.target='_self'; on_submit('actualiza');\"";
+        my $html_tpag = &glib_html_02::generar_popup_from_dir($dir_tpl_pags, '_PLT', '', 1, '', 'SIN_EXT', '', '', 1000000, 'STRASC');
 
-    $pagina =~ s/%%_REL_PATH_PRONTUS%%/$prontus_varglb::RELDIR_BASE\/$prontus_varglb::PRONTUS_ID/ig;
-    $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
-    $pagina =~ s/%%LOOP_FOTOS%%.*?%%\/LOOP_FOTOS%%//isg;
-    $pagina =~ s/<!--vermas imagenes-->.*?<!--\/vermas imagenes-->//isg;
-    $pagina =~ s/%%_SIZE_HTML%%/0/isg;
-    $pagina =~ s/%%_SIZE_TOTAL%%/0/isg;
-    # reemplazar nombre del prontus
-    $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
+        # Filtrar lista de templates de acuerdo a los soportados por el tipo de ficha de articulo.
+        # print STDERR "html_tpag1[$html_tpag] fid[$FORM{'_fid'}]\n";
+        $html_tpag = &filtrar_templates($html_tpag, $FORM{'_fid'});
+        # print STDERR "html_tpag2[$html_tpag]\n";
 
-    # pagspar
-    $pagina =~ s/<!--list_pagspar-->.*?<!--\/list_pagspar-->//isg;
+        # Generar combo con tipos de articulos
+        my $tipos_art = 'FID:<br/>' . $popup_tipos . '&nbsp;';
+        my $cmb_multivistas;
+        if (keys(%prontus_varglb::MULTIVISTAS)) {
+            $cmb_multivistas = 'Vista: ' . &lib_prontus::generar_popup_multivistas();
+        };
 
-    # Alta control
-    if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
 
-        my $alta_control = '<label for="_alta">Alta de art&iacute;culo:</label> <input type="checkbox" id="_alta" name="_ALTA" value="1" %%_ALTA%% />';
-        if ($prontus_varglb::USERS_PERFIL eq 'P') { # para periodistas aparece disabled
-            $alta_control =~ s/%%_ALTA%%/ disabled/ig;
-            $pagina =~ s/%%_ALTA%%/ $alta_control/ig;
+        $pagina = &carga_buffer_fid($PATH_FICHA);
+
+        # Reemplazar marcas privadas
+        $pagina =~ s/%%_FID%%/$tipos_art/ig;
+        $pagina =~ s/%%_ART_AUTOINC%%/0/ig;
+        $pagina =~ s/%%_CURR_BODY%%/$FORM{'_curr_body'}/ig;
+        $pagina =~ s/%%_PLT%%/Plantilla :<br\/> $html_tpag/ig;
+        $pagina =~ s/%%_CMB_MV%%/$cmb_multivistas/ig;
+        $pagina =~ s/%%_port_dd%%/$FORM{'_port_dd'}/ig;
+
+        # Para no perder el titular
+        $pagina =~ s/%%_saved_titular%%/$FORM{'_txt_titular'}/ig;
+
+        my $fid = $FORM{'_fid'};
+        $fid =~ s/\.\w+$//; # borra extension
+        my $hiddens = "<input type=\"hidden\" name=\"_file\" value=\"\" />\n"
+                    . "<input type=\"hidden\" name=\"_path_conf\" value=\"$FORM{'_path_conf'}\" />\n";
+
+
+        $pagina =~ s/<form (.*?)>/<form $1>\n$hiddens/is;
+
+        # Agrega el vtxt
+        $html_tpag =~ /value *= *"(\w.*?)" *>/i;
+        my $tpl_artic = $1;
+        $pagina = &add_vtxt($pagina, $tpl_artic);
+
+
+        $pagina = &incluye_fechahora($pagina);
+        $pagina = &incluye_nomseccs($pagina);
+        $pagina = &incluye_fotosfijas($pagina);
+
+        $pagina =~ s/%%_REL_PATH_PRONTUS%%/$prontus_varglb::RELDIR_BASE\/$prontus_varglb::PRONTUS_ID/ig;
+        $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
+        $pagina =~ s/%%LOOP_FOTOS%%.*?%%\/LOOP_FOTOS%%//isg;
+        $pagina =~ s/<!--vermas imagenes-->.*?<!--\/vermas imagenes-->//isg;
+        $pagina =~ s/%%_SIZE_HTML%%/0/isg;
+        $pagina =~ s/%%_SIZE_TOTAL%%/0/isg;
+        # reemplazar nombre del prontus
+        $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
+
+        # pagspar
+        $pagina =~ s/<!--list_pagspar-->.*?<!--\/list_pagspar-->//isg;
+
+        # Alta control
+        if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
+
+            my $alta_control = '<label for="_alta">Alta de art&iacute;culo:</label> <input type="checkbox" id="_alta" name="_ALTA" value="1" %%_ALTA%% />';
+            if ($prontus_varglb::USERS_PERFIL eq 'P') { # para periodistas aparece disabled
+                $alta_control =~ s/%%_ALTA%%/ disabled/ig;
+                $pagina =~ s/%%_ALTA%%/ $alta_control/ig;
+            }
+            else {
+                $alta_control =~ s/%%_ALTA%%//ig;
+                $pagina =~ s/%%_ALTA%%/ $alta_control/ig;
+            };
         }
         else {
-            $alta_control =~ s/%%_ALTA%%//ig;
-            $pagina =~ s/%%_ALTA%%/ $alta_control/ig;
+            $pagina =~ s/%%_ALTA%%//ig;
         };
-    }
-    else {
-        $pagina =~ s/%%_ALTA%%//ig;
-    };
 
-    # solo portadas, nuevo artic.
-    if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
-        $pagina =~ s/%%_SOLOPORTADAS%%/ checked="checked"/ig;
-    }
-    else {
-        $pagina =~ s/%%_SOLOPORTADAS%%//ig;
-    };
-
-    if ($FORM{'_edic'} && $FORM{'_port'} && $FORM{'_area'}) {
-
-        my $hidden_edic = '<input type="hidden" name="_edic" value="' . $FORM{'_edic'} . '" />';
-        my $hidden_port = '<input type="hidden" name="_port" value="' . $FORM{'_port'} . '" />';
-        my $hidden_area = '<input type="hidden" name="_area" value="' . $FORM{'_area'} . '" />';
-        $pagina =~ s/<form (.*?)>/<form \1>\n$hidden_edic\n$hidden_area\n$hidden_port/is;
-        my $label_pub_directa = 'Publicaci&oacute;n directa en ';
-        if ($FORM{'_edic'} != 'base') {
-            my $edic4fecha = $FORM{'_edic'};
-            $edic4fecha =~ s/_//ig;
-            $label_pub_directa .= "Edici&oacute;n '" . &glib_hrfec_02::des_normaliza_fecha($edic4fecha) . "'" . ' - ';
+        # solo portadas, nuevo artic.
+        if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
+            $pagina =~ s/%%_SOLOPORTADAS%%/ checked="checked"/ig;
+        }
+        else {
+            $pagina =~ s/%%_SOLOPORTADAS%%//ig;
         };
-        my ($port_nom, $ext_port) = &lib_prontus::split_nom_y_extension($FORM{'_port'});
-        $label_pub_directa .= "Portada '" . $port_nom . "'" . ' - &Aacute;rea ' . $FORM{'_area'};
 
-        # Enmarca el label, para que se destaque.
-#        $label_pub_directa = '<div style="display:inline; background-color:white; color:#003d7a; font-weight:bold; border:1px solid red; margin-left:20%">&nbsp;'
-#                           . $label_pub_directa
-#                           . '&nbsp;&nbsp;</div>';
+        if ($FORM{'_edic'} && $FORM{'_port'} && $FORM{'_area'}) {
 
-        $pagina =~ s/%%_LABEL_PUB_DIRECTA%%/$label_pub_directa/g;
+            my $hidden_edic = '<input type="hidden" name="_edic" value="' . $FORM{'_edic'} . '" />';
+            my $hidden_port = '<input type="hidden" name="_port" value="' . $FORM{'_port'} . '" />';
+            my $hidden_area = '<input type="hidden" name="_area" value="' . $FORM{'_area'} . '" />';
+            $pagina =~ s/<form (.*?)>/<form $1>\n$hidden_edic\n$hidden_area\n$hidden_port/is;
+            my $label_pub_directa = 'Publicaci&oacute;n directa en ';
+            if ($FORM{'_edic'} != 'base') {
+                my $edic4fecha = $FORM{'_edic'};
+                $edic4fecha =~ s/_//ig;
+                $label_pub_directa .= "Edici&oacute;n '" . &glib_hrfec_02::des_normaliza_fecha($edic4fecha) . "'" . ' - ';
+            };
+            my ($port_nom, $ext_port) = &lib_prontus::split_nom_y_extension($FORM{'_port'});
+            $label_pub_directa .= "Portada '" . $port_nom . "'" . ' - &Aacute;rea ' . $FORM{'_area'};
+
+            # Enmarca el label, para que se destaque.
+    #        $label_pub_directa = '<div style="display:inline; background-color:white; color:#003d7a; font-weight:bold; border:1px solid red; margin-left:20%">&nbsp;'
+    #                           . $label_pub_directa
+    #                           . '&nbsp;&nbsp;</div>';
+
+            $pagina =~ s/%%_LABEL_PUB_DIRECTA%%/$label_pub_directa/g;
+        } else {
+            $pagina =~ s/%%_LABEL_PUB_DIRECTA%%//g;
+        };
+
+    # Modificar
     } else {
-        $pagina =~ s/%%_LABEL_PUB_DIRECTA%%//g;
+        $PATH_FICHA = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . "/fid/$FORM{'_fid'}.html";
+
+        # Validar tipo de articulo.
+        if (!-f $PATH_FICHA) {
+            &glib_html_02::print_pag_result('Error','Tipo de art&iacute;≠culo no v&aacute;lido o indeterminado.',1,'exit=1,ctype=0');
+        };
+
+        $pagina = &cargar_campos($dir_tpl_pags);
     };
 
-# Modificar
-} else {
-    $PATH_FICHA = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . "/fid/$FORM{'_fid'}.html";
+    my $hidden_dirfecha = '<input type="hidden" name="_dir_fecha" value="' . $FORM{'_dir_fecha'} . '" />';
+    $pagina =~ s/<form (.*?)>/<form $1>\n$hidden_dirfecha/is;
 
-    # Validar tipo de articulo.
-    if (!-f $PATH_FICHA) {
-        &glib_html_02::print_pag_result('Error','Tipo de art&iacute;≠culo no v&aacute;lido o indeterminado.',1,'exit=1,ctype=0');
+    # Conectar a BD
+    my $msg_err_bd;
+    ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
+    if (! ref($BD)) {
+        &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1');
     };
 
-    $pagina = &cargar_campos($dir_tpl_pags);
-};
+    my $pathrel_arr_tst = $prontus_varglb::DIR_CPAN . '/procs/tax4fids/tax4fids.js';
+    my $str_random_tax = &glib_str_02::random_string(10);
+    my $str_tax4fids = "<script type=\"text/javascript\" src=\"$pathrel_arr_tst?$str_random_tax\"></script>";
+    $str_tax4fids = '' if(! -f "$prontus_varglb::DIR_SERVER$pathrel_arr_tst");
+    $pagina =~ s/%%_tax4fids%%/$str_tax4fids/isg;
+    $pagina =~ s/%%_ARR_TST%%/$str_tax4fids/;
+    # print STDERR "pagina[$pagina]";
+    $pagina = &incluye_combostax($pagina);
+
+    # if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+    $pagina = &lib_secc::parse_seccion($pagina, $BD, 'solo habilitadas');
+
+    $pagina = &posicionar_combo($pagina, '_SECCION1', $ID_SECCIONES{'_SECCION1'});
+    $pagina = &posicionar_combo($pagina, '_SECCION2', $ID_SECCIONES{'_SECCION2'});
+    $pagina = &posicionar_combo($pagina, '_SECCION3', $ID_SECCIONES{'_SECCION3'});
+
+    $ID_TEMAS{'_TEMA1'} = '0' if ($ID_TEMAS{'_TEMA1'} eq '');
+    $ID_TEMAS{'_TEMA2'} = '0' if ($ID_TEMAS{'_TEMA2'} eq '');
+    $ID_TEMAS{'_TEMA3'} = '0' if ($ID_TEMAS{'_TEMA3'} eq '');
+    $pagina =~ s/%%_TEMA1%%/$ID_TEMAS{'_TEMA1'}/ig;
+    $pagina =~ s/%%_TEMA2%%/$ID_TEMAS{'_TEMA2'}/ig;
+    $pagina =~ s/%%_TEMA3%%/$ID_TEMAS{'_TEMA3'}/ig;
+
+    $ID_SUBTEMAS{'_SUBTEMA1'} = '0' if ($ID_SUBTEMAS{'_SUBTEMA1'} eq '');
+    $ID_SUBTEMAS{'_SUBTEMA2'} = '0' if ($ID_SUBTEMAS{'_SUBTEMA2'} eq '');
+    $ID_SUBTEMAS{'_SUBTEMA3'} = '0' if ($ID_SUBTEMAS{'_SUBTEMA3'} eq '');
+
+    $pagina =~ s/%%_SUBTEMA1%%/$ID_SUBTEMAS{'_SUBTEMA1'}/ig;
+    $pagina =~ s/%%_SUBTEMA2%%/$ID_SUBTEMAS{'_SUBTEMA2'}/ig;
+    $pagina =~ s/%%_SUBTEMA3%%/$ID_SUBTEMAS{'_SUBTEMA3'}/ig;
 
 
-my $hidden_dirfecha = '<input type="hidden" name="_dir_fecha" value="' . $FORM{'_dir_fecha'} . '" />';
-$pagina =~ s/<form (.*?)>/<form \1>\n$hidden_dirfecha/is;
+    my $ts_artic = $FORM{'_file'}; # pal parseo de la tsdata da lo mismo q venga vacio
+    $ts_artic =~ s/\.[\w\-]*$//; # saca extension
+
+    # Recupera los tags asignados a este articulo, los nombres ya vienen escapeados para html
+    my $tags_for_fid = &lib_tags::get_tags_for_fid($BD, $ts_artic);
+    $pagina =~ s/%%_tags4fid%%/$tags_for_fid/ig;
 
 
+    # Recupera los ultimos tags ingresados, los nombres ya vienen escapeados para html
+    my $max_tags = $prontus_varglb::MAX_LAST_TAGS_4FID;
+    if($max_tags eq '1') {
+      $pagina =~ s/%%_lasttags_text%%/&Uacute;ltimo Tag Ingresado/ig;
+    } else {
+      $pagina =~ s/%%_lasttags_text%%/&Uacute;ltimos $max_tags Tags Ingresados/ig;
+    }
+    my $last_tags = &lib_tags::get_last_tags($BD, $max_tags);
+    $pagina =~ s/%%_lasttags%%/$last_tags/ig;
 
 
-# Conectar a BD
-my $msg_err_bd;
-($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
-if (! ref($BD)) {
-    &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1');
-};
+    $BD->disconnect;
+
+    if ($FORM{'_file'}) {
+        my $marca_file = $prontus_varglb::DIR_CONTENIDO .
+                        $prontus_varglb::DIR_ARTIC .
+                        "/$FORM{'_dir_fecha'}" .
+                        $prontus_varglb::DIR_PAG .
+                        "/$FORM{'_file'}";
+        $pagina =~ s/%%_FILE%%/$marca_file/ig;
+    }
+    else {
+        $pagina =~ s/%%_FILE%%//ig;
+    };
+
+    # Reemplaza TS, FECHAC, FECHACLONG, FECHACSHRT
+    $pagina = &lib_prontus::replace_tsdata($pagina, $ts_artic);
 
 
-my $pathrel_arr_tst = $prontus_varglb::DIR_CPAN . '/procs/tax4fids/tax4fids.js';
-my $str_random_tax = &glib_str_02::random_string(10);
-my $str_tax4fids = "<script type=\"text/javascript\" src=\"$pathrel_arr_tst?$str_random_tax\"></script>";
-$str_tax4fids = '' if(! -f "$prontus_varglb::DIR_SERVER$pathrel_arr_tst");
-$pagina =~ s/%%_tax4fids%%/$str_tax4fids/isg;
-$pagina =~ s/%%_ARR_TST%%/$str_tax4fids/;
-# print STDERR "pagina[$pagina]";
-$pagina = &incluye_combostax($pagina);
+    # Borrar marcas sobrantes
+    # si no se parseo el titular intentamos el titular anterior
+    if ($FORM{'_txt_titular'} ne '' ) {
+        $pagina =~ s/%%_TXT_TITULAR%%/$FORM{'_txt_titular'}/isg;
+    }
+    # si aun no se parseo el titular, parseo algo de relleno
+    my $placeholder = 'Sin t&iacute;tulo '. (time - $prontus_varglb::URL_NUMBER);
+    $pagina =~ s/%%_TXT_TITULAR%%/$placeholder/isg;
 
-# if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
-$pagina = &lib_secc::parse_seccion($pagina, $BD, 'solo habilitadas');
+    # parsear SERVER_NAME
+    $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
 
-$pagina = &posicionar_combo($pagina, '_SECCION1', $ID_SECCIONES{'_SECCION1'});
-$pagina = &posicionar_combo($pagina, '_SECCION2', $ID_SECCIONES{'_SECCION2'});
-$pagina = &posicionar_combo($pagina, '_SECCION3', $ID_SECCIONES{'_SECCION3'});
+    # parsea el archivo de configuracion
+    $pagina =~ s/%%_path_conf%%/$FORM{'_path_conf'}/isg;
 
-$ID_TEMAS{'_TEMA1'} = '0' if ($ID_TEMAS{'_TEMA1'} eq '');
-$ID_TEMAS{'_TEMA2'} = '0' if ($ID_TEMAS{'_TEMA2'} eq '');
-$ID_TEMAS{'_TEMA3'} = '0' if ($ID_TEMAS{'_TEMA3'} eq '');
-$pagina =~ s/%%_TEMA1%%/$ID_TEMAS{'_TEMA1'}/ig;
-$pagina =~ s/%%_TEMA2%%/$ID_TEMAS{'_TEMA2'}/ig;
-$pagina =~ s/%%_TEMA3%%/$ID_TEMAS{'_TEMA3'}/ig;
-
-$ID_SUBTEMAS{'_SUBTEMA1'} = '0' if ($ID_SUBTEMAS{'_SUBTEMA1'} eq '');
-$ID_SUBTEMAS{'_SUBTEMA2'} = '0' if ($ID_SUBTEMAS{'_SUBTEMA2'} eq '');
-$ID_SUBTEMAS{'_SUBTEMA3'} = '0' if ($ID_SUBTEMAS{'_SUBTEMA3'} eq '');
-
-$pagina =~ s/%%_SUBTEMA1%%/$ID_SUBTEMAS{'_SUBTEMA1'}/ig;
-$pagina =~ s/%%_SUBTEMA2%%/$ID_SUBTEMAS{'_SUBTEMA2'}/ig;
-$pagina =~ s/%%_SUBTEMA3%%/$ID_SUBTEMAS{'_SUBTEMA3'}/ig;
+    # parsea id de sesion activa para que pueda enviarsele al prontus_art_upfoto.cgi
+    $pagina = &parsea_id_session($pagina);
 
 
-my $ts_artic = $FORM{'_file'}; # pal parseo de la tsdata da lo mismo q venga vacio
-$ts_artic =~ s/\.[\w\-]*$//; # saca extension
+    # parsea ubic del cgi-bin ya que ahi esta la cgi de upload de fotos
+    $pagina =~ s/%%_DIR_CGI_PUBLIC%%/$prontus_varglb::DIR_CGI_PUBLIC/isg;
 
-# Recupera los tags asignados a este articulo, los nombres ya vienen escapeados para html
-my $tags_for_fid = &lib_tags::get_tags_for_fid($BD, $ts_artic);
-$pagina =~ s/%%_tags4fid%%/$tags_for_fid/ig;
+    # parsea nombre del prontus del manual de operacion
+    my $version4manual = $prontus_varglb::VERSION_PRONTUS;
+    $version4manual =~ s/^(\d+)\.(\d+)\.(\d+).+$/$1_$2/;
+    my $prontus_manual_oper =  'prontus_operacion_v' . $version4manual;
+    $pagina =~ s/%%_prontus_manual_oper%%/$prontus_manual_oper/isg;
 
 
-# Recupera los ultimos tags ingresados, los nombres ya vienen escapeados para html
-my $max_tags = $prontus_varglb::MAX_LAST_TAGS_4FID;
-if($max_tags eq '1') {
-  $pagina =~ s/%%_lasttags_text%%/&Uacute;ltimo Tag Ingresado/ig;
-} else {
-  $pagina =~ s/%%_lasttags_text%%/&Uacute;ltimos $max_tags Tags Ingresados/ig;
+    # CVI - 21/07/2014 - Para uso desde el CPAN
+    if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+        $pagina =~ s/%%_ishttps%%(.*?)%%\/_ishttps%%/$1/isg;
+    } else {
+        $pagina =~ s/%%_ishttps%%.*?%%\/_ishttps%%//isg;
+    }
+
+    # CVI - 16/06/2011
+    my $open_fid_in_pop = 'open_normally';
+    if($prontus_varglb::ABRIR_FIDS_EN_POP eq 'SI') {
+        $open_fid_in_pop = 'open_in_pop';
+    }
+    $pagina =~ s/%%_class_open_fid%%/$open_fid_in_pop/ig;
+
+    # CVI - 16/06/2011
+    if($FORM{'_popup'} eq '1') {
+      $pagina =~ s/%%_code4popup%%(.*?)%%\/_code4popup%%/$1/isg;
+    } else {
+      $pagina =~ s/%%_code4popup%%.*?%%\/_code4popup%%//isg;
+    }
+
+    if ($FORM{'_upd_port_dd'}) {
+        $pagina =~ s/%%_upd_port_dd%%(.*?)%%\/_upd_port_dd%%/$1/isg;
+    } else {
+        $pagina =~ s/%%_upd_port_dd%%.*?%%\/_upd_port_dd%%//isg;
+    };
+
+    # se parsea el numero de version de friendly urls en uso
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+        $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig
+    } else {
+        $pagina =~ s/%%_friendly_urls_ver%%/0/ig
+    }
+
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && !exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$FORM{'_fid'}}) {
+      $pagina =~ s/%%_friendly4%%(.*?)%%\/_friendly4%%/$1/isg;
+    } else {
+      $pagina =~ s/%%_friendly4%%.*?%%\/_friendly4%%//isg;
+    }
+
+    if ($prontus_varglb::MULTITAG eq 'SI') {
+        $pagina =~ s/%%_multitag%%(.*?)%%\/_multitag%%/$1/isg;
+    } else {
+        $pagina =~ s/%%_multitag%%.*?%%\/_multitag%%//isg;
+    }
+
+    $pagina =~ s/%%.+?%%//g;
+
+    # Restituir las marcas especiales de las fotos y tablas y htmlfiles embebidas en el texto..
+    $pagina =~ s/##(.*?)##/%%$1%%/g;
+
+    $pagina =~ s/&#37;&#37;/%%/sg; # restituyo los %% escritos por el usuario al interior de los campos
+
+    $pagina =~ s/<!--[^\/]+?-->//sg;
+    $pagina =~ s/<!-- *\/[^\/]+?-->//sg;
+
+    my ($crlf) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
+    $pagina =~ s/>($crlf| )+</>\x0a</sg;
+
+    print $pagina;
 }
-my $last_tags = &lib_tags::get_last_tags($BD, $max_tags);
-$pagina =~ s/%%_lasttags%%/$last_tags/ig;
-
-
-$BD->disconnect;
-
-if ($FORM{'_file'}) {
-    my $marca_file = $prontus_varglb::DIR_CONTENIDO .
-                    $prontus_varglb::DIR_ARTIC .
-                    "/$FORM{'_dir_fecha'}" .
-                    $prontus_varglb::DIR_PAG .
-                    "/$FORM{'_file'}";
-    $pagina =~ s/%%_FILE%%/$marca_file/ig;
-}
-else {
-    $pagina =~ s/%%_FILE%%//ig;
-};
-
-# Reemplaza TS, FECHAC, FECHACLONG, FECHACSHRT
-$pagina = &lib_prontus::replace_tsdata($pagina, $ts_artic);
-
-
-# Borrar marcas sobrantes
-# si no se parseo el titular intentamos el titular anterior
-if ($FORM{'_txt_titular'} ne '' ) {
-    $pagina =~ s/%%_TXT_TITULAR%%/$FORM{'_txt_titular'}/isg;
-}
-# si aun no se parseo el titular, parseo algo de relleno
-my $placeholder = 'Sin t&iacute;tulo '. (time - $prontus_varglb::URL_NUMBER);
-$pagina =~ s/%%_TXT_TITULAR%%/$placeholder/isg;
-
-# parsear SERVER_NAME
-$pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
-
-# parsea el archivo de configuracion
-$pagina =~ s/%%_path_conf%%/$FORM{'_path_conf'}/isg;
-
-# parsea id de sesion activa para que pueda enviarsele al prontus_art_upfoto.cgi
-$pagina = &parsea_id_session($pagina);
-
-
-# parsea ubic del cgi-bin ya que ahi esta la cgi de upload de fotos
-$pagina =~ s/%%_DIR_CGI_PUBLIC%%/$prontus_varglb::DIR_CGI_PUBLIC/isg;
-
-# parsea nombre del prontus del manual de operacion
-my $version4manual = $prontus_varglb::VERSION_PRONTUS;
-$version4manual =~ s/^(\d+)\.(\d+)\.(\d+).+$/\1_\2/;
-my $prontus_manual_oper =  'prontus_operacion_v' . $version4manual;
-$pagina =~ s/%%_prontus_manual_oper%%/$prontus_manual_oper/isg;
-
-
-# CVI - 21/07/2014 - Para uso desde el CPAN
-if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
-    $pagina =~ s/%%_ishttps%%(.*?)%%\/_ishttps%%/\1/isg;
-} else {
-    $pagina =~ s/%%_ishttps%%.*?%%\/_ishttps%%//isg;
-}
-
-# CVI - 16/06/2011
-my $open_fid_in_pop = 'open_normally';
-if($prontus_varglb::ABRIR_FIDS_EN_POP eq 'SI') {
-    $open_fid_in_pop = 'open_in_pop';
-}
-$pagina =~ s/%%_class_open_fid%%/$open_fid_in_pop/ig;
-
-# CVI - 16/06/2011
-if($FORM{'_popup'} eq '1') {
-  $pagina =~ s/%%_code4popup%%(.*?)%%\/_code4popup%%/\1/isg;
-} else {
-  $pagina =~ s/%%_code4popup%%.*?%%\/_code4popup%%//isg;
-}
-
-if ($FORM{'_upd_port_dd'}) {
-    $pagina =~ s/%%_upd_port_dd%%(.*?)%%\/_upd_port_dd%%/\1/isg;
-} else {
-    $pagina =~ s/%%_upd_port_dd%%.*?%%\/_upd_port_dd%%//isg;
-};
-
-# se parsea el numero de version de friendly urls en uso
-if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-    $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig
-} else {
-    $pagina =~ s/%%_friendly_urls_ver%%/0/ig
-}
-
-if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && !exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$FORM{'_fid'}}) {
-  $pagina =~ s/%%_friendly4%%(.*?)%%\/_friendly4%%/$1/isg;
-} else {
-  $pagina =~ s/%%_friendly4%%.*?%%\/_friendly4%%//isg;
-}
-
-$pagina =~ s/%%.+?%%//g;
-
-# Restituir las marcas especiales de las fotos y tablas y htmlfiles embebidas en el texto..
-$pagina =~ s/##(.*?)##/%%\1%%/g;
-
-$pagina =~ s/&#37;&#37;/%%/sg; # restituyo los %% escritos por el usuario al interior de los campos
-
-$pagina =~ s/<!--[^\/]+?-->//sg;
-$pagina =~ s/<!-- *\/[^\/]+?-->//sg;
-
-my ($crlf) = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;
-$pagina =~ s/>($crlf| )+</>\x0a</sg;
-
-print $pagina;
-
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -719,18 +719,16 @@ sub generar_popup_tipos {
 };
 # ---------------------------------------------------------------
 sub get_first_fid {
-  my $popup_tipos = $_[0];
-
-  $default_fid = &get_default_fid();
-  # print STDERR "default_fid[$default_fid]\n";
-  if ($popup_tipos =~ /<option value="$default_fid"/i) {
-    return $default_fid;
-  } else {
-    my $first_fid;
-    $first_fid = $1 if ($popup_tipos =~ /<option value="(.+?)"/i);
-    return $first_fid;
-  };
-
+    my $popup_tipos = $_[0];
+    my $default_fid = &get_default_fid();
+    # print STDERR "default_fid[$default_fid]\n";
+    if ($popup_tipos =~ /<option value="$default_fid"/i) {
+        return $default_fid;
+    } else {
+        my $first_fid;
+        $first_fid = $1 if ($popup_tipos =~ /<option value="(.+?)"/i);
+        return $first_fid;
+    };
 };
 # ---------------------------------------------------------------
 sub get_template {
@@ -855,7 +853,7 @@ sub cargar_campos {
 
 my ($dir_tpl_pags) = $_[0];
 my ($html_tpag, $path_paso, $buf, $pag, $marca, %hash_val, $path_artic, @campos, $nom_campo, $valor_campo, $valor_campo_original, $text_artic, $text_artic_aux, $estilo, $delimitador_ini, $delimitador_fin, $head_artic, $relpath_foto, $nom_foto);
-my ($base_path, $relbase_path, $campo, $nom);
+my ($base_path, $relbase_path, $base_path_mm, $relbase_path_mm, $campo, $nom);
 my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
   # Cargar xml del articulo.
@@ -875,11 +873,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   $html_tpag =~ s/(.*)selected(.*)/$1$2/is;
   $html_tpag =~ s/(.*)value *= *"$tpl_actual" *>(.*)/$1value="$tpl_actual" selected="selected">$2/is;
 
-
-
-
   # Cargar plantilla del FID
-  my $pag = &carga_buffer_fid($PATH_FICHA);
+  $pag = &carga_buffer_fid($PATH_FICHA);
 
 
   $pag =~ s/%%_PLT%%/Plantilla :<br\/>$html_tpag/ig;
@@ -901,8 +896,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
               . "<input type=\"hidden\" name=\"_path_conf\" value=\"$FORM{'_path_conf'}\"/>\n";
 
 
-  $pag =~ s/<form (.*?)>/<form \1>\n$hiddens/is;
-
+  $pag =~ s/<form (.*?)>/<form $1>\n$hiddens/is;
 
   # Agrega el vtxt
   $pag = &add_vtxt($pag, $tpl_actual);
@@ -921,8 +915,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   $pag =~ s/%%_FID%%/FID:<br\/><div class="label-fid" title="$glosa_tipo_ficha">$glosa_tipo_ficha<\/div>/ig;
 
 
-
-
   $base_path = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$FORM{'_dir_fecha'}";
   $base_path_mm = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA . "/$FORM{'_dir_fecha'}";
   $relbase_path = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$FORM{'_dir_fecha'}";
@@ -932,23 +924,11 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   my $size_total = $size_html;
   my $relpath_artic = "$relbase_path$prontus_varglb::DIR_PAG/$FORM{'_file'}";
 
-
   $pag = &lib_prontus::replace_mtime($pag, "$base_path$prontus_varglb::DIR_PAG/$FORM{'_file'}");
 
-
-  # $path_artic = $base_path . $prontus_varglb::DIR_PAG . "/$ART";
-
-  # Lee texto completo del articulo
-  # $text_artic = &glib_fildir_02::read_file($path_artic);
-
-
-  # Lee los campos y los reemplaza en la ficha
-  # por las marcas correspondientes. Esto es valido para todos los campos menos las fotos, tablas y realmedia Y ASOCFILE y SWF
-
-
   # Enmascara marcas Htmlfiles en el texto.
-  $xml_data =~ s/<!--(HTMLFILE\w+?)-->/<!---\1--->/isg;
-  $xml_data =~ s/<!--\/(HTMLFILE\w+?)-->/<!---\/\1--->/isg;
+  $xml_data =~ s/<!--(HTMLFILE\w+?)-->/<!---$1--->/isg;
+  $xml_data =~ s/<!--\/(HTMLFILE\w+?)-->/<!---\/$1--->/isg;
 
   my %fotos_icono;
   my %fotos_controls;
@@ -962,7 +942,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
 
 
-  # se lee plantilla para banco de im√°genes
+  # se lee plantilla para banco de imagenes
   my $tplBancoImg = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/fid/macro_banco_imagenes.html";
   my $tplBancoImg2 = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/fid/macro_banco_imagenes_noimg.html";
   my $moldeBancoImg = &glib_fildir_02::read_file($tplBancoImg);
@@ -1099,8 +1079,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($valor_campo =~ /<(_w$nom_campo)>(.+?)<\/\1>/i) {
         $wfoto = $2;
         $campo = $1;
-        $valor = '<input type="hidden" name="' . $campo . '" value="'. $wfoto . '" />';
-        $pag =~ s/<form (.*?)>/<form \1>\n$valor/is;
+        my $valor = '<input type="hidden" name="' . $campo . '" value="'. $wfoto . '" />';
+        $pag =~ s/<form (.*?)>/<form $1>\n$valor/is;
       };
 
       # Rescatar altos de fotos.
@@ -1108,8 +1088,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $hfoto = $2;
         $campo = $1;
 
-        $valor = '<input type="hidden" name="' . $campo . '" value="'. $hfoto . '" />';
-        $pag =~ s/<form (.*?)>/<form \1>\n$valor/is;
+        my $valor = '<input type="hidden" name="' . $campo . '" value="'. $hfoto . '" />';
+        $pag =~ s/<form (.*?)>/<form $1>\n$valor/is;
       };
 
       $fotos_size{$nom_campo}{'w'} = $wfoto;
@@ -1119,7 +1099,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         next if (lc $nom_campo eq 'foto_n'); # --> producto de un prb en la glib es posible que hayan fotos fantasma en el xml
         $nom_foto = $2;
 
-        $bytes_foto = -s $base_path . $prontus_varglb::DIR_IMAG . "/$nom_foto";       # 1.9
+        my $bytes_foto = -s $base_path . $prontus_varglb::DIR_IMAG . "/$nom_foto";       # 1.9
         $size_total += $bytes_foto;
         my $kbytes_foto = &lib_prontus::bytes2kb($bytes_foto, 0);
 
@@ -1147,22 +1127,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg2 =~ s/%%relpath_foto%%/$relpath_foto/ig;
         $bufferBancoImg2 =~ s/%%wfoto%%/$wfoto/ig;
         $bufferBancoImg2 =~ s/%%hfoto%%/$hfoto/ig;
-
-        # Foto iconizada
-        # my $alt = "$nom_campo\nW:$wfoto\nH:$hfoto\n$kbytes_foto";
-        my $foto_iconizada;
-        if($wfoto >= $hfoto) {
-            my $ancho_foto_iconizada = $wfoto;
-            $ancho_foto_iconizada = 80 if ($wfoto > 80);
-            $ancho_foto_iconizada = 'width:'.$ancho_foto_iconizada.'px;';
-            $bufferBancoImg =~ s/%%size_img%%/$ancho_foto_iconizada/ig;
-
-        } else {
-            my $alto_foto_iconizada = $wfoto;
-            $alto_foto_iconizada = 80 if ($wfoto > 80);
-            $alto_foto_iconizada = 'height:'.$alto_foto_iconizada.'px;';
-            $bufferBancoImg =~ s/%%size_img%%/$alto_foto_iconizada/ig;
-        }
 
         # Para los iconos de acciones sobre la imagen
         my $reldir_icons = "$prontus_varglb::DIR_CORE/imag/boto";
@@ -1198,15 +1162,12 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $foto_iconizada =~ s/> />/sg;
         # print STDERR '2 --> '.$foto_iconizada;
         $fotos_icono{$nom_campo} = $foto_iconizada;
-
-
       };
-
 
       # Pies
       if ($valor_campo =~ /<(_TXT_P$nom_campo)>(.+?)<\/\1>/i) {
         $campo = $1;
-        $foot = $2;
+        my $foot = $2;
         if ($foot =~ /<!\[CDATA\[(.*?)\]\]>/i) {
           $foot = $1;
         };
@@ -1279,7 +1240,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     elsif ($nom_campo =~ /^ASOCFILE_\w+/i) {
 
       $nom = $valor_campo;
-      $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
+      my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
 
       my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
       $size_total += $bytes;
@@ -1293,7 +1254,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     # Rescatar htmlfiles
     elsif ($nom_campo =~ /^HTMLFILE_\w+/i) {
       $nom = $valor_campo;
-      $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
+      my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
 
       my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
       $size_total += $bytes;
@@ -1308,7 +1269,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     # Rescatar swf
     elsif ($nom_campo =~ /^SWF_\w+/isg) {
       $nom = $valor_campo;
-      $relpath_swf = $relbase_path . $prontus_varglb::DIR_SWF . "/$nom";
+      my $relpath_swf = $relbase_path . $prontus_varglb::DIR_SWF . "/$nom";
 
       my $bytes = -s $base_path . $prontus_varglb::DIR_SWF . "/$nom";
       $size_total += $bytes;
@@ -1318,8 +1279,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
       # ---- Imprime advertencia en rojo en caso de que el peso de la swf exceda el limite establecido.
       # El limite se establece por c/swf en el formulario, de la forma <!--SWF1_MAXBYTES=1500-->.
-      $bytes_swf = -s $base_path . $prontus_varglb::DIR_SWF . "/$nom";
-      $maxbytes = 0;
+      my $bytes_swf = -s $base_path . $prontus_varglb::DIR_SWF . "/$nom";
+      my $maxbytes = 0;
       if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
         $maxbytes = $1;
         if ($bytes_swf > $maxbytes) {
@@ -1338,7 +1299,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
       if ($valor_campo eq '') { $valor_campo = $prontus_varglb::USERS_ID;}; # 8.0 para compatibilidad con p7
       my $hidd_user = '<input type="hidden" name="_USER_ID" value="' . $valor_campo . '"/>';
-      $pag =~ s/<form (.*?)>/<form \1>\n$hidd_user/is;
+      $pag =~ s/<form (.*?)>/<form $1>\n$hidd_user/is;
     }
     else {
       # campos normales
@@ -1402,7 +1363,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
   # Para el mensaje de que faltan imagenes
   if($nro_fotos_banco > $prontus_varglb::BANCO_IMG_MAX) {
-    $pag =~ s/<!--vermas imagenes-->(.*?)<!--\/vermas imagenes-->/\1/isg;
+    $pag =~ s/<!--vermas imagenes-->(.*?)<!--\/vermas imagenes-->/$1/isg;
     my $resto = $nro_fotos_banco - $prontus_varglb::BANCO_IMG_MAX;
     my $texto = "Mostrar <b>$resto</b> im&aacute;genes restantes";
     $texto = "Mostrar <b>1</b> imagen restante" if($resto == 1);
@@ -1425,7 +1386,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
   # pagspar
   my $fullpath_pagspar = $relpath_artic;
-  $fullpath_pagspar =~ s/^(.*?)\/pags\/(\d{14})\.(\w+)$/\1\/pagspar\/\2_\*\.\3/isg;
+  $fullpath_pagspar =~ s/^(.*?)\/pags\/(\d{14})\.(\w+)$/$1\/pagspar\/$2_\*\.$3/isg;
   my @pagspar = glob("$prontus_varglb::DIR_SERVER$fullpath_pagspar");
   if (scalar @pagspar) {
     my $list_pagspar;
@@ -1438,8 +1399,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $pag =~ s/<!--list_pagspar-->.*?<!--\/list_pagspar-->//isg;
   };
 
-  print STDERR "$titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic\n";
   my $fileurl = &lib_prontus::parse_filef('%%_fileurl%%', $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1);
+  print STDERR "$titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $fileurl\n";
   $pag =~ s/%%_fileurl%%/$fileurl/ig;
   if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
     $pag =~ s/%%_fileurlinfo%%/$fileurl/ig;
@@ -1498,7 +1459,7 @@ sub incluye_nomseccs {
 <input type="hidden" name="_NOM_SUBTEMA3" value="%%_NOM_SUBTEMA3%%" />
 ';
 
-  $buffer =~ s/<form (.*?)>/<form \1>\n$nomseccs\n/is;
+  $buffer =~ s/<form (.*?)>/<form $1>\n$nomseccs\n/is;
 
   return $buffer;
 };
@@ -1523,8 +1484,6 @@ sub parse_text {
 
 # ---------------------------------------------------------------
 sub procesar_obj_seleccion {
-
-
   my $pag = $_[0];
   my $tipo = $_[1];
   my $nom_campo = $_[2];
@@ -1542,16 +1501,15 @@ sub procesar_obj_seleccion {
         # Compone el tag.
         $tag =~ /^(<.+?)\/?>$/;
 
-        my $tag_aux = $1;
+        #~ my $tag_aux = $1;
         my $tag_original = $tag;
         #$tag =~ s/>$/$tag_aux checked \/>/is;
-        $tag =~ s/(\/?>)$/ checked="checked" \1/is;
+        $tag =~ s/(\/?>)$/ checked="checked" $1/is;
         $pag =~ s/$tag_original/$tag/is;
       };
     };
   };
   return $pag;
-
 };
 # ---------------------------------------------------------------
 sub procesar_select {

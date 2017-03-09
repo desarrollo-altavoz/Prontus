@@ -132,6 +132,14 @@
 							<td class="column1"><label id="stylelabel" for="style">{#advimage_dlg.style}</label></td> 
 							<td colspan="2"><input id="style" name="style" type="text" value="" onchange="ImageDialog.changeAppearance();" /></td> 
 						</tr>
+                        <tr>
+                            <td class="column1">Aplicar estilos responsive</td>
+                            <td colspan="2" align="left">
+                                <input type="hidden" name="dataW" id="dataW" value="">
+                                <input type="hidden" name="dataH" id="dataH" value="">
+                                <input type="checkbox" name="styleResponsive" id="styleResponsive" style="width:16px;" onclick="ImageDialog.setResponsiveStyles();" value="1">
+                            </td>
+                        </tr>
 
 						<!-- <tr>
 							<td class="column1"><label id="classeslabel" for="classes">{#advimage_dlg.classes}</label></td> 

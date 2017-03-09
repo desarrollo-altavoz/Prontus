@@ -394,12 +394,22 @@
 </div> <!--/listado-->
 <script>
 $(document).ready(function() {
+    if(Admin.dir_cgi_cpn !== '') {
+        CfgXcoding.init();
+    } else {
+        CfgXcoding.idInterval = setInterval(function() {
+            if(Admin.dir_cgi_cpn !== '') {
+                clearInterval(CfgXcoding.idInterval);
+                CfgXcoding.init();
+            }
+        }, 100);
+    }
+
     if ($('input[name=GEN_HLS]:checked').val() == 'SI') {
         $('#GEN_HLS_alert').show();
     }
     if ($('input[name=MODO_PARALELO]:checked').val() == 'SI') {
         $('#MODO_PARALELO_alert').show();
     }
-    CfgXcoding.init();
 });
 </script>

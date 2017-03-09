@@ -1,4 +1,32 @@
 ====================================================================================================
+11.2.94 - 09/03/2017 - SCT/EAG/JOR/ALD
+====================================================================================================
+- bugfixes: Se corrige consulta SQL al momento de obtener cantidad de artículos con fotos para la paginación.
+- bugfixes: Se corrige validación js al momento de crear un prontus que comience con números ya que obligaba a que comenzara con letras.
+- bugfixes: Se corrige ordenamiento de campos recibidos en prontus form, los campos que no estan en el html quedan siempre al final
+- bugfixes: Prontus Form, se corrige ordenamiento de campos recibidos en prontus form, los campos que no estan en el html quedan siempre al final
+- improvement: VTXT: Se agrega opción para hacer tablas e imagenes responsivas.
+- improvement: VTXT: Se agrega estilo para tablas transparentes.
+- improvement: Se integra el sistema de multitag a Prontus. Provee una funcionalidad similar a la taxonomia para clasificar artículos pero con mayor flexibilidad y otras limitaciones.
+- improvement: Se modifica el sistema de actualización de prontus para no respaldar logs y carpetas con archivos que no corresponden.
+- improvement: Buscador Prontus, se aumenta a 100 el posible valor de RATIO en la configuracion del buscador, de esta forma no omiten palabras poco relevantes.
+- improvement: Se realizan mejoras y correciones generales en las librerias de prontus.
+- improvement: Los fids excluidos de la generación de friendly 4, generan link directo al usar %%_FILEURL%%.
+- improvement: Se mejora la forma de informar que el titular o slug es vacío, ahora aparece un mensaje emergente en vez de un alert.
+- improvement: Se mejora la búsqueda del administrador de articulos para palabras compuestas que usen '-' ,'+' o caracteres especiales.
+- improvement: Prontus Form: Se agrega texto descriptivo por defecto para los campos nombre, apellidos, email, telefono, celular, fax, rut.
+- improvement: Prontus Form: Se cambia a segundo plano la descarga del csv con los datos consolidados.
+- improvement: Prontus Form: Se agrega logeo de acciones: listar, descargar y borrar.
+- improvement: Prontus Form: Se reordenan algunos procesos para mejorar eficiencia.
+- improvement: Respaldo Dropbox: Se actualizan las librerías para usar la v2 de la api de dropbox y se rediseña funcionamiento general
+- improvement: Transcodificación: Se habilitan las cgis de transcodificacion para poder ser ejecutadas a través de línea de comando, esto para poder transcodificar todos los videos de un sitio web sin tener que abrir cada artículo manualmente. Se incluye utilidad en la release.
+- improvement: Transcodificación: Se agrega una espera aleatoria antes de iniciar una transcodificación para prevenir que puedan
+ ejecutarse 2 procesos sobre el mismo video.
+- changes: VTXT: Se cambia la publicación de imágenes en el vtxt, ahora se insertan a tamaño completo.
+- changes: Prontus Form: Se agrega a la url de respuesta del formulario, "exito" o "error" según corresponda.
+- changes: Prontus Form: Se modifica el borrado de datos recibidos por Prontus Form, solo el usuario admin podrá borrarlos.
+
+====================================================================================================
 11.2.93 - 15/11/2016 - SCT/EAG/NAR
 ====================================================================================================
 - bugfixes: Portadas list, Se corrige query al momento de generar una lista con tags configurados.

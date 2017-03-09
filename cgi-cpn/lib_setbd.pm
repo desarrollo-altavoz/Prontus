@@ -40,7 +40,6 @@ use strict;
 #---------------------------------------------------------------
 # SUB-RUTINAS.
 #---------------------------------------------------------------
-
 sub crear_tabla_secc {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
@@ -78,7 +77,6 @@ sub crear_tabla_secc {
 };
 
 #---------------------------------------------------------------
-
 sub crear_tabla_temas {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
@@ -271,9 +269,7 @@ sub crear_tabla_coment {
     return ($msg_ret, $hay_error);
 };
 
-
 #---------------------------------------------------------------
-
 sub crear_tabla_asset {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
@@ -434,6 +430,168 @@ sub crear_tabla_url {
     $hay_error = 1;
   };
   return ($msg_ret, $hay_error);
+};
+
+#---------------------------------------------------------------
+sub crear_tabla_multitag_s {
+    my $base = $_[0];
+    my $motor = $_[1]; # PRONTUS | MYSQL
+    my ($msg_ret, $hay_error);
+    my $sql;
+
+    if (!&existe_tabla($base, 'MULTITAG_S', $motor)) {
+        if ($motor eq 'MYSQL') {
+            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_S` (
+                `MULTITAG_S_ID` INT NOT NULL AUTO_INCREMENT,
+                `MULTITAG_S_NOMBRE` VARCHAR(128) NOT NULL,
+                `MULTITAG_S_FRIENDLY` VARCHAR(64) NOT NULL,
+                `MULTITAG_S_ESTADO` TINYINT NOT NULL DEFAULT 1,
+                PRIMARY KEY (`MULTITAG_S_ID`),
+                INDEX `index2` (`MULTITAG_S_FRIENDLY`))
+                ENGINE = MyISAM;";
+            $base->do($sql) || return("Error al crear la tabla MULTITAG_S:" . $base->errstr, 1);
+            $msg_ret = "- Tabla MULTITAG_S creada OK.";
+        }
+    } else {
+        $msg_ret = '- Error: La tabla MULTITAG_S ya existe.';
+        $hay_error = 1;
+    }
+    return ($msg_ret, $hay_error);
+};
+
+#---------------------------------------------------------------
+sub crear_tabla_multitag_t {
+    my $base = $_[0];
+    my $motor = $_[1]; # PRONTUS | MYSQL
+    my ($msg_ret, $hay_error);
+    my $sql;
+
+    if (!&existe_tabla($base, 'MULTITAG_T', $motor)) {
+        if ($motor eq 'MYSQL') {
+            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_T` (
+                `MULTITAG_T_ID` INT NOT NULL AUTO_INCREMENT,
+                `MULTITAG_T_NOMBRE` VARCHAR(128) NOT NULL,
+                `MULTITAG_T_FRIENDLY` VARCHAR(64) NOT NULL,
+                `MULTITAG_T_ESTADO` TINYINT NOT NULL DEFAULT 1,
+                PRIMARY KEY (`MULTITAG_T_ID`),
+                INDEX `index2` (`MULTITAG_T_FRIENDLY`))
+                ENGINE = MyISAM;";
+            $base->do($sql) || return("Error al crear la tabla MULTITAG_T:" . $base->errstr, 1);
+            $msg_ret = "- Tabla MULTITAG_T creada OK.";
+        }
+    } else {
+        $msg_ret = '- Error: La tabla MULTITAG_T ya existe.';
+        $hay_error = 1;
+    }
+    return ($msg_ret, $hay_error);
+};
+
+#---------------------------------------------------------------
+sub crear_tabla_multitag_st {
+    my $base = $_[0];
+    my $motor = $_[1]; # PRONTUS | MYSQL
+    my ($msg_ret, $hay_error);
+    my $sql;
+
+    if (!&existe_tabla($base, 'MULTITAG_ST', $motor)) {
+        if ($motor eq 'MYSQL') {
+            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ST` (
+                `MULTITAG_ST_ID` INT NOT NULL AUTO_INCREMENT,
+                `MULTITAG_ST_NOMBRE` VARCHAR(128) NOT NULL,
+                `MULTITAG_ST_FRIENDLY` VARCHAR(64) NOT NULL,
+                `MULTITAG_ST_ESTADO` TINYINT NOT NULL DEFAULT 1,
+                PRIMARY KEY (`MULTITAG_ST_ID`),
+                INDEX `index2` (`MULTITAG_ST_FRIENDLY`))
+                ENGINE = MyISAM;";
+            $base->do($sql) || return("Error al crear la tabla MULTITAG_ST:" . $base->errstr, 1);
+            $msg_ret = "- Tabla MULTITAG_ST creada OK.";
+        }
+    } else {
+        $msg_ret = '- Error: La tabla MULTITAG_ST ya existe.';
+        $hay_error = 1;
+    }
+    return ($msg_ret, $hay_error);
+};
+
+#---------------------------------------------------------------
+sub crear_tabla_multitag_art_s {
+    my $base = $_[0];
+    my $motor = $_[1]; # PRONTUS | MYSQL
+    my ($msg_ret, $hay_error);
+    my $sql;
+
+    if (!&existe_tabla($base, 'MULTITAG_ART_S', $motor)) {
+        if ($motor eq 'MYSQL') {
+            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_S` (
+                `MULTITAG_ART_S_ID` INT NOT NULL,
+                `MULTITAG_ART_S_FRIENDLY` VARCHAR(64) NOT NULL,
+                `MULTITAG_ART_S_ART_ID` CHAR(14) NOT NULL,
+                INDEX `index1` (`MULTITAG_ART_S_ID`),
+                INDEX `index2` (`MULTITAG_ART_S_ART_ID`),
+                INDEX `index3` (`MULTITAG_ART_S_ART_ID`, `MULTITAG_ART_S_ID`))
+                ENGINE = MyISAM;";
+            $base->do($sql) || return("Error al crear la tabla MULTITAG_ART_S:" . $base->errstr, 1);
+            $msg_ret = "- Tabla MULTITAG_ART_S creada OK.";
+        }
+    } else {
+        $msg_ret = '- Error: La tabla MULTITAG_ART_S ya existe.';
+        $hay_error = 1;
+    }
+    return ($msg_ret, $hay_error);
+};
+
+#---------------------------------------------------------------
+sub crear_tabla_multitag_art_t {
+    my $base = $_[0];
+    my $motor = $_[1]; # PRONTUS | MYSQL
+    my ($msg_ret, $hay_error);
+    my $sql;
+
+    if (!&existe_tabla($base, 'MULTITAG_ART_T', $motor)) {
+        if ($motor eq 'MYSQL') {
+            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_T` (
+                `MULTITAG_ART_T_ID` INT NOT NULL,
+                `MULTITAG_ART_T_FRIENDLY` VARCHAR(64) NOT NULL,
+                `MULTITAG_ART_T_ART_ID` CHAR(14) NOT NULL,
+                INDEX `index1` (`MULTITAG_ART_T_ID`),
+                INDEX `index2` (`MULTITAG_ART_T_ART_ID`),
+                INDEX `index3` (`MULTITAG_ART_T_ART_ID`, `MULTITAG_ART_T_ID`))
+                ENGINE = MyISAM;";
+            $base->do($sql) || return("Error al crear la tabla MULTITAG_ART_T:" . $base->errstr, 1);
+            $msg_ret = "- Tabla MULTITAG_ART_T creada OK.";
+        }
+    } else {
+        $msg_ret = '- Error: La tabla MULTITAG_ART_T ya existe.';
+        $hay_error = 1;
+    }
+    return ($msg_ret, $hay_error);
+};
+
+#---------------------------------------------------------------
+sub crear_tabla_multitag_art_st {
+    my $base = $_[0];
+    my $motor = $_[1]; # PRONTUS | MYSQL
+    my ($msg_ret, $hay_error);
+    my $sql;
+
+    if (!&existe_tabla($base, 'MULTITAG_ART_ST', $motor)) {
+        if ($motor eq 'MYSQL') {
+            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_ST` (
+                `MULTITAG_ART_ST_ID` INT NOT NULL,
+                `MULTITAG_ART_ST_FRIENDLY` VARCHAR(64) NOT NULL,
+                `MULTITAG_ART_ST_ART_ID` CHAR(14) NOT NULL,
+                INDEX `index1` (`MULTITAG_ART_ST_ID`),
+                INDEX `index2` (`MULTITAG_ART_ST_ART_ID`),
+                INDEX `index3` (`MULTITAG_ART_ST_ART_ID`, `MULTITAG_ART_ST_ID`))
+                ENGINE = MyISAM;";
+            $base->do($sql) || return("Error al crear la tabla MULTITAG_ART_ST:" . $base->errstr, 1);
+            $msg_ret = "- Tabla MULTITAG_ART_ST creada OK.";
+        }
+    } else {
+        $msg_ret = '- Error: La tabla MULTITAG_ART_ST ya existe.';
+        $hay_error = 1;
+    }
+    return ($msg_ret, $hay_error);
 };
 
 # ---------------------------------------------------------------

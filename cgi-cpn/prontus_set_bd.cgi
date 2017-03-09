@@ -189,12 +189,29 @@ sub crear_tablas {
     ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_url($base, $prontus_varglb::MOTOR_BD);
     &add2result($msg_ret, $hay_err);
 
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_s($base, $prontus_varglb::MOTOR_BD);
+    &add2result($msg_ret, $hay_err);
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_t($base, $prontus_varglb::MOTOR_BD);
+    &add2result($msg_ret, $hay_err);
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_st($base, $prontus_varglb::MOTOR_BD);
+    &add2result($msg_ret, $hay_err);
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_s($base, $prontus_varglb::MOTOR_BD);
+    &add2result($msg_ret, $hay_err);
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_t($base, $prontus_varglb::MOTOR_BD);
+    &add2result($msg_ret, $hay_err);
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_st($base, $prontus_varglb::MOTOR_BD);
+    &add2result($msg_ret, $hay_err);
+
     &add_html2result('</div></span></body></html>');
 
 };
 # ---------------------------------------------------------------
 sub add2result {
-  # SQLITE
   my $msg = $_[0];
   my $werr = $_[1];
   if ($werr) {
@@ -209,7 +226,6 @@ sub add2result {
 
 # ---------------------------------------------------------------
 sub add_html2result {
-  # SQLITE
   my $html = $_[0];
   $RESULT .= $html;
 };
@@ -228,13 +244,12 @@ sub listar_tablas {
     my $charset = &get_charset($base, $prontus_varglb::NOM_BD);
     $charset = " ($charset)" if($charset);
 
-    # $RESULT .= "<b>Tablas en base de datos: $prontus_varglb::NOM_BD</b>&nbsp;&nbsp;<INPUT TYPE='button' VALUE='Cerrar' OnClick='javascript:window.close();'><br><br>";
     $RESULT .= "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"/$prontus_varglb::PRONTUS_ID/cpan/core/css/estilos.css\" /></head><body>";
     $RESULT .= "<span class=\"check-install\"><div class=\"desc\"><b>Tablas en Base de Datos MySQL: $prontus_varglb::NOM_BD $charset</b><br><br>";
     $RESULT .= "<div class=\"desc\" style=\"text-align:left;\">";
 
     my $res = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($nom));
-    # $RESULT .= '<br>------------<br>';
+
     while ($res->fetch) {
       my $count;
 
@@ -250,8 +265,6 @@ sub listar_tablas {
     $RESULT .= "</div></div></span></body>";
     $res->finish;
   };
-
-
 };
 # ---------------------------------------------------------------
 sub get_count {

@@ -71,6 +71,7 @@ use strict;
 use utf8;
 
 my %FORM;        # Contenido del formulario de invocacion.
+my $MODO_CLI = 0;
 
 main: {
     # Rescatar parametros recibidos
@@ -78,6 +79,13 @@ main: {
     &glib_cgi_04::set_formvar('video', \%FORM);
     &glib_cgi_04::set_formvar('prontus_id', \%FORM);
     &glib_cgi_04::set_formvar('generar_versiones', \%FORM);
+
+    if ($ENV{'SERVER_NAME'} eq '') {
+        $MODO_CLI = 1;
+        $FORM{'video'} = $ARGV[0];
+        $FORM{'prontus_id'} = $ARGV[1];
+        $FORM{'generar_versiones'} = $ARGV[2];
+    }
 
     # Valida datos de entrada
     my $msg_err;
@@ -98,11 +106,13 @@ main: {
     $msg_err = "Tamaño de archivo es muy grande para ser transcodificado, límite: [$prontus_varglb::MAX_XCODING MB]" if ( (-s "$prontus_varglb::DIR_SERVER$FORM{'video'}") > ($prontus_varglb::MAX_XCODING*1048576));
     &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
+    if (!$MODO_CLI) {
     # User check
-    ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
-    if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
-    };
+        ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
+        if ($prontus_varglb::USERS_ID eq '') {
+            &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
+        };
+    }
 
 
     # Startea transcodificacion y devuelve respuesta json
@@ -116,6 +126,7 @@ sub start_xcode {
     my $prontus_id = $FORM{'prontus_id'};
     my $origen = "$prontus_varglb::DIR_SERVER$FORM{'video'}";
 
+    sleep(rand(5));
     # Verifica que no haya otro transcoding identico en ejecucion.
     my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep/;
     # print STDERR "Execution test = [$res][ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep]\n";

@@ -11,6 +11,7 @@ var Fid = {
     isMac: navigator.userAgent.indexOf('Macintosh') !== -1,
     animationSlideSpeed: 500,
 
+    waitingProntusForm: 0,
     tooltipId: null,
     tooltipTime: 800,
     //iframeVoid: '/cpan/core/imag/bg-iframe.gif',
@@ -436,7 +437,6 @@ var Fid = {
         var i;
         $('iframe:[id^=FOTOFIJA]').each(function(){
             var iframe = this.contentWindow.document.body.innerHTML;
-            //alert(iframe);
             var imag = $(this).contents().find("img");
             for (i = 0; i < imag.length; i++){
                 wfoto = $(imag[i]).attr("width");
@@ -459,19 +459,16 @@ var Fid = {
             } else {
                 nom_img = '';
             }
-            //alert(nom_img);
             Fid.objFormFid[this.id].value = nom_img;
         });
     },
 
     // -----------------------------------------
     procesarTags: function() {
-
         var tags4fid = $('#_tags4fid').val();
         if(typeof tags4fid === 'undefined') {
             return;
         }
-        //alert(tags4fid);
         var _tags = '';
         if(tags4fid !== '') {
             var arr = tags4fid.split(',');
@@ -489,7 +486,6 @@ var Fid = {
             _tags = _tags.substr(0, _tags.length-1);
         }
         $('#_tags').val(_tags);
-        //alert($('#_tags').val());
     },
 
     // -----------------------------------------
@@ -511,7 +507,6 @@ var Fid = {
         if (content === '') {
             content = '&nbsp;';
         }
-        //iframe.contentWindow.document.body.background = '/'+Admin.prontus_id+Fid.iframeVoid;
         iframe.contentWindow.document.body.innerHTML = content;
         iframe.contentWindow.document.body.style.border = "none";
         iframe.contentWindow.document.body.style.margin = "2px";
@@ -544,9 +539,6 @@ var Fid = {
             for (i in elems) {
                 if((' ' + elems[i].className + ' ').indexOf(' ' + matchClass + ' ') > -1) {
                     elems[i].addEventListener("dragstart", function(_event) {
-                        //_event.stopPropagation();
-                        //_event.preventDefault();
-                        //$("#debug1").html(Admin.debugPrintObject(_event.dataTransfer));
                         _event.dataTransfer.setData('imagen', this.outerHTML);
                     }, false);
                 }
@@ -681,8 +673,6 @@ var Fid = {
             success: function (resp, textStatus, jqXHR) {
                 if (resp.status == '1') {
                     window.location.href = 'prontus_art_ficha.cgi?_path_conf='+Admin.path_conf+'&_file='+resp.file+'&_fid='+resp.fid+'&fotosvtxt=/1/2/3/4';
-                    //window.open('prontus_art_ficha.cgi?_path_conf='+Admin.path_conf+'&_file='+resp.file+'&_fid='+resp.fid+'&fotosvtxt=/1/2/3/4');
-                    //Fid.setGUIProcesando(false);
                 } else {
                     Fid.setGUIProcesando(false);
                     alert(resp.msg);
@@ -704,7 +694,6 @@ var Fid = {
         var posy = 50;
         if(screen.width) {
             if(screen.width <= ancho) {
-                //alert('pantalla ancha');
                 ancho = screen.width;
                 alto = ancho * 0.56;
                 if(alto >= screen.height) {
@@ -742,8 +731,8 @@ var Fid = {
 
         Fechas.fillfechap();
         CombosTax.fillSeccTemStem(); // Taxonomia
-        //Fid.guardaFotosFijas();
         Fid.procesarTags();
+
         // Para la transcodificacion
         if($('#xcodeInput').val() == 1) {
             var msg = Transcoding.validarVideo();
@@ -828,13 +817,14 @@ var Fid = {
                 success: function (data) {
                         if (data.status == 'OK') {
                             $('#_slug').val(data.uri_titular);
+                            Fid.alertaTitular();
                             if (bot_press == 'save' || bot_press == 'save_new') {
                                 // se submite el formulario
                                 $('#_mainFidForm').trigger('submit');
                             }
                         } else {
                             if (typeof data.ts === 'undefined' || data.ts == '') {
-                                alert(data.msg);
+                                Fid.alertaTitular(data.msg);
                                 if ($('#_custom_slug').val() == 'SI') {
                                     $('#_slug').focus();
                                 } else {
@@ -877,13 +867,20 @@ var Fid = {
     // -------------------------------------------------------------------------
     // Funcion usada para vaciar el titular en caso que sea "sin titulo \d+"
     limpiaTitular: function(elemento) {
-        console.log(elemento);
-        console.log(elemento.val());
         if (/^Sin título \d+$/.test($(elemento).val())) {
             $(elemento).val('');
         }
     },
-
+    // -------------------------------------------------------------------------
+    // alerta para indicar que el titular o slug estan incorrectos
+    alertaTitular: function(msg) {
+        if(typeof msg !== 'undefined' && msg !== '') {
+            var str = '<img src="/'+Admin.prontus_id+'/cpan/core/imag/boto/msg-error.png" width="24" height="24" alt="Error en titular o slug" title="Error en titular o slug" /> <span>' + msg + '</span>';
+            $('#slug-alert').html(str).fadeIn();
+        } else {
+            $('#slug-alert').hide();
+        }
+    },
     // -------------------------------------------------------------------------
     // Funcion usada para abrir el editor de un articulo en otra ventana
     abrirEditor: function(elemento) {
@@ -893,16 +890,12 @@ var Fid = {
     // -------------------------------------------------------------------------
     //Funcion usada en los formularios para eliminar archivos de respaldos
     eliminarArchivo: function() {
-
         if (confirm(FidConfig.msgConfirmRemoveBackup)) {
-
             var config = {
                 formSelector: '#backupDatos'
             };
             var opts = {
                 success:   function(json, statusText) {   // post-submit callback
-                    // $("#reloj").hide();
-                    // $("#botones_ficha").show();
                     if (json.status == 0) {
                         alert(unescape(json.msg));
                         parent.Fid.listadoDatos();
@@ -922,10 +915,62 @@ var Fid = {
 
     // -------------------------------------------------------------------------
     //Funcion usada en los formularios para descargar el archivo de respaldo
-    descargarArchivo: function() {
+    generarArchivoForm: function() {
+        $('#msg-link').hide();
+        $('#msg-error').hide();
+        if (Fid.waitingProntusForm == 0) {
+            var actionURL = "prontus_form_download.cgi?" + $('#backupDatos').serialize();
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                url: actionURL,
+                cache: false,
+                success: function (resp, textStatus, jqXHR) {
+                    if (resp.status == '1') {
+                        $('#msg-loading').show();
+                        Fid.waitingProntusForm = setTimeout(function(){ Fid.chequeaDescargaForm(); }, 5000);
+                    } else {
+                        $('#msg-error').show();
+                        $('#error-data').html("Ha ocurrido un error al procesar la solicitud: " + resp.msg);
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    $('#msg-error').show();
+                    $('#error-data').html("Ha ocurrido un error al procesar la solicitud");
+                }
+            });
+        }
+    },
 
-        var url = "prontus_form_download.cgi?" + $('#backupDatos').serialize();
-        open(url, 'Descargar respaldo');
+    chequeaDescargaForm: function() {
+        Fid.waitingProntusForm = 0;
+        var actionURL = '/' + mainFidJs.PRONTUS_ID + '/cpan/procs/form/' + mainFidJs.TS + '/status.json';
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            url: actionURL,
+            cache: false,
+            success: function (resp, textStatus, jqXHR) {
+                if (resp.status == '1') {
+                    Fid.waitingProntusForm = setTimeout(function(){ Fid.chequeaDescargaForm(); }, 5000);
+                } else if (resp.status == '0') {
+                    $('#msg-link').show();
+                    $('#msg-loading').hide();
+                    $('#link-csv')[0].href = resp.path;
+                } else {
+                    $('#msg-error').show();
+                    $('#error-data').html("Ha ocurrido un error al procesar la solicitud: "  + resp.msg);
+                    $('#msg-link').show();
+                    $('#msg-loading').hide();
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#msg-error').show();
+                $('#error-data').html("Ha ocurrido un error al procesar la solicitud.");
+                $('#msg-link').hide();
+                $('#msg-loading').hide();
+            }
+        });
     },
 
     // -------------------------------------------------------------------------

@@ -86,7 +86,6 @@ use glib_fildir_02;
 use lib_prontus;
 use strict;
 use glib_cgi_04;
-#use lib_secc;
 use lib_tags;
 
 $| = 1; # Sin buffer. Despliega a medida que va leyendo.
@@ -101,7 +100,6 @@ my (%XML_VISTAS, %HASH_FS_TAG);
 my $RELPATH_TEMPL = '/cpan/core/prontus_tags_admin.html';
 
 main:{
-
     my $tags_max_display = $lib_tags::MAX_TAGS_SEARCH_RESULT;
 
     &glib_cgi_04::new();
@@ -217,6 +215,13 @@ main:{
     $pagina = &parse_multivistas($pagina, '', 'vista_loop_new');
     $pagina = &parse_multivistas($pagina, '', 'vista_loop_hidden1');
     $pagina = &parse_multivistas($pagina, '', 'vista_loop_hidden2');
+
+    if ($prontus_varglb::MULTITAG eq 'SI') {
+        $pagina =~ s/<!--multitag-->//isg;
+        $pagina =~ s/<!--\/multitag-->//isg;
+    } else {
+        $pagina =~ s/<!--multitag-->.*?<!--\/multitag-->//isg;
+    }
 
     print $pagina;
 }; # main

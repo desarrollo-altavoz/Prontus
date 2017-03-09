@@ -12,13 +12,14 @@
 package lib_form;
 
 $Mail::Sender::NO_X_MAILER = 1; # Elimina copyrights.
-$SERVER_SMTP;  # Servidor SMTP.
 
-%MULTIVISTAS;
-$SEPARADOR = ';';
-$DELIMITADOR = '"';
-$MAX_COLS = 6;
-$MAX_ROWS = 50;
+our $SERVER_SMTP = '';  # Servidor SMTP.
+
+our %MULTIVISTAS = ();
+our $SEPARADOR = ';';
+our $DELIMITADOR = '"';
+our $MAX_COLS = 6;
+our $MAX_ROWS = 50;
 
 # ------------------------------------------------------------------------- #
 # Envia un mensaje de correo electronico.
@@ -41,7 +42,7 @@ sub envia_mail {
 # Elimina los archivos, del cache de respuestas, de mas de 10 minutos de antiguedad.
 sub garbage_collection {
     my $path_answer_dir = $_[0];
-    print STDERR "path_answer_dir[$path_answer_dir]\n";
+    # print STDERR "path_answer_dir[$path_answer_dir]\n";
     return unless(-d $path_answer_dir);
     if (opendir(DIR, $path_answer_dir)) {
         my @entries = readdir(DIR);
@@ -113,8 +114,12 @@ sub getFormData {
         $FORM{$name} = $value;
     };
     # Valida variables.
-    $FORM{'ts'} =~ s/[^\d]//g; # Elimina todos los no-numeros.
-    $FORM{'prontus'} =~ s/[^\w\.\-]//g; # Elimina caracteres no validos como nombres de prontus.
+    if (defined($FORM{'ts'})) {
+        $FORM{'ts'} =~ s/[^\d]//g; # Elimina todos los no-numeros.
+    }
+    if (defined($FORM{'prontus'})) {
+        $FORM{'prontus'} =~ s/[^\w\.\-]//g; # Elimina caracteres no validos como nombres de prontus.
+    }
     return \%FORM;
     # print "<p>FILTROACTIVO = $FILTROACTIVO $FORMfechaini $FORMfechafin"; # debug
 }; # getFormData

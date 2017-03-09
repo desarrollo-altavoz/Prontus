@@ -3,7 +3,7 @@
 
   <!-- CSS de Prontus -->
   <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
-  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/fids.css?v3" />
+  <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/fids.css?v4" />
   <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
   <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
   <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/tags_input/jquery.tagsinput.css" />
@@ -53,6 +53,7 @@
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Fechas.class.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/CombosTax.class.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/MultiTag.class.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/validator.js"></script>
   %%_tax4fids%%
   <script type="text/javascript">
@@ -65,38 +66,38 @@
         DIR_CGI_PUBLIC: '%%_DIR_CGI_PUBLIC%%',
         TS: '%%_TS%%'
     };
-    %%_friendly4%%
-    Fid.friendlyVer = %%_friendly_urls_ver%%;
-    %%/_friendly4%%
+
+    %%_friendly4%%Fid.friendlyVer = %%_friendly_urls_ver%%;%%/_friendly4%%
 
     $(document).ready(function () {
-      Admin.init('%%_prontus_id%%');
-      %%_ishttps%%Fid.setHttps();%%/_ishttps%%
-      FotoFija.init('%%_prontus_id%%'); // Debe ir primero que Fid.
-      Fid.init();
+        Admin.init('%%_prontus_id%%');
+        %%_ishttps%%Fid.setHttps();%%/_ishttps%%
+        FotoFija.init('%%_prontus_id%%'); // Debe ir primero que Fid.
+        Fid.init();
+        %%_multitag%%MultiTag.init('%%_prontus_id%%');%%/_multitag%%
 
-      // Se revisa si el articulo es nuevo o no
-      if(mainFidJs.TS !== '') {
-        Fid.pingRecurso();
-        document.title = 'Editar ' + document.title;
-      } else {
-        document.title = 'Nuevo ' + document.title;
-        // Si el articulo es nuevo, se intentar recargar el titular
-        var titular = "%%_saved_titular%%";
-        if(titular !== '') {
-            $('#_txt_titular').val(titular);
+        // Se revisa si el articulo es nuevo o no
+        if(mainFidJs.TS !== '') {
+            Fid.pingRecurso();
+            document.title = 'Editar ' + document.title;
+        } else {
+            document.title = 'Nuevo ' + document.title;
+            // Si el articulo es nuevo, se intentar recargar el titular
+            var titular = "%%_saved_titular%%";
+            if(titular !== '') {
+                $('#_txt_titular').val(titular);
+            }
         }
-      }
-      FidConfig.cargando = false;
+        FidConfig.cargando = false;
     });
   </script>
 
   %%_upd_port_dd%%
   <script type="text/javascript">
-      if (window.opener) {
-          window.opener.PortDD.refrescar();
-      } else {
-          alert("Advertencia: No se pudo actualizar la ventana de interfaz Drag & Drop.");
-      }
+    if (window.opener) {
+        window.opener.PortDD.refrescar();
+    } else {
+        alert("Advertencia: No se pudo actualizar la ventana de interfaz Drag & Drop.");
+    }
   </script>
   %%/_upd_port_dd%%

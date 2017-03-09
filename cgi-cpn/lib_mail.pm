@@ -69,7 +69,7 @@ sub enviar_mail {  # FROM MAILCENTER
     if($attach) {
         if ($htmldoc ne '') {
             $texto =~ s/\n/<br>\n/g;
-            $htmldoc =~ s/(<body.*?>)/\1\n$texto<br>\n/is;
+            $htmldoc =~ s/(<body.*?>)/$1\n$texto<br>\n/is;
             $htmldoc = &procesar_html($htmldoc, $url);
             if(&mail_multipart($from, $email, $autor_replyto, $asunto, $htmldoc, $filename, $attach, 1, $smtp)) {
                 return 'S';
@@ -97,7 +97,7 @@ sub enviar_mail {  # FROM MAILCENTER
         if ($htmldoc ne '') {
             # Inserta bajo el body el $texto, transformando los \n en <br>
             $texto =~ s/\n/<br>\n/g;
-            $htmldoc =~ s/(<body.*?>)/\1\n$texto<br>\n/is;
+            $htmldoc =~ s/(<body.*?>)/$1\n$texto<br>\n/is;
             $htmldoc = &procesar_html($htmldoc, $url);
             if (&mail_text($from, $email, $autor_replyto, $asunto, $htmldoc, 1, $smtp)) {
                 return 'S';

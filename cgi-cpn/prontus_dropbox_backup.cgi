@@ -14,35 +14,51 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0.0 - 11/11/2014 - JOR - Primera versión
+# 2.0.0 - 26/02/2017 - ALD - Actualiza a v2 de la API
+#                          - Cambios en la logica para asegurar el proceso
+#                            de todos los archivos en /dropbox.
+#                          - Usa forks para acelerar el proceso.
+#                          - Solo considera el nombre del Prontus como parametro,
+#                            ya que siempre procesa todos los archivos en /dropbox.
+# 2.0.1 - 28/02/2017 - ALD - Elimina el fork, ya que es penalizado por la API 2 de dropbox.
+#                          - Valida hash de los archivos antes de subirlos.
+# 2.0.2 - 09/03/2017 - EAG - Se agrega funcion de salida para no dejar tomado el semaforo en caso de error.
+#                            Se modifica opcion para no tener problemas al dejar en segundo plano
 # ---------------------------------------------------------------
-
+# 2do:
+# - Perfeccionar el sistema de semaforo: si hay un proceso corriendo estaria ok,
+#   no hay para que matarlos a todos.
+# - Revisar que otros directorios seria necesario sincronizar para tener un
+#   verdadero site de contingencia.
 
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
 };
+END {
+    &tareas_salida();
+};
+
+use sigtrap 'handler' => \&signal_catch, 'INT';
+use sigtrap 'handler' => \&signal_catch, 'TERM';
 
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
 use strict;
-use LWP::UserAgent;
-use HTTP::Response;
+use Time::Local;
 
 use prontus_varglb; &prontus_varglb::init();
 use lib_prontus;
 use lib_dropbox;
-
-close STDOUT;
 
 my %FORM;
 my $DIR_SEMAF;
 
 main: {
     $FORM{'prontus_id'} = $ARGV[0];
-    $FORM{'file'} = $ARGV[1];
 
     &valida_params();
 
@@ -70,9 +86,9 @@ main: {
         if ($diff > 7200) { # 2 hrs.
             print STDERR "[$$] Semaforo muy antiguo, eliminando...";
             unlink "$DIR_SEMAF/dropbox_backup.lck";
-            
+
             my $res = `ps auxww |grep 'prontus_dropbox_backup.cgi $prontus_varglb::PRONTUS_ID' | grep -v grep | wc -l`;
-            
+
             if ($res) {
                 system('kill -9 `ps -auxww | grep \'prontus_dropbox_backup.cgi ' . $prontus_varglb::PRONTUS_ID . '\' | grep -v grep | awk \'{print $2}\' | grep -v ' . $$ . '`');
             };
@@ -81,306 +97,282 @@ main: {
 
     &glib_fildir_02::write_file("$DIR_SEMAF/dropbox_backup.lck", $$);
 
-    &procesar_archivo($FORM{'file'}) if (-f $FORM{'file'});
+    # Inicializa modulo dropbox.
+    &lib_dropbox::init($prontus_varglb::DROPBOX_ACCESS_TOKEN);
 
-    # Revisar si hay más archivos.
+    # Revisa si hay archivos.
     my $dir_dropbox = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/dropbox";
+    my ($file,$recurso);
+    my %days; # 2.0.0 Dias a procesar (un dia especial es 'port', que procesa las portadas).
+
     my @files = glob("$dir_dropbox/*.txt");
-    my $file;
+    while (scalar @files > 0) {
+        print STDERR "[$$] Buscando si hay archivos...\n";
+        %days = ();
+        while (defined($file = shift @files)) {
+            print STDERR "[$$] Procesando [$file]\n";
+            next if (!-s $file);
+            &procesar_archivo($file,\%days);
+            # print STDERR "[$$] Se termino de procesar [$file].\n";
 
-    print STDERR "[$$] Buscando si hay mas archivos...\n";
-    my $x = 0;
-    while (defined($file = shift @files)) {
-        print STDERR "[$$] Procesando [$file]\n";
-        next if (!-s $file);
-        &procesar_archivo($file);
-        print STDERR "[$$] Se termino de procesar [$file].\n";
-
-        # La idea es que si van agregando mas archivos mientras este proceso corre, se procecen.
-        if ($#files <= 0) {
-            print STDERR "[$$] Buscando si hay mas archivos...\n";
-            @files = glob("$dir_dropbox/*.txt");
-
-            sleep 5; # esperar 5 segundos.
+        };
+        # Respalda los contenidos correspondientes.
+        foreach $recurso (keys %days) {
+            print STDERR "[$$] Procesando recurso [$recurso]\n";
+            if ($recurso eq 'port') {
+                &procesar_port();
+            }else{
+                &procesa_art($recurso);
+            };
+            # Actualiza fecha modificacion semaforo, para que no lo vayan a matar!
+            utime time, time, "$DIR_SEMAF/dropbox_backup.lck";
         };
 
-        last if ($x > 50);
-
-        $x++;
+        @files = glob("$dir_dropbox/*.txt");
     };
+
+    # Respalda la taxonomia.
+    &procesa_tax();
+
+    # &procesa_ejemplo(); # debug
 
     print STDERR "[$$] Fin.\n";
 
+}; # main
+
+# ----------------------------------------------------------------------------- #
+# tareas que se deben realizar al terminar el script
+sub tareas_salida {
     unlink "$DIR_SEMAF/dropbox_backup.lck";
-    exit;
-
-};
-
+}
+# ---------------------------------------------------------------
+# funcion para capturar las señales INT y TERM y logearlas
+sub signal_catch {
+    print STDERR  "Terminado por signal @_\n";
+    exit(0);
+}
+# ----------------------------------------------------------------------------- #
 sub procesar_archivo {
-    my $file = $_[0];
+    my ($file,$days) = @_;
 
     open (FILE, "<$file");
-
     foreach my $linea (<FILE>) {
         chomp($linea);
         my ($tipo, $recurso, $param1, $param2, $param3) = split(';', $linea);
         print STDERR "[$$] tipo[$tipo] recurso[$recurso]\n";
         if ($tipo eq 'art') {
-            &procesa_art($recurso, $param1, $param2, $param3); # ts, seccion1, tema1, subtema1
-
-            # actualiza fecha modificacion semaforo, para que no lo vayan a matar!
-            utime time, time, "$DIR_SEMAF/dropbox_backup.lck";
+            # Reduce recurso a un dia especifico.
+            $recurso = substr($recurso,0,8);
+            $$days{$recurso} = 1;
         } elsif ($tipo eq 'port') {
-            &procesar_port($recurso);
+            $$days{'port'} = 1;
         };
-
-        unlink $file;
     };
+    close FILE;
 
-};
+    unlink $file;
 
+}; # procesar_archivo
+
+# ----------------------------------------------------------------------------- #
+# 2.0.0 Sincroniza los directorios de portadas completos.
 sub procesar_port {
-    my $recurso = $_[0];
-    my ($edic, $port) = split('/', $recurso);
-    my @local_filelist = &get_port_filelist($edic, $port);
+    &recurseDirs("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/edic",
+                                            "$prontus_varglb::DIR_CONTENIDO/edic");
+}; # procesar_port
 
-    &lib_dropbox::conectar();
-
-    my $remote_dir = "$prontus_varglb::DIR_CONTENIDO/edic";
-    my @dropbox_filelist = &lib_dropbox::get_dir_filelist($remote_dir);
-
-    &sincroniza_directorios(\@local_filelist, \@dropbox_filelist);
-
-};
-
+# ----------------------------------------------------------------------------- #
+# 2.0.0 Sincroniza el directorio del dia del articulo completo.
 sub procesa_art {
     my $ts = $_[0];
-    my $seccion1 = $_[1];
-    my $tema1 = $_[2];
-    my $subtema1 = $_[3];
     my $dir_fecha;
 
-    &lib_dropbox::conectar();
-
-    $ts =~ /(\d{8})/;
-    $dir_fecha = $1; # solo fecha.
-    #$dir_fecha = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/site/artic/$dir_fecha"; # ruta completa.
-
-    # Obtener listado de directorios asociados al articulo, incluye vistas.
-    my @dirlist = &get_artic_dirlist($dir_fecha);
-
-    foreach my $dir (@dirlist) {
-        my $artic_dir = "$prontus_varglb::DIR_SERVER$dir";
-        next if (!-d $artic_dir); # saltar si el directorio no existe.
-
-        # Obtener listado de archivos locales.
-        my @local_filelist = &get_artic_filelist($artic_dir, $ts);
-        # Obtener listado de archivos en Dropbox.
-        my @dropbox_filelist = &lib_dropbox::get_dir_filelist($dir);
-
-        &sincroniza_directorios(\@local_filelist, \@dropbox_filelist);
-
+    if ($ts =~ /(\d{8})/) {
+        $dir_fecha = $1; # solo fecha.
+        &recurseDirs("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha",
+                                                "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha");
+        # Se incluye la media externa.
+        if ($prontus_varglb::EXTERNAL_MMEDIA == 1) {
+            &recurseDirs("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dir_fecha",
+                                                    "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dir_fecha");
+        };
     };
+}; # procesa_art
 
-    if ($seccion1) {
-        my @local_filelist = &get_relac($ts, $seccion1, $tema1, $subtema1);
-        my @dropbox_filelist = &lib_dropbox::get_dir_filelist("$prontus_varglb::DIR_CONTENIDO/cache/taxonomia/pags");
+# ----------------------------------------------------------------------------- #
+# 2.0.0 Sincroniza el directorio de la taxonomia.
+sub procesa_tax {
+    # Incluye taxonomia.
+    &recurseDirs("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/cache/taxonomia/pags",
+                                            "$prontus_varglb::DIR_CONTENIDO/cache/taxonomia/pags");
+}; # procesa_tax
 
-        &sincroniza_directorios(\@local_filelist, \@dropbox_filelist);
-    };
+# ----------------------------------------------------------------------------- #
+# 2.0.0 Directorio de pruebas.
+sub procesa_ejemplo {
+    &recurseDirs("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/artic/20170227/pags",
+                                            "$prontus_varglb::DIR_CONTENIDO/artic/20170227/pags");
+}; # procesa_ejemplo
 
-};
-
-sub get_relac {
-    my $ts = $_[0];
-    my $seccion1 = $_[1];
-    my $tema1 = $_[2];
-    my $subtema1 = $_[3];
-    my @local_filelist;
-    my $cache_dir = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/cache/taxonomia/pags";
-    my @files = glob("$cache_dir/$seccion1*");
-
-    foreach my $file (@files) {
-        push @local_filelist, $file;
-    };
-
-    return @local_filelist;
-};
-
+# ----------------------------------------------------------------------------- #
 sub valida_params {
     if ($FORM{'prontus_id'} eq '') {
         print STDERR "[$$] Debe indicar el nombre del Prontus.\n";
         exit;
     };
 
-    if ($FORM{'file'} eq '') {
-        print STDERR "[$$] Debe indicar la ruta hacia archivo.\n";
-        exit;
+}; # valida_params
+
+# ----------------------------------------------------------------------------- #
+# Recorre los directorios recursivamente, subiendo a Dropbox los archivos que no
+# existen o que tienen un peso distinto.
+sub recurseDirs {
+    my($source,$destination) = @_;
+    my($entry,$dropBoxEntry,$path,$esdir,$size,$pid,$res);
+    my ($fileTime,$numEntries,$aux,$localHash,$dropBoxHash,$debeSubir);
+    my(@entries,@dropboxEntries);
+    my %dropboxFileSizes;
+    my %dropboxFileTimes;
+    my %dropboxFileHashes;
+
+    # Si el directorio es cpan/data/search o es /cache o /bak, sale sin hacer nada.
+    if (($source =~ /cpan\/data\/search/) || ($source =~ /\/cache$/) || ($source =~ /\/bak$/)) {
+        # print "    Banned Dir: $source\n"; # debug
+        return;
     };
 
-};
+    opendir(DIR, $source) || die "Can't opendir " . $source . $!;
+    @entries = readdir(DIR);
+    closedir DIR;
 
-sub get_artic_filelist {
-    my $dir_fecha = $_[0];
-    my $ts = $_[1];
-    my @files = glob("$dir_fecha/*");
-    my @filelist;
-
-    foreach my $file (@files) {
-        next if ($file !~ /$ts/); # si tiene el ts del articulo, se sube.
-        $file =~ /\.(\w+)$/;
-        my $ext = $1;
-        next if (exists $prontus_varglb::DROPBOX_FILEXT_EXCLUDE_LIST{$ext});
-        my $mtime = (stat($file))[9];
-        my $bytes = -s $file;
-
-        next if (-d $file && $bytes == 4096);
-        #next if ((time - $mtime) > 60); # solo considerar archivos modificados hace menos de 1 minuto.
-
-        push @filelist, "$file\t$bytes";
+    # 2.1.0 Si el directorio esta vacio, sale sin hacer nada.
+    $numEntries = scalar(@entries);
+    if ($numEntries <= 2) {
+        # print "    Empty Dir: $source\n"; # debug
+        return;
     };
 
-    return @filelist;
+    print STDERR "[$$] Inicio: $source [$numEntries] -> $destination\n"; # debug
 
-};
+    # Lee las entradas de dropbox en el destino. <path>\t<es dir>\t<tamano en bytes>
+    @dropboxEntries = &lib_dropbox::getDir($destination);
+    # Obtiene los tamanos de archivo. Si es un directorio asigna el tamano -1.
+    %dropboxFileSizes = ();
+    %dropboxFileTimes = ();
+    # print "    Listado de $destination en dropbox:\n";
+    foreach $dropBoxEntry (@dropboxEntries) {
+        ($path,$esdir,$size,$fileTime,$dropBoxHash) = split(/\t/,$dropBoxEntry);
+        # Elimina los directorios superiores del path.
+        if ($path =~ /\/([^\/]+)$/) {
+            $path = $1;
+        }else{
+            $path = '/';
+        };
+        # Asigna el tamano.
+        if ($esdir) {
+            $dropboxFileSizes{$path} = -1;
+        }else{
+            $dropboxFileSizes{$path} = $size;
+        };
+        # Asigna el tiempo de modificacion en Dropbox.
+        $dropboxFileTimes{$path} = &iso8601ToEpoch($fileTime);
+        $dropboxFileHashes{$path} = $dropBoxHash;
+        # print "    $path $size $fileTime\n"; # debug
+    };
 
-sub get_port_filelist {
-    my $edic = $_[0];
-    my $port = $_[1];
-    my @filelist;
+    # Recorre los archivos y subdirectorios.
+    foreach $entry (sort @entries) {
+        # # 1.1.0 Solo procesa si la fecha es posterior a 20161201
+        # if ($entry =~ /^\d{8}$/) {
+        #     next if ($entry < 20161201);
+        # };
+        # Si es un directorio, entonces aplica de nuevo la rutina en forma recursiva.
+        # No copia los directorios que empiezan con un punto.
+        if ((-d "$source/$entry") && ($entry !~ /^\./)) {
+            &recurseDirs("$source/$entry","$destination/$entry");
+        };
 
-    $port =~ /(.*?)\.\w+$/;
-    my $sinext = $1;
-
-    push @filelist, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/edic/$edic$prontus_varglb::DIR_SECC/$port";
-    push @filelist, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/edic/$edic/xml/$sinext.xml";
-    push @filelist, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/edic/base/rss/$sinext.xml";
-
-    foreach my $port_cfg (keys %prontus_varglb::PORT_PLTS_EXTRA) {
-        next if ($port ne $port_cfg);
-
-        my $extra_ports = $prontus_varglb::PORT_PLTS_EXTRA{$port_cfg};
-
-        while ($extra_ports =~ /([\w\-\.]+) *;?/g) {
-            my $extra_port = $1;
-            push @filelist, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/edic/$edic$prontus_varglb::DIR_SECC/$extra_port";
-
-            foreach my $mv (keys(%prontus_varglb::MULTIVISTAS)) {
-                push @filelist, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/edic/$edic$prontus_varglb::DIR_SECC-$mv/$extra_port";
+        if (-f "$source/$entry") {
+            # 2.1.0 No considera los archivos que contengan 'preview.' en su nombre,
+            # o sean nombres baneados por dropbox.
+            $aux = lc $entry;
+            if (($aux =~ /preview\./) || ($aux eq 'desktop.ini') || ($aux eq 'thumbs.db')
+                 || ($aux eq '.ds_store') || ($aux eq "icon\r") || ($aux =~ /^\.dropbox/)) {
+                # print "  Me salto preview: $source/$entry\n";
+                next;
             };
-        };
-    };
-
-    foreach my $mv (keys(%prontus_varglb::MULTIVISTAS)) {
-        push @filelist, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/edic/$edic$prontus_varglb::DIR_SECC-$mv/$port";
-    };
-
-    return @filelist;
-};
-
-sub get_artic_dirlist {
-    my $dir_fecha = $_[0];
-    my @dirlist;
-
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha";
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_ASOCFILE";
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_IMAG";
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_MMEDIA";
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_PAG";
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/pagspar";
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_SWF";
-    push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/xml";
-
-    # Se agregan los directorios custom.
-    foreach my $custom_dir (keys %prontus_varglb::DROPBOX_CUSTOM_DIR) {
-        next if (!$custom_dir);
-        push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/$custom_dir";
-    };
-
-    foreach my $mv (keys(%prontus_varglb::MULTIVISTAS)) {
-        push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha$prontus_varglb::DIR_PAG-$mv";
-        push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/pagspar-$mv";
-
-        # Se agregan los directorios custom, pero ahora con la vista.
-        foreach my $custom_dir (keys %prontus_varglb::DROPBOX_CUSTOM_DIR) {
-            next if (!$custom_dir);
-            push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$dir_fecha/$custom_dir-$mv";
-        };
-    };
-
-    # Se incluye la media externa.
-    if ($prontus_varglb::EXTERNAL_MMEDIA == 1) {
-        push @dirlist, "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dir_fecha";
-    };
-
-    return @dirlist;
-};
-
-sub sincroniza_directorios {
-    my $local_filelist_ref = $_[0];
-    my $dropbox_filelist_ref = $_[1];
-    my @local_filelist = @{$local_filelist_ref};
-    my @dropbox_filelist = @{$dropbox_filelist_ref};
-
-    foreach my $local_file (@local_filelist) {
-        my ($local_fullpath, $local_bytes) = split(/\t/, $local_file);
-        my $local_relpath = $local_fullpath;
-        $local_relpath =~ s/$prontus_varglb::DIR_SERVER//sg;
-        my $upload = 1;
-
-        next if (!-f $local_fullpath);
-
-        #print STDERR "local_relpath[$local_relpath] local_bytes[$local_bytes]\n";
-
-        foreach my $remote_file (@dropbox_filelist) {
-            my ($remote_path, $remote_isdir, $remote_bytes) = split(/\t/, $remote_file);
-            next if ($remote_isdir);
-
-            #print STDERR "remote_path[$remote_path] remote_bytes[$remote_bytes]\n";
-
-            if ($local_relpath eq $remote_path) { # archivo encontrado, decidir si se sube o no.
-                $upload = 0;
-                if ($local_bytes != $remote_bytes) {
-                    $upload = 1;
+            # Si los tamanos son cero arriba y abajo, no hace nada.
+            if (($dropboxFileSizes{$entry} == 0) && ((-s "$source/$entry") == 0)) {
+                next;
+            };
+            $debeSubir = 0;
+            # Si no existe en dropbox o si los tamanos son distintos, lo sube.
+            if ( $dropboxFileSizes{$entry} != -s "$source/$entry") {
+                $debeSubir = 1;
+            };
+            ($dropBoxHash,$localHash) = ('','');
+            # Si la fecha local es mas reciente que en dropbox, verifica hashes y sube si corresponde.
+            if (($debeSubir == 0) && ( $dropboxFileTimes{$entry} < (stat "$source/$entry")[9] )) {
+                # Compara los hashes por si los contenidos son identicos (suele suceder...).
+                $dropBoxHash = $dropboxFileHashes{$entry};
+                $localHash = &lib_dropbox::computeContentHash("$source/$entry");
+                if ($localHash ne $dropBoxHash) {
+                    $debeSubir = 1;
                 };
-                last;
             };
-        };
-
-        if ($upload) {
-            print STDERR "[$$] Subiendo [$local_fullpath] => [$local_relpath]\n";
-            my ($resp, $msgerr) = &lib_dropbox::upload_file($local_fullpath, $local_relpath);
-            if (!$resp) {
-                print STDERR "[$$] No fue posible subir el archivo [$local_fullpath] => [$local_relpath] msgerr[$msgerr]\n";
-                # vuelve a intentar.
-                ($resp, $msgerr) = &lib_dropbox::upload_file($local_fullpath, $local_relpath);
-            };
-
-            if (!$resp) {
-                print STDERR "[$$] No fue posible subir el archivo [$local_fullpath] => [$local_relpath] msgerr[$msgerr]\n";
-            } else {
-                print STDERR "[$$] Archivo subido [$local_fullpath] => [$local_relpath]\n";
-            };
-        };
-    };
-
-    # Articulo o archivo eliminado.
-    foreach my $remote_file (@dropbox_filelist) {
-        my ($remote_path, $remote_isdir, $remote_bytes) = split(/\t/, $remote_file);
-        next if ($remote_isdir);
-
-        my $local_path = "$prontus_varglb::DIR_SERVER$remote_path";
-
-        if (!-f $local_path) { # si el archivo local no existe con el mismo nombre, es que fue eliminado.
-            my $resp = &lib_dropbox::delete_path($remote_path);
-            if ($resp) {
-                print STDERR "[$$] Archivo eliminado remote_path[$remote_path].\n";
-            } else {
-                print STDERR "[$$] El archivo remote_path[$remote_path] no se pudo eliminar.\n";
+            if ($debeSubir == 1) {
+                    print STDERR "[$$] Sube: $source/$entry d[".$dropboxFileSizes{$entry}.
+                        "] s[".(-s "$source/$entry")."] t[".((stat "$source/$entry")[9] - $dropboxFileTimes{$entry}).
+                        "] d[$dropBoxHash] s[$localHash]\n"; # debug
+                # Hace la sincronizacion.
+                $res = 0;
+                while ($res == 0) { # 2.2.0
+                    $res = &lib_dropbox::putFile("$source/$entry","$destination/$entry");
+                    if ($res == 0) {
+                        print STDERR "[$$] Falla subir: $source/$entry\n"; # debug
+                    }else{
+                        print STDERR "[$$] Res OK [$res]: $source/$entry\n"; # debug
+                    };
+                };
+            }else{
+                # print STDERR "    [$$] NO Sube: $source/$entry [".(-s "$source/$entry").
+                #     "][".$dropboxFileSizes{$entry}."] t[".((stat "$source/$entry")[9] - $dropboxFileTimes{$entry}).
+                #     "] d[$dropBoxHash] s[$localHash]\n"; # debug
             };
         };
     };
 
-};
+}; # recurseDirs
+
+# ----------------------------------------------------------------------------- #
+# Convierte una fecha en formato iso8601 (UTC) en epoch. Ejemplo: 2017-02-27T12:05:28Z
+sub iso8601ToEpoch {
+    my $utc = $_[0];
+    my ($year,$mon,$mday,$hour,$min,$sec,$epoch);
+    if ($utc =~ /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z/) {
+        ($year,$mon,$mday,$hour,$min,$sec) = ($1,$2,$3,$4,$5,$6);
+        $year -= 1900;
+        $mon--;
+        # $epoch = POSIX::mktime( $sec, $min, $hour, $mday, $mon, $year );
+        $epoch = timegm( $sec, $min, $hour, $mday, $mon, $year );
+    };
+    return $epoch;
+}; # iso8601ToEpoch
+
+# ----------------------------------------------------------------------------- #
+sub epochToFechaHora {
+    my $epoch = $_[0];
+    my @utc = gmtime($epoch);
+    my $fechahora = sprintf('%04d/%02d/%02d %02d:%02d:%02d',(1900 + $utc[5]),(1 + $utc[4]),$utc[3],$utc[2],$utc[1],$utc[0]);
+}; # epochToFechaHora
+
+# ----------------------------------------------------------------------------- #
+# Retorna cuantas copias del mismo script hay corriendo.
+sub myselfRunning {
+   my($res) = qx/ps axww | grep $0 | grep -v ' grep ' | grep -v ' nice ' | wc -l/;
+   $res =~ s/\D//gs;
+   return $res;
+}; # myselfRunning
+
 
 

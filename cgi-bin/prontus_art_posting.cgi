@@ -58,17 +58,18 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
-    require 'dir_cgi.pm';
-
-    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    do 'dir_cgi.pm';
+    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
 use prontus_varglb; &prontus_varglb::init();
+
 use glib_html_02;
 use glib_fildir_02;
 use lib_prontus;
@@ -94,22 +95,19 @@ use lib_form;
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
-my (%CONFIG_POSTING, $ARTIC_OBJ);
+my (%CONFIG_POSTING, $ARTIC_OBJ, %FORM);
 
 my $CACHE_DIR = 'site/cache/posting'; # /pags-vvv Directorio de las paginas generadas.
 my $ANSWERS_DIR;
 
-# Soporta un maximo de n copias corriendo.
-if (&lib_maxrunning::maxExcedido(4)) {
-    print "Content-Type: text/html\n\n";
-    print "Error: Servidor ocupado.";
-    exit;
-};
+main: {
+    # Soporta un maximo de n copias corriendo.
+    if (&lib_maxrunning::maxExcedido(4)) {
+        print "Content-Type: text/html\n\n";
+        print "Error: Servidor ocupado.";
+        exit;
+    };
 
-&main();
-exit;
-
-sub main {
 
     # valida
     if ($ENV{'REQUEST_METHOD'} ne 'POST') {
@@ -189,7 +187,7 @@ sub main {
         my $captcha_code = &glib_cgi_04::param('_captcha_code');
         $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
         #~ require 'dir_cgi.pm';
-        &lib_captcha2::init($prontus_varglb::DIR_SERVER, $DIR_CGI_CPAN);
+        &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
         my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
         if ($msg_err_captcha ne '') {
             &make_resp_and_exit($msg_err_captcha, 1);
@@ -204,7 +202,7 @@ sub main {
     my $msg_err_save = &lib_artic::save_artic_with_object($is_new);
     &glib_html_02::print_pag_result("Error", $msg_err_save, 1, 'exit=1,ctype=1') if ($msg_err_save);
 
-    my $rutaScript = "$prontus_varglb::DIR_SERVER/$DIR_CGI_CPAN";
+    my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
 
     # Solo se ejecutan estos procesos si el articulo tiene alta.
     &call_procs($rutaScript) if (&param('_alta'));
@@ -241,7 +239,7 @@ sub crear_objeto_artic {
     my @campos = &param(); # No toma los datos directamente submitidos, sino los adaptados
                            # y complementados con la conf de posting.
     my %hash_datos;
-    foreach $nom_campo (sort {$a cmp $b} @campos) {
+    foreach my $nom_campo (sort {$a cmp $b} @campos) {
         # Al obj artic se le pasan los campos en minusculas
         my $nom_lc = lc $nom_campo;
         $hash_datos{$nom_lc} = &param($nom_campo);
@@ -367,7 +365,7 @@ sub make_resp_and_exit {
         $buffer = $msg;
     };
 
-    my $answerid = $prontus_varglb::PRONTUS_ID . $TS . time . $$; # rand(1000000000);
+    my $answerid = $prontus_varglb::PRONTUS_ID . time . $$; # rand(1000000000);
     my $extension = &lib_prontus::get_file_extension($path_plt);
 
     # Escribe el archivo de respuesta.

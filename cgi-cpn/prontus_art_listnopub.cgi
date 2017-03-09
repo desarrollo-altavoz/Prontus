@@ -652,10 +652,11 @@ sub genera_filtros {
             $filtros = " MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
 
         } else {
+            $titu4query =~ s/([^ ]+)/"$1"/g;  # mysql
             $titu4query =~ s/ / \+/g;  # mysql
             $titu4query =~ s/^/+/;     # mysql
-            $filtros .= " and MATCH (ART_TITU) AGAINST (\"$titu4query\" IN BOOLEAN MODE)" if $filtros ne ''; # mysql
-            $filtros = " MATCH (ART_TITU) AGAINST (\"$titu4query\" IN BOOLEAN MODE)" if $filtros eq '';      # mysql
+            $filtros .= " and MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros ne ''; # mysql
+            $filtros = " MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
         };
       };
 

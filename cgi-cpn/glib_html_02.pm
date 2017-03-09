@@ -186,10 +186,10 @@ sub rellenar_plantilla {
   $plantilla  = $_[$#_];
 
   # Abrir y cargar archivo corresp. a la plantilla
-  open (archivo,$plantilla) || die "$!\n";
+  open (ARCHIVO,$plantilla) || die "$!\n";
   $size_arch = (-s $plantilla);
-  read archivo, $pagina, $size_arch;
-  close archivo;
+  read ARCHIVO, $pagina, $size_arch;
+  close ARCHIVO;
   if ($pagina !~ /\n/) { # 2.3
     $pagina =~ s/\r/\n/sg;
   };
@@ -235,11 +235,11 @@ sub get_datos_desde_html {
   $arch_html = $_[$#_];
 
   # Abrir y cargar archivo en la variable $str_arch.
-  open (archivo,$arch_html) || die "$!\n";
+  open (ARCHIVO,$arch_html) || die "$!\n";
   $size_arch = (-s $arch_html);
-  binmode archivo;
-  read archivo, $str_arch, $size_arch;
-  close archivo;
+  binmode ARCHIVO;
+  read ARCHIVO, $str_arch, $size_arch;
+  close ARCHIVO;
 
   # Obtener valores entre delimitadores y cargar el hash.
   %hash_valores = ();
@@ -282,9 +282,6 @@ sub print_json_result {
     } else {
         print &JSON::to_json($resp);
     }
-    #~ my $json = new JSON;
-    # print $json->to_json($resp);
-    #~ print &JSON::to_json($resp);
     exit if ($exit);
 }
 #--------------------------------------------------------------------#
@@ -336,12 +333,12 @@ sub print_pag_result {
   my $plantilla = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/prontus_msg.html";
   my $pagina;
   if (-f $plantilla) {
-    open (archivo,$plantilla) || die "$!\n";
+    open (ARCHIVO,$plantilla) || die "$!\n";
     my $size_arch = (-s $plantilla);
 
-    binmode archivo;
-    read archivo, $pagina, $size_arch;
-    close archivo;
+    binmode ARCHIVO;
+    read ARCHIVO, $pagina, $size_arch;
+    close ARCHIVO;
     if ($pagina !~ /\n/) { # 2.3
       $pagina =~ s/\r/\n/sg;
     };
@@ -455,7 +452,7 @@ sub lee_tit_file {
 
   # Lee archivo.
   open (ARCHIVO,"<$file")
-    || die "Fail Open file $archivo \n $!\n";
+    || die "Fail Open file $file \n $!\n";
   binmode ARCHIVO;
 
   $numbytes = (-s $file);

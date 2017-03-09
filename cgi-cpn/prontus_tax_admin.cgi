@@ -182,10 +182,7 @@ main:{
 
     $pagina = &lib_prontus::set_coreplt_ppal($pagina);
 
-    # !!!!
-    # &load_data_multivistas($FORM{'_entidad'});
-
-   %HASH_FS_TAX = &cache_dirs_tax($FORM{'_entidad'});
+    %HASH_FS_TAX = &cache_dirs_tax($FORM{'_entidad'});
 
     my $sql;
     $sql = "select SECC_ID, SECC_NOM, SECC_MOSTRAR, SECC_PORT, SECC_ORDEN, SECC_NOM4VISTAS  from SECC order by SECC_ORDEN ASC, SECC_ID ASC" if ($FORM{'_entidad'} eq 'seccion');
@@ -210,23 +207,18 @@ main:{
     $pagina =~ s/%%_tema_id%%/$FORM{'_tema_id'}/isg;
     $pagina =~ s/%%_newitem%%/$FORM{'_newitem'}/isg;
 
+    if ($prontus_varglb::MULTITAG eq 'SI') {
+        $pagina =~ s/<!--multitag-->//isg;
+        $pagina =~ s/<!--\/multitag-->//isg;
+    } else {
+        $pagina =~ s/<!--multitag-->.*?<!--\/multitag-->//isg;
+    }
 
     print $pagina;
 }; # main
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
-# ---------------------------------------------------------------
-# rotulos tax
-#sub load_data_multivistas {
-#    my $tipo = shift;
-#    foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
-#        # r:\prontus_development\web\prontus_toolbox\cpan\data\tax_multivista\pda\seccion.xml
-#        my $path_xml_vista = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/tax_multivista/$mv/$tipo.xml";
-#        $XML_VISTAS{$mv} = &glib_fildir_02::read_file($path_xml_vista);
-#
-#    };
-#};
 # ---------------------------------------------------------------
 sub check_col {
     my ($tabla, $colname, $coldef) = @_;

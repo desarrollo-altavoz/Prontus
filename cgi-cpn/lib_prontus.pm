@@ -208,11 +208,24 @@ my ($dir);
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
         $dir = $prontus_varglb::DIR_SERVER .
                 $prontus_varglb::DIR_CONTENIDO .
-                $prontus_varglb::DIR_FRIENLY;
+                $prontus_varglb::DIR_FRIENDLY;
 
         if ( ! (&glib_fildir_02::check_dir($dir)) ) {
             print "Content-Type: text/html\n\n";
             &glib_html_02::print_pag_result("Error","El directorio de destino de urls friendly v4 no es válido");
+            exit;
+        };
+    };
+
+    # Directorio de cache de multitag
+    if ($prontus_varglb::MULTITAG eq 'SI') {
+        $dir = $prontus_varglb::DIR_SERVER .
+                $prontus_varglb::DIR_CONTENIDO .
+                $prontus_varglb::DIR_MULTITAG;
+
+        if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de cache de multitag no es válido");
             exit;
         };
     };
@@ -233,18 +246,11 @@ my ($dir);
     exit;
   };
 
-  # Escribe htaccess en el dir de los LOGs para permitir listar directorio
-  # &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/log/.htaccess", "Options +Indexes");
-
-
-
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/procs')) ) {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("Error","El directorio de logs de procesos masivos de Prontus no es válido");
     exit;
   };
-
-
 
   # Dir cpan
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN)) ) {
@@ -929,9 +935,6 @@ sub load_artic_pubs {
 
     return %hash_artics;
 };
-
-
-
 # ---------------------------------------------------------------
 sub port_asoc {
   # Ve si la portada esta asignada al usuario.
@@ -1170,12 +1173,17 @@ sub load_config {
         $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
     };
 
+    $prontus_varglb::MULTITAG = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*MULTITAG\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::MULTITAG = $2;
+    };
+
     $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
     if ($buffer =~ m/\s*RECAPTCHA_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::RECAPTCHA_API_URL = $2;
     };
 
-    $prontus_varglb::RECAPTCHA_SECRET_CODE = 'NO'; # valor por defecto.
+    $prontus_varglb::RECAPTCHA_SECRET_CODE = ''; # valor por defecto.
     if ($buffer =~ m/\s*RECAPTCHA_SECRET_CODE\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::RECAPTCHA_SECRET_CODE = $2;
     };
@@ -3350,48 +3358,14 @@ sub parsea_texto {
 };
 
 # ---------------------------------------------------------------
-#sub ajusta_nchars {
-## Ajusta el valor del campo de texto al max. nro. de caracteres para publicacion en la portada.
-#
-#  my ($val_campo, $nchars) = @_;
-#  # Saltar los objetos HTMLFILE
-#  $val_campo =~ s/<!--(HTMLFILE\w+?)-->.*<!--\/\1-->//isg;
-#
-#  $val_campo =~ s/<.*?>//sg; # elimino los tags para que no interfieran en el conteo de palabras.
-#  $val_campo =~ s/&nbsp\;/ /sg; # elimina los &nbsp; insertados al formateasr el texto (estos marcaban los saltos de linea.) # 1.18
-#  # Corta al nro. de caracteres especificado
-#  my $val_campo_aux = '';
-#
-#  $val_campo_aux = $val_campo;
-#  $val_campo = '';
-#  # Recorrer por palabras.
-#  # while ($val_campo_aux =~ /([^\s\b\r\n\t\/=\|@\}\*\[\]\+\{\_\\~]+)/g) {         # 1.21
-#  while ($val_campo_aux =~ /([^\s]+)/g) {
-#    $val_campo .= $1 . ' ';
-#
-#    if (length($val_campo) >= $nchars) {
-#      last;
-#    };
-#  };
-#  $val_campo =~ s/\s*$//;  # remueve espacio sobrante.
-#
-#  # Si el texto era mas largo entonces agrego los '...' y el icono 'mas'.
-#  if ( length($val_campo_aux) > length($val_campo) ) {
-#    $val_campo .= '...';
-#  };
-#  return $val_campo;
-#};
-# ---------------------------------------------------------------
+# Ajusta el valor del campo de texto al max. nro. de caracteres
+# $val_campo: string a ser recortada
+# $nchars: cantidad de caracteres a conservar
+# $mode_bytes : 1|0, default 0
+# si es en mode_bytes = 1, ajusta a n bytes
+# si es en mode_bytes = 0, ajusta a n chars (independiente de cuantos bytes sea un char)
 sub ajusta_nchars {
-    # Ajusta el valor del campo de texto al max. nro. de caracteres para publicacion en la portada.
-
     my ($val_campo, $nchars, $mode_bytes) = @_;
-
-    # $mode_bytes : 1|0, default 0
-    # si es en mode_bytes = 1, ajusta a n bytes
-    # si es en mode_bytes = 0, ajusta a n chars (independiente de cuantos bytes sea un char)
-
-
 
     # Saltar los objetos HTMLFILE
     $val_campo =~ s/<!--(HTMLFILE\w+?)-->.*<!--\/\1-->//isg;
@@ -3400,10 +3374,7 @@ sub ajusta_nchars {
     $val_campo =~ s/&nbsp\;/ /sg; # elimina los &nbsp; insertados al formateasr el texto (estos marcaban los saltos de linea.) # 1.18
     # Corta al nro. de caracteres especificado
 
-
-
     my $val_campo_original = $val_campo;
-
     if (length($val_campo_original) <= $nchars ) {
         if ($val_campo_con_tags =~ /^\s*<p>.*<\/p>\s*$/is) {
             $val_campo_original = '<p>' . $val_campo_original . '</p>';
@@ -3416,20 +3387,20 @@ sub ajusta_nchars {
     # Recorrer por palabras.
     my $string_ajustado;
     while ($val_campo_original =~ /([^\s]+)/g) {
-    $string_ajustado = $val_campo;
-    $val_campo .= ' ' if ($val_campo);
-    $val_campo .= $1;
+        $string_ajustado = $val_campo;
+        $val_campo .= ' ' if ($val_campo);
+        $val_campo .= $1;
 
-    # print STDERR "val_campo[$val_campo] largo[" . length($val_campo) . "]\n";
-    if (length($val_campo) > ($nchars - 3)) { # se restan 3 para que quede espacio para los puntos suspensivos
-      last;
-    };
+        # print STDERR "val_campo[$val_campo] largo[" . length($val_campo) . "]\n";
+        if (length($val_campo) > ($nchars - 3)) { # se restan 3 para que quede espacio para los puntos suspensivos
+            last;
+        };
     };
     $string_ajustado =~ s/\s*$//;  # remueve espacio sobrante.
     $string_ajustado .= '...' if ($string_ajustado);
     utf8::encode($string_ajustado) if (!$mode_bytes);
     if ($val_campo_con_tags =~ /^\s*<p>.*<\/p>\s*$/is) {
-      $string_ajustado = '<p>' . $string_ajustado . '</p>';
+        $string_ajustado = '<p>' . $string_ajustado . '</p>';
     };
     return $string_ajustado;
 };
@@ -5048,28 +5019,32 @@ sub parse_filef {
             } elsif ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
                 # Formato: /prontus/seccion/tema/subtema/titular.extension
                 my $xml_art = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER/$prontus_id/site/artic/$fecha/xml/$ts.xml");
-                # rescatamos el titular original sin cambios
-                $titular = $_[1];
-                # si se debe usar url custom
-                if ($xml_art =~ /<_custom_slug>SI<\/_custom_slug>/) {
-                    # rescatamos el slug, si no existe usamos el titular de forma normal
-                    if ($xml_art =~ /<_slug>([a-z0-9\-]+)<\/_slug>/) {
-                        $titular = $1;
+                $xml_art =~ /<_fid>(.*?)<\/_fid>/;
+                my $fid = $1;
+                # si el fid esta excluido de friendly 4, se genera url directa
+                if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$fid}) {
+                    # rescatamos el titular original sin cambios
+                    $titular = $_[1];
+                    # si se debe usar url custom
+                    if ($xml_art =~ /<_custom_slug>SI<\/_custom_slug>/) {
+                        # rescatamos el slug, si no existe usamos el titular de forma normal
+                        if ($xml_art =~ /<_slug>([a-z0-9\-]+)<\/_slug>/) {
+                            $titular = $1;
+                        }
                     }
+                    $titular = &ajusta_titular_f4($titular);
+                    $fileurl = "/$prontus_id$tax/$titular";
+                } else {
+                    $fileurl = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
                 }
-                $titular = &ajusta_titular_f4($titular);
-                $fileurl = "/$prontus_id$tax/$titular";
-
             }
         } else {
             # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
             $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
         };
-
         #~ print STDERR "fileurl[$fileurl]\n";
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
-
     } else {
         my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
         $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly

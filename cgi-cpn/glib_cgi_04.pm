@@ -70,26 +70,31 @@ use lib_cookies;
 # SUB-RUTINAS.
 # ---------------------------------------------------------------#
 
-my %FORM = ();
-my %REALPATH = ();
-my %MULTIVALUES = ();
-my $BUFFER_SIZE = 100000; # Usar minimo 512 bytes, de otra forma no funciona.
+our %FORM = ();
+our %REALPATH = ();
+our %MULTIVALUES = ();
+our $BUFFER_SIZE = 100000; # Usar minimo 512 bytes, de otra forma no funciona.
 
-my $script_path = $ENV{'SCRIPT_FILENAME'};
-$script_path =~ s/\\/\//g; # 4.7
+my $script_path = '';
+if (defined($ENV{'SCRIPT_FILENAME'})) {
+    $script_path = $ENV{'SCRIPT_FILENAME'};
+    $script_path =~ s/\\/\//g; # 4.7
+}
 my $ridx = rindex($script_path,'/');
 if ($ridx < 0) {
-  # $ridx = rindex($0,"\\"); # Esto es para la version Windows.
-  $script_path = $ENV{'PATH_TRANSLATED'};        # PATH_TRANSLATED = C:\Inetpub\wwwroot
-  $script_path =~ s/\\/\//g;
-  $script_path =~ s/\/cgi\-.*//g;
-  $script_path .= $ENV{'SCRIPT_NAME'};
-  $ridx = rindex($script_path,'/');
+    if (defined($ENV{'PATH_TRANSLATED'})) {
+        $script_path = $ENV{'PATH_TRANSLATED'};        # PATH_TRANSLATED = C:\Inetpub\wwwroot
+        $script_path =~ s/\\/\//g;
+        $script_path =~ s/\/cgi\-.*//g;
+    }
+    if (defined($ENV{'SCRIPT_NAME'})) {
+    $script_path .= $ENV{'SCRIPT_NAME'};
+    }
+    $ridx = rindex($script_path,'/');
 };
-my $CGI_DIR = substr($script_path, 0, $ridx);
-my $TEMP_DIR = "$CGI_DIR/prontus_temp";
-my $CURRENTFILEIDX = 0; # 4.2
-
+our $CGI_DIR = substr($script_path, 0, $ridx);
+our $TEMP_DIR = "$CGI_DIR/prontus_temp";
+our $CURRENTFILEIDX = 0; # 4.2
 # --------------------------------------------------------------------#
 sub param {
 # Retorna el valor del objeto de formulario pasado por parametro. ej : $FORM{'campo1'} = &glib_cgi_02::param('campo1');

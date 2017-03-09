@@ -214,6 +214,24 @@ sub deploy {
     ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_url($base, 'MYSQL');
     return ($msg_ret, '') if ($hay_err ne '');
 
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_s($base, 'MYSQL');
+    return ($msg_ret, '') if ($hay_err ne '');
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_t($base, 'MYSQL');
+    return ($msg_ret, '') if ($hay_err ne '');
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_st($base, 'MYSQL');
+    return ($msg_ret, '') if ($hay_err ne '');
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_s($base, 'MYSQL');
+    return ($msg_ret, '') if ($hay_err ne '');
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_t($base, 'MYSQL');
+    return ($msg_ret, '') if ($hay_err ne '');
+
+    ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_st($base, 'MYSQL');
+    return ($msg_ret, '') if ($hay_err ne '');
+
     $base->disconnect;
 
 
@@ -343,12 +361,6 @@ sub cambia_referencias {
             my $buffer = &glib_fildir_02::read_file("$dir/$entry");
             $buffer =~ s/$CRLF/\x0a/sg;
             my ($nompag, $newnompag);
-            # cambia en cada pagina las referencias a archivos con posible extension erronea.
-            # p10.11
-            # foreach $nompag (keys %FILES_CAMBIAR_REF) {
-            #  $newnompag = $FILES_CAMBIAR_REF{$nompag};
-            #  $buffer =~ s/$nompag/$newnompag/ig;
-            # };
 
             # Cambia nombre del publicador de origen por el q escogio el user.
             $buffer =~ s/$prontus_base\//$prontus_id\//ig;
@@ -434,15 +446,6 @@ sub check_paso_anterior {
     if ($prontus_id eq '') {
       return 'Información de paso 1 está corrupta.';
     }
-
-    # extension
-    # CVI se movió a la seccion [MODEL] [/MODEL]
-#    if ($buffer_prontus !~ /MODEL_EXT=(\w+)\n/) {
-#      return 'Información de paso 1 está corrupta.';
-#    }
-#    else {
-#      $extension = $1;
-#    };
 
     # smtp
     if ($buffer_prontus =~ /SERVER_SMTP=([\w\.\-]+)\n/) {
