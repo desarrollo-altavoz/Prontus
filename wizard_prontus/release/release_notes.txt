@@ -9077,3 +9077,12 @@ Se agrega texto descriptivo por defecto para los campos nombre, apellidos, email
 Se reordenan algunos procesos.
 
 cgi-bin/prontus_form.cgi
+
+Se cambia a segundo plano la descarga del csv con los datos consolidados
+cgi-bin/prontus_form.cgi
+cgi-cpn/lib_form.pm
+cgi-cpn/prontus_form_download.cgi
+cgi-cpn/prontus_form_download_real.cgi
+wizard_prontus/prontus_dir/cpan/core/css/fids.css
+wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+wizard_prontus/prontus_dir/cpan/core/prontus_form_list.html
