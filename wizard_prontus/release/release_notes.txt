@@ -9069,3 +9069,6 @@ Mejoras generales en las cgis
 
 Se mejora la busqueda del administrador de articulos, para palabras compuestas que usen - o caracteres especiales
 /var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
+
+Los fids excluidos de la generación de friendly 4 generan link directo al usar %%_FILEURL%%
+/var/www/prontus_release/cgi-cpn/lib_prontus.pm
