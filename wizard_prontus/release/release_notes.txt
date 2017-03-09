@@ -8978,13 +8978,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 11.2.94 - 09/03/2017 - SCT/EAG/JOR
 ====================================================================================================
-- Prontus en general
-    [bugfixes]
-        - Se corrige ordenamiento de campos recibidos en prontus form, los campos que no estan en el html
-        quedan siempre al final
-    [files]
-        /cgi-bin/prontus_form.cgi
-
 - Biblioteca multimedia
     [bugfixes]
         - Se corrige consulta SQL al momento de obtener cantidad de artículos con fotos para la paginación.
@@ -8997,108 +8990,128 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           comenzara con letras.
     [files]
         - /wizard_prontus/core/js/Wizard.class.js
+
 - VTXT
+    [cambio]
+        -Se cambia la publicación de imágenes en el vtxt, ahora se insertan a tamaño completo.
     [mejoras]
-      - Se agrega opción para hacer tablas e imagenes responsivas.
-      - Se agrega estilo para tablas transparentes.
+        - Se agrega opción para hacer tablas e imagenes responsivas.
+        - Se agrega estilo para tablas transparentes.
     [files]
+        /cgi-cpn/prontus_art_ficha.cgi
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/js/table.js
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/table.htm
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/advimage/image.htm
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/advimage/js/image.js
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/content.css
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
 
-Multitag
-Se integra el sistema de multitag a Prontus. Provee una funcionalidad similar a las taxonomia para clasificar artículos pero con mayor flexibilidad.
-Para utilizarlas se debe activar la opcion en Administración > Configuración > Variables Generales > MULTITAG. Si es un Prontus existente, se deben crear las tablas de base de datos necesarias, en Administración > Base de Datos > Crear Tablas.
-Para integrar el sistema a un artículo se provee la macro reservada "_multitag.html"
-/cgi-bin/multitag/prontus_multitag_list.cgi
-/cgi-bin/prontus_form.cgi
-/cgi-cpn/Artic.pm
-/cgi-cpn/lib_artic.pm
-/cgi-cpn/lib_prontus.pm
-/cgi-cpn/lib_setbd.pm
-/cgi-cpn/multitag/prontus_multitag_admin.cgi
-/cgi-cpn/multitag/prontus_multitag_limpia_cache.cgi
-/cgi-cpn/multitag/prontus_multitag_load_data.cgi
-/cgi-cpn/multitag/prontus_multitag_mant_borrar.cgi
-/cgi-cpn/multitag/prontus_multitag_mant_guardar.cgi
-/cgi-cpn/multitag/prontus_multitag_mant_limpia_cache.cgi
-/cgi-cpn/prontus_admin_main.cgi
-/cgi-cpn/prontus_art_ficha.cgi
-/cgi-cpn/prontus_cfg_save.cgi
-/cgi-cpn/prontus_regenerabd_real.cgi
-/cgi-cpn/prontus_set_bd.cgi
-/cgi-cpn/prontus_tags_admin.cgi
-/cgi-cpn/prontus_tax_admin.cgi
-/cgi-cpn/prontus_varglb.pm
-/cgi-cpn/wizard_deploy.cgi
-/wizard_prontus/prontus_dir/cpan/core/css/fids.css
-/wizard_prontus/prontus_dir/cpan/core/css/multitag.css
-/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_form_fields.html
-/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
-/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_multitag.html
-/wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
-/wizard_prontus/prontus_dir/cpan/core/js-local/MantenedorMultiTag.class.js
-/wizard_prontus/prontus_dir/cpan/core/js-local/MultiTag.class.js
-/wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.js
-/wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.swf
-/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
-/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
-/wizard_prontus/prontus_dir/cpan/core/macros/menu_head2b.html
-/wizard_prontus/prontus_dir/cpan/core/mant_seccs/prontus_seccion_admin.html
-/wizard_prontus/prontus_dir/cpan/core/prontus_multitag_admin.html
-/wizard_prontus/prontus_dir/cpan/core/prontus_tags_admin.html
+- Multitag
+    [mejoras]
+        - Se integra el sistema de multitag a Prontus. Provee una funcionalidad similar a la taxonomia para
+          clasificar artículos pero con mayor flexibilidad y otras limitaciones.
+        - Para utilizarlas se debe activar la opcion en Administración > Configuración > Variables Generales > MULTITAG.
+          Si es un Prontus existente, se deben crear las tablas de base de datos necesarias, en Administración > Base de Datos > Crear Tablas.
+        - Para integrar el sistema a un artículo se provee la macro reservada "_multitag.html"
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_setbd.pm
+        /cgi-cpn/multitag/prontus_multitag_admin.cgi
+        /cgi-cpn/multitag/prontus_multitag_limpia_cache.cgi
+        /cgi-cpn/multitag/prontus_multitag_load_data.cgi
+        /cgi-cpn/multitag/prontus_multitag_mant_borrar.cgi
+        /cgi-cpn/multitag/prontus_multitag_mant_guardar.cgi
+        /cgi-cpn/multitag/prontus_multitag_mant_limpia_cache.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_regenerabd_real.cgi
+        /cgi-cpn/prontus_set_bd.cgi
+        /cgi-cpn/prontus_tags_admin.cgi
+        /cgi-cpn/prontus_tax_admin.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /cgi-cpn/wizard_deploy.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /wizard_prontus/prontus_dir/cpan/core/css/multitag.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_form_fields.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_multitag.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/MantenedorMultiTag.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/MultiTag.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.swf
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/menu_head2b.html
+        /wizard_prontus/prontus_dir/cpan/core/mant_seccs/prontus_seccion_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_multitag_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_tags_admin.html
 
-Update
-Se modifica el update de prontus para no incluir logs y carpetas con respaldos.
-/cgi-cpn/Update.pm
-/cgi-cpn/dir_cgi.pm
-/cgi-cpn/glib_fildir_02.pm
+- Actualización de Prontus
+    [mejoras]
+        - Se modifica el update de prontus para no incluir logs y carpetas con respaldos.
+    [files]
+        /cgi-cpn/Update.pm
+        /cgi-cpn/dir_cgi.pm
+        /cgi-cpn/glib_fildir_02.pm
 
-VTXT
-Se cambia la publicación de imágenes en el vtxt, ahora se insertan a tamaño completo.
-/cgi-cpn/prontus_art_ficha.cgi
-/wizard_prontus/prontus_dir/cpan/core/css/fids.css
-/wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
+- Prontus en general
 
-General
-Se realizan mejoras y correciones generales en las librerias de prontus.
-/cgi-cpn/glib_cgi_04.pm
-/cgi-cpn/glib_html_02.pm
-/cgi-cpn/lib_prontus.pm
-/cgi-cpn/lib_secc.pm
-/cgi-cpn/lib_tax.pm
-/cgi-cpn/lib_mail.pm
-/cgi-cpn/lib_form.pm
 
-Se mejora la busqueda del administrador de articulos para palabras compuestas que usen '-' ,'+' o caracteres especiales.
-/cgi-cpn/prontus_art_listnopub.cgi
+- Prontus en general
+    [mejoras]
+        - Se realizan mejoras y correciones generales en las librerias de prontus.
+        - Los fids excluidos de la generación de friendly 4, generan link directo al usar %%_FILEURL%%.
+    [files]
+        /cgi-cpn/glib_cgi_04.pm
+        /cgi-cpn/glib_html_02.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_secc.pm
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/lib_mail.pm
+        /cgi-cpn/lib_form.pm
 
-Los fids excluidos de la generación de friendly 4, generan link directo al usar %%_FILEURL%%.
-/cgi-cpn/lib_prontus.pm
-/cgi-bin/prontus_art_posting.cgi
+- Administrador de artículos
+    [mejoras]
+        - Se mejora la busqueda del administrador de articulos para palabras compuestas que usen '-' ,'+' o caracteres especiales.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-bin/prontus_art_posting.cgi
 
-Prontus Form
-Se agrega a la url de respuesta del formulario, "exito" o "error" según corresponda.
-Se agrega texto descriptivo por defecto para los campos nombre, apellidos, email, telefono, celular, fax, rut.
-Se cambia a segundo plano la descarga del csv con los datos consolidados.
-Se agrega logeo de acciones: listar, descargar y borrar.
-Se modifica el borrado de datos recibidos por Prontus Form, solo el usuario admin podrá borrarlos. A los demás usuarios no les aparecerá la opción
-Se reordenan algunos procesos.
+- Prontus Form
+    [cambios]
+        - Se agrega a la url de respuesta del formulario, "exito" o "error" según corresponda.
+        - Se modifica el borrado de datos recibidos por Prontus Form, solo el usuario admin podrá borrarlos.
+        A los demás usuarios no les aparecerá la opción
+    [mejoras]
+        - Se agrega texto descriptivo por defecto para los campos nombre, apellidos, email, telefono, celular, fax, rut.
+        - Se cambia a segundo plano la descarga del csv con los datos consolidados.
+        - Se agrega logeo de acciones: listar, descargar y borrar.
+        - Se reordenan algunos procesos para mejorar eficiencia.
+    [bugfixes]
+        - Se corrige ordenamiento de campos recibidos en prontus form, los campos que no estan en el html
+        quedan siempre al final
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/lib_form.pm
+        /cgi-cpn/prontus_form_delete.cgi
+        /cgi-cpn/prontus_form_download.cgi
+        /cgi-cpn/prontus_form_download_real.cgi
+        /cgi-cpn/prontus_form_list.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_form_list.html
 
-/cgi-bin/prontus_form.cgi
-/cgi-cpn/lib_form.pm
-/cgi-cpn/prontus_form_delete.cgi
-/cgi-cpn/prontus_form_download.cgi
-/cgi-cpn/prontus_form_download_real.cgi
-/cgi-cpn/prontus_form_list.cgi
-/wizard_prontus/prontus_dir/cpan/core/css/fids.css
-/wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
-/wizard_prontus/prontus_dir/cpan/core/prontus_form_list.html
-
-Dropbox
-Se actualizan las librerias para usar la v2 de la api de dropbox
-/cgi-cpn/lib_dropbox.pm
-/cgi-cpn/prontus_dropbox_backup.cgi
-
+- Dropbox
+    [mejoras]
+        - Se actualizan las librerias para usar la v2 de la api de dropbox
+    [files]
+        /cgi-cpn/lib_dropbox.pm
+        /cgi-cpn/prontus_dropbox_backup.cgi

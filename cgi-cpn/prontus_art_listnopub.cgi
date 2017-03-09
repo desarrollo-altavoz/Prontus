@@ -645,7 +645,6 @@ sub genera_filtros {
     $FORM{'titu'} =~ s/ {2,}/ /g;
     if ($FORM{'titu'} ne '') {
       my $titu4query = $FORM{'titu'};
-      print STDERR $titu4query."\n";
 
       if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
         if($titu4query =~ /".*?"/) {
