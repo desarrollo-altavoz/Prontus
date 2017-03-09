@@ -86,6 +86,12 @@ main: {
         &send_error("El parámetro _ts no es válido");
         exit;
     };
+
+    # Se chequean los permisos
+    ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
+
+    &lib_prontus::write_log('Descargar Datos', 'Prontus Form', "TS[$TS]", $prontus_varglb::USERS_USR);
+
     # Se revisa que el archivo de "orden" exista
     my $DIRFORM     = "/$PRONTUS/cpan/procs/form/$TS";
     if (! -d "$ROOT$DIRFORM") {

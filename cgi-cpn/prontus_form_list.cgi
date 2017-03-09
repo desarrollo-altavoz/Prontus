@@ -98,6 +98,8 @@ main: {
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     # print STDERR "($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL)\n";
 
+    &lib_prontus::write_log('Listar Datos', 'Prontus Form', "TS[$TS]", $prontus_varglb::USERS_USR);
+
     print "Content-type: text/html\n\n";
 
     if ($TS eq '') {
