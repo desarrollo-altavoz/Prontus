@@ -9011,8 +9011,21 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se integra el sistema de multitag a Prontus. Provee una funcionalidad similar a la taxonomia para
           clasificar artículos pero con mayor flexibilidad y otras limitaciones.
+          Solo puede haber 1 prontus con multitag activada en un servidor.
         - Para utilizarlas se debe activar la opcion en Administración > Configuración > Variables Generales > MULTITAG.
           Si es un Prontus existente, se deben crear las tablas de base de datos necesarias, en Administración > Base de Datos > Crear Tablas.
+          En nginx se deben agregar las siguientes reglas:
+            # Rewrite multitag
+            rewrite ^/seccion/([^\/]+)/p/(\d+)$ /cgi-bin/multitag/prontus_multitag_list.cgi?prontus_id=<prontus_id>&s=$1&p=$2;
+            rewrite ^/tema/([^\/]+)/p/(\d+)$ /cgi-bin/multitag/prontus_multitag_list.cgi?prontus_id=<prontus_id>&t=$1&p=$2;
+            rewrite ^/subtema/([^\/]+)/p/(\d+)$ /cgi-bin/multitag/prontus_multitag_list.cgi?prontus_id=<prontus_id>&st=$1&p=$2;
+            rewrite ^/seccion/([^\/]+)/tema/([^\/]+)/p/(\d+)$ /cgi-bin/multitag/prontus_multitag_list.cgi?prontus_id=<prontus_id>&s=$1&t=$2&p=$3;
+            rewrite ^/seccion/([^\/]+)/subtema/([^\/]+)/p/(\d+)$ /cgi-bin/multitag/prontus_multitag_list.cgi?prontus_id=<prontus_id>&s=$1&st=$2&p=$3;
+            rewrite ^/seccion/([^\/]+)/tema/([^\/]+)/subtema/([^\/]+)/p/(\d+)$ /cgi-bin/multitag/prontus_multitag_list.cgi?prontus_id=<prontus_id>&s=$1&t=$2&st=$3&p=$4;
+            rewrite ^/tema/([^\/]+)/subtema/([^\/]+)/p/(\d+)$ /cgi-bin/multitag/prontus_multitag_list.cgi?prontus_id=<prontus_id>&t=$1&st=$2&p=$3;
+            # /Rewrite multitag
+        Se debe reemplazar <prontus_id> con el nombre del prontus en el cual se encuentra activada la multitag.
+
         - Para integrar el sistema a un artículo se provee la macro reservada "_multitag.html"
     [files]
         /cgi-bin/multitag/prontus_multitag_list.cgi
@@ -9127,7 +9140,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se habilitan las cgis de transcodificacion para poder ser ejecutadas a través de línea de comando,
         esto para poder transcodificar todos los videos de un sitio web sin tener que abrir cada artículo
-        manualmente. Se incluye utilidad en la release.
+        manualmente.
+        Se incluye utilidad en la release ubicada en /cgi-cpn/xcoding. Acepta 3 parametros como se detalla a continuación:
+        perl prontus_procesar_videos.pl <prontus_id> <fid_id> <multimedia_video1,..,multimedia_videoN>
+        <prontus_id> : identificador del prontus que se desea procesar
+        <fid_id> : identificador del fid que se desea procesar
+        <multimedia_video1,..,multimedia_videoN> : lista de marcas de videos a procesar separadas por coma
+
+        Ejemplo de uso:
+        perl prontus_procesar_videos.pl mi_prontus_id fid_noticia multimedia_video1,multimedia_video2
+
         - Se agrega una espera aleatoria antes de iniciar una transcodificación para prevenir que puedan
          ejecutarse 2 procesos sobre el mismo video.
     [files]
