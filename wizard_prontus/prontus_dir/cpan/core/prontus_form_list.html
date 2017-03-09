@@ -19,7 +19,7 @@
 
     <!-- JS de Prontus -->
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Fid.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Fid.class.js?v2"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/dir_cgi.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Botones.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
@@ -59,19 +59,42 @@
         <tr valign="top">
           <td align="left" valign="middle" class="hint" colspan="%%_colspan%%">
             <div class="form_icon">
-              <a href="javascript:Fid.descargarArchivo()">
+              <a href="#" onclick="Fid.generarArchivoForm(); return false;">
                 <img src="/%%_prontus_id%%/cpan/core/imag/form_save.png" alt="Guardar" />
                 <span>Descargar Archivo</span></a>
               Aquí podrá descargar el archivo completo con los datos de los formularios que se han enviado enviado.
             </div>
+            <!--admin-->
             <div class="form_icon">
-              <a href="javascript:Fid.eliminarArchivo()">
+              <a href="#" onclick="Fid.eliminarArchivo(); return false;">
                 <img src="/%%_prontus_id%%/cpan/core/imag/form_trash.png" alt="Eliminar" />
                 <span>Eliminar Archivo</span></a>
-              <b>Importante:</b> Si ud. borra el archivo de datos, también se borrarán los archivos adjuntos que aquí e muestran.
+              <b>Importante:</b> Si ud. borra el archivo de datos, también se borrarán los archivos adjuntos que aquí se muestran.
             </div>
+            <!--/admin-->
           </td>
         </tr>
+    </table>
+  </div>
+  <div class="msg">
+    <div class="icon" id="msg-link">
+        <a href="#" id="link-csv">
+            <img src="/%%_prontus_id%%/cpan/core/imag/boto/msg-alert.png" width="24" height="24" alt="Informaci&oacute;n" title="Informaci&oacute;n" />
+            <span>Click aqu&iacute; para descargar el archivo</span>
+        </a>
+    </div>
+    <div class="icon" id="msg-loading">
+        <img src="/%%_prontus_id%%/cpan/core/imag/loader/ajax-loader.gif" width="24" height="24" alt="Cargando..." title="Cargando..." />
+        <span>Por favor espere mientras se procesa su solicitud</span>
+    </div>
+    <div class="icon" id="msg-error">
+        <img src="/%%_prontus_id%%/cpan/core/imag/boto/msg-error.png" width="24" height="24" alt="Error" title="Error" />
+        <span id="error-data"></span>
+    </div>
+  </div>
+
+  <div class="box-auxi" id="content-box">
+    <table cellspacing="0" class="tableback" >
         <tr valign="top">
           <td align="left" valign="middle" class="separador hint" colspan="%%_colspan%%">
           Se presentan las <u>primeras %%_max_cols%% columnas</u> del archivo de datos, más los links a los archivos adjuntos,

@@ -446,7 +446,7 @@ sub generar_relacionados_manualtax {
 
     my ($ruta_dir) = $prontus_varglb::DIR_SERVER . $RELDIR_ARTIC_RELAC;
     $ruta_dir =~ s/\/taxonomia\/pags/\/taxonomia\/pags-$mv/ if ($mv);
-    $dst_dir =~ s/(\d{8})\/pags/\1\/pags-$mv/ if ($mv);
+    $dst_dir =~ s/(\d{8})\/pags/$1\/pags-$mv/ if ($mv);
 
     my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
     my ($pagina, $k, $plantilla, $loop);
