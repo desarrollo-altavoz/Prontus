@@ -9072,3 +9072,10 @@ Se mejora la busqueda del administrador de articulos, para palabras compuestas q
 
 Los fids excluidos de la generación de friendly 4 generan link directo al usar %%_FILEURL%%
 /var/www/prontus_release/cgi-cpn/lib_prontus.pm
+
+
+Dropbox
+Se actualizan las librerias para usar la v2 de la api de dropbox
+/cgi-cpn/lib_dropbox.pm
+/cgi-cpn/prontus_dropbox_backup.cgi
+
