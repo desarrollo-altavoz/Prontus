@@ -45,9 +45,9 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
-    require 'dir_cgi.pm';
+    do 'dir_cgi.pm';
 
-    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
 };
 
@@ -60,7 +60,6 @@ use lib_captcha;
 use lib_maxrunning;
 use glib_cgi_04;
 
-require 'dir_cgi.pm';
 $lib_captcha::TTF = $ENV{'DOCUMENT_ROOT'} . "/$DIR_CGI_CPAN/fontcaptcha.ttf"; # OBLIGATORIO, para los scripts que estan fuera del cgi-cpn
 
 # ---------------------------------------------------------------
