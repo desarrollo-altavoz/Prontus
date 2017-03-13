@@ -9114,6 +9114,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia a segundo plano la descarga del csv con los datos consolidados.
         - Se agrega logeo de acciones: listar, descargar y borrar.
         - Se reordenan algunos procesos para mejorar eficiencia.
+        - Se mejora sanitizacion de nombres de archivos adjuntos
     [bugfixes]
         - Se corrige ordenamiento de campos recibidos en prontus form, los campos que no estan en el html
         quedan siempre al final
