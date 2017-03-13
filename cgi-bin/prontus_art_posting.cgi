@@ -116,7 +116,12 @@ main: {
 
     # Validacion y gestion de ip bloqueada
     my $dir_ip_control = 'ip_control_art_posting'; # dentro del prontus_temp
-    my $user_ip = $ENV{'REMOTE_ADDR'};
+    my $user_ip = '';
+    if ( defined($ENV{'HTTP_X_FORWARDED_FOR'})) {
+        $user_ip = $ENV{'HTTP_X_FORWARDED_FOR'};
+    } else {
+        $user_ip = $ENV{'REMOTE_ADDR'};
+    }
     my $maxrequest_por_ip = 30;
     my $bloqueoip_interval = 60;
     my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $user_ip, $maxrequest_por_ip, $bloqueoip_interval);
@@ -186,7 +191,7 @@ main: {
         my $captcha_img = &glib_cgi_04::param('_captcha_img');
         my $captcha_code = &glib_cgi_04::param('_captcha_code');
         $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
-        #~ require 'dir_cgi.pm';
+
         &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
         my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
         if ($msg_err_captcha ne '') {

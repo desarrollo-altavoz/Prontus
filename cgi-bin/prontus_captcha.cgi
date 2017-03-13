@@ -41,16 +41,19 @@
 # DECLARACIONES GLOBALES.
 # ------------------------
 
+my $DIR_CGI_CPAN_SCRIPT;
 BEGIN {
     use FindBin '$Bin';
-    $pathLibs = $Bin;
+    my $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
     do 'dir_cgi.pm';
-
-    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN/;
+    $DIR_CGI_CPAN_SCRIPT = $DIR_CGI_CPAN;
+    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN_SCRIPT/;
+    print $pathLibs;
     unshift(@INC,$pathLibs);
 };
 
+use strict;
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
@@ -60,7 +63,7 @@ use lib_captcha;
 use lib_maxrunning;
 use glib_cgi_04;
 
-$lib_captcha::TTF = $ENV{'DOCUMENT_ROOT'} . "/$DIR_CGI_CPAN/fontcaptcha.ttf"; # OBLIGATORIO, para los scripts que estan fuera del cgi-cpn
+$lib_captcha::TTF = $ENV{'DOCUMENT_ROOT'} . "/$DIR_CGI_CPAN_SCRIPT/fontcaptcha.ttf"; # OBLIGATORIO, para los scripts que estan fuera del cgi-cpn
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -104,7 +107,12 @@ main: {
 
     # Validacion y gestion de ip bloqueada
     my $dir_ip_control = "ip_control_captcha_$captcha_type"; # dentro del prontus_temp
-    my $user_ip = $ENV{'REMOTE_ADDR'};
+    my $user_ip = '';
+    if ( defined($ENV{'HTTP_X_FORWARDED_FOR'})) {
+        $user_ip = $ENV{'HTTP_X_FORWARDED_FOR'};
+    } else {
+        $user_ip = $ENV{'REMOTE_ADDR'};
+    }
     my $maxrequest_por_ip = 30;
     my $bloqueoip_interval = 60;
     my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $user_ip, $maxrequest_por_ip, $bloqueoip_interval);
