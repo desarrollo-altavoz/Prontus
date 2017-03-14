@@ -12,20 +12,20 @@
 # Funciones para utilizar captcha sin utilizar sesiones.
 package lib_captcha2;
 
+use strict;
 use Digest::SHA  qw(sha1 sha1_hex sha1_base64);
 use glib_fildir_02;
 use glib_str_02;
 
-#~ our $MAX_FILES = 30000; # NRO. MAXIMO DE ARCHIVOS QUE PUEDEN EXISTIR SIMULTANEAMENTE
-our $MAX_FILES = 30000;
+our $MAX_FILES = 2000; # NRO. MAXIMO DE ARCHIVOS QUE PUEDEN EXISTIR SIMULTANEAMENTE
 our $TIME_OLD_FILES = 600; # 600 segundos, 10 minutos.
 our $FORECOLOR = '0,0,0'; # COLOR LETRAS
 our $BACKCOLOR = '255,255,255'; # COLOR FONDO
 our $ERRCODE = 0;
 
-$TTF = './fontcaptcha.ttf';
+our $TTF = './fontcaptcha.ttf';
 
-%ERR_MSGS = (
+our %ERR_MSGS = (
     'MSG_CAPTCHA_SYSTEM' => 'Error interno del sistema',
     'MSG_CAPTCHA_VOID' => 'Debe ingresar el c&oacute;digo de seguridad',
     'MSG_CAPTCHA_INVALID' => 'El c&oacute;digo de seguridad no es v&aacute;lido',
@@ -36,7 +36,9 @@ $TTF = './fontcaptcha.ttf';
     'MSG_CAPTCHA_BLOCKED' => 'Petición invalida, usuario restringido'
 );
 
-
+our $DOCUMENT_ROOT;
+our $PATH_CAPTCHA_IMG;
+our $DIR_CGI_CPAN;
 
 #--------------------------------------------------------------------------------------------------#
 sub init {
@@ -48,7 +50,6 @@ sub init {
     $TTF = "$lib_captcha2::DOCUMENT_ROOT/$DIR_CGI/fontcaptcha.ttf";
 
     # faltaria cargar un arreglo con mensajes segun idioma
-
 };
 #--------------------------------------------------------------------------------------------------#
 sub validar_tipo {
@@ -62,7 +63,6 @@ sub validar_tipo {
 #--------------------------------------------------------------------------------------------------#
 sub valida_captcha {
     my ($captcha_input, $captcha_code, $captcha_type, $captcha_img) = @_;
-    #~ my ($captcha_input, $captcha_encoded, $captcha_type, $captcha_img) = @_;
     $captcha_input =~ s/[^\w]//sg;
 
     if(! &validar_tipo($captcha_type)) {
@@ -268,20 +268,10 @@ sub check_max_files {
 #--------------------------------------------------------------------------------------------------#
 sub garbage_collector {
     my $path = $_[0];
-    my $num = &check_max_files($path);
-
-    if ($num >= $MAX_FILES) {
-       my @entries = &glib_fildir_02::lee_dir($path);
-        foreach my $entry (@entries) {
-            if (($entry !~ /^\./g) && (-f "$path/$entry")) {
-                my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime, $mtime, $ctime,  $blksize,  $blocks) = stat "$path/$entry";
-                if ((time - $ctime) > $TIME_OLD_FILES) {
-                    unlink "$path/$entry";
-                };
-            };
-        };
-    };
-
+    use FindBin '$Bin';
+    $Bin =~ s/\/cgi\-\w+$/\/$DIR_CGI_CPAN/;
+    my $cmd = "/usr/bin/perl $Bin/prontus_garbage_collector.pl $path $TIME_OLD_FILES $MAX_FILES >/dev/null 2>&1 &";
+    system($cmd);
 };
 
 #--------------------------------------------------------------------------------------------------#

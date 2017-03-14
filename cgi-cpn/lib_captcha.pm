@@ -18,25 +18,24 @@ use glib_fildir_02;
 use glib_str_02;
 
 # variables globales del paquete
-our $MAX_FILES = 1000; # NRO. MAXIMO DE ARCHIVOS QUE PUEDEN EXISTIR SIMULTANEAMENTE
-our $MAX_TIME = 1800; # Tiempo máximo antes de borra los captcha antiguos -> 30 mins.
+our $MAX_FILES = 2000; # NRO. MAXIMO DE ARCHIVOS QUE PUEDEN EXISTIR SIMULTANEAMENTE
+our $MAX_TIME = 600; # Tiempo máximo antes de borra los captcha antiguos -> 10 mins.
 
 our $FORECOLOR = '0,0,0'; # COLOR LETRAS
 our $BACKCOLOR = '255,255,255'; # COLOR FONDO
 our $TTF = './fontcaptcha.ttf';
 our $ERRCODE = 0;
-our %ERRGLOSA =
-(
-0,'',
-1,'$folder_captcha_files no especificado al setear captcha',
-2,'Nro. de archivos en $folder_captcha_files excede $MAX_FILES',
-3,'No se pudo chequear directorio para captcha files',
-4,'No se especifico string captcha a validar',
-5,'No se especifico carpeta de captcha files al validar captcha',
-6,'No se encontro la libreria perl GD en el sistema',
-7,'No se encontro archivo TTF'
+our %ERRGLOSA = (
+    0,'',
+    1,'$folder_captcha_files no especificado al setear captcha',
+    2,'Nro. de archivos en $lib_captcha::folder_captcha_files excede $lib_captcha::MAX_FILES',
+    3,'No se pudo chequear directorio para captcha files',
+    4,'No se especifico string captcha a validar',
+    5,'No se especifico carpeta de captcha files al validar captcha',
+    6,'No se encontro la libreria perl GD en el sistema',
+    7,'No se encontro archivo TTF'
 );
-
+our $DIR_CGI_CPAN;
 
 
 # --------------------------------------------------------------------#
@@ -74,8 +73,8 @@ sub set_captcha {
 
   # nombre de la cookie dentro de la cual se guardara el nombre del archivo
   my $nom_cookie = $ENV{'REMOTE_ADDR'} . $folder_captcha_files;
-  $nom_cookie = &Digest::SHA::sha1_hex($nom_cookie);
 
+  $nom_cookie = &Digest::SHA::sha1_hex($nom_cookie);
 
   # nombre del archivo en el cual se guardará el captcha encriptado
   my $nom_file_captcha;
@@ -118,51 +117,31 @@ sub print_img {
   print $img_captcha;
 };
 # --------------------------------------------------------------------#
+# lanza el borrado de archivos antiguos
 sub garbage_collector {
-# borra archivos antiguos y retorna cantidad de archivos en el dir
-# Sólo se hará garbage si hay más de $MAX_FILES archivos en el directorio
-  my ($dir) = $_[0];
-  my(@entries,@stats,$entry);
-  if (! (-d $dir)) {
-    return 0;
-  };
-
-  # Lee el contenido del directorio.
-  my $num_files;
-  if (opendir(DIR, $dir)) {
-    @entries = readdir(DIR);
-    closedir DIR;
-    $num_files = @entries - 2; # salta . y ..
-  }
-  else {
-    $ERRCODE = 3;
-    return 0;
-  };
-
-  # Si hay menos de $MAX_FILES, se retorna
-  if ($num_files < $MAX_FILES) {
-     return 1;
-  };
-
-  # Borra archivos con mas de 30 mins de antiguedad
-  # print $$ . 'time = ' . time . ' ';
-  foreach $entry (@entries) {
-    if (-f "$dir/$entry") {
-      @stats = stat "$dir/$entry";
-      # print $stats[10] . ' ';
-      if ($stats[10] < (time - $MAX_TIME)) {
-        unlink "$dir/$entry";
-        $num_files--;
-      };
+    my ($dir) = $_[0];
+    my(@entries,@stats,$entry);
+    if (! (-d $dir)) {
+        return 0;
     };
-  };
 
-  if ($num_files >= $MAX_FILES) {
-    $ERRCODE = 2;
-    return 0; # muchos files!!
-  };
-  return 1;
+    # Intenta leer el contenido del directorio.
+    my $num_files;
+    if (opendir(DIR, $dir)) {
+        closedir DIR;
+    } else {
+        $ERRCODE = 3;
+        return 0;
+    };
 
+    # se lanza el garbage collector en segundo plano
+    use FindBin '$Bin';
+    $Bin =~ s/\/cgi\-\w+$/\/$DIR_CGI_CPAN/;
+
+    my $cmd = "/usr/bin/perl $Bin/prontus_garbage_collector.pl $dir $MAX_TIME $MAX_FILES >/dev/null 2>&1 &";
+    system($cmd);
+
+    return 1;
 }; # garbage_collector
 # --------------------------------------------------------------------------- #
 
@@ -325,7 +304,6 @@ sub get_captcha_imag {
   return $salida->jpeg(50); # 0 - 100 = calidad. Esto es para hacer difusa la imagen.
 
 };
-
 
 #-------------------------------------------------------------------------#
 # 1.2

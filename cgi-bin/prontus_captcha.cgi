@@ -97,6 +97,7 @@ main: {
         exit;
     };
 
+    $lib_captcha::DIR_CGI_CPAN = $DIR_CGI_CPAN_SCRIPT;
     # Tipo de captcha
     my $captcha_type = &glib_cgi_04::param('_type');
     if ($captcha_type !~ /^(form|posting|enviar)$/) {
