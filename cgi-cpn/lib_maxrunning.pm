@@ -30,6 +30,7 @@
 
 package lib_maxrunning;
 
+use strict;
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
 # ---------------------------------------------------------------
@@ -54,5 +55,12 @@ sub maxExcedido {
     return 0;
 }; # maxRunning
 # ---------------------------------------------------------------
-1;
+# deterimna si un pid esta corriendo o no
+# retorna la informacion del PID
+sub isRunningPid {
+    my $result = `ps -p $_[0] -o args=`;
+    return $result;
+}
+
 # -------------------------------END LIBRERIA--------------------
+return 1;

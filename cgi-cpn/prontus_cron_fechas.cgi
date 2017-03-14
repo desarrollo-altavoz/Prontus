@@ -13,7 +13,9 @@
 # ---------------------------------------------------------------
 # PROPOSITO .
 # -----------
-
+# Cambia el estado de publicacion de los articulos segun sus fechas de
+# publicacion y expiración, también actualiza las portadas en las que se
+# encuentran publicados
 # ---------------------------------------------------------------
 # LLAMADAS A ARCHIVOS EXTERNOS.
 # ------------------------------

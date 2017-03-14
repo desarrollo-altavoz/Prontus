@@ -15,6 +15,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -28,7 +29,6 @@ use glib_fildir_02;
 use Artic;
 use lib_tax;
 use lib_maxrunning;
-use strict;
 use DBI;
 use Time::HiRes qw(usleep);
 use POSIX qw(strftime ceil);
@@ -89,13 +89,27 @@ main:{
 
     foreach my $worker (keys %WORKERS2TRIGGER) {
         # Solo ejecuta el worker si no esta corriendo.
-        if (!-f "$DIR_SEMAF/worker_$worker") {
-            my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $worker >/dev/null 2>&1 &";
-            #print "cmd[$cmd]\n";
-            system($cmd);
-        } else {
-            print STDERR "worker[$worker] ya esta corriendo.\n";
+        my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/worker_$worker");
+        $pid =~ s/^\s+|\s+$//g;
+        # revisamos si el proceso corresponde a un worker
+        if ($pid ne '') {
+            my $data_pid = &lib_maxrunning::isRunningPid($pid);
+            print STDERR $data_pid;
+            if ($data_pid eq '') {
+                # si no hay procesos conrriendo con este pid se borra el semaforo y lanza el worker
+                print "no hay proceso con pid $pid\n";
+                unlink("$DIR_SEMAF/worker_$worker");
+            } elsif ($data_pid !~ /prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $worker/) {
+                # si no es un proceso worker eliminamos el semaforo para lanzar el proceso correcto
+                print STDERR "[$pid] no es proceso worker de taxport\n";
+                unlink("$DIR_SEMAF/worker_$worker");
+            } else {
+                print STDERR "worker[$worker] ya esta corriendo.\n";
+            }
         }
+        my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $worker >/dev/null 2>&1 &";
+        #print "cmd[$cmd]\n";
+        system($cmd);
     }
 
     $BD->disconnect;
@@ -212,15 +226,20 @@ sub queue_procs {
     my $tot_artics = &get_tot_artics($filtros, $BD);
     my $nro_paginas = ceil($tot_artics / $prontus_varglb::TAXPORT_ARTXPAG);
 
+    # ajustamos el id level en caso de que tenga 0s
+    $id_level =~ s/^0_/_/ if ($secc_id eq '0');
+    $id_level =~ s/(\d*)_0_(\d*)/$1__$2/ if ($temas_id eq '0');
+    $id_level =~ s/(\d*)_(\d*)_0/$1_$2_/ if ($subtemas_id eq '0');
+
     if ($ts) {
         my $nro_pag = &get_pagina_artic($ts, $filtros, $nro_paginas, $taxport_order, $BD);
 
         if ($nro_pag) {
             print STDERR "Actualiza pagina especifica nro_pag[$nro_pag]\n";
 
-            if (-f "$DIR_SEMAF/$id_level\_$nro_pag") {
+            my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$id_level\_$nro_pag");
+            if ($pid ne '') {
                 print STDERR "Existe otro proceso para pagina $nro_pag, level $id_level... matandolo.\n";
-                my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$id_level\_$nro_pag");
                 my $ret = `kill -9 $pid`;
                 print STDERR "Killed pid[$pid] ret[$ret]\n";
             }
@@ -235,9 +254,9 @@ sub queue_procs {
                 # la primera pagina no se encola, se ejecuta como proceso independiente sin espera.
                 # pero si existe otro igual corriendo, lo mata.
                 # fid/seccion/tema/subtema
-                if (-f "$DIR_SEMAF/$id_level\_$x") {
+                my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$id_level\_$x");
+                if ($pid ne '') {
                     print STDERR "Existe otro proceso para pagina 1, level $id_level... matandolo.\n";
-                    my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$id_level\_$x");
                     my $ret = `kill -9 $pid`;
                     print STDERR "Killed pid[$pid] ret[$ret]\n";
                 }

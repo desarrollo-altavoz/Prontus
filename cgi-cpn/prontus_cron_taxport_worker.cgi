@@ -15,6 +15,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -28,7 +29,6 @@ use glib_fildir_02;
 use Artic;
 use lib_tax;
 use lib_maxrunning;
-use strict;
 use DBI;
 use Time::HiRes qw(usleep);
 use POSIX qw(strftime ceil);
