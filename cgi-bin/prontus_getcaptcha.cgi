@@ -9,16 +9,18 @@
 # http://www.prontus.cl/license.html
 # --------------------------------------------------------------
 
+my $DIR_CGI_CPAN_SCRIPT;
 BEGIN {
     use FindBin '$Bin';
     $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
-    require 'dir_cgi.pm';
-
-    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    do 'dir_cgi.pm';
+    $DIR_CGI_CPAN_SCRIPT = $DIR_CGI_CPAN;
+    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN_SCRIPT/;
     unshift(@INC,$pathLibs);
 };
 
+use strict;
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
@@ -33,8 +35,8 @@ use glib_fildir_02;
 main: {
 
     # require 'dir_cgi.pm';
-    &lib_captcha2::init($ENV{'DOCUMENT_ROOT'}, $DIR_CGI_CPAN);
-    #~ $lib_captcha2::DIR_CGI_CPAN = $DIR_CGI_CPAN;
+    &lib_captcha2::init($ENV{'DOCUMENT_ROOT'}, $DIR_CGI_CPAN_SCRIPT);
+    $lib_captcha2::DIR_CGI_CPAN = $DIR_CGI_CPAN_SCRIPT;
 
     print "Content-Type: text/plain\n\n";
     &glib_cgi_04::new();
@@ -53,7 +55,12 @@ main: {
 
     # Validacion y gestion de ip bloqueada
     my $dir_ip_control = "ip_control_captcha_prontus"; # dentro del prontus_temp
-    my $user_ip = $ENV{'REMOTE_ADDR'};
+    my $user_ip;
+    if ( defined($ENV{'HTTP_X_FORWARDED_FOR'})) {
+        $user_ip = $ENV{'HTTP_X_FORWARDED_FOR'};
+    } else {
+        $user_ip = $ENV{'REMOTE_ADDR'};
+    }
     my $maxrequest_por_ip = 100;
     my $bloqueoip_interval = 60;
     my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $user_ip, $maxrequest_por_ip, $bloqueoip_interval);
@@ -79,7 +86,4 @@ main: {
     my $make_captcha_img_resp = &lib_captcha2::make_captcha_img($captcha_code_clear, "$full_path_to_img/$captcha_img_name");
     &lib_captcha2::print_response('', '', '', $make_captcha_img_resp) unless($make_captcha_img_resp eq '');
     &lib_captcha2::print_response($captcha_img_name, $path_to_img, $captcha_code_hash, '');
-
 };
-
-
