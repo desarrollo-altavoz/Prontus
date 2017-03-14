@@ -30,7 +30,7 @@ $REL_TMPL_EDIT_EMPTY = "/prontus_edit/prontus_edit_file_empty.html";
 $REL_TMPL_ARBOL = "/prontus_edit/prontus_edit_arbol.html";
 $REL_TMPL_MAIN = "/prontus_edit/prontus_edit_main.html";
 
-$EDIT_PERMITIDOS = 'xsl,xml,htm,html,css,csv,cfg,txt,php,asp,jsp,js';
+$EDIT_PERMITIDOS = 'xsl,xml,htm,html,css,csv,cfg,txt,php,asp,jsp,js,json';
 $IMAG_PERMITIDOS = 'jpg,jpeg,jpe,gif,png,bmp';
 
 #---------------------------------------------------------------#
@@ -54,7 +54,7 @@ sub valida_dirs {
 # $curr_dir: Debe ser ruta absoluta incluyendo el document root
 # $path_file: Debe ser sólo la ruta del archivo (desde la raiz del server)
   my ($curr_dir, $path_file, $full_edit) = @_;
-  
+
   my $dir_prontus_full = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID";
   if($curr_dir !~ /^$prontus_varglb::DIR_SERVER/) {
       $curr_dir = "$prontus_varglb::DIR_SERVER$curr_dir";
@@ -62,7 +62,7 @@ sub valida_dirs {
   if($path_file && ($path_file !~ /^$prontus_varglb::DIR_SERVER/)) {
       $path_file = "$prontus_varglb::DIR_SERVER$path_file";
   };
-  
+
   if (($curr_dir =~ /\.\./) || (! -d $curr_dir)) {
     print STDERR "[1] curr_dir: $curr_dir\n";
     return "Directorio no v&aacute;lido.";
@@ -83,7 +83,7 @@ sub valida_dirs {
         print STDERR "[4] curr_dir: $curr_dir -> $dir_prontus_full\n";
         return "El directorio no es v&aacute;lido";
     }
-    
+
     if ($path_file && ($path_file !~ /^$dir_prontus_full/)) {
         print STDERR "[1] path_file: $path_file\n";
         return "Archivo no es v&aacute;lido.";
@@ -251,7 +251,7 @@ sub short_name {
     my $first = substr($name, 0, 11);
     my $last = substr($name, $largo - 11, 11);
     $newname = "$first...$last";
-  } 
+  }
   return $newname;
 }
 # ---------------------------------------------------------------

@@ -9102,6 +9102,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_art_listnopub.cgi
+
+
         /cgi-bin/prontus_art_posting.cgi
 
 - Prontus Form
@@ -9168,5 +9170,16 @@ wizard_prontus/prontus_dir/cpan/core/js-local/PortAdmin.class.js
 Se cambia validacion de ip para usar HTTP_X_FORWARDED_FOR si esta disponible
 Tambien se cambia la inicializacion de DIR_CGI_CPAN para que funcione con stricts en prontus captcha
 Se cambia el uso de require por do en dir_cgi.pm
-cgi-bin/prontus_captcha.cgi
-/var/www/prontus_release/cgi-bin/prontus_art_posting.cgi
+/cgi-bin/prontus_captcha.cgi
+/cgi-bin/prontus_getcaptcha.cgi
+/cgi-bin/prontus_art_posting.cgi
+
+
+Se implementa garbage collector en segundo plano para los archivos de captcha
+Se cambian el limite a 2000 archivos como máximo y 10 minutos de antiguedad máxima
+/cgi-cpn/lib_captcha.pm
+/cgi-cpn/lib_captcha2.pm
+/cgi-cpn/prontus_garbage_collector.pl
+
+Se agrega json a tipos de archivos editables
+/cgi-cpn/lib_edit.pm
