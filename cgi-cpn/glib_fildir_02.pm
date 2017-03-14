@@ -229,7 +229,7 @@ sub read_file {
 # Retorna : El texto leido | '' en caso que el archivo no exista.
 
   my($archivo) = shift;
-  my($buffer);
+  my $buffer = '';
 
   if (-f $archivo) {
     open (ARCHIVO,"<$archivo")
