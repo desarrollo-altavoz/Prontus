@@ -840,7 +840,7 @@ sub salida {
     my $archivo = "$ROOTDIR/$ANSWERS_DIR/$ANSWERID\.$EXT";
     open (ARCHIVO,">$archivo")
             || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";
-    #binmode(ARCHIVO, ":utf8");
+
     print ARCHIVO $plantilla; #Escribe buffer completo
     close ARCHIVO;
 

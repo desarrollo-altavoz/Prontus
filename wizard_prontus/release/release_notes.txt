@@ -9183,3 +9183,6 @@ Se cambian el limite a 2000 archivos como máximo y 10 minutos de antiguedad má
 
 Se agrega json a tipos de archivos editables
 /cgi-cpn/lib_edit.pm
+
+Correciones menores
+/var/www/prontus_release/cgi-cpn/prontus_form_download_real.cgi
