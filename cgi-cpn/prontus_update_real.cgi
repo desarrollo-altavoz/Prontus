@@ -113,7 +113,7 @@ main:{
     $PATH_CONF = $ARGV[1];
     print STDERR "DIR_SERVER: [$prontus_varglb::DIR_SERVER]\n";
     print STDERR "PATH_CONF: [$PATH_CONF]\n";
-    
+
     if (! -d $prontus_varglb::DIR_SERVER) {
         print STDERR "ERROR: DIR_SERVER no válido[$prontus_varglb::DIR_SERVER]\n";
         exit;
@@ -138,12 +138,12 @@ main:{
         &lib_loading::finish_loading(0, "Proceso en ejecución. Por favor espere hasta que la importación anterior termine.");
         &lib_logproc::add_to_log_finish("Proceso en ejecución. Por favor espere hasta que la importación anterior termine.", 1);
     };
-    
+
     my $ret = &lib_loading::init('result_prontus_update.js');
     unless($ret) {
         &lib_loading::finish_loading(0, 'No se pudo escribir el archivo de respuesta');
         &lib_logproc::add_to_log_finish('No se pudo escribir el archivo de respuesta', 1);
-    }    
+    }
 
     # Se realiza el proceso y se escribe al Log
     &lib_logproc::flush_log();
@@ -159,16 +159,16 @@ main:{
         $mensaje = "<b>Actualización finalizada con errores:</b><br/>$error_msg";
         &enviar_mail_error($EMAIL_SOPORTE_PRONTUS, $mensaje);
     };
-    
+
     # Borra cache de no publicados
     &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
 
     # Elimina el bloqueo y termina ejecucion.
     &lib_lock::unlock_file($lock_obj, $LOCK_FILE);
-    
+
     &lib_logproc::add_to_log_count($mensaje);
     &lib_logproc::writeRule();
-    
+
     &lib_loading::finish_loading($respuesta, $mensaje);
 
 }; # main
@@ -238,8 +238,8 @@ sub actualizar_prontus {
     my $path_conf = shift;
 
     my ($msg, $quota_usado, $quota_asignado, $usado_porc, $nousado_porc) = &lib_quota::calcula_unix();
-    
-    &lib_loading::update_loading(100, 5);    
+
+    &lib_loading::update_loading(100, 5);
     my $msg_abort = 'No fue posible actualizar Prontus';
 
     # Creacion del objeto Update (todas los params son obligatorios).
@@ -249,14 +249,14 @@ sub actualizar_prontus {
                     'path_conf'         => $path_conf,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || &lib_logproc::add_to_log_finish("$msg_abort\n\nError inicializando Update: [$Update::ERR]", 1);
-    
+
     # Se chequea si es factible realizar la actualización
     &lib_loading::update_loading(100, 10);
     $upd_obj->descarga_upd_descriptor();
     if (!$upd_obj->update_disponible()) {
         return "Error: No se han detectado actualizaciones disponibles.";
     };
-    
+
     # Detecta instancias de prontus compatibles con las cgis
     &lib_loading::update_loading(100, 20);
     &lib_logproc::add_to_log_count("Detectando instancias Prontus ...");
@@ -264,31 +264,31 @@ sub actualizar_prontus {
     &lib_logproc::add_to_log_count("Calculando espacio disponible ...");
     my $ret = $upd_obj->check_before_download();
     return "Error al calcular espacio libre en disco: [$Update::ERR]" if (!$ret);
-    
+
     # Descarga release
     &lib_loading::update_loading(100, 30);
     &lib_logproc::add_to_log_count("Descargando release: " . $upd_obj->{last_version_disponible} . ' desde ' . $upd_obj->{update_server} . '/release ...');
     $ret = $upd_obj->descarga_release();
     return "Error al descargar release: [$Update::ERR]" if (!$ret);
     &lib_logproc::add_to_log_count("Release descargada ok en /_prontus_update/downloads/" . $upd_obj->{last_version_disponible});
-    
+
     # Se chequea factibilidad de instalacion
     &lib_loading::update_loading(100, 70);
     $ret = $upd_obj->check_before_update();
     return "Error al hacer la validación: [$Update::ERR]" if (!$ret);
-    
-    # Se realizaon los respaldos de todos los elementos
+
+    # Se realizan los respaldos de todos los elementos
     &lib_loading::update_loading(100, 75);
     $ret = $upd_obj->crea_respaldos();
     return "Error al crear los respaldos: [$Update::ERR]" if (!$ret);
-    
+
     # Instala CGIs de prontus
     &lib_loading::update_loading(100, 80);
     &lib_logproc::add_to_log_count("Instalando nuevas CGIs");
     $ret = $upd_obj->install_cgis();
     return "Error al instalar CGIs: [$Update::ERR]" if (!$ret);
     &lib_logproc::add_to_log_count("CGIs instaladas OK");
-    
+
     # Actualiza core de las instancias prontus detectadas y tb. del prontus_dir del wizard
     &lib_loading::update_loading(100, 85);
     &lib_logproc::add_to_log_count("Actualizando carpeta 'core' de instancias Prontus detectadas [$upd_obj->{core_dirs}]");
@@ -321,10 +321,10 @@ sub actualizar_prontus {
                . "- En ambos casos, se mantienen autom&aacute;ticamente los &uacute;ltimos 3 respaldos de cada tipo,<br>eliminando los m&aacute;s antiguos e impidiendo as&iacute; su acumulaci&oacute;n.<br>"
                . "<br>El espacio utilizado actualmente por estos respaldos es el siguiente:<br><pre>$du_result</pre>";
     &lib_logproc::add_to_log_count($str_ok);
-    
+
     &enviar_mail_notif($EMAIL_SOPORTE_PRONTUS, $prontus_varglb::VERSION_PRONTUS, $upd_obj->{last_version_disponible}, $str_ok);
     &lib_loading::update_loading(100, 100);
-    
+
     return '';
 
 };

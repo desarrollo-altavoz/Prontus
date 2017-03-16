@@ -72,7 +72,6 @@ use DBI; # SQLITE
 my (%FORM, $TIPO_PRONTUS, $AREA_MENU, $AREA_CONT, $PRONTUS_KEY);
 my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID);
 my ($RESULT);
-my ($HAY_ERROR) = 0;
 my $RELPATHFILE_SQLITE;
 
 main: {
@@ -112,16 +111,6 @@ main: {
 
     if ($FORM{'Sbm_ACCION'} =~ /^Crear/i) {
         if (! ref($base)) {
-            # si no esta el file sqlite, lo crea con el connect manual
-#            if (($prontus_varglb::MOTOR_BD eq 'PRONTUS') && (! -f "$prontus_varglb::DIR_SERVER$RELPATHFILE_SQLITE")) {
-#                my $path_sqlite = "$prontus_varglb::DIR_SERVER$RELPATHFILE_SQLITE";
-#                $base = DBI->connect("dbi:SQLite2:dbname=$path_sqlite","","")
-#                      || warn "DBI Error Code: $DBI::err";
-#                if (! ref($base)) {
-#                    $msg_err_bd = "No es posible conectar con base de datos Prontus SQLite en $RELPATHFILE_SQLITE. Cod[$DBI::err]" if ($DBI::err);
-#                    &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1,ctype=1');
-#                };
-#            };
             &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1,ctype=1');
         };
         &crear_tablas($base);
@@ -215,12 +204,10 @@ sub add2result {
   my $msg = $_[0];
   my $werr = $_[1];
   if ($werr) {
-    $HAY_ERROR = 1;
     $RESULT .= "$msg<br/>";
   }
   else {
     $RESULT .= "$msg<br/>";
-    $HAY_ERROR = 0;
   };
 };
 
