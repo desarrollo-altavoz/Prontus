@@ -151,7 +151,6 @@ main: {
             foreach my $name (sort keys %jsonhash) {
                 $CSV = $CSV . &lib_form::add_to_csv($jsonhash{$name});
                 push(@orderreal, $name);
-                # undef $jsonhash{$name};
             }
 
             # Se agregan los archivos si es que hay.
