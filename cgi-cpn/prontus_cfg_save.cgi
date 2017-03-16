@@ -28,6 +28,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -40,7 +41,7 @@ use glib_hrfec_02;
 use glib_dbi_02;
 use File::Copy;
 use lib_prontus;
-use strict;
+use lib_setbd;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -65,7 +66,6 @@ main: {
 
     # user no valido
     if ($prontus_varglb::USERS_ID eq '') {
-        #~ &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
         &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
     };
 
@@ -84,7 +84,6 @@ main: {
     $hash_defaultvars{'bd'}{'USER_BD'} = 'USER_BD;(\w+);' . $prontus_varglb::USER_BD . ';U';
     $hash_defaultvars{'bd'}{'PWD_BD'} = 'PWD_BD;(\w+);' . $prontus_varglb::PWD_BD . ';U';
     $hash_defaultvars{'bd'}{'SERVER_BD'} = 'SERVER_BD;(\w+);' . $prontus_varglb::SERVER_BD . ';U';
-    #$hash_defaultvars{'bd'}{'ADMIN_BASEDATOS'} = 'ADMIN_BASEDATOS;(SI|NO);NO;U';
     $hash_defaultvars{'bd'}{'MOTOR_BD'} = 'MOTOR_BD;(MYSQL|PRONTUS);MYSQL;U';
 
     # -var.cfg
@@ -93,7 +92,6 @@ main: {
     $hash_defaultvars{'var'}{'PUBLIC_SERVER_NAME'} = 'PUBLIC_SERVER_NAME;(\w+);;U';
     $hash_defaultvars{'var'}{'CONTROL_FECHA'} = 'CONTROL_FECHA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'CONTROLAR_ALTA_ARTICULOS'} = 'CONTROLAR_ALTA_ARTICULOS;(SI|NO);NO;U';
-    #$hash_defaultvars{'var'}{'ACTUALIZACION_MASIVA'} = 'ACTUALIZACION_MASIVA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URL_IMAGES'} = 'FRIENDLY_URL_IMAGES;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_EXCLUDE_FID'} = 'FRIENDLY_V4_EXCLUDE_FID;(\w+);;M';
@@ -104,7 +102,6 @@ main: {
     $hash_defaultvars{'var'}{'DROPBOX'} = 'DROPBOX;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'CLOUDFLARE'} = 'CLOUDFLARE;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'ARTIC_ACTUALIZA_PORTS'} = 'ARTIC_ACTUALIZA_PORTS;(SI|NO);NO;U';
-    #$hash_defaultvars{'var'}{'VERIFICAR_INSTALACION'} = 'VERIFICAR_INSTALACION;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'VTXT_PASTE_NEWLINES_AS_P'} = 'VTXT_PASTE_NEWLINES_AS_P;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'VTXT_DTD'} = 'VTXT_DTD;(STRICT|TRANSITIONAL);STRICT;U';
     $hash_defaultvars{'var'}{'VTXT_ENCODE_CHARS'} = 'VTXT_ENCODE_CHARS;(SI|NO);SI;U';
@@ -152,8 +149,6 @@ main: {
     $hash_defaultvars{'tax'}{'TAXONOMIA_NIVELES'} = 'TAXONOMIA_NIVELES;[0-3];0;U';
     $hash_defaultvars{'tax'}{'NUM_RELAC_DEFAULT'} = 'NUM_RELAC_DEFAULT;^(\d+)$;5;U';
     $hash_defaultvars{'tax'}{'TAXPORT_ARTXPAG'} = 'TAXPORT_ARTXPAG;^(\d+)$;20;U';
-    #~ $hash_defaultvars{'tax'}{'TAXPORT_REFRESH_SEGS'} = 'TAXPORT_REFRESH_SEGS;^(\d+)$;1800;U';
-    #~ $hash_defaultvars{'tax'}{'TAXPORT_REFRESH'} = 'TAXPORT_REFRESH;(SI|NO);NO;U';
     $hash_defaultvars{'tax'}{'TAXPORT_MAXARTICS'} = 'TAXPORT_MAXARTICS;^(\d+)$;500;U';
     $hash_defaultvars{'tax'}{'TAXPORT_MAX_WORKERS'} = 'TAXPORT_MAX_WORKERS;^(\d+)$;4;U';
     $hash_defaultvars{'tax'}{'TAXPORT_ORDEN'} = 'TAXPORT_ORDEN;^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$;PUBLICACION(DESC);U';
@@ -171,7 +166,6 @@ main: {
     $hash_defaultvars{'list'}{'LIST_PORT_PPROC'} = 'LIST_PORT_PPROC;(SI|NO);SI;U';
     $hash_defaultvars{'list'}{'LIST_MAXARTICS'} = 'LIST_MAXARTICS;^(\d+)$;20;U';
     $hash_defaultvars{'list'}{'LIST_ORDEN'} = 'LIST_ORDEN;^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$;PUBLICACION(DESC);U';
-    #~ $hash_defaultvars{'list'}{'LIST_ARTXPAG'} = 'LIST_ARTXPAG;^(\d+)$;20;U';
 
     # -coment.cfg
     $hash_defaultvars{'coment'}{'NOM'} = 'NOM;(\w+);Artículos;U';
@@ -282,154 +276,127 @@ main: {
         &glib_html_02::print_json_result(0, 'Tipo de CFG inválido.', 'exit=1,ctype=1');
     };
 
-    my @campos = &glib_cgi_04::param();
-
-    my $msg;
     my $buffer;
 
     my %hash_vars = %{ $hash_defaultvars{$FORM{'_cfg'}} };
 
     foreach my $var_valida (keys %hash_vars) {
         my @var_info = split(/;/, $hash_vars{$var_valida});
-        if (&glib_cgi_04::param($var_valida)) {
+        my $input_value = &glib_cgi_04::param($var_valida);
+        if ($input_value && $input_value ne '') {
+            # eliminamos espacios al principio y final
+            $input_value =~ s/^\s+|\s+$//g;
             # El input es una variable de configuracion valida.
             my $re = qr/$var_info[1]/;
-            my $input_value = &glib_cgi_04::param($var_valida);
-            if ($input_value ne '') {
-                if ($var_info[3] eq 'M') { # Los valores del input vienen separados por |, son multiples.
-                    # Validar cada valor.
-                    my @input_value_array = split(/\|/, $input_value);
-                    if ((scalar @input_value_array) gt 0) {
-                        foreach my $item (@input_value_array) {
-                            if ($item !~ /$re/) {
-                                &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
+            if ($var_info[3] eq 'M') { # Los valores del input vienen separados por |, son multiples.
+                # Validar cada valor.
+                my @input_value_array = split(/\|/, $input_value);
+                if ((scalar @input_value_array) gt 0) {
+                    foreach my $item (@input_value_array) {
+                        if ($item !~ /$re/) {
+                            &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
+                        } else {
+                            &validarArt($item) if ($FORM{'_cfg'} eq 'art');
+                            &validarPort($var_valida, $item) if ($FORM{'_cfg'} eq 'port');
+                            &validarVar($var_valida, $item) if ($FORM{'_cfg'} eq 'var');
+                            # Consideracion especial para el buscador.... ya que los valores van sin ''.
+                            if ($FORM{'_cfg'} eq 'buscador') {
+                                $buffer = $buffer . "$var_valida = $item\n";
                             } else {
-                                &validarArt($item) if ($FORM{'_cfg'} eq 'art');
-                                &validarPort($var_valida, $item) if ($FORM{'_cfg'} eq 'port');
-                                &validarVar($var_valida, $item) if ($FORM{'_cfg'} eq 'var');
-                                # Concideracion especial para el buscador.... ya que los valores van sin ''.
-                                if ($FORM{'_cfg'} eq 'buscador') {
-                                    $buffer = $buffer . "$var_valida = $item\n";
-                                } else {
-                                    # Si la variable es multivista, no guardar vacia.
-                                    if ($var_valida eq 'MULTIVISTA') {
-                                        if ($item ne '') {
-                                            $buffer = $buffer . "$var_valida = '$item'\n";
-                                        };
-                                    } else {
-                                        # Seguir curso normal.
+                                # Si la variable es multivista, no guardar vacia.
+                                if ($var_valida eq 'MULTIVISTA') {
+                                    if ($item ne '') {
                                         $buffer = $buffer . "$var_valida = '$item'\n";
                                     };
+                                } else {
+                                    # Seguir curso normal.
+                                    $buffer = $buffer . "$var_valida = '$item'\n";
                                 };
                             };
                         };
+                    };
+                } else {
+                    # No viene nada, tomar valor por defecto.
+                    # Consideracion especial para el buscador.... ya que los valores van sin ''.
+                    if ($FORM{'_cfg'} eq 'buscador') {
+                        $buffer = $buffer . "$var_valida = $var_info[2]\n";
                     } else {
-                        # No viene nada, tomar valor por defecto.
-                        # Concideracion especial para el buscador.... ya que los valores van sin ''.
-                        if ($FORM{'_cfg'} eq 'buscador') {
-                            $buffer = $buffer . "$var_valida = $var_info[2]\n";
-                        } else {
-                            # Si la variable es multivista, no guardar vacia.
-                            if ($var_valida eq 'MULTIVISTA') {
-                                if ($var_info[2] ne '') {
-                                    $buffer = $buffer . "$var_valida = '$var_info[2]'\n";
-                                };
-                            } else {
-                                # Seguir curso normal.
+                        # Si la variable es multivista, no guardar vacia.
+                        if ($var_valida eq 'MULTIVISTA') {
+                            if ($var_info[2] ne '') {
                                 $buffer = $buffer . "$var_valida = '$var_info[2]'\n";
                             };
-                        };
-                    };
-                } elsif ($var_info[3] eq 'U') { # Es un solo valor.
-                    if ($input_value !~ /$re/) {
-                        &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
-                    } else {
-                        &validarPort($var_valida, $input_value) if ($FORM{'_cfg'} eq 'port');
-                        &validarTax($var_valida, $input_value) if ($FORM{'_cfg'} eq 'tax');
-                        &validarVar($var_valida, $input_value) if ($FORM{'_cfg'} eq 'var');
-                        &validarComent($var_valida, $input_value) if ($FORM{'_cfg'} eq 'coment');
-                        &validarCloudFlare($var_valida, $input_value) if ($FORM{'_cfg'} eq 'cloudflare');
-                        &validarXcoding($var_valida, $input_value) if ($FORM{'_cfg'} eq 'xcoding');
-
-                        if ($FORM{'_cfg'} eq 'var' && $var_valida eq 'UPLOADS_PERMITIDOS') {
-                            # Quitar espacios.
-                            $input_value =~ s/, /,/ig
-                        };
-
-                        if ($FORM{'_cfg'} eq 'var' && $var_valida eq 'POST_PROCESO') {
-                            # Quitar espacios.
-                            $input_value = "ART-BORRAR($input_value)";
-                        };
-
-                        # Concideracion especial para el buscador.... ya que los valores van sin ''.
-                        if ($FORM{'_cfg'} eq 'buscador') {
-                            #~ print STDERR "var_valida[$var_valida] -> input_value[$input_value]\n";
-                            # consideracion especial para el buscador
-                            if ($var_valida eq 'PRONTUS_DIR') {
-                                my @arr = split /\|/, $input_value;
-                                my $counter = 1;
-                                foreach my $dir (@arr) {
-                                    next unless($dir);
-                                    $buffer = $buffer . "PRONTUS_DIR_$counter = $dir\n";
-                                    $counter++;
-                                }
-                            } elsif($var_valida eq 'RAW_DIR') {
-                                my @arr = split /\|/, $input_value;
-                                my $counter = 1;
-                                foreach my $dir (@arr) {
-                                    next unless($dir);
-                                    $buffer = $buffer . "RAW_DIR_$counter = $dir\n";
-                                    $counter++;
-                                }
-                            } else {
-                                $buffer = $buffer . "$var_valida = $input_value\n";
-                            };
                         } else {
-                            # Si la variable es multivista, no guardar vacia.
-                            if ($var_valida eq 'MULTIVISTA') {
-                                if ($input_value ne '') {
-                                    $buffer = $buffer . "$var_valida = '$input_value'\n";
-                                };
-                            } else {
-                                # Seguir curso normal.
-                                $buffer = $buffer . "$var_valida = '$input_value'\n";
-                            };
-                        };
-
-                    };
-                };
-            } else {
-                # Validar vacios.
-                # Si el input esta vacio, tomar valor por defecto.
-                # Concideracion especial para el buscador.... ya que los valores van sin ''.
-                if ($FORM{'_cfg'} eq 'buscador') {
-                    &validarSearch($var_valida);
-                    $buffer = $buffer . "$var_valida = $var_info[2]\n";
-                } else {
-                    # Esto no puede quedar vacio y no hay que poner el valor por defecto.
-                    if ($var_valida eq 'DIR_FFMPEG') {
-                        &glib_html_02::print_json_result(0, 'La variable DIR_FFMPEG debe tener una ruta válida.', 'exit=1,ctype=1');
-                    }
-
-                    # Si la variable es multivista, no guardar vacia.
-                    if ($var_valida eq 'MULTIVISTA') {
-                        if ($var_info[2] ne '') {
+                            # Seguir curso normal.
                             $buffer = $buffer . "$var_valida = '$var_info[2]'\n";
                         };
-                    } else {
-                        # Seguir curso normal.
-                        $buffer = $buffer . "$var_valida = '$var_info[2]'\n";
                     };
+                };
+            } elsif ($var_info[3] eq 'U') { # Es un solo valor.
+                if ($input_value !~ /$re/) {
+                    &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
+                } else {
+                    &validarPort($var_valida, $input_value) if ($FORM{'_cfg'} eq 'port');
+                    &validarTax($var_valida, $input_value) if ($FORM{'_cfg'} eq 'tax');
+                    &validarVar($var_valida, $input_value) if ($FORM{'_cfg'} eq 'var');
+                    &validarComent($var_valida, $input_value) if ($FORM{'_cfg'} eq 'coment');
+                    &validarCloudFlare($var_valida, $input_value) if ($FORM{'_cfg'} eq 'cloudflare');
+                    &validarXcoding($var_valida, $input_value) if ($FORM{'_cfg'} eq 'xcoding');
+
+                    if ($FORM{'_cfg'} eq 'var' && $var_valida eq 'UPLOADS_PERMITIDOS') {
+                        # Quitar espacios.
+                        $input_value =~ s/, /,/ig
+                    };
+
+                    if ($FORM{'_cfg'} eq 'var' && $var_valida eq 'POST_PROCESO') {
+                        # Quitar espacios.
+                        $input_value = "ART-BORRAR($input_value)";
+                    };
+
+                    # Consideracion especial para el buscador.... ya que los valores van sin ''.
+                    if ($FORM{'_cfg'} eq 'buscador') {
+                        #~ print STDERR "var_valida[$var_valida] -> input_value[$input_value]\n";
+                        # consideracion especial para el buscador
+                        if ($var_valida eq 'PRONTUS_DIR') {
+                            my @arr = split /\|/, $input_value;
+                            my $counter = 1;
+                            foreach my $dir (@arr) {
+                                next unless($dir);
+                                $buffer = $buffer . "PRONTUS_DIR_$counter = $dir\n";
+                                $counter++;
+                            }
+                        } elsif($var_valida eq 'RAW_DIR') {
+                            my @arr = split /\|/, $input_value;
+                            my $counter = 1;
+                            foreach my $dir (@arr) {
+                                next unless($dir);
+                                $buffer = $buffer . "RAW_DIR_$counter = $dir\n";
+                                $counter++;
+                            }
+                        } else {
+                            $buffer = $buffer . "$var_valida = $input_value\n";
+                        };
+                    } else {
+                        # Si la variable es multivista, no guardar vacia.
+                        if ($var_valida eq 'MULTIVISTA') {
+                            if ($input_value ne '') {
+                                $buffer = $buffer . "$var_valida = '$input_value'\n";
+                            };
+                        } else {
+                            # Seguir curso normal.
+                            $buffer = $buffer . "$var_valida = '$input_value'\n";
+                        };
+                    };
+
                 };
             };
         } else {
             # El campo no viene, guardarlo con el valor por default.
-            # Concideracion especial para el buscador.... ya que los valores van sin ''.
+            # Consideracion especial para el buscador.... ya que los valores van sin ''.
             if ($FORM{'_cfg'} eq 'buscador') {
                 &validarSearch($var_valida);
                 $buffer = $buffer . "$var_valida = $var_info[2]\n";
             } else {
-
                 # Esto no puede quedar vacio y no hay que poner el valor por defecto.
                 if ($var_valida eq 'DIR_FFMPEG') {
                     &glib_html_02::print_json_result(0, 'La variable DIR_FFMPEG debe tener una ruta válida.', 'exit=1,ctype=1');
@@ -488,7 +455,6 @@ main: {
     &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
 
     &glib_html_02::print_json_result(1, 'La configuración se guardó con éxito.', 'exit=1,ctype=1');
-
 };
 
 sub guardarCFG {
@@ -496,23 +462,14 @@ sub guardarCFG {
     my ($cfg) = shift;
     my ($buffer) = shift;
 
-    #$cfg = $cfg . "-TST";
-
     my ($nomcfg);
     if ($path_conf =~ /(.*)\.cfg$/) {
         $nomcfg = $1;
     };
 
-    # Verificar que exista el archivo.
-    #my $errcfg;
-    #$errcfg = "[$nomcfg-$cfg.cfg]" if (! -f  $prontus_varglb::DIR_SERVER . $nomcfg . '-' . $cfg . '.cfg');
-    #if ($errcfg) {
-    #    &glib_html_02::print_json_result(0, "No se pudo localizar el Archivo de Configuración PRONTUS $errcfg", 'exit=1,ctype=1');
-    #};
-
     $nomcfg = $nomcfg . '-' . $cfg . '.cfg';
 
-    # Concideracion especial para el buscador.
+    # Consideracion especial para el buscador.
     if ($cfg eq 'buscador') {
         $nomcfg = '/' . $prontus_varglb::PRONTUS_ID . '/cpan/buscador_prontus.cfg';
     };
@@ -531,14 +488,11 @@ sub guardarCFG {
 
     # Escribir archivo.
     &glib_fildir_02::write_file($prontus_varglb::DIR_SERVER . $nomcfg, $last_buffer);
-
 };
 
 sub validarXcoding {
     my ($var) = shift;
     my ($item) = shift;
-
-    print STDERR "var[$var]\n";
 
     if ($var eq 'MAX_VIDEO_BITRATE' && $item !~ /^[0-9]+$/) {
         &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico.", 'exit=1,ctype=1');
@@ -679,6 +633,95 @@ sub validarVar {
             &glib_html_02::print_json_result(0, "El largo máximo del titular en la URL es 100 caracteres", 'exit=1,ctype=1');
         };
     };
+
+    # si se usara friendly 4, intentamos crear la tabla en db
+    if (&glib_cgi_04::param('FRIENDLY_URLS') eq 'SI' && $var eq 'FRIENDLY_URLS_VERSION' && $item eq '4') {
+        my ($msg_ret, $hay_err);
+        my $base = DBI->connect("DBI:mysql:$prontus_varglb::NOM_BD:$prontus_varglb::SERVER_BD", $prontus_varglb::USER_BD, $prontus_varglb::PWD_BD, {'PrintError'=>1})
+            || warn "DBI Error Code: [$DBI::err][$DBI::errstr] ";
+
+        # conectamos a la DB
+        if ($DBI::err) {
+            $msg_ret = "No fue posible conectar con base de datos Prontus MySQL.\nOcurrió el siguiente error:\n\n";
+            $msg_ret .= "Cod[$DBI::err][$DBI::errstr]\n";
+            &glib_html_02::print_json_result(0, $msg_ret, 'exit=1,ctype=1');
+        };
+
+        # intentamos crear la tabla
+        ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_url($base, $prontus_varglb::MOTOR_BD);
+        if ($hay_err) {
+            if ($msg_ret !~ /existe/){
+                print STDERR "([$msg_ret], [$hay_err])\n";
+                $msg_ret = substr($msg_ret, 9);
+                &glib_html_02::print_json_result(0, "Ha ocurrido un error: $msg_ret", 'exit=1,ctype=1');
+            }
+        }
+        $base->disconnect;
+    }
+
+    # si se usara MULTITAG, intentamos crear las tablas en db
+    if ($var eq 'MULTITAG' && $item eq 'SI') {
+        my ($msg_ret, $hay_err);
+        my $base = DBI->connect("DBI:mysql:$prontus_varglb::NOM_BD:$prontus_varglb::SERVER_BD", $prontus_varglb::USER_BD, $prontus_varglb::PWD_BD, {'PrintError'=>1})
+            || warn "DBI Error Code: [$DBI::err][$DBI::errstr] ";
+
+        # conectamos a la DB
+        if ($DBI::err) {
+            $msg_ret = "No fue posible conectar con base de datos Prontus MySQL.\nOcurrió el siguiente error:\n\n";
+            $msg_ret .= "Cod[$DBI::err][$DBI::errstr]\n";
+            &glib_html_02::print_json_result(0, $msg_ret, 'exit=1,ctype=1');
+        };
+
+        # intentamos crear las tablas
+        ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_s($base, $prontus_varglb::MOTOR_BD);
+        if ($hay_err) {
+            if ($msg_ret !~ /existe/){
+                $msg_ret = substr($msg_ret, 9);
+                &glib_html_02::print_json_result(0, "Ha ocurrido un error: $msg_ret", 'exit=1,ctype=1');
+            }
+        }
+
+        ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_t($base, $prontus_varglb::MOTOR_BD);
+        if ($hay_err) {
+            if ($msg_ret !~ /existe/){
+                $msg_ret = substr($msg_ret, 9);
+                &glib_html_02::print_json_result(0, "Ha ocurrido un error: $msg_ret", 'exit=1,ctype=1');
+            }
+        }
+
+        ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_st($base, $prontus_varglb::MOTOR_BD);
+        if ($hay_err) {
+            if ($msg_ret !~ /existe/){
+                $msg_ret = substr($msg_ret, 9);
+                &glib_html_02::print_json_result(0, "Ha ocurrido un error: $msg_ret", 'exit=1,ctype=1');
+            }
+        }
+
+        ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_s($base, $prontus_varglb::MOTOR_BD);
+        if ($hay_err) {
+            if ($msg_ret !~ /existe/){
+                $msg_ret = substr($msg_ret, 9);
+                &glib_html_02::print_json_result(0, "Ha ocurrido un error: $msg_ret", 'exit=1,ctype=1');
+            }
+        }
+
+        ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_t($base, $prontus_varglb::MOTOR_BD);
+        if ($hay_err) {
+            if ($msg_ret !~ /existe/){
+                $msg_ret = substr($msg_ret, 9);
+                &glib_html_02::print_json_result(0, "Ha ocurrido un error: $msg_ret", 'exit=1,ctype=1');
+            }
+        }
+
+        ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_multitag_art_st($base, $prontus_varglb::MOTOR_BD);
+        if ($hay_err) {
+            if ($msg_ret !~ /existe/){
+                $msg_ret = substr($msg_ret, 9);
+                &glib_html_02::print_json_result(0, "Ha ocurrido un error: $msg_ret", 'exit=1,ctype=1');
+            }
+        }
+        $base->disconnect;
+    }
 };
 
 sub validarArt {
