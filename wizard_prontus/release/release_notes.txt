@@ -9199,3 +9199,9 @@ elimina un bloque else que no se usaba.
 
 Se agrega regeneracion de taxports, tagports y listas a control fecha
 /cgi-cpn/prontus_cron_fechas.cgi
+
+Se corrigen los headers impresos segun estandar HTTP
+/cgi-cpn/multitag/prontus_multitag_load_data.cgi
+/cgi-cpn/multitag/prontus_multitag_mant_guardar.cgi
+/cgi-cpn/prontus_art_check_url.cgi
+/cgi-cpn/xcoding/prontus_xcoding_guardarformatos.cgi

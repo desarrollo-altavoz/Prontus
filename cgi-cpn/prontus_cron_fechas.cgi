@@ -13,22 +13,17 @@
 # ---------------------------------------------------------------
 # PROPOSITO .
 # -----------
-# Cambia el estado de publicacion de los articulos segun sus fechas de
-# publicacion y expiración, también actualiza las portadas en las que se
-# encuentran publicados
+# Actualiza portadas segun fechas de publicacion y expiración de
+# los articulos, también actualiza taxports, tagports y listas
 # ---------------------------------------------------------------
 # LLAMADAS A ARCHIVOS EXTERNOS.
 # ------------------------------
-
-
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-
 # ---------------------------------------------------------------
 # PLANTILLAS HTML UTILIZADAS.
 # ------------------------
-
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
