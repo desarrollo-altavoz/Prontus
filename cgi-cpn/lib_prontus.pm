@@ -3389,11 +3389,15 @@ sub ajusta_nchars {
         $val_campo .= ' ' if ($val_campo);
         $val_campo .= $1;
 
-        # print STDERR "val_campo[$val_campo] largo[" . length($val_campo) . "]\n";
+        # print STDERR "val_campo[$val_campo] largo[" . length($val_campo) . "][$string_ajustado]\n";
         if (length($val_campo) > ($nchars - 3)) { # se restan 3 para que quede espacio para los puntos suspensivos
+            if (length($string_ajustado) == 0) { # si el largo de una palabra es mayor al maximo, se recorta dicha palabra.
+                $string_ajustado = substr($val_campo, 0, ($nchars - 3));
+            }
             last;
         };
     };
+
     $string_ajustado =~ s/\s*$//;  # remueve espacio sobrante.
     $string_ajustado .= '...' if ($string_ajustado);
     utf8::encode($string_ajustado) if (!$mode_bytes);

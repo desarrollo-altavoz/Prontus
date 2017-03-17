@@ -9208,3 +9208,9 @@ Se corrigen los headers impresos segun estandar HTTP
 
 Se agregan links con la configuracion de apache y nginx para las friendly url
 /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+Se corrige funcion ajusta_nchars y mensaje de art check url:
+La funcion ajusta_nchars no generaba un texto recortado si la primera palabra tenia largo mayor al definido, ahora recorta la primera palabra.
+El mensaje del chequeo de friendly url 4 no se enviaba si el titular era muy corto.
+/cgi-cpn/lib_prontus.pm
+/cgi-cpn/prontus_art_check_url.cgi

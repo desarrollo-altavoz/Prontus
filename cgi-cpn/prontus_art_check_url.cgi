@@ -91,9 +91,8 @@ main: {
         };
         # se convierte el titular a friendly 4
         my $titular = &lib_prontus::ajusta_titular_f4($FORM{'_txt_titular'});
-
         if (length($titular) < 5) {
-            print '{"status":"Error","msg":"La url generada es muy corta, debe tener al menos 5 caracteres","url":"$titular"}';
+            print '{"status":"Error","msg":"La url generada es muy corta, debe tener al menos 5 caracteres","url":"'.$titular.'"}';
             exit;
         }
 
