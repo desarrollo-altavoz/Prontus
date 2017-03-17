@@ -9185,15 +9185,17 @@ Se agrega json a tipos de archivos editables
 /cgi-cpn/lib_edit.pm
 
 Correciones menores
-/var/www/prontus_release/cgi-cpn/prontus_form_download_real.cgi
-/var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
-/var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
+/cgi-cpn/prontus_form_download_real.cgi
+/cgi-cpn/prontus_art_ficha.cgi
+/cgi-cpn/prontus_art_listnopub.cgi
 
 Al activar friendly v4 y multitag se intenta crear las tablas de
 db necesarias, si hay algun error distinto a que la tabla ya existe se
 informará el error y no se guardará la nueva configuración
 Se reordena el orden de validacion de variable vacía, con esto se
 elimina un bloque else que no se usaba.
-/var/www/prontus_release/cgi-cpn/prontus_cfg_save.cgi
+/cgi-cpn/prontus_cfg_save.cgi
 
 
+Se agrega regeneracion de taxports, tagports y listas a control fecha
+/cgi-cpn/prontus_cron_fechas.cgi
