@@ -317,8 +317,6 @@ sub check_portadas {
 
                 $entry = &get_nom_port($entry); # obtener nombre de la portada a re-escribir
 
-                next;
-
                 if ($prontus_varglb::MULTI_EDICION eq 'SI') {
                 # solo para multi-edicion: si la edicion es la base, actualiza solo las portadas declaradas como BASE_PORTS
                     if (($EDIC eq 'base') && (! &is_base_port($entry))) {
