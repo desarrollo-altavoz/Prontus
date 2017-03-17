@@ -101,7 +101,7 @@ main: {
     $resp{'temas'} = &cargar_temas();
     $resp{'subtemas'} = &cargar_subtemas();
 
-    print "Content-type: application/json; charset=utf-8\n\n";
+    print "Content-type: application/json; charset=utf-8\r\n\r\n";
 
     &glib_html_02::print_json_result_hash(\%resp, 'exit=1');
 };

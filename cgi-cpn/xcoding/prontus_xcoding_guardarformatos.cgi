@@ -75,7 +75,7 @@ main: {
 
     # imprimimos las cabeceras de la respuesta
     print "Cache-Control: no-cache, must-revalidate\r\n";
-    print "Content-type: application/json\n\n";
+    print "Content-type: application/json\r\n\r\n";
 
     &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=0') if ($msg_err);
 

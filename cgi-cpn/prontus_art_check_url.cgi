@@ -71,9 +71,9 @@ main: {
     };
 
     print "Cache-Control: no-cache, must-revalidate\r\n";
-    print "Cache-Control: max-age=0\n";
-    print "Cache-Control: no-store\n";
-    print "Content-type: application/json;charset=utf-8\n\n";
+    print "Cache-Control: max-age=0\r\n";
+    print "Cache-Control: no-store\r\n";
+    print "Content-type: application/json; charset=utf-8\r\n\r\n";
 
     if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
         if ($FORM{'_txt_titular'} eq '') {
