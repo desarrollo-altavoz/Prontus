@@ -9205,3 +9205,6 @@ Se corrigen los headers impresos segun estandar HTTP
 /cgi-cpn/multitag/prontus_multitag_mant_guardar.cgi
 /cgi-cpn/prontus_art_check_url.cgi
 /cgi-cpn/xcoding/prontus_xcoding_guardarformatos.cgi
+
+Se agregan links con la configuracion de apache y nginx para las friendly url
+/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
