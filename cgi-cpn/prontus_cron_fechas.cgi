@@ -61,6 +61,8 @@ use glib_fildir_02;
 use lib_prontus;
 use glib_cgi_04;
 use DBI;
+
+use Data::Dumper;
 # ---------------------------------------------------------------
 # DECLARACIONES GLOBALES.
 # ---------------------------------------------------------------
@@ -74,7 +76,10 @@ my $DST_SWF;
 my $DST_WMEDIA;
 my $DST_ASOCFILE;
 my %FORM;
-
+my $DB;
+my %TAX_REG = ();
+my %LIST_REG = ();
+my %TAGS_REG = ();
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
@@ -83,7 +88,7 @@ main : {
         &glib_cgi_04::new();
         $FORM{'prontus'} = &glib_cgi_04::param('prontus');
         $FORM{'ports'} = &glib_cgi_04::param('ports'); # port1/port2/port3 (OPTATIVO, portadas a procesar, si viene, se procesan solo estas ports en vez de todas)
-        print "Content-Type: text/html\n\n";
+        print "Content-Type: text/html\r\n\r\n";
         $| = 1;
         $AMBIENTE_WEB = 1;
     } else {
@@ -91,8 +96,52 @@ main : {
         $prontus_varglb::IP_SERVER = $ARGV[1];
         $FORM{'ports'} = $ARGV[2];
     };
+
     &valida_param();
+
+    my $msg_err_bd;
+    ($DB, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
+    if (! ref($DB)) {
+        die "ERROR: $msg_err_bd\n";
+        exit;
+    };
+
     &check_prontus();
+
+    $DB->disconnect;
+    # print STDERR Dumper(\%TAX_REG);
+    # print STDERR Dumper(\%LIST_REG);
+    # print STDERR Dumper(\%TAGS_REG);
+
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if($pathnice);
+    my $path_cgicpn = $prontus_varglb::DIR_SERVER. '/'. $prontus_varglb::DIR_CGI_CPAN;
+    my ($cmd, $regen);
+
+    # regeneramos portadas taxonomicas
+    foreach $regen (keys %TAX_REG) {
+        $cmd = "$pathnice $path_cgicpn/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $regen >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    }
+
+    # regeneramos portadas lista
+    if ($prontus_varglb::LIST_PROCESO_INTERNO eq 'SI') {
+        foreach $regen (keys %LIST_REG) {
+            $cmd = "$pathnice $path_cgicpn/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $regen >/dev/null 2>&1 &";
+            print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+            system $cmd;
+        }
+    }
+
+    # regeneramos portadas tagonomicas
+    foreach $regen (keys %TAGS_REG) {
+        $cmd = "$pathnice $path_cgicpn/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $regen >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    }
+
+    print "<br><br>Proceso terminado." if ($AMBIENTE_WEB);
 }; # main
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -134,9 +183,9 @@ sub check_prontus {
         $EDIC = $entry;
         &get_main_data();
         &check_portadas();
-        # Borra cache de listas de articulos del cpan
-        &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
     };
+    # Borra cache de listas de articulos del cpan
+    &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
 };
 
 # --------------------------------------------------------------------#
@@ -191,6 +240,9 @@ sub check_portadas {
 
     my @ports = split(/\//, $FORM{'ports'});
 
+    my $dir_plt_tax = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP
+                    . $prontus_varglb::DIR_PTEMA . '/';
+
     # Deduce del path completo de la portada, el del xml.
     my $pathdir_seccs_xml = $DST_SEC;
     $pathdir_seccs_xml =~ s/\/port$/\/xml/;
@@ -221,10 +273,43 @@ sub check_portadas {
                 # Rescatar la info de c/artic de la seccion correspondiente
                 my $totartics = 0;
                 while ($text_seccion =~ /<rowartic>[ \n]*?<dir>(\d+?)<\/dir>[ \n]*?<file>(.*?)<\/file>[ \n]*?<area>(\d*?)<\/area>[ \n]*?<ord>(\d*?)<\/ord>[ \n]*?(<vb>(\w*?)<\/vb>)?[ \n]*?<?i?n?>?([\w\/\-]*?)<?\/?i?n?>?[ \n]*?<?o?u?t?>?([\w\/\-]*?)<?\/?o?u?t?>?[ \n]*?<?p?u?b?>?(\d?)<?\/?p?u?b?>?[ \n]*?<\/rowartic>/isg) {
-
-                    # print STDERR "ENTRA";
                     my ($dirfecha,$art,$area,$prio,$pub,$ext_art,$vb) = '';
                     ($dirfecha,$art,$area,$prio,$vb,$pub) = ($1,$2,$3,$4,$6,$9);
+
+                    # si cambio el estado de publicacion debemos realizar operaciones de actualización
+                    my $art_pub_status = &lib_prontus::get_status_pub($art, $prontus_varglb::CONTROL_FECHA, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS, $DB);
+                    if ($pub ne $art_pub_status) {
+                        my $xml_data = &lib_prontus::get_xml_data("$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/site/artic/".substr($art, 0,8)."/xml/$art.xml");
+                        my %campos_xml = &lib_prontus::getCamposXml($xml_data);
+
+                        my $filtro_fid = '';
+                        if (-e $dir_plt_tax . $campos_xml{'_fid'}) {
+                                $filtro_fid = $campos_xml{'_fid'};
+                        }
+
+                        # chequeamos la taxonomia a regenerar
+                        for (my $i = 1; $i < 4; $i++) {
+                            if ($campos_xml{"_seccion$i"} ne '') {
+                                $campos_xml{"_seccion$i"} = 0 if ($campos_xml{"_seccion$i"} eq '');
+                                $campos_xml{"_tema$i"} = 0 if ($campos_xml{"_tema$i"} eq '');
+                                $campos_xml{"_subtema$i"} = 0 if ($campos_xml{"_subtema$i"} eq '');
+
+                                $TAX_REG{$filtro_fid.'/'.$campos_xml{"_seccion$i"}.'/'.$campos_xml{"_tema$i"}.'/'.$campos_xml{"_subtema$i"}} = 1;
+                                $LIST_REG{$campos_xml{'_fid'}.'/'.$campos_xml{"_seccion$i"}.'/'.$campos_xml{"_tema$i"}.'/'.$campos_xml{"_subtema$i"}} = 1;
+                            }
+                        }
+
+                        # si hay tags agregamos las tagonomicas a regenerar
+                        if ($campos_xml{'_tags'} ne '') {
+                            $campos_xml{'_tags'} =~ s/\,/\//g;
+                            $TAGS_REG{$campos_xml{'_tags'}." $filtro_fid"} = 1;
+                        }
+
+                        # agregamos las listas a regenerar por taxonomia
+                        if (!($campos_xml{'_seccion1'} || $campos_xml{'_seccion2'} || $campos_xml{'_seccion3'})) {
+                            $LIST_REG{$campos_xml{'_fid'} . '///'} = 1;
+                        }
+                    }
 
                     $lib_prontus::AREA{$art} = $area;      # Asocia area al articulo.
                     $lib_prontus::PRIO{$art} = $prio;      # Asocia prioridad correspondiente.
@@ -236,7 +321,8 @@ sub check_portadas {
                 };# while
 
                 $entry = &get_nom_port($entry); # obtener nombre de la portada a re-escribir
-                #~ print "entry[$entry]\n";
+
+                next;
 
                 if ($prontus_varglb::MULTI_EDICION eq 'SI') {
                 # solo para multi-edicion: si la edicion es la base, actualiza solo las portadas declaradas como BASE_PORTS
@@ -264,10 +350,7 @@ sub check_portadas {
 
 
                     # Ahora proceso multivistas
-
                     $sin_regen_xml = 1; # para no reescribir el xml
-                    $ts_preview = '';
-                    $users_perfil = 'A';
                     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
                         &lib_prontus::make_portada("$DST_SEC/$entry", $DST_TSEC . "/$entry", $prontus_varglb::DIR_SERVER, $prontus_varglb::PRONTUS_ID,
                                          $mv, $prontus_varglb::PUBLIC_SERVER_NAME, $prontus_varglb::PRONTUS_KEY, $prontus_varglb::STAMP_DEMO,
@@ -277,6 +360,7 @@ sub check_portadas {
 
                     &lib_prontus::write_log('Actualizar', 'Portada', "$DST_SEC/$entry (Articulos: $totartics)", 'Control Fecha');
                 } else {
+                    print STDERR "2 arch_seccion $arch_seccion\n";
                     if($arch_seccion =~ /^(.*?)\/([^\/]+)$/) {
                         my $dirxml = $1;
                         my $namexml = $2;
@@ -297,7 +381,6 @@ sub check_portadas {
             };# if
         };# if
     };# foreach
-    print "<br><br>Proceso terminado." if ($AMBIENTE_WEB);
 };
 
 # ---------------------------------------------------------------
@@ -309,7 +392,7 @@ sub get_nom_port {
     my $entry;
     foreach $entry (keys %prontus_varglb::PORT_PLTS) {
         if ((-s "$DST_TSEC/$entry") and (! -d "$DST_TSEC/$entry")) {
-        # print "entry[$entry] - port_xml[$port_xml]\n";
+        # print STDERR "entry[$entry] - port_xml[$port_xml]\n";
             if ($entry =~ /^$port_xml\.\w+$/) {
                 return $entry;
             };

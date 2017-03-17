@@ -231,7 +231,7 @@ sub main {
 
     #print STDERR "dir_filtro_fid[$dir_filtro_fid]\n";
     my $filtro_fid = '';
-    # basta que este la carpeta para que se generen, tonz uno la genera a mano y con eso logra que se
+    # basta que este la carpeta para que se generen, entonces uno la genera a mano y con eso logra que se
     # generen esas paginas, pero usando la plantilla del all.
     if (-e $dir_filtro_fid) {
         $filtro_fid = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'};
@@ -271,7 +271,6 @@ sub main {
                                       . '/' . $id_tema1
                                       . '/' . $id_subtema1;
             &call_list_regen($rutaScript, $param_especif_taxport);
-
             # Se actualiza tax/list para la seccion que estaba en el XML (antigua).
             if ($xml_id_seccion1 ne '') {
                 my $param_especif_taxport = $filtro_fid

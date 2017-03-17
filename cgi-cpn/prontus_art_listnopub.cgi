@@ -461,7 +461,7 @@ sub make_lista {
         $sql =~ s/%%FILTRO%%//;
     };
 
-    print STDERR "sql filtro[$sql]\n\n";
+    #~ print STDERR "sql filtro[$sql]\n\n";
     my ($art_id, $art_dirfecha, $art_tit, $art_seccion, $art_tema, $art_subtema, $art_extension, $art_autoinc, $art_tipoficha, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae);
     my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($art_id, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_dirfecha, $art_tit, $art_extension, $art_autoinc, $art_tipoficha, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae));
     my $nro_filas = 0;
@@ -1039,9 +1039,6 @@ sub get_lisdir_artic {
   return @archivos_sorted;
 };
 
-
-
-
 # ---------------------------------------------------------------
 sub get_artic_parsed {
     # 1.5
@@ -1055,6 +1052,7 @@ sub get_artic_parsed {
 
     # Art. inexistente
     if (! -f $path_artic) {
+        print STDERR "[$ts] No existe $path_artic\n";
         $loop_art_tpl =~ s/%%_ts%%/$ts/g;
         $loop_art_tpl =~ s/%%_artic_sin_file%%/_artic_sin_file/g;
         $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo_disabled/g;
