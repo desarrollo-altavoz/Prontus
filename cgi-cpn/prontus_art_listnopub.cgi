@@ -109,12 +109,9 @@ my (%HASH_ARTIC_PUBS);
 # -------------
   # print STDERR "\n" . &get_time('Inicio');
 
-
 main: {
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
-
 
     $FORM{'_orden_lista'} = &glib_cgi_04::param('_orden_lista'); #  'F' (fecha public, default)  / 'T' (titular) / 'C' creacion
     $FORM{'_orden_lista'} = 'C' if ($FORM{'_orden_lista'} !~ /^(F|T|C)$/);
@@ -171,7 +168,6 @@ main: {
         exit;
     };
 
-
     # CVI - 06/02/2012 - Se carga el Hash de Articulos publicados en portadas
     %HASH_ARTIC_PUBS = &lib_prontus::load_artic_pubs();
 
@@ -181,7 +177,6 @@ main: {
     if (! ref($BD)) {
         &glib_html_02::print_pag_result("Error",$msg_err_bd,0,'exit=1,,link=nolink');
     };
-
 
     my $buffer = &glib_fildir_02::read_file($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/prontus_art_listnopub.html");
     $buffer = &lib_prontus::set_coreplt_ppal($buffer);
@@ -193,10 +188,7 @@ main: {
 
     $buffer =~ s/<!--articulo_loop-->.*<!--\/articulo_loop-->/$artics_parsed/s;
 
-    my $label_paginacion = '';
-    # if ($artics_parsed) {
-        $label_paginacion = &implementar_anterior_sgte($artics_parsed, $ult_reg, $sql_contar, $ftexto);
-    # };
+    my $label_paginacion = &implementar_anterior_sgte($artics_parsed, $ult_reg, $sql_contar, $ftexto);
     $buffer =~ s/%%_label_paginacion%%/$label_paginacion/;
 
     $BD->disconnect;
@@ -213,12 +205,6 @@ main: {
     if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS ne 'SI') {
         $buffer =~ s/<!--alta_col-->.*?<!--\/alta_col-->//sg;
     };
-
-    #~ $buffer =~ s/<!--vobo-->.*?<!--\/vobo-->//sg; # quitar vobo de listado de no publicados, solo aplica a publicados.
-
-    # $buffer = &agrega_valores_filtros($buffer);
-
-    # print STDERR &get_time('Fin');
 
     $buffer =~ s/<!--\w.*?\w-->//sg;
     $buffer =~ s/<!--\/\w.*?\w-->//sg;
@@ -326,8 +312,6 @@ sub implementar_anterior_sgte {
 
     $FORM{'_rec_ini'}++;
 
-
-
     if ($tot_reg > $ult_reg) { # habilitar link siguiente
 
         $sgte = "<a href=\"#\" onclick=\"Listartic.nextpag('$ult_reg'); return false;\">Siguiente &rsaquo;&nbsp;</a>";
@@ -388,50 +372,8 @@ sub implementar_anterior_sgte {
     };
     $label_tablanopub .= '<br/>' . $result . '&nbsp;' x 20 . $ant_sig;
 
-
     return $label_tablanopub;
-
 };
-
-# ---------------------------------------------------------------
-#sub agrega_valores_filtros {
-#  my ($buf) = $_[0];
-#
-#  $buf =~ s/%%nom_alta%%/$FORM{'nom_alta'}/sig;
-#  $buf =~ s/%%alta%%/$FORM{'alta'}/sig;
-#
-#  $buf =~ s/%%tipart%%/$FORM{'tipart'}/si;
-#
-#  $buf =~ s/%%seccion%%/$FORM{'seccion'}/si;
-#  $buf =~ s/%%tema%%/$FORM{'tema'}/si;
-#  $buf =~ s/%%subtema%%/$FORM{'subtema'}/si;
-#
-#  $buf =~ s/%%nom_tipart%%/$FORM{'nom_tipart'}/sig;
-#  $buf =~ s/%%nom_seccion%%/$FORM{'nom_seccion'}/sig;
-#  $buf =~ s/%%nom_tema%%/$FORM{'nom_tema'}/sig;
-#  $buf =~ s/%%nom_subtema%%/$FORM{'nom_subtema'}/sig;
-#
-#
-#  $buf =~ s/%%autor%%/$FORM{'autor'}/sig;
-#  $buf =~ s/%%titu%%/$FORM{'titu'}/sig;
-#  $buf =~ s/%%baja%%/$FORM{'baja'}/sig;
-#  my $fec_desnorm;
-#  $fec_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'dia'}) if ($FORM{'dia'} ne '');
-#  $buf =~ s/%%dia%%/$fec_desnorm/sig;
-#
-#  $fec_desnorm = '';
-#  $fec_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diapub'}) if ($FORM{'diapub'} ne '');
-#  $buf =~ s/%%diapub%%/$fec_desnorm/sig;
-#
-#  $fec_desnorm = '';
-#  $fec_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diaexp'}) if ($FORM{'diaexp'} ne '');
-#  $buf =~ s/%%diaexp%%/$fec_desnorm/sig;
-#
-#
-#  $buf =~ s/%%autoinc%%/$FORM{'autoinc'}/sig;
-#
-#  return $buf;
-#};
 
 # ---------------------------------------------------------------
 sub make_lista {
@@ -774,24 +716,15 @@ sub genera_filtros {
       $filtros_texto = "<b>S&oacute;lo art&iacute;culos propios.</b>" if $filtros_texto eq '';
     };
   };
-
-
   # -----------------------
-
   if ($filtros_texto eq '') {
     $filtros_texto = '&nbsp;Sin filtros';
   } else {
     my $imgDel = '<img src="/'.$prontus_varglb::PRONTUS_ID.'/cpan/core/imag/boto/delete10x10px.png" width="10" height="10" alt="Eliminar Filtros" />';
     $filtros_texto .= '&nbsp;&nbsp;&nbsp;<a href="#" onclick="Buscador.limpiaFiltros(); return false;" class="elim-filtros">['.$imgDel.' Eliminar filtros]</a>';
   };
-
-
-
-
   return ($filtros, $filtros_texto);
 }; # genera_filtros.
-
-
 #-------------------------------------------------------------------------#
 sub guarda_busqueda {
 
@@ -855,16 +788,14 @@ sub guarda_busqueda {
     my $file = &lib_search::get_file_mis_busquedas($prontus_varglb::USERS_ID);
     &glib_fildir_02::write_file($file, $texto);
 };
-
-
 #-------------------------------------------------------------------------#
-sub get_time {
-  my $label = $_[0];
-  my $dt = &glib_hrfec_02::get_dtime_pack4();
-  $dt =~ /(\d{2})(\d{2})(\d{2})$/;
-  return "\nHora $label [$1:$2:$3]";
+#~ sub get_time {
+  #~ my $label = $_[0];
+  #~ my $dt = &glib_hrfec_02::get_dtime_pack4();
+  #~ $dt =~ /(\d{2})(\d{2})(\d{2})$/;
+  #~ return "\nHora $label [$1:$2:$3]";
 
-};
+#~ };
 
 #--------------------------------------------------------------------#
 sub normaliza_fecha_plus {
@@ -932,13 +863,6 @@ sub des_normaliza_fecha_plus {
 
 };
 
-
-
-
-
-
-
-
 # ---------------------------------------------------------------
 sub generar_hash_articulos_pub {
 # Cargar en un hash de registros la lista total de articulos de la portada
@@ -987,11 +911,7 @@ sub generar_hash_articulos_pub {
 
         }# while
     }# if
-
 };# sub
-
-
-
 
 #-----------------------------------------------------------------------#
 sub lee_dir {

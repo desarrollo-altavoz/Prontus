@@ -355,6 +355,7 @@ var Listartic = {
             $('#artics').addClass('disable-flecha');
         };
         Listartic.procesarCorruptos(listado, elementos);
+        Listartic.procesarTitulares(listado, elementos);
         Listartic.limpiarControles();
     },
 
@@ -375,6 +376,31 @@ var Listartic = {
                 $(this).find('.datos').append('<span class="msg-nopub">Para eliminar del listado, se debe "Regenerar tabla de Artículos"</span>');
                 // Se agrega campo oculto para que el Prontus lo borre
                 $(this).find('.controles').html('<input type="hidden" name="_corrupt_'+ts+'" value="1" class="area" />');
+            });
+        });
+    },
+    // -------------------------------------------------------------------------
+    // ajusta el largo de los titulares y los divide si es necesario
+    // para que se vean correctamente en el listado
+    procesarTitulares: function (listado, elementos) {
+        var maxLength = 48;
+        $(listado).each(function () {
+            $(this).find(elementos + ' .titulo-left strong a').each(function () {
+                var titular = $(this).html();
+                var palabras = titular.split(' ');
+                for (var i = 0; i < palabras.length; i++) {
+                    // si la palabra es muy larga la recortamos
+                    if (palabras[i].length > maxLength) {
+                        var palabra_dividida = palabras[i].substr(0, maxLength) + ' ';
+                        palabra_dividida += palabras[i].substr(maxLength, palabras[i].length);
+                        titular = titular.replace(palabras[i], palabra_dividida);
+                        // actualizamos el despliegue del titular
+                        $(this).html(titular);
+                        // si la palabra fue dividida recargamos el arreglo y revisamos
+                        // si el resto de la palabra dividida cumple largo maximo.
+                        palabras = titular.split(' ');
+                    }
+                }
             });
         });
     },
