@@ -9214,3 +9214,8 @@ La funcion ajusta_nchars no generaba un texto recortado si la primera palabra te
 El mensaje del chequeo de friendly url 4 no se enviaba si el titular era muy corto.
 /cgi-cpn/lib_prontus.pm
 /cgi-cpn/prontus_art_check_url.cgi
+
+Se dividen las palabras con largo mayor a 48 caracteres para evitar que
+no se vea el nombre de titular en los listados de articulos publicados y
+no publicados
+/wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js

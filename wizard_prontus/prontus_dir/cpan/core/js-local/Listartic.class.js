@@ -854,5 +854,3 @@ var Listartic = {
         }, 1000);
     }
 }; // fin clase
-
-

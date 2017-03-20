@@ -403,7 +403,7 @@ sub make_lista {
         $sql =~ s/%%FILTRO%%//;
     };
 
-    #~ print STDERR "sql filtro[$sql]\n\n";
+    print STDERR "sql busqueda[$sql]\n\n";
     my ($art_id, $art_dirfecha, $art_tit, $art_seccion, $art_tema, $art_subtema, $art_extension, $art_autoinc, $art_tipoficha, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae);
     my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($art_id, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_dirfecha, $art_tit, $art_extension, $art_autoinc, $art_tipoficha, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae));
     my $nro_filas = 0;
