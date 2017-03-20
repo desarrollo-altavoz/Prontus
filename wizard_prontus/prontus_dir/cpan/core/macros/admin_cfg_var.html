@@ -206,16 +206,21 @@
                                         <td style="width: 300px;" valign="top">
                                             FRIENDLY_URLS<br>
                                             <span class="ayuda">Habilita o deshabilita las url amigables. <br/><br/>
-                                            Para el correcto funcionamiento se necesita habilitar el soporte en el servidor web, apache o nginx.<br/>
+                                            Para el correcto funcionamiento se necesita habilitar el soporte en el servidor web (Apache o NGINX).<br/>
                                             Para mayor informaci&oacute;n revisar los siguientes art&iacute;culos:<br/>
-                                            <a target="_blank" href="http://develop.prontus.cl/configuracion-de-apache-para-utilizar-friendly-urls/prontus_desarrollo_v11_2/2011-03-17/165638.html">Configuración de apache</a>
-                                            <br/><a target="_blank" href="http://develop.prontus.cl/configuracion-de-nginx-para-utilizar-friendly-urls/prontus_desarrollo_v11_2/2017-02-16/130604.html">Configuración de nginx</a>
+                                            <a target="_blank" href="http://develop.prontus.cl/configuracion-de-apache-para-utilizar-friendly-urls/prontus_desarrollo_v11_2/2011-03-17/165638.html">Configuración de Apache</a>
+                                            <br/><a target="_blank" href="http://develop.prontus.cl/configuracion-de-nginx-para-utilizar-friendly-urls/prontus_desarrollo_v11_2/2017-02-16/130604.html">Configuración de NGINX</a>
                                             </span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_SI" value="SI"%%FRIENDLY_URLS_SI%%/> <label for="FRIENDLY_URLS_SI">SI</label>
+                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_SI" onchange="Utiles.showAlert(this);" value="SI"%%FRIENDLY_URLS_SI%%/> <label for="FRIENDLY_URLS_SI">SI</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_NO" value="NO"%%FRIENDLY_URLS_NO%%/> <label for="FRIENDLY_URLS_NO">NO</label>
+                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_NO" onchange="Utiles.showAlert(this);" value="NO"%%FRIENDLY_URLS_NO%%/> <label for="FRIENDLY_URLS_NO">NO</label>
+                                            <div class="msg-global" style="text-align: left;" id="FRIENDLY_URLS_alert">
+                                                <img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/msg-alert.png" width="24" height="24" alt="Alerta" title="Alerta" />
+                                                <span>¿La configuración de su servidor web ya fue modificada? </span><br/>
+                                                <span>Si no es así, recomendamos no activar esta opción ya que deshabilitará los links del sitio</span>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>

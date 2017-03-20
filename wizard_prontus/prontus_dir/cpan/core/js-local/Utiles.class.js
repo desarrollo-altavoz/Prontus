@@ -10,7 +10,7 @@ Dependencias:
 Ninguna
 
 Versión:
-3.0.6 - 03/06/2010
+3.0.7 - 20/03/2017
 Más información en Utiles.txt
 
 **/
@@ -34,7 +34,6 @@ var Utiles = {
      * @param posy posicion Y de la ventana
      */
     subWin: function (loc, nom, ancho, alto, posx, posy, options) {
-
         var thisposx = (typeof posx !== 'undefined') ? posx : 20;
         var thisposy = (typeof posy !== 'undefined') ? posy : 10;
 
@@ -62,7 +61,6 @@ var Utiles = {
             alert(Utiles.msgWin);
             return;
         }
-        //~ win.moveTo(thisposx, thisposy);
     },
 
     /**
@@ -186,7 +184,6 @@ var Utiles = {
      * @param texto Texto por default del campo input
      */
     instalaHandlerBuscador: function(theid, texto) {
-
         if($(theid).val() === '') {
             $(theid).val(texto).addClass('texto-ayuda');
         }
@@ -210,33 +207,41 @@ var Utiles = {
         if(human) {
             var arr = ['enero', 'febrero', 'marzo', 'abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
             fecha = d+" de "+arr[m]+' de '+y;
-            
+
         } else {
             d = (d<=9?'0'+d:d);
             m = m + 1;
-            m = (m<=9?'0'+m:m);                   
+            m = (m<=9?'0'+m:m);
             fecha = d+'/'+m+'/'+y;
         }
         return fecha;
     },
-    
+
     getHora: function(thetime, sinsegundos) {
-        
         var date = new Date(thetime);
         var h = date.getHours();
         h = (h<=9?'0'+h:h);
-        
+
         var m = date.getMinutes()+1;
-        m = (m<=9?'0'+m:m);        
-        
+        m = (m<=9?'0'+m:m);
+
         var s = date.getSeconds();
-        s = (s<=9?'0'+s:s);       
+        s = (s<=9?'0'+s:s);
         if(sinsegundos) {
             return h+':'+m;
         } else {
             return h+':'+m+':'+s;
         }
-        
-        
+    },
+
+    /**
+     * Muestra/oculta las advertencias
+     */
+    showAlert: function(object) {
+        if (object.value == 'SI') {
+            $('#'+object.name+'_alert').show();
+        } else {
+            $('#'+object.name+'_alert').hide();
+        }
     }
 };

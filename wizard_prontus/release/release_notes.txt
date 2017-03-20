@@ -9219,3 +9219,9 @@ Se dividen las palabras con largo mayor a 48 caracteres para evitar que
 no se vea el nombre de titular en los listados de articulos publicados y
 no publicados
 /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+
+Se agrega una alerta recordando que hay que modificar la configuracion del servidor web al activar las friendly url
+/wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
+/wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
+/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html

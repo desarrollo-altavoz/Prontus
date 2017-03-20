@@ -362,15 +362,4 @@ var CfgXcoding = {
             $.fn.colorbox(obj);
         }
     },
-
-    /**
-     * Muestra/oculta las advertencias
-     */
-    showAlert: function(object) {
-        if (object.value == 'SI') {
-            $('#'+object.name+'_alert').show();
-        } else {
-            $('#'+object.name+'_alert').hide();
-        }
-    }
 };

@@ -78,9 +78,9 @@
                     <br/></span>
                 </td>
                 <td>
-                    <input type="radio" name="GEN_HLS" id="GEN_HLS_SI" onchange="CfgXcoding.showAlert(this);" value="SI"%%GEN_HLS_SI%%/> <label for="GEN_HLS_SI">SI</label>
+                    <input type="radio" name="GEN_HLS" id="GEN_HLS_SI" onchange="Utiles.showAlert(this);" value="SI"%%GEN_HLS_SI%%/> <label for="GEN_HLS_SI">SI</label>
                     &nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="GEN_HLS" id="GEN_HLS_NO" onchange="CfgXcoding.showAlert(this);" value="NO"%%GEN_HLS_NO%%/> <label for="GEN_HLS_NO">NO</label>
+                    <input type="radio" name="GEN_HLS" id="GEN_HLS_NO" onchange="Utiles.showAlert(this);" value="NO"%%GEN_HLS_NO%%/> <label for="GEN_HLS_NO">NO</label>
                     <div class="msg-global" style="text-align: left;" id="GEN_HLS_alert">
                         <img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/msg-alert.png" width="24" height="24" alt="Alerta" title="Alerta" />
                         <span>Activar la generaci&oacute;n de HLS duplica el uso de espacio de almacenamiento para los videos.</span>
@@ -106,9 +106,9 @@
                     <span class="ayuda">Activa el procesamiento simult&aacute;neo de las m&uacute;ltiples calidades que ser&aacute;n generadas.<br/><br/></span>
                 </td>
                 <td>
-                    <input type="radio" name="MODO_PARALELO" id="MODO_PARALELO_SI" onchange="CfgXcoding.showAlert(this);" value="SI"%%MODO_PARALELO_SI%%/> <label for="MODO_PARALELO_SI">SI</label>
+                    <input type="radio" name="MODO_PARALELO" id="MODO_PARALELO_SI" onchange="Utiles.showAlert(this);" value="SI"%%MODO_PARALELO_SI%%/> <label for="MODO_PARALELO_SI">SI</label>
                     &nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="MODO_PARALELO" id="MODO_PARALELO_NO" onchange="CfgXcoding.showAlert(this);" value="NO"%%MODO_PARALELO_NO%%/> <label for="MODO_PARALELO_NO">NO</label>
+                    <input type="radio" name="MODO_PARALELO" id="MODO_PARALELO_NO" onchange="Utiles.showAlert(this);" value="NO"%%MODO_PARALELO_NO%%/> <label for="MODO_PARALELO_NO">NO</label>
                     <div class="msg-global" style="text-align: left;" id="MODO_PARALELO_alert">
                         <img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/msg-alert.png" width="24" height="24" alt="Alerta" title="Alerta" />
                         <span>La carga de trabajo del servidor aumentar&aacute; considerablemente, no se recomienda activar en servidores peque&ntilde;os (menor a 1 GB de RAM y menor a 2 cpu)</span>
@@ -404,12 +404,7 @@ $(document).ready(function() {
             }
         }, 100);
     }
-
-    if ($('input[name=GEN_HLS]:checked').val() == 'SI') {
-        $('#GEN_HLS_alert').show();
-    }
-    if ($('input[name=MODO_PARALELO]:checked').val() == 'SI') {
-        $('#MODO_PARALELO_alert').show();
-    }
+    Utiles.showAlert($('input[name=GEN_HLS]:checked')[0]);
+    Utiles.showAlert($('input[name=MODO_PARALELO]:checked')[0]);
 });
 </script>
