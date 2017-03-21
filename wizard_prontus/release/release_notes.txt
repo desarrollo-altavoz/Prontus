@@ -9197,6 +9197,15 @@ elimina un bloque else que no se usaba.
 /cgi-cpn/prontus_cfg_save.cgi
 
 
+Se cambia la forma de utilizar los semaforos en el procesamiento de taxport.
+Se lee el valor y se verifica si el proceso asociado existe y si es un worker de taxport, en
+caso contrario se elimina el semaforo y se lanza un worker nuevo
+Se corrige la verificacion de semaforo para los procesos de taxonomias 0/0/0
+/cgi-cpn/lib_maxrunning.pm
+/cgi-cpn/prontus_cron_fechas.cgi
+/cgi-cpn/prontus_cron_taxport.cgi
+/cgi-cpn/prontus_cron_taxport_worker.cgi
+
 Se agrega regeneracion de taxports, tagports y listas a control fecha
 /cgi-cpn/prontus_cron_fechas.cgi
 
