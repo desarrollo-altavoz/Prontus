@@ -107,7 +107,6 @@ my (%HASH_ARTIC_PUBS);
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
-  # print STDERR "\n" . &get_time('Inicio');
 
 main: {
     # Rescatar parametros recibidos
@@ -589,14 +588,29 @@ sub genera_filtros {
       my $titu4query = $FORM{'titu'};
 
       if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
-        if($titu4query =~ /".*?"/) {
-            $filtros .= " and MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros ne ''; # mysql
-            $filtros = " MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
-
+        # eliminamos espacios al principio y final
+        $titu4query =~ s/^\s+|\s+$//g;
+        if ($titu4query =~ /^"(.*)"$/) { # si el string de busqueda esta envuelto en " se busca completo
+            my $string_busqueda = $1;
+            # eliminamos las comillas que puedan estar en el interior del string de busqueda
+            $string_busqueda =~ s/\"//g;
+            # volvemos agregar las comillas que rodean el string de busqueda
+            $titu4query = "\"$string_busqueda\"";
+            $filtros .= " and MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros ne '';
+            $filtros = " MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros eq '';
         } else {
-            $titu4query =~ s/([^ ]+)/"$1"/g;  # mysql
-            $titu4query =~ s/ / \+/g;  # mysql
-            $titu4query =~ s/^/+/;     # mysql
+            $titu4query =~ s/\"/ /g; # eliminamos las comillas que traiga el string completo
+            $titu4query =~ s/[ ]+/ /g; # reemplazamos multiples espacios por 1
+            my @search_words = split(' ',$titu4query);
+            $titu4query = '';
+            foreach my $word (@search_words) {
+                # si el largo es mayor a 3 caracteres se encierra en comillas
+                if (length($word) > 3) {
+                    $word = "\"$word\"";
+                }
+
+                $titu4query .= "+$word ";
+            }
             $filtros .= " and MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros ne ''; # mysql
             $filtros = " MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
         };
@@ -788,15 +802,6 @@ sub guarda_busqueda {
     my $file = &lib_search::get_file_mis_busquedas($prontus_varglb::USERS_ID);
     &glib_fildir_02::write_file($file, $texto);
 };
-#-------------------------------------------------------------------------#
-#~ sub get_time {
-  #~ my $label = $_[0];
-  #~ my $dt = &glib_hrfec_02::get_dtime_pack4();
-  #~ $dt =~ /(\d{2})(\d{2})(\d{2})$/;
-  #~ return "\nHora $label [$1:$2:$3]";
-
-#~ };
-
 #--------------------------------------------------------------------#
 sub normaliza_fecha_plus {
 # Toma una fecha escrita como dia/mes/ano, la normaliza y la entrega
