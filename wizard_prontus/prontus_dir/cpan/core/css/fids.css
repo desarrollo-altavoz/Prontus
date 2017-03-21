@@ -105,7 +105,7 @@
 #banco-img .butBancoImg {cursor:pointer;}
 #banco-img .banco-total{margin-left:5px; margin-top:4px; font-size:12px; font-weight:bold; color:#aaa;}
 #banco-img .foto-icon {width:80px;padding-top:4px;}
-#banco-img .foto-icon img {max-width:80px;max-height:80px;}
+.foto-icon img {max-width:80px;max-height:80px;}
 #banco-img .datos-foto {padding-left:4px;}
 #banco-img .datos-foto span{font-size:11px;}
 #banco-img .datos-foto .sin-usar {color:#ff0000; font-size:10px;}
@@ -119,10 +119,6 @@
 .box-gris {padding:2px 0px;}
 .box-gris .box-auxi .box-scroll {height:320px; margin:4px 2px;}
 .box-gris .box-auxi .item {margin:8px 5px;}
-/**
-#banco-img .banco-botonera {position:relative; top:-22px; height:22px;}
-#banco-img .banco-botones {padding:2px 4px; height:22px; width:60px; position:absolute;}
-#banco-img .banco-fondo {height:22px; width:68px; position:absolute; background-color:#FAFAFA; -moz-border-radius:2px; border-radius:2px; filter:alpha(opacity=90);-moz-opacity:0.9; opacity:0.9;} */
 
 
 /* para el administrar archivos de respaldo en formularios */

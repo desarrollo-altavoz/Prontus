@@ -9230,4 +9230,8 @@ Se corrige y mejora busqueda de articulos en cpan:
 Las palabras de busqueda se encapsulan en comillas solo si tienen largo mayor a 3 caracteres
 Se eliminan las comillas y espacios multiples dentro del string de busqueda para mejorar los resultados
 Se mejora detección de frases encapsuladas en comillas
-/var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
+/cgi-cpn/prontus_art_listnopub.cgi
+
+Se corrige error al arrastrar fotos desde el banco de imagenes a campos de fotofija
+/wizard_prontus/prontus_dir/cpan/core/css/fids.css
+/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
