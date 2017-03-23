@@ -479,7 +479,6 @@
             // Validar si la foto tiene dimensiones válidas.
             // ---------------------------------------------------------------
             hasValidDimensions: function (id) {
-                //console.log(self.foto.instances[id]);
                 //hidde-crop
                 if (self.foto.instances[id].imgW <= self.foto.instances[id].maxW || self.foto.instances[id].imgH <= self.foto.instances[id].maxH) {
                     return false;

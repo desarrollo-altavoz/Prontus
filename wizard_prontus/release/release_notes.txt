@@ -9162,85 +9162,92 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
 
 ====================================================================================================
-11.2.95 - xx/xx/2017 - EAG/PRB
+11.2.95 - xx/03/2017 - EAG/PRB
 ====================================================================================================
-Se corrige error que permitia ingresar "-" al duplicar portada
-wizard_prontus/prontus_dir/cpan/core/js-local/PortAdmin.class.js
+- Prontus Form
+    [mejoras]
+        - Se implementa garbage collector en segundo plano para los archivos de captcha.
+        - Se cambia a 2000 el límite máximo de archivos y a 10 minutos la máxima antigüedad.
+        - Se cambia validación de ip para usar HTTP_X_FORWARDED_FOR si esta disponible.
+        - También se cambia la inicialización de DIR_CGI_CPAN para que la cgi prontus captcha funcione con stricts.
+    [files]
+        /cgi-cpn/lib_captcha.pm
+        /cgi-cpn/lib_captcha2.pm
+        /cgi-bin/prontus_captcha.cgi
+        /cgi-bin/prontus_getcaptcha.cgi
+        /cgi-cpn/prontus_garbage_collector.pl
 
-Se cambia validacion de ip para usar HTTP_X_FORWARDED_FOR si esta disponible
-Tambien se cambia la inicializacion de DIR_CGI_CPAN para que funcione con stricts en prontus captcha
-Se cambia el uso de require por do en dir_cgi.pm
-/cgi-bin/prontus_captcha.cgi
-/cgi-bin/prontus_getcaptcha.cgi
-/cgi-bin/prontus_art_posting.cgi
+- Configuración de Prontus
+    [cambios]
+        - Al activar las opciones de friendly v4 y multitag en la configuración, se crearán
+        las tablas necesarias en db. Si ocurre un error distinto a que la tabla ya existe, se
+        informará al usuario y no se guardará la nueva configuración.
+        - Se reordena la validación de variables vacías, con esto se elimina un bloque de código que no se usaba.
+        - Se agrega una alerta recordando que hay que modificar la configuración del servidor web al activar las friendly url
+        - Se agregan links hacia artículos del manual con la configuración de apache y nginx necesaria para las friendly url
+    [files]
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
 
+- Portadas taxonómicas
+    [mejoras]
+        - Se cambia la forma de utilizar los semáforos en el procesamiento de taxport.
+        - Se lee el valor del pid para verificar si el proceso asociado existe y si corresponde a un worker
+        de taxport, en caso contrario se elimina el semáforo y se lanza un worker nuevo.
+        - Se corrige el id usado en la verificación de semáforo para los procesos de taxonomías 0/0/0
+        - Se agrega regeneración de taxports, tagports y listas a control fecha.
+    [files]
+        /cgi-cpn/prontus_cron_fechas.cgi
+        /cgi-cpn/lib_maxrunning.pm
+        /cgi-cpn/prontus_cron_fechas.cgi
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
 
-Se implementa garbage collector en segundo plano para los archivos de captcha
-Se cambian el limite a 2000 archivos como máximo y 10 minutos de antiguedad máxima
-/cgi-cpn/lib_captcha.pm
-/cgi-cpn/lib_captcha2.pm
-/cgi-cpn/prontus_garbage_collector.pl
+- Administrador de artículos
+    [mejoras]
+        - Se dividen las palabras con largo mayor a 48 caracteres para evitar que no se vea el nombre de
+            titular en los listados de artículos publicados y no publicados
+        - Se corrige y mejora búsqueda de artículos en el cpan:
+            Las palabras de búsqueda se encapsulan en comillas solo si tienen largo mayor a 3 caracteres
+            Se eliminan las comillas y espacios múltiples dentro del string de búsqueda para mejorar los resultados
+            Se mejora detección de frases encapsuladas entre comillas
+    [files]
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
 
-Se agrega json a tipos de archivos editables
-/cgi-cpn/lib_edit.pm
+- Prontus en general
+    [mejoras]
+        - Se modificó la función ajusta_nchars para generar un texto recortado cuando la primera palabra tiene un largo mayor al definido
+        - Se corrige chequeo de titulares cortos para friendly url 4
+        - Se corrigen los headers impresos según estándar HTTP
+        - Se cambia el uso de "require" por "do" al importar dir_cgi.pm
+    [cambios]
+        - Se agrega json a tipos de archivos editables.
+    [bugfixes]
+        - Se corrige error al arrastrar fotos desde el banco de imágenes a campos de fotofija
+        - Se corrige error que permitía ingresar "-" al duplicar portada, las portadas no pueden llevar "-".
+    [files]
+        /cgi-cpn/lib_edit.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_form_download_real.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_art_check_url.cgi
+        /cgi-bin/prontus_art_posting.cgi
+        /cgi-cpn/xcoding/prontus_xcoding_guardarformatos.cgi
+        /cgi-cpn/multitag/prontus_multitag_load_data.cgi
+        /cgi-cpn/multitag/prontus_multitag_mant_guardar.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/MantenedorMultiTag.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/PortAdmin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 
-Correciones menores
-/cgi-cpn/prontus_form_download_real.cgi
-/cgi-cpn/prontus_art_ficha.cgi
-/cgi-cpn/prontus_art_listnopub.cgi
-
-Al activar friendly v4 y multitag se intenta crear las tablas de
-db necesarias, si hay algun error distinto a que la tabla ya existe se
-informará el error y no se guardará la nueva configuración
-Se reordena el orden de validacion de variable vacía, con esto se
-elimina un bloque else que no se usaba.
-/cgi-cpn/prontus_cfg_save.cgi
-
-
-Se cambia la forma de utilizar los semaforos en el procesamiento de taxport.
-Se lee el valor y se verifica si el proceso asociado existe y si es un worker de taxport, en
-caso contrario se elimina el semaforo y se lanza un worker nuevo
-Se corrige la verificacion de semaforo para los procesos de taxonomias 0/0/0
-/cgi-cpn/lib_maxrunning.pm
-/cgi-cpn/prontus_cron_fechas.cgi
-/cgi-cpn/prontus_cron_taxport.cgi
-/cgi-cpn/prontus_cron_taxport_worker.cgi
-
-Se agrega regeneracion de taxports, tagports y listas a control fecha
-/cgi-cpn/prontus_cron_fechas.cgi
-
-Se corrigen los headers impresos segun estandar HTTP
-/cgi-cpn/multitag/prontus_multitag_load_data.cgi
-/cgi-cpn/multitag/prontus_multitag_mant_guardar.cgi
-/cgi-cpn/prontus_art_check_url.cgi
-/cgi-cpn/xcoding/prontus_xcoding_guardarformatos.cgi
-
-Se agregan links con la configuracion de apache y nginx para las friendly url
-/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
-
-Se corrige funcion ajusta_nchars y mensaje de art check url:
-La funcion ajusta_nchars no generaba un texto recortado si la primera palabra tenia largo mayor al definido, ahora recorta la primera palabra.
-El mensaje del chequeo de friendly url 4 no se enviaba si el titular era muy corto.
-/cgi-cpn/lib_prontus.pm
-/cgi-cpn/prontus_art_check_url.cgi
-
-Se dividen las palabras con largo mayor a 48 caracteres para evitar que
-no se vea el nombre de titular en los listados de articulos publicados y
-no publicados
-/wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
-
-Se agrega una alerta recordando que hay que modificar la configuracion del servidor web al activar las friendly url
-/wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
-/wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
-/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
-/wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_xcoding.html
-
-Se corrige y mejora busqueda de articulos en cpan:
-Las palabras de busqueda se encapsulan en comillas solo si tienen largo mayor a 3 caracteres
-Se eliminan las comillas y espacios multiples dentro del string de busqueda para mejorar los resultados
-Se mejora detección de frases encapsuladas en comillas
-/cgi-cpn/prontus_art_listnopub.cgi
-
-Se corrige error al arrastrar fotos desde el banco de imagenes a campos de fotofija
-/wizard_prontus/prontus_dir/cpan/core/css/fids.css
-/wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+- Transcodificación
+    [bugfixes]
+        - Se corrige error al procesar múltiples marcas de video del mismo artículo
+    [files]
+        /cgi-cpn/xcoding/prontus_procesar_videos.pl
