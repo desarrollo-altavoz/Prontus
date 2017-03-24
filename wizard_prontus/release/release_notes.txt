@@ -9162,7 +9162,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
 
 ====================================================================================================
-11.2.95 - xx/03/2017 - EAG/PRB
+11.2.95 - 27/03/2017 - EAG/PRB
 ====================================================================================================
 - Prontus Form
     [mejoras]
@@ -9195,8 +9195,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Portadas taxonómicas
     [mejoras]
         - Se cambia la forma de utilizar los semáforos en el procesamiento de taxport.
-        - Se lee el valor del pid para verificar si el proceso asociado existe y si corresponde a un worker
-        de taxport, en caso contrario se elimina el semáforo y se lanza un worker nuevo.
+          Se lee el valor del pid para verificar si el proceso asociado existe y si corresponde a un worker
+          de taxport, en caso contrario se elimina el semáforo y se lanza un worker nuevo.
         - Se corrige el id usado en la verificación de semáforo para los procesos de taxonomías 0/0/0
         - Se agrega regeneración de taxports, tagports y listas a control fecha.
     [files]
@@ -9248,6 +9248,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Transcodificación
     [bugfixes]
-        - Se corrige error al procesar múltiples marcas de video del mismo artículo
+        - Se corrige error al procesar múltiples marcas de video del mismo artículo en script de procesamiento masivo de videos
     [files]
         /cgi-cpn/xcoding/prontus_procesar_videos.pl
