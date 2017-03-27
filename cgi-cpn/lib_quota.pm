@@ -307,23 +307,26 @@ sub format_bytes {
 
 # ------------------------------------------------------------------------------------- #
 sub format_number {
+    my $number = shift;
+    $number =~ s/[^\d\.\,]//g; # se limpia el numero
 
-  my $number = shift;
-  $number =~ s/[^\d\.\,]//g; # se limpia el numero
-
-  # Verifica si tiene decimales, si tiene mas que dos elimina el resto.
-  if ($number =~ /^(\d+)\.(\d+)$/) {
-    my $entero = $1;
-    my $decimales = $2;
-    if (length($decimales) > 1){
-      $decimales = substr($decimales, 0, 1);
-      if($decimales) {
-        $number =  $entero.','.$decimales;
-      } else {
-        $number =  $entero;
-      };
+    # Verifica si tiene decimales, si tiene mas que dos elimina el resto.
+    if ($number =~ /^(\d+)\.(\d+)$/) {
+        my $entero = $1;
+        my $decimales = $2;
+        if (length($decimales) > 1){
+            if (length($entero) < 2){
+                $decimales = substr($decimales, 0, 2);
+            } else {
+                $decimales = substr($decimales, 0, 1);
+            }
+            if($decimales) {
+                $number =  $entero.','.$decimales;
+            } else {
+                $number =  $entero;
+            };
+        };
     };
-  };
   return $number;
 };
 

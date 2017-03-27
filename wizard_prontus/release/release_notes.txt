@@ -9226,10 +9226,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia el uso de "require" por "do" al importar dir_cgi.pm
     [cambios]
         - Se agrega json a tipos de archivos editables.
+        - En el formateo de espacio disponible/usado, se utilizan 2 decimales si la cantidad entera es solo 1 dígito.
     [bugfixes]
         - Se corrige error al arrastrar fotos desde el banco de imágenes a campos de fotofija
         - Se corrige error que permitía ingresar "-" al duplicar portada, las portadas no pueden llevar "-".
     [files]
+        /cgi-cpn/lib_quota.pm
         /cgi-cpn/lib_edit.pm
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_form_download_real.cgi

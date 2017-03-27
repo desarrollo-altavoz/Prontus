@@ -1,3 +1,4 @@
+====================================================================================================
 11.2.95 - 27/03/2017 - EAG/PRB
 ====================================================================================================
 - bugfixes: Se corrige error al arrastrar fotos desde el banco de imágenes a campos de fotofija
@@ -20,7 +21,8 @@ titular en los listados de artículos publicados y no publicados
 - improvement: Se corrige chequeo de titulares cortos para friendly url 4
 - improvement: Se corrigen los headers impresos según estándar HTTP
 - improvement: Se cambia el uso de "require" por "do" al importar dir_cgi.pm
-- changes: Se agrega json a tipos de archivos editables.
+- changes: En el formateo de espacio disponible/usado, se utilizan 2 decimales si la cantidad entera es solo 1 dígito.
+- changes: Editor: Se agrega json a tipos de archivos editables.
 - changes: Configuración: Al activar las opciones de friendly v4 y multitag en la configuración, se crearán las tablas necesarias en db.
 - changes: Configuración: Se reordena la validación de variables vacías, con esto se elimina un bloque de código que no se usaba.
 - changes: Configuración: Se agrega una alerta recordando que hay que modificar la configuración del servidor web al activar las friendly url
