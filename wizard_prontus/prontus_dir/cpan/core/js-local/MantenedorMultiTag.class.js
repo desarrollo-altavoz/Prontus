@@ -191,7 +191,6 @@
             },
             // ------------------------------------------------------------------
             saveData: function (id, type, data, callback) {
-                console.log(id + ' , '+ type + ' , '+  data + ' , '+ callback)
                 if (self.actions.validateData(id, data)) {
                     $.extend(data, {
                         _path_conf: self._path_conf,

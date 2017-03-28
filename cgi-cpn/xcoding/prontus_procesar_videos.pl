@@ -92,7 +92,7 @@ main:{
     $FID = $ARGV[1];
     print join('|', @ARGV);
     if ($ARGV[2] eq '') {
-        @buscar = ('multimedia_video1');
+        @buscar = ('multimedia_video1','multimedia_video999');
     } else {
         @buscar = split(',', $ARGV[2]);
     }
@@ -139,7 +139,6 @@ sub procesa_file {
     my($filename, $path) = ($_[0], $_[1]);
     my $filepath = $path . $filename;
     my $titular;
-    my $found;
     my $ts;
     if ($filename !~ /(\d+?)\.xml/isg) {
         return;
@@ -157,6 +156,7 @@ sub procesa_file {
         my $result2 = '';
         my $video = '';
         foreach my $campo (@buscar) {
+            my $found = '';
             if ($file =~ /<$campo>.*?<\!\[CDATA\[(.*?)\]\]>.*?<\/$campo>/is) {
                 $found = $1;
                 $found =~ s/[\n\r]//g;
