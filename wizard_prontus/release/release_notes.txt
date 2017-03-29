@@ -9257,3 +9257,20 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrige error al procesar múltiples marcas de video del mismo artículo en script de procesamiento masivo de videos
     [files]
         /cgi-cpn/xcoding/prontus_procesar_videos.pl
+
+====================================================================================================
+11.2.96 - X/X/2017 - EAG
+====================================================================================================
+- Portadas taxonómicas
+    [bugfixes]
+        - Se corrige error en procesamiento de paginas de taxport filtradas, solo se procesaba la
+        primera página.
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+
+- Prontus en general
+    [mejoras]
+        - Se incorporan más exclusiones de archivos al garbage collector:
+            se omiten tipos js, sst y nombres robots.txt e index.html.
+    [files]
+        /cgi-cpn/prontus_garbage_collector.pl
