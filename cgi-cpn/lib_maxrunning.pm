@@ -58,7 +58,7 @@ sub maxExcedido {
 # deterimna si un pid esta corriendo o no
 # retorna la informacion del PID
 sub isRunningPid {
-    my $result = `ps -p $_[0] -o args=`;
+    my $result = `ps -ww -p $_[0] -o args=`;
     return $result;
 }
 

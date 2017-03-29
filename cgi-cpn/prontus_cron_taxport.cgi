@@ -94,10 +94,10 @@ main:{
         # revisamos si el proceso corresponde a un worker
         if ($pid ne '') {
             my $data_pid = &lib_maxrunning::isRunningPid($pid);
-            print STDERR $data_pid;
+            print STDERR "data_pid[$data_pid]\n";
             if ($data_pid eq '') {
                 # si no hay procesos conrriendo con este pid se borra el semaforo y lanza el worker
-                print "no hay proceso con pid $pid\n";
+                print STDERR "No hay proceso con pid $pid\n";
                 unlink("$DIR_SEMAF/worker_$worker");
             } elsif ($data_pid !~ /prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $worker/) {
                 # si no es un proceso worker eliminamos el semaforo para lanzar el proceso correcto
