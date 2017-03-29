@@ -42,7 +42,7 @@ sub envia_mail {
 # Elimina los archivos, del cache de respuestas, de mas de 10 minutos de antiguedad.
 sub garbage_collection {
     my $path_answer_dir = $_[0];
-    # print STDERR "path_answer_dir[$path_answer_dir]\n";
+    # print STDERR "garbage collection dir [$path_answer_dir]\n";
     return unless(-d $path_answer_dir);
     if (opendir(DIR, $path_answer_dir)) {
         my @entries = readdir(DIR);

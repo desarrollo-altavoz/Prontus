@@ -9170,7 +9170,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia a 2000 el límite máximo de archivos y a 10 minutos la máxima antigüedad.
         - Se cambia validación de ip para usar HTTP_X_FORWARDED_FOR si esta disponible.
         - También se cambia la inicialización de DIR_CGI_CPAN para que la cgi prontus captcha funcione con stricts.
+    [bugfixes]
+        - Se corrige error en el garbage collection de prontus form, se estaba ejecutanto en la raiz del sitio
+         en vez de la carpeta correcta
     [files]
+        /cgi-bin/prontus_form.cgi
         /cgi-cpn/lib_captcha.pm
         /cgi-cpn/lib_captcha2.pm
         /cgi-bin/prontus_captcha.cgi

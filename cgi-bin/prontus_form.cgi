@@ -264,11 +264,11 @@ main: {
     my $result = &data_management();
     if ($DEBUG) { print $result; };
 
-    # Limpia el directorio de archivos temporales.
-    &lib_form::garbage_collection("$ROOTDIR$ANSWERS_DIR");
-
     # Finaliza mostrando la pagina de exito.
     &salida('', $PRONTUS_VARS{'form_msg_exito'.$VISTAVAR}, $TMP_EXITO, 0);
+
+    # Limpia el directorio de archivos temporales.
+    &lib_form::garbage_collection("$ROOTDIR$ANSWERS_DIR");
 }; # main
 
 # ###################################################
@@ -848,7 +848,6 @@ sub salida {
     # print "Location: /$ANSWERS_DIR/$ANSWERID\.$EXT\n\n";
     # 02/01/2012 - CVI - se quita slash del comienzo para evitar // con error en nginx
     print "Location: $ANSWERS_DIR/$ANSWERID\.$EXT\n\n";
-    exit;
 }; # salida
 
 # ------------------------------------------------------------------------- #

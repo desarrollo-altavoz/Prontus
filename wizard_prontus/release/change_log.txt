@@ -4,6 +4,7 @@
 - bugfixes: Se corrige error al arrastrar fotos desde el banco de imágenes a campos de fotofija
 - bugfixes: corrige error que permitía ingresar "-" al duplicar portada, las portadas no pueden llevar "-".
 - bugfixes: Transcodificación: Se corrige error al procesar múltiples marcas de video del mismo artículo en script de procesamiento masivo de videos
+- bugfixes: Prontus Form, se corrige garbage collection, se estaba ejecutanto en la raiz del sitio en vez de la carpeta correcta
 - improvement: Prontus Form: Se implementa garbage collector en segundo plano para los archivos de captcha.
 - improvement: Prontus Form: Se cambia a 2000 el límite máximo de archivos y a 10 minutos la máxima antigüedad.
 - improvement: Prontus Form: Se cambia validación de ip para usar HTTP_X_FORWARDED_FOR si esta disponible.
