@@ -96,16 +96,8 @@ var Fid = {
         // Para Tabs Alternativos
         $(".tabs-alt").idTabs(0);
 
-        // Para lazyLoad
-        /*
-        $("#ARTFOTOS img[id^='foto_']").lazyload({
-            container: $("#ARTFOTOS")
-        });
-        */
-
         // Upload masivo de imagenes
         $('#uploadcomplete').hide();
-
 
         /* Verificar si d&d es compatible con el browser. */
         var userAgent = navigator.userAgent.toString().toLowerCase();
@@ -211,79 +203,6 @@ var Fid = {
             });
         }
 
-        /* Uploadify */
-        var cgiuploadify = '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi';
-
-        $('#fileInput').uploadify({
-            //debug:          true,
-            removeCompleted: false,
-            buttonText:     'Examinar...',
-            swf:            '/' + mainFidJs.PRONTUS_ID + '/cpan/core/js-local/uploadify/uploadify.swf',
-            auto:           true,
-            multi:          true,
-            queueSizeLimit: 30,
-            uploader:       cgiuploadify,
-            fileSizeLimit:  0,
-            fileTypeDesc:   'Image Files',
-            fileTypeExts:   '*.jpg;*.jpeg;*.gif;*.png',
-            uploadLimit:    100,
-            formData: {
-                    "prontus_id":   mainFidJs.PRONTUS_ID,
-                    "sdata":        mainFidJs.SDATA
-            },
-            'onQueueComplete':  function(queueData) {
-                $('#uploadcomplete').show();
-                setTimeout(function() {
-                    Fid.submitir('Guardar', '_self');
-                }, 1500);
-            },
-            'onUploadSuccess': function(fileObj, data, response) {
-
-                if (response === false) {
-                    alert( 'No fue posible subir correctamente la imagen [' + fileObj.name + ']');
-                    return true;
-                } else {
-                    var arrResp = [];
-                    arrResp = data.split(","); // $idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile,$nomReal
-                    var idFoto = arrResp[0];
-                    var wFoto = arrResp[1];
-                    var hFoto = arrResp[2];
-                    var relPath = arrResp[3];
-                    var nomFile = arrResp[4];
-                    var nomReal = arrResp[5];
-                    var labelSize = '<br/><span class="ST">(' + wFoto + ' x ' + hFoto + ')</span>';
-                    if (wFoto > 100) {
-                        wFoto = 100;
-                    }
-
-                    $('#imagenescargadas').append('<div class="item-uploaded">' +
-                            '<div>' + fileObj.name + labelSize + '</div>' +
-                            '<img src="' + relPath + '" id="' + idFoto  + '" width="' + wFoto + '">' +
-                            '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">' +
-                            '<input type="hidden" name="_fotoreal" value="' + nomReal + '">' +
-                            '</div>');
-                    return true;
-                }
-            },
-            'onUploadError': function(fileObj, errorCode, errorMsg, errorString) {
-                alert( '[' + errorMsg + '] No fue posible subir la imagen [' + fileObj.name + ']');
-                return true;
-            },
-            'onDialogOpen': function() {
-                // Al subir imagenes por este metodo y si esta activado d&d, deshabilitarlo
-                if (Fid.showDragDrop) {
-                    $('#fileInputDD').fileupload('disable');
-                    $('#dropZone').css('cursor', 'not-allowed');
-                }
-            }
-        }, {preserve_relative_urls: true});
-        /* /Uploadify */
-
-        // El uploadify no funciona en Firefox con https
-        if (jQuery.browser.mozilla && Fid.ishttps) {
-            $('#uploadUploadify').hide();
-        }
-
         Fid.setGUIProcesando(false);
 
         // Muestra por lo menos un body
@@ -291,22 +210,22 @@ var Fid = {
             $('.tabs a:first').trigger('click');
         }
 
+        // Para los input:file
+        $(".upload input:file").filestyle({
+            image: "/" + mainFidJs.PRONTUS_ID + "/cpan/core/imag/boto/examinar.gif",
+            imageheight : 22,
+            imagewidth : 82,
+            width : 240
+        });
+
         // Codigo para soporte de flash
         if(!jQuery.browser.flash) {
             $('.browser-comun').not('.browser-noflash').remove();
             $('#copy-artic-url, #copy-artic-ext').remove();
+            $('#uploadUploadify').remove();
 
         } else {
-
             $('.browser-comun').not('.browser-normal').remove();
-
-            // Para los input:file
-            $(".upload input:file").filestyle({
-                image: "/" + mainFidJs.PRONTUS_ID + "/cpan/core/imag/boto/examinar.gif",
-                imageheight : 22,
-                imagewidth : 82,
-                width : 240
-            });
 
             // Para el copiar al Clipboard
             ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
@@ -320,6 +239,79 @@ var Fid = {
                 return true;
             });
             clip.glue('copy-artic-int', 'copy-artic-ext', {position:'relative', left:'0', top:'0'});
+
+            /* Uploadify */
+            var cgiuploadify = '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi';
+
+            $('#fileInput').uploadify({
+                //debug:          true,
+                removeCompleted: false,
+                buttonText:     'Examinar...',
+                swf:            '/' + mainFidJs.PRONTUS_ID + '/cpan/core/js-local/uploadify/uploadify.swf',
+                auto:           true,
+                multi:          true,
+                queueSizeLimit: 30,
+                uploader:       cgiuploadify,
+                fileSizeLimit:  0,
+                fileTypeDesc:   'Image Files',
+                fileTypeExts:   '*.jpg;*.jpeg;*.gif;*.png',
+                uploadLimit:    100,
+                formData: {
+                        "prontus_id":   mainFidJs.PRONTUS_ID,
+                        "sdata":        mainFidJs.SDATA
+                },
+                'onQueueComplete':  function(queueData) {
+                    $('#uploadcomplete').show();
+                    setTimeout(function() {
+                        Fid.submitir('Guardar', '_self');
+                    }, 1500);
+                },
+                'onUploadSuccess': function(fileObj, data, response) {
+
+                    if (response === false) {
+                        alert( 'No fue posible subir correctamente la imagen [' + fileObj.name + ']');
+                        return true;
+                    } else {
+                        var arrResp = [];
+                        arrResp = data.split(","); // $idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile,$nomReal
+                        var idFoto = arrResp[0];
+                        var wFoto = arrResp[1];
+                        var hFoto = arrResp[2];
+                        var relPath = arrResp[3];
+                        var nomFile = arrResp[4];
+                        var nomReal = arrResp[5];
+                        var labelSize = '<br/><span class="ST">(' + wFoto + ' x ' + hFoto + ')</span>';
+                        if (wFoto > 100) {
+                            wFoto = 100;
+                        }
+
+                        $('#imagenescargadas').append('<div class="item-uploaded">' +
+                                '<div>' + fileObj.name + labelSize + '</div>' +
+                                '<img src="' + relPath + '" id="' + idFoto  + '" width="' + wFoto + '">' +
+                                '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">' +
+                                '<input type="hidden" name="_fotoreal" value="' + nomReal + '">' +
+                                '</div>');
+                        return true;
+                    }
+                },
+                'onUploadError': function(fileObj, errorCode, errorMsg, errorString) {
+                    alert( '[' + errorMsg + '] No fue posible subir la imagen [' + fileObj.name + ']');
+                    return true;
+                },
+                'onDialogOpen': function() {
+                    // Al subir imagenes por este metodo y si esta activado d&d, deshabilitarlo
+                    if (Fid.showDragDrop) {
+                        $('#fileInputDD').fileupload('disable');
+                        $('#dropZone').css('cursor', 'not-allowed');
+                    }
+                }
+            }, {preserve_relative_urls: true});
+            /* /Uploadify */
+
+            // El uploadify no funciona en Firefox con https
+            if (jQuery.browser.mozilla && Fid.ishttps) {
+                $('#uploadUploadify').hide();
+            }
         }
 
         // Para el drag and drop de Fotofijas en Chrome de Mac

@@ -55,9 +55,8 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
-    require 'dir_cgi.pm';
-
-    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    do 'dir_cgi.pm';
+    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
 };
 
@@ -80,12 +79,9 @@ use lib_thumb;
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
-
 my (%FORM);
 
 main: {
-    my ($lnk);
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
 
@@ -176,7 +172,7 @@ main: {
             };
         };
 
-        print "$idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile,$FORM{'filename'}"; # se devuelve para presntarlo en la pagina y tb. para guardarlo en hiddens
+        print "$idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile,$FORM{'filename'}"; # se devuelve para presentarlo en la pagina y tb. para guardarlo en hiddens
                              # y luego tomar desde ahi la imagen para crearla.
     } else {
         print STDERR "error al subir imagen:\n$trace_info";
