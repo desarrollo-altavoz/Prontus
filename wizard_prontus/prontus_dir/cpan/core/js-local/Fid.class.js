@@ -211,7 +211,7 @@ var Fid = {
         }
 
         // Para los input:file
-        $(".upload input:file").filestyle({
+        $('.upload input:file,.ipad-mult input:file').filestyle({
             image: "/" + mainFidJs.PRONTUS_ID + "/cpan/core/imag/boto/examinar.gif",
             imageheight : 22,
             imagewidth : 82,
@@ -1096,5 +1096,3 @@ var Fid = {
     }
 
 };
-
-
