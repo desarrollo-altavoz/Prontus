@@ -347,14 +347,14 @@ var Fid = {
         $('.tabs a[href="'+thediv+'"]').addClass('selected');
         Fid.activarFotosFijas();
 
-        // se destruyen los drags asociados a los vtxt
+        // se destruyen los drop asociados a los vtxt
         FotoFija.destroyDroppableVTXT();
 
         // Se muestran / ocultan los botones de publicar foto
         if($(thediv).find('[id^="FOTOFIJA_"]').size() > 0) {
             $("#banco-img .botonera .publicar").show();
             FotoFija.initDraggableBanco();
-            // se inicia drag para vtxt, para que puedan existir vtxt
+            // se inicia drop para vtxt, para que puedan existir vtxt
             // y fotos fijas en el mismo tab
             if($(thediv).find('iframe[id^="VTXT_"]').size() > 0) {
                 FotoFija.initDroppableVTXT(thediv);
@@ -631,20 +631,15 @@ var Fid = {
 
     // -------------------------------------------------------------------------
     editFotoBanco: function(nameimg) {
-
-        //var opciones = 'toolbar=0,status=0,menubar=0,scrollbars=1,resizable=1,location=0,directories=0,width=,height=,left=610,top=150';
         var url = 'prontus_imag_ficha.cgi?path_conf='+Admin.path_conf+'&ts='+mainFidJs.TS+'&foto='+nameimg;
         var nameWin = 'EditImg' + nameimg;
         Utiles.subWin(url, nameWin, 1000, 600);
-        //var win = window.open(url, nameWin, opciones);
     },
 
     // -------------------------------------------------------------------------
     verArtActual: function(obj, ts) {
-
         var url = $(obj).attr('href');
         window.open(url);
-
     },
 
     // -------------------------------------------------------------------------
