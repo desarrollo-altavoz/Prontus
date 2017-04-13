@@ -8,7 +8,8 @@ las fotos agregadas a campos de fotofija se agregaban también al vtxt
 - improvement: Se incorporan más exclusiones de archivos al garbage collector:
 se omiten tipos js, sst y nombres robots.txt e index.html.
 - improvement: Administración y FIDs: Se agrega plugin de clipboard Html5
-- improvement: Administración y FIDs: Se implementa fallback para utilizar clipboard Html5 primero y después una solución Flash.
+- improvement: Administración y FIDs: Se implementa uso principal de html5 con fallback a flash para
+ la carga de fotos, copiar al portapapeles y el funcionamiento del transcodificador.
 - improvement: Administración y FIDs: Se mejora el diseño de la interfaz de administración de multitag
 - changes: Administración y FIDs Se quita plugin de clipboard que no se usará
 - bugfixes: FIDs: En el "Listado de enlaces" de multitag para el fid, se corrige error que mostraba información vacía

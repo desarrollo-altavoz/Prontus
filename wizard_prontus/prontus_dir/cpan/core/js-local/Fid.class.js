@@ -239,6 +239,9 @@ var Fid = {
         if(!jQuery.browser.flash) {
             $('.browser-comun').not('.browser-noflash').remove();
             $('#uploadUploadify').remove();
+            if (Fid.showDragDrop) {
+                $('.browser-noflash').remove();
+            }
         } else {
             $('.browser-comun').not('.browser-normal').remove();
 
