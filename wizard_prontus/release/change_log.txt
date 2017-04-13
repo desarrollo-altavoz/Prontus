@@ -1,9 +1,6 @@
 ====================================================================================================
 11.2.96 - 13/04/2017 - EAG
 ====================================================================================================
-
-otra linea
-
 - bugfixes: Portadas taxonómicas: Se corrige error en procesamiento de paginas de taxport filtradas,
 solo se procesaba la primera página.
 - bugfixes: FIDs: Se corrige error que ocurría al haber campos de foto fija y vtxt en el mismo panel,
@@ -19,8 +16,6 @@ cuando demoraba la carga asincrónica de los datos
 - improvement: FIDs: Se permite el funcionamiento de campos de fotofija junto con un vtxt en el mismo panel.
 No se recomienda hacer esto, ya que el funcionamiento del arrastre de fotos se vuelve limitado
 en el vtxt.
-
-Hola
 ====================================================================================================
 11.2.95 - 27/03/2017 - EAG/PRB
 ====================================================================================================
