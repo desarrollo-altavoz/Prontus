@@ -218,27 +218,29 @@ var Fid = {
             width : 240
         });
 
-        // Codigo para soporte de flash
+        // Para el copiar al Clipboard
+        if (jQuery.browser.msie) { // para internet explorer
+            if (jQuery.browser.flash) { // navegador tiene flash
+                Fid.instalaClipboardFlash();
+            } else if (Admin.clipboardHtml5) { // navegador soporta api html5
+                Fid.instalaClipboardHtml5();
+            } else { // no se puede habilitar funcionalidad de clipboard
+            $('#copy-artic-url, #copy-artic-ext').remove();
+        }
+        } else if (Admin.clipboardHtml5) { // navegador soporta api html5
+            Fid.instalaClipboardHtml5();
+        } else if (jQuery.browser.flash) { // navegador tiene flash
+            Fid.instalaClipboardFlash();
+        } else { // no se puede habilitar funcionalidad de clipboard
+            $('#copy-artic-url, #copy-artic-ext').remove();
+        }
+
+        // Codigo para soporte de flash general
         if(!jQuery.browser.flash) {
             $('.browser-comun').not('.browser-noflash').remove();
-            $('#copy-artic-url, #copy-artic-ext').remove();
             $('#uploadUploadify').remove();
-
         } else {
             $('.browser-comun').not('.browser-normal').remove();
-
-            // Para el copiar al Clipboard
-            ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
-            var clip = new ZeroClipboard.Client();
-            clip.setHandCursor(true);
-            clip.setCSSEffects(true);
-            clip.addEventListener('mouseDown', function (client, text) {
-                var theUrl = $('#copy-artic-url').attr('href');
-                clip.setText(theUrl);
-                Fid.showTooltipCopiar(client.domElement.offsetLeft, client.domElement.offsetTop);
-                return true;
-            });
-            clip.glue('copy-artic-int', 'copy-artic-ext', {position:'relative', left:'0', top:'0'});
 
             /* Uploadify */
             var cgiuploadify = '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi';
@@ -257,8 +259,8 @@ var Fid = {
                 fileTypeExts:   '*.jpg;*.jpeg;*.gif;*.png',
                 uploadLimit:    100,
                 formData: {
-                        "prontus_id":   mainFidJs.PRONTUS_ID,
-                        "sdata":        mainFidJs.SDATA
+                    "prontus_id":   mainFidJs.PRONTUS_ID,
+                    "sdata":        mainFidJs.SDATA
                 },
                 'onQueueComplete':  function(queueData) {
                     $('#uploadcomplete').show();
@@ -267,7 +269,6 @@ var Fid = {
                     }, 1500);
                 },
                 'onUploadSuccess': function(fileObj, data, response) {
-
                     if (response === false) {
                         alert( 'No fue posible subir correctamente la imagen [' + fileObj.name + ']');
                         return true;
@@ -319,6 +320,31 @@ var Fid = {
 
         // Para la edicion de friendly v4
         Fid.iniciaSlug();
+    },
+
+    instalaClipboardHtml5: function() {
+        var clipboard = new Clipboard(document.getElementById('copy-artic-int'),{
+                text: function(trigger) {
+                    return  $('#copy-artic-url').attr('href');
+                }
+            });
+        clipboard.on('success', function(e) {
+            Fid.showTooltipCopiar(e.trigger.offsetLeft, e.trigger.offsetTop);
+        });
+    },
+
+    instalaClipboardFlash: function() {
+        ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
+        var clip = new ZeroClipboard.Client();
+        clip.setHandCursor(true);
+        clip.setCSSEffects(true);
+        clip.addEventListener('mouseDown', function (client, text) {
+            var theUrl = $('#copy-artic-url').attr('href');
+            clip.setText(theUrl);
+            Fid.showTooltipCopiar(client.domElement.offsetLeft, client.domElement.offsetTop);
+            return true;
+        });
+        clip.glue('copy-artic-int', 'copy-artic-ext', {position:'relative', left:'0', top:'0'});
     },
 
     // -------------------------------------------------------------------------

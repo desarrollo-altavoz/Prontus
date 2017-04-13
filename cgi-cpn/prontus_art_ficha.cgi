@@ -1120,7 +1120,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg =~ s/%%wfoto%%/$wfoto/ig;
         $bufferBancoImg =~ s/%%hfoto%%/$hfoto/ig;
 
-        # Para los campos hidden de las fotos que no se desplegarán
+        # Para los campos hidden de las fotos que no se desplegaran
         my $bufferBancoImg2 = $moldeBancoImg2;
         $bufferBancoImg2 =~ s/%%nom_campo%%/$nom_campo/ig;
         $bufferBancoImg2 =~ s/%%nom_foto%%/$nom_foto/ig;

@@ -13,23 +13,58 @@
                     // Actualizar hidden con secciones/temas/substemas
                     self.actions.updateHidden($(this).attr('data-type'));
                 });
+                $('#btnCombMtag').colorbox({
+                    width: '850',
+                    height: '60%',
+                    inline: true,
+                    href: "#divCombinaciones",
+                    onOpen: function () {
+                        self.actions.makeCombinations();
+                    },
+                    onClosed: function() {
+                    },
+                    onComplete: function () {
+                        self.actions.bindCopyLink();
+                    }
+                });
             });
+        },
 
-            $('#btnCombMtag').colorbox({
-                width: '850',
-                height: '60%',
-                inline: true,
-                href: "#divCombinaciones",
-                onOpen: function () {
-                    self.actions.makeCombinations();
-                },
-                onClosed: function() {
-                },
-                onComplete: function () {
-                    self.actions.bindCopyLink();
-                }
+        instalaClipboardHtml5: function(element) {
+            var $elem = $(element);
+            var $td = $elem.parent().next();
+            var clipboard = new Clipboard($elem.get(0),{
+                    text: function(trigger) {
+                        return $td.find('a').attr('href');
+                    }
+                });
+            clipboard.on('success', function(e) {
+                $td.animate({
+                    backgroundColor: "#dff0d8"
+                }, 500).animate({
+                    backgroundColor: "#fafafa"
+                }, 500);
+                return true;
             });
+        },
 
+        instalaClipboardFlash: function(element) {
+            var $elem = $(element);
+            ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
+            var clip = new ZeroClipboard.Client();
+            clip.setHandCursor(true);
+            clip.setCSSEffects(true);
+            clip.addEventListener('mouseDown', function (client, text) {
+                var $td = $elem.parent().next();
+                clip.setText($td.find('a').attr('href'));
+                $td.animate({
+                    backgroundColor: "#dff0d8"
+                }, 500).animate({
+                    backgroundColor: "#fafafa"
+                }, 500);
+                return true;
+            });
+            clip.glue($elem.get(0), 'divCombinaciones');
         },
         actions: {
             bindCopyLink: function () {
@@ -39,28 +74,24 @@
                     e.preventDefault();
                 });
 
-                $copy.on('mouseover', function(e) {
-                    var $elem = $(this);
-                    var clip = new ZeroClipboard.Client();
-
-                    clip.setHandCursor(true);
-                    clip.setCSSEffects(true);
-
-                    clip.addEventListener('mousedown', function (client, text) {
-                        var $td = $elem.parent().next();
-                        clip.setText($td.find('a').attr('href'));
-
-                        $td.animate({
-                            backgroundColor: "#dff0d8"
-                        }, 500).animate({
-                            backgroundColor: "#fafafa"
-                        }, 500);
-
-                        return true;
-                    });
-                    clip.glue($elem.get(0), 'divCombinaciones');
+                $copy.each( function() {
+                    // Para el copiar al Clipboard
+                    if (jQuery.browser.msie) { // para internet explorer
+                        if (jQuery.browser.flash) { // navegador tiene flash
+                            self.instalaClipboardFlash(this);
+                        } else if (Admin.clipboardHtml5) { // navegador soporta api html5
+                            self.instalaClipboardHtml5(this);
+                        } else { // no se puede habilitar funcionalidad de clipboard
+                            $('.copiar-link-mtag').remove();
+                        }
+                    } else if (Admin.clipboardHtml5) { // navegador soporta api html5
+                        self.instalaClipboardHtml5(this);
+                    } else if (jQuery.browser.flash) { // navegador tiene flash
+                        self.instalaClipboardFlash(this);
+                    } else { // no se puede habilitar funcionalidad de clipboard
+                        $('.copiar-link-mtag').remove();
+                    }
                 });
-
             },
             makeCombinations: function () {
                 var secciones = $('#multitag_lista_seccion').find('input[type="checkbox"]:checked');
@@ -117,7 +148,6 @@
                     $('#divCombinaciones table').append('<tr><td>' + stn + '</td><td>' + btnCopy + '</td><td><a target="_blank" href="/subtema/' + stf + '/p/1" class="lv1">/subtema/' + stf + '/p/1</a></td></tr>');
                 });
             },
-
             loadData: function (callback) {
                 $.ajax({
                     url: '/cgi-cpn/multitag/prontus_multitag_load_data.cgi',
