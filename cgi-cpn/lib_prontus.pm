@@ -5349,6 +5349,9 @@ sub make_mapa {
     $mapa_plt =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
     $mapa_plt =~ s/%%(LOOP_SECCION)%%.*?%%\/\1%%/$mapa_total/is;
     $mapa_plt = &parser_custom_function($mapa_plt);
+    # se parsean variables globales
+    $mapa_plt =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+    $mapa_plt =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
     &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt");
     my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt/$k";
     &glib_fildir_02::write_file($dst_mapa, $mapa_plt);
