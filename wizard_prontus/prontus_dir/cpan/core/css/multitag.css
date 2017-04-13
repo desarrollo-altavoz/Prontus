@@ -2,7 +2,7 @@
 .mantenedor-multitag {}
 .mantenedor-multitag ul {}
 .mantenedor-multitag ul li {padding: 2px 5px 2px 5px;}
-.mantenedor-multitag ul li .fila {border: 1px solid #e6e6e6;background-color: #E0E0E0;padding: 5px;}
+.mantenedor-multitag ul li .fila {border: 1px solid #e6e6e6;background-color: #F0F0F0;padding: 4px;}
 .mantenedor-multitag ul li .fila.data {font-size: 13px;}
 .mantenedor-multitag ul li .fila.cabecera {font-size: 13px;}
 .mantenedor-multitag ul li .fila .campo {float: left;margin-right: 10px;height: 21px;}
@@ -22,5 +22,11 @@
 .mantenedor-multitag ul li .fila.data .campo input {border: 0;font-size: 13px;outline: 1px solid #ccc;margin: 1px 0px 0px 1px;}
 .mantenedor-multitag ul li .fila.data .campo input:focus {outline-offset: 0;outline: 2px solid #ccc;}
 .mantenedor-multitag ul li .fila.data .campo p {margin: 1px 0px 0px 1px;}
+/*
 .aleft {float: left !important;}
+*/
+/*
 .aright {float: right !important;}
+*/
+.col960 .rotulo .col1 {width:294px; margin:0 0 0 18px; }
+.col960 .rotulo .col0 {width:40px; margin:0 0 0 38px; font-size:14px; color:#FFFFFF; font-weight:bold; padding:5px 0 0 0;}
