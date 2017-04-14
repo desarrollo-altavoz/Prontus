@@ -9272,26 +9272,38 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se incorporan más exclusiones de archivos al garbage collector:
         se omiten tipos js, sst y nombres robots.txt e index.html.
+        - Se realizan mejoras generales en las cgis
+    [bugfixes]
+        - Se corrige error al leer los formatos multimedia en la lib_prontus
     [files]
+        /cgi-bin/prontus_art_upfoto.cgi
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+        /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_garbage_collector.pl
 
 - Administración y FIDs
     [mejoras]
         - Se agrega plugin de clipboard Html5
-        - Se implementa fallback para utilizar clipboard Html5 primero y después una solución Flash.
+        - Se implementa uso principal de html5 con fallback a flash para la carga de fotos, copiar
+        al portapapeles y el funcionamiento del transcodificador.
         - Se mejora el diseño de la interfaz de administración de multitag
     [cambios]
         - Se quita plugin de clipboard que no se usará
     [files]
         /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_fotos_extra.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_video_xcode.html
         /wizard_prontus/prontus_dir/cpan/core/js-local/clipboard/clipboard.min.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/clipboard/clipboard.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/MultiTag.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/MantenedorMultiTag.class.js
-        /wizard_prontus/prontus_dir/cpan/core/prontus_multitag_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
         /wizard_prontus/prontus_dir/cpan/core/css/multitag.css
+        /wizard_prontus/prontus_dir/cpan/core/prontus_multitag_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/include_common.html
     [deleted]
         /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.swf
         /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.js
