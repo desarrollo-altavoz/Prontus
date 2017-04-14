@@ -8,6 +8,7 @@ solo se procesaba la primera página.
 las fotos agregadas a campos de fotofija se agregaban también al vtxt
 - bugfixes: FIDs: En el "Listado de enlaces" de multitag para el fid, se corrige error que mostraba información vacía
 cuando demoraba la carga asincrónica de los datos
+- improvement: Se agrega parseo de PRONTUS_ID y SERVER_NAME al mapa del sitio
 - improvement: Se incorporan más exclusiones de archivos al garbage collector:
 se omiten tipos js, sst y nombres robots.txt e index.html.
 - improvement: Administración y FIDs: Se agrega plugin de clipboard Html5

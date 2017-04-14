@@ -9273,6 +9273,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se incorporan más exclusiones de archivos al garbage collector:
         se omiten tipos js, sst y nombres robots.txt e index.html.
         - Se realizan mejoras generales en las cgis
+        - Se agrega parseo de PRONTUS_ID y SERVER_NAME al mapa del sitio
     [bugfixes]
         - Se corrige error al leer los formatos multimedia en la lib_prontus
     [files]
