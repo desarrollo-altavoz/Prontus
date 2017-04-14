@@ -33,14 +33,12 @@
 # DECLARACIONES GLOBALES.
 # ------------------------
 
-
 BEGIN {
     use FindBin '$Bin';
     $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
-    require 'dir_cgi.pm';
-
-    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    do 'dir_cgi.pm';
+    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
 };
 
@@ -62,11 +60,11 @@ my (%FORM);
 
 main: {
     &glib_cgi_04::new();
-    
+
     $FORM{'files'} = &glib_cgi_04::param('fileInputDD');
     $FORM{'prontus_id'} = &glib_cgi_04::param('prontus_id');
     # $FORM{'prontus_id'} =~ s/[^\w\-]//sg; No es necesario se valida dentro de valida_invocacion()
-    
+
     &valida_invocacion();
 
     # Path de cfg de prontus
@@ -76,25 +74,25 @@ main: {
     # Carga variables de configuracion de prontus.
     &lib_prontus::load_config($path_conf);
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
-    
+
     my $nomfile;
     my $ext;
-    
+
     if ($FORM{'files'} =~ /(\/|\\)?([^\/\\]+?)(\.\w+)$/) {
         $nomfile = lc $2;
         $ext = lc $3; # ext con punto
     }
-    
+
     my $relpath = &glib_cgi_04::real_paths('fileInputDD');
 
     # Compone path destino de la imagen y realiza garbage
     my $rel_dst_dir = "/$FORM{'prontus_id'}/cpan/procs/uploadify";
     &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$rel_dst_dir");
     &garbage_collector("$prontus_varglb::DIR_SERVER$rel_dst_dir");
-    
+
     my $rel_dst_path = "$rel_dst_dir/$nomfile$ext";
     my $dst_path = "$prontus_varglb::DIR_SERVER$rel_dst_path";
-    
+
     &File::Copy::move($FORM{'files'}, $dst_path);
 
     my $idFoto = $nomfile . $relpath;
@@ -116,7 +114,7 @@ main: {
             &glib_fildir_02::write_file($dst_path, $binfoto) if ($binfoto);
         };
     };
-                         
+
     print "Content-Type: text/html\n\n";
     print "$idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile,$relpath"; # se devuelve para presntarlo en la pagina y tb. para guardarlo en hiddens
     exit;
@@ -131,26 +129,26 @@ sub valida_invocacion {
         print 0;
         exit;
     };
-    
+
     if ($FORM{'files'} eq '') {
         print STDERR "fileInputDD no valido\n";
         print "Content-Type: text/html\n\n";
         print 0;
         exit;
     };
-    
+
     my $sess_obj = Session->new(
                     'prontus_id'        => $FORM{'prontus_id'},
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
-                    
+
     if ($sess_obj->{id_session} eq '') {
         print STDERR "user no valido[$prontus_varglb::USERS_PERFIL] - prontus_id[$FORM{'prontus_id'}]\n";
         print "Content-Type: text/html\n\n";
         print 0;
         exit;
     };
-    
+
 };
 
 sub garbage_collector {

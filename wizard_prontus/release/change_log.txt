@@ -1,4 +1,25 @@
 ====================================================================================================
+11.2.96 - 13/04/2017 - EAG
+====================================================================================================
+- bugfixes: Se corrige error al leer los formatos multimedia en la lib_prontus
+- bugfixes: Portadas taxonómicas: Se corrige error en procesamiento de paginas de taxport filtradas,
+solo se procesaba la primera página.
+- bugfixes: FIDs: Se corrige error que ocurría al haber campos de foto fija y vtxt en el mismo panel,
+las fotos agregadas a campos de fotofija se agregaban también al vtxt
+- bugfixes: FIDs: En el "Listado de enlaces" de multitag para el fid, se corrige error que mostraba información vacía
+cuando demoraba la carga asincrónica de los datos
+- improvement: Se agrega parseo de PRONTUS_ID y SERVER_NAME al mapa del sitio
+- improvement: Se incorporan más exclusiones de archivos al garbage collector:
+se omiten tipos js, sst y nombres robots.txt e index.html.
+- improvement: Administración y FIDs: Se agrega plugin de clipboard Html5
+- improvement: Administración y FIDs: Se implementa uso principal de html5 con fallback a flash para
+ la carga de fotos, copiar al portapapeles y el funcionamiento del transcodificador.
+- improvement: Administración y FIDs: Se mejora el diseño de la interfaz de administración de multitag
+- improvement: FIDs: Se permite el funcionamiento de campos de fotofija junto con un vtxt en el mismo panel.
+No se recomienda hacer esto, ya que el funcionamiento del arrastre de fotos se vuelve limitado
+en el vtxt.
+- changes: Administración y FIDs: Se quita plugin de clipboard que no se usará
+====================================================================================================
 11.2.95 - 27/03/2017 - EAG/PRB
 ====================================================================================================
 - bugfixes: Se corrige error al arrastrar fotos desde el banco de imágenes a campos de fotofija

@@ -5,8 +5,11 @@
         _path_conf: '',
         // ------------------------------------------------------------------
         init: function (prontus_id) {
-            $('#multitag-tabs').idTabs();
             self = this;
+            $('#multitag-tabs').idTabs(function(id,list,set) {
+                setTimeout(function() {self.bindClipboard(id)},100);
+                return true;
+            });
             self.prontus_id = prontus_id;
             self._path_conf = '/' + self.prontus_id + '/cpan/' + self.prontus_id + '.cfg';
 
@@ -117,24 +120,72 @@
 
                 return false;
             });
-
-            var $copy = $('.copiar-link');
+            self.bindClipboard('#multitag_tab1');
+            self.bindClipboard('#multitag_tab2');
+            self.bindClipboard('#multitag_tab3');
+        },
+        bindClipboard: function(id) {
+            var $copy = $(id +' .copiar-link');
 
             $copy.on('click', function(e) {
                 e.preventDefault();
             });
 
-            $copy.clipboard({
-                path: '/' + self.prontus_id + '/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.swf',
-
-                copy: function() {
-                    self.helper.toogle($(this).find('img').get(0), 'on');
-                    return $(this).attr('href');
-                },
-                afterCopy: function () {
-                    self.helper.toogle($(this).find('img').get(0), 'of');
+            $copy.each( function() {
+                // Para el copiar al Clipboard
+                if (jQuery.browser.msie) { // para internet explorer
+                    if (jQuery.browser.flash) { // navegador tiene flash
+                        self.instalaClipboardFlash(this);
+                    } else if (Admin.clipboardHtml5) { // navegador soporta api html5
+                        self.instalaClipboardHtml5(this);
+                    } else { // no se puede habilitar funcionalidad de clipboard
+                        $('.copiar-link').remove();
+                    }
+                } else if (Admin.clipboardHtml5) { // navegador soporta api html5
+                    self.instalaClipboardHtml5(this);
+                } else if (jQuery.browser.flash) { // navegador tiene flash
+                    self.instalaClipboardFlash(this);
+                } else { // no se puede habilitar funcionalidad de clipboard
+                    $('.copiar-link').remove();
                 }
             });
+        },
+        instalaClipboardHtml5: function(element) {
+            var $elem = $(element);
+            var $td = $elem.parent().prev();
+            var clipboard = new Clipboard($elem.get(0),{
+                    text: function(trigger) {
+                        return $(element).attr('href');
+                    }
+                });
+            clipboard.on('success', function(e) {
+                $td.animate({
+                    backgroundColor: "#dff0d8"
+                }, 500).animate({
+                    backgroundColor: "#fafafa"
+                }, 500);
+                return true;
+            });
+        },
+
+        instalaClipboardFlash: function(element) {
+            var $elem = $(element);
+            ZeroClipboard.setMoviePath('/'+Admin.prontus_id+'/cpan/core/js-local/zeroclipboard/ZeroClipboard.swf');
+            var clip = new ZeroClipboard.Client();
+            clip.setHandCursor(true);
+            clip.setCSSEffects(true);
+            clip.addEventListener('mouseDown', function (client, text) {
+                var $td = $elem.parent().prev();
+                clip.setText($(element).attr('href'));
+                $td.animate({
+                    backgroundColor: "#dff0d8"
+                }, 500).animate({
+                    backgroundColor: "#fafafa"
+                }, 500);
+                return true;
+            });
+            console.log($elem.parent().parent().parent().parent().get(0).id);
+            clip.glue($elem.get(0), $elem.parent().parent().parent().parent().get(0).id);
         },
         // ------------------------------------------------------------------
         bindCambiaBoton: function () {
@@ -267,7 +318,7 @@
                 '            <a href="#" class="cancelar" onclick=""><img src="/%%_prontus_id%%/cpan/core/imag/boto/can_of.png" width="18" height="18" class="cambia-boton" alt="Cancelar" title="Cancelar"></a>',
                 '        </div>',
                 '        <div class="campo loading aright">',
-                '           <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loader/ajax-loader.gif"/>',
+                '           <img src="/%%_prontus_id%%/cpan/core/imag/loader/ajax-loader.gif"/>',
                 '        </div>',
                 '    </div>',
                 //'</li>'

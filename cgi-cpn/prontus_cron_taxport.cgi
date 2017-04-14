@@ -482,7 +482,7 @@ sub get_taxport_fil {
     foreach my $dir (@listado) {
         if ($dir =~ /fil_(.*?)$/) {
             push @filtros, "fil_" . $1;
-            #&cargar_fil_cfg("$dir/filtros.cfg", "fil_" . $1);
+            &cargar_fil_cfg("$dir/filtros.cfg", "fil_" . $1);
         };
 
     };

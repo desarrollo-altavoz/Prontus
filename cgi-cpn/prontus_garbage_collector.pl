@@ -124,7 +124,9 @@ main: {
     foreach $file (@files) {
         if ($file eq '.' or $file eq '..') { next;};
         # tipos de archivo que no se borraran
-        if ($file =~ /\.(cgi|pl|pm|cfg|xml)$/) { next;};
+        if ($file =~ /\.(cgi|pl|pm|cfg|xml|js|sst)$/) { next;};
+        # archivos que no se borran
+        if ($file =~ /(robots\.txt|index\.html)$/) { next;};
         $mtime = (stat("$DATADIR/$file"))[9];
 
         $file_age = 0;

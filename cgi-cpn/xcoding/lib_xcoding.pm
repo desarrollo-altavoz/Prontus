@@ -65,6 +65,7 @@ sub get_all_formatos {
     };
     return %formatos;
 };
+
 # ---------------------------------------------------------------
 # Se lee la configuracion por defecto, o lee configuracion para versiones
 sub get_formatos {
@@ -317,7 +318,6 @@ sub get_cmd_ffmpeg {
         return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y -vcodec copy -acodec $audio_string -f mp4 $ruta_trabajo$destino", 0);
     }
 };
-
 
 # ---------------------------------------------------------------
 # genera hls para el video indicado

@@ -25,6 +25,12 @@
   <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/autocomplete/jquery.autocomplete.js"></script>
   <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/uploadify/jquery.uploadify.js"></script>
   <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/zeroclipboard/ZeroClipboard.js"></script>
+  <script type="text/javascript">
+// cargamos clipboard si esta soportado
+if (!$.browser.msie || ($.browser.msie && $.browser.version > 9)) {
+    document.writeln('<script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/clipboard/clipboard.js"></'+'script>');
+}
+</script>
   %%_code4popup%%<style style="text/css">
     .main-head, .userdata {display:none;}
     #main {width:990px; padding-top:4px;}

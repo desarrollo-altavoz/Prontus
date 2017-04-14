@@ -4689,7 +4689,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Wizard Prontus:
     [bugfixes]
-        - Despues de hacer el deploy, se borra el caché de artículos.
+        - después de hacer el deploy, se borra el caché de artículos.
           Esto evita errores en caso de que los modelos traigan un caché de una versión antigua.
     [files]
         /cgi-cpn/wizard_deploy.cgi
@@ -9257,3 +9257,72 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrige error al procesar múltiples marcas de video del mismo artículo en script de procesamiento masivo de videos
     [files]
         /cgi-cpn/xcoding/prontus_procesar_videos.pl
+
+====================================================================================================
+11.2.96 - 13/04/2017 - EAG
+====================================================================================================
+- Portadas taxonómicas
+    [bugfixes]
+        - Se corrige error en procesamiento de paginas de taxport filtradas, solo se procesaba la
+        primera página.
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+
+- Prontus en general
+    [mejoras]
+        - Se incorporan más exclusiones de archivos al garbage collector:
+        se omiten tipos js, sst y nombres robots.txt e index.html.
+        - Se realizan mejoras generales en las cgis
+        - Se agrega parseo de PRONTUS_ID y SERVER_NAME al mapa del sitio
+    [bugfixes]
+        - Se corrige error al leer los formatos multimedia en la lib_prontus
+    [files]
+        /cgi-bin/prontus_art_upfoto.cgi
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_garbage_collector.pl
+
+- Administración y FIDs
+    [mejoras]
+        - Se agrega plugin de clipboard Html5
+        - Se implementa uso principal de html5 con fallback a flash para la carga de fotos, copiar
+        al portapapeles y el funcionamiento del transcodificador.
+        - Se mejora el diseño de la interfaz de administración de multitag
+    [cambios]
+        - Se quita plugin de clipboard que no se usará
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_fotos_extra.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_video_xcode.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/clipboard/clipboard.min.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/clipboard/clipboard.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/MultiTag.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/MantenedorMultiTag.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
+        /wizard_prontus/prontus_dir/cpan/core/css/multitag.css
+        /wizard_prontus/prontus_dir/cpan/core/prontus_multitag_admin.html
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/include_common.html
+    [deleted]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.swf
+        /wizard_prontus/prontus_dir/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.js
+
+- FIDs
+    [mejoras]
+        - Se permite el funcionamiento de campos de fotofija junto con un vtxt en el mismo panel.
+            No se recomienda hacer esto, ya que el funcionamiento del arrastre de fotos se vuelve limitado
+            en el vtxt:
+            - La foto arrastrada no queda en la posición donde se suelta, sino donde estaba el cursor.
+            - El arrastre es mas "torpe", si se mueve muy rapido el mouse, la imagen puede "quedarse" atrás.
+    [bugfixes]
+        - Se corrige error que ocurría al haber campos de foto fija y vtxt en el mismo panel,
+        las fotos agregadas a campos de fotofija se agregaban también al vtxt
+        - En el "Listado de enlaces" de multitag para el fid, se corrige error que mostraba información vacía
+        cuando demoraba la carga asincrónica de los datos
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/MultiTag.class.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/include_common.html
