@@ -79,6 +79,31 @@
             }
         },
         // ---------------------------------------------------------------
+        // Inicia drag & drop desde banco de imagenes para VTXT
+        // ---------------------------------------------------------------
+        initDroppableVTXT: function (thediv) {
+            console.log('initDroppableVTXT', thediv);
+            $(thediv).find('iframe[id^="VTXT_"]').each(function () {
+                var iframe = $(this);
+                var id = iframe.attr('id').replace('_ifr', '');
+                iframe.droppable({
+                    drop: function (e, ui) {
+                        // Sobrepasa los limites.
+                        if (ui.helper.position().top < (iframe.position().top)) {
+                            return false;
+                        }
+                        tinyMCE.getInstanceById(id).execCommand('mceInsertContent', false, $(ui.helper).html());
+                    }
+                });
+            });
+        },
+        // ---------------------------------------------------------------
+        // Destruye drag & drop del banco de imagenes para VTXT
+        // ---------------------------------------------------------------
+        destroyDroppableVTXT: function () {
+            $('iframe[id^="VTXT_"].ui-droppable').droppable("destroy");
+        },
+        // ---------------------------------------------------------------
         // Crea una nueva instancia de un campo de foto.
         // ---------------------------------------------------------------
         newInstance: function (id, maxW, maxH, imgW, imgH) {

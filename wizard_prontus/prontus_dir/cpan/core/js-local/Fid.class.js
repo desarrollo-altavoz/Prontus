@@ -349,17 +349,24 @@ var Fid = {
     // -----------------------------------------
     //Muestra el contenido de un div para el div con valor 'thediv'
     showBody: function(thediv) {
-
         $('.cabecera').hide();
         $(thediv).show();
         $('.tabs a').removeClass('selected');
         $('.tabs a[href="'+thediv+'"]').addClass('selected');
         Fid.activarFotosFijas();
 
+        // se destruyen los drags asociados a los vtxt
+        FotoFija.destroyDroppableVTXT();
+
         // Se muestran / ocultan los botones de publicar foto
         if($(thediv).find('[id^="FOTOFIJA_"]').size() > 0) {
             $("#banco-img .botonera .publicar").show();
             FotoFija.initDraggableBanco();
+            // se inicia drag para vtxt, para que puedan existir vtxt
+            // y fotos fijas en el mismo tab
+            if($(thediv).find('iframe[id^="VTXT_"]').size() > 0) {
+                FotoFija.initDroppableVTXT(thediv);
+            }
         } else {
             $("#banco-img .botonera .publicar").hide();
             FotoFija.destroyDraggableBanco();
