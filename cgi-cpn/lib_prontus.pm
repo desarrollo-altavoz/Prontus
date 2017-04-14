@@ -6415,12 +6415,11 @@ sub get_formatos_multimedia {
     my $marca = shift;
     my %formatos;
     my $file_formatos = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/xcoding/formatos.cfg";
-
     if (-f $file_formatos) {
         my $buffer_formatos = &glib_fildir_02::read_file($file_formatos);
         if ($marca ne '') {
-            while ($buffer_formatos =~ /\s*($marca\.\w).(\w+)\s*=\s*["|'](.*?)["|']/ig) {
-                $formatos{$1}{$2} = $3;
+            while ($buffer_formatos =~ /\s*($marca\.\w)\s*=\s*["|'](.*?)["|']/ig) {
+                $formatos{$1} = $2;
             };
         };
     };

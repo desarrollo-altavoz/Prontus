@@ -19,6 +19,7 @@ var Admin = {
     isMozilla: false,
     isChrome: false,
     notFlash: false,
+    clipboardHtml5: false,
 
     randcode: 0,
 
@@ -38,6 +39,10 @@ var Admin = {
         }
         if($.browser.webkit) {
             Admin.isChrome = true;
+        }
+
+        if (typeof Clipboard !== 'undefined') {
+            Admin.clipboardHtml5 = Clipboard.isSupported();
         }
 
         // Si se han activado las Pop

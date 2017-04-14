@@ -79,10 +79,9 @@
             }
         },
         // ---------------------------------------------------------------
-        // Inicia drag & drop desde banco de imagenes para VTXT
+        // Inicia drag & drop para VTXT
         // ---------------------------------------------------------------
         initDroppableVTXT: function (thediv) {
-            console.log('initDroppableVTXT', thediv);
             $(thediv).find('iframe[id^="VTXT_"]').each(function () {
                 var iframe = $(this);
                 var id = iframe.attr('id').replace('_ifr', '');
@@ -98,7 +97,7 @@
             });
         },
         // ---------------------------------------------------------------
-        // Destruye drag & drop del banco de imagenes para VTXT
+        // Destruye drag & drop para VTXT
         // ---------------------------------------------------------------
         destroyDroppableVTXT: function () {
             $('iframe[id^="VTXT_"].ui-droppable').droppable("destroy");

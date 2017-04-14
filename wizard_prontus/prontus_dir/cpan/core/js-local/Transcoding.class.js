@@ -366,6 +366,7 @@ var Transcoding, Msg, Flash;
     //  Objeto que ejecuta las funciones de internas del flash
     Flash = {
 
+        html5: false,
         movieObj: null,
 
         pooling: 0,
@@ -398,8 +399,16 @@ var Transcoding, Msg, Flash;
         insertaPlayer: function (idDiv) {
 
             if(!jQuery.browser.flash) {
-                $(idDiv).html('<video width="'+Flash.anchoPlayer+'" height="'+Flash.altoPlayer+'" controls="controls"></video>')
-                        .find('video').append('<source src="'+Transcoding.linkVideo+'" type="video/mp4" />');
+                var video = document.createElement('video');
+                video.width = Flash.anchoPlayer;
+                video.height = Flash.altoPlayer;
+                video.id = Flash.playerId;
+                video.src = Transcoding.linkVideo;
+                video.type = "video/mp4";
+                video.controls = "controls";
+                video.onclick = function(){this.paused?this.play():this.pause();}
+                $(idDiv).append(video);
+                Flash.html5 = true;
             } else {
                 $(idDiv).media({
                     width: Flash.anchoPlayer,
@@ -478,7 +487,11 @@ var Transcoding, Msg, Flash;
                 if (Flash.movieObj === null) {
                     return;
                 }
-                return Flash.movieObj.getPlayPoint();
+                if (Flash.html5) {
+                    return Flash.movieObj.currentTime;
+                } else {
+                    return Flash.movieObj.getPlayPoint();
+                }
             } catch (e) {
                 Msg.setAlertMessage('Error al invocar función del Flash getPlayPoint():<br/> ' + e);
             }

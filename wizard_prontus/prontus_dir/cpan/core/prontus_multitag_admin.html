@@ -10,19 +10,25 @@
 
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/dir_cgi.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.jqplugin.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/ui/js/jquery-ui-1.9.2.custom.min.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/jquery.idTabs.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
-    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/jquery/plugins/clipboard/jquery.clipboard.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/zeroclipboard/ZeroClipboard.js"></script>
 
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Url.class.js"></script>
-    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/MantenedorMultiTag.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Botones.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Admin.class.js"></script>
+    <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/MantenedorMultiTag.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Opciones.class.js"></script>
     <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Utiles.class.js"></script>
-
+    <script type="text/javascript">
+// cargamos clipboard si esta soportado
+if (!$.browser.msie || ($.browser.msie && $.browser.version > 9)) {
+    document.writeln('<script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/clipboard/clipboard.js"></'+'script>');
+}
+    </script>
   </head>
   <body class="bodysite">
 
@@ -50,18 +56,15 @@
                     <a class="button" href="#multitag_tab2"><span>Temas</span></a>
                     <a class="button" href="#multitag_tab3"><span>Subtemas</span></a>
                 </div>
-                <div class="mantenedor-multitag">
+                <div class="mantenedor-multitag col960 aleft">
                     <!--Seccion-->
                     <div class="auxi" id="multitag_tab1">
+                        <div class="rotulo fila cabecera">
+                            <div class="campo col0 campo-id aleft">ID</div>
+                            <div class="campo col1 campo-nombre aleft">Nombre Seccion</div>
+                            <div class="campo col1 campo-friendly aleft">Friendly URL</div>
+                        </div>
                         <ul id="multitag_seccion">
-                            <li class="ignore-sortable">
-                                <div class="fila cabecera">
-                                    <div class="campo campo-handler"></div>
-                                    <div class="campo campo-id">ID</div>
-                                    <div class="campo campo-nombre">NOMBRE SECCION</div>
-                                    <div class="campo campo-friendly">FRIENDLY URL</div>
-                                </div>
-                            </li>
                             <li class="ignore-sortable form" id="form-seccion">
                                 <div class="fila">
                                     <div class="campo campo-handler"></div>
@@ -86,15 +89,12 @@
                     </div>
                     <!--Tema-->
                     <div class="auxi" id="multitag_tab2">
+                        <div class="rotulo fila cabecera">
+                            <div class="campo col0 campo-id aleft">ID</div>
+                            <div class="campo col1 campo-nombre aleft">Nombre Tema</div>
+                            <div class="campo col1 campo-friendly aleft">Friendly URL</div>
+                        </div>
                         <ul id="multitag_tema">
-                            <li class="ignore-sortable">
-                                <div class="fila cabecera">
-                                    <div class="campo campo-handler"></div>
-                                    <div class="campo campo-id">ID</div>
-                                    <div class="campo campo-nombre">NOMBRE TEMA</div>
-                                    <div class="campo campo-friendly">FRIENDLY URL</div>
-                                </div>
-                            </li>
                             <li class="ignore-sortable form" id="form-tema">
                                 <div class="fila">
                                     <div class="campo campo-handler"></div>
@@ -117,14 +117,11 @@
                     <!--Subtema-->
                     <div class="auxi" id="multitag_tab3">
                         <ul id="multitag_subtema">
-                            <li class="ignore-sortable">
-                                <div class="fila cabecera">
-                                    <div class="campo campo-handler"></div>
-                                    <div class="campo campo-id">ID</div>
-                                    <div class="campo campo-nombre">NOMBRE SUBTEMA</div>
-                                    <div class="campo campo-friendly">FRIENDLY URL</div>
-                                </div>
-                            </li>
+                            <div class="rotulo fila cabecera">
+                                <div class="campo col0 campo-id aleft">ID</div>
+                                <div class="campo col1 campo-nombre aleft">Nombre Subtema</div>
+                                <div class="campo col1 campo-friendly aleft">Friendly URL</div>
+                            </div>
                             <li class="ignore-sortable form" id="form-subtema">
                                 <div class="fila">
                                     <div class="campo campo-handler"></div>
