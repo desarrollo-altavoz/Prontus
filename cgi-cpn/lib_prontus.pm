@@ -2220,12 +2220,12 @@ sub load_config {
   # El valor por defecto es vacio
   if ($buffer =~ m/\s*MAX_XCODING\s*=\s*("|')(\d*)("|')/) {
     if ($2 eq '') {
-        $prontus_varglb::MAX_XCODING = '100';
+        $prontus_varglb::MAX_XCODING = '500';
     } else {
         $prontus_varglb::MAX_XCODING = $2;
     };
   } else {
-      $prontus_varglb::MAX_XCODING = '100';
+      $prontus_varglb::MAX_XCODING = '500';
   };
 
   # El valor por defecto es 0
