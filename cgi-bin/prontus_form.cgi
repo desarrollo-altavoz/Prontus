@@ -200,6 +200,9 @@ my $FECHA;        # Fecha de creacion del formulario. Usada para acceder a los d
 my $EXT;          # Extension usada por Prontus. Se deduce del path del formulario.
 my %MSGS;         # Mensajes de error.
 my $BUFFER_ART = ''; # Buffer para cargar el contenido de articulo
+my $SALIDA_ESTATICA = '';
+my $NOM_PLT_EXITO = '';
+my $NOM_PLT_ERROR = '';
 
 my $RECAPTCHA_RESPONSE = ""; # Captura la respuesta por POST del formulario
 
@@ -269,6 +272,8 @@ main: {
 
     # Limpia el directorio de archivos temporales.
     &lib_form::garbage_collection("$ROOTDIR$ANSWERS_DIR");
+
+    exit;
 }; # main
 
 # ###################################################
@@ -543,11 +548,13 @@ sub valida_data {
     } else {
         &lib_form::aborta("Archivo inv&aacute;lido"); # 1.10
     };
+
     # 1.1 Establece cuales son y verifica que existen las plantillas basicas.
     if (&glib_cgi_04::param('_pag_exito') ne '') {
         $plantilla = &glib_cgi_04::param('_pag_exito');
         $plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
         $TMP_EXITO = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$plantilla\.$EXT");
+        $NOM_PLT_EXITO = "$plantilla\.$EXT";
     } else {
         $TMP_EXITO = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/exito\.$EXT");
     };
@@ -559,12 +566,19 @@ sub valida_data {
         $plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
         # Lee la plantilla del directorio de la vista.
         $TMP_ERROR = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$plantilla\.$EXT");
+        $NOM_PLT_ERROR = "$plantilla\.$EXT";
     } else {
         $TMP_ERROR = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/error\.$EXT");
     };
+
     if ( $TMP_ERROR eq '' ) {
         &lib_form::aborta("No existe plantilla de error.");
     };
+
+    if (&glib_cgi_04::param('_pag_estatico') ne '') { # si
+        $SALIDA_ESTATICA = 1;
+    }
+
     &inicializaMensajes(\$TMP_ERROR);
 
     # Lee el servidor SMTP definido para Prontus.
@@ -802,6 +816,7 @@ sub salida {
             &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
         };
     };
+
     $ANSWERID = $PRONTUS_ID . $TS . time . $$; # rand(1000000000);
 
     # 1.2 Procesa IFs y NIFs.
@@ -828,6 +843,7 @@ sub salida {
     # Elimina tags no parseados en la plantilla.
     $plantilla =~ s/%%\w+%%//sg; # 1.2.1
     $plantilla =~ s/%\w+%//sg;
+
     # Verifica que existe el directorios de cache y los crea si no es asi.
     print STDERR "$ROOTDIR$ANSWERS_DIR\n";
     if (! (-d "$ROOTDIR/$ANSWERS_DIR") ) {
@@ -835,6 +851,30 @@ sub salida {
             &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
         };
     };
+
+    # Salida estatica y existe plantilla exito estatica
+    if ($SALIDA_ESTATICA && $NOM_PLT_EXITO && !$hay_error) {
+        # Escribe el archivo de respuesta.
+        my $archivo = "$ROOTDIR/$ANSWERS_DIR/$NOM_PLT_EXITO";
+        open (ARCHIVO,">$archivo") || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";
+        print ARCHIVO $plantilla; #Escribe buffer completo
+        close ARCHIVO;
+
+        print "Location: $ANSWERS_DIR/$NOM_PLT_EXITO\n\n";
+        exit;
+    }
+
+    # Salida estatica y existe plantilla exito estatica
+    if ($SALIDA_ESTATICA && $NOM_PLT_ERROR && $hay_error) {
+        # Escribe el archivo de respuesta.
+        my $archivo = "$ROOTDIR/$ANSWERS_DIR/$NOM_PLT_ERROR";
+        open (ARCHIVO,">$archivo") || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";
+        print ARCHIVO $plantilla; #Escribe buffer completo
+        close ARCHIVO;
+
+        print "Location: $ANSWERS_DIR/$NOM_PLT_ERROR\n\n";
+        exit;
+    }
 
     # Escribe el archivo de respuesta.
     my $archivo = "$ROOTDIR/$ANSWERS_DIR/$ANSWERID\.$EXT";
@@ -848,6 +888,8 @@ sub salida {
     # print "Location: /$ANSWERS_DIR/$ANSWERID\.$EXT\n\n";
     # 02/01/2012 - CVI - se quita slash del comienzo para evitar // con error en nginx
     print "Location: $ANSWERS_DIR/$ANSWERID\.$EXT\n\n";
+
+    exit;
 }; # salida
 
 # ------------------------------------------------------------------------- #

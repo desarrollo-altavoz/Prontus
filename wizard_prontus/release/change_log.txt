@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.96 - 13/04/2017 - EAG
+11.2.96 - 27/04/2017 - EAG/JOR
 ====================================================================================================
 - bugfixes: Se corrige error al leer los formatos multimedia en la lib_prontus
 - bugfixes: Portadas taxonómicas: Se corrige error en procesamiento de paginas de taxport filtradas,
@@ -19,6 +19,10 @@ se omiten tipos js, sst y nombres robots.txt e index.html.
 No se recomienda hacer esto, ya que el funcionamiento del arrastre de fotos se vuelve limitado
 en el vtxt.
 - changes: Administración y FIDs: Se quita plugin de clipboard que no se usará
+- bugfixes: Se corrige función de salida. No estaba haciendo exit luego del location lo que causaba que se ejecutaran las instrucciones siguientes.
+- improvement: Se agrega nueva variable de configuración a la plantilla del formulario: _pag_estatico:
+        Esta variable sirve para indicar si la salida de exito o error se escribe en un archivo con
+        el mismo nombre que la plantilla o el nombre tradicional (random).
 ====================================================================================================
 11.2.95 - 27/03/2017 - EAG/PRB
 ====================================================================================================
