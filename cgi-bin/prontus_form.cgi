@@ -270,9 +270,6 @@ main: {
     # Finaliza mostrando la pagina de exito.
     &salida('', $PRONTUS_VARS{'form_msg_exito'.$VISTAVAR}, $TMP_EXITO, 0);
 
-    # Limpia el directorio de archivos temporales.
-    &lib_form::garbage_collection("$ROOTDIR$ANSWERS_DIR");
-
     exit;
 }; # main
 
@@ -811,7 +808,9 @@ sub salida {
         print STDERR "[prontus_form] Error: $msg\n";
         $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/error";
     }
-    if (! (-d "$ROOTDIR$ANSWERS_DIR") ) {
+
+    # Verifica que existe el directorios de cache y los crea si no es asi.
+    if (! (-d "$ROOTDIR/$ANSWERS_DIR") ) {
         if (&glib_fildir_02::check_dir("$ROOTDIR$ANSWERS_DIR") == 0) {
             &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
         };
@@ -844,13 +843,6 @@ sub salida {
     $plantilla =~ s/%%\w+%%//sg; # 1.2.1
     $plantilla =~ s/%\w+%//sg;
 
-    # Verifica que existe el directorios de cache y los crea si no es asi.
-    print STDERR "$ROOTDIR$ANSWERS_DIR\n";
-    if (! (-d "$ROOTDIR/$ANSWERS_DIR") ) {
-        if (&glib_fildir_02::check_dir("$ROOTDIR$ANSWERS_DIR") == 0) {
-            &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
-        };
-    };
 
     # Salida estatica y existe plantilla exito estatica
     if ($SALIDA_ESTATICA && $NOM_PLT_EXITO && !$hay_error) {
@@ -888,6 +880,9 @@ sub salida {
     # print "Location: /$ANSWERS_DIR/$ANSWERID\.$EXT\n\n";
     # 02/01/2012 - CVI - se quita slash del comienzo para evitar // con error en nginx
     print "Location: $ANSWERS_DIR/$ANSWERID\.$EXT\n\n";
+
+    # Limpia el directorio de archivos temporales.
+    &lib_form::garbage_collection("$ROOTDIR$ANSWERS_DIR");
 
     exit;
 }; # salida

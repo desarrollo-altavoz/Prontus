@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.96 - 27/04/2017 - EAG/JOR
+11.2.96 - 03/05/2017 - EAG/JOR
 ====================================================================================================
 - bugfixes: Se corrige error al leer los formatos multimedia en la lib_prontus
 - bugfixes: Portadas taxonómicas: Se corrige error en procesamiento de paginas de taxport filtradas,
