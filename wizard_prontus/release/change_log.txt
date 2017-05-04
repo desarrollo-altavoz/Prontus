@@ -8,6 +8,7 @@ solo se procesaba la primera página.
 las fotos agregadas a campos de fotofija se agregaban también al vtxt
 - bugfixes: FIDs: En el "Listado de enlaces" de multitag para el fid, se corrige error que mostraba información vacía
 cuando demoraba la carga asincrónica de los datos
+- bugfixes: Prontus Form: Se corrige función de salida. No estaba haciendo exit luego del location lo que causaba que se ejecutaran las instrucciones siguientes.
 - improvement: Se agrega parseo de PRONTUS_ID y SERVER_NAME al mapa del sitio
 - improvement: Se incorporan más exclusiones de archivos al garbage collector:
 se omiten tipos js, sst y nombres robots.txt e index.html.
@@ -18,11 +19,10 @@ se omiten tipos js, sst y nombres robots.txt e index.html.
 - improvement: FIDs: Se permite el funcionamiento de campos de fotofija junto con un vtxt en el mismo panel.
 No se recomienda hacer esto, ya que el funcionamiento del arrastre de fotos se vuelve limitado
 en el vtxt.
-- changes: Administración y FIDs: Se quita plugin de clipboard que no se usará
-- bugfixes: Se corrige función de salida. No estaba haciendo exit luego del location lo que causaba que se ejecutaran las instrucciones siguientes.
-- improvement: Se agrega nueva variable de configuración a la plantilla del formulario: _pag_estatico:
+- improvement: Prontus Form: Se agrega nueva variable de configuración a la plantilla del formulario: _pag_estatico:
         Esta variable sirve para indicar si la salida de exito o error se escribe en un archivo con
         el mismo nombre que la plantilla o el nombre tradicional (random).
+- changes: Administración y FIDs: Se quita plugin de clipboard que no se usará
 ====================================================================================================
 11.2.95 - 27/03/2017 - EAG/PRB
 ====================================================================================================
