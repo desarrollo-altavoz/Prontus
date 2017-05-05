@@ -276,7 +276,7 @@ sub procesa_files {
                     }
 
                     if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
-                        $artic_obj->genera_friendly_v4($base, 0);
+                        $artic_obj->genera_friendly_v4($base, 0) || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
                     }
 
                     my $secc4tax = $campos_xml{'_seccion1'};
