@@ -327,7 +327,7 @@ sub generar_xml_artic {
     };
 
 
-    # convierte tags a latin1 para poder aplicar la er
+    # convierte tags a latin1 para poder aplicar la regex
     utf8::decode($this->{campos}->{'_tags'});
     $this->{campos}->{'_tags'} =~ s/[^\w\,\-áéíóúüñÁÉÍÓÚÜÑ \.]//g;
     $this->{campos}->{'_tags'} =~ tr/ÁÉÍÓÚÜÑ/áéíóúüñ/;
@@ -1412,8 +1412,8 @@ sub get_xml_content {
     # print STDERR  "get content[$this->{fullpath_xml}]\n";
     my $num_elem = keys(%{$this->{xml_content}});
     if (!$num_elem) {
-        my $buff_xml_data = lib_prontus::get_xml_data($this->{fullpath_xml});
-        my %campos_from_xml = lib_prontus::getCamposXml($buff_xml_data);
+        my $buff_xml_data = &lib_prontus::get_xml_data($this->{fullpath_xml});
+        my %campos_from_xml = &lib_prontus::getCamposXml($buff_xml_data);
         $this->{xml_content} = \%campos_from_xml;
     };
     return %{$this->{xml_content}};
@@ -1423,7 +1423,7 @@ sub get_xml_content {
 sub tags2bd {
 # puebla nub de art con tags
 # Se invoca al momento de guardar un articulo.
-    my ($this, $base, $is_new) = @_;
+    my ($this, $base) = @_;
 
     my %campos = $this->get_xml_content();
     my @tags = split(/,/, $campos{'_tags'});
@@ -1454,7 +1454,7 @@ sub tags2bd {
 sub multitag2db {
 # puebla tabla de multitag
 # Se invoca al momento de guardar un articulo.
-    my ($this, $base, $is_new) = @_;
+    my ($this, $base) = @_;
     my %tipos = ('S' => '_multitag_seccion','T' => '_multitag_tema','ST' => '_multitag_subtema');
 
     foreach my $type (keys %tipos) {
@@ -1467,6 +1467,10 @@ sub multitag2db {
             return 0;
         };
 
+        my $num_elem = keys(%{$this->{xml_content}});
+        if (!$num_elem) {
+            $this->get_xml_content();
+        };
         # Asocia los TAGS al artic
         my @multittags = split(/,/, $this->{'xml_content'}->{$tipos{$type}});
         foreach my $id (@multittags) {
@@ -1483,9 +1487,14 @@ sub multitag2db {
 };
 # ---------------------------------------------------------------
 sub friendly_v4_2bd {
-# puebla tabal de urls friendly v4
+# puebla tabla de urls friendly v4
 # Se invoca al regenerar la DB de prontus
-    my ($this, $base, $is_new) = @_;
+    my ($this, $base) = @_;
+
+    my $num_elem = keys(%{$this->{xml_content}});
+    if (!$num_elem) {
+        $this->get_xml_content();
+    };
 
     if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
         # Primero elimina la url del artic actual:
@@ -1525,7 +1534,12 @@ sub genera_friendly_v4 {
 # genera todo lo que necesita la friendly v4 para funcionar
 # guarda el titular formateado en la BD
 # genera el archivo con el include en el filesystem
-    my ($this, $base, $is_new) = @_;
+    my ($this, $base) = @_;
+
+    my $num_elem = keys(%{$this->{xml_content}});
+    if (!$num_elem) {
+        $this->get_xml_content();
+    };
 
     if (!exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$this->{'xml_content'}->{'_fid'}}) {
         my ($mv, $buffer);
