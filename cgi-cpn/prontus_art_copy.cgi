@@ -195,8 +195,9 @@ sub copia_archivos {
     # Se copia el HTML y los relacionados manuales
     my @pags = &glib_fildir_02::lee_dir("$dir_base/$oldfechac$prontus_varglb::DIR_PAG");
     foreach my $file (@pags) {
-        if($file =~ /^$oldts/) {
-            &File::Copy::copy("$dir_base/$oldfechac$prontus_varglb::DIR_PAG/$file", "$dir_base/$newfechac$prontus_varglb::DIR_PAG/$file");
+        if ($file =~ /^$oldts(.*?)$/) {
+            my $newfile = $newts.$1;
+            &File::Copy::copy("$dir_base/$oldfechac$prontus_varglb::DIR_PAG/$file", "$dir_base/$newfechac$prontus_varglb::DIR_PAG/$newfile");
         }
     }
 
@@ -207,7 +208,7 @@ sub copia_archivos {
         # Se renombran por si las moscas
         my @asoc = &glib_fildir_02::lee_dir("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
         foreach my $file (@asoc) {
-            if($file =~ /^(.*?)$oldts(.*?)$/) {
+            if ($file =~ /^(.*?)$oldts(.*?)$/) {
                 my $newasoc = $1.$newts.$2;
                 &File::Copy::move("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$file", "$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$newasoc");
             }
@@ -218,10 +219,10 @@ sub copia_archivos {
     my @imags = &glib_fildir_02::lee_dir("$dir_base/$oldfechac$prontus_varglb::DIR_IMAG");
     foreach my $file (@imags) {
         #~ print STDERR "testeando de $dir_base/$oldfechac/imag/$file\n";
-        if($file =~ /^(.*?)$oldts(\.\w+)$/) {
+        if($file =~ /^(.*?)$oldts(\_*[a-zA-Z0-9\_\-]*?\.\w+)$/) {
             my $newimage = $1.$newts.$2;
+            #~ print STDERR "$dir_base/$oldfechac$prontus_varglb::DIR_IMAG/$file", "$dir_base/$newfechac$prontus_varglb::DIR_IMAG/$newimage\n";
             &File::Copy::copy("$dir_base/$oldfechac$prontus_varglb::DIR_IMAG/$file", "$dir_base/$newfechac$prontus_varglb::DIR_IMAG/$newimage");
-
         }
     }
 
@@ -267,9 +268,17 @@ sub editar_nuevo_artic {
     $buffer =~ s/<_art_autoinc>.*?<\/_art_autoinc>/<_art_autoinc><\/_art_autoinc>/is;
 
     # se actualiza el Titular
-    my %titular = &lib_prontus::getCamposXml($buffer, '_txt_titular');
-    my $tagtitu = "<_txt_titular>\n<![CDATA[(Copia de) " . $titular{'_txt_titular'}."]]>\n</_txt_titular>";
-    $buffer =~ s/<_txt_titular>\s*.*?\s*<\/_txt_titular>/$tagtitu/is;
+    my %campos_xml = &lib_prontus::getCamposXml($buffer, '_txt_titular,_slug');
+    my $nuevo_tag = "<_txt_titular>\n<![CDATA[(Copia de) " . $campos_xml{'_txt_titular'}."]]>\n</_txt_titular>";
+    $buffer =~ s/<_txt_titular>\s*.*?\s*<\/_txt_titular>/$nuevo_tag/is;
+
+    # se actualiza el slug
+    if ($campos_xml{'_slug'} ne '') {
+        # para que el nuevo slug cumple las reglas definidas
+        $campos_xml{'_slug'} = &lib_prontus::ajusta_titular_f4('copia-de-'.$campos_xml{'_slug'});
+        $nuevo_tag = "<_slug>" . $campos_xml{'_slug'}."</_slug>";
+        $buffer =~ s/<_slug>\s*.*?\s*<\/_slug>/$nuevo_tag/is;
+    }
 
     # Se deja el articulo sin el alta
     $buffer =~ s/<_alta>.*?<\/_alta>/<_alta><\/_alta>/is;
