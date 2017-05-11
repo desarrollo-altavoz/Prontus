@@ -35,10 +35,6 @@
 
             self.initDraggableBanco();
 
-            $('div[id^="body"]').each(function () {
-                $(this).find('div[id^="recuadro_FOTOFIJA_"]:eq(0)').attr("data-ini", "1");
-            });
-
             // Verificar nombres de fotos duplicados.
             var duplicados = '';
             $('div[id^="recuadro_FOTOFIJA_"]').each(function(){
@@ -70,6 +66,7 @@
             self.actions.bindOpenColorBox();
             self.actions.bindZoom();
             self.actions.bindRotate();
+            self.actions.bindReset();
         },
         // ---------------------------------------------------------------
         // Inicia drag & drop desde banco de imagenes.
@@ -224,42 +221,88 @@
                         onComplete: function () {
                             $("#editor_workarea_fotoimg").attr("src", relfoto);
 
-                            self.workArea.areaW = parseInt($("#editor_workarea_fotoimg").width());
-                            self.workArea.areaH = parseInt($("#editor_workarea_fotoimg").height());
-                            self.workArea.areaFotoW = parseInt($("#editor_workarea_foto").width());
-                            self.workArea.areaFotoH = parseInt($("#editor_workarea_foto").height());
-
-                            // $('#editor_workarea_foto').draggable({});
-                            $('#editor_workarea_crop').draggable({
-                                containment: "parent",
-                                drag: function (e, ui) {
-                                    console.log(ui.position.top);
-
-                                    self.workArea.areaFotoW = parseInt($("#editor_workarea_foto").width());
-                                    self.workArea.areaFotoH = parseInt($("#editor_workarea_foto").height());
-                                    self.workArea.areaW = parseInt($("#editor_workarea_fotoimg").width());
-                                    self.workArea.areaH = parseInt($("#editor_workarea_fotoimg").height());
-
-                                    console.log(self.workArea.areaH * self.workArea.zoomScale, self.workArea.areaFotoH);
-
-                                    if (self.workArea.areaH * self.workArea.zoomScale > self.workArea.areaFotoH) {
-                                        console.log("!!!!!", $("#editor_workarea_fotoimg").position().top);
-                                        // $("#editor_workarea_fotoimg").css("top", $("#editor_workarea_fotoimg").position().top * -1);
-                                        // $("#editor_workarea_fotoimg").position().top = ($("#editor_workarea_fotoimg").position().top*-1) -1;
-                                    }
-
-
-                                }
-
+                            $('#editor_workarea_fotoimg').draggable({
+                                containment: "#editor_workarea"
                             });
-                            $('#editor_workarea_crop').resizable({
-                                handles: 'n, e, s, w, ne, se, sw, nw',
-                                // aspectRatio: true,
-                                minWidth: 50,
-                                minHeight: 50,
-                                maxWidth: self.workArea.areaFotoW - 50,
-                                maxHeight: self.workArea.areaFotoH - 50,
-                            });
+
+                            // self.workArea.areaW = parseInt($("#editor_workarea_fotoimg").width());
+                            // self.workArea.areaH = parseInt($("#editor_workarea_fotoimg").height());
+                            // self.workArea.areaFotoW = parseInt($("#editor_workarea_foto").width());
+                            // self.workArea.areaFotoH = parseInt($("#editor_workarea_foto").height());
+
+                            // $('#editor_workarea_foto').draggable({
+                            //     drag: function (e, ui) {
+                            //         var limitLeft = $("#editor_workarea").width() + ui.position.left;
+                            //         var limitRight = $("#editor_workarea").width() - ui.position.left;
+                            //         var limitTop = $("#editor_workarea").height() + ui.position.top;
+                            //         var limitBottom = $("#editor_workarea").height() - ui.position.top;
+
+                            //         // console.log(limitTop, limitBottom, self.workArea.rotation);
+
+                            //         if (limitLeft <= 25) {
+                            //             ui.position.left = ($("#editor_workarea").width() - 25) * -1;
+                            //         }
+
+                            //         if (limitRight <= 25) {
+                            //             ui.position.left = ($("#editor_workarea").width() - 25);
+                            //         }
+
+                            //         if (limitTop <= 25) {
+                            //             ui.position.top = ($("#editor_workarea").height() - 25) * -1;
+                            //         }
+
+                            //         if (limitBottom <= 25) {
+                            //             ui.position.top = ($("#editor_workarea").height() - 25);
+                            //         }
+
+                            //         if (self.workArea.rotation == 90) {
+                            //             var newLeft = ui.position.left + $("#editor_workarea_fotoimg").position().left;
+                            //             if (($("#editor_workarea").width() - newLeft) <= 25) {
+                            //                 return false;
+                            //                 // ui.position.left = $("#editor_workarea_foto").width() - 25;
+                            //                 // console.log(($("#editor_workarea_foto").position().left - 25));
+                            //             }
+
+
+                            //         }
+
+                            //     }
+                            // });
+                            // $('#editor_workarea_crop').draggable({
+                            //     containment: "#editor_workarea_foto",
+                            //     drag: function (e, ui) {
+                            //         self.workArea.areaFotoW = parseInt($("#editor_workarea_foto").width());
+                            //         self.workArea.areaFotoH = parseInt($("#editor_workarea_foto").height());
+                            //         self.workArea.areaW = parseInt($("#editor_workarea_fotoimg").width());
+                            //         self.workArea.areaH = parseInt($("#editor_workarea_fotoimg").height());
+                            //     }
+
+                            // });
+                            // $('#editor_workarea_crop').resizable({
+                            //     handles: 'n, e, s, w, ne, se, sw, nw',
+                            //     // aspectRatio: true,
+                            //     minWidth: 50,
+                            //     minHeight: 50,
+                            //     maxWidth: self.workArea.areaFotoW - 50,
+                            //     maxHeight: self.workArea.areaFotoH - 50,
+                            // });
+
+                            // $("#editor_fotos").empty();
+
+                            // $('input[name^="FOTOFIJA_"]').each(function () {
+                            //     console.log($(this).attr("value").indexOf('/'));
+                            //     if ($(this).attr("value") && $(this).attr("value").indexOf('/') == 0) {
+                            //         var active = '';
+                            //         if ($(this).attr("value") == relfoto) active = 'active';
+
+                            //         console.log($(this).attr("name"), nomfoto);
+
+
+
+                            //         $("#editor_fotos").append('<div class="foto ' + active + '" data-fotofijaname="' + $(this).attr("name") + '"><a href="#"><img src="' +  $(this).attr("value") + '"></a></div>');
+                            //     }
+                            // });
+
                         },
                         onClosed: function () {
                             $('#editor_workarea_crop').resizable("destroy");
@@ -269,7 +312,8 @@
                 })
             },
             bindZoom: function () {
-                $("#editor_zoom_in").click(function () {
+                $("#editor_zoom_in").click(function (e) {
+                    e.preventDefault();
 
                     if ((self.workArea.areaW * self.workArea.zoomScale) >= self.workArea.realW) {
                         return false;
@@ -278,9 +322,11 @@
                     }
 
                     $("#editor_workarea_fotoimg").css("transform", "scale(" + self.workArea.zoomScale + ")");
+                    $("#editor_workarea_foto").css("transform", "scale(" + self.workArea.zoomScale + ")");
                 });
 
-                $("#editor_zoom_out").click(function () {
+                $("#editor_zoom_out").click(function (e) {
+                    e.preventDefault();
                     if (self.workArea.zoomScale <= 1) {
                         return false;
                     } else {
@@ -288,25 +334,43 @@
                     }
 
                     $("#editor_workarea_fotoimg").css("transform", "scale(" + self.workArea.zoomScale + ")");
+                    $("#editor_workarea_foto").css("transform", "scale(" + self.workArea.zoomScale + ")");
                 });
             },
             bindRotate: function () {
-                $("#editor_rotate_left").click(function () {
+                $("#editor_rotate_left").click(function (e) {
+                    e.preventDefault();
                     self.workArea.rotation -= 90;
 
                     console.log(self.workArea.rotation);
                     if (self.workArea.rotation == -360) self.workArea.rotation = 0;
 
-                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg)");
+                    $("#editor_workarea_fotoimg").css("transform", "rotate(" + self.workArea.rotation + "deg)");
                 });
-                $("#editor_rotate_right").click(function () {
+                $("#editor_rotate_right").click(function (e) {
+                    e.preventDefault();
                     self.workArea.rotation += 90;
 
                     console.log(self.workArea.rotation);
                     if (self.workArea.rotation == 360) self.workArea.rotation = 0;
 
-                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg)");
+                    $("#editor_workarea_fotoimg").css("transform", "rotate(" + self.workArea.rotation + "deg)");
                 });
+            },
+            bindReset: function () {
+                $("#editor_reset").click(function (e) {
+                    e.preventDefault();
+                    $("#editor_workarea_foto").css("left", 0);
+                    $("#editor_workarea_foto").css("top", 0);
+
+                    self.workArea.rotation = 0;
+                    self.workArea.zoomScale = 1;
+
+                    $("#editor_workarea_fotoimg").css("transform", "scale(1) rotate(0deg)");
+                });
+            },
+            apply: function () {
+
             }
         },
         // ---------------------------------------------------------------
