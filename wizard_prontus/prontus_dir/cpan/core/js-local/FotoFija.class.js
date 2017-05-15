@@ -27,6 +27,10 @@
             areaFotoH: false,
             zoomScale: 1.0,
             rotation: 0,
+            x: 0,
+            y: 0,
+            dx: 0,
+            dy: 0
         },
         // ---------------------------------------------------------------
         init: function (prontus_id) {
@@ -145,24 +149,6 @@
                 }
             },
             // ---------------------------------------------------------------
-            // Editar una foto. Inicia el crop.
-            // ---------------------------------------------------------------
-            edit: function (id) {
-                if (self.noCrop === true) return; // crop deshabilitado. (global)
-
-                if (self.preview.getCurrent(id) != id) {
-                    self.preview.update(id);
-                }
-
-                self.crop.init(id);
-            },
-            // ---------------------------------------------------------------
-            // Carga el preview de la foto.
-            // ---------------------------------------------------------------
-            preview: function (id) {
-                self.preview.update(id);
-            },
-            // ---------------------------------------------------------------
             // Ver una foto en su tamaño real en un colorbox.
             // ---------------------------------------------------------------
             show: function (id) {
@@ -219,89 +205,63 @@
                         width: 1040,
                         height: 580,
                         onComplete: function () {
-                            $("#editor_workarea_fotoimg").attr("src", relfoto);
+                            $("#editor_workarea_foto").css("background-image", "url(" + relfoto + ")");
 
-                            $('#editor_workarea_fotoimg').draggable({
-                                containment: "#editor_workarea"
+                            // Cargar fotos en sidebar.
+                            $("#editor_fotos").empty();
+
+                            $('input[name^="FOTOFIJA_"]').each(function () {
+                                console.log($(this).attr("value").indexOf('/'));
+                                if ($(this).attr("value") && $(this).attr("value").indexOf('/') == 0) {
+                                    var active = '';
+                                    if ($(this).attr("value") == relfoto) active = 'active';
+
+                                    console.log($(this).attr("name"), nomfoto);
+
+
+
+                                    $("#editor_fotos").append('<div class="foto ' + active + '" data-fotofijaname="' + $(this).attr("name") + '"><a href="#"><img src="' +  $(this).attr("value") + '"></a></div>');
+                                }
                             });
 
-                            // self.workArea.areaW = parseInt($("#editor_workarea_fotoimg").width());
-                            // self.workArea.areaH = parseInt($("#editor_workarea_fotoimg").height());
-                            // self.workArea.areaFotoW = parseInt($("#editor_workarea_foto").width());
-                            // self.workArea.areaFotoH = parseInt($("#editor_workarea_foto").height());
 
-                            // $('#editor_workarea_foto').draggable({
-                            //     drag: function (e, ui) {
-                            //         var limitLeft = $("#editor_workarea").width() + ui.position.left;
-                            //         var limitRight = $("#editor_workarea").width() - ui.position.left;
-                            //         var limitTop = $("#editor_workarea").height() + ui.position.top;
-                            //         var limitBottom = $("#editor_workarea").height() - ui.position.top;
+                            $('#editor_workarea_foto').draggable({
+                                // containment: "parent", // Contaiment no funciona con propiedad css "transform scale". Se debe hacer a mano.
+                                start: function (event, ui) {
+                                },
+                                drag: function (event, ui) {
+                                    var workAreaOffset = $("#editor_workarea").offset();
 
-                            //         // console.log(limitTop, limitBottom, self.workArea.rotation);
+                                    // console.log(ui.offset.left, workAreaOffset.left, ui.position);
 
-                            //         if (limitLeft <= 25) {
-                            //             ui.position.left = ($("#editor_workarea").width() - 25) * -1;
-                            //         }
-
-                            //         if (limitRight <= 25) {
-                            //             ui.position.left = ($("#editor_workarea").width() - 25);
-                            //         }
-
-                            //         if (limitTop <= 25) {
-                            //             ui.position.top = ($("#editor_workarea").height() - 25) * -1;
-                            //         }
-
-                            //         if (limitBottom <= 25) {
-                            //             ui.position.top = ($("#editor_workarea").height() - 25);
-                            //         }
-
-                            //         if (self.workArea.rotation == 90) {
-                            //             var newLeft = ui.position.left + $("#editor_workarea_fotoimg").position().left;
-                            //             if (($("#editor_workarea").width() - newLeft) <= 25) {
-                            //                 return false;
-                            //                 // ui.position.left = $("#editor_workarea_foto").width() - 25;
-                            //                 // console.log(($("#editor_workarea_foto").position().left - 25));
-                            //             }
+                                    if (ui.offset.left >= workAreaOffset.left) {
+                                        ui.position.left = 0;
+                                    }
 
 
-                            //         }
+                                    if (ui.offset.left <= workAreaOffset.left) {
+                                        // ui.position.left = 0;
+                                    }
 
-                            //     }
-                            // });
-                            // $('#editor_workarea_crop').draggable({
-                            //     containment: "#editor_workarea_foto",
-                            //     drag: function (e, ui) {
-                            //         self.workArea.areaFotoW = parseInt($("#editor_workarea_foto").width());
-                            //         self.workArea.areaFotoH = parseInt($("#editor_workarea_foto").height());
-                            //         self.workArea.areaW = parseInt($("#editor_workarea_fotoimg").width());
-                            //         self.workArea.areaH = parseInt($("#editor_workarea_fotoimg").height());
-                            //     }
+                                    var var1 = $("#editor_workarea").width() + workAreaOffset.left;
+                                    var var2 = $('#editor_workarea_foto').width() + ui.offset.left;
+                                    var var3 = ($('#editor_workarea_foto').width() - $("#editor_workarea").width()) / 2;
 
-                            // });
-                            // $('#editor_workarea_crop').resizable({
-                            //     handles: 'n, e, s, w, ne, se, sw, nw',
-                            //     // aspectRatio: true,
-                            //     minWidth: 50,
-                            //     minHeight: 50,
-                            //     maxWidth: self.workArea.areaFotoW - 50,
-                            //     maxHeight: self.workArea.areaFotoH - 50,
-                            // });
+                                    if (var2 <= var1) {
+                                        // console.log("el otro lado", ui.position, ui.offset);
+                                        // ui.position.left = 
+                                        // console.log(var3);
+                                    }
 
-                            // $("#editor_fotos").empty();
+                                    if (ui.offset.top >= workAreaOffset.top) {
+                                        ui.position.top = 0
+                                    }
 
-                            // $('input[name^="FOTOFIJA_"]').each(function () {
-                            //     console.log($(this).attr("value").indexOf('/'));
-                            //     if ($(this).attr("value") && $(this).attr("value").indexOf('/') == 0) {
-                            //         var active = '';
-                            //         if ($(this).attr("value") == relfoto) active = 'active';
-
-                            //         console.log($(this).attr("name"), nomfoto);
+                                    console.log(ui.offset, workAreaOffset);
 
 
-
-                            //         $("#editor_fotos").append('<div class="foto ' + active + '" data-fotofijaname="' + $(this).attr("name") + '"><a href="#"><img src="' +  $(this).attr("value") + '"></a></div>');
-                            //     }
-                            // });
+                                }
+                            });
 
                         },
                         onClosed: function () {
@@ -321,8 +281,7 @@
                         self.workArea.zoomScale += 0.1;
                     }
 
-                    $("#editor_workarea_fotoimg").css("transform", "scale(" + self.workArea.zoomScale + ")");
-                    $("#editor_workarea_foto").css("transform", "scale(" + self.workArea.zoomScale + ")");
+                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
                 });
 
                 $("#editor_zoom_out").click(function (e) {
@@ -333,8 +292,7 @@
                         self.workArea.zoomScale -= 0.1;
                     }
 
-                    $("#editor_workarea_fotoimg").css("transform", "scale(" + self.workArea.zoomScale + ")");
-                    $("#editor_workarea_foto").css("transform", "scale(" + self.workArea.zoomScale + ")");
+                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
                 });
             },
             bindRotate: function () {
@@ -342,19 +300,21 @@
                     e.preventDefault();
                     self.workArea.rotation -= 90;
 
-                    console.log(self.workArea.rotation);
                     if (self.workArea.rotation == -360) self.workArea.rotation = 0;
 
-                    $("#editor_workarea_fotoimg").css("transform", "rotate(" + self.workArea.rotation + "deg)");
+                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
+
+
                 });
+
                 $("#editor_rotate_right").click(function (e) {
                     e.preventDefault();
                     self.workArea.rotation += 90;
 
-                    console.log(self.workArea.rotation);
                     if (self.workArea.rotation == 360) self.workArea.rotation = 0;
 
-                    $("#editor_workarea_fotoimg").css("transform", "rotate(" + self.workArea.rotation + "deg)");
+                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
+
                 });
             },
             bindReset: function () {
