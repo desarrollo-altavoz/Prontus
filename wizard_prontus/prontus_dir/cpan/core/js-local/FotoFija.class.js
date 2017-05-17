@@ -18,17 +18,6 @@
     var FotoFija = {
         prontus_id: '',
         draggableBanco: false,
-        workArea: {
-            fotoRealW: false,
-            fotoRealH: false,
-            fotoOrigW: false,
-            fotoOrigH: false,
-            fotoW: false,
-            fotoH: false,
-            zoomScale: 1.0,
-            rotation: 0,
-            dragged: false,
-        },
         // ---------------------------------------------------------------
         init: function (prontus_id) {
             self = this;
@@ -64,10 +53,11 @@
                 });
             });
 
-            self.actions.bindOpenColorBox();
-            self.actions.bindZoom();
-            self.actions.bindRotate();
-            self.actions.bindReset();
+            self.workArea.bindFotoEditor();
+            self.workArea.bindZoom();
+            // self.actions.bindZoom();
+            // self.actions.bindRotate();
+            // self.actions.bindReset();
         },
         // ---------------------------------------------------------------
         // Inicia drag & drop desde banco de imagenes.
@@ -186,77 +176,6 @@
                     // }
                 });
             },
-            bindOpenColorBox: function () {
-                $('body').find('.openFotoEditor').click(function () {
-                    var nomfoto = $(this).data("nomfoto");
-                    var relfoto = $(this).data("relfoto");
-                    var wfoto = $(this).data("wfoto");
-                    var hfoto = $(this).data("hfoto");
-
-                    self.workArea.fotoRealW = wfoto;
-                    self.workArea.fotoRealH = hfoto;
-
-                    $.colorbox({
-                        inline: true,
-                        href:"#editor_container",
-                        width: 1040,
-                        height: 580,
-                        onComplete: function () {
-                            $("#editor_workarea_foto").css("background-image", "url(" + relfoto + ")");
-                            self.workArea.fotoW = self.workArea.fotoOrigW = $("#editor_workarea_foto").width();
-                            self.workArea.fotoH = self.workArea.fotoOrigH = $("#editor_workarea_foto").height();
-
-                            // Cargar fotos en sidebar.
-                            $("#editor_fotos").empty();
-
-                            $('input[name^="FOTOFIJA_"]').each(function () {
-                                console.log($(this).attr("value").indexOf('/'));
-                                if ($(this).attr("value") && $(this).attr("value").indexOf('/') == 0) {
-                                    var active = '';
-                                    if ($(this).attr("value") == relfoto) active = 'active';
-
-                                    console.log($(this).attr("name"), nomfoto);
-
-                                    $("#editor_fotos").append('<div class="foto ' + active + '" data-fotofijaname="' + $(this).attr("name") + '"><a href="#"><img src="' +  $(this).attr("value") + '"></a></div>');
-                                }
-                            });
-
-                            $('#editor_workarea_foto').draggable({
-                                start: function (event, ui) {
-                                    self.workArea.dragged = true;
-                                },
-                                drag: function (event, ui) {
-                                    var workAreaOffset = $("#editor_workarea").offset();
-                                    var nleft = parseInt((self.workArea.fotoW - $("#editor_workarea").width()) * -1);
-                                    var ntop = parseInt((self.workArea.fotoH - $("#editor_workarea").height()) * -1);
-
-
-                                    if (ui.offset.left >= workAreaOffset.left) {
-                                        ui.position.left = 0;
-                                    }
-
-                                    if (ui.position.left <= nleft) {
-                                        ui.position.left = nleft;
-                                    }
-
-                                    if (ui.position.top <= ntop) {
-                                        ui.position.top = ntop;
-                                    }
-
-                                    if (ui.offset.top >= workAreaOffset.top) {
-                                        ui.position.top = 0
-                                    }
-                                }
-                            });
-
-                        },
-                        onClosed: function () {
-                            // $('#editor_workarea_crop').resizable("destroy");
-                            // $('#editor_workarea_crop').draggable("destroy");
-                        }
-                    });
-                })
-            },
             bindZoom: function () {
                 $("#editor_zoom_in").click(function (e) {
                     e.preventDefault();
@@ -372,6 +291,250 @@
                 });
             }
         },
+        // ---------------------------------------------------------------
+        // Manejo del area de trabajo.
+        // ---------------------------------------------------------------
+        workArea: {
+            canvas: {
+                editor: null,
+                context: null,
+                width: false,
+                height: false,
+                image: {
+                    object: null,
+                    realWidth: 0,
+                    realHeight: 0,
+                    scale: 0,
+                    relativePath: null,
+                },
+                lastX: false,
+                lastY: false,
+            },
+            restart: function () {
+
+            },
+            bindFotoEditor: function () {
+                $('body').find('.openFotoEditor').click(function () {
+                    var nomfoto     = $(this).data("nomfoto");
+                    var relfoto     = $(this).data("relfoto");
+                    var wfoto       = $(this).data("wfoto");
+                    var hfoto       = $(this).data("hfoto");
+
+                    // Se guarda el tamaño real de la foto.
+                    self.workArea.canvas.image.realWidth = wfoto;
+                    self.workArea.canvas.image.realHeight = hfoto;
+                    self.workArea.canvas.image.relativePath = relfoto;
+
+                    $.colorbox({
+                        inline: true,
+                        href:"#editor_container",
+                        width: 1030,
+                        height: 700,
+                        onComplete: function () {
+                            self.workArea.canvas.width = $("#editor_workarea_foto").width();
+                            self.workArea.canvas.height = $("#editor_workarea_foto").height();
+
+                            self.workArea.cargarFotosSidebar();
+                            self.workArea.handleColorBox();
+                        },
+                        onClosed: function () {
+                        }
+                    });
+                })
+            },
+            handleColorBox: function () {
+                self.workArea.canvas.editor = $("#editor_workarea_foto");
+                self.workArea.canvas.context = self.workArea.canvas.editor[0].getContext("2d");
+                self.workArea.canvas.image.object = new Image;
+                self.workArea.canvas.image.object.onload = function () {
+                    // self.workArea.dibujarImagen(true);
+                    self.workArea.handleZoom(0);
+                    self.workArea.eventsListeners();
+                };
+
+                self.workArea.canvas.image.object.src = self.workArea.canvas.image.relativePath;
+                self.workArea.handleTransforms(self.workArea.canvas.context);
+
+            },
+            eventsListeners: function () {
+                self.workArea.canvas.lastX = self.workArea.canvas.width / 2;
+                self.workArea.canvas.lastY = self.workArea.canvas.height / 2;
+                var dragStart;
+                var dragged;
+
+                self.workArea.canvas.editor.on('mousedown', function (evt) {
+                    document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+                    self.workArea.canvas.lastX = evt.offsetX || (evt.pageX - self.workArea.canvas.editor.offsetLeft);
+                    self.workArea.canvas.lastY = evt.offsetY || (evt.pageY - self.workArea.canvas.editor.offsetTop);
+                    dragStart = self.workArea.canvas.context.transformedPoint(self.workArea.canvas.lastX, self.workArea.canvas.lastY);
+                    dragged = false;
+                });
+
+                self.workArea.canvas.editor.on('mousemove', function (evt) {
+                    self.workArea.canvas.lastX = evt.offsetX || (evt.pageX - self.workArea.canvas.editor.offset().left);
+                    self.workArea.canvas.lastY = evt.offsetY || (evt.pageY - self.workArea.canvas.editor.offset().top);
+                    dragged = true;
+
+                    if (dragStart) {
+                        var pt = self.workArea.canvas.context.transformedPoint(self.workArea.canvas.lastX, self.workArea.canvas.lastY);
+                        self.workArea.canvas.context.translate(pt.x - dragStart.x, pt.y - dragStart.y);
+                        self.workArea.handleZoom(0);
+
+                        var var1 = evt.pageX - evt.offsetX;
+                        console.log(evt.pageX, evt.offsetX, var1, self.workArea.canvas.editor.offset().left);
+                    }
+                });
+
+                self.workArea.canvas.editor.on('mouseup', function (evt) {
+                    dragStart = null;
+                    if (!dragged) self.workArea.handleZoom(evt.shiftKey ? -1 : 1);
+                });
+
+                // Estos no funcionan en esta version de jQuery.
+                document.getElementById('editor_workarea_foto').addEventListener('DOMMouseScroll', function(evt) {
+                    var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+                    if (delta) self.workArea.handleZoom(delta);
+
+                    return evt.preventDefault() && false;
+                }, false);
+
+                document.getElementById('editor_workarea_foto').addEventListener('mousewheel', function(evt) {
+                    var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+                    if (delta) self.workArea.handleZoom(delta);
+
+                    return evt.preventDefault() && false;
+                }, false);
+
+            },
+            handleZoom: function (clicks) {
+                var scaleFactor = 1.1;
+                var pt = self.workArea.canvas.context.transformedPoint(self.workArea.canvas.lastX, self.workArea.canvas.lastY);
+                self.workArea.canvas.context.translate(pt.x, pt.y);
+                var factor = Math.pow(scaleFactor, clicks);
+                self.workArea.canvas.context.scale(factor, factor);
+                self.workArea.canvas.context.translate(-pt.x, -pt.y);
+                self.workArea.dibujarImagen(true);
+            },
+            dibujarImagen: function (centrar) {
+                var p1 = self.workArea.canvas.context.transformedPoint(0, 0);
+                var p2 = self.workArea.canvas.context.transformedPoint(self.workArea.canvas.width, self.workArea.canvas.height);
+                self.workArea.canvas.context.clearRect(p1.x, p1.y, (p2.x - p1.x), (p2.y - p1.y));
+
+                self.workArea.canvas.context.save();
+                self.workArea.canvas.context.setTransform(1, 0, 0, 1, 0, 0);
+                self.workArea.canvas.context.clearRect(0, 0, self.workArea.canvas.width, self.workArea.canvas.height);
+                self.workArea.canvas.context.restore();
+                // self.workArea.canvas.context.resetTransform();
+
+                if (typeof centrar !== 'undefined' && centrar) {
+                    var hRatio = self.workArea.canvas.width / self.workArea.canvas.image.realWidth;
+                    var vRatio = self.workArea.canvas.height / self.workArea.canvas.image.realHeight;
+                    var ratio = Math.min(hRatio, vRatio);
+                    var centerShift_x = (self.workArea.canvas.width - self.workArea.canvas.image.realWidth * ratio) / 2;
+                    var centerShift_y = (self.workArea.canvas.height - self.workArea.canvas.image.realHeight * ratio) / 2;
+
+                    self.workArea.canvas.context.drawImage(self.workArea.canvas.image.object, 0, 0, self.workArea.canvas.image.realWidth, self.workArea.canvas.image.realHeight, centerShift_x, centerShift_y, self.workArea.canvas.image.realWidth*ratio, self.workArea.canvas.image.realHeight*ratio);
+                } else {
+                    self.workArea.canvas.context.drawImage(self.workArea.canvas.image.object, 0, 0);
+                }
+            },
+            handleTransforms: function () {
+                var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+                var xform = svg.createSVGMatrix();
+                var savedTransforms = [];
+                var save = self.workArea.canvas.context.save;
+                var restore = self.workArea.canvas.context.restore;
+                var scale = self.workArea.canvas.context.scale;
+                var rotate = self.workArea.canvas.context.rotate;
+                var translate = self.workArea.canvas.context.translate;
+                var transform = self.workArea.canvas.context.transform;
+                var setTransform = self.workArea.canvas.context.setTransform;
+                var pt  = svg.createSVGPoint();
+
+                self.workArea.canvas.context.getTransform = function() {
+                    return xform;
+                };
+
+                self.workArea.canvas.context.save = function() {
+                    savedTransforms.push(xform.translate(0, 0));
+
+                    return save.call(self.workArea.canvas.context);
+                };
+
+                self.workArea.canvas.context.restore = function() {
+                    xform = savedTransforms.pop();
+
+                    return restore.call(self.workArea.canvas.context);
+                };
+
+                self.workArea.canvas.context.scale = function(sx, sy){
+                    xform = xform.scaleNonUniform(sx, sy);
+
+                    return scale.call(self.workArea.canvas.context, sx, sy);
+                };
+
+                self.workArea.canvas.context.rotate = function(radians) {
+                    xform = xform.rotate(radians * 180 / Math.PI);
+
+                    return rotate.call(self.workArea.canvas.context, radians);
+                };
+
+                self.workArea.canvas.context.translate = function(dx, dy) {
+                    xform = xform.translate(dx, dy);
+
+                    return translate.call(self.workArea.canvas.context, dx, dy);
+                };
+
+                self.workArea.canvas.context.transform = function(a, b, c, d, e, f) {
+                    var m2 = svg.createSVGMatrix();
+                    m2.a = a;
+                    m2.b = b;
+                    m2.c = c;
+                    m2.d = d;
+                    m2.e = e;
+                    m2.f = f;
+                    xform = xform.multiply(m2);
+
+                    return transform.call(self.workArea.canvas.context, a, b, c, d, e, f);
+                };
+
+                self.workArea.canvas.context.setTransform = function(a, b, c, d, e, f) {
+                    xform.a = a;
+                    xform.b = b;
+                    xform.c = c;
+                    xform.d = d;
+                    xform.e = e;
+                    xform.f = f;
+
+                    return setTransform.call(self.workArea.canvas.context, a, b, c, d, e, f);
+                };
+
+                self.workArea.canvas.context.transformedPoint = function(x,y) {
+                    pt.x = x;
+                    pt.y = y;
+
+                    return pt.matrixTransform(xform.inverse());
+                };
+            },
+            cargarFotosSidebar: function () {
+                // Cargar fotos en sidebar.
+                $("#editor_fotos").empty();
+
+                $('input[name^="FOTOFIJA_"]').each(function () {
+                    $("#editor_fotos").append('<div class="foto"><span>' + $(this).attr("name") + '</span></div>');
+                });
+            },
+
+            bindZoom: function () {
+                $("#editor_zoom_in").click(function (e) {
+                    e.preventDefault();
+
+                    self.workArea.context.scale(2, 2);
+
+                });
+            }
+        },
+        // ---------------------------------------------------------------
         // ---------------------------------------------------------------
         // Manejo de fotos.
         // ---------------------------------------------------------------
