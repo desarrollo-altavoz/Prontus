@@ -19,18 +19,15 @@
         prontus_id: '',
         draggableBanco: false,
         workArea: {
-            realW: false,
-            realH: false,
-            areaW: false,
-            areaH: false,
-            areaFotoW: false,
-            areaFotoH: false,
+            fotoRealW: false,
+            fotoRealH: false,
+            fotoOrigW: false,
+            fotoOrigH: false,
+            fotoW: false,
+            fotoH: false,
             zoomScale: 1.0,
             rotation: 0,
-            x: 0,
-            y: 0,
-            dx: 0,
-            dy: 0
+            dragged: false,
         },
         // ---------------------------------------------------------------
         init: function (prontus_id) {
@@ -196,8 +193,8 @@
                     var wfoto = $(this).data("wfoto");
                     var hfoto = $(this).data("hfoto");
 
-                    self.workArea.realW = wfoto;
-                    self.workArea.realH = hfoto;
+                    self.workArea.fotoRealW = wfoto;
+                    self.workArea.fotoRealH = hfoto;
 
                     $.colorbox({
                         inline: true,
@@ -206,6 +203,8 @@
                         height: 580,
                         onComplete: function () {
                             $("#editor_workarea_foto").css("background-image", "url(" + relfoto + ")");
+                            self.workArea.fotoW = self.workArea.fotoOrigW = $("#editor_workarea_foto").width();
+                            self.workArea.fotoH = self.workArea.fotoOrigH = $("#editor_workarea_foto").height();
 
                             // Cargar fotos en sidebar.
                             $("#editor_fotos").empty();
@@ -218,55 +217,42 @@
 
                                     console.log($(this).attr("name"), nomfoto);
 
-
-
                                     $("#editor_fotos").append('<div class="foto ' + active + '" data-fotofijaname="' + $(this).attr("name") + '"><a href="#"><img src="' +  $(this).attr("value") + '"></a></div>');
                                 }
                             });
 
-
                             $('#editor_workarea_foto').draggable({
-                                // containment: "parent", // Contaiment no funciona con propiedad css "transform scale". Se debe hacer a mano.
                                 start: function (event, ui) {
+                                    self.workArea.dragged = true;
                                 },
                                 drag: function (event, ui) {
                                     var workAreaOffset = $("#editor_workarea").offset();
+                                    var nleft = parseInt((self.workArea.fotoW - $("#editor_workarea").width()) * -1);
+                                    var ntop = parseInt((self.workArea.fotoH - $("#editor_workarea").height()) * -1);
 
-                                    // console.log(ui.offset.left, workAreaOffset.left, ui.position);
 
                                     if (ui.offset.left >= workAreaOffset.left) {
                                         ui.position.left = 0;
                                     }
 
-
-                                    if (ui.offset.left <= workAreaOffset.left) {
-                                        // ui.position.left = 0;
+                                    if (ui.position.left <= nleft) {
+                                        ui.position.left = nleft;
                                     }
 
-                                    var var1 = $("#editor_workarea").width() + workAreaOffset.left;
-                                    var var2 = $('#editor_workarea_foto').width() + ui.offset.left;
-                                    var var3 = ($('#editor_workarea_foto').width() - $("#editor_workarea").width()) / 2;
-
-                                    if (var2 <= var1) {
-                                        // console.log("el otro lado", ui.position, ui.offset);
-                                        // ui.position.left = 
-                                        // console.log(var3);
+                                    if (ui.position.top <= ntop) {
+                                        ui.position.top = ntop;
                                     }
 
                                     if (ui.offset.top >= workAreaOffset.top) {
                                         ui.position.top = 0
                                     }
-
-                                    console.log(ui.offset, workAreaOffset);
-
-
                                 }
                             });
 
                         },
                         onClosed: function () {
-                            $('#editor_workarea_crop').resizable("destroy");
-                            $('#editor_workarea_crop').draggable("destroy");
+                            // $('#editor_workarea_crop').resizable("destroy");
+                            // $('#editor_workarea_crop').draggable("destroy");
                         }
                     });
                 })
@@ -275,13 +261,27 @@
                 $("#editor_zoom_in").click(function (e) {
                     e.preventDefault();
 
-                    if ((self.workArea.areaW * self.workArea.zoomScale) >= self.workArea.realW) {
+                    if ((self.workArea.fotoOrigW * self.workArea.zoomScale) >= self.workArea.fotoRealW) {
                         return false;
                     } else {
                         self.workArea.zoomScale += 0.1;
                     }
 
-                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
+                    self.workArea.fotoW = self.workArea.fotoOrigW * self.workArea.zoomScale;
+                    self.workArea.fotoH = self.workArea.fotoOrigH * self.workArea.zoomScale;
+
+                    $("#editor_workarea_foto").width(self.workArea.fotoW);
+                    $("#editor_workarea_foto").height(self.workArea.fotoH);
+
+                    var var1 = ($("#editor_workarea").width() - self.workArea.fotoW) / 2;
+                    var var2 = ($("#editor_workarea").height() - self.workArea.fotoH) / 2;
+
+                    // if (!self.workArea.dragged) {
+                        $("#editor_workarea_foto").css("left", var1);
+                        $("#editor_workarea_foto").css("top", var2);
+                    // }
+
+                    // $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
                 });
 
                 $("#editor_zoom_out").click(function (e) {
@@ -292,7 +292,21 @@
                         self.workArea.zoomScale -= 0.1;
                     }
 
-                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
+                    self.workArea.fotoW = self.workArea.fotoOrigW * self.workArea.zoomScale;
+                    self.workArea.fotoH = self.workArea.fotoOrigH * self.workArea.zoomScale;
+
+                    $("#editor_workarea_foto").width(self.workArea.fotoW);
+                    $("#editor_workarea_foto").height(self.workArea.fotoH);
+
+                    var var1 = ($("#editor_workarea").width() - self.workArea.fotoW) / 2;
+                    var var2 = ($("#editor_workarea").height() - self.workArea.fotoH) / 2;
+
+                    // if (!self.workArea.dragged) {
+                        $("#editor_workarea_foto").css("left", var1);
+                        $("#editor_workarea_foto").css("top", var2);
+                    // }
+
+                    // $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
                 });
             },
             bindRotate: function () {
@@ -302,7 +316,7 @@
 
                     if (self.workArea.rotation == -360) self.workArea.rotation = 0;
 
-                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
+                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg)");
 
 
                 });
@@ -313,7 +327,7 @@
 
                     if (self.workArea.rotation == 360) self.workArea.rotation = 0;
 
-                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg) scale(" + self.workArea.zoomScale + ")");
+                    $("#editor_workarea_foto").css("transform", "rotate(" + self.workArea.rotation + "deg)");
 
                 });
             },
