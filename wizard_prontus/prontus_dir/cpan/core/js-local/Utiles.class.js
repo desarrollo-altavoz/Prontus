@@ -20,7 +20,7 @@ var Utiles = {
     /**
      * Zona de Configuraciones
      */
-    prontusName: '/prontus_modelo_vacio',
+    prontusName: '',
     configWinDefault: 'scrollbars=1,resizable=1,toolbar=0,status=0,menubar=0,location=0,directories=0',
     msgWin: 'Debes habilitar las ventanas emergentes en tu navegador para acceder a esta funcionalidad.',
 

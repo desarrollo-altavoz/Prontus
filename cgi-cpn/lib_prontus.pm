@@ -924,7 +924,7 @@ sub load_artic_pubs {
 
     my $ref_hash_artics = \%hash_artics;
     my $json_artics;
-    if($JSON::VERSION =~ /^1\./) {
+    if ($JSON::VERSION =~ /^1\./) {
         my $json = new JSON;
         $json_artics = $json->objToJson($ref_hash_artics);
     } else {
@@ -5908,10 +5908,7 @@ sub artic_parser_fechas {
     }; # foreach fechas
 
     return $buffer;
-
 };
-
-
 
 # --------------------------------------------------------------------#
 sub escapea_bd {
@@ -6301,7 +6298,6 @@ sub get_relpathconf_by_prontus_id {
 };
 # ---------------------------------------------------------------
 sub get_path_nice {
-
     my $pathnice = '/usr/bin/nice';
     if (! -f $pathnice) {
       $pathnice = '/usr/local/bin/nice';
