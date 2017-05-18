@@ -53,7 +53,7 @@ sub save_artic_with_object {
         $tags_old = $campos_xml_old{'_tags'};
     };
 
-    # Generar y guardar xml.
+    # Generar y guardar xml. Se guardan los recursos subidos a traves del fid
     # Esto es comun para nuevo y actualizar
     if (!$ARTIC_OBJ->generar_xml_artic()) {
         &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");

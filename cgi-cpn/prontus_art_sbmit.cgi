@@ -23,19 +23,13 @@
 # ---------------------------------------------------------------
 # LLAMADAS A ARCHIVOS EXTERNOS.
 # ------------------------------
-
-
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-
 # ---------------------------------------------------------------
 # PLANTILLAS HTML UTILIZADAS.
 # ------------------------
-
 # ---------------------------------------------------------------
-
-
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 # ---------------------------
@@ -83,9 +77,11 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
+use Data::Dumper;
 
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
@@ -102,17 +98,11 @@ use lib_quota;
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
-
-
 my ($ARTIC_OBJ);
+my %FORM;
+my $PATHNICE;
 
-&main();
-exit;
-
-# ---------------------------------------------------------------
-# SUB-RUTINAS.
-# ---------------------------------------------------------------
-sub main {
+main: {
 
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
@@ -182,20 +172,19 @@ sub main {
     my $is_new = 0;
     $is_new = 1 if ($FORM{'_file'} eq '');
 
-    # Se comprueba si el articulo merece ser guardado
-    my $buff_xml_data = lib_prontus::get_xml_data($lib_artic::ARTIC_OBJ->{fullpath_xml});
+    # Se comprueba si el articulo debe ser guardado
+    my $buff_xml_data = &lib_prontus::get_xml_data($lib_artic::ARTIC_OBJ->{fullpath_xml});
     my $regenerar_procesos = 1;
-    my %campo_alta = lib_prontus::getCamposXml($buff_xml_data, '_alta');
-    my $alta = $campo_alta{'_alta'};
+    my %campos_xml = &lib_prontus::getCamposXml($buff_xml_data, '_alta');
+    my $alta = $campos_xml{'_alta'};
     if($FORM{'_alta'} eq '' && ($alta eq '' || $is_new)) {
         $regenerar_procesos = 0;
     };
 
-    my %campos_stst_old = lib_prontus::getCamposXml($buff_xml_data, '_seccion1,_tema1,_subtema1,_seccion2,_tema2,_subtema2,_seccion3,_tema3,_subtema3');
+    my %campos_stst_old = &lib_prontus::getCamposXml($buff_xml_data, '_seccion1,_tema1,_subtema1,_seccion2,_tema2,_subtema2,_seccion3,_tema3,_subtema3');
 
     # Se revisa si se deben regenerar todas las taxport o solo una página
     my ($ts1, $ts2, $ts3) = &check_taxport2process($buff_xml_data, \%campos_stst_old, $is_new);
-
 
     my $msg_err_save = &lib_artic::save_artic_with_object($is_new);
     &glib_html_02::print_pag_result("Error", $msg_err_save, 0, 'exit=1,ctype=1') if ($msg_err_save);
@@ -206,7 +195,6 @@ sub main {
         # Publicar art.
         my $dir_port = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/site/edic/$FORM{'_edic'}/port";
         my $nom_port = $FORM{'_port'};
-        # my $nom_artic = $lib_artic::ARTIC_OBJ->get_nom_artic($lib_artic::ARTIC_OBJ->{campos}->{'_plt'});
         my $ts = $lib_artic::ARTIC_OBJ->{ts};
         # print STDERR "ts[$ts]\n";
         &lib_artic::publica_art_in_port("$dir_port/$nom_port", $FORM{'_edic'}, $nom_port, $prontus_varglb::PRONTUS_ID, $ts, $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}, $FORM{'_area'});
@@ -215,6 +203,14 @@ sub main {
     my $fullpath_artic = $lib_artic::ARTIC_OBJ->get_fullpath_artic('', $lib_artic::ARTIC_OBJ->{campos}->{'_plt'});
     use FindBin '$Bin';
     my $rutaScript = $Bin;
+
+    # cargamos la ruta de nice
+    $PATHNICE = &lib_prontus::get_path_nice();
+    $PATHNICE = "$PATHNICE -n19 " if ($PATHNICE);
+
+    if ($lib_artic::ARTIC_OBJ->{xml_content}->{'_gal_archive'} ne '') {
+        &call_gallery_save($fullpath_artic, $rutaScript);
+    }
 
     # DAM
     &call_dam2save($fullpath_artic, $rutaScript);
@@ -239,9 +235,7 @@ sub main {
 
     #print STDERR "filtro_fid[$filtro_fid]\n";
     if($regenerar_procesos && !($lib_artic::ARTIC_OBJ->{campos}->{'_seccion1'} || $lib_artic::ARTIC_OBJ->{campos}->{'_seccion2'} || $lib_artic::ARTIC_OBJ->{campos}->{'_seccion3'})) {
-        #~ print STDERR "primer call_list_regen\n";
         my $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'} . '///';
-        #~ &call_taxports_regen($rutaScript, $param_especif_taxport);
         &call_list_regen($rutaScript, $param_especif_taxport);
     };
 
@@ -590,8 +584,10 @@ sub main {
     my $popup = '';
     $popup = '&_popup=1' if($FORM{'_popup'});
     print "Location: prontus_art_ficha.$prontus_varglb::EXTENSION_CGI?_curr_body=$FORM{'_curr_body'}" . '&_dir_fecha=' . $dir_fecha . '&_file=' . $nom_file_artic . '&_fid=' . $FORM{'_fid'} . '&_path_conf=' . $FORM{'_path_conf'} . '&fotosvtxt=/1/2/3/4' . $popup . $port_preview . $upd_port_preview . "\n\n";    # 1.15
-
+    exit;
 };
+# ---------------------------------------------------------------
+# SUB-RUTINAS.
 # ---------------------------------------------------------------
 sub call_dropbox_backup {
     my $ts = $_[0];
@@ -617,9 +613,15 @@ sub call_clustering {
 sub call_dam2save {
     my $fullpath_artic = shift;
     my $rutaScript = shift;
-    my $pathnice = &lib_prontus::get_path_nice();
-    $pathnice = "$pathnice -n19 " if($pathnice);
-    my $cmd = "$pathnice $rutaScript/dam/prontus_dam_ppart_save.cgi $fullpath_artic $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
+    my $cmd = "$PATHNICE $rutaScript/dam/prontus_dam_ppart_save.cgi $fullpath_artic $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
+    print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+    system $cmd;
+};
+# ---------------------------------------------------------------
+sub call_gallery_save {
+    my $fullpath_artic = shift;
+    my $rutaScript = shift;
+    my $cmd = "$PATHNICE $rutaScript/galeria/prontus_galeria_procesar.cgi $fullpath_artic >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
@@ -629,10 +631,7 @@ sub call_taxports_regen {
     my $rutaScript = shift;
     my $param_especif_taxport = shift;
     my $param_ts = shift;
-
-    my $pathnice = &lib_prontus::get_path_nice();
-    $pathnice = "$pathnice -n19 " if($pathnice);
-    my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport $param_ts >/dev/null 2>&1 &";
+    my $cmd = "$PATHNICE $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport $param_ts >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
@@ -642,9 +641,7 @@ sub call_list_regen {
     my $rutaScript = shift;
     my $param_especif_list = shift;
     return if($prontus_varglb::LIST_PROCESO_INTERNO ne 'SI');
-    my $pathnice = &lib_prontus::get_path_nice();
-    $pathnice = "$pathnice -n19 " if($pathnice);
-    my $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif_list >/dev/null 2>&1 &";
+    my $cmd = "$PATHNICE $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif_list >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
@@ -653,9 +650,7 @@ sub call_list_regen {
 sub call_tagonomicas_regen {
     my $rutaScript = shift;
     my $param_especif_tagonomicas = shift;
-    my $pathnice = &lib_prontus::get_path_nice();
-    $pathnice = "$pathnice -n19 " if($pathnice);
-    my $cmd = "$pathnice $rutaScript/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $param_especif_tagonomicas >/dev/null 2>&1 &";
+    my $cmd = "$PATHNICE $rutaScript/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $param_especif_tagonomicas >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
@@ -668,11 +663,14 @@ sub crear_objeto_artic {
 
     my @campos = &glib_cgi_04::param();
     my %hash_datos;
-    foreach $nom_campo (sort {$a cmp $b} @campos) {
+    foreach my $nom_campo (sort {$a cmp $b} @campos) {
         my $nom_lc = lc $nom_campo;
         $hash_datos{$nom_lc} = &glib_cgi_04::param($nom_campo);
-        if (($nom_lc =~ /^asocfile_/) && ($hash_datos{$nom_lc} ne '')) {
+        if (($nom_lc =~ /^asocfile_/ || $nom_lc eq '_gal_archive') && ($hash_datos{$nom_lc} ne '')) {
+            # revisar como se esta pasando el real path del archivo
+            no strict "refs";
             $hash_datos{$nom_lc}{'real_path'} = &glib_cgi_04::real_paths($nom_campo);
+            use strict;
         };
     };
 
@@ -696,7 +694,6 @@ sub crear_objeto_artic {
 
     # cvi - Para guardar los nombres de los tags tambien
     my $tagnames = '';
-    #~ my $tags4fid = &glib_cgi_04::param('_tags4fid');
     my @tagscomp = split(/,/, $tags4fid);
     foreach my $idandname (@tagscomp) {
       if($idandname =~ /^\d+\|(.+?)$/) {
@@ -713,17 +710,13 @@ sub crear_objeto_artic {
         $hash_datos{'_alta'} = '1';
     };
 
-
     my $artic_obj = Artic->new(
                     'prontus_id'=>$prontus_varglb::PRONTUS_ID,
                     'public_server_name'=>$prontus_varglb::PUBLIC_SERVER_NAME,
                     'cpan_server_name'=>$prontus_varglb::IP_SERVER,
                     'ts'=>$ts, # si no va, asigna uno nuevo
                     'campos'=>\%hash_datos) || die "Error inicializando objeto articulo: $Artic::ERR\n";
-
-
     return $artic_obj;
-
 };
 # ---------------------------------------------------------------
 sub do_preview {
@@ -773,7 +766,6 @@ sub check_taxport2process {
 
     my ($ts, $ext) = &lib_prontus::split_nom_y_extension($FORM{'_file'});
     my %campos_old = lib_prontus::getCamposXml($buff_xml_data, '_alta,_fechap,_horap,_fechae,_horae');
-    $all = $ts;
 
     # En este caso no hacemos nada, porque no se regenerarán las taxport
     return ('', '', '') if($is_new && $FORM{'_alta'} eq '');

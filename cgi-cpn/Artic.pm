@@ -77,6 +77,12 @@ our $XML_BASE =
 <_multitag_seccion></_multitag_seccion>
 <_multitag_tema></_multitag_tema>
 <_multitag_subtema></_multitag_subtema>
+<_galeria_prontus_conf></_galeria_prontus_conf>
+<_galeria_flag_imagen_temporal></_galeria_flag_imagen_temporal>
+<_galeria_prontus_str></_galeria_prontus_str>
+<_txt_galeria_description_total></_txt_galeria_description_total>
+<_txt_galeria_credito_total></_txt_galeria_credito_total>
+<_gal_archive></_gal_archive>
 </_private>
 <_public>
 </_public>
@@ -358,7 +364,7 @@ sub generar_xml_artic {
     foreach my $nom_campo (keys %{$this->{campos}}) {
         # Salta los recursos, ya procesados de manera especial
 
-        next if ($nom_campo =~ /^(asocfile_|swf_|multimedia_|foto_|fotofija_|_wfoto_|_hfoto_)/);
+        next if ($nom_campo =~ /^(asocfile_|swf_|multimedia_|foto_|fotofija_|_wfoto_|_hfoto_|_gal_archive)/);
         my $val_campo = $this->{campos}->{$nom_campo};
 
         # elimina posibles caracteres de control
@@ -399,8 +405,6 @@ sub generar_xml_artic {
 
     # Se escribe el XML a disco
     return $this->_flush_xml();
-
-
 };
 # ---------------------------------------------------------------
 sub _flush_xml {
@@ -465,7 +469,9 @@ sub _guarda_recursos {
 
     foreach my $nom_campo (keys %{$this->{campos}}) {
         my $val_campo = $this->{campos}->{$nom_campo};
-        next if ($nom_campo !~ /^$type\_\w+/);
+        next if ($nom_campo !~ /^$type\_\w+/ && $nom_campo ne '_gal_archive');
+        next if ($nom_campo eq '_gal_archive' && $type ne 'asocfile');
+
         # Ver si hay archivo existente para el recurso
         my $arch_existente = $this->{campos}->{'_hidd_' . $nom_campo}; # ej: foto_1120090528115643.jpg
         my $nom_arch;
@@ -521,16 +527,11 @@ sub _guarda_recursos {
 
                 my $borrar_arch = $this->{campos}->{'_borr_' . $nom_campo};
                 if ($borrar_arch eq 'S') {
-                    # my $full_path_arch = "$dst_dir/$nom_arch";
-                    # unlink $full_path_arch if (-f $full_path_arch);
-
                     # Obtener nombre de arch. sin extension
                     my $nom_sin_ext = $nom_arch;
                     $nom_sin_ext =~ s/\.\w*$//;
 
                     # Borra todos los relacionados
-                    #my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
-
                     my @archivos_rel = glob("$dst_dir/$nom_sin_ext" . '*');
                     foreach my $archivo_rel (@archivos_rel) {
                         if (-d $archivo_rel) {
@@ -668,7 +669,7 @@ sub _get_aux_mediafile {
     my ($nom_file, $texto_mm);
 
     my $protocolo = 'http';
-    if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+    if ($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
         $protocolo = 'https';
     }
 
@@ -710,10 +711,8 @@ sub _get_aux_mediafile {
 sub _get_nom_asocfile {
 # retorna nombre de archivo para asocfile_i, con extension y sin path
     my ($this) = shift;
-
     my $texto = shift;
     my $af_existente = shift;
-
 
     my $nomfile = '';
     my $ext = '';
@@ -769,7 +768,7 @@ sub _get_nom_foto {
     my $foto_existente = shift;
     my $nom_foto_orig = shift;
 
-    if($nom_foto_orig) {
+    if ($nom_foto_orig) {
         $nom_foto_orig =~ s/\_/ /sig;
         $nom_foto_orig =~ s/^\s+//;
 
@@ -836,7 +835,6 @@ sub _existe_foto {
             return 1; # encuentra
         };
     };
-
     return 0;
 };
 
@@ -853,7 +851,6 @@ sub _guarda_fotosbatch {
     &glib_fildir_02::check_dir($dir_uploadify);
 
     foreach my $nom_campo (keys %{$this->{campos}}) {
-
         next if ($nom_campo !~ /^_fotobatch\d+/);
         my $val_campo = $this->{campos}->{$nom_campo}; # path de la foto, pero s/doc. root
         my $path_foto_batch = "$document_root$val_campo";

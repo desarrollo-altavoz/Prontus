@@ -1,0 +1,95 @@
+<div class="tabs-alt">
+    <ul>
+        <li><a href="#_prontus_galeria_subtab1" class="button"><span>Editar galer&iacute;a</span></a></li>
+        <li><a href="#_prontus_galeria_subtab2" class="button"><span>Subir nuevas im&aacute;genes a la galer&iacute;a</span></a></li>
+    </ul>
+</div>
+
+<div id="_prontus_galeria_subtab1">
+    <table width="100%" cellspacing="0" class="tableform">
+      <tr>
+        <td>
+            <div id="_addimage-galeria-prontus" class="radius">
+                <img src="/%%_prontus_id%%/cpan/custom/imag/ico-add-image.png" width="32" height="32" alt="Agregar im&aacute;genes" title="Agregar im&aacute;genes" />
+                Arrastre imágenes aquí para agregarlas a la galería
+            </div>
+            <h1>Galería de Imágenes</h1>
+            <h4>Total de imágenes: <span id="_galeria-prontus-total"></span></h4>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <div class="ocultar">
+                <div id="_imagen_temporal">
+                    <!--custom-->
+                    <input type="hidden" id="_galeria_prontus_conf"  name="_galeria_prontus_conf" value="##_gal_conf##"/>
+                    <input type="text" name="_galeria_prontus_str" id="_galeria_prontus_str" value="%%_galeria_prontus_str%%" />
+                    <!--loop_gal-->
+                    %%fotofija_prontus_galeria_temporal##i##(##_size##)%%
+                    <input type="text" id="_galeria_prontus_str##i##" value="%%_galeria_prontus_str##i##%%" />
+                    <!--/loop_gal-->
+                    <!--/custom-->
+
+                    <textarea id="_txt_galeria_description_total" name="_txt_galeria_description_total" cols="110" rows="2" class="fieldform">%%_txt_galeria_description_total%%</textarea>
+                    <textarea id="_txt_galeria_credito_total" name="_txt_galeria_credito_total" cols="110" rows="2" class="fieldform">%%_txt_galeria_credito_total%%</textarea>
+                </div>
+
+                <div id="_matrix">
+                    <div class="botonera">
+                        <a href="#" class="show">
+                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png" class="cambia-boton" alt="Ver imagen" title="Ver imagen" height="17" width="18">
+                        </a>
+                        <a href="#" class="edit">
+                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/ed2_of.gif" class="cambia-boton" alt="Editar datos de la imagen" title="Editar datos de la imagen" height="17" width="18" >
+                        </a>
+                        <a href="#" class="delete">
+                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/bo2_of.gif" class="cambia-boton" alt="Click para borrar" title="Click para borrar" height="17" width="18">
+                        </a>
+                    </div>
+                </div>
+
+                <div id="_dialog-form" title="Editar datos de la imagen">
+                    <input type="hidden" name="_galeria_id_item_editing" id="_galeria_id_item_editing" value="" class="fieldform" />
+                    <div class="opcion">
+                        Descripción de la imagen:
+                        <textarea name="_galeria_desc_temporal" id="_galeria_desc_temporal"cols="110" rows="4" class="fieldform"></textarea>
+                    </div>
+                    <div class="opcion">
+                        Crédito de la imagen:
+                        <input type="text" name="_galeria_credito_temporal" id="_galeria_credito_temporal" value="" class="fieldform" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="_content-galeria-prontus" class="radius">
+            </div>
+        </td>
+      </tr>
+    </table>
+</div>
+
+<div id="_prontus_galeria_subtab2">
+    <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform">
+        <tr>
+            <td class="nombre">Archivo Zip con Imágenes</td>
+            <td class="campo2 upload">
+                <input name="_gal_archive" type="file" id="_gal_archive" />
+                <div class="file-link">&nbsp; %%_gal_archive%%</div>
+                <br/>
+                <span class="ayuda">Ingrese un archivo en formato ZIP con varias fotos, las cuales serán agregadas al artículo, redimensionadas y posicionadas en los controles de Foto de la Galería.</span>
+                <br/>
+                <br/>
+                <div class="ocultar">
+                    <div id="_prontus-galeria-dialog" title="Procesando el Zip">Espere mientras se procesa el Zip
+                        <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading.gif" style="vertical-align:bottom;" />
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+$(document).ready(function () {
+    GaleriaProntus.init('%%_galeria_flag_imagen_temporal%%');
+});
+</script>

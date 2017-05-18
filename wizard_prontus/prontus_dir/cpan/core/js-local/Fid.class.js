@@ -766,6 +766,15 @@ var Fid = {
             }
         }
 
+        if (GaleriaProntus.pproc_working) {
+            if (!confirm(GaleriaProntus.msg_confirm)) {
+                return false;
+            }
+        }
+
+        GaleriaProntus.guardarGaleriaProntus();
+
+        // si friendly 4 esta activada el guardado se hace acá y no se ejecuta el codigo siguiente
         if (Fid.friendlyVer == 4 && (bot_press == 'save' || bot_press == 'save_new')) {
                 Fid.validaTitular(bot_press);
                 return false;
