@@ -9363,3 +9363,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_art_copy.cgi
         /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
 
+    [mejoras]
+        - Se agrega script para corregir friendly url v4 en Prontus ya existentes. Después de activar
+        la versión 4 en la configuración, ejecutar el script por consola:
+        perl prontus_corrige_friendly4.pl mi_prontus
+    [files]
+        /cgi-cpn/prontus_corrige_friendly4.pl
