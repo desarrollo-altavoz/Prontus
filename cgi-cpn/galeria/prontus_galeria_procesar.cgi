@@ -188,7 +188,7 @@ sub procesar_zip {
     }
 
     # Se descomprime el archivo
-    $resp = `/usr/bin/unzip -oj $newZip -d $DIRTMP`;
+    $resp = `unzip -oj $newZip -d $DIRTMP`;
     if($resp =~ /such file/i) {
         &exitProgram("Error al descomprimir el archivo: $resp", 1);
     }
