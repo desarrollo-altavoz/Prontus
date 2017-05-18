@@ -9359,15 +9359,22 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [cambios]
         - Se cambia mensaje de modal que indica conclicto de urls de artículos
         - Se elimina check_platform.cgi, prontus_check_platform cumple estas funciones
-        - Se agrega verificación de unzip instalado.
+        - Se cambian las leyendas y rótulos en la verificación de plataforma.
     [mejoras]
+        - Se agrega verificación de unzip instalado.
         - Correcciones menores en el código y comentarios
+        - Se mejora deteccion de version de ffmpeg obtenida desde git
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_art_copy.cgi
         /cgi-cpn/check_platform.cgi
         /cgi-cpn/prontus_check_platform.cgi
+        /cgi-cpn/lib_prontus.pm
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
+        /wizard_prontus/prontus_dir/cpan/core/dam/js-local/Dam.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_platform.html
         /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_publicacion_directa.html
 
 - FID
     [mejoras]

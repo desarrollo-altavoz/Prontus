@@ -269,13 +269,17 @@ sub check_xcoding {
     my $resp = `$path_ffmpeg -version 2>&1`;
     if($resp =~ /^FFmpeg (version | |)([^\s,]+)/i) {
         my $ver = $2;
+        my $origver = $ver;
         printf(" * %28s %-12s ", 'FFmpeg', "($xcoding_ver)");
+
+        # eliminamos el texto '.git' si es una version de git, lo reemplazamos por un 0
+        $ver =~ s/(git)/0/;
 
         if($ver =~ /\d+\.\d+\.\d+/) {
             my $vok = (vers_cmp($ver,$xcoding_ver) > -1);
-            my $error = "error (found $ver)";
-            $error = "<span class=\"check-error\">error (found $ver)</span>\n" if ($AMBIENTE_WEB);
-            print ((($vok) ? "ok (found $ver)\n" : $error));
+            my $error = "error (found $origver)";
+            $error = "<span class=\"check-error\">error (found $origver)</span>\n" if ($AMBIENTE_WEB);
+            print ((($vok) ? "ok (found $origver)\n" : $error));
 
         } elsif ($resp =~ /(built on .*?) with/) {
             my $built = $1;
