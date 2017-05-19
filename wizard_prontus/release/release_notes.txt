@@ -9400,3 +9400,22 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         perl prontus_corrige_friendly4.pl mi_prontus
     [files]
         /cgi-cpn/prontus_corrige_friendly4.pl
+
+- Taxonomía
+    [bugfixes]
+        - En los artículos relacionados no se estaba parseando %%_SERVER_NAME%% y %%_PRONTUS_ID%% fuera del loop.
+    [cambios]
+        - Se centralizan las funciones que se utilizan en los scripts de procesamiento de portadas taxonómicas en la lib_tax.
+    [mejoras]
+        - Se corrige la generación de la página de todas las taxonomías para un fid específico,
+        el listado creado incluía todos los artículos del fid aunque no tuvieran taxonomía.
+        - Al ejecutar la generación de portadas de un fid especifico se verifica que exista la carpeta
+        asociada en el directorio de plantillas para no generar paginas innecesarias.
+        - Se indica siempre el tipo de fid al guardar un artículo y llamar la regeneración de taxport,
+        ya que es innecesario que se regeneren todas las páginas de todos los fids asociadas a la tripleta de artículo.
+        Sólo se necesita actualizar el listado "all" y los listados del fid correspondiente.
+    [files]
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi

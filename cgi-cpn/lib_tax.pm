@@ -33,11 +33,12 @@ package lib_tax;
 use glib_dbi_02;
 use glib_fildir_02;
 use glib_hrfec_02;
-# use strict;
+use strict;
 use prontus_varglb;
 use lib_prontus;
 use Artic;
 use DBI;
+use POSIX qw(strftime ceil);
 
 # Limite maximo permitido.
 my $MAX_LIMIT = 50;
@@ -48,7 +49,7 @@ my $NUM_RELAC_DEFAULT;
 
 my $RELDIR_DST_ARTIC_RELAC;
 my $CONTROLAR_ALTA_ARTICULOS;
-
+our %CFG_FIL_TAXPORT;
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
 # ---------------------------------------------------------------
@@ -168,7 +169,6 @@ sub generar_relacionados {
                 . "/xml/$exclude_port";
 
                 if ($exclude_port !~ /\.xml$/) {
-                    $value = '';
                     } elsif (!-f $exclude_port) {
                         $exclude_port = '';
                     };
@@ -285,10 +285,9 @@ sub make_lista {
         $filas .= $una_fila;
         $nro_filas++;
     };
+    $salida->finish;
 
-  $salida->finish;
-
-  return ($filas, $hay_mas);
+    return ($filas, $hay_mas);
 };
 
 # ---------------------------------------------------------------
@@ -369,8 +368,8 @@ sub parse_and_write {
     $pagina =~ s/%%_TEMA1%%/$id_tema1/ig;
     $pagina =~ s/%%_SUBTEMA1%%/$id_subtema1/ig;
 
-    $fila =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
-    $fila =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
+    $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+    $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
 
     if ($id_secc1 eq '-1') {
         $id_secc1 = '';
@@ -624,9 +623,9 @@ sub procesar_condicional_extra {
     my $localbuf = $buffer;
 
     while ($buffer =~ /%%IFV\((\d+)\, *(\d+)\)%%.+?%%\/IFV%%/isg) {
-        $div = $1;
-        $res = $2;
-        $mod = $loopcounter % $div;
+        my $div = $1;
+        my $res = $2;
+        my $mod = $loopcounter % $div;
         if ($mod != $res) {
             $localbuf =~ s/%%(IFV\($div\, *$res\))%%(.+?)%%\/(IFV)%%//is;
 
@@ -634,9 +633,9 @@ sub procesar_condicional_extra {
     };
 
     while ($buffer =~ /%%NIFV\((\d+)\, *(\d+)\)%%.+?%%\/NIFV%%/isg) {
-        $div = $1;
-        $res = $2;
-        $mod = $loopcounter % $div;
+        my $div = $1;
+        my $res = $2;
+        my $mod = $loopcounter % $div;
         if ($mod == $res) {
             $localbuf =~ s/%%(NIFV\($div\, *$res\))%%(.+?)%%\/(NIFV)%%//is;
 
@@ -660,5 +659,185 @@ sub carga_configuracion_local {
         }
     }
 }
+# ---------------------------------------------------------------
+# genera los filtros para los listados de taxport
+sub genera_filtros_taxports {
+    my ($id_secc1, $id_tema1, $id_subtema1, $fid, $curr_dtime) = @_;
+    my $fid_fil = $fid;
+
+    if ($fid =~ /^fil_/) {
+        $fid = '';
+    };
+
+    $id_secc1 =~ s/"/""/g;
+    $id_tema1 =~ s/"/""/g;
+    $id_subtema1 =~ s/"/""/g;
+
+    $curr_dtime =~ /^(\d{8})(\d\d\d\d)/;
+
+    my $dt_system = $1;
+    my $hhmm_system = $2;
+    my $filtros;
+
+    if ($id_secc1) {
+        $filtros = "(";
+        $filtros .= "ART_IDSECC1 = \"$id_secc1\"";
+        $filtros .= " or ART_IDSECC2 = \"$id_secc1\"" if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^(2|3)$/);
+        $filtros .= " or ART_IDSECC3 = \"$id_secc1\"" if ($prontus_varglb::TAXONOMIA_NIVELES eq '3');
+        $filtros .= ")";
+
+        if ($id_tema1) { # Distinto de todos.
+            if ($filtros ne '') {
+                $filtros .= "and (";
+                $filtros .= "ART_IDTEMAS1 = \"$id_tema1\"";
+                $filtros .= " or ART_IDTEMAS2 = \"$id_tema1\"" if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^(2|3)$/);
+                $filtros .= " or ART_IDTEMAS3 = \"$id_tema1\"" if ($prontus_varglb::TAXONOMIA_NIVELES eq '3');
+                $filtros .= ")";
+            }
+
+            if ($id_subtema1) { # Distinto de todos.
+                if ($filtros ne '') {
+                    $filtros .= "and (";
+                    $filtros .= "ART_IDSUBTEMAS1 = \"$id_subtema1\"";
+                    $filtros .= " or ART_IDSUBTEMAS2 = \"$id_subtema1\"" if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^(2|3)$/);
+                    $filtros .= " or ART_IDSUBTEMAS3 = \"$id_subtema1\"" if ($prontus_varglb::TAXONOMIA_NIVELES eq '3');
+                    $filtros .= ")";
+                }
+            }
+        }
+
+    } else {
+        $filtros = "(";
+        $filtros .= "ART_IDSECC1 <> \"\"";
+        $filtros .= " or ART_IDSECC2 <> \"\"" if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^(2|3)$/);
+        $filtros .= " or ART_IDSECC3 <> \"\"" if ($prontus_varglb::TAXONOMIA_NIVELES eq '3');
+        $filtros .= ")";
+    }
+
+    if ($fid) {
+        $filtros .= " and " if ($filtros);
+        $filtros .= " (ART_TIPOFICHA = \"$fid\") ";
+    }
+
+    if ($fid_fil && defined $CFG_FIL_TAXPORT{$fid_fil}{'FIDS'}) {
+        my @fidlist = @{$CFG_FIL_TAXPORT{$fid_fil}{'FIDS'}};
+        my $filtro_fids;
+
+        if (scalar @fidlist) {
+            foreach my $filfid (@fidlist) {
+                $filtro_fids .= "ART_TIPOFICHA = '$filfid' OR ";
+            }
+
+            $filtro_fids = substr($filtro_fids, 0, (length($filtro_fids)-3));
+
+            $filtros .= " and " if ($filtros);
+            $filtros .= "($filtro_fids)";
+        }
+    }
+
+    $filtros .= " and " if ($filtros);
+
+    if ($fid_fil && defined $CFG_FIL_TAXPORT{$fid_fil}{'FECHA_DESDE'} & $CFG_FIL_TAXPORT{$fid_fil}{'FECHA_DESDE'} ne '') {
+        $filtros .= " (ART_FECHAP >= \"$CFG_FIL_TAXPORT{$fid_fil}{'FECHA_DESDE'}\") ";
+    } else {
+        $filtros .= " (ART_FECHAPHORAP <= \"$dt_system$hhmm_system\") ";
+    }
+
+    $filtros .= " and (ART_ALTA = \"1\") " if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI');
+
+    if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
+        $filtros .= " and ( (ART_FECHAEHORAE >= \"$dt_system$hhmm_system\") OR ( (ART_FECHAEHORAE < \"$dt_system$hhmm_system\") AND (ART_SOLOPORTADAS = \"1\") ) )";
+    }
+    return $filtros;
+};
+
+# ---------------------------------------------------------------
+# cargo los filtros para los taxport filtradas
+sub cargar_fil_cfg {
+    my $file = $_[0];
+    my $fil = $_[1];
+
+    return if (!-f $file); # no se hace nada si no existe el directorio y archivo del filtro.
+    return if (exists $CFG_FIL_TAXPORT{$fil}); # para no cargarlo dos veces.
+
+    my $cfg = &glib_fildir_02::read_file($file);
+
+    if ($cfg =~ m/\s*TAXPORT_FIDS\s*=\s*("|')(.*?)("|')/) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+        $value =~ s/[^a-zA-Z0-9_,]//sg; # dejar solo caracteres permitidos
+
+        my @valores = split(',', $value);
+
+        $CFG_FIL_TAXPORT{$fil}{'FIDS'} = \@valores;
+
+        #print STDERR "CFG TAXPORT_FIDS! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAXPORT_PLANTILLAS\s*=\s*("|')(.*?)("|')/) {
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+        $value =~ s/[^a-zA-Z0-9_\-,\.]//sg; # dejar solo caracteres permitidos
+
+        my @valores = split(',', $value);
+
+        foreach my $tpl (@valores) {
+            $CFG_FIL_TAXPORT{$fil}{'PLANTILLAS'}{$tpl} = 1;
+        };
+
+        #print STDERR "CFG TAXPORT_PLANTILLAS! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAXPORT_FECHAP?_DESDE\s*=\s*("|')(.*?)("|')/s) { # fecha de publicacion, ART_FECHAP
+        my $value = $2;
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        if ($value eq 'now') {
+            $value = strftime "%Y%m%d", localtime;
+        } else {
+            $value =~ s/[^0-9]//sg; # dejar solo caracteres permitidos, numeros.
+        }
+
+        $value = '' if ($value !~ /^(\d{8})$/); # formato debe ser YYYYMMDD
+
+        $CFG_FIL_TAXPORT{$fil}{'FECHA_DESDE'} = $value;
+        #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value]\n";
+    };
+
+    if ($cfg =~ m/\s*TAXPORT_ORDEN\s*=\s*("|')(.*?)("|')/s) { # fecha de publicacion, ART_FECHAP
+        my $value = $2;
+        my $taxport_orden = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
+
+        # Se limpian los espacios.
+        $value =~ s/\s+/ /sg;
+        $value =~ s/^\s//sg;
+        $value =~ s/\s$//sg;
+
+        if ($value =~ /^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$/) {
+            if ($1 eq 'PUBLICACION') {
+                $taxport_orden = "ART_FECHAP $2, ART_HORAP $2";
+            } elsif ($1 eq 'TITULAR') {
+                $taxport_orden = "ART_TITU $2";
+            } elsif ($1 eq 'CREACION') {
+                $taxport_orden = "ART_AUTOINC $2";
+            }
+        }
+
+        $CFG_FIL_TAXPORT{$fil}{'TAXPORT_ORDEN'} = $taxport_orden;
+        #print STDERR "CFG CFG_FIL_TAXPORT! fil[$fil] value[$value] taxport_orden[$taxport_orden]\n";
+    };
+};
 
 return 1;

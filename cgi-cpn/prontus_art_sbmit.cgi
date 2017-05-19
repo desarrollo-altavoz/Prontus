@@ -221,17 +221,9 @@ main: {
     # Dropbox.
     &call_dropbox_backup($lib_artic::ARTIC_OBJ->{ts}, $lib_artic::ARTIC_OBJ->{campos}->{'_seccion1'}, $lib_artic::ARTIC_OBJ->{campos}->{'_tema1'}, $lib_artic::ARTIC_OBJ->{campos}->{'_subtema1'});
 
-    # Verifica que exista filtro para FID
-    my $dir_filtro_fid = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP
-                       . $prontus_varglb::DIR_PTEMA . '/' . $lib_artic::ARTIC_OBJ->{campos}->{'_fid'};
-
-    #print STDERR "dir_filtro_fid[$dir_filtro_fid]\n";
-    my $filtro_fid = '';
-    # basta que este la carpeta para que se generen, entonces uno la genera a mano y con eso logra que se
-    # generen esas paginas, pero usando la plantilla del all.
-    if (-e $dir_filtro_fid) {
-        $filtro_fid = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'};
-    };
+    # se indica el fid a procesar, la cgi que genera las taxports determina si hay una vista
+    # propia de este fid que generar
+    my $filtro_fid = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'};
 
     #print STDERR "filtro_fid[$filtro_fid]\n";
     if($regenerar_procesos && !($lib_artic::ARTIC_OBJ->{campos}->{'_seccion1'} || $lib_artic::ARTIC_OBJ->{campos}->{'_seccion2'} || $lib_artic::ARTIC_OBJ->{campos}->{'_seccion3'})) {
