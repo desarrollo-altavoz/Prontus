@@ -33,7 +33,7 @@ package lib_tax;
 use glib_dbi_02;
 use glib_fildir_02;
 use glib_hrfec_02;
-# use strict;
+use strict;
 use prontus_varglb;
 use lib_prontus;
 use Artic;
@@ -168,7 +168,6 @@ sub generar_relacionados {
                 . "/xml/$exclude_port";
 
                 if ($exclude_port !~ /\.xml$/) {
-                    $value = '';
                     } elsif (!-f $exclude_port) {
                         $exclude_port = '';
                     };
@@ -369,8 +368,8 @@ sub parse_and_write {
     $pagina =~ s/%%_TEMA1%%/$id_tema1/ig;
     $pagina =~ s/%%_SUBTEMA1%%/$id_subtema1/ig;
 
-    $fila =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
-    $fila =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
+    $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+    $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
 
     if ($id_secc1 eq '-1') {
         $id_secc1 = '';
@@ -624,9 +623,9 @@ sub procesar_condicional_extra {
     my $localbuf = $buffer;
 
     while ($buffer =~ /%%IFV\((\d+)\, *(\d+)\)%%.+?%%\/IFV%%/isg) {
-        $div = $1;
-        $res = $2;
-        $mod = $loopcounter % $div;
+        my $div = $1;
+        my $res = $2;
+        my $mod = $loopcounter % $div;
         if ($mod != $res) {
             $localbuf =~ s/%%(IFV\($div\, *$res\))%%(.+?)%%\/(IFV)%%//is;
 
@@ -634,9 +633,9 @@ sub procesar_condicional_extra {
     };
 
     while ($buffer =~ /%%NIFV\((\d+)\, *(\d+)\)%%.+?%%\/NIFV%%/isg) {
-        $div = $1;
-        $res = $2;
-        $mod = $loopcounter % $div;
+        my $div = $1;
+        my $res = $2;
+        my $mod = $loopcounter % $div;
         if ($mod == $res) {
             $localbuf =~ s/%%(NIFV\($div\, *$res\))%%(.+?)%%\/(NIFV)%%//is;
 

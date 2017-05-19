@@ -9400,3 +9400,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         perl prontus_corrige_friendly4.pl mi_prontus
     [files]
         /cgi-cpn/prontus_corrige_friendly4.pl
+
+- Taxonomía
+    [bugfixes]
+        - En los artículos relacionados no se estaba parseando %%_SERVER_NAME%% y %%_PRONTUS_ID%% fuera del loop.
+    [files]
+        /cgi-cpn/lib_tax.pm
