@@ -32,7 +32,10 @@ my (%FORM);
 main: {
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
-    $FORM{'path_conf'} = &glib_cgi_04::param('_path_conf');
+    $FORM{'path_conf'}  = &glib_cgi_04::param('_path_conf');
+    $FORM{'relfoto'}    = &glib_cgi_04::param('relfoto');
+    $FORM{'wfoto'}      = &glib_cgi_04::param('w');
+    $FORM{'hfoto'}      = &glib_cgi_04::param('h');
 
     # Deduce path conf del referer, en caso de no ser suministrado.
     $FORM{'path_conf'} = &get_path_conf() if ($FORM{'path_conf'} eq '');
@@ -50,7 +53,7 @@ main: {
 
     print "Content-Type: text/html\n\n";
     # Generar pagina final (loopeando una fila modelo)
-    my $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/prontus_editor_img.html"; #_20110119
+    my $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/editor_imag/prontus_editor_imag.html"; #_20110119
     my $pagina = &glib_fildir_02::read_file($plantilla);
 
     $pagina = &lib_prontus::set_coreplt_ppal($pagina);
@@ -58,12 +61,12 @@ main: {
     # Se parsean variables
     $pagina =~ s/%%_path_conf%%/$FORM{'path_conf'}/sg;
     $pagina =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/ig;
+    $pagina =~ s/%%_relfoto%%/$FORM{'relfoto'}/ig;
+    $pagina =~ s/%%_wfoto%%/$FORM{'wfoto'}/ig;
+    $pagina =~ s/%%_hfoto%%/$FORM{'hfoto'}/ig;
 
     my $version = $prontus_varglb::VERSION_PRONTUS;
     $version =~ s/^(\d+)\.(\d+)\.\d+.+$/\1_\2/;
-
-    $pagina =~ s/%%_url_manual_desa%%/$url_manual_desa/ig;
-    $pagina =~ s/%%_url_manual_oper%%/$url_manual_oper/ig;
 
     print $pagina;
 
