@@ -128,12 +128,13 @@ sub get_fids2process {
     my %fids;
 
     &carga_fids();
-
+    my $dir = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$RELDIR_PORT_TMP";
     if ($PARAMS{'fid'} ne '') {
         my $fname = $PARAMS{'fid'};
-        $fids{$fname} = 1;
+        if (-d "$dir/$fname" && $fname =~ /^(\w+)-?/) {
+            $fids{$fname} = 1;
+        }
     } else {
-        my $dir = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$RELDIR_PORT_TMP";
         my @listado = &glib_fildir_02::lee_dir($dir);
         @listado = grep !/^\./, @listado; # Elimina directorios . y ..
 
@@ -392,4 +393,3 @@ sub get_taxport_fil {
     };
     return @filtros;
 };
-
