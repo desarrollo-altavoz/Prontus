@@ -9360,6 +9360,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia mensaje de modal que indica conclicto de urls de artículos
         - Se elimina check_platform.cgi, prontus_check_platform cumple estas funciones
         - Se cambian las leyendas y rótulos en la verificación de plataforma.
+        - Se cambia a "agregar" la escritura del log de operación de Prontus.
     [mejoras]
         - Se agrega verificación de unzip instalado.
         - Correcciones menores en el código y comentarios
