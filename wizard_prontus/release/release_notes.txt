@@ -9369,3 +9369,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         perl prontus_corrige_friendly4.pl mi_prontus
     [files]
         /cgi-cpn/prontus_corrige_friendly4.pl
+
+
+- Wizard
+    [bugfixes]
+        Se corrige validacion de password para BD en el wizard, era distinta a la hecha
+        por la cgi del paso siguiente
+    [files]
+        /wizard_prontus/core/js/Wizard.class.js
