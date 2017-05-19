@@ -9419,3 +9419,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cron_taxport.cgi
         /cgi-cpn/prontus_cron_taxport_worker.cgi
         /cgi-cpn/prontus_art_sbmit.cgi
+
+- Wizard
+    [bugfixes]
+        Se corrige validacion de password para BD en el wizard, era distinta a la hecha
+        por la cgi del paso siguiente
+    [files]
+        /wizard_prontus/core/js/Wizard.class.js
