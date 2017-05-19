@@ -9381,7 +9381,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se integra la galeria drag and drop y la carga masiva de fotos via zip
         - El texto "Borrar" funciona para marcar el checkbox para borrar archivos "multimedia_"
-        - Se quita el tipo type="video/x-ms-wvx" al link de Reproducir Archivo Actual
+        - Se quita el tipo type="video/x-ms-wvx" al link de "Reproducir Archivo Actual"
+        - Se implementa registro de acciones para todas las marcas "multimedia_video"
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_artic.pm

@@ -136,18 +136,26 @@ main: {
         &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 0, 'exit=1,ctype=1');
     };
 
-    my $video_subido = &glib_cgi_04::param('MULTIMEDIA_VIDEO1');
-    if ($video_subido ne '') {
-        my $ts = &glib_cgi_04::param('_file');
-        $ts =~ s/\.html//;
-        &lib_prontus::write_log('Carga Video', 'Articulo', "TS[$ts] VIDEOTEMP[$video_subido]", $prontus_varglb::USERS_USR);
-    }
-
-    my $borrar_video = &glib_cgi_04::param('_BORR_multimedia_video1');
-    if ($borrar_video eq 'S') {
-        my $ts = &glib_cgi_04::param('_file');
-        $ts =~ s/\.html//;
-        &lib_prontus::write_log('Borrar Video', 'Articulo', "TS[$ts] VIDEO[". &glib_cgi_04::param('_HIDD_multimedia_video1')."]", $prontus_varglb::USERS_USR);
+    my @lista_campos = &glib_cgi_04::param();
+    foreach my $campo (@lista_campos) {
+        if ($campo =~ /MULTIMEDIA_VIDEO/i) {
+            if ($campo =~ /^MULTIMEDIA_VIDEO/i) {
+                my $video_subido = &glib_cgi_04::param($campo);
+                if ($video_subido ne '') {
+                    my $ts = &glib_cgi_04::param('_file');
+                    $ts =~ s/\.html//;
+                    &lib_prontus::write_log('Carga Video', 'Articulo', "TS[$ts] [$campo] VIDEOTEMP[$video_subido]", $prontus_varglb::USERS_USR);
+                }
+            } elsif ($campo =~ /^_BORR_(MULTIMEDIA_VIDEO\d+)/i) {
+                my $borrar_video = &glib_cgi_04::param($campo);
+                my $marca_video = $1;
+                if ($borrar_video eq 'S') {
+                    my $ts = &glib_cgi_04::param('_file');
+                    $ts =~ s/\.html//;
+                    &lib_prontus::write_log('Borrar Video', 'Articulo', "TS[$ts] [$marca_video] VIDEO[". &glib_cgi_04::param('_HIDD_'.$marca_video)."]", $prontus_varglb::USERS_USR);
+                }
+            }
+        }
     }
 
     # Validar quota
