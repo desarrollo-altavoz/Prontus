@@ -69,7 +69,6 @@ my $MARCA; # nombre de la marca prontus del video
 
 # ---------------------------------------------------------------
 main: {
-    #~ $prontus_varglb::DIR_SERVER =~ s/cgi\-cpn//is;
     &die_stderr("El parámetro 'origen' no es válido.", "", 1) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
     &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
     &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");

@@ -9346,10 +9346,21 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.97 - XX/XX/2017 - EAG
 ====================================================================================================
 - Transcodificación
+    [cambios]
+        - Se eliminan comentarios.
     [mejoras]
         - Se mejora seleccion de xmls a procesar en script de procesamiento masivo de videos
+        - Se modifica la detección de ejecucuión por línea de comando de las cgis
+        - Los videos subidos se transcodifican automaticamente al guardar el fid. No es necesario
+        volver a revisarlo para que sean procesados
     [files]
+        /cgi-cpn/prontus_art_sbmit.cgi
         /cgi-cpn/xcoding/prontus_procesar_videos.pl
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodehls.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
 
 - Prontus
     [bugfixes]
