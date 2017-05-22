@@ -1,146 +1,106 @@
 (function (window) {
     var self = null;
     var EditorImag = {
-        containerID: "#imag_container",
-        imagID: "#imag",
-        imag: {
-            path: null,
-            realWidth: null,
-            realHeight: null,
-            origWidth: null,
-            origHeight: null,
-            currentWidth: null,
-            currentHeight: null
-        },
-        lastPost: null,
-        zoomScale: 1.0,
+        currentZoom: 0,
         init: function (path_foto, w, h) {
-            self = this;
-            self.imag.path = path_foto;
-            self.imag.realWidth = w;
-            self.imag.realHeight = h;
-
-            // loading
-            $(self.imagID).on('load', function () {
-                self.imag.origWidth = self.imag.currentWidth = $(self.imagID).width();
-                self.imag.origHeight = self.imag.currentHeight = $(self.imagID).height();
-
-                console.log(self.imag);
+            $("#image").on('load', function () {
+                $('#image').cropper({
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.65,
+                    restore: false,
+                    guides: false,
+                    highlight: false,
+                    cropBoxMovable: false,
+                    cropBoxResizable: true,
+                    minCropBoxWidth: 80,
+                    minCropBoxHeight: 80
+                });
             });
 
-            $(self.imagID).attr("src", self.imag.path);
+            $("#image").attr("src", path_foto);
 
-            self.divWidth = $(self.containerID).width();
-            self.divHeight = $(self.containerID).height();
+            $("#zoom_in").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('zoom', 0.1)
+            });
 
-            $(self.imagID).draggable({
-                start: function (event, ui) {
-                    console.log('start');
+            $("#zoom_out").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('zoom', -0.1)
+            });
 
-                    if ($(self.containerID).width() > $(self.imagID).width()) {
-                        return false;
+            $("#rotate_left").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('rotate', -90)
+            });
+
+            $("#rotate_right").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('rotate', 90);
+            });
+
+            $("#reset").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('reset');
+            });
+
+            $("#move_left").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('move', -10, 0);
+            });
+
+            $("#move_right").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('move', 10, 0);
+            });
+
+            $("#move_up").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('move', 0, -10);
+            });
+
+            $("#move_down").on("click", function (e) {
+                e.preventDefault();
+                $("#image").cropper('move', 0, 10);
+            });
+
+
+            var fotoFijas = {};
+
+            if (typeof parent.FotoFija.foto !== 'undefined') {
+                fotoFijas = parent.FotoFija.foto.instances;
+            }
+
+            console.log(fotoFijas);
+
+            $.each(fotoFijas, function (i, v) {
+                if (v.id != "temporal1" && v.id != "temporal2") {
+                    var aspectRatio = parseFloat(v.maxW / v.maxH).toFixed(2);
+                    var w = 50;
+                    var h = 50;
+
+                    if (aspectRatio) {
+                        if (h * aspectRatio > w) {
+                            h = Math.round(w / aspectRatio);
+                        } else {
+                            w = Math.round(h * aspectRatio);
+                        }
                     }
 
-                    if ($(self.containerID).height() > $(self.imagID).height()) {
-                        return false;
-                    }
+                    $(".fotos-fijas").append('<div class="box" id="'+ v.id + '" data-aspectratio="' + aspectRatio + '"><div class="size">' + v.maxW + 'x' + v.maxH +
+                                             '</div><div class="modelo" style="width:' + w + 'px;height:' + h + 'px;"></div></div>');
 
-                },
-                drag: function (event, ui) {
-                    var workAreaOffset = $(self.containerID).offset();
-                    var nleft = parseInt(($(self.imagID).width() - $(self.containerID).width()) * -1);
-                    var ntop = parseInt(($(self.imagID).height() - $(self.containerID).height()) * -1);
+                    console.log(w, h);
 
-                    if (ui.offset.left >= workAreaOffset.left) {
-                        ui.position.left = 0;
-                    }
-
-                    if (ui.position.left <= nleft) {
-                        ui.position.left = nleft;
-                    }
-
-                    if (ui.position.top <= ntop) {
-                        ui.position.top = ntop;
-                    }
-
-                    if (ui.offset.top >= workAreaOffset.top) {
-                        ui.position.top = 0;
-                    }
-                },
-                stop: function (event, ui) {
-                    self.lastPost = ui.position;
                 }
             });
 
-            self.bindEvents();
-        },
-        bindEvents: function () {
-                $("#zoom_in").on('click', function (e) {
-                    e.preventDefault();
+            $(".fotos-fijas .box").on('click', function (e) {
+                var aspectRatio = $(this).data("aspectratio");
+                $("#image").cropper("setAspectRatio", aspectRatio);
+            });
 
-                    if ((self.imag.origWidth * self.zoomScale) >= self.imag.realWidth) {
-                        return false;
-                    } else {
-                        self.zoomScale += 0.1;
-                    }
-
-                    self.imag.currentWidth = self.imag.origWidth * self.zoomScale;
-                    self.imag.currentHeight = self.imag.origHeight * self.zoomScale;
-
-                    $(self.imagID).width(self.imag.currentWidth);
-                    $(self.imagID).height(self.imag.currentHeight);
-
-                });
-
-                $("#zoom_out").on('click', function (e) {
-                    e.preventDefault();
-                    if (self.zoomScale <= 1) {
-                        return false;
-                    } else {
-                        self.zoomScale -= 0.1;
-                    }
-
-                    var oldW = self.imag.currentWidth;
-                    var oldH = self.imag.currentHeight;
-
-                    self.imag.currentWidth  = self.imag.origWidth * self.zoomScale;
-                    self.imag.currentHeight = self.imag.origHeight * self.zoomScale;
-
-                    $(self.imagID).width(self.imag.currentWidth);
-                    $(self.imagID).height(self.imag.currentHeight);
-
-                    var diffW   = oldW - self.imag.currentWidth;
-                    var diffH   = oldH - self.imag.currentHeight;
-                    var newLeft = $(self.imagID).position().left + diffW;
-                    var newTop  = $(self.imagID).position().top + diffH;
-
-                    // console.log($(self.imagID).position().top, diffH, 'newTop: ' + newTop, 'newLeft: ' + newLeft);
-
-                    if (newLeft > 0) newLeft = 0;
-                    if (newTop > 0) newTop = 0;
-
-                    if ($(self.imagID).position().left <= 0) {
-                        $(self.imagID).css("left", newLeft);
-                    }
-
-                    if ($(self.imagID).position().top <= 0) {
-                        $(self.imagID).css("top", newTop);
-                    }
-                });
-
-                $(self.imagID).on('mousewheel', function (e) {
-                    console.log(e.deltaX, e.deltaY, e.deltaFactor);
-
-                    if (e.deltaY > 0) {
-                        // Arriba.
-                        $("#zoom_in").trigger('click');
-                        // Centrar imagen en puntero del mouse.
-                    } else {
-                        // Abajo
-                        console.log("Abajo");
-                        $("#zoom_out").trigger("click");
-                    }
-                });
         }
     };
     window.EditorImag = EditorImag;

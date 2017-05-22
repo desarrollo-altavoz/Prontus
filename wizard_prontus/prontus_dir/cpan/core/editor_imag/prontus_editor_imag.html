@@ -3,11 +3,9 @@
 <head>
     <title>Editor de Fotos</title>
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/css/estilos.css" />
-    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery-ui/jquery-ui.min.css" />
-    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery-ui/jquery-ui.theme.min.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/js-local/cropper/cropper.min.css" />
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery/jquery.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery/jquery.mousewheel.min.js"></script>
-    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/cropper/cropper.min.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/EditorImag.class.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -16,14 +14,41 @@
     </script>
 </head>
 <body>
-    <div class="editor">
-        <div class="left">
-            <div id="listado_fotofija"></div>
+    <div class="editor-container">
+        <div style="float: left;">
+            <div class="fotos-fijas">
+                <div class="box" data-aspectratio="0">
+                    <div class="size">Sin restricción</div>
+                    <div class="modelo" style="width: 50px; height: 50px;"><img class="smile" src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/smile.png" width="40" height="40"></div>
+                </div>
+            </div>
         </div>
-        <div class="left">
-            <div id="herramientas"><a href="#" id="zoom_in">in</a> <a href="#" id="zoom_out">out</a></div>
-            <div id="imag_container">
-                <img id="imag" src="" width="100%" height="100%" />
+        <div style="float:left;">
+            <div class="tools-container">
+                <div class="zoom">
+                    <a href="#" id="zoom_in" class="icon" title="Aumentar Zoom"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/zoom-in.png" width="18px"></a>
+                    <a href="#" id="zoom_out" class="icon" title="Disminuir Zoom"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/zoom-out.png" width="18px"></a>
+                </div>
+                <div class="rotate">
+                    <a href="#" id="rotate_left" class="icon" title="Rotar a la izquierda"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/rotate-left.png" width="18px"></a>
+                    <a href="#" id="rotate_right" class="icon" title="Rotar a la derecha"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/rotate-right.png" width="18px"></a>
+                </div>
+                <div class="move">
+                    <a href="#" id="move_left" class="icon" title="Mover imagen hacia la izquierda"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-left.png" width="18px"></a>
+                    <a href="#" id="move_right" class="icon" title="Mover imagen hacia la derecha"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-right.png" width="18px"></a>
+                    <a href="#" id="move_up" class="icon" title="Mover imagen hacia arriba"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-up.png" width="18px"></a>
+                    <a href="#" id="move_down" class="icon" title="Mover imagen hacia abajo"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-down.png" width="18px"></a>
+                </div>
+                <div class="reset">
+                    <a href="#" id="reset" class="icon" title="Reiniciar edición"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/reset.png" width="18px"></a>
+                </div>
+                <div class="actions">
+                    <a href="#" id="apply" class="icon" title="Aplicar"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/apply.png" width="18px"></a>
+                    <a href="#" id="cancel" class="icon" title="Cancelar"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/cancel.png" width="18px"></a>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="" id="image">
             </div>
         </div>
     </div>

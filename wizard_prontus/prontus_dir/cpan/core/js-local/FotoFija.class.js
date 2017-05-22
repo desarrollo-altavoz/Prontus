@@ -224,11 +224,7 @@
                     maxH: parseInt(maxH),
                     imgW: parseInt(imgW),
                     imgH: parseInt(imgH),
-                    src: currImgSrc,
-                    left: 0,
-                    top: 0,
-                    preW: false,
-                    preH: false
+                    src: currImgSrc
                 };
 
                 if (currImgSrc && currImgSrc != 'javascript:void(0)') {
@@ -268,11 +264,7 @@
                     maxH: '',
                     imgW: '',
                     imgH: '',
-                    src: '',
-                    left: 0,
-                    top: 0,
-                    preW: false,
-                    preH: false
+                    src: ''
                 };
             },
             // ---------------------------------------------------------------
