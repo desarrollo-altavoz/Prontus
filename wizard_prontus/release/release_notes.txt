@@ -6231,7 +6231,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - También se agrega código para setear binmode, para evitar error al descargar en utf8
     [mejoras]
         - El listado de los envíos, ahora lee desde el json. Si no hay order.json desde el csv.
-        - Se crea nueva macro resevada de FID, llamada: _form_cabecera.html, la cual posee los siguientes campos:
+        - Se crea nueva macro reservada de FID, llamada: _form_cabecera.html, la cual posee los siguientes campos:
             form_subject, form_subject_auto, form_admin, chk_form_force_from, form_from
     [cambios]
         - Se agrega una nueva marca reservada de prontus form: chk_form_force_from
