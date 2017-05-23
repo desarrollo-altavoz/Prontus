@@ -9364,12 +9364,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se agrega verificación de unzip instalado.
         - Correcciones menores en el código y comentarios
         - Se mejora deteccion de version de ffmpeg obtenida desde git
+        - Se agrega script para corregir friendly url v4 en Prontus ya existentes. Después de activar
+        la versión 4 en la configuración, ejecutar el script por consola:
+        perl prontus_corrige_friendly4.pl mi_prontus
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_art_copy.cgi
         /cgi-cpn/check_platform.cgi
         /cgi-cpn/prontus_check_platform.cgi
         /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_corrige_friendly4.pl
         /wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
         /wizard_prontus/prontus_dir/cpan/core/dam/js-local/Dam.class.js
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_platform.html
@@ -9393,3 +9397,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/GaleriaProntus.class.js
+
+- Wizard
+    [bugfixes]
+        Se corrige validacion de password para BD en el wizard, era distinta a la hecha
+        por la cgi del paso siguiente
+    [files]
+        /wizard_prontus/core/js/Wizard.class.js
