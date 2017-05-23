@@ -108,7 +108,7 @@ main: {
     &glib_cgi_04::set_formvar('video', \%FORM);
     &glib_cgi_04::set_formvar('prontus_id', \%FORM);
 
-    if ($ENV{'SERVER_NAME'} eq '') {
+    if ($ENV{'SERVER_NAME'} eq '' ||  scalar @ARGV > 0) {
         $MODO_CLI = 1;
         $FORM{'video'} = $ARGV[0];
         $FORM{'prontus_id'} = $ARGV[1];
@@ -117,8 +117,8 @@ main: {
     # Valida datos de entrada
     my $msg_err;
     $msg_err = "Parámetro [video] no es válido [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+    $msg_err = "Parámetro [prontus_id] no es válido [$FORM{'prontus_id'}]" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = "Parámetro [prontus_id] no es válido " if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
 
     &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
 

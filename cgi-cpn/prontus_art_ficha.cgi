@@ -1226,7 +1226,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       my $bytes = -s $base_path_mm . $prontus_varglb::DIR_MMEDIA . "/$nom";
       $size_total += $bytes;
       my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
-      $valor_campo = '<a href="' . $relpath_mm . '" target="_blank" type="video/x-ms-wvx">Reproducir Archivo actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />';
+      $valor_campo = '<a href="' . $relpath_mm . '" target="_blank">Reproducir Archivo Actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">Borrar</label><input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />';
       $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '" />';
       $marca ='%%' . $nom_campo . '%%';
       $pag =~ s/$marca/$valor_campo/ig;

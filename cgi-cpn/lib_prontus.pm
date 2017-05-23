@@ -2432,9 +2432,7 @@ sub write_log {
   my ($linea, $fecha, $hora, $buf, $nom_file, $usr);
   $prontus_varglb::DIR_LOG =~ s/\\/\//g;
 
-  no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-  $prontus_varglb::DIR_LOG =~ s/(\w)\/$/\1/; # Borrar posible ultimo slash.
-
+  $prontus_varglb::DIR_LOG =~ s/(\w)\/$/$1/; # Borrar posible ultimo slash.
 
   if ((-d $prontus_varglb::DIR_LOG) && ($prontus_varglb::PRONTUS_LOG eq 'SI')) {
     # <nombre del publicador>_aaaammdd.log
@@ -2463,9 +2461,7 @@ sub write_log {
       $linea = $fecha . "\t" . $hora . "\t" . $ENV{'REMOTE_ADDR'} . "\t" . $objeto . "\t" . $accion . "\t" . $path . "\n";
     };
 
-    $buf = &glib_fildir_02::read_file($prontus_varglb::DIR_LOG . '/' . $nom_file);
-    $buf = $buf . $linea;
-    &glib_fildir_02::write_file($prontus_varglb::DIR_LOG . '/' . $nom_file, $buf);
+    &glib_fildir_02::append_file($prontus_varglb::DIR_LOG . '/' . $nom_file, $linea);
   };
 
 };

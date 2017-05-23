@@ -80,7 +80,7 @@ main: {
     &glib_cgi_04::set_formvar('prontus_id', \%FORM);
     &glib_cgi_04::set_formvar('generar_versiones', \%FORM);
 
-    if ($ENV{'SERVER_NAME'} eq '') {
+    if ($ENV{'SERVER_NAME'} eq '' ||  scalar @ARGV > 0) {
         $MODO_CLI = 1;
         $FORM{'video'} = $ARGV[0];
         $FORM{'prontus_id'} = $ARGV[1];

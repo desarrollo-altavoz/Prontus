@@ -136,18 +136,28 @@ main: {
         &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 0, 'exit=1,ctype=1');
     };
 
-    my $video_subido = &glib_cgi_04::param('MULTIMEDIA_VIDEO1');
-    if ($video_subido ne '') {
-        my $ts = &glib_cgi_04::param('_file');
-        $ts =~ s/\.html//;
-        &lib_prontus::write_log('Carga Video', 'Articulo', "TS[$ts] VIDEOTEMP[$video_subido]", $prontus_varglb::USERS_USR);
-    }
-
-    my $borrar_video = &glib_cgi_04::param('_BORR_multimedia_video1');
-    if ($borrar_video eq 'S') {
-        my $ts = &glib_cgi_04::param('_file');
-        $ts =~ s/\.html//;
-        &lib_prontus::write_log('Borrar Video', 'Articulo', "TS[$ts] VIDEO[". &glib_cgi_04::param('_HIDD_multimedia_video1')."]", $prontus_varglb::USERS_USR);
+    my %marcas_multimedia_art = ();
+    my @lista_campos = &glib_cgi_04::param();
+    foreach my $campo (@lista_campos) {
+        if ($campo =~ /(MULTIMEDIA_VIDEO\d+)/i) {
+            my $marca_video = lc($1);
+            $marcas_multimedia_art{$marca_video} = 1;
+            if ($campo =~ /^MULTIMEDIA_VIDEO/i) {
+                my $video_subido = &glib_cgi_04::param($campo);
+                if ($video_subido ne '') {
+                    my $ts = &glib_cgi_04::param('_file');
+                    $ts =~ s/\.html//;
+                    &lib_prontus::write_log('Carga Video', 'Articulo', "TS[$ts] [$campo] VIDEOTEMP[$video_subido]", $prontus_varglb::USERS_USR);
+                }
+            } elsif ($campo =~ /^_BORR_(MULTIMEDIA_VIDEO\d+)/i) {
+                my $borrar_video = &glib_cgi_04::param($campo);
+                if ($borrar_video eq 'S') {
+                    my $ts = &glib_cgi_04::param('_file');
+                    $ts =~ s/\.html//;
+                    &lib_prontus::write_log('Borrar Video', 'Articulo', "TS[$ts] [$marca_video] VIDEO[". &glib_cgi_04::param('_HIDD_'.$marca_video)."]", $prontus_varglb::USERS_USR);
+                }
+            }
+        }
     }
 
     # Validar quota
@@ -195,9 +205,7 @@ main: {
         # Publicar art.
         my $dir_port = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/site/edic/$FORM{'_edic'}/port";
         my $nom_port = $FORM{'_port'};
-        my $ts = $lib_artic::ARTIC_OBJ->{ts};
-        # print STDERR "ts[$ts]\n";
-        &lib_artic::publica_art_in_port("$dir_port/$nom_port", $FORM{'_edic'}, $nom_port, $prontus_varglb::PRONTUS_ID, $ts, $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}, $FORM{'_area'});
+        &lib_artic::publica_art_in_port("$dir_port/$nom_port", $FORM{'_edic'}, $nom_port, $prontus_varglb::PRONTUS_ID, $lib_artic::ARTIC_OBJ->{'ts'}, $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}, $FORM{'_area'});
     };
 
     my $fullpath_artic = $lib_artic::ARTIC_OBJ->get_fullpath_artic('', $lib_artic::ARTIC_OBJ->{campos}->{'_plt'});
@@ -210,6 +218,11 @@ main: {
 
     if ($lib_artic::ARTIC_OBJ->{xml_content}->{'_gal_archive'} ne '') {
         &call_gallery_save($fullpath_artic, $rutaScript);
+    }
+
+    # Xcoding
+    if (keys %marcas_multimedia_art) {
+        &call_xcoding($rutaScript, $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}, join(',', keys %marcas_multimedia_art), $lib_artic::ARTIC_OBJ->{ts});
     }
 
     # DAM
@@ -617,7 +630,17 @@ sub call_gallery_save {
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
-
+# ---------------------------------------------------------------
+sub call_xcoding {
+    print STDERR "call_xcoding\n";
+    my $rutaScript = shift;
+    my $fid = shift;
+    my $marcas_video = shift;
+    my $ts = shift;
+    my $cmd = "$PATHNICE perl $rutaScript/xcoding/prontus_procesar_videos.pl $prontus_varglb::PRONTUS_ID $ts $marcas_video >/dev/null 2>&1 &";
+    print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+    system $cmd;
+};
 # ---------------------------------------------------------------
 sub call_taxports_regen {
     my $rutaScript = shift;
@@ -627,7 +650,6 @@ sub call_taxports_regen {
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
-
 # ---------------------------------------------------------------
 sub call_list_regen {
     my $rutaScript = shift;
@@ -637,7 +659,6 @@ sub call_list_regen {
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
-
 # ---------------------------------------------------------------
 sub call_tagonomicas_regen {
     my $rutaScript = shift;
@@ -646,9 +667,7 @@ sub call_tagonomicas_regen {
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 };
-
 # ---------------------------------------------------------------
-
 sub crear_objeto_artic {
 # Crea objeto Artic, para lo cual es basico cargar el hash de datos a partir
 # de los datos submitidos.

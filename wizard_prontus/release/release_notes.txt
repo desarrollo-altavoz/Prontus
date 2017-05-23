@@ -9346,10 +9346,21 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.97 - XX/XX/2017 - EAG
 ====================================================================================================
 - Transcodificación
+    [cambios]
+        - Se eliminan comentarios.
     [mejoras]
         - Se mejora seleccion de xmls a procesar en script de procesamiento masivo de videos
+        - Se modifica la detección de ejecucuión por línea de comando de las cgis
+        - Los videos subidos se transcodifican automaticamente al guardar el fid. No es necesario
+        volver a revisarlo para que sean procesados
     [files]
+        /cgi-cpn/prontus_art_sbmit.cgi
         /cgi-cpn/xcoding/prontus_procesar_videos.pl
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodehls.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
 
 - Prontus
     [bugfixes]
@@ -9360,6 +9371,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia mensaje de modal que indica conclicto de urls de artículos
         - Se elimina check_platform.cgi, prontus_check_platform cumple estas funciones
         - Se cambian las leyendas y rótulos en la verificación de plataforma.
+        - Se cambia a "agregar" la escritura del log de operación de Prontus.
     [mejoras]
         - Se agrega verificación de unzip instalado.
         - Correcciones menores en el código y comentarios
@@ -9383,6 +9395,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - FID
     [mejoras]
         - Se integra la galeria drag and drop y la carga masiva de fotos via zip
+        - El texto "Borrar" funciona para marcar el checkbox para borrar archivos "multimedia_"
+        - Se quita el tipo type="video/x-ms-wvx" al link de "Reproducir Archivo Actual"
+        - Se implementa registro de acciones para todas las marcas "multimedia_video"
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_artic.pm

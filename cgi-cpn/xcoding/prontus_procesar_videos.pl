@@ -66,48 +66,71 @@ BEGIN {
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
 
-use Term::ANSIColor;
 use strict;
 use glib_hrfec_02;
+use lib_prontus;
+use lib_stdlog;
+&lib_stdlog::set_stdlog($0, 51200);
+use Data::Dumper;
 
 # ---------------------------------------------------------------
 # MAIN.
 # ---------------------------------------------------------------
 my $separator_orig = '   ';
 my $separator = '';
-my $counter = 0;
-my $rule = '';
+my $COUNTER = 0;
 
-for(my $i = 0 ; $i < 80; $i++) {
-    $rule = $rule . '-';
-};
-
-my @buscar;
+my @BUSCAR;
 my $FID = '';
 my $PRONTUS_ID = '';
-my $input = $Bin;
+my $TS = '';
+my $input;
 
 main:{
+    if (scalar @ARGV < 2) {
+        print "Parámetros insuficientes. Modo de uso:\n";
+        print "perl prontus_procesar_videos.pl <prontus_id> <fid_id o ts articulo> <multimedia_video1,multimedia_video2,..,multimedia_videoN>\n";
+        exit;
+    }
     $PRONTUS_ID = $ARGV[0];
-    $FID = $ARGV[1];
-    print join('|', @ARGV);
+
+    if (! &lib_prontus::valida_prontus($PRONTUS_ID)) {
+        print "El parámetro 'prontus_id' no es válido.\n";
+        exit;
+    }
+
+    if ($ARGV[1] eq '' || ($ARGV[1] !~ /^fid\_/ && $ARGV[1] !~ /^\d{14}$/)) {
+        print "El segundo parámetro no es válido.\nDebe ser el nombre de un fid o el ts de un artículo.\n";
+        exit;
+    }
+
+    if ($ARGV[1] !~ /^\d{14}$/) {
+        $TS = $ARGV[1];
+    } elsif ($ARGV[1] !~ /^fid\_/) {
+        $FID = $ARGV[1];
+    }
+
     if ($ARGV[2] eq '') {
-        @buscar = ('multimedia_video1','multimedia_video999');
+        @BUSCAR = ('multimedia_video1','multimedia_video999');
     } else {
-        @buscar = split(',', $ARGV[2]);
+        @BUSCAR = split(',', $ARGV[2]);
     }
 
     $input = $Bin;
     $input =~ s/\/[^\/]+\/?$//;
     $input =~ s/\/[^\/]+\/?$//;
     $input .= "/$PRONTUS_ID/site/artic/";
-    printf color('blue') . $rule . color('reset') . "\n";
 
-    print "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Inicio Proceso\n";
+    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Inicio Proceso\n";
 
-    &procesa_dir($input);
-    printf color('blue') . 'Se encontraron ' . $counter .  ' archivos ' . color('reset') . "\n";
-    print "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Fin Proceso\n";
+    if ($TS ne '') {
+        $input .= substr(0, 8, $TS). "/xml/";
+        &procesa_file("$TS.xml", $input);
+    } else {
+        &procesa_dir($input);
+    }
+    print STDERR 'Se procesaron ' . $COUNTER .  " videos \n" if $COUNTER;
+    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Fin Proceso\n";
 };
 
 #-----------------------------------------------------------------------#
@@ -140,7 +163,7 @@ sub procesa_file {
     my $filepath = $path . $filename;
     my $titular;
     my $ts;
-    if ($filename !~ /^(\d+?)\.xml/isg) {
+    if ($filename !~ /^(\d{14})\.xml/isg) {
         return;
     }
     $ts = $1;
@@ -155,7 +178,7 @@ sub procesa_file {
         my $result = '';
         my $result2 = '';
         my $video = '';
-        foreach my $campo (@buscar) {
+        foreach my $campo (@BUSCAR) {
             my $found = '';
             if ($file =~ /<$campo>.*?<\!\[CDATA\[(.*?)\]\]>.*?<\/$campo>/is) {
                 $found = $1;
@@ -169,35 +192,46 @@ sub procesa_file {
                 $titular = $1;
             }
             if ($found ne '') {
-                printf color('red') . $path . $filename . color('reset') . " Encontrado: ->\t [$titular] \t[$campo] ->\t[$found] \n";
+                print STDERR "Procesar [$ts][$titular][$campo][$found]\n";
                 $video =  "/$PRONTUS_ID/site/mm/". substr($ts ,0, 8) ."/mmedia/$found";
-                $cmd = "perl $Bin/prontus_qtfaststart_check.cgi $video $PRONTUS_ID\n";
-                $result = `$cmd`;
-                #~ print $result;
-                if ($result =~ /(RECODE|XCODE|Xcoding)/) {
-                    my $versiones = 0;
-                    $versiones = 1 if ($result =~ /XCODE/);
-                    $cmd = "perl $Bin/prontus_videoxcode.cgi $video $PRONTUS_ID $versiones";
-                    #~ print "$cmd\n";
-                    print "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Transcodificar $video\n";
-                    $result = `$cmd`;
-                    #~ print $result;
-                    do {
-                        sleep(10);
-                        $cmd = "perl $Bin/prontus_videoxcodestatus.cgi $video $PRONTUS_ID\n";
-                        $result = `$cmd`;
-                    } while ($result =~ /busy/);
-                    print "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Terminado $video\n";
-                } elsif ($result =~ /FIX/) {
-                    print "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Corregir $video\n";
-                    do {
-                        sleep(10);
-                        $cmd = "perl $Bin/prontus_qtfaststart_check.cgi $video $PRONTUS_ID\n";
-                        $result = `$cmd`;
-                    } while ($result =~ /busy/);
-                    print "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Terminado $video\n";
+                if ($found =~ /\.mp4$/) { # si es mp4 revisamos los atoms
+                    $cmd = "perl $Bin/prontus_qtfaststart_check.cgi $video $PRONTUS_ID";
+                } else { # si no es mp4 hay que transcodificarlo
+                    $cmd = "perl $Bin/prontus_videoxcodestatus.cgi $video $PRONTUS_ID";
                 }
-                $counter++;
+                $result = `$cmd`;
+                #~ print STDERR  $result;
+                if ($result =~ /(RECODE|XCODE|Xcoding|none|busy)/) {
+                    my $versiones = 0;
+                    # si es XCODE significa que faltan las versiones del video
+                    $versiones = 1 if ($result =~ /XCODE/);
+                    # si es none, significa que no es mp4, que no hay proceso corriendo y hay que transcodificar
+                    $versiones = 0 if ($result =~ /none/);
+                    $cmd = "perl $Bin/prontus_videoxcode.cgi $video $PRONTUS_ID $versiones";
+                    #~ print STDERR "$cmd\n";
+                    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Transcodificar $video\n";
+
+                    # si no se está procesando se lanza uno nuevo
+                    $result = `$cmd` if ($result !~ /Xcoding/ && $result !~ /busy/);
+                    #~ print STDERR $result;
+                    do {
+                        sleep(10);
+                        $cmd = "perl $Bin/prontus_videoxcodestatus.cgi $video $PRONTUS_ID";
+                        $result = `$cmd`;
+                    } while ($result =~ /busy/);
+                    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Terminado $video\n";
+                    $COUNTER++;
+                } elsif ($result =~ /FIX/) {
+                    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Corregir $video\n";
+                    do {
+                        sleep(10);
+                        $cmd = "perl $Bin/prontus_qtfaststart_check.cgi $video $PRONTUS_ID";
+                        $result = `$cmd`;
+                        #~ print STDERR $result;
+                    } while ($result =~ /busy/);
+                    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Terminado $video\n";
+                    $COUNTER++;
+                }
             }
         }
     };
