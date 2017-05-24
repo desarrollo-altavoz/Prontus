@@ -6,10 +6,11 @@
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/js-local/cropper/cropper.min.css" />
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery/jquery.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/cropper/cropper.min.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/dir_cgi.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/EditorImag.class.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            EditorImag.init("%%_relfoto%%", "%%_wfoto%%", "%%_hfoto%%");
+            EditorImag.init("%%_relfoto%%", "%%_wfoto%%", "%%_hfoto%%", "%%_path_conf%%");
         });
     </script>
 </head>
@@ -17,9 +18,9 @@
     <div class="editor-container">
         <div style="float: left;">
             <div class="fotos-fijas">
-                <div class="box" data-aspectratio="0">
-                    <div class="size">Sin restricción</div>
-                    <div class="modelo" style="width: 50px; height: 50px;"><img class="smile" src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/smile.png" width="40" height="40"></div>
+                <div class="box active" data-aspectratio="0">
+                    <!-- <div class="size">Sin restricción</div> -->
+                    <div class="modelo" style="width: 50px; height: 50px;"><div style="margin-top: 15px; text-align: center; font-weight: bold;">Libre</div></div>
                 </div>
             </div>
         </div>
@@ -48,7 +49,7 @@
                 </div>
             </div>
             <div class="image-container">
-                <img src="" id="image">
+                <img src="%%_relfoto%%" id="image">
             </div>
         </div>
     </div>

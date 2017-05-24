@@ -24,8 +24,9 @@ body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-u
 .tools-container a:hover {text-decoration: none; background-color: #0097fb; border: 1px solid #ffffff; border-radius: 2px 2px 2px 2px;}
 .tools-container a img { width: 18px; height: 18px; position: absolute; margin: auto; top:0; left:0; right:0;bottom: 0}
 
-.fotos-fijas .box {width: 100px; height:100px; margin: 5px; background: #ffffff; position: relative; border: 1px solid #e2e2e2; cursor: pointer;}
+.fotos-fijas .box {width: 100px; height:100px; margin: 5px; background: #ffffff; position: relative; border: 1px solid #e2e2e2; cursor: pointer; position: relative;}
 .fotos-fijas .box .size {text-align: center; margin-top: 10px; margin-bottom: 5px;}
-.fotos-fijas .box .modelo {background: #0097fb; margin: 0 auto; position: relative;}
+.fotos-fijas .box .modelo {background: #0097fb; margin:auto; position: absolute; top:0; left:0; right: 0; bottom: 0;}
+.fotos-fijas .box.active {box-shadow: 0px 0px 5px #000;}
 
-.smile {position: absolute; margin: auto; top:4px; left: 0;right: 0;left: 0;}
+.smile {position: absolute; margin: auto; top:5px; left: 0;right: 0;left: 0;}
