@@ -14,13 +14,8 @@ var Fid = {
     waitingProntusForm: 0,
     tooltipId: null,
     tooltipTime: 800,
-    //iframeVoid: '/cpan/core/imag/bg-iframe.gif',
 
     init: function() {
-
-        //Admin.prontus_id = mainFidJs.PRONTUS_ID;
-        //Fid.iframeVoid = '/' + Admin.prontus_id + Fid.iframeVoid;
-
         // Muestra los elementos con class hide-new-artic, cuando el artículo no es nuevo
         if(mainFidJs.TS !== '') {
             $('.hide-new-artic').show();
@@ -120,22 +115,17 @@ var Fid = {
 
         /* Mostrar drag & drop siempre y cuando este soportado. */
         if (Fid.showDragDrop) {
-
             // Iniciar upload Drag & Drop
             $('#uploadNormal').hide();
             $('#uploadDragDrop').show();
             $('#uploadUploadify').show();
             $('#DragDropAndTradicional').show();
 
-            var valoresAdicionales = {
-                prontus_id: mainFidJs.PRONTUS_ID
-            };
-
             $('#fileInputDD').fileupload({
                 dataType: 'text',
                 url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
                 dropZone: $('#dropZone'),
-                formData: valoresAdicionales,
+                formData: { prontus_id: mainFidJs.PRONTUS_ID },
                 done: function (e, data) {
                     var arrResp = [];
                     var response = data.result
@@ -449,9 +439,8 @@ var Fid = {
                     href: urlFoto,
                     maxWidth: '90%',
                     maxHeight: '90%',
-                    scalePhotos: false,
+                    scalePhotos: true,
                     opacity: 0.8
-                    // iframe: true,
             });
         }
     },
