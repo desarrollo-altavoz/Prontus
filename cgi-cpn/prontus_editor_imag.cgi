@@ -9,6 +9,12 @@
 # http://www.prontus.cl/license.html
 # ---------------------------------------------------------------
 
+# ---------------------------------------------------------------
+# HISTORIAL DE VERSIONES.
+# ---------------------------------------------------------------
+# 1.0.0 - 24/05/2017 - JOR - Primera versión
+# ---------------------------------------------------------------
+
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
@@ -65,10 +71,5 @@ main: {
     $pagina =~ s/%%_wfoto%%/$FORM{'wfoto'}/ig;
     $pagina =~ s/%%_hfoto%%/$FORM{'hfoto'}/ig;
 
-    my $version = $prontus_varglb::VERSION_PRONTUS;
-    $version =~ s/^(\d+)\.(\d+)\.\d+.+$/\1_\2/;
-
     print $pagina;
-
-
 };

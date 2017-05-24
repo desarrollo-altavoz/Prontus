@@ -16,15 +16,16 @@
 </head>
 <body>
     <div class="editor-container">
-        <div style="float: left;">
+        <div class="left">
+            <!-- Lista de proporciones en sidebar izquierdo. -->
             <div class="fotos-fijas">
                 <div class="box active" data-aspectratio="0">
-                    <!-- <div class="size">Sin restricción</div> -->
-                    <div class="modelo" style="width: 50px; height: 50px;"><div style="margin-top: 15px; text-align: center; font-weight: bold;">Libre</div></div>
+                    <div class="modelo" style="width: 50px; height: 50px;"><div class="free">Libre</div></div>
                 </div>
             </div>
         </div>
-        <div style="float:left;">
+        <div class="left">
+            <!-- Herramientas de la barra superior. -->
             <div class="tools-container">
                 <div class="zoom">
                     <a href="#" id="zoom_in" class="icon" title="Aumentar Zoom"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/zoom-in.png" width="18px"></a>
@@ -48,9 +49,8 @@
                     <a href="#" id="cancel" class="icon" title="Cancelar"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/cancel.png" width="18px"></a>
                 </div>
             </div>
-            <div class="image-container">
-                <img src="%%_relfoto%%" id="image">
-            </div>
+            <!-- Foto a editar -->
+            <div class="image-container"><img src="%%_relfoto%%" id="image"></div>
         </div>
     </div>
 </body>

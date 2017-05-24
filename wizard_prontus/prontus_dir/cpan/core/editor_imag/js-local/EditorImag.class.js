@@ -1,3 +1,18 @@
+// ---------------------------------------------------------------
+// SCRIPT
+// ---------------------------------------------------------------
+// EditorImag.class.js
+//
+// ---------------------------------------------------------------
+// PROPOSITO
+// ---------------------------------------------------------------
+// Manejo de eventos y funciones del editor de imagenes.
+// ---------------------------------------------------------------
+// HISTORIAL DE VERSIONES
+// ---------------------------------------------------------------
+// 1.0.0 - 24/05/2017 - JOR - Primera versión.
+// ---------------------------------------------------------------
+
 (function (window) {
     var self = null;
     var EditorImag = {
@@ -40,7 +55,7 @@
                         if (data.status == '0') {
                             alert(data.msg);
                         } else {
-                            alert('ok.');
+                            alert('La imagen fue editada exitosamente.');
 
                             parent.$('#_fotoeditada').val(data.msg);
                             parent.Fid.submitir('Guardar', '_self');

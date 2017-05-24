@@ -9,8 +9,11 @@
 # http://www.prontus.cl/license.html
 # ---------------------------------------------------------------
 
-# BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA
-# BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA
+# ---------------------------------------------------------------
+# HISTORIAL DE VERSIONES.
+# ---------------------------------------------------------------
+# 1.0.0 - 24/05/2017 - JOR - Primera versión
+# ---------------------------------------------------------------
 
 BEGIN {
     use FindBin '$Bin';
@@ -68,7 +71,9 @@ main: {
         &glib_html_02::print_json_result(0, 'La imagen no es válida', 'exit=1,ctype=1');
     }
 
-    # Dir de trabajo
+    &valida_parametros();
+
+    # Directorio de trabajo: /cpan/procs/imgedit
     my $prontus_id = $prontus_varglb::PRONTUS_ID;
     my $reldir_imgedit = "/$prontus_id/cpan/procs/imgedit";
     &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$reldir_imgedit");
@@ -91,7 +96,7 @@ main: {
         &File::Copy::copy($prontus_varglb::DIR_SERVER . $FORM{'foto'}, "$prontus_varglb::DIR_SERVER$relpath_img_dst");
     }  else {
         # Invalida.
-        &glib_html_02::print_json_result(0, "foto mala", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, "La imagen es inválida.", 'exit=1,ctype=1');
     }
 
     my $path_img_dst = "$prontus_varglb::DIR_SERVER$relpath_img_dst";
@@ -106,15 +111,16 @@ main: {
 
         my $binfoto = &lib_thumb::make_rotate($degrees, $path_img_dst);
         $path_img_dst =~ s/\.gif$/\.png/i if($path_img_dst =~ /\.gif$/i);
+
+
         &lib_thumb::write_image($path_img_dst, $binfoto);
     }
 
-    print STDERR "path_img_dst[$path_img_dst]\n";
+    # Cropper
     my ($binfoto, $final_w, $final_h) = &lib_thumb::make_crop($FORM{'srcX'}, $FORM{'srcY'}, $FORM{'width'}, $FORM{'height'}, $path_img_dst);
-
-    $path_img_dst =~ s/\.gif$/\.png/i if($path_img_dst =~ /\.gif$/i);
     &lib_thumb::write_image($path_img_dst, $binfoto);
 
+    # Se aplica el zoom si existe.
     if ($FORM{'zoomRatio'} > 1) {
         my $zoomW = $final_w * $FORM{'zoomRatio'};
         my $zoomH = $final_h * $FORM{'zoomRatio'};
@@ -124,11 +130,32 @@ main: {
         &lib_thumb::write_image($path_img_dst, $binfoto);
     }
 
-    # &glib_html_02::print_json_result(1, "fin.", 'exit=1,ctype=1');
-
     &glib_html_02::print_json_result(1, "$relpath_img_dst", 'exit=1,ctype=1');
 
     # print $pagina;
+};
+
+sub valida_parametros {
+    if ($FORM{'srcX'} eq '' || $FORM{'srcY'} eq '') {
+        &glib_html_02::print_json_result(0, "Parámetros insuficientes para realizar crop.", 'exit=1,ctype=1');
+    }
+
+    if ($FORM{'width'} eq '' || $FORM{'height'} eq '') {
+        &glib_html_02::print_json_result(0, "Parámetros insuficientes para realizar crop.", 'exit=1,ctype=1');
+    }
+
+
+    if ($FORM{'rotate'} && $FORM{'rotate'} !~ /[0-9]+/) {
+        &glib_html_02::print_json_result(0, "Ángulo de rotación inválido.", 'exit=1,ctype=1');
+    }
+
+    # Unusued.
+    # if ($FORM{'aspectRatio'} eq '') {
+    # }
+
+    if ($FORM{'zoomRatio'} && $FORM{'zoomRatio'} !~ /[0-9]+/) {
+        &glib_html_02::print_json_result(0, "Zoom ratio inválido.", 'exit=1,ctype=1');
+    }
 };
 
 sub garbage_work_images {
