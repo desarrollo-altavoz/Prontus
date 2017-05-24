@@ -82,7 +82,8 @@ main: {
 
     my $relpath_img_dst;
     # Determinar si la imagen es la original o una tmp y segun eso determinar el path de la imagen de trabajo
-    if ($FORM{'foto'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\.(\w+)$/) {
+    # if ($FORM{'foto'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\.(\w+)$/) {
+    if ($FORM{'foto'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\_*[a-zA-Z0-9\_\-]*?\.(\w+)$/) {
         my $random = &glib_str_02::random_string(12);
         my $ts = $1;
         my $ext = $2; # sin punto
