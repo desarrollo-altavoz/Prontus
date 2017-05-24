@@ -2,6 +2,7 @@ var GaleriaProntus = {
     separadorTexto: '||==',
     separadorImagen: '|',
     total: 0,
+    cantidadTamanos: 0,
     flag: '',
     pproc_working: false,
     errorCounter: 0,
@@ -28,6 +29,7 @@ var GaleriaProntus = {
         var conf = $('#_galeria_prontus_conf').val();
         var arrconf = conf.split('|');
         GaleriaProntus.ArregloFotos = {};
+        GaleriaProntus.cantidadTamanos = arrconf.length;
         for(x in arrconf) {
             var item = arrconf[x];
             var arritem = item.split(':');
@@ -48,7 +50,7 @@ var GaleriaProntus = {
         }
 
         // Vemos si pudimos extraer algo de la conf
-        if (GaleriaProntus.ArregloFotos.length < 2) {
+        if (GaleriaProntus.cantidadTamanos < 2) {
             GaleriaProntus.showMsg('Error en la configuración de la galería');
             return;
         }
@@ -108,9 +110,9 @@ var GaleriaProntus = {
                     $('#_prontus-galeria-sortable').append('<li class="item" id="_prontus-foto'+idx+'"></li>');
                     $(iditem).append('<div class="_prontus-img-container" ><img class="thumb"></div>');
                     $(iditem + ' .thumb').attr('src', fullfoto);
-                    $(iditem).append($('#matrix .botonera').clone());
+                    $(iditem).append($('#_matrix .botonera').clone());
                 }
-                if (obj.num == 2) {
+                if (obj.num == GaleriaProntus.cantidadTamanos) {
                     $(iditem + ' .botonera .show').attr('href', fullfoto);
                 }
                 var nombrefoto = obj.nombre;
@@ -136,7 +138,7 @@ var GaleriaProntus = {
         }).disableSelection();
 
         // Los eventos para los botones
-        $('#_content-galeria-prontus #_prontus-galeria-sortable li .show').live('click', function() {
+        $('#_content-galeria-prontus #_prontus-galeria-sortable li .show, #_content-galeria-prontus ._prontus-img-container').live('click', function() {
             var iditem = $(this).parents('.item').attr('id');
             GaleriaProntus.accionShow('#'+iditem);
             return false;
@@ -442,7 +444,7 @@ var GaleriaProntus = {
                 href: urlFoto,
                 maxWidth: '100%',
                 maxHeight: '100%',
-                scalePhotos: false,
+                scalePhotos: true,
                 opacity: 0.8
         });
     },
