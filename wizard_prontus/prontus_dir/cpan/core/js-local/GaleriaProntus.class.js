@@ -104,13 +104,13 @@ var GaleriaProntus = {
                 var fechac = ts.substr(0, 8);
                 var fullfoto = '/'+Admin.prontus_id+'/site/artic/'+fechac+'/imag/'+foto;
 
-                if(obj.num == 1) {
+                if (obj.num == 1) {
                     $('#_prontus-galeria-sortable').append('<li class="item" id="_prontus-foto'+idx+'"></li>');
-                    $(iditem).append('<img class="thumb">');
+                    $(iditem).append('<div class="_prontus-img-container" ><img class="thumb"></div>');
                     $(iditem + ' .thumb').attr('src', fullfoto);
                     $(iditem).append($('#matrix .botonera').clone());
                 }
-                if(obj.num == 2) {
+                if (obj.num == 2) {
                     $(iditem + ' .botonera .show').attr('href', fullfoto);
                 }
                 var nombrefoto = obj.nombre;
@@ -498,7 +498,7 @@ var GaleriaProntus = {
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // No se pudo leer el json
-                if (GaleriaProntus.errorCounter >= 10) {
+                if (GaleriaProntus.errorCounter >= 5) {
                     GaleriaProntus.terminarProcesamiento(GaleriaProntus.msg_error_resp, true);
                     return;
                 } else {
@@ -541,14 +541,23 @@ var GaleriaProntus = {
             noreload = false;
         }
         GaleriaProntus.pproc_working = false;
+        var labelBoton = 'Cerrar';
+        if (!noreload) {
+            labelBoton = 'Recargar';
+            setTimeout(function() {
+                window.location.reload();
+            }, 5000);
+        }
         $('#_prontus-galeria-dialog').html(msg);
-        $('#_prontus-galeria-dialog').dialog("option", "buttons", {
-            Cerrar: function() {
-                $(this).dialog("close");
+        $('#_prontus-galeria-dialog').dialog("option", "buttons", [{
+            text: labelBoton,
+            click: function() {
                 if (!noreload) {
                     window.location.reload();
+                } else {
+                    $(this).dialog("close");
                 }
             }
-        });
+        }]);
     }
 }

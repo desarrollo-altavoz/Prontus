@@ -34,6 +34,8 @@ BEGIN {
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
 };
 
+use utf8;
+use strict;
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
