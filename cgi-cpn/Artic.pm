@@ -193,8 +193,7 @@ sub _get_fulldir_vista {
 
     my $fulldir_vista = $this->{dst_pags};
     # warn "fulldir_vista1[$fulldir_vista]";
-    no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-    $fulldir_vista =~ s/(\/site\/artic\/\d{8}\/pags)/\1-$mv/ if ($mv);
+    $fulldir_vista =~ s/(\/site\/artic\/\d{8}\/pags)/$1-$mv/ if ($mv);
     # warn "fulldir_vista2[$fulldir_vista] mv[$mv]";
 
     return $fulldir_vista;
@@ -354,7 +353,7 @@ sub generar_xml_artic {
     # Fotos fijas, a continuacion de las fotos
     $this->_guarda_fotosfijas();
 
-    # Fotos subidas masivamente via uploadify
+    # Fotos subidas masivamente via uploadify o drag and drop
     $this->_guarda_fotosbatch();
 
     # Fotos editadas
@@ -1020,8 +1019,7 @@ sub _guarda_fotosfijas {
         # foto local al sitio, caso que venga con ../, sacarlos
         # warn("1-nom_campo[$nom_campo] val_campo[$val_campo]");
         if ($val_campo =~ /^\.\.\//) {
-            no warnings 'syntax'; # para evitar el msg "\2 better written as $2"
-            $val_campo =~ s/^(\.\.\/)+(\w)/\/\2/;
+            $val_campo =~ s/^(\.\.\/)+(\w)/\/$2/;
         };
         # warn("2-nom_campo[$nom_campo] val_campo[$val_campo]");
 
@@ -1721,8 +1719,7 @@ sub borra_artic {
     my $mv;
     foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
         my $dir_art_mv = $dirpag;
-        no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-        $dir_art_mv =~ s/(\d{8})\/pags/\1\/pags-$mv/;
+        $dir_art_mv =~ s/(\d{8})\/pags/$1\/pags-$mv/;
         my @files2delete_mv = glob("$dir_art_mv/$ts" . '.*');
         foreach my $file2delete (@files2delete_mv) {
             unlink $file2delete;
@@ -1733,7 +1730,7 @@ sub borra_artic {
 
         # Paginas paralelas
         $dir_art_mv = $dirpagpar;
-        $dir_art_mv =~ s/(\d{8})\/pagspar/\1\/pagspar-$mv/;
+        $dir_art_mv =~ s/(\d{8})\/pagspar/$1\/pagspar-$mv/;
         @files2delete_mv = glob("$dir_art_mv/$ts*" . '.*');
         foreach my $file2delete (@files2delete_mv) {
             unlink $file2delete;
@@ -2254,8 +2251,7 @@ sub generar_vista_art {
         undef %claves_adicionales;
 
         # Stamp demo
-        no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-        $buffer =~ s/<title>(.*?)<\/title>/<title>$stamp_demo\1<\/title>/is;
+        $buffer =~ s/<title>(.*?)<\/title>/<title>$stamp_demo$1<\/title>/is;
 
         # tag Generator
         $buffer = &lib_prontus::add_generator_tag($buffer);
@@ -2276,9 +2272,8 @@ sub generar_vista_art {
         $buffer =~ s/<!--POST_PROCESO=.+?-->//isg;
 
     } else {
-        no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
         my $titular = $titular_crudo;
-        $titular =~ s/<\!\[CDATA\[(.*?)\]\]>/\1/i;
+        $titular =~ s/<\!\[CDATA\[(.*?)\]\]>/$1/i;
         $titular = &lib_prontus::saca_tags_rets($titular);
         utf8::decode($titular);
 
@@ -2693,11 +2688,9 @@ sub _parsing_vtxt {
     # Da por sentado que si encuentra alguna ruta relativa, al sacarle los puntos quedara absoluta
     # Esto siempre sera true para imagenes prontus
     if ($val_campo =~ /src *= *("|')\.\.\//i) {
-        no warnings 'syntax'; # para evitar el msg "\2 better written as $2"
-        $val_campo =~ s/src *= *("|')(\.\.\/)+(\w)/src=\1\/\3/ig;
+        $val_campo =~ s/src *= *("|')(\.\.\/)+(\w)/src=$1\/$3/ig;
     } elsif ($val_campo =~ /src *= *("|')\w+?\//i) {
-        no warnings 'syntax'; # para evitar el msg "\2 better written as $2"
-        $val_campo =~ s/(src) *= *("|')(\w+?)\//\1=\2\/\3\//ig;
+        $val_campo =~ s/(src) *= *("|')(\w+?)\//$1=$2\/$3\//ig;
     };
 
     my $vtxt_aux = $val_campo;
@@ -2734,12 +2727,11 @@ sub _parsing_vtxt {
         $curr_nrotit++;
     };
 
-    no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
     foreach my $st (sort{$a <=> $b}(keys %hash_subtits)) {
         # print STDERR "st[$st]\n";
         my $item_menu = $hash_subtits{$st};
         # Reemplazar en la pagina misma.
-        $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%/$item_menu%%_SUBTIT_LOOP_$nom_campo%%\1%%\/_SUBTIT_LOOP_$nom_campo%%/is;
+        $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%/$item_menu%%_SUBTIT_LOOP_$nom_campo%%$1%%\/_SUBTIT_LOOP_$nom_campo%%/is;
     };
     # Eliminar TITLOOP sobrante.
     $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%//isg;
