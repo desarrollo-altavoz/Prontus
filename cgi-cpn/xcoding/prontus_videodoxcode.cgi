@@ -153,7 +153,6 @@ main: {
     my $path_conf = "$prontus_varglb::DIR_SERVER/$PRONTUS_ID/cpan/$PRONTUS_ID.cfg";
     $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
-    $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
     print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Inicio Proceso\n";
     if ($prontus_varglb::ADVANCED_XCODING eq 'SI' && $prontus_varglb::USAR_XCODER_EXTERNO eq 'SI') {

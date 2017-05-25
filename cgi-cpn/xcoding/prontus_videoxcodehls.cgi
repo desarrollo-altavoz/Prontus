@@ -69,7 +69,6 @@ my $MARCA; # nombre de la marca prontus del video
 
 # ---------------------------------------------------------------
 main: {
-    #~ $prontus_varglb::DIR_SERVER =~ s/cgi\-cpn//is;
     &die_stderr("El parámetro 'origen' no es válido.", "", 1) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
     &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
     &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
@@ -88,7 +87,6 @@ main: {
     my $path_conf = "$prontus_varglb::DIR_SERVER/$PRONTUS_ID/cpan/$PRONTUS_ID.cfg";
     $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
-    $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
     print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] [$ARTIC_filename] Inicio Proceso de Corte\n";
 

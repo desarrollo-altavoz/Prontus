@@ -303,9 +303,6 @@ sub print_json_result_hash {
     } else {
         print &JSON::to_json($hash);
     }
-    #~ my $json = new JSON;
-    # print $json->to_json($resp);
-    #~ print &JSON::to_json($hash);
     exit if ($exit);
 };
 
