@@ -357,7 +357,7 @@ sub generar_xml_artic {
     $this->_guarda_fotosbatch();
 
     # Fotos editadas
-#     $this->_guarda_fotoeditada();
+    $this->_guarda_fotoeditada();
     $this->_guarda_fotofromdir('/' . $this->{prontus_id} . '/cpan/procs/imgedit', '_fotoeditada');
 
     foreach my $nom_campo (keys %{$this->{campos}}) {
