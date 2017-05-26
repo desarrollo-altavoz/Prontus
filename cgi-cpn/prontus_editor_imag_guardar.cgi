@@ -85,7 +85,6 @@ main: {
     my $nom_orig_foto;
 
     # Determinar si la imagen es la original o una tmp y segun eso determinar el path de la imagen de trabajo
-    # if ($FORM{'foto'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\.(\w+)$/) {
     if ($FORM{'foto'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\_*([a-zA-Z0-9\_\-]*?)\.(\w+)$/) {
         my $random = &glib_str_02::random_string(12);
         my $ts = $1;
@@ -136,12 +135,9 @@ main: {
     }
 
     # Agregar nueva imagen al articulo.
+    my ($fotonum, $relpath_foto, $wfoto, $hfoto) = &agrega_foto_artic($relpath_img_dst, $nom_orig_foto, $path_img_dst);
 
-    print STDERR "nom_orig_foto[$nom_orig_foto]\n";
-
-    my ($num, $relpath_foto, $wfoto, $hfoto) = &agrega_foto_artic($relpath_img_dst, $nom_orig_foto);
-
-    &glib_html_02::print_json_result(1, "$relpath_foto;$num;$wfoto;$hfoto", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, "$relpath_foto;$fotonum;$wfoto;$hfoto", 'exit=1,ctype=1');
 
     # print $pagina;
 };
@@ -149,6 +145,7 @@ main: {
 sub agrega_foto_artic {
     my $foto = $_[0];
     my $nom_orig = $_[1];
+    my $path_img_dst = $_[2];
     my $artic_obj;
 
     unless($artic_obj = Artic->new(
@@ -159,60 +156,81 @@ sub agrega_foto_artic {
                 'ts'                => $FORM{'ts'},
                 'campos'            => {})) {
 
-        print "[error] Error inicializando objeto articulo: $Artic::ERR\n";
-        return 0;
+        print STDERR "[error] Error inicializando objeto articulo: $Artic::ERR\n";
+        unlink $path_img_dst; # se elimina foto generada.
+        &glib_html_02::print_json_result(0, "[error] Error inicializando objeto articulo: $Artic::ERR", 'exit=1,ctype=1');
     };
 
     $artic_obj->{xml_data} = &glib_fildir_02::read_file($artic_obj->{fullpath_xml});
 
-    my $nomfoto = $artic_obj->_add_foto_filesystem($foto, $nom_orig);
-    $artic_obj->_flush_xml();
-
-    my $bufferXML = &glib_fildir_02::read_file($artic_obj->{fullpath_xml});
+    my $nomfoto = $artic_obj->_add_foto_filesystem($foto, $nom_orig); # en este punto, aun no se escribe el XML, por si hay errores.
     my $fechap;
+    my $fotonum;
+    my $wfoto;
+    my $hfoto;
+    my $bufferXML = $artic_obj->{xml_data};
 
     if ($bufferXML =~ /<(_fechap)>(.+?)<\/\1>/i) {
         $fechap = $2;
     } else {
-        print STDERR "Articulo sin fechap!\n";
+        print STDERR "Articulo sin fechap, se deduce del TS.\n";
+        # Se deduce del TS del articulo.
         $FORM{'ts'} =~ /(\d{8})/;
         $fechap = $1;
     }
 
-    print STDERR "fechap[$fechap]\n";
+    if (!$fechap) {
+        unlink $path_img_dst; # se elimina foto generada.
+        &glib_html_02::print_json_result(0, "No se pudo obtener del XML la fecha de publicación del artículo (fechap).", 'exit=1,ctype=1');
+    }
 
     my $relbase_path = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$fechap";
     my $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/" . $nomfoto;
 
-    print STDERR "nomfoto[$nomfoto] rel[$relpath_foto]\n";
+    if (!-d "$prontus_varglb::DIR_SERVER$relbase_path") {
+        unlink $path_img_dst; # se elimina foto generada.
+        unlink "$prontus_varglb::DIR_SERVER$relpath_foto"; # foto creada por _add_foto_filesystem.
 
-    my $num;
-
-    if ($nomfoto =~ /^(foto_\d{8}).*/i) {
-        $num = $1;
-    } else {
-        print STDERR "Error al determinar id de la foto [$nomfoto]\n";
+        &glib_html_02::print_json_result(0, "El directorio base [$relbase_path] no existe.", 'exit=1,ctype=1');
     }
 
-    my $wfoto;
-    my $hfoto;
+    if (!-f "$prontus_varglb::DIR_SERVER$relpath_foto") {
+        unlink $path_img_dst; # se elimina foto generada.
+        &glib_html_02::print_json_result(0, "La foto generada por objeto Artic existe.", 'exit=1,ctype=1');
+    }
 
-    if ($num) {
-        if ($bufferXML =~ /<(_w$num)>(.+?)<\/\1>/i) {
+    if ($nomfoto =~ /^(foto_\d{8}).*/i) {
+        $fotonum = $1;
+    } else {
+        print STDERR "Error al determinar foto_<numero> de la foto [$nomfoto]\n";
+        unlink $path_img_dst; # se elimina foto generada.
+        unlink "$prontus_varglb::DIR_SERVER$relpath_foto"; # foto creada por _add_foto_filesystem.
+        &glib_html_02::print_json_result(0, "Error al determinar foto_<numero> de la foto [$nomfoto]", 'exit=1,ctype=1');
+    }
+
+    if ($fotonum) {
+        if ($bufferXML =~ /<(_w$fotonum)>(.+?)<\/\1>/i) {
             $wfoto = $2;
         }
-        if ($bufferXML =~ /<(_h$num)>(.+?)<\/\1>/i) {
+        if ($bufferXML =~ /<(_h$fotonum)>(.+?)<\/\1>/i) {
             $hfoto = $2;
         }
     }
 
-    print STDERR "wfoto[$wfoto] hfoto[$hfoto]\n";
-
-    if (-f "$prontus_varglb::DIR_SERVER$foto") {
-        unlink "$prontus_varglb::DIR_SERVER$foto";
+    if (!$wfoto || !$hfoto) {
+        unlink $path_img_dst; # se elimina foto generada.
+        unlink "$prontus_varglb::DIR_SERVER$relpath_foto"; # foto creada por _add_foto_filesystem.
+        &glib_html_02::print_json_result(0, "No se pudo obtener del XML el ancho y el alto de la foto.", 'exit=1,ctype=1');
     }
 
-    return ($num, $relpath_foto, $wfoto, $hfoto);
+    if (-f $path_img_dst) {
+        unlink $path_img_dst;
+    }
+
+    # Todo OK. Se escribe el XML.
+    $artic_obj->_flush_xml();
+
+    return ($fotonum, $relpath_foto, $wfoto, $hfoto);
 };
 
 sub valida_parametros {
@@ -235,6 +253,12 @@ sub valida_parametros {
 
     if ($FORM{'zoomRatio'} && $FORM{'zoomRatio'} !~ /[0-9]+/) {
         &glib_html_02::print_json_result(0, "Zoom ratio inválido.", 'exit=1,ctype=1');
+    }
+
+    if (!$FORM{'ts'}) {
+        &glib_html_02::print_json_result(0, "El TS del artículo es obligatorio.", 'exit=1,ctype=1');
+    } elsif ($FORM{'ts'} && $FORM{'ts'} !~ /[0-9]+/) {
+        &glib_html_02::print_json_result(0, "El TS es inválido.", 'exit=1,ctype=1');
     }
 };
 

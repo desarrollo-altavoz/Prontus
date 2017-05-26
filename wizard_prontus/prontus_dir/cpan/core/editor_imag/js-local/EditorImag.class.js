@@ -10,7 +10,7 @@
 // ---------------------------------------------------------------
 // HISTORIAL DE VERSIONES
 // ---------------------------------------------------------------
-// 1.0.0 - 24/05/2017 - JOR - Primera versión.
+// 1.0.0 - 24/05/2017 - JOR - Primera versiÃ³n.
 // ---------------------------------------------------------------
 
 (function (window) {
@@ -21,7 +21,7 @@
         zoomRatio: 1,
         tsArtic: null,
         imgElementId: "#image",
-        editFromFotoFija: null,
+        activeFotoFija: null,
         init: function (path_foto, path_conf, active, ts) {
             self = this;
             self.foto = path_foto;
@@ -36,14 +36,14 @@
             if (active) {
                 $("#" + active).trigger("click");
                 $('.fotos-fijas').animate({scrollTop: $("#" + active).offset().top}, 500);
-                self.editFromFotoFija = active;
+                self.activeFotoFija = active;
             }
         },
         actions: {
             apply: function (e) {
                 e.preventDefault();
 
-                if (!confirm("¿Está seguro de aplicar sus cambios?")) {
+                if (!confirm("Â¿EstÃ¡ seguro de aplicar sus cambios?")) {
                     return false;
                 }
 
@@ -91,8 +91,8 @@
                             parent.$("#_mainFidForm").prepend(html);
 
                             // La edicion de la foto viene desde una fotofija. Asignar la nueva foto a este campo.
-                            if (self.editFromFotoFija) {
-                                parent.FotoFija.foto.set(self.editFromFotoFija, url, wfoto, hfoto);
+                            if (self.activeFotoFija) {
+                                parent.FotoFija.foto.set(self.activeFotoFija, url, wfoto, hfoto);
                             }
 
                             // Cerrar colorbox.
@@ -100,7 +100,7 @@
                         }
                     },
                     error: function() {
-                        alert('Ocurrió un error al procesar la imagen, inténtalo nuevamente.');
+                        alert('OcurriÃ³ un error al procesar la imagen, intÃ©ntalo nuevamente.');
                     }
                 });
             },
@@ -143,7 +143,7 @@
             cancel: function (e) {
                 e.preventDefault();
 
-                if (confirm("Al cancelar, sus cambios se perderán. ¿Está seguro de cancelar sus cambios?")) {
+                if (confirm("Al cancelar, sus cambios se perderÃ¡n. Â¿EstÃ¡ seguro de cancelar sus cambios?")) {
                     parent.$.colorbox.close();
                 }
             },
@@ -211,6 +211,7 @@
                     $(".fotos-fijas .box").removeClass('active');
                     $(self.imgElementId).cropper("setAspectRatio", aspectRatio);
                     $(this).addClass('active');
+                    self.activeFotoFija = $(this).attr("id");
                 });
             }
         }

@@ -150,22 +150,6 @@ main: {
             $bufferBancoImg =~ s/%%wfoto%%/$wfoto/ig;
             $bufferBancoImg =~ s/%%hfoto%%/$hfoto/ig;
 
-            # Foto iconizada
-            # my $alt = "$nom_campo\nW:$wfoto\nH:$hfoto\n$kbytes_foto";
-            my $foto_iconizada;
-            if($wfoto >= $hfoto) {
-                my $ancho_foto_iconizada = $wfoto;
-                $ancho_foto_iconizada = 80 if ($wfoto > 80);
-                $ancho_foto_iconizada = 'width:'.$ancho_foto_iconizada.'px;';
-                $bufferBancoImg =~ s/%%size_img%%/$ancho_foto_iconizada/ig;
-
-            } else {
-                my $alto_foto_iconizada = $wfoto;
-                $alto_foto_iconizada = 80 if ($wfoto > 80);
-                $alto_foto_iconizada = 'height:'.$alto_foto_iconizada.'px;';
-                $bufferBancoImg =~ s/%%size_img%%/$alto_foto_iconizada/ig;
-            }
-
             # Para los iconos de acciones sobre la imagen
             my $reldir_icons = "$prontus_varglb::DIR_CORE/imag/boto";
             $bufferBancoImg =~ s/%%reldir_icons%%/$reldir_icons/ig;
