@@ -116,7 +116,7 @@ Cambios de esta versión respecto de Prontus 10.x:
                 %%IF(CHK_comentarios)%% %%MACRO(macro_coment.html)%% %%/IF%%
                 </div>
             (debiera venir con los modelos o por lib de modelos)
-            Esta macro utiliza la /js-local/lib_validator.js para las validaciónes, hay que hacer el cambio
+            Esta macro utiliza la /js-local/lib_validator.js para las validaciones, hay que hacer el cambio
             para que use la nueva validator.js
             La nueva macro ahora incluye ahi mismo el formulario.
         - ver que en el fid se incluya la macro reservada de comentarios inmediatamente a continuación de la macro de opciones, así:
@@ -367,7 +367,7 @@ ARCHIVOS ELIMINADOS
 BUGS CORREGIDOS
 ---------------
 - Coment: Se corrige un error de convivencia entre /cgi-cpn/lib_custom.pm y /cgi-bin/coment/lib_custom.pm
-Para realizar validaciónes custom, copiar archivo lib_custom_val_sample.pm a lib_custom_val.pm
+Para realizar validaciones custom, copiar archivo lib_custom_val_sample.pm a lib_custom_val.pm
 y agregar la validación a la función: custom_validation.
 Ojo con el archivo eliminado para no dejar basura
 
@@ -836,7 +836,7 @@ MEJORAS
 
   Luego la macro se podría llamar de la siguiente forma:
 
-        <!-- begin artículos relacionados -->
+        <!-- begin articulos relacionados -->
         %%IF(_tax)%%
             <?php include('%%_TS%%_art_relac.html'); ?>
         %%/IF%%
@@ -852,7 +852,7 @@ MEJORAS
                 %%/IF%% %%/IF%%
             %%/NIF%%
          %%/NIF%%
-        <!-- end artículos relacionados -->
+        <!-- end articulos relacionados -->
 
   Para obetener el comportamiento: usar taxonomia manual, sino hay taxonomia manual, usar
   relacionados portags y sino hay tags, usar taxonomia manual.
@@ -1316,7 +1316,7 @@ MEJORAS
     - Permite especificar params para BD MySQL
     - Incorpora creacion de BD, tablas, regeneracion de tabla artículos e importacion de tax
     - Remasterizacion general de modelos, model-lib y descripciones de éstos
-    - Incorpora validaciónes para prevención de borradod e prontus existente y para evitar de que se utilice una BD existente.
+    - Incorpora validaciones para prevención de borradod e prontus existente y para evitar de que se utilice una BD existente.
 
 - Editor de archivos Prontus:
     - elimina botones "reinicializar resaltado" y "visualizacion inteligente"
@@ -4532,7 +4532,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [info]
         - Se agrega soporte para IE9, quedando: Chrome >= 10, Firefox >= 3.6, Safari 5, Internet Explorer 8 y 9.
 
-- Listado de artículos:
+- Listado de Artículos:
     [changes]
         - Se agrandan los íconos para expandir la fila del Listado de Artículos
     [files]
@@ -5710,9 +5710,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se agrega a la release postproceso de generación de galería de fotos a partir de un archivo zip.
     [files]
-        /cgi-cpn/pproc/lib_ppart_galería.pm
-        /cgi-cpn/pproc/prontus_galería_ppart.cgi
-        /cgi-cpn/pproc/prontus_galería_delete.cgi
+        /cgi-cpn/pproc/lib_ppart_galeria.pm
+        /cgi-cpn/pproc/prontus_galeria_ppart.cgi
+        /cgi-cpn/pproc/prontus_galeria_delete.cgi
 
 - Wizard
     [cambios]
@@ -6116,7 +6116,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se agrega la nueva interface de descarga/administración de modelos en el "Paso 2"
     [mejoras]
         - Se actualiza la versión de jquery del Wizard a la 1.7.1 (la misma que usa prontus)
-        - Se agrega la librería validator.js para las validaciónes de los pasos
+        - Se agrega la librería validator.js para las validaciones de los pasos
         - Se crea librería wizard_lib.pm para manejo de funciones comunes
     [cambios]
         - Se cambia el botón "Cancelar" por un redirect a /wizard_prontus, en vez del window.close();
@@ -6369,7 +6369,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Wizard Prontus
     [bugfixes]
         - Error en el Wizard, tenía mal el directorio de los modelos y llegaba solo al paso 2 en la instalacion de cero
-        - En caso de que el problema anterior se repita, se agregaron varias validaciónes y chequeos para evitarlo
+        - En caso de que el problema anterior se repita, se agregaron varias validaciones y chequeos para evitarlo
     [files]
         /cgi-cpn/wizard_lib.pm
         /cgi-cpn/wizard_models_download.cgi
@@ -6710,7 +6710,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
-- Listado de artículos
+- Listado de Artículos
     [bugfix]
         - Se corrige error al posicionar la combo de portadas y ediciones, cuando hay mutiedicion
           y la variable: EDICBASE_INI_SELECTED estaba en SI.
@@ -6836,7 +6836,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_tags_ports.cgi
 
-- Listado de artículos
+- Listado de Artículos
     [bugfix]
         - Bug al guardar las búsquedas. Si se refrescaba el listado, se guardaba la misma busqueda muchas veces
     [mejoras]
@@ -7157,7 +7157,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           se repetía la variable FORM_PLTS para ese fid. Esto ocurre desde que se agregaron las
           plantillas paralelas de artículo.
         - Se corrige error en regexp al leer VARNISH_GLOBAL_PURGE. Cuando era vacío, tomaba valores basura.
-        - Se cambian validaciónes de FFMPEG_PARAMS, para que acepte comillas dobles. Por lo mismo,
+        - Se cambian validaciones de FFMPEG_PARAMS, para que acepte comillas dobles. Por lo mismo,
           se cambia el input de FFMPEG_PARAMS, por un textarea
     [files]
         /cgi-cpn/prontus_cfg_save.cgi
@@ -7391,7 +7391,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_cron_list.cgi
 
-- Regenerar artículos
+- Regenerar Artículos
     [bugfixes]
         - Cuando se regeneran los artículos se parsean las plantillas paralelas
     [files]
@@ -8011,7 +8011,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             %%_EXCLUDE_PORT=inicio.xml%%
             %%_EXCLUDE_PORT_AREA=1,2%%
         - Se agrega filtro por FID.
-            %%_FIDS=fid_galería,fid_audio%%
+            %%_FIDS=fid_galeria,fid_audio%%
 
     [files]
         /cgi-cpn/lib_tax.pm
@@ -9382,8 +9382,34 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - FID
     [mejoras]
-        - Se integra la galería drag and drop y la carga masiva de fotos via zip
-        - Las fotos se acumulan en sucesivas cargas de archivos, sea un zip o fotos individuales
+        - Se integra la galería drag and drop y la carga masiva de fotos via zip:
+        Para esto se agrega una nueva macro reservada: _galeria_prontus.html
+        Se utiliza de la siguiente forma:
+        %%MACRO(_galeria_prontus.html, <configuracion galería>)%%.
+
+        La configuración de la galería se especifica con un string detallando los nombres que
+        tendrán las fotos subidas y los tamaños que se deben generar, por ejemplo:
+        1:fotofija_galeria@@_low:65x65
+
+        1: Indica que es primer tamaño de foto
+        fotofija_galeria@@_low: el nombre de las fotos resultantes, @@ se reemplaza con el nro de la foto por ej:
+                                fotofija_galeria11_low.
+        65x65: la resolución, ancho por alto.
+
+        Un ejemplo completo de uso:
+        %%MACRO(_galeria_prontus.html, 1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_mid:400x300|3:fotofija_galeria@@_high:1280x720)%%
+        Este incluye 2 tamaños, baja, media y alta resolución.
+
+        Se deben pasar como mínimo 2 tamaños de fotos para que funcione el sistema, en caso contrario se
+        utilizará la configuración por defecto:
+
+        1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_high:800x600
+
+        Para usar la configuración por defecto se debe incluir la macro de la sgte. forma:
+        %%MACRO(_galeria_prontus.html)%%.
+
+        Las fotos se acumulan en sucesivas cargas de archivos, sea un zip o fotos individuales
+        Se puede utilizar modo drag and drop para subir archivos de imágenes y zip.
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_artic.pm
@@ -9391,12 +9417,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_art_sbmit.cgi
         /cgi-cpn/galería/prontus_galería_garbage.cgi
         /cgi-cpn/galería/prontus_galería_procesar.cgi
-        /wizard_prontus/prontus_dir/cpan/core/css/galería.css
+        /cgi-cpn/galeria/prontus_galeria_upfoto_dd.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/galeria.css
         /wizard_prontus/prontus_dir/cpan/core/imag/auxi/ico-add-image.png
-        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_galería_prontus.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_galeria_prontus.html
         /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
-        /wizard_prontus/prontus_dir/cpan/core/js-local/galeríaProntus.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/GaleriaProntus.class.js
 
 - Wizard
     [bugfixes]
