@@ -130,8 +130,8 @@ var Fid = {
                     var arrResp = [];
                     var response = data.result
                     if (response == '0') {
-                        $('#imagenescargadas').append('<div style="margin-left:10px;margin-top:16px;width:120px;height:135px;overflow:auto;display:inline;float:left">' +
-                                '<div style="color:#FFA500;">Imagen con errores</div>' +
+                        $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
+                                '<div class="img-error">Imagen con errores</div>' +
                                 '</div>');
 
                     } else if (response != '') {
@@ -147,9 +147,9 @@ var Fid = {
                             wFoto = 100;
                         }
 
-                        $('#imagenescargadas').append('<div style="margin-left:10px;margin-top:16px;width:120px;height:135px;overflow:auto;display:inline;float:left">' +
+                        $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
                                 '<div>' + realNomFile + labelSize + '</div>' +
-                                '<img src="' + relPath + '" id="' + idFoto  + '" width="' + wFoto + '">' +
+                                '<img src="' + relPath + '" id="' + idFoto  + '">' +
                                 '</div>' +
                                 '<input type="hidden" name="_fotoreal" value="' + realNomFile + '">' +
                                 '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">');
