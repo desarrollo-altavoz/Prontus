@@ -12,7 +12,7 @@
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 # ---------------------------------------------------------------
-# 1.0.0 - 24/05/2017 - JOR - Primera versiÃ³n
+# 1.0.0 - 24/05/2017 - JOR - Primera versión
 # ---------------------------------------------------------------
 
 BEGIN {
@@ -42,6 +42,8 @@ main: {
     $FORM{'relfoto'}    = &glib_cgi_04::param('relfoto');
     $FORM{'wfoto'}      = &glib_cgi_04::param('w');
     $FORM{'hfoto'}      = &glib_cgi_04::param('h');
+    $FORM{'active'}     = &glib_cgi_04::param('active');
+    $FORM{'ts'}         = &glib_cgi_04::param('ts');
 
     # Deduce path conf del referer, en caso de no ser suministrado.
     $FORM{'path_conf'} = &get_path_conf() if ($FORM{'path_conf'} eq '');
@@ -70,6 +72,8 @@ main: {
     $pagina =~ s/%%_relfoto%%/$FORM{'relfoto'}/ig;
     $pagina =~ s/%%_wfoto%%/$FORM{'wfoto'}/ig;
     $pagina =~ s/%%_hfoto%%/$FORM{'hfoto'}/ig;
+    $pagina =~ s/%%active%%/$FORM{'active'}/ig;
+    $pagina =~ s/%%ts%%/$FORM{'ts'}/ig;
 
     print $pagina;
 };

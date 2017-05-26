@@ -10,7 +10,7 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/EditorImag.class.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            EditorImag.init("%%_relfoto%%", "%%_wfoto%%", "%%_hfoto%%", "%%_path_conf%%");
+            EditorImag.init("%%_relfoto%%", "%%_path_conf%%", "%%active%%", '%%ts%%');
         });
     </script>
 </head>
@@ -20,7 +20,8 @@
             <!-- Lista de proporciones en sidebar izquierdo. -->
             <div class="fotos-fijas">
                 <div class="box active" data-aspectratio="0">
-                    <div class="modelo" style="width: 50px; height: 50px;"><div class="free">Libre</div></div>
+                    <div class="modelo" style="width: 45px; height: 45px;"></div>
+                    <div class="size">Libre</div>
                 </div>
             </div>
         </div>
@@ -42,7 +43,7 @@
                     <a href="#" id="move_down" class="icon" title="Mover imagen hacia abajo"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-down.png" width="18px"></a>
                 </div>
                 <div class="reset">
-                    <a href="#" id="reset" class="icon" title="Reiniciar ediciÃ³n"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/reset.png" width="18px"></a>
+                    <a href="#" id="reset" class="icon" title="Reiniciar edición"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/reset.png" width="18px"></a>
                 </div>
                 <div class="actions">
                     <a href="#" id="apply" class="icon" title="Aplicar"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/apply.png" width="18px"></a>

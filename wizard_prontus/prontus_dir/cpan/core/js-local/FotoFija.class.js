@@ -146,6 +146,18 @@
                     });
                 }
             },
+            edit: function (id, wfoto, hfoto) {
+                var path = $('input[name="FOTOFIJA_' + id + '"]').val();
+
+                if (path) {
+                    $.colorbox({
+                        iframe: true,
+                        href:"/" + DIR_CGI_CPAN + "/prontus_editor_imag.cgi?&_path_conf=" + Admin.path_conf + "&ts=" + mainFidJs.TS + "&relfoto=" + path + "&w=" + wfoto + "&h=" + hfoto + "&active=" + id,
+                        innerWidth: 1024,
+                        innerHeight: 576
+                    });
+                }
+            },
             // ---------------------------------------------------------------
             // Asignar una foto del banco de imagenes a todos los campos de foto
             // Llamada desde Fid.class.js
@@ -187,7 +199,7 @@
                 });
             },
             bindEditorFotos: function () {
-                $('body').find('.openFotoEditor').click(function () {
+                $('body').find('.openFotoEditor').off('click').on('click', function () {
                     var nomfoto     = $(this).data("nomfoto");
                     var relfoto     = $(this).data("relfoto");
                     var wfoto       = $(this).data("wfoto");
@@ -195,11 +207,27 @@
 
                     $.colorbox({
                         iframe: true,
-                        href:"/" + DIR_CGI_CPAN + "/prontus_editor_imag.cgi?&_path_conf=" + Admin.path_conf + "&relfoto=" + relfoto + "&w=" + wfoto + "&h=" + hfoto,
+                        href:"/" + DIR_CGI_CPAN + "/prontus_editor_imag.cgi?&_path_conf=" + Admin.path_conf + "&ts=" + mainFidJs.TS + "&relfoto=" + relfoto,
                         innerWidth: 1024,
                         innerHeight: 576
                     });
                 })
+            },
+            reloadBancoImagenes: function () {
+                $('#scroll-banco').empty();
+
+                var theurl = './prontus_art_banco.cgi?_ts=' + mainFidJs.TS + '&_path_conf='+Admin.path_conf + '&_all=1';
+
+                $('#scroll-banco').load(theurl, function(responseText, textStatus, XMLHttpRequest) {
+                    FotoFija.initDraggableBanco();
+                    FotoFija.methods.bindEditorFotos();
+                    Fid.addDragImagenes();
+
+                    var curr_body = '#' + $('#_curr_body').val();
+                    if ($(curr_body).find('[id^="FOTOFIJA_"]').size() > 0) {
+                        $("#scroll-banco .botonera .publicar").show();
+                    }
+                });
             }
         },
         // ---------------------------------------------------------------

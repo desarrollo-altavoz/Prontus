@@ -1100,6 +1100,7 @@ var Fid = {
                     $("#banco-content .botonera .publicar").show();
                     FotoFija.initDraggableBanco();
                 }
+                FotoFija.methods.bindEditorFotos();
                 Fid.addDragImagenes();
             });
         });

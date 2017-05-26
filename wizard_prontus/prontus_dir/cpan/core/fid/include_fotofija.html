@@ -23,6 +23,10 @@
         <img name="borrarFOTOFIJA_##name##"   src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/delete_of.png"
         class="classfotofija cambia-boton" alt="Borrar" title="Borrar" width="18" height="17"  />
       </a>
+      <a href="#" onclick="FotoFija.actions.edit('##name##', '%%_WFOTOFIJA_##name##%%', '%%_HFOTOFIJA_##name##%%');return false;">
+        <img name="borrarFOTOFIJA_##name##"   src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/edit_of.png"
+        class="classfotofija cambia-boton" alt="Editar" title="Editar" width="18" height="17"  />
+      </a>
       <div class="cuadrar">
         <input type="checkbox" name="CHK_cuadrar_FOTOFIJA_##name##" id="CHK_cuadrar_FOTOFIJA_##name##" value="si" />
         <label for="CHK_cuadrar_FOTOFIJA_##name##" title="Cuadra las dimensiones para que la foto resultante tenga exactamente las mismas dimensiones indicadas en el control de Fotofija.">Cuadrar</label>
@@ -30,7 +34,7 @@
     </div>
     <script type="text/javascript">
       $(document).ready(function () {
-        FotoFija.newInstance('##name##', '##w##', '##h##', '%%_WFOTOFIJA_##name##%%', '%%_WFOTOFIJA_##name##%%');
+        FotoFija.newInstance('##name##', '##w##', '##h##', '%%_WFOTOFIJA_##name##%%', '%%_HFOTOFIJA_##name##%%');
       });
     </script>
   </div>

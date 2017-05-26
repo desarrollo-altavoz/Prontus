@@ -33,7 +33,7 @@ use lib_prontus;
 use glib_str_02;
 use lib_thumb;
 use File::Copy;
-
+use Artic;
 use strict;
 
 my (%FORM);
@@ -52,6 +52,7 @@ main: {
     $FORM{'rotate'}         = &glib_cgi_04::param('rotate');
     $FORM{'aspectRatio'}    = &glib_cgi_04::param('aspectRatio');
     $FORM{'zoomRatio'}      = &glib_cgi_04::param('zoomRatio');
+    $FORM{'ts'}             = &glib_cgi_04::param('ts');
 
     # Ajusta path_conf para completar path y/o cambiar \ por /
     $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
@@ -81,12 +82,15 @@ main: {
     &garbage_work_images("$prontus_varglb::DIR_SERVER$reldir_imgedit");
 
     my $relpath_img_dst;
+    my $nom_orig_foto;
+
     # Determinar si la imagen es la original o una tmp y segun eso determinar el path de la imagen de trabajo
     # if ($FORM{'foto'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\.(\w+)$/) {
-    if ($FORM{'foto'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\_*[a-zA-Z0-9\_\-]*?\.(\w+)$/) {
+    if ($FORM{'foto'} =~ /^\/$prontus_id\/site\/.*?\/[0-9]{8}\/imag\/foto_([0-9]+)\_*([a-zA-Z0-9\_\-]*?)\.(\w+)$/) {
         my $random = &glib_str_02::random_string(12);
         my $ts = $1;
-        my $ext = $2; # sin punto
+        my $ext = $3; # sin punto
+        $nom_orig_foto = $2; # nombre original de la foto, solo si esta en formato friendly url de imagenes.
 
         $relpath_img_dst = "$reldir_imgedit/foto_$ts" . '_' . "$random.$ext";
         while (-f "$prontus_varglb::DIR_SERVER$relpath_img_dst") {
@@ -131,9 +135,84 @@ main: {
         &lib_thumb::write_image($path_img_dst, $binfoto);
     }
 
-    &glib_html_02::print_json_result(1, "$relpath_img_dst", 'exit=1,ctype=1');
+    # Agregar nueva imagen al articulo.
+
+    print STDERR "nom_orig_foto[$nom_orig_foto]\n";
+
+    my ($num, $relpath_foto, $wfoto, $hfoto) = &agrega_foto_artic($relpath_img_dst, $nom_orig_foto);
+
+    &glib_html_02::print_json_result(1, "$relpath_foto;$num;$wfoto;$hfoto", 'exit=1,ctype=1');
 
     # print $pagina;
+};
+
+sub agrega_foto_artic {
+    my $foto = $_[0];
+    my $nom_orig = $_[1];
+    my $artic_obj;
+
+    unless($artic_obj = Artic->new(
+                'document_root'     => $prontus_varglb::DIR_SERVER,
+                'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                'public_server_name'=> $prontus_varglb::PUBLIC_SERVER_NAME,
+                'cpan_server_name'  => $prontus_varglb::IP_SERVER,
+                'ts'                => $FORM{'ts'},
+                'campos'            => {})) {
+
+        print "[error] Error inicializando objeto articulo: $Artic::ERR\n";
+        return 0;
+    };
+
+    $artic_obj->{xml_data} = &glib_fildir_02::read_file($artic_obj->{fullpath_xml});
+
+    my $nomfoto = $artic_obj->_add_foto_filesystem($foto, $nom_orig);
+    $artic_obj->_flush_xml();
+
+    my $bufferXML = &glib_fildir_02::read_file($artic_obj->{fullpath_xml});
+    my $fechap;
+
+    if ($bufferXML =~ /<(_fechap)>(.+?)<\/\1>/i) {
+        $fechap = $2;
+    } else {
+        print STDERR "Articulo sin fechap!\n";
+        $FORM{'ts'} =~ /(\d{8})/;
+        $fechap = $1;
+    }
+
+    print STDERR "fechap[$fechap]\n";
+
+    my $relbase_path = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$fechap";
+    my $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/" . $nomfoto;
+
+    print STDERR "nomfoto[$nomfoto] rel[$relpath_foto]\n";
+
+    my $num;
+
+    if ($nomfoto =~ /^(foto_\d{8}).*/i) {
+        $num = $1;
+    } else {
+        print STDERR "Error al determinar id de la foto [$nomfoto]\n";
+    }
+
+    my $wfoto;
+    my $hfoto;
+
+    if ($num) {
+        if ($bufferXML =~ /<(_w$num)>(.+?)<\/\1>/i) {
+            $wfoto = $2;
+        }
+        if ($bufferXML =~ /<(_h$num)>(.+?)<\/\1>/i) {
+            $hfoto = $2;
+        }
+    }
+
+    print STDERR "wfoto[$wfoto] hfoto[$hfoto]\n";
+
+    if (-f "$prontus_varglb::DIR_SERVER$foto") {
+        unlink "$prontus_varglb::DIR_SERVER$foto";
+    }
+
+    return ($num, $relpath_foto, $wfoto, $hfoto);
 };
 
 sub valida_parametros {
