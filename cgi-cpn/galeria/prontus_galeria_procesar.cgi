@@ -163,41 +163,66 @@ sub procesar_zip {
     $DIRTMP = $PROCDIR . '/' . $TS;
     &glib_fildir_02::check_dir($DIRTMP);
 
+    # Se recorren la imagenes
+    my @DIRFILES;
     # Se revisa la ruta del archivo
     $filezip = $prontus_varglb::DIR_SERVER . $filezip;
     if(! (-f $filezip)) {
-        &exitProgram("El archivo indicado no existe: $filezip");
+        @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
+        # si hay menos de 3 archivos (= 2), no hay fotos en la carpeta
+        # si hay 3 o mas hay al menos 1 imagen.
+        if (scalar @DIRFILES < 3) {
+            print STDERR "El archivo indicado no existe: $filezip\n";
+            &exitProgram("El archivo zip no existe");
+        } else {
+            # revisamos los tipos de archivos subidos, si hay algun .zip
+            # se debe descomprimir en la misma carpeta
+            foreach my $file (@DIRFILES) {
+                print STDERR $file;
+                if ($file =~ /[^\/]+\.zip$/i) {
+                    # Se descomprime el archivo
+                    `unzip -oj $DIRTMP/$file -d $DIRTMP`;
+                    # se borra despues de descomprimir
+                    unlink "$DIRTMP/$file";
+                }
+            }
+            # se actualiza el listado de archivos de la carpeta
+            @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
+        }
+    } else {
+        # Se cambia al directorio temporal
+        my $resp = `cd $DIRTMP`;
+        if ($resp) {
+            &exitProgram("No se pudo cambiar al directorio temporal: $resp");
+        }
+
+        # Se limpia el directorio temporal, para que no haya basura
+        $resp = `rm -rf $DIRTMP/*`;
+        if ($resp) {
+            &exitProgram("Error al borrar los archivos del directorio temporal: $resp");
+        }
+
+        # Se mueve el Archivo al directorio temporal
+        my $newZip = $DIRTMP . '/' . $nameZip;
+
+        print STDERR "[$TS] Copiando el Zip $filezip -> $newZip\n";
+        $resp = `cp '$filezip' '$newZip'`;
+        if ($resp) {
+            &exitProgram("Error al mover el archivo ZIP: $resp");
+        }
+
+        # Se descomprime el archivo
+        $resp = `unzip -oj $newZip -d $DIRTMP`;
+        if($resp =~ /such file/i) {
+            &exitProgram("Error al descomprimir el archivo: $resp", 1);
+        }
+
+        # Se elimina el ZIP copiado
+        unlink $newZip;
+
+        # Se recorren la imagenes
+        @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
     }
-
-    # Se cambia al directorio temporal
-    my $resp = `cd $DIRTMP`;
-    if($resp) {
-        &exitProgram("No se pudo cambiar al directorio temporal: $resp");
-    }
-
-    # Se limpia el directorio temporal, para que no haya basura
-    $resp = `rm -rf $DIRTMP/*`;
-    if($resp) {
-        &exitProgram("Error al borrar los archivos del directorio temporal: $resp");
-    }
-
-    # Se mueve el Archivo al directorio temporal
-    my $newZip = $DIRTMP . '/' . $nameZip;
-
-    print STDERR "[$TS] Copiando el Zip $filezip -> $newZip\n";
-    $resp = `cp '$filezip' '$newZip'`;
-    if($resp) {
-        &exitProgram("Error al mover el archivo ZIP: $resp");
-    }
-
-    # Se descomprime el archivo
-    $resp = `unzip -oj $newZip -d $DIRTMP`;
-    if($resp =~ /such file/i) {
-        &exitProgram("Error al descomprimir el archivo: $resp", 1);
-    }
-
-    # Se elimina el ZIP copiado
-    unlink $newZip;
 
     # Se calculan datos del articulo
     my $dst_img = $prontus_varglb::DIR_SERVER . '/'.$prontus_varglb::PRONTUS_ID.'/site/artic/'.$fechac.'/imag';
@@ -213,8 +238,6 @@ sub procesar_zip {
 
     $artic_obj->{xml_data} = &glib_fildir_02::read_file($artic_obj->{fullpath_xml});
 
-    # Se recorren la imagenes
-    my @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
     my $counter = 1;
     my $res;
     my $newimage;
@@ -266,7 +289,7 @@ sub procesar_zip {
         $newfile = lc $newfile;
         if($newfile ne $file) {
             my $resp = `mv '$DIRTMP/$file' '$DIRTMP/$newfile'`;
-            if($resp) {
+            if ($resp) {
                 print STDERR "No se pudo mover la imagen: '$DIRTMP/$file'\n";
                 next;
             }
@@ -304,7 +327,7 @@ sub procesar_zip {
             $newimage = &procesarImagen("$DIRTMP/$newfile", $ancho, $alto, $tam_w, $tam_h, $cuadrar);
             next unless($newimage);
 
-            $nomfoto = $artic_obj->_add_foto_filesystem("$newimage", "$nom_foto_orig");
+            $nomfoto = $artic_obj->_add_foto_filesystem($newimage, $nom_foto_orig);
             $strfotos{$num} = $nomfoto .'|'. $strfotos{$num};
             my $pathfoto = "/".$prontus_varglb::PRONTUS_ID."/site/artic/$fechac/imag/$nomfoto";
             $fotofija =~ s/@@/$counter/g;
