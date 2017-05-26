@@ -105,6 +105,7 @@
 #banco-img .butBancoImg {cursor:pointer;}
 #banco-img .banco-total{margin-left:5px; margin-top:4px; font-size:12px; font-weight:bold; color:#aaa;}
 #banco-img .foto-icon {width:80px;padding-top:4px;}
+#banco-img .foto-icon img.ui-state-disabled.ui-draggable-disabled {opacity:1;}
 .foto-icon img, .fotodrag.ui-draggable {max-width:80px;max-height:80px;}
 #banco-img .datos-foto {padding-left:4px;}
 #banco-img .datos-foto span{font-size:11px;}
