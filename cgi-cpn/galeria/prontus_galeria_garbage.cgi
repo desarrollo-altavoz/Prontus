@@ -52,7 +52,7 @@ main: {
     &glib_cgi_04::new();
     my $TS          = &glib_cgi_04::param('ts');
     my $PRONTUS_ID  = &glib_cgi_04::param('prontus_id');
-    my $file = "$ROOTDIR/$PRONTUS_ID/cpan/procs/status_fotorama/$TS.json";
+    my $file = "$ROOTDIR/$PRONTUS_ID/cpan/procs/galeria_prontus/$TS.json";
 
     # Para eliminar la semaforo de la galeria de fotos
     if(-f $file) {
@@ -60,12 +60,12 @@ main: {
     };
 
     # Para eliminar la carpeta con las fotos temporales
-    my $dir = "$ROOTDIR/$PRONTUS_ID/cpan/procs/status_fotorama/$TS";
+    my $dir = "$ROOTDIR/$PRONTUS_ID/cpan/procs/galeria_prontus/$TS";
     if(-d $dir) {
         &glib_fildir_02::borra_dir($dir);
     };
 
     print "Cache-Control: no-cache, must-revalidate\r\n";
     print "Content-type: application/json\n\n";
-    print '{"status": "ok"}';
+    print '{"status": "0"}';
 }

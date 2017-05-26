@@ -87,7 +87,7 @@ main:{
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($prontus_id);
     $prontus_varglb::DIR_SERVER = $document_root;
     &lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
-    $PROCDIR = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/status_fotorama";
+    $PROCDIR = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/galeria_prontus";
 
     &set_semaforo();
 

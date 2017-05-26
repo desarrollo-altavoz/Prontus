@@ -478,13 +478,31 @@ var GaleriaProntus = {
                     resizable: false
             });
             GaleriaProntus.actualizaEstado(mainFidJs.TS, Admin.prontus_id);
+            return;
+        }
+        if (typeof zipfile !== 'undefined' && zipfile !== '' && !/\.zip$/.test(zipfile)) {
+            $("#_prontus-galeria-dialog").html(GaleriaProntus.msg_error_zip);
+            $("#_prontus-galeria-dialog").dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    modal: true,
+                    position: [300,250],
+                    buttons: [{
+                            text: 'Cerrar',
+                            click: function() {
+                                    $(this).dialog("close");
+                                }
+                            }],
+                    resizable: false
+            });
+            return;
         }
     },
     // ---------------------------------------------------------------------------------------------
     actualizaEstado: function (ts, prontus_id) {
         // Se deja el dialogo modal
         // Ahora se revisa el json
-        var url = '/'+Admin.prontus_id+'/cpan/procs/status_fotorama/'+ts+'.json';
+        var url = '/'+Admin.prontus_id+'/cpan/procs/galeria_prontus/'+ts+'.json';
         $.ajax({
             url: url,
             dataType: 'json',
