@@ -6,12 +6,12 @@
 </div>
 
 <div id="_prontus_galeria_subtab1">
-    <table width="100%" cellspacing="0" class="tableform">
+    <table width="100%" cellspacing="0" class="tableform" >
       <tr>
         <td>
             <div id="_addimage-galeria-prontus" class="radius">
                 <img src="/%%_prontus_id%%/cpan/custom/imag/ico-add-image.png" width="32" height="32" alt="Agregar im&aacute;genes" title="Agregar im&aacute;genes" />
-                Arrastre imágenes aquí para agregarlas a la galería
+                Arrastre aqu&iacute; imágenes desde el Banco de imag&aacute;nes para agregarlas a la galería
             </div>
             <h1>Galería de Imágenes</h1>
             <h4>Total de imágenes: <span id="_galeria-prontus-total"></span></h4>
@@ -71,12 +71,16 @@
 <div id="_prontus_galeria_subtab2">
     <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform">
         <tr>
+            <td class="campo-titu-center" colspan="2">
+                <span>Seleccione un archivo en formato ZIP con varias fotos, las cuales serán agregadas al artículo, redimensionadas y posicionadas en la Galería.</span>
+            </td>
+        </tr>
+        <tr>
             <td class="nombre">Archivo Zip con Imágenes</td>
             <td class="campo2 upload">
                 <input name="_gal_archive" type="file" id="_gal_archive" />
                 <div class="file-link">&nbsp; %%_gal_archive%%</div>
                 <br/>
-                <span class="ayuda">Ingrese un archivo en formato ZIP con varias fotos, las cuales serán agregadas al artículo, redimensionadas y posicionadas en los controles de Foto de la Galería.</span>
                 <br/>
                 <br/>
                 <div class="ocultar">
@@ -84,6 +88,30 @@
                         <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading.gif" style="vertical-align:bottom;" />
                     </div>
                 </div>
+            </td>
+        </tr>
+        <tr id="_galeria_uploadDragDrop">
+            <td class="campo-titu-center" colspan="2">
+                Arrastre las imágenes a esta &aacute;rea y se subirán autom&aacute;ticamente.<br/>
+                <span class="ayuda">Se agregar&aacute;n autom&aacute;ticamente a la galer&iacute;a del art&iacute;culo.</span><br /><br/>
+                <div id="_galeria_dropZone">
+                    <div class="draghere">Arrastre sus im&aacute;genes hasta aqu&iacute;</div>
+                </div>
+                <div id="_galeria_uploadProgress" class="ocultar uploadProgress">
+                    <div id="_galeria_uploadProgressContainer" class="uploadProgressContainer">
+                        <div id="_galeria_uploadProgressBar" class="uploadProgressBar" style="background-image: url('/%%_prontus_id%%/cpan/core/imag/auxi/avancebg.gif');" >
+                        <div id="_galeria_uploadProgressPercent" class="uploadProgressPercent">0%</div>
+                    </div>
+                </div>
+                <div class="ocultar">
+                  <input id="_galeria_fileInputDD" name="_galeria_fileInputDD" type="file" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><br/>
+                <div id="_galeria_uploadcomplete" class="ocultar red" >Carga de imágenes terminada, guardando artículo...</div>
+                <div id="_galeria_imagenescargadas" ></div>
             </td>
         </tr>
     </table>

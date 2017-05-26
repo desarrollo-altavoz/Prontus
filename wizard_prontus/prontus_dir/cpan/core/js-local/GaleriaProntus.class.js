@@ -2,15 +2,17 @@ var GaleriaProntus = {
     separadorTexto: '||==',
     separadorImagen: '|',
     total: 0,
+    cantidadTamanos: 0,
     flag: '',
     pproc_working: false,
     errorCounter: 0,
+    procesarDD: 0,
 
     cgi_borrar: 'galeria/prontus_galeria_garbage.cgi',
     // mensajes del proceso de archivo
     msg_confirm: "¿Está seguro que desea guardar el FID?\nEl proceso de upload masivo de imágenes aún no termina.",
     msg_process: 'El archivo Zip se está procesando. No guarde este FID hasta que termine.',
-    msg_error_zip: 'El archivo no tiene extensión Zip. Suba un archivo zip y vuelva a guardar el artículo',
+    msg_error_zip: 'El archivo cargado no tiene extensión Zip. Suba un archivo zip y vuelva a guardar el artículo',
     msg_error_resp: 'Se ha producido un error en el procesamiento del Zip. Guarde de nuevo el artículo o suba otro archivo zip.',
     msg_error_com: 'Se ha producido un error de comunicación, se recargará el fid.',
 
@@ -22,12 +24,15 @@ var GaleriaProntus = {
         GaleriaProntus.flag = flag;
         GaleriaProntus.img_process = '<br/><img src="/'+Admin.prontus_id+'/cpan/core/imag/loading.gif" style="vertical-align:bottom;">';
 
-        GaleriaProntus.verificarZip();
+        if (GaleriaProntus.procesarDD == 0) {
+            GaleriaProntus.verificarZip();
+        }
 
         // Primero que todo obtenemos un arreglo con las fotos temporales:
         var conf = $('#_galeria_prontus_conf').val();
         var arrconf = conf.split('|');
         GaleriaProntus.ArregloFotos = {};
+        GaleriaProntus.cantidadTamanos = arrconf.length;
         for(x in arrconf) {
             var item = arrconf[x];
             var arritem = item.split(':');
@@ -48,7 +53,7 @@ var GaleriaProntus = {
         }
 
         // Vemos si pudimos extraer algo de la conf
-        if (GaleriaProntus.ArregloFotos.length < 2) {
+        if (GaleriaProntus.cantidadTamanos < 2) {
             GaleriaProntus.showMsg('Error en la configuración de la galería');
             return;
         }
@@ -104,13 +109,13 @@ var GaleriaProntus = {
                 var fechac = ts.substr(0, 8);
                 var fullfoto = '/'+Admin.prontus_id+'/site/artic/'+fechac+'/imag/'+foto;
 
-                if(obj.num == 1) {
+                if (obj.num == 1) {
                     $('#_prontus-galeria-sortable').append('<li class="item" id="_prontus-foto'+idx+'"></li>');
-                    $(iditem).append('<img class="thumb">');
+                    $(iditem).append('<div class="_prontus-img-container" ><img class="thumb"></div>');
                     $(iditem + ' .thumb').attr('src', fullfoto);
-                    $(iditem).append($('#matrix .botonera').clone());
+                    $(iditem).append($('#_matrix .botonera').clone());
                 }
-                if(obj.num == 2) {
+                if (obj.num == GaleriaProntus.cantidadTamanos) {
                     $(iditem + ' .botonera .show').attr('href', fullfoto);
                 }
                 var nombrefoto = obj.nombre;
@@ -136,7 +141,7 @@ var GaleriaProntus = {
         }).disableSelection();
 
         // Los eventos para los botones
-        $('#_content-galeria-prontus #_prontus-galeria-sortable li .show').live('click', function() {
+        $('#_content-galeria-prontus #_prontus-galeria-sortable li .show, #_content-galeria-prontus ._prontus-img-container').live('click', function() {
             var iditem = $(this).parents('.item').attr('id');
             GaleriaProntus.accionShow('#'+iditem);
             return false;
@@ -161,7 +166,6 @@ var GaleriaProntus = {
         for(name in GaleriaProntus.ArregloFotos) {
             var obj = GaleriaProntus.ArregloFotos[name];
             var iframe = obj.iframe;
-            //~ var foto = $('input[name^="'+iframe+'"').val();
             var foto = document.getElementsByName(iframe)[1].value;
             if(obj.num == 1 && foto == '') {
                 return;
@@ -289,6 +293,77 @@ var GaleriaProntus = {
                 Fid.submitir('save', '_self');
             }
         })
+
+        /* Mostrar drag & drop siempre y cuando este soportado. */
+        if (Fid.showDragDrop) {
+            // Iniciar upload Drag & Drop
+            $('#_galeria_fileInputDD').fileupload({
+                dataType: 'text',
+                url: 'galeria/prontus_galeria_upfoto_dd.cgi',
+                dropZone: $('#_galeria_dropZone'),
+                formData: { prontus_id: mainFidJs.PRONTUS_ID,
+                            ts: mainFidJs.TS
+                        },
+                done: function (e, data) {
+                    var response = JSON.parse(data.result);
+                    if (response.status == '0') {
+                        $('#_galeria_imagenescargadas').append('<div class="prontus-imagenescargadas">' +
+                                '<div class="img-error">Imagen con errores</div>' +
+                                '</div>');
+                    } else if (response.status == '1') {
+                        var idFoto       = response.data.idFoto;
+                        var wFoto        = response.data.wFoto;
+                        var hFoto        = response.data.hFoto;
+                        var relPath      = response.data.relPath;
+                        var nomFile      = response.data.nomFile;
+                        var realNomFile  = response.data.realNomFile ;
+                        var labelSize = '<br/><span class="ST">(' + wFoto + ' x ' + hFoto + ')</span>';
+                        $('#_galeria_imagenescargadas').append('<div class="prontus-imagenescargadas">' +
+                                '<div>' + realNomFile + labelSize + '</div>' +
+                                '<img src="' + relPath + '" id="' + idFoto  + '" >' +
+                                '</div>');
+                        if (typeof $('input[name="_HIDD__gal_archive"]').val() === 'undefined' || $('input[name="_HIDD__gal_archive"]').val() == '') {
+                            $('#_gal_archive').after('<input name="_HIDD__gal_archive" value="prontus_dummy.zip" id="_HIDD__gal_archive" type="hidden" />');
+                        }
+                        GaleriaProntus.procesarDD = 1;
+                    }
+                },
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#_galeria_uploadProgressBar').css('width', progress + '%');
+                    $('#_galeria_uploadProgressPercent').text(progress+'%');
+                },
+                stop: function (e) {
+                    $('#_galeria_uploadProgressBar').css('width', '100%');
+                    $('#_galeria_uploadProgressPercent').text('100%');
+                    $('#_galeria_fileInputDD').fileupload('disable');
+                    $('#_galeria_dropZone').css('cursor', 'not-allowed');
+                    setTimeout(function () {
+                        $('#_galeria_uploadProgressContainer').hide();
+                        $('#_galeria_uploadcomplete').show();
+                        Fid.submitir('Guardar', '_self');
+                    }, 1000);
+                },
+                drop: function (e, data) {
+                    /* Validar extensiones de archivo. */
+                    var fail = false;
+                    $.each(data.files, function (index, file) {
+                        var ext = (file.name).split('.').pop().toLowerCase();
+                        if ($.inArray(ext, ['gif','png','jpg','jpeg', 'zip']) == -1) {
+                            alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, jpg o jpeg; o un comprimido .zip con imágenes.");
+                            fail = true;
+                            return false;
+                        }
+                    });
+
+                    if (fail) {
+                        return false; /* al retornar false, se detiene la ejecución del plugin. */
+                    }
+
+                    $('#_galeria_uploadProgress').show();
+                }
+            });
+        }
     },
     // --------------------------------------------------------------------
     guardarGaleriaProntus: function() {
@@ -442,7 +517,7 @@ var GaleriaProntus = {
                 href: urlFoto,
                 maxWidth: '100%',
                 maxHeight: '100%',
-                scalePhotos: false,
+                scalePhotos: true,
                 opacity: 0.8
         });
     },
@@ -465,7 +540,7 @@ var GaleriaProntus = {
     verificarZip: function() {
         // Para ver status del Zip con fotos
         var zipfile = $('[name="_HIDD__gal_archive"]').val();
-        if(typeof zipfile !== 'undefined' && zipfile !== '') {
+        if (typeof zipfile !== 'undefined' && zipfile !== '' && /\.zip$/.test(zipfile)) {
             GaleriaProntus.pproc_working = true;
             $("#_prontus-galeria-dialog").html(GaleriaProntus.msg_process + GaleriaProntus.img_process);
             $("#_prontus-galeria-dialog").dialog({
@@ -476,13 +551,31 @@ var GaleriaProntus = {
                     resizable: false
             });
             GaleriaProntus.actualizaEstado(mainFidJs.TS, Admin.prontus_id);
+            return;
+        }
+        if (typeof zipfile !== 'undefined' && zipfile !== '' && !/\.zip$/.test(zipfile)) {
+            $("#_prontus-galeria-dialog").html(GaleriaProntus.msg_error_zip);
+            $("#_prontus-galeria-dialog").dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    modal: true,
+                    position: [300,250],
+                    buttons: [{
+                            text: 'Cerrar',
+                            click: function() {
+                                    $(this).dialog("close");
+                                }
+                            }],
+                    resizable: false
+            });
+            return;
         }
     },
     // ---------------------------------------------------------------------------------------------
     actualizaEstado: function (ts, prontus_id) {
         // Se deja el dialogo modal
         // Ahora se revisa el json
-        var url = '/'+Admin.prontus_id+'/cpan/procs/status_fotorama/'+ts+'.json';
+        var url = '/'+Admin.prontus_id+'/cpan/procs/galeria_prontus/'+ts+'.json';
         $.ajax({
             url: url,
             dataType: 'json',
@@ -498,7 +591,7 @@ var GaleriaProntus = {
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // No se pudo leer el json
-                if (GaleriaProntus.errorCounter >= 10) {
+                if (GaleriaProntus.errorCounter >= 4) {
                     GaleriaProntus.terminarProcesamiento(GaleriaProntus.msg_error_resp, true);
                     return;
                 } else {
@@ -541,14 +634,23 @@ var GaleriaProntus = {
             noreload = false;
         }
         GaleriaProntus.pproc_working = false;
+        var labelBoton = 'Cerrar';
+        if (!noreload) {
+            labelBoton = 'Recargar';
+            setTimeout(function() {
+                window.location.reload();
+            }, 2000);
+        }
         $('#_prontus-galeria-dialog').html(msg);
-        $('#_prontus-galeria-dialog').dialog("option", "buttons", {
-            Cerrar: function() {
-                $(this).dialog("close");
+        $('#_prontus-galeria-dialog').dialog("option", "buttons", [{
+            text: labelBoton,
+            click: function() {
                 if (!noreload) {
                     window.location.reload();
+                } else {
+                    $(this).dialog("close");
                 }
             }
-        });
+        }]);
     }
 }

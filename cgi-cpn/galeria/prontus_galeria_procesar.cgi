@@ -14,15 +14,15 @@
 # PROPOSITO.
 # -----------
 # Procesa el archivo zip cargado al articulo para generar los
-# tamaÒos de imagenes definidos para la galerÌa y los agrega al
-# xml del artÌculo
+# tama√±os de imagenes definidos para la galer√≠a y los agrega al
+# xml del art√≠culo
 #
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 # -----------------------
 # 1.0.0 - 28/05/2008 - CVI
 # 2.0.0 - 02/08/2012 - CVI - Migrado para coop 2012
-# 2.0.1 - 28/01/2013 - JOR - Se incluye dentro de la release prontus y se dejan tamaÒos dinamicos, provienen desde el fid.
+# 2.0.1 - 28/01/2013 - JOR - Se incluye dentro de la release prontus y se dejan tama√±os dinamicos, provienen desde el fid.
 # 2.0.2 - 11/03/2014 - JOR/CVI
 # 2.0.3 - 09/06/2014 - CVI
 # 2.0.4 - 17/06/2014 - MPG
@@ -49,11 +49,14 @@ use lib_stdlog;
 
 close STDOUT;
 
+use utf8;
 use strict;
+use JSON;
 use prontus_varglb; &prontus_varglb::init();
 use lib_prontus;
-use lib_galeria;
 use glib_fildir_02;
+
+#~ use Data::Dumper;
 
 my $MAXITEM = 100;
 my @FOTOS;
@@ -70,7 +73,7 @@ main:{
     my $document_root;
     my $fechac;
 
-    # Se leen los par·metros de entrada
+    # Se leen los par√°metros de entrada
     if ($origen =~ m|^(.*)/(.*?)/site/artic/(\d{8})/pags/(\d{14})\.\w+$|) {
         $document_root = $1;
         $prontus_id = $2;
@@ -84,7 +87,7 @@ main:{
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($prontus_id);
     $prontus_varglb::DIR_SERVER = $document_root;
     &lib_prontus::load_config("$prontus_varglb::DIR_SERVER$relpath_conf");
-    $PROCDIR = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/status_fotorama";
+    $PROCDIR = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/galeria_prontus";
 
     &set_semaforo();
 
@@ -93,7 +96,7 @@ main:{
     $xmlpath =~ s/\/pags\/(\w+)(\.\w+)?$/\/xml\/$1\.xml/;
     my $bufferxml = &lib_prontus::get_xml_data($xmlpath);
 
-    # Se lee la configuraciÛn para saber cuantas fotos hay
+    # Se lee la configuraci√≥n para saber cuantas fotos hay
     my %campos_xml = &lib_prontus::getCamposXml($bufferxml, "_galeria_prontus_conf,_gal_archive");
     my $filezip = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$fechac$prontus_varglb::DIR_ASOCFILE/$TS/$campos_xml{'_gal_archive'}";
 
@@ -149,7 +152,7 @@ sub procesar_zip {
     # Se imprime el TS y se comienza con el script
     print STDERR "[$TS] Comienza el proceso batch del zip\n";
 
-    # Se revisa extensiÛn del archivo
+    # Se revisa extensi√≥n del archivo
     if ($filezip !~ /([^\/]+\.zip)$/i) {
         &exitProgram("El archivo debe ser un ZIP");
     };
@@ -160,41 +163,66 @@ sub procesar_zip {
     $DIRTMP = $PROCDIR . '/' . $TS;
     &glib_fildir_02::check_dir($DIRTMP);
 
+    # Se recorren la imagenes
+    my @DIRFILES;
     # Se revisa la ruta del archivo
     $filezip = $prontus_varglb::DIR_SERVER . $filezip;
     if(! (-f $filezip)) {
-        &exitProgram("El archivo indicado no existe: $filezip");
+        @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
+        # si hay menos de 3 archivos (= 2), no hay fotos en la carpeta
+        # si hay 3 o mas hay al menos 1 imagen.
+        if (scalar @DIRFILES < 3) {
+            print STDERR "El archivo indicado no existe: $filezip\n";
+            &exitProgram("El archivo zip no existe");
+        } else {
+            # revisamos los tipos de archivos subidos, si hay algun .zip
+            # se debe descomprimir en la misma carpeta
+            foreach my $file (@DIRFILES) {
+                print STDERR $file;
+                if ($file =~ /[^\/]+\.zip$/i) {
+                    # Se descomprime el archivo
+                    `unzip -oj $DIRTMP/$file -d $DIRTMP`;
+                    # se borra despues de descomprimir
+                    unlink "$DIRTMP/$file";
+                }
+            }
+            # se actualiza el listado de archivos de la carpeta
+            @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
+        }
+    } else {
+        # Se cambia al directorio temporal
+        my $resp = `cd $DIRTMP`;
+        if ($resp) {
+            &exitProgram("No se pudo cambiar al directorio temporal: $resp");
+        }
+
+        # Se limpia el directorio temporal, para que no haya basura
+        $resp = `rm -rf $DIRTMP/*`;
+        if ($resp) {
+            &exitProgram("Error al borrar los archivos del directorio temporal: $resp");
+        }
+
+        # Se mueve el Archivo al directorio temporal
+        my $newZip = $DIRTMP . '/' . $nameZip;
+
+        print STDERR "[$TS] Copiando el Zip $filezip -> $newZip\n";
+        $resp = `cp '$filezip' '$newZip'`;
+        if ($resp) {
+            &exitProgram("Error al mover el archivo ZIP: $resp");
+        }
+
+        # Se descomprime el archivo
+        $resp = `unzip -oj $newZip -d $DIRTMP`;
+        if($resp =~ /such file/i) {
+            &exitProgram("Error al descomprimir el archivo: $resp", 1);
+        }
+
+        # Se elimina el ZIP copiado
+        unlink $newZip;
+
+        # Se recorren la imagenes
+        @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
     }
-
-    # Se cambia al directorio temporal
-    my $resp = `cd $DIRTMP`;
-    if($resp) {
-        &exitProgram("No se pudo cambiar al directorio temporal: $resp");
-    }
-
-    # Se limpia el directorio temporal, para que no haya basura
-    $resp = `rm -rf $DIRTMP/*`;
-    if($resp) {
-        &exitProgram("Error al borrar los archivos del directorio temporal: $resp");
-    }
-
-    # Se mueve el Archivo al directorio temporal
-    my $newZip = $DIRTMP . '/' . $nameZip;
-
-    print STDERR "[$TS] Copiando el Zip $filezip -> $newZip\n";
-    $resp = `cp '$filezip' '$newZip'`;
-    if($resp) {
-        &exitProgram("Error al mover el archivo ZIP: $resp");
-    }
-
-    # Se descomprime el archivo
-    $resp = `unzip -oj $newZip -d $DIRTMP`;
-    if($resp =~ /such file/i) {
-        &exitProgram("Error al descomprimir el archivo: $resp", 1);
-    }
-
-    # Se elimina el ZIP copiado
-    unlink $newZip;
 
     # Se calculan datos del articulo
     my $dst_img = $prontus_varglb::DIR_SERVER . '/'.$prontus_varglb::PRONTUS_ID.'/site/artic/'.$fechac.'/imag';
@@ -210,18 +238,23 @@ sub procesar_zip {
 
     $artic_obj->{xml_data} = &glib_fildir_02::read_file($artic_obj->{fullpath_xml});
 
-    my $strthumbs = '';
-    my $strfotos = '';
-
-    # Se recorren la imagenes
-    my @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
     my $counter = 1;
     my $res;
     my $newimage;
     my $parse_as_cdata = 1;
-    my %strfotos;
-    foreach my $file (sort @DIRFILES) {
 
+    my %campos_xml = &lib_prontus::getCamposXml($bufferxml, '_galeria_prontus_str,_txt_galeria_description_total,_txt_galeria_credito_total');
+
+    my %strfotos;
+    my $id_str_photos = 1;
+    foreach my $str_foto (split(/@@/, $campos_xml{'_galeria_prontus_str'})) {
+        $strfotos{$id_str_photos} = $str_foto;
+        $id_str_photos++;
+    }
+    # inicializamos el contador con el total de fotos del la galeria
+    $counter = scalar(split(/\|/, $strfotos{'1'}));
+
+    foreach my $file (sort @DIRFILES) {
         next if(-d $DIRTMP.'/'.$file);
         next unless($file =~ /\.jpg$/i or $file =~ /\.jpeg$/i or $file =~ /\.png$/i);
 
@@ -233,7 +266,12 @@ sub procesar_zip {
                 $fotofija =~ s/%%/$idx/g;
                 my %nomfoto = &lib_prontus::getCamposXml($bufferxml, $fotofija);
                 $nomfoto{$fotofija} =~ s/^.*?\/(foto_\d+\.\w+)$/$1/;
-                $strfotos{$num} = $strfotos{$num}.'|'.$nomfoto{$fotofija};
+                $strfotos{$num} = $nomfoto{$fotofija} .'|'. $strfotos{$num};
+                # agregamos creditos y descripcion dummy
+                if ($num eq '1') {
+                    $campos_xml{'_txt_galeria_credito_total'} = '||==' . $campos_xml{'_txt_galeria_credito_total'};
+                    $campos_xml{'_txt_galeria_description_total'} = '||==' . $campos_xml{'_txt_galeria_description_total'};
+                }
             }
             $counter++;
             next;
@@ -251,7 +289,7 @@ sub procesar_zip {
         $newfile = lc $newfile;
         if($newfile ne $file) {
             my $resp = `mv '$DIRTMP/$file' '$DIRTMP/$newfile'`;
-            if($resp) {
+            if ($resp) {
                 print STDERR "No se pudo mover la imagen: '$DIRTMP/$file'\n";
                 next;
             }
@@ -289,13 +327,19 @@ sub procesar_zip {
             $newimage = &procesarImagen("$DIRTMP/$newfile", $ancho, $alto, $tam_w, $tam_h, $cuadrar);
             next unless($newimage);
 
-            $nomfoto = $artic_obj->_add_foto_filesystem("$newimage", "$nom_foto_orig");
-            $strfotos{$num} = $strfotos{$num}.'|'.$nomfoto;
+            $nomfoto = $artic_obj->_add_foto_filesystem($newimage, $nom_foto_orig);
+            $strfotos{$num} = $nomfoto .'|'. $strfotos{$num};
             my $pathfoto = "/".$prontus_varglb::PRONTUS_ID."/site/artic/$fechac/imag/$nomfoto";
             $fotofija =~ s/@@/$counter/g;
 
+            # agregamos creditos y descripcion dummy
+            if ($num eq '1') {
+                $campos_xml{'_txt_galeria_credito_total'} = '||==' . $campos_xml{'_txt_galeria_credito_total'};
+                $campos_xml{'_txt_galeria_description_total'} = '||==' . $campos_xml{'_txt_galeria_description_total'};
+            }
+
             print STDERR "\tRedimensionando $fotofija a ($tam_w, $tam_h)\n";
-            $artic_obj->{xml_data} = &lib_prontus::replace_in_xml($artic_obj->{xml_data}, $fotofija, $pathfoto, $parse_as_cdata);
+            $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, $fotofija, $pathfoto, $parse_as_cdata);
         };
 
         $counter++;
@@ -304,26 +348,24 @@ sub procesar_zip {
 
     # Se guardan los Strings con las fotos
     my $str_gal = '';
-    foreach my $num (keys %strfotos) {
-        my $str = $strfotos{$num};
+    for (my $i = 1; $i <= scalar(keys %strfotos); $i++) {
+        my $str = $strfotos{$i};
         $str =~ s/^\|//;
-        print STDERR $str."\n";
         $str_gal .= $str ."@@";
     };
     $str_gal = substr($str_gal, 0, -2);
-    print STDERR "\n$str_gal\n";
 
     # actualizamos los datos en el articulo
     # se actualiza la galeria
-    $artic_obj->{xml_data} = &lib_prontus::replace_in_xml($artic_obj->{xml_data}, "_galeria_prontus_str", $str_gal, $parse_as_cdata);
+    $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_galeria_prontus_str", $str_gal, $parse_as_cdata);
 
     # Se borran las descripciones
-    $artic_obj->{xml_data} = &lib_prontus::replace_in_xml($artic_obj->{xml_data}, "_txt_galeria_description_total", '', $parse_as_cdata);
-    $artic_obj->{xml_data} = &lib_prontus::replace_in_xml($artic_obj->{xml_data}, "_txt_galeria_credito_total", '', $parse_as_cdata);
+    $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_txt_galeria_description_total", $campos_xml{'_txt_galeria_description_total'}, $parse_as_cdata);
+    $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_txt_galeria_credito_total", $campos_xml{'_txt_galeria_credito_total'}, $parse_as_cdata);
 
-    # Si todo saliÛ bien hasta ac· de limpia el ZIP original
+    # Si todo sali√≥ bien hasta ac√° de limpia el ZIP original
     unlink $filezip;
-    $artic_obj->{xml_data} = &lib_prontus::replace_in_xml($artic_obj->{xml_data}, "_gal_archive", '', 0);
+    $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_gal_archive", '', 0);
 
     # se actualiza el xml
     $artic_obj->_flush_xml();
@@ -374,7 +416,7 @@ sub procesarImagen {
     if($ancho > $anchomax || $alto > $altomax) {
         ($newbin, $newdimx, $newdimy) = &lib_thumb::make_thumbnail($anchomax, $altomax, $imagen, $cuadrar);
         &glib_fildir_02::write_file($newimage, $newbin);
-    } else { # Si la imagen es mas pequeÒa, se copia nomas
+    } else { # Si la imagen es mas peque√±a, se copia nomas
         $newdimx = $ancho;
         $newdimy = $alto;
         #~ print STDERR "Copiando imagen pequena: $fotofija '$newimage'\n";
@@ -413,11 +455,11 @@ sub garbage_archivos {
         my @entries = readdir(DIR);
         closedir DIR;
 
-        # my $limite = (time - 31536000); # 1 aÒo atras
+        # my $limite = (time - 31536000); # 1 a√±o atras
         # my $limite = (time - 15768000); # 6 meses atras
         # my $limite = (time - 2628000); # 1 mes atras
-        my $limite = (time - 259200); # 3 dÌas atras
-        # my $limite = (time - 86400); # 1 dÌa atras
+        my $limite = (time - 259200); # 3 d√≠as atras
+        # my $limite = (time - 86400); # 1 d√≠a atras
         foreach my $file (@entries) {
             next unless($file =~ /\d{14}/);
             # Detecta si son archivos.
@@ -455,7 +497,7 @@ sub unset_semaforo {
     $hash{'procesando'} = 0;
     $hash{'msg'} = $msg;
 
-    my $jsonstr = &lib_galeria::generaJson(\%hash);
+    my $jsonstr = &generaJson(\%hash);
     &glib_fildir_02::write_file($proctxt, $jsonstr);
 
     # borramos el semaforo despues de 10 segundos
@@ -473,6 +515,16 @@ sub set_semaforo {
     $hash{'procesando'} = 1;
     $hash{'msg'} = 'Procesando la galeria';
 
-    my $jsonstr = &lib_galeria::generaJson(\%hash);
+    my $jsonstr = &generaJson(\%hash);
     &glib_fildir_02::write_file($proctxt, $jsonstr);
+}
+#---------------------------------------------------------------------------------------------------
+sub generaJson {
+    my $hash = $_[0];
+    if ($JSON::VERSION =~ /^1\./) {
+        my $json = new JSON;
+        return $json->objToJson($hash);
+    } else {
+        return &JSON::to_json($hash);
+    }
 }

@@ -180,7 +180,7 @@ BUGS CORREGIDOS
 ---------------
 - prontus_art_public.cgi : elimina warns
 - prontus_edit_arbol.cgi : elimina warns
-- prontus_regenerabd_real.cgi: Borra cache de lista de articulos al regenarar la tabla de articulos.
+- prontus_regenerabd_real.cgi: Borra cache de lista de artículos al regenarar la tabla de artículos.
 - lib_prontus.pm : elimina stamp demo
 
 MEJORAS
@@ -273,7 +273,7 @@ BUGS CORREGIDOS
 ---------------
 - Corrección del problema al guardar categorías, relacionado con la definición de los campos como not null.
   Con este cambio, ya no es necesario realizar el alter table para corregir release preliminares de P11.
-- Borra cache de listas de articulos después de borrar un artículo.
+- Borra cache de listas de artículos después de borrar un artículo.
 
 MEJORAS
 -------
@@ -1314,7 +1314,7 @@ MEJORAS
     Se libera edicion final del wizard para Prontus 11, incluye:
     - Cambio de gráfica
     - Permite especificar params para BD MySQL
-    - Incorpora creacion de BD, tablas, regeneracion de tabla articulos e importacion de tax
+    - Incorpora creacion de BD, tablas, regeneracion de tabla artículos e importacion de tax
     - Remasterizacion general de modelos, model-lib y descripciones de éstos
     - Incorpora validaciones para prevención de borradod e prontus existente y para evitar de que se utilice una BD existente.
 
@@ -2322,7 +2322,7 @@ y archivos por cada tópico o tema.
 - Tags Relacionados:
     [mejoras]
         Se optimiza el mecanismo para armar los artículos relacionados por Tags, limitando el número
-        máximo al momento de cargar cada uno de los articulos de los distintos tags. En el peor de
+        máximo al momento de cargar cada uno de los artículos de los distintos tags. En el peor de
         los casos, el hash llegará a tener: (MAX_ARTICS * Nro_de_Tags)
     [files]
     /wizard_prontus/prontus_dir/cpan/core/php-lib/TagsRelac.class.php
@@ -4532,7 +4532,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [info]
         - Se agrega soporte para IE9, quedando: Chrome >= 10, Firefox >= 3.6, Safari 5, Internet Explorer 8 y 9.
 
-- Listado de Articulos:
+- Listado de Artículos:
     [changes]
         - Se agrandan los íconos para expandir la fila del Listado de Artículos
     [files]
@@ -4547,7 +4547,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se mejoran los cambios anteriores, para usar el compresor PHP de ahora en adelante
           (en vez de modificar directamente el edit_area_full.js)
     [bugfixes]
-        - Se corrige validacion en el arbol de archivos, para core y data (no estaba funcionando)
+        - Se corrige validación en el arbol de archivos, para core y data (no estaba funcionando)
         - Cuando se tiene abierto el Editor de un Archivo, el upload de archivo quedaba debajo.
     [files]
         /cgi-cpn/lib_edit.pm
@@ -4956,7 +4956,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Usuarios
     [bugfixes]
-        - Se corrige validacion de 6-8 chars al guardar los datos del usuario.
+        - Se corrige validación de 6-8 chars al guardar los datos del usuario.
         Queda con el standar de las nuevas contraseñas de 6 a 32.
     [files]
         /cgi-cpn/prontus_usr_sbmit.cgi
@@ -5066,7 +5066,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Administrador de portadas
     [mejoras]
-        - Se agrega funcionalidad de VoBo a los articulos publicados en un area. De esta forma se podrá controlar
+        - Se agrega funcionalidad de VoBo a los artículos publicados en un area. De esta forma se podrá controlar
         si un articulo se muestra o no en la portada, independiente si tiene alta.
         - Se agrega botón para previsualizar la portada en una ventana nueva.
     [files]
@@ -5733,7 +5733,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Regeneración masiva de artículos
     [bugfixes]
-        - No se estaba actualizando la taxonomia en los articulos regenerados cuando esta cambiaba de nombre en la bd.
+        - No se estaba actualizando la taxonomia en los artículos regenerados cuando esta cambiaba de nombre en la bd.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/Artic.pm
@@ -6050,7 +6050,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Listado de Artículos:
     [cambios]
-        - Se aumenta el tiempo que dura la Cookie con el estado de la portada, edicion, numero de articulos
+        - Se aumenta el tiempo que dura la Cookie con el estado de la portada, edicion, numero de artículos
           por pagina, y orden, a 1 año (vale decir, se mantiene aunque se cierre el navegador)
     [files]
         /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
@@ -6341,7 +6341,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se deja disponible un regenerador de portadas, similar al regenerador de artículos, con opciones avanzadas
         - Producto de lo anterior, se cambia levemente la gráfica del regenerador de artículos, dejando
-          un par de pestañas similares a las de Configuración, para elegir entre Articulos y Portadas.
+          un par de pestañas similares a las de Configuración, para elegir entre artículos y Portadas.
         - Se centraliza la función &finishLoading() del regenerador de artículos (y portadas) en la lib_logproc.
           Producto de esto, ahora se debe setaear la variable: $lib_logproc::JS_FILE antes de usar dicha función
     [files]
@@ -6710,7 +6710,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
-- Listado de Articulos
+- Listado de Artículos
     [bugfix]
         - Se corrige error al posicionar la combo de portadas y ediciones, cuando hay mutiedicion
           y la variable: EDICBASE_INI_SELECTED estaba en SI.
@@ -6836,7 +6836,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_tags_ports.cgi
 
-- Listado de Articulos
+- Listado de Artículos
     [bugfix]
         - Bug al guardar las búsquedas. Si se refrescaba el listado, se guardaba la misma busqueda muchas veces
     [mejoras]
@@ -7153,7 +7153,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Editor de CFG GUI
     [bugfix]
-        - Se soluciona problema con cfg de articulos. Al seleccionar un fid como "Inicial",
+        - Se soluciona problema con cfg de artículos. Al seleccionar un fid como "Inicial",
           se repetía la variable FORM_PLTS para ese fid. Esto ocurre desde que se agregaron las
           plantillas paralelas de artículo.
         - Se corrige error en regexp al leer VARNISH_GLOBAL_PURGE. Cuando era vacío, tomaba valores basura.
@@ -7391,7 +7391,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_cron_list.cgi
 
-- Regenerar Articulos
+- Regenerar Artículos
     [bugfixes]
         - Cuando se regeneran los artículos se parsean las plantillas paralelas
     [files]
@@ -7543,7 +7543,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Listado de Artículos
     [cambios]
         - Se cambia la forma de búsqueda al usar la sección: "Sin sección". Ahora encuentra los artículos
-          que no tienen ninguna sección en ninguna de las 3 tripletas (antes encontraba articulos que tuvieran
+          que no tienen ninguna sección en ninguna de las 3 tripletas (antes encontraba artículos que tuvieran
           por lo menos 1 vacía, aunque ésta estuviera deshabilitada en el cpan)
     [files]
         /cgi-cpn/prontus_art_listnopub.cgi
@@ -7708,9 +7708,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Control Fecha
     [bugfixes]
-        - Cuando se usaba CONTROL_FECHA con MULTI_EDICION, al correr el cron, agregaban articulos de otras areas
+        - Cuando se usaba CONTROL_FECHA con MULTI_EDICION, al correr el cron, agregaban artículos de otras areas
     [mejoras]
-        - Al escribir en el log de operación, se agrega el número de articulos procesados por portada
+        - Al escribir en el log de operación, se agrega el número de artículos procesados por portada
     [files]
         /cgi-cpn/prontus_cron_fechas.cgi
 
@@ -7718,7 +7718,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejora]
         - Se agrega script que regenerar los comentarios.
           Este script está en fase de beta: recibe el nombre del prontus y va imprimiendo los
-          articulos regnerados. Falta agregar gráfica a la salida. Podría dar timeout si el sitio
+          artículos regnerados. Falta agregar gráfica a la salida. Podría dar timeout si el sitio
           posee muchos comentarios. Ejemplo de invocación:
           http://misitio.cl/cgi-cpn/coment/coment_regenera.cgi?_prontus_id=<prontus_id>
     [files]
@@ -7923,10 +7923,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Portadas list
     [mejoras]
-        - Se agrega la posibilidad de excluir de la lista los articulos que están publicados en una portada:
+        - Se agrega la posibilidad de excluir de la lista los artículos que están publicados en una portada:
             Se especifica el xml de la portada.
             <!-- CONFIG LIST_EXCLUDE_PORT = inicio.xml -->
-            Se especifica el área donde estan publicados los articulos que se excluirán de la lista. (Opcional)
+            Se especifica el área donde estan publicados los artículos que se excluirán de la lista. (Opcional)
             <!-- CONFIG LIST_EXCLUDE_PORT_AREA = 1 -->
         - Se agrega variable de configuración LIST_PORT_PPROC, para activar o desactivar la generación de salidas de artículos cada vez que se guarde una portada.
     [files]
@@ -8007,7 +8007,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Artículos relacionados
     [mejoras]
-        - Se agrega la posibilidad de excluir de la lista, los articulos que están publicados en una portada:
+        - Se agrega la posibilidad de excluir de la lista, los artículos que están publicados en una portada:
             %%_EXCLUDE_PORT=inicio.xml%%
             %%_EXCLUDE_PORT_AREA=1,2%%
         - Se agrega filtro por FID.
@@ -8123,7 +8123,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         en la variable de configuración FRIENDLY_URLS_LARGO_TITULAR en Administración > Configuráción > Variables generales.
         - Se comenta mensaje de debug en la ejecución de prontus functions.
     [bugfixes]
-        - Se corrige generación de articulos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba
+        - Se corrige generación de artículos relacionados al eliminar un artículo. Al haber más de 1 tripleta de taxonomía, se estaba
         considerando solo la primera.
         - Se elimina generación de relacionados sin taxonomía, por ejemplo: ___art_relac.html
         - Se soluciona problema que ocurría al arrastrar fotos del banco de imágenes a campos de fotofija en firefox. El navegador se cerraba de manera inesperada.
@@ -8436,7 +8436,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia la manera de determinar el document root (DIR_SERVER).
     [bugfixes]
         - Se soluciona problema con calculo de cuota custom.
-        - Se agrega escritura y validacion de contenido json valido en prontus form
+        - Se agrega escritura y validación de contenido json valido en prontus form
     [files]
         /cgi-cpn/prontus_varglb.pm
         /cgi-cpn/lib_quota.pm.pm
@@ -8558,7 +8558,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Portadas taxonómicas
       [mejoras]
-          - Se agrega configuración de orden de los articulos (TAXPORT_ORDEN) en las portadas taxonómica con filtro. Los valores pueden ser:
+          - Se agrega configuración de orden de los artículos (TAXPORT_ORDEN) en las portadas taxonómica con filtro. Los valores pueden ser:
             PUBLICACION(ASC o DESC) # Order por fecha de publicacion
             CREACION(ASC o DESC) # Orden por creacion
             TITULAR(ASC o DESC) # Orden por titular.
@@ -8696,7 +8696,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se mejora la lectura de la configuracion de media externa
         - Se agrega chequeo de quota con formato linux.
         - Se elimina atributo name de las fotos del banco imagenes por causar problemas en el vtxt.
-        - Se agrega flecha mover articulo en mouseover sobre la fila de los articulos publicados.
+        - Se agrega flecha mover articulo en mouseover sobre la fila de los artículos publicados.
         - La API de cloudflare hizo cambios en el llamado al método purge, por lo tanto fue necesario cambiar la ejecución del método.
         - Se agrega la opción de generar fotos con friendly del tipo: foto_0000000320160421131452/auto10.jpg
             * Para utilizar esta función, se debe activar la opción FRIENDLY_URL_IMAGES en la configuración del prontus.
@@ -8730,7 +8730,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Transcodificación
     [cambios]
-        - Se comenta validacion de antiguedad de la lista HLS vs el video subido.
+        - Se comenta validación de antiguedad de la lista HLS vs el video subido.
         - Si una de las versiones no tiene los atoms necesarios se indica que se deben generar las versiones
     [files]
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
@@ -8826,7 +8826,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Prontus en general
     [cambios]
         - Se aumenta el ancho del contenedor en el buscador de tags para que no queden superpuestos los elementos.
-        - Se cambia el orden de los botones para despublicar y editar articulos en portada.
+        - Se cambia el orden de los botones para despublicar y editar artículos en portada.
         - Se aumenta a 2000 el limite de condicionales a procesar.
         - Se agrega parámetro a acciones masivas de capn para evitar el cache de los navegadores.
     [mejoras]
@@ -8914,7 +8914,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [cambio]
         - El respaldo de xmls de portadas ahora se hace moviendo los archivos en vez de copiarlos.
     [bugfixes]
-        - Al regenerar articulos se regeneran relacionados manuales
+        - Al regenerar artículos se regeneran relacionados manuales
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_artic.pm
@@ -9098,7 +9098,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Administrador de artículos
     [mejoras]
-        - Se mejora la búsqueda del administrador de articulos para palabras compuestas que usen '-' ,'+' o caracteres especiales.
+        - Se mejora la búsqueda del administrador de artículos para palabras compuestas que usen '-' ,'+' o caracteres especiales.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_art_listnopub.cgi
@@ -9364,7 +9364,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Prontus
     [bugfixes]
-        - Se corrige copia de articulos, no se estaban copiando las fotos si habia friendly url de
+        - Se corrige copia de artículos, no se estaban copiando las fotos si habia friendly url de
         imágenes activada, se copiaban los htmls manteniendo el TS del artículo original y no se estaba
         actualizando el slug del articulo copiado.
     [cambios]
@@ -9373,12 +9373,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambian las leyendas y rótulos en la verificación de plataforma.
         - Se cambia a "agregar" la escritura del log de operación de Prontus.
     [mejoras]
-        - Se agrega verificación de unzip instalado.
+        - Se agrega verificación de instalación de unzip.
         - Correcciones menores en el código y comentarios
         - Se mejora deteccion de version de ffmpeg obtenida desde git
-        - Se agrega script para corregir friendly url v4 en Prontus ya existentes. Después de activar
-        la versión 4 en la configuración, ejecutar el script por consola:
-        perl prontus_corrige_friendly4.pl mi_prontus
+        - Se agrega script para corregir friendly url v4 en Prontus ya existentes en cgi-cpn.
+        Después de activar la versión 4 en la configuración, ejecutar el script por consola:
+        perl prontus_corrige_friendly4.pl <mi_prontus>
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_art_copy.cgi
@@ -9394,10 +9394,34 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - FID
     [mejoras]
-        - Se integra la galeria drag and drop y la carga masiva de fotos via zip
-        - El texto "Borrar" funciona para marcar el checkbox para borrar archivos "multimedia_"
-        - Se quita el tipo type="video/x-ms-wvx" al link de "Reproducir Archivo Actual"
-        - Se implementa registro de acciones para todas las marcas "multimedia_video"
+        - Se integra la galería drag and drop y la carga masiva de fotos via zip:
+        Para esto se agrega una nueva macro reservada: _galeria_prontus.html
+        Se utiliza de la siguiente forma:
+        %%MACRO(_galeria_prontus.html, <configuracion galería>)%%.
+
+        La configuración de la galería se especifica con un string detallando los nombres que
+        tendrán las fotos subidas y los tamaños que se deben generar, por ejemplo:
+        1:fotofija_galeria@@_low:65x65
+
+        1: Indica que es primer tamaño de foto
+        fotofija_galeria@@_low: el nombre de las fotos resultantes, @@ se reemplaza con el nro de la foto por ej:
+                                fotofija_galeria11_low.
+        65x65: la resolución, ancho por alto.
+
+        Un ejemplo completo de uso:
+        %%MACRO(_galeria_prontus.html, 1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_mid:400x300|3:fotofija_galeria@@_high:1280x720)%%
+        Este incluye 2 tamaños, baja, media y alta resolución.
+
+        Se deben pasar como mínimo 2 tamaños de fotos para que funcione el sistema, en caso contrario se
+        utilizará la configuración por defecto:
+
+        1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_high:800x600
+
+        Para usar la configuración por defecto se debe incluir la macro de la sgte. forma:
+        %%MACRO(_galeria_prontus.html)%%.
+
+        Las fotos se acumulan en sucesivas cargas de archivos, sea un zip o fotos individuales
+        Se puede utilizar modo drag and drop para subir archivos de imágenes y zip.
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_artic.pm
@@ -9434,7 +9458,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Wizard
     [bugfixes]
-        Se corrige validacion de password para BD en el wizard, era distinta a la hecha
+        Se corrige validación de password para BD en el wizard, era distinta a la hecha
         por la cgi del paso siguiente
     [files]
         /wizard_prontus/core/js/Wizard.class.js

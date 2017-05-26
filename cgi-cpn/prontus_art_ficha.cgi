@@ -1335,13 +1335,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $valor_campo = $fotos_controls{$nom_campo};
     $pag =~ s/$marca/$valor_campo/ig;
 
-# Se cambia sistema por otro mejor
-#    if ((-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/imag/icono_camara.jpg") && ($nro_fotos_banco >= 8)) {
-#      $valor_campo =~ s/src=".+?"/src="$prontus_varglb::DIR_CORE\/imag\/icono_camara\.jpg"/;
-#    };
-
     $nro_fotos_banco++;
-
   };
 
 
@@ -1877,6 +1871,12 @@ sub add_macros_fid {
             my $loop_gal_temp;
             my @temp_array = split(/\|/,$id);
             my $temp_buffer = '';
+            if (scalar @temp_array < 2) {
+                print STDERR "No hay configuracion de galeria, se usan valores por defecto\n";
+                # cargamos valores por defecto
+                $id = '1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_high:800x600';
+                @temp_array = split(/\|/,$id);
+            }
             my $counter = 1;
             foreach my $conf_size (@temp_array) {
                 $loop_gal_temp = $loop_gal;

@@ -73,7 +73,6 @@ main: {
 
     # Carga variables de configuracion de prontus.
     &lib_prontus::load_config($path_conf);
-    $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
     my $nomfile;
     my $ext;
