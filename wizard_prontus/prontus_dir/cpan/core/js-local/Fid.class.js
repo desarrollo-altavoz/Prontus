@@ -360,6 +360,7 @@ var Fid = {
     // -----------------------------------------
     //Muestra el contenido de un div para el div con valor 'thediv'
     showBody: function(thediv) {
+        $('#banco-img').fadeIn(300);
         $('.cabecera').hide();
         $(thediv).show();
         $('.tabs a').removeClass('selected');

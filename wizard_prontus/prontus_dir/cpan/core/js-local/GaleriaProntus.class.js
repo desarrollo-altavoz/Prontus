@@ -52,6 +52,15 @@ var GaleriaProntus = {
             }
         }
 
+        // para evitar confusiones se esconde el banco de imagenes al subir fotos
+        $('#_show_galeria_subtab2').click(function() {
+            $('#banco-img').fadeOut(300);
+        })
+        // aseguramos que se muestre al editar la galeria
+        $('#_show_galeria_subtab1').click(function() {
+            $('#banco-img').fadeIn(300);
+        })
+
         // Vemos si pudimos extraer algo de la conf
         if (GaleriaProntus.cantidadTamanos < 2) {
             GaleriaProntus.showMsg('Error en la configuración de la galería');
