@@ -11,7 +11,7 @@ var GaleriaProntus = {
     cgi_borrar: 'galeria/prontus_galeria_garbage.cgi',
     // mensajes del proceso de archivo
     msg_confirm: "¿Está seguro que desea guardar el FID?\nEl proceso de upload masivo de imágenes aún no termina.",
-    msg_process: 'El archivo Zip se está procesando. No guarde este FID hasta que termine.',
+    msg_process: 'Se están procesando los archivos subidos. No guarde este FID hasta que termine.',
     msg_error_zip: 'El archivo cargado no tiene extensión Zip. Suba un archivo zip y vuelva a guardar el artículo',
     msg_error_resp: 'Se ha producido un error en el procesamiento del Zip. Guarde de nuevo el artículo o suba otro archivo zip.',
     msg_error_com: 'Se ha producido un error de comunicación, se recargará el fid.',
@@ -296,13 +296,17 @@ var GaleriaProntus = {
 
         /* Mostrar drag & drop siempre y cuando este soportado. */
         if (Fid.showDragDrop) {
+            var id_art = mainFidJs.TS;
+            if (id_art == '') {
+                id_art = (new Date()).getTime();
+            }
             // Iniciar upload Drag & Drop
             $('#_galeria_fileInputDD').fileupload({
                 dataType: 'text',
                 url: 'galeria/prontus_galeria_upfoto_dd.cgi',
                 dropZone: $('#_galeria_dropZone'),
                 formData: { prontus_id: mainFidJs.PRONTUS_ID,
-                            ts: mainFidJs.TS
+                            ts: id_art
                         },
                 done: function (e, data) {
                     var response = JSON.parse(data.result);
@@ -323,7 +327,7 @@ var GaleriaProntus = {
                                 '<img src="' + relPath + '" id="' + idFoto  + '" >' +
                                 '</div>');
                         if (typeof $('input[name="_HIDD__gal_archive"]').val() === 'undefined' || $('input[name="_HIDD__gal_archive"]').val() == '') {
-                            $('#_gal_archive').after('<input name="_HIDD__gal_archive" value="prontus_dummy.zip" id="_HIDD__gal_archive" type="hidden" />');
+                            $('#_gal_archive').after('<input name="_HIDD__gal_archive" value="_prontus_galeria_'+id_art+'.zip" id="_HIDD__gal_archive" type="hidden" />');
                         }
                         GaleriaProntus.procesarDD = 1;
                     }
@@ -639,7 +643,7 @@ var GaleriaProntus = {
             labelBoton = 'Recargar';
             setTimeout(function() {
                 window.location.reload();
-            }, 2000);
+            }, 500);
         }
         $('#_prontus-galeria-dialog').html(msg);
         $('#_prontus-galeria-dialog').dialog("option", "buttons", [{
