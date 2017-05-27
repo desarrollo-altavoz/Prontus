@@ -127,8 +127,8 @@ main:{
     }
 
     # Se borra el directorio temporal
-    if (-d "$PROCDIR/$TS") {
-        &glib_fildir_02::borra_dir("$PROCDIR/$TS");
+    if (-d $DIRTMP) {
+        &glib_fildir_02::borra_dir($DIRTMP);
     }
 
     # Se hace un poco de garbage de las carpetas temporales
@@ -227,7 +227,9 @@ sub procesar_zip {
         }
 
         # Se elimina el ZIP copiado
-        unlink $newZip;
+        if (-f $newZip) {
+            unlink $newZip;
+        }
 
         # Se recorren la imagenes
         @DIRFILES = &glib_fildir_02::lee_dir($DIRTMP);
@@ -361,6 +363,7 @@ sub procesar_zip {
     my $str_gal = '';
     for (my $i = 1; $i <= scalar(keys %strfotos); $i++) {
         my $str = $strfotos{$i};
+        # se elimina el | sobrante al final
         $str =~ s/\|$//;
         $str_gal .= $str ."@@";
     };
@@ -371,13 +374,13 @@ sub procesar_zip {
     $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_galeria_prontus_str", $str_gal, $parse_as_cdata);
 
     # Se actualizan las descripciones
-    #~ $campos_xml{'_txt_galeria_credito_total'} =~ s/\|\|==$//;
-    #~ $campos_xml{'_txt_galeria_description_total'} =~ s/\|\|==$//;
     $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_txt_galeria_description_total", $campos_xml{'_txt_galeria_description_total'}, $parse_as_cdata);
     $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_txt_galeria_credito_total", $campos_xml{'_txt_galeria_credito_total'}, $parse_as_cdata);
 
     # Si todo salió bien hasta acá de limpia el ZIP original
-    unlink $filezip;
+    if (-f $filezip) {
+        unlink $filezip;
+    }
     $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_gal_archive", '', 0);
 
     # se actualiza el xml
