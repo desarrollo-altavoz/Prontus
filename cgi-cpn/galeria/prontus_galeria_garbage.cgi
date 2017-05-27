@@ -55,7 +55,7 @@ main: {
     my $file = "$ROOTDIR/$PRONTUS_ID/cpan/procs/galeria_prontus/$TS.json";
 
     # Para eliminar la semaforo de la galeria de fotos
-    if(-f $file) {
+    if (-f $file) {
         unlink($file);
     };
 
