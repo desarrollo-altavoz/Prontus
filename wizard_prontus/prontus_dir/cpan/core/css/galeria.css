@@ -16,6 +16,6 @@
 #_dialog-form {text-align:left;}
 #_dialog-form .opcion {margin:5px 0;}
 
-#_addimage-galeria-prontus {float:right; border:1px solid #CCC; width:150px; height:36px; padding:5px; font-size:10px; color:#888;}
+#_addimage-galeria-prontus {float:right; border:1px solid #CCC; width:200px; height:36px; padding:5px; font-size:10px; color:#888;}
 #_addimage-galeria-prontus img {float:left; margin:2px 10px 0 5px;}
 #_addimage-galeria-prontus.ui-state-default{border:1px solid #FBCB09 !important;color:#C77405 !important;}

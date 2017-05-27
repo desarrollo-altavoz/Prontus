@@ -159,8 +159,17 @@ sub procesar_zip {
     my $nameZip = $1;
     print STDERR "nameZip $nameZip\n";
 
+    # si el zip se llama asi, es porque se cargaron imagenes a través de D&D
+    # obtenemos el identificador de la carpeta temporal
+    if ($nameZip =~ /_prontus_galeria_(\d+)\.zip/) {
+        # si el articulo se habia guardado corresponde al TS del articulo
+        # si el articulo es nuevo corresponde al epoch en milisegundos
+        $DIRTMP = $PROCDIR . '/' . $1;
+    } else {
+        $DIRTMP = $PROCDIR . '/' . $TS;
+    }
+
     # Se crea el directorio temporal, si no existiera
-    $DIRTMP = $PROCDIR . '/' . $TS;
     &glib_fildir_02::check_dir($DIRTMP);
 
     # Se recorren la imagenes
@@ -334,8 +343,10 @@ sub procesar_zip {
 
             # agregamos creditos y descripcion dummy
             if ($num eq '1') {
-                $campos_xml{'_txt_galeria_credito_total'} = '||==' . $campos_xml{'_txt_galeria_credito_total'};
-                $campos_xml{'_txt_galeria_description_total'} = '||==' . $campos_xml{'_txt_galeria_description_total'};
+                if ($campos_xml{'_txt_galeria_credito_total'} ne '') {
+                    $campos_xml{'_txt_galeria_credito_total'} = '||==' . $campos_xml{'_txt_galeria_credito_total'};
+                    $campos_xml{'_txt_galeria_description_total'} = '||==' . $campos_xml{'_txt_galeria_description_total'};
+                }
             }
 
             print STDERR "\tRedimensionando $fotofija a ($tam_w, $tam_h)\n";
@@ -350,7 +361,7 @@ sub procesar_zip {
     my $str_gal = '';
     for (my $i = 1; $i <= scalar(keys %strfotos); $i++) {
         my $str = $strfotos{$i};
-        $str =~ s/^\|//;
+        $str =~ s/\|$//;
         $str_gal .= $str ."@@";
     };
     $str_gal = substr($str_gal, 0, -2);
@@ -359,7 +370,9 @@ sub procesar_zip {
     # se actualiza la galeria
     $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_galeria_prontus_str", $str_gal, $parse_as_cdata);
 
-    # Se borran las descripciones
+    # Se actualizan las descripciones
+    #~ $campos_xml{'_txt_galeria_credito_total'} =~ s/\|\|==$//;
+    #~ $campos_xml{'_txt_galeria_description_total'} =~ s/\|\|==$//;
     $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_txt_galeria_description_total", $campos_xml{'_txt_galeria_description_total'}, $parse_as_cdata);
     $artic_obj->{'xml_data'} = &lib_prontus::replace_in_xml($artic_obj->{'xml_data'}, "_txt_galeria_credito_total", $campos_xml{'_txt_galeria_credito_total'}, $parse_as_cdata);
 
