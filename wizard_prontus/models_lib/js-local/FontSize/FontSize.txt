@@ -20,6 +20,7 @@ Dependencias:
 Versión:
     ----------------------------------------------------------------------------
     2.0.0 - 11/11/2009 - CVI - Primera Versión coa Orientación a Objetos
+    2.0.1 - 26/01/2015 - BDV - Agrega la busqueda de la hoja por el nombre
 
 Instalacion:
     Para instalar este script, sólo basta con agregarlo en el head, y luego

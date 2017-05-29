@@ -1,19 +1,20 @@
 /**
 FontSize.class.js
 Descripcion:
-    Cambia el tamaÒo de la fuenta para los estilos que coincidan con cierto patrones
-    como titular, bajada, cuerpo, etc. VÈase la secciÛn de configuraciÛn m·s abajo
-    para cambiar dichos par·metros.
-    OJO: Cambia el estilo de la primera hoja de estilos definida en la p·gina
-    PrÛximamente podrÌa quedar obsoleto, por lo que la documentaciÛn es b·sica
+    Cambia el tama√±o de la fuenta para los estilos que coincidan con cierto patrones
+    como titular, bajada, cuerpo, etc. V√©ase la secci√≥n de configuraci√≥n m√°s abajo
+    para cambiar dichos par√°metros.
+    OJO: Cambia el estilo de la primera hoja de estilos definida en la p√°gina
+    Pr√≥ximamente podr√≠a quedar obsoleto, por lo que la documentaci√≥n es b√°sica
 
 Dependencias:
     Ninguna
 
-VersiÛn:
+Versi√≥n:
     ----------------------------------------------------------------------------
-    2.0.0 - 11/11/2009 - CVI - Primera VersiÛn coa OrientaciÛn a Objetos
+    2.0.0 - 11/11/2009 - CVI - Primera Versi√≥n coa Orientaci√≥n a Objetos
                 Basada en la version 1.10 de cambia_tam_fonts.js
+    2.0.1 - 26/01/2015 - BDV - Agrega la busqueda de la hoja por el nombre
 **/
 
 var FontSize = {
@@ -22,23 +23,24 @@ var FontSize = {
      * Zona de Configuraciones
      */
 
-    // TamaÒo actual En porcentaje
+    // Tama√±o actual En porcentaje
     size_actual: 100,
 
-    // Arreglo con los tamaÒos a los que se podr· cambiar
+    // Arreglo con los tama√±os a los que se podr√° cambiar
     tamanos: [70,80,90,100,130,180,250],
 
-    // patrones que se buscar·n para cambiar el estilo
-    estilos: ['titular','bajada','epigrafe','cuerpo'],
+    // patrones que se buscar√≥n para cambiar el estilo
+    estilos: ['titular', 'bajada', 'epigrafe', 'CUERPO p', 'CUERPO div', 'CUERPO h2', 'infoVideo', 'animar', 'title', 'infoVideo title' ],
 
     // indice del arrglo de tamanos (3 = 4to elemento)
     size_actual_i: 3,
 
     // Mensaje cuando no se puede usar esta opcion
-    msgError: 'Este Navegador no soporta aumento/disminuciÛn de tamaÒo de texto.',
+    msgError: 'Este Navegador no soporta aumento/disminuci√≥n de tama√±o de texto.',
 
     // En el caso de que se quiera procesar otro CSS y no el primero
-    indice_hoja_estilos: 0,
+    indice_hoja_estilos: 1,
+    nombre_hoja_estilos: 'articulo.css',
 
 
     /** ----------
@@ -59,8 +61,8 @@ var FontSize = {
 
 
     /**
-     * Funcion que inicializa los tamaÒos de fuentes
-     * Se llama automaticamente al intentar cambiar de tamaÒo
+     * Funcion que inicializa los tama√±os de fuentes
+     * Se llama automaticamente al intentar cambiar de tama√±o
      */
     init: function () {
 
@@ -68,8 +70,17 @@ var FontSize = {
             return false;
         }
 
+        var numberSheets =  document.styleSheets.length;
+        var expresion = new RegExp(FontSize.nombre_hoja_estilos+'$', 'gi');
+        for (var i=0; i < numberSheets; i++) {
+            if(expresion.exec(document.styleSheets[i].href) != null){
+                FontSize.firstsheet = document.styleSheets[i];
+            }
+        };
         // Inicializa arreglos de estilos. V1.7.
-        FontSize.firstsheet = document.styleSheets[FontSize.indice_hoja_estilos];
+        if(FontSize.firstsheet == null){
+            FontSize.firstsheet = document.styleSheets[FontSize.indice_hoja_estilos];
+        }
         if(FontSize.firstsheet.cssRules) {
             FontSize.therules = FontSize.firstsheet.cssRules;
         } else {
@@ -80,10 +91,12 @@ var FontSize = {
         // pagina html (por eso se usa el subindice 0).
         var theruleslen = FontSize.therules.length;
         for (var j=0; j < theruleslen; j++) { // 1.2
-            FontSize.fontweight[j] = FontSize.therules[j].style.fontWeight;
-            FontSize.fontfamily[j] = FontSize.therules[j].style.fontFamily;
-            FontSize.fontsize[j]   = FontSize.therules[j].style.fontSize;
-            FontSize.fontcolor[j]  = FontSize.therules[j].style.color;
+            if (typeof FontSize.therules[j].style !== 'undefined') {
+                FontSize.fontweight[j] = FontSize.therules[j].style.fontWeight;
+                FontSize.fontfamily[j] = FontSize.therules[j].style.fontFamily;
+                FontSize.fontsize[j]   = FontSize.therules[j].style.fontSize;
+                FontSize.fontcolor[j]  = FontSize.therules[j].style.color;
+            }
         }
 
         // Busca los elementos a modificar (css). Estos son fijos y hay que
@@ -91,31 +104,37 @@ var FontSize = {
 
         for (var i=0; i < theruleslen; i++) {
             var aux = FontSize.therules[i].selectorText;
-            var found = 0;
-            if (aux == '*') {
-                FontSize.fontWeight_default = FontSize.therules[i].style.fontWeight;
-                FontSize.fontFamily_default = FontSize.therules[i].style.fontFamily;
-                FontSize.fontSize_default   = FontSize.therules[i].style.fontSize;
-                FontSize.color_default      = FontSize.therules[i].style.color;
-            }
-            // 1.8 Encuentra estilos a afectar.
-            for (var k=0; k < FontSize.estilos.length; k++) {
-                if ( (aux.indexOf(FontSize.estilos[k]) >= 0) && (aux.indexOf(':hover') < 0) ) {
-                    found = 1;
+
+            if (typeof aux !== 'undefined') {
+                var found = 0;
+                if (aux == '*') {
+                    if (typeof FontSize.therules[i].style !== 'undefined') {
+                        FontSize.fontWeight_default = FontSize.therules[i].style.fontWeight;
+                        FontSize.fontFamily_default = FontSize.therules[i].style.fontFamily;
+                        FontSize.fontSize_default   = FontSize.therules[i].style.fontSize;
+                        FontSize.color_default      = FontSize.therules[i].style.color;
+                    }
                 }
-            }
-            if (found == 1) {
-                FontSize.var_elements[FontSize.var_elements.length] = i;
+                // 1.8 Encuentra estilos a afectar.
+                for (var k=0; k < FontSize.estilos.length; k++) {
+                    if ( (aux.indexOf(FontSize.estilos[k]) >= 0) && (aux.indexOf(':hover') < 0) ) {
+                        found = 1;
+                    }
+                }
+                if (found == 1) {
+                    FontSize.var_elements[FontSize.var_elements.length] = i;
+                }
             }
         }
         return true;
     },
 
     /**
-     * Esta funcion en la que cambia los tamaÒos
+     * Esta funcion en la que cambia los tama√±os
      * @param signo Signo para cambiar, puede se 'mas' o 'menos'
      */
     cambiaSize: function (signo) {
+        //console.log(document.styleSheets);
         if (! document.styleSheets) { // 1.8 Funciona solo para browsers capaces.
             alert(FontSize.msgError);
             return;
@@ -146,8 +165,8 @@ var FontSize = {
         var varelemlen = FontSize.var_elements.length;
         for (var i=0; i < varelemlen; i++) {
             var j = FontSize.var_elements[i];
-            if (FontSize.fontsize[j] == '') {
-                if (FontSize.fontSize_default != '') {
+            if (FontSize.fontsize[j] === '') {
+                if (FontSize.fontSize_default !== '') {
                     FontSize.fontsize[j] = FontSize.fontSize_default;
                 } else {
                     FontSize.fontsize[j] = 12;
@@ -163,3 +182,4 @@ var FontSize = {
         }
     }
 };
+
