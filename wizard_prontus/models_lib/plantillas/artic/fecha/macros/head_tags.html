@@ -1,0 +1,63 @@
+  <!-- Meta tags comunes-->
+  %%if(txt_metatitular)%%<title>%%metatitular%%</title>%%/if%%
+  %%nif(txt_metatitular)%%<title>%%_titular.xml%%</title>%%/nif%%
+  %%if(txt_metadescription)%%<meta name="description" content="%%metadescription.xml%%" />%%/if%%
+  %%nif(txt_metadescription)%%<meta name="description" content="%%_bajada.xml%%" />%%/nif%%
+  %%if(_alta = 1)%%<meta name="robots" content="index, follow" />%%/if%%
+  %%nif(_alta = 1)%%<meta name="robots" content="noindex, nofollow" />%%/nif%%
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="canonical" href="http://%%_server_name%%%%_fileurl%%">
+
+  <!-- Meta tags FB  -->
+  %%if(txt_socialtitular)%%<meta property="og:title" content="%%socialtitular.xml%%">%%/if%%
+  %%nif(txt_socialtitular)%%
+    %%if(txt_metatitular)%%<meta property="og:title" content="%%metatitular.xml%%">%%/if%%
+    %%nif(txt_metatitular)%%<meta property="og:title" content="%%_titular.xml%%">%%/nif%%
+  %%/nif%%
+  %%if(txt_socialdescription)%%<meta property="og:description" content="%%socialdescription.xml%%">%%/if%%
+  %%nif(txt_metadescription)%%
+    %%if(txt_metadescription)%%<meta property="og:description" content="%%metadescription.xml%%">%%/if%%
+    %%nif(txt_metadescription)%%<meta property="og:description" content="%%_bajada.xml%%">%%/nif%%
+  %%/nif%%
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="http://%%_server_name%%%%_fileurl%%" >
+  %%if(FOTOFIJA_ART650)%%
+  <meta property="og:image" content="http://%%_server_name%%%%FOTOFIJA_ART650%%">
+  <meta property="og:image:width" content="%%_WFOTOFIJA_port1600%%">
+  <meta property="og:image:height" content="%%_HFOTOFIJA_port1600%%">
+  %%/if%%
+  %%nif(FOTOFIJA_ART650)%%
+  <meta property="og:image" content="http://%%_server_name%%/%%_PRONTUS_ID%%/imag/defaults/650x380.jpg">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="600">
+  %%/nif%%
+  <meta property="og:site_name" content="" >
+  <!-- fin meta tags fb  -->
+
+  <!-- Meta tags Twitter-->
+  <meta property="twitter:card" content="summary" />
+  <meta property="twitter:site" content="ACA_VA_EL_TWITTER" >
+  %%if(txt_socialtitular)%%<meta property="twitter:title" content="%%socialtitular.xml%%"/>%%/if%%
+  %%nif(txt_socialtitular)%%
+    %%if(txt_metatitular)%%<meta property="twitter:title" content="%%metatitular.xml%%" />%%/if%%
+    %%nif(txt_metatitular)%%<meta property="twitter:title" content="%%_titular.xml%%" />%%/nif%%
+  %%/nif%%
+  %%if(txt_socialdescription)%%<meta property="twitter:description" content="%%socialdescription.xml%%" />%%/if%%
+  %%nif(txt_socialdescription)%%
+    %%if(txt_metadescription)%%<meta property="twitter:description" content="%%metadescription.xml%%" />%%/if%%
+    %%nif(txt_metadescription)%%<meta property="twitter:description" content="%%_bajada.xml%%" />%%/nif%%
+  %%/nif%%
+  %%if(FOTOFIJA_ART650)%%<meta property="twitter:image" content="http://%%_server_name%%%%FOTOFIJA_ART650%%" >%%/if%%
+  %%nif(FOTOFIJA_ART650)%%
+    <meta property="twitter:image" content="http://%%_server_name%%/%%_PRONTUS_ID%%/imag/defaults/650x380.jpg" />
+  %%/nif%%
+  <meta property="twitter:url" content="http://%%_server_name%%%%_fileurl%%" />
+  <!-- Fin Meta tags twitter-->
+
+  <!-- utiles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="author" content="" >
+  <meta name="generator" content="Prontus CMS" >
