@@ -70,31 +70,25 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
+use prontus_varglb; &prontus_varglb::init();
 
 use DBI;
-
-use prontus_varglb; &prontus_varglb::init();
 use glib_dbi_02;
 use glib_html_02;
 use glib_cgi_04;
 use glib_str_02;
 use lib_secc;
-
 use lib_prontus;
-use strict;
-
-
 
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
 
 my (%FORM, $BD);
-
-
 my %DATA_VISTAS;
 
 main: {
@@ -176,8 +170,6 @@ main: {
     };
     &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1') if ($msg);
 
-    # &actualiza_xml_vistas($new_id);
-
     &lib_prontus::make_mapa('', $BD);
 
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
@@ -198,97 +190,6 @@ main: {
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
-# ---------------------------------------------------------------
-
-
-
-#sub actualiza_xml_vistas {
-## Actualiza xml que contienen los nombres de la seccion (tema o subtema, segun corresponda) en cada vista.
-## Los XML son:
-#
-## Seccion:
-## prontus_toolbox\cpan\data\tax_multivista\$mv\seccion.xml
-#
-## Tema:
-## prontus_toolbox\cpan\data\tax_multivista\$mv\tema-$idsecc.xml
-#
-## STema:
-## prontus_toolbox\cpan\data\tax_multivista\$mv\subtema-$idtema.xml
-#
-#
-#  my $saved_id = $_[0];
-#
-## para nuevo o update
-#if ($saved_id) {
-#    foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
-#      my $k = '_nom' . "-$mv"; # ej: _nom-pda
-#      my $nom = &glib_cgi_04::param($k);
-#      $nom = &lib_prontus::despulga_item_tax(&glib_str_02::trim($nom));
-#      $nom = $FORM{'_nom'} if (!$nom);
-#      $DATA_VISTAS{$mv} = "$saved_id\t$nom\n";
-#    };
-#};
-#
-#
-#  # Recupera todos los demas items del XML respectivo
-#  my $nom_xml;
-#  $nom_xml = if ($FORM{'_entidad'} eq 'seccion')
-#  my $path_xml_vista = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/tax_multivista/$mv/";
-#
-#
-#
-#
-#
-#  my ($id_item, $nom_item);
-#  my $sql = "select SECC_ID, SECC_NOM from SECC where SECC_ID <> \"$saved_id\" order by SECC_NOM";
-#
-#my $sql;
-#if ($FORM{'_entidad'} eq 'seccion') {
-#    $sql = "select SECC_ID, SECC_NOM from SECC "
-#         . "where SECC_ID <> \"$saved_id\" order by SECC_ORDEN";
-#};
-#if ($FORM{'_entidad'} eq 'tema') {
-#    $sql = "select TEMAS_ID, TEMAS_NOM from TEMAS "
-#         . "where TEMAS_IDSECC = $FORM{'_secc_id'} and where TEMAS_ID <> \"$saved_id\" order by TEMAS_ORDEN";
-#};
-#if ($FORM{'_entidad'} eq 'subtema') {
-#    $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM from SUBTEMAS "
-#         . "where SUBTEMAS_IDTEMAS = $FORM{'_tema_id'} and where SUBTEMAS_ID <> \"$saved_id\" order by SUBTEMAS_ORDEN";
-#};
-#
-#
-#  my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id_item, $nom_item));
-#  while($salida->fetch){
-#    foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
-#
-#      my $k = '_nom' . $id_item . "-$mv";
-#      my $nom = &glib_cgi_04::param($k);
-#
-#      # warn "nom[$nom] - k[$k]\n";
-#      $nom = $FORM{'Txt_NOM' . $id_item} if (!$nom);
-#      $DATA_VISTAS{$mv} .= "$id_item\t$nom\n";
-#    };
-#  };
-#
-#  # Dumpea los datos a los xml de cada vista
-#  my $xml_buf = "<?xml version='1.0' encoding='utf-8'?>\n<ROTULOS>\n%%ITEMS%%</ROTULOS>";
-#
-#  foreach $mv (keys %DATA_VISTAS) {
-#    my $items;
-#    while ($DATA_VISTAS{$mv} =~ /(\d+)\t(.+?)\n/sg) {
-#      ($id_item, $nom_item) = ($1, $2);
-#
-#      my $item = "<ITEM>\n<ID>$id_item</ID>\n<NOM>$nom_item</NOM>\n</ITEM>\n";
-#      $items .= $item;
-#    };
-#    my $xml_out = $xml_buf;
-#    $xml_out =~ s/%%ITEMS%%/$items/;
-#    my $dir_xml_vista = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/tax_multivista/$mv";
-#    &glib_fildir_02::check_dir($dir_xml_vista);
-#    &glib_fildir_02::write_file($dir_xml_vista . '/seccion.xml', $xml_out);
-#  };
-#
-#};
 # ---------------------------------------------------------------
 sub do_insert {
 
@@ -373,122 +274,4 @@ sub do_update {
     $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, 'Error actualizando ítem en la base de datos', 'exit=0');
     return '';
 };
-
-# ---------------------------------------------------------------
-#sub actualiza_entidad {
-#  # Actualiza o elimina los datos ya existentes.
-#  my (%datos) = &glib_cgi_04::param(); # Asigna todos los objetos a un hash.
-#  my ($msg, $campo, $id_entidad, $borrar, $id_temas);
-#  my ($sql, $salida);
-#  my ($nombre);
-#
-#
-#
-#  # Busca todos los objetos para actualizar o eliminar.
-#  foreach $campo (%datos) {
-#    if ($campo =~ /^Txt_NOM(\d+)/) {
-#      $id_entidad = $1;
-#      $borrar = &glib_cgi_04::param("Chk_BOR$id_entidad");
-#
-#      $sql = "select SECC_NOM from SECC where SECC_ID = $id_entidad";
-#      $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \$nombre);
-#      $salida->fetch;
-#      $salida->finish;
-#
-#      $FORM{'Chk_BOR' . $id_entidad} = &glib_cgi_04::param('Chk_BOR' . $id_entidad);
-#      $FORM{'Chk_MOSTRAR' . $id_entidad} = &glib_cgi_04::param('Chk_MOSTRAR' . $id_entidad);
-#      $FORM{'Txt_NOM' . $id_entidad} = &glib_str_02::trim(&glib_cgi_04::param('Txt_NOM' . $id_entidad));
-#      $FORM{'Txt_NOM' . $id_entidad} = &lib_prontus::despulga_item_tax($FORM{'Txt_NOM' . $id_entidad});
-#
-#
-#      $FORM{'Txt_PORT' . $id_entidad} = &glib_str_02::trim(&glib_cgi_04::param('Txt_PORT' . $id_entidad));
-#      $FORM{'Txt_PORT' . $id_entidad} = &lib_prontus::despulga_item_tax($FORM{'Txt_PORT' . $id_entidad});
-#
-#      $FORM{'Txt_ORDEN' . $id_entidad} = &glib_str_02::trim(&glib_cgi_04::param('Txt_ORDEN' . $id_entidad));
-#      $FORM{'Txt_ORDEN' . $id_entidad} =~ s/[^\d]//sig;
-#
-#      if ($borrar ne 'S') { # Si actualizar y no borrar.
-#
-#        # Verifica nombre.
-#        if ($FORM{'Txt_NOM' . $id_entidad} eq '') {
-#            print "Content-Type: text/html\n\n";
-#            &lib_secc::print_pag_html($PLANTILLA_MSG, 'ERROR', 'Existe una fila que no tiene nombre digitado', 'pagina');
-#            $BD->disconnect;
-#            exit;
-#        };
-#
-#        # Comprobar si el nombre ya existe.
-#
-#        # if ($nombre ne $FORM{'Txt_NOM' . $id_entidad}) {
-#
-#          $msg = &tit_repetido($id_entidad, $FORM{'Txt_NOM' . $id_entidad});
-#          if ($msg ne '') {
-#            print "Content-Type: text/html\n\n";
-#            &lib_secc::print_pag_html($PLANTILLA_MSG, 'ERROR', 'Nombre de secci&oacute;  (' . $FORM{'Txt_NOM' . $id_entidad} . ') ya existe en otra fila', 'pagina');
-#            $BD->disconnect;
-#            exit;
-#          };
-#
-#          my $nom_quoted = $BD->quote($FORM{'Txt_NOM' . $id_entidad});
-#          my $port_quoted = $BD->quote($FORM{'Txt_PORT' . $id_entidad});
-#
-#          # $sql = "update SECC set SECC_NOM = \"$FORM{'Txt_NOM' . $id_entidad}\", SECC_MOSTRAR = \"$FORM{'Chk_MOSTRAR' . $id_entidad}\", SECC_PORT = \"$FORM{'Txt_PORT' . $id_entidad}\", SECC_ORDEN = \"$FORM{'Txt_ORDEN' . $id_entidad}\" where SECC_ID = $id_entidad";
-#          $sql = "update SECC set SECC_NOM = $nom_quoted, SECC_MOSTRAR = \"$FORM{'Chk_MOSTRAR' . $id_entidad}\", SECC_PORT = $port_quoted, SECC_ORDEN = \"$FORM{'Txt_ORDEN' . $id_entidad}\" where SECC_ID = $id_entidad";
-#          $BD->do($sql) || print STDERR $BD->errstr;
-#
-#
-#        # };
-#      } # Si borrar.
-#      else { # Entonces borrar.
-#        # Si el item no se puede borrar por estar siendo utilizado, entonces mensajear.
-#        if (! &no_referenciada($id_entidad)) {
-#          print "Content-Type: text/html\n\n";
-#          &lib_secc::print_pag_html($PLANTILLA_MSG, 'ERROR', "<b>$FORM{'Txt_NOM' . $id_entidad}</b>: Item está siendo utilizado en algún artículo. No se puede borrar.", 'pagina');
-#          $BD->disconnect;
-#          exit;
-#        };
-#
-#        # Selecciona todos los temas de la seccion a eliminar.
-#        $sql = "select TEMAS_ID from TEMAS where TEMAS_IDSECC = $id_entidad";
-#        $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \$id_temas);
-#
-#        while ($salida->fetch) {
-#          # Elimina subtema.
-#          $sql = " delete from SUBTEMAS where SUBTEMAS_IDTEMAS = $id_temas";
-#          $BD->do($sql) || print STDERR $BD->errstr;
-#        };
-#
-#        $salida->finish;
-#
-#        # Elimina Temas.
-#        $sql = " delete from TEMAS where TEMAS_IDSECC = $id_entidad";
-#        $BD->do($sql) || print STDERR $BD->errstr;
-#
-#        # Elimina Secc.
-#        $sql = " delete from SECC where SECC_ID = $id_entidad";
-#        $BD->do($sql) || print STDERR $BD->errstr;
-#
-#      }; # if Borrar
-#    }; # $campo =~ /Chk.
-#  }; # foreach.
-#}; # actualiza_entidad.
-#
-## ---------------------------------------------------------------
-#sub no_referenciada {
-#
-#  # Verifica que el registro actual no este referenciado en alguna de las tablas principales correspondientes.
-#  my ($id) = $_[0];
-#  my ($sql, $salida, $id_ref);
-#
-#  $sql = "select ART_ID from ART where ART_IDSECC1 = $id or ART_IDSECC2 = $id or ART_IDSECC3 = $id";
-#  # print STDERR "sql SECC NOREF[$sql]\n\n";
-#  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \$id_ref);
-#  $salida->fetch;
-#  if ($salida->rows <= 0) {
-#    return 1; # No referenciada.
-#  };
-#
-#  return 0; # Referenciada.
-#}; # no_referenciada.
-
 # ----------------------------END SCRIPT---------------------

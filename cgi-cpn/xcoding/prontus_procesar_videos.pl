@@ -140,7 +140,7 @@ sub procesa_file {
     my $filepath = $path . $filename;
     my $titular;
     my $ts;
-    if ($filename !~ /(\d+?)\.xml/isg) {
+    if ($filename !~ /^(\d+?)\.xml/isg) {
         return;
     }
     $ts = $1;
