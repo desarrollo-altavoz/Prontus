@@ -463,12 +463,11 @@ var Wizard = {
      * Se deja centralizado para cambiar el tipo de manejo en caso necesario
      **/
     handleError: function(url, XMLHttpRequest, textStatus, errorThrown) {
-
         alert("Server error procesando request ajax:\nURL invocada:"
                 + url + "\ntextStatus="
                 + textStatus + "\nXMLHttpRequest.status="
                 + XMLHttpRequest.status + '-' + XMLHttpRequest.statusText
                 + "\nXMLHttpRequest.responseText=[" + XMLHttpRequest.responseText
-                + "]\nResponseHeaders=" + XMLHttpRequest.getAllResponseHeaders());
+                + "]\nResponseHeaders=" + XMLHttpRequest.getAllResponseHeaders() );
     }
 }
