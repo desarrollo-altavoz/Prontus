@@ -469,6 +469,6 @@ var Wizard = {
                 + textStatus + "\nXMLHttpRequest.status="
                 + XMLHttpRequest.status + '-' + XMLHttpRequest.statusText
                 + "\nXMLHttpRequest.responseText=[" + XMLHttpRequest.responseText
-                + "]\nResponseHeaders=" + XMLHttpRequest.getAllResponseHeaders());
+                + "]\nResponseHeaders=" + XMLHttpRequest.getAllResponseHeaders() );
     }
 }
