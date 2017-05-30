@@ -2,12 +2,35 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     %%MACRO(_head.html)%%
+    <link rel="stylesheet" type="text/css" href="/%%_prontus_id%%/cpan/custom/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="/%%_prontus_id%%/cpan/custom/css/custom.css" />
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/custom/js-local/Fotos.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/custom/js-local/Galeria.class.js"></script>
     <script type="text/javascript">
       // Espacio para personalizar o agregar JS custom al cargar o subimitir
       $(document).ready(function () {
 
-        $('#_mainFidForm').submit(function() {
+        // Si el articulo es nuevo, se chequea el "Tamaño exacto" de las FOTOFIJAS
+        Fid.autocheckNewArtic("CHK_fb_comentarios");
+        if(mainFidJs.TS === '') {
+            $('input[name^="CHK_cuadrar_FOTOFIJA_port_"]:checkbox').attr('checked', 'checked');
+            $('input[name^="CHK_cuadrar_FOTOFIJA_art_"]:checkbox').attr('checked', 'checked');
 
+        }
+
+        // Para ver status del Zip con fotos
+        var zipfile = $('[name="_HIDD_asocfile_batch"]').val();
+        if(typeof zipfile !== 'undefined' && zipfile !== '') {
+            Fotos.init('%%_ts%%', '%%_prontus_id%%');
+        }
+
+        $('#_mainFidForm').submit(function() {
+          if(Fotos.pproc_working) {
+            if(!confirm(Fotos.msg_confirm)) {
+              return;
+            }
+          }
+          return Galeria.guardarGaleria('%%_prontus_id%%');
           /* Ejemplo: realizar validaciones de JS al submitir: */
           /*
           var notValidData = 1;
@@ -89,8 +112,14 @@
               </div>
               <!-- /archivos video -->
 
-              <!-- SEO-->
+              <!-- Galeria Prontus -->
               <div class="cabecera" id="body7">
+                %%MACRO(_galeria_prontus.html,1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_high:800x600)%%
+              </div>
+              <!-- /Galeria Prontus -->
+
+              <!-- SEO-->
+              <div class="cabecera" id="body8">
                 %%MACRO(comun_seo.html)%%
               </div>
               <!-- /SEO-->

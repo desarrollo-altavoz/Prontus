@@ -240,3 +240,42 @@ ARCHIVOS NUEVOS
 ARCHIVOS ELIMINADOS
 --------------------
 - Ninguno
+
+----------------------------------------------------------------------------------------------------
+Versión 3.0.9 - 29/05/2017 - RVP
+----------------------------------------------------------------------------------------------------
+Se actualiza la librería JS: FontSize.class.js
+Se agrega en fid_general.html la nueva macro reservada _galeria_prontus.html
+Se corrigen %%IF%% que no estaban cerrados y que faltaba %%_PRONTUS_ID%% en algunas plantillas
+Se agrega macro, para FID, comun_seo.html para nueva pestaña SEO
+Se agrega macro, para Articulo, head_tags.html, con los tags de SEO
+
+
+ARCHIVOS MODIFICADOS
+--------------------
+/models_lib/fid/fid_general.html
+/models_lib/fid/macros/general_tabs.html
+/models_lib/js-local/FontSize/FontSize.class.js
+/models_lib/plantillas/artic/fecha/pags/banner.html
+/models_lib/plantillas/artic/fecha/pags/boton.html
+/models_lib/plantillas/artic/fecha/pags/evento.html
+/models_lib/plantillas/artic/fecha/pags/formulario.html
+/models_lib/plantillas/artic/fecha/pags/galeria10.html
+/models_lib/plantillas/artic/fecha/pags/galeria20.html
+/models_lib/plantillas/artic/fecha/pags/galeria30.html
+/models_lib/plantillas/artic/fecha/pags/general.html
+/models_lib/plantillas/artic/fecha/pags/link.html
+/models_lib/plantillas/artic/fecha/pags/logo.html
+/models_lib/plantillas/artic/fecha/pags/noticia.html
+/models_lib/plantillas/artic/fecha/pags/producto.html
+/models_lib/plantillas/artic/fecha/pags/rotulo.html
+/models_lib/plantillas/artic/fecha/pags/video.html
+
+ARCHIVOS NUEVOS
+--------------------
+/models_lib/fid/macros/comun_seo.html
+/models_lib/plantillas/artic/fecha/macros/head_tags.html
+
+ARCHIVOS ELIMINADOS
+--------------------
+[ARCHIVOS]
