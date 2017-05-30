@@ -249,7 +249,7 @@ Se agrega en fid_general.html la nueva macro reservada _galeria_prontus.html (pr
 Se corrigen %%IF%% que no estaban cerrados y que faltaba %%_PRONTUS_ID%% en algunas plantillas
 Se agrega macro, para FID, comun_seo.html para nueva pestaña SEO
 Se agrega macro, para Articulo, head_tags.html, con los tags de SEO
-
+Se agrega carpeta Swiper, es el js que ocupa la nueva Galeria Prontus
 
 ARCHIVOS MODIFICADOS
 --------------------
@@ -275,6 +275,7 @@ ARCHIVOS NUEVOS
 --------------------
 /models_lib/fid/macros/comun_seo.html
 /models_lib/plantillas/artic/fecha/macros/head_tags.html
+/models_lib/js-local/Swiper[..]
 
 ARCHIVOS ELIMINADOS
 --------------------
