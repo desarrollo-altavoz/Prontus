@@ -30,6 +30,7 @@ Thumbs.db
 /wizard_prontus/_data
 /wizard_prontus/models
 /prueba
+/prueba_limpia
 pproc
 lib_custom.pm
 *.error.log*
