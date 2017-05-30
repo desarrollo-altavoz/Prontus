@@ -1,0 +1,39 @@
+Swiper.js
+------------------------------
+
+Descripcion:
+    JavaScript para la nueva macro reservada _galeria_prontus.html
+
+Dependencias:
+    ninguna
+
+Versión:
+    Swiper 3.4.2 http://idangero.us/swiper/
+
+Instalacion:
+    Para instalar y usar, sólo basta con agregar el script a la página, y comenzar a usar las
+    funiones. De todas formas se recomienda revisar las configuraciones por si hay algo que
+    corregir.
+
+    Iniciarlo:
+
+    // GALERIA TOP PRONTUS
+    // Se instancia la galería prontus
+    var galleryTopProntus = new Swiper('.gallery-top-prontus', {
+        nextButton: '.swiper-button-next',
+        prevButton: '.swiper-button-prev',
+        spaceBetween: 10
+    }); 
+
+    // Se instancia las miniaturas prontus
+    var galleryThumbsProntus = new Swiper('.gallery-thumbs-prontus', {
+        spaceBetween: 10,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        touchRatio: 0.2,
+        slideToClickedSlide: true
+    });
+
+    // Se enlazan las diferentes instancias 
+    galleryTopProntus.params.control = galleryThumbsProntus;
+    galleryThumbsProntus.params.control = galleryTopProntus;

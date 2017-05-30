@@ -29,8 +29,7 @@ Thumbs.db
 /cgi-bin/prontus_temp
 /wizard_prontus/_data
 /wizard_prontus/models
-/prueba
-/prueba_limpia
+/prueba_vacia
 pproc
 lib_custom.pm
 *.error.log*
