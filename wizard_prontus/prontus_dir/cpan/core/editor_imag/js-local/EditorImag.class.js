@@ -62,6 +62,12 @@
                     ts: self.tsArtic
                 };
 
+                $('.tools-container .tools').hide();
+                $('.tools-container .loading').show();
+                $('.image-container').css('opacity', 0.5);
+                $(self.imgElementId).cropper('disable');
+                self.methods.offFotosFijas();
+
                 $.ajax({
                     url: "/" + DIR_CGI_CPAN + "/prontus_editor_imag_guardar.cgi",
                     type: "POST",
@@ -70,9 +76,15 @@
                     success: function(data) {
                         if (data.status == '0') {
                             alert(data.msg);
-                        } else {
-                            alert('La imagen fue editada exitosamente.');
 
+                            // Si la cgi arroja error, se habilita todo de nuevo para recibir un nuevo intento.
+                            $('.tools-container .tools').show();
+                            $('.tools-container .loading').hide();
+                            $('.image-container').css('opacity', 1);
+                            $(self.imgElementId).cropper('enable');
+                            self.actions.onFotosfijas();
+
+                        } else {
                             var arr = data.msg.split(';');
                             var url = arr[0];
                             var numfoto = arr[1];
@@ -101,6 +113,11 @@
                     },
                     error: function() {
                         alert('Ocurrió un error al procesar la imagen, inténtalo nuevamente.');
+                        $('.tools-container .tools').show();
+                        $('.tools-container .loading').hide();
+                        $('.image-container').css('opacity', 1);
+                        $(self.imgElementId).cropper('enable');
+                        self.methods.onFotosfijas();
                     }
                 });
             },
@@ -122,7 +139,9 @@
             },
             reset: function (e) {
                 e.preventDefault();
+                $(self.imgElementId).cropper('clear');
                 $(self.imgElementId).cropper('reset');
+                $(self.imgElementId).cropper('crop');
             },
             rotate_right: function (e) {
                 e.preventDefault();
@@ -205,6 +224,10 @@
                     }
                 });
 
+                self.methods.onFotosFijas();
+
+            },
+            onFotosFijas: function () {
                 $(".fotos-fijas .box").on('click', function (e) {
                     var aspectRatio = $(this).data("aspectratio");
 
@@ -213,6 +236,12 @@
                     $(this).addClass('active');
                     self.activeFotoFija = $(this).attr("id");
                 });
+
+                $(".fotos-fijas .box").css('opacity', 1);
+            },
+            offFotosFijas: function () {
+                $(".fotos-fijas .box").off('click');
+                $(".fotos-fijas .box").css('opacity', 0.5);
             }
         }
     };

@@ -10,6 +10,9 @@ body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-u
 .tools-container .zoom {margin-left: 5px;}
 .tools-container .zoom .icon:last-child {margin-left: 0; border-left: 0;}
 
+.tools-container .loading {display: none;}
+.tools-container .loading img {display: block;margin: auto;text-align: center;margin-top: 7px;}
+
 .tools-container .rotate {margin-left: 20px; float: left;}
 .tools-container .rotate .icon:last-child {margin-left: 0; border-left: 0;}
 .tools-container .reset {margin-left: 20px; float: right; margin-right: 5px;}
