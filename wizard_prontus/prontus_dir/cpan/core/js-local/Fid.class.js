@@ -756,6 +756,10 @@ var Fid = {
             }
         }
 
+        if (! GaleriaProntus.verificaArchivoCargado()) {
+            return false;
+        }
+
         if (GaleriaProntus.pproc_working) {
             if (!confirm(GaleriaProntus.msg_confirm)) {
                 return false;
