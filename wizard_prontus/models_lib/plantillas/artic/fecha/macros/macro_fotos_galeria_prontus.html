@@ -1,0 +1,41 @@
+<!-- Galería de imágenes, puede ser manipulado pero con precaución en swiper-custom.css -->
+<div class="swiper-container gallery-top-prontus">
+ <div class="swiper-wrapper">
+ %%_LOOP_ARTIC(1,100)%%
+ %%IF(fotofija_galeria##i##_high)%%
+  <div class="swiper-slide">
+   <img 
+    src="%%fotofija_galeria##i##_high%%"
+    %%IF(txt_descripcion_port##i##)%%alt="%%descripcion_port##i##.xml%%"%%/IF%%>
+
+   <!-- Caption de las imágenes, pueden ser manipuladas en swiper-custom.css -->
+   <div class="image-caption">
+    %%IF(txt_credito_port##i##)%%<p class="credito">%%credito_port##i##%%</p>%%/IF%%
+    %%IF(txt_descripcion_port##i##)%%<br /><p class="descripcion">%%descripcion_port##i##%%</p>%%/IF%%
+   </div>
+   <!-- /Caption de las imágenes -->
+
+  </div>
+ %%/IF%%
+ %%/_LOOP_ARTIC%%
+ </div>
+
+ <!-- Flechas de navegación, pueden ser manipuladas en swiper-custom.css -->
+ <div class="swiper-button-next swiper-button-black"></div>
+ <div class="swiper-button-prev swiper-button-black"></div>
+ <!-- /Flechas de navegación -->
+
+</div>
+<!-- /Galería de imágenes -->
+
+<!-- Miniaturas de la galería, pueden ser manipuladas en swiper-custom.css -->
+<div class="swiper-container gallery-thumbs-prontus">
+ <div class="swiper-wrapper">
+ %%_LOOP_ARTIC(1,100)%%
+ %%IF(fotofija_galeria##i##_low)%%
+  <div class="swiper-slide" style="background-image:url(%%fotofija_galeria##i##_low%%);"></div>
+ %%/IF%%
+ %%/_LOOP_ARTIC%%
+ </div>
+</div>
+<!-- /Miniaturas de la galería, pueden ser manipuladas en swiper-custom.css -->
