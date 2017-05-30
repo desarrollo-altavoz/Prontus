@@ -7,6 +7,7 @@ var GaleriaProntus = {
     pproc_working: false,
     errorCounter: 0,
     procesarDD: 0,
+    firstInit: 0,
 
     cgi_borrar: 'galeria/prontus_galeria_garbage.cgi',
     // mensajes del proceso de archivo
@@ -26,6 +27,10 @@ var GaleriaProntus = {
 
         if (GaleriaProntus.procesarDD == 0) {
             GaleriaProntus.verificarZip();
+        }
+
+        if (GaleriaProntus.firstInit == 0) {
+            $('#_gal_archive').blur(GaleriaProntus.verificaArchivoCargado);
         }
 
         // Primero que todo obtenemos un arreglo con las fotos temporales:
@@ -167,6 +172,7 @@ var GaleriaProntus = {
 
         // Se inicia el dialogo
         GaleriaProntus.iniciarDialogo();
+        GaleriaProntus.firstInit = 1;
     },
 
     // --------------------------------------------------------------------
@@ -665,5 +671,30 @@ var GaleriaProntus = {
                 }
             }
         }]);
+    },
+    // ---------------------------------------------------------------------------------------------
+    verificaArchivoCargado: function() {
+        var archivo = $('#_gal_archive').val();
+        if (typeof archivo !== 'undefined' && archivo !== '' && !/\.zip$/.test(archivo)) {
+            $('#_gal_archive').val('');
+            $('#_gal_archive').parent().siblings(':input').val('')
+            $("#_prontus-galeria-dialog").html(GaleriaProntus.msg_error_zip);
+            $("#_prontus-galeria-dialog").dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    modal: true,
+                    position: [300,250],
+                    buttons: [{
+                            text: 'Cerrar',
+                            click: function() {
+                                    $(this).dialog("close");
+                                }
+                            }],
+                    resizable: false
+            });
+            return false;
+        }
+        return true;
     }
+
 }
