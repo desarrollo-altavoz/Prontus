@@ -244,8 +244,8 @@ ARCHIVOS ELIMINADOS
 ----------------------------------------------------------------------------------------------------
 Versión 3.0.9 - 29/05/2017 - RVP
 ----------------------------------------------------------------------------------------------------
-Se actualiza la librería JS: FontSize.class.js
-Se agrega en fid_general.html la nueva macro reservada _galeria_prontus.html
+Se actualiza la librería JS: FontSize.class.js y FontSize.class.min.js
+Se agrega en fid_general.html la nueva macro reservada _galeria_prontus.html (prontus 11.2.97)
 Se corrigen %%IF%% que no estaban cerrados y que faltaba %%_PRONTUS_ID%% en algunas plantillas
 Se agrega macro, para FID, comun_seo.html para nueva pestaña SEO
 Se agrega macro, para Articulo, head_tags.html, con los tags de SEO
