@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+  <head>
+  <title>%%_titular%%</title>
+
+  <link rel="stylesheet" href="/%%_PRONTUS_ID%%/js-local/swiper/css/swiper.min.css">
+
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/js-local/jquery/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/js-local/jquery/jquery-ui.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/js-local/Utiles.class.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/js-local/swiper/js/swiper.min.js"></script>  
+  <script type="text/javascript">
+              $(document).ready(function() {
+                  // GALERIA TOP PRONTUS
+                  // Se instancia la galería prontus
+                  var galleryTopProntus = new Swiper('.gallery-top-prontus', {
+                    nextButton: '.swiper-button-next',
+                    prevButton: '.swiper-button-prev',
+                    spaceBetween: 10
+                  }); 
+                  
+                  // Se instancia las miniaturas prontus
+                  var galleryThumbsProntus = new Swiper('.gallery-thumbs-prontus', {
+                    spaceBetween: 10,
+                    centeredSlides: true,
+                    slidesPerView: 'auto',
+                    touchRatio: 0.2,
+                    slideToClickedSlide: true
+                  });
+
+                  // Se enlazan las diferentes instancias 
+                  galleryTopProntus.params.control = galleryThumbsProntus;
+                  galleryThumbsProntus.params.control = galleryTopProntus;
+              });
+  </script>
+  </head>
+  <body class="av">
+
+
+        <!-- Galeria Prontus -->
+        %%MACRO(macro_fotos_galeria_prontus.html)%%
+        <!-- /GAleria Prontus -->
+
+    </div>
+  </body>
+</html>

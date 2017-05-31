@@ -1,0 +1,15 @@
+%%IF(MULTIMEDIA_video1)%%
+  <div id="prontusPlayer" class="mediavideo"></div>
+    <script type="text/javascript">
+      prontusPlayer.mediaController.install({
+        "player": {
+          "imageFolder":"/%%_prontus_id%%/img/prontusPlayer/",
+          "swf": "/%%_prontus_id%%/js-local/prontusPlayer_min/player/prontusPlayer.swf",
+          },
+        "mediaSrc": {
+          "defaultSrc": "%%MULTIMEDIA_video1%%",
+          "onErrorSrc": "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+          }
+        });
+    </script>
+%%/IF%%

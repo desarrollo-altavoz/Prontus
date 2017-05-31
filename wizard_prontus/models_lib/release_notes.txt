@@ -250,6 +250,9 @@ Se corrigen %%IF%% que no estaban cerrados y que faltaba %%_PRONTUS_ID%% en algu
 Se agrega macro, para FID, comun_seo.html para nueva pestaña SEO
 Se agrega macro, para Articulo, head_tags.html, con los tags de SEO
 Se agrega carpeta Swiper, es el js que ocupa la nueva Galeria Prontus
+Se agrega carpeta prontusPlayer_min, con todo lo necesario para instalar el Prontus Player
+Se agrega macro macro_fotos_galeria_prontus.html 
+Se agrega macro macro_prontus_player.html
 
 ARCHIVOS MODIFICADOS
 --------------------
@@ -275,8 +278,44 @@ ARCHIVOS NUEVOS
 --------------------
 /models_lib/fid/macros/comun_seo.html
 /models_lib/plantillas/artic/fecha/macros/head_tags.html
+/models_lib/plantillas/artic/fecha/macros/macro_fotos_galeria_prontus.html
+/models_lib/plantillas/artic/fecha/macros/macro_botones_compartir.html
+/models_lib/plantillas/artic/fecha/macros/macro_prontus_player.html
 /models_lib/js-local/Swiper[..]
+/models_lib/js-local/prontusPlayer_min[..]
 
 ARCHIVOS ELIMINADOS
 --------------------
-[ARCHIVOS]
+/models_lib/fid/fid_galeria10.html
+/models_lib/fid/fid_galeria20.html
+/models_lib/fid/fid_galeria30.html
+
+/models_lib/fid/macros/galeria10_cabecera.html
+/models_lib/fid/macros/galeria10_foto_articulo.html
+/models_lib/fid/macros/galeria10_foto_portada.html
+/models_lib/fid/macros/galeria10_foto_subtab.html
+/models_lib/fid/macros/galeria10_galeria_1.html
+/models_lib/fid/macros/galeria10_galeria_2.html
+/models_lib/fid/macros/galeria10_galeria_subtab.html
+/models_lib/fid/macros/galeria10_raw_html.html
+/models_lib/fid/macros/galeria10_tabs.html
+
+/models_lib/fid/macros/galeria20_cabecera.html
+/models_lib/fid/macros/galeria20_foto_articulo.html
+/models_lib/fid/macros/galeria20_foto_portada.html
+/models_lib/fid/macros/galeria20_foto_subtab.html
+/models_lib/fid/macros/galeria20_galeria_1.html
+/models_lib/fid/macros/galeria20_galeria_2.html
+/models_lib/fid/macros/galeria20_galeria_subtab.html
+/models_lib/fid/macros/galeria20_raw_html.html
+/models_lib/fid/macros/galeria20_tabs.html
+
+/models_lib/fid/macros/galeria30_cabecera.html
+/models_lib/fid/macros/galeria30_foto_articulo.html
+/models_lib/fid/macros/galeria30_foto_portada.html
+/models_lib/fid/macros/galeria30_foto_subtab.html
+/models_lib/fid/macros/galeria30_galeria_1.html
+/models_lib/fid/macros/galeria30_galeria_2.html
+/models_lib/fid/macros/galeria30_galeria_subtab.html
+/models_lib/fid/macros/galeria30_raw_html.html
+/models_lib/fid/macros/galeria30_tabs.html
