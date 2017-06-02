@@ -22,13 +22,24 @@
         tsArtic: null,
         imgElementId: "#image",
         activeFotoFija: null,
+        fotoFijaW: null,
+        fotoFijaH: null,
+        free: false,
         init: function (path_foto, path_conf, active, ts) {
             self = this;
             self.foto = path_foto;
             self.path_conf = path_conf;
             self.tsArtic = ts;
 
-            self.methods.initCropper();
+            self.methods.initCropper({}, function () {
+                var cropData = $(self.imgElementId).cropper('getData', true);
+                if (!active) {
+                    self.free = 1;
+                    $('.freesize').show();
+                    $('.freesize').text(cropData.width + 'x' + cropData.height);
+                }
+            });
+
             self.methods.initActions();
             self.methods.initFotosFijas();
 
@@ -55,11 +66,13 @@
                     width: cropData.width,
                     height: cropData.height,
                     aspectRatio:imageData.aspectRatio,
-                    rotate: cropData.rotate,
-                    foto: self.foto,
+                    rotate: cropData.rotate
+,                    foto: self.foto,
                     zoomRatio: self.zoomRatio,
                     _path_conf: self.path_conf,
-                    ts: self.tsArtic
+                    ts: self.tsArtic,
+                    fotow: self.fotoFijaW,
+                    fotoh: self.fotoFijaH
                 };
 
                 $('.tools-container .tools').hide();
@@ -138,7 +151,10 @@
                 $(self.imgElementId).cropper('move', -10, 0);
             },
             reset: function (e) {
-                e.preventDefault();
+                if (typeof e !== 'undefined') {
+                    e.preventDefault();
+                }
+
                 $(self.imgElementId).cropper('clear');
                 $(self.imgElementId).cropper('reset');
                 $(self.imgElementId).cropper('crop');
@@ -168,11 +184,17 @@
             },
             saveZoomRatio: function (e) {
                 self.zoomRatio = e.ratio;
+            },
+            showCropSize: function (e) {
+                if (self.free) {
+                    $('.freesize').show();
+                    $('.freesize').text(Math.round(e.width) + 'x' + Math.round(e.height));
+                }
             }
         },
         methods: {
-            initCropper: function () {
-                $('#image').cropper({
+            initCropper: function (extraOptions, fnBuilt) {
+                var options = {
                     viewMode: 1,
                     dragMode: 'move',
                     autoCropArea: 0.65,
@@ -183,8 +205,14 @@
                     cropBoxResizable: true,
                     minCropBoxWidth: 80,
                     minCropBoxHeight: 80,
-                    zoom: self.actions.saveZoomRatio
-                });
+                    zoom: self.actions.saveZoomRatio,
+                    crop: self.actions.showCropSize,
+                    built: fnBuilt
+                };
+
+                $.extend(options, extraOptions);
+
+                $('#image').cropper(options);
             },
             initActions: function () {
                 $("#zoom_in").on("click", self.actions.zoom_in);
@@ -220,7 +248,7 @@
                             }
                         }
 
-                        $(".fotos-fijas").append('<div class="box" id="'+ v.id + '" data-aspectratio="' + aspectRatio + '"><div class="modelo" style="width:' + w + 'px;height:' + h + 'px;"></div><div class="size">' + v.maxW + 'x' + v.maxH + '</div></div>');
+                        $(".fotos-fijas").append('<div class="box" id="'+ v.id + '" data-aspectratio="' + aspectRatio + '" data-fotow="' + v.maxW + '" data-fotoh="' + v.maxH + '"><div class="modelo" style="width:' + w + 'px;height:' + h + 'px;"></div><div class="size">' + v.maxW + 'x' + v.maxH + '</div></div>');
                     }
                 });
 
@@ -230,11 +258,32 @@
             onFotosFijas: function () {
                 $(".fotos-fijas .box").on('click', function (e) {
                     var aspectRatio = $(this).data("aspectratio");
+                    var fotow = $(this).data("fotow");
+                    var fotoh = $(this).data("fotoh");
+
+                    if (aspectRatio == 0) {
+                        self.free = 1;
+                    } else {
+                        self.free = 0;
+                        $('.freesize').hide();
+                    }
 
                     $(".fotos-fijas .box").removeClass('active');
-                    $(self.imgElementId).cropper("setAspectRatio", aspectRatio);
                     $(this).addClass('active');
                     self.activeFotoFija = $(this).attr("id");
+
+                    $('.image-container').css('opacity', 0).animate({opacity: 1}, 250);
+                    $(self.imgElementId).cropper('destroy');
+
+                    self.methods.initCropper({}, function () {
+                        $(self.imgElementId).cropper("setAspectRatio", aspectRatio);
+                        // $(self.imgElementId).cropper("setData", {width: fotow, height: fotoh});
+                    });
+
+                    if (fotow && fotoh) {
+                        self.fotoFijaW = fotow;
+                        self.fotoFijaH = fotoh;
+                    }
                 });
 
                 $(".fotos-fijas .box").css('opacity', 1);

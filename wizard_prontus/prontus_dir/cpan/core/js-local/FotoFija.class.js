@@ -227,6 +227,22 @@
                     if ($(curr_body).find('[id^="FOTOFIJA_"]').size() > 0) {
                         $("#scroll-banco .botonera .publicar").show();
                     }
+
+                    $('#banco-img').find('img.fotodrag').each(function () {
+                        var $objSinUsar = $(this).parent().next('.datos-foto').find('.sin-usar');
+                        var sinusar = $objSinUsar.text();
+                        var fotosrcbanco = $(this).attr('src');
+
+                        $(curr_body).find('[id^="recuadro_FOTOFIJA_"]').each(function () {
+                            var fotosrc = $(this).find('img').attr("src");
+
+                            if (fotosrc && fotosrc == fotosrcbanco) {
+                                if (sinusar == '(sin usar)') {
+                                    $objSinUsar.text('');
+                                }
+                            }
+                        });
+                    });
                 });
             }
         },
