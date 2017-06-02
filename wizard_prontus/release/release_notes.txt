@@ -9354,10 +9354,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrige copia de articulos, no se estaban copiando las fotos si habia friendly url de
         imágenes activada, se copiaban los htmls manteniendo el TS del artículo original y no se estaba
         actualizando el slug del articulo copiado.
+        - Se corrige mensaje incorrecto al validar hora de apertura de comentarios.
     [cambios]
         - Se cambia mensaje de modal que indica conclicto de urls de artículos
+        - Se quita botón duplicado para despublicar de portadas.
     [mejoras]
         - Correcciones menores en el código y comentarios
+        - Se ajusta el tamaño del titular y área en el listado de articulos publicados en portada para
+        mostrar correctamente ids de artículos hasta 9.999.999
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_art_copy.cgi
@@ -9371,6 +9375,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_corrige_friendly4.pl
         /cgi-cpn/lib_mail.pm
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/macros/listado_iconos.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_general_comentarios.html
 
 
 - Wizard
@@ -9386,3 +9394,5 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se Se deshabilita encriptacion SSL para todos los casos al enviar mail.
     [files]
         /cgi-cpn/lib_mail.pm
+
+
