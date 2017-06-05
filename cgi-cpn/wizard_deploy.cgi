@@ -260,6 +260,7 @@ sub deploy {
     &File::Copy::move("$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$model_nom" . '-var.cfg', "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id" . '-var.cfg');
     &File::Copy::move("$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$model_nom" . '-coment.cfg', "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id" . '-coment.cfg');
     &File::Copy::move("$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$model_nom" . '-posting.cfg', "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id" . '-posting.cfg');
+    &File::Copy::move("$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$model_nom" . '-xcoding.cfg', "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id" . '-xcoding.cfg');
     # &File::Copy::move("$prontus_varglb::DIR_SERVER/$prontus_id/cpan/buscador_prontus.cfg", "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/buscador_prontus.cfg");
     # Si el CFG de BD del modelo antiguo existe, se borra.
     unlink("$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$model_nom" . '-bd.cfg') if(-f "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$model_nom" . '-bd.cfg');
