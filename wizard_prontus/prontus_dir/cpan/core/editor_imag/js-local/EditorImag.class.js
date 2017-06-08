@@ -21,14 +21,27 @@
         zoomRatio: 1,
         tsArtic: null,
         imgElementId: "#image",
+        msgBoxId: "#msg-box",
         activeFotoFija: null,
+        fotoFijaW: null,
+        fotoFijaH: null,
+        free: false,
+        hasChanges: false,
         init: function (path_foto, path_conf, active, ts) {
             self = this;
             self.foto = path_foto;
             self.path_conf = path_conf;
             self.tsArtic = ts;
 
-            self.methods.initCropper();
+            self.methods.initCropper({}, function () {
+                var cropData = $(self.imgElementId).cropper('getData', true);
+                if (!active) {
+                    self.free = 1;
+                    $('.freesize').show();
+                    $('.freesize').text(cropData.width + 'x' + cropData.height);
+                }
+            });
+
             self.methods.initActions();
             self.methods.initFotosFijas();
 
@@ -42,6 +55,15 @@
         actions: {
             apply: function (e) {
                 e.preventDefault();
+
+                if (!self.hasChanges) {
+                    if (confirm("No hay cambios que aplicar. ¿Desea continuar editando la imagen?")) {
+                        return false;
+                    } else {
+                        parent.$.colorbox.close();
+                        return false;
+                    }
+                }
 
                 if (!confirm("¿Está seguro de aplicar sus cambios?")) {
                     return false;
@@ -59,8 +81,16 @@
                     foto: self.foto,
                     zoomRatio: self.zoomRatio,
                     _path_conf: self.path_conf,
-                    ts: self.tsArtic
+                    ts: self.tsArtic,
+                    fotow: self.fotoFijaW,
+                    fotoh: self.fotoFijaH
                 };
+
+                $('.tools-container .tools').hide();
+                $('.tools-container .loading').show();
+                $('.image-container').css('opacity', 0.5);
+                $(self.imgElementId).cropper('disable');
+                self.methods.offFotosFijas();
 
                 $.ajax({
                     url: "/" + DIR_CGI_CPAN + "/prontus_editor_imag_guardar.cgi",
@@ -70,9 +100,15 @@
                     success: function(data) {
                         if (data.status == '0') {
                             alert(data.msg);
-                        } else {
-                            alert('La imagen fue editada exitosamente.');
 
+                            // Si la cgi arroja error, se habilita todo de nuevo para recibir un nuevo intento.
+                            $('.tools-container .tools').show();
+                            $('.tools-container .loading').hide();
+                            $('.image-container').css('opacity', 1);
+                            $(self.imgElementId).cropper('enable');
+                            self.actions.onFotosfijas();
+
+                        } else {
                             var arr = data.msg.split(';');
                             var url = arr[0];
                             var numfoto = arr[1];
@@ -88,72 +124,111 @@
                                 '<input type="hidden" name="_h%%numfoto%%" value="%%hfoto%%">'
                             ].join("").replace(/%%numfoto%%/g, numfoto).replace(/%%wfoto%%/g, wfoto).replace(/%%hfoto%%/g, hfoto);
 
-                            parent.$("#_mainFidForm").prepend(html);
 
                             // La edicion de la foto viene desde una fotofija. Asignar la nueva foto a este campo.
                             if (self.activeFotoFija) {
                                 parent.FotoFija.foto.set(self.activeFotoFija, url, wfoto, hfoto);
+                                parent.FotoFija.imgEditor = true; // Le dice al padre que se hizo una edición y colorbox debe hacer submit.
                             }
+
+                            parent.$("#_mainFidForm").prepend(html);
 
                             // Cerrar colorbox.
                             parent.$.colorbox.close();
                         }
                     },
                     error: function() {
-                        alert('Ocurrió un error al procesar la imagen, inténtalo nuevamente.');
+                        alert('Ocurrió un error al procesar la imagen, inténtelo nuevamente.');
+                        $('.tools-container .tools').show();
+                        $('.tools-container .loading').hide();
+                        $('.image-container').css('opacity', 1);
+                        $(self.imgElementId).cropper('enable');
+                        self.methods.onFotosfijas();
                     }
                 });
             },
             move_down: function (e) {
                 e.preventDefault();
                 $(self.imgElementId).cropper('move', 0, 10);
+                self.hasChanges = true;
             },
             move_up: function (e) {
                 e.preventDefault();
                 $(self.imgElementId).cropper('move', 0, -10);
+                self.hasChanges = true;
             },
             move_right: function (e) {
                 e.preventDefault();
                 $(self.imgElementId).cropper('move', 10, 0);
+                self.hasChanges = true;
             },
             move_left: function (e) {
                 e.preventDefault();
                 $(self.imgElementId).cropper('move', -10, 0);
+                self.hasChanges = true;
             },
             reset: function (e) {
-                e.preventDefault();
-                $(self.imgElementId).cropper('reset');
+                if (typeof e !== 'undefined') {
+                    e.preventDefault();
+                }
+
+                if (self.hasChanges) {
+                    if (confirm("Hay cambios pendientes de aplicar. Si reinicia la edición estos se perderán.")) {
+                        $(self.imgElementId).cropper('clear');
+                        $(self.imgElementId).cropper('reset');
+                        $(self.imgElementId).cropper('crop');
+                        self.hasChanges = false;
+                    }
+                } else {
+                    $(self.imgElementId).cropper('clear');
+                    $(self.imgElementId).cropper('reset');
+                    $(self.imgElementId).cropper('crop');
+                }
             },
             rotate_right: function (e) {
                 e.preventDefault();
                 $(self.imgElementId).cropper('rotate', 90);
+                self.hasChanges = true;
             },
             rotate_left: function (e) {
                 e.preventDefault();
                 $(self.imgElementId).cropper('rotate', -90);
+                self.hasChanges = true;
             },
             zoom_out: function (e) {
                 e.preventDefault();
                 $(self.imgElementId).cropper('zoom', -0.1);
+                self.hasChanges = true;
             },
             zoom_in: function (e) {
                 e.preventDefault();
                 $(self.imgElementId).cropper('zoom', 0.1);
+                self.hasChanges = true;
             },
             cancel: function (e) {
                 e.preventDefault();
 
-                if (confirm("Al cancelar, sus cambios se perderán. ¿Está seguro de cancelar sus cambios?")) {
+                if (!self.hasChanges) {
                     parent.$.colorbox.close();
+                } else {
+                    if (confirm("Al cancelar, sus cambios se perderán. ¿Está seguro de cancelar sus cambios?")) {
+                        parent.$.colorbox.close();
+                    }
                 }
             },
             saveZoomRatio: function (e) {
                 self.zoomRatio = e.ratio;
+            },
+            showCropSize: function (e) {
+                if (self.free) {
+                    $('.freesize').show();
+                    $('.freesize').text(Math.round(e.width) + 'x' + Math.round(e.height));
+                }
             }
         },
         methods: {
-            initCropper: function () {
-                $('#image').cropper({
+            initCropper: function (extraOptions, fnBuilt) {
+                var options = {
                     viewMode: 1,
                     dragMode: 'move',
                     autoCropArea: 0.65,
@@ -164,8 +239,17 @@
                     cropBoxResizable: true,
                     minCropBoxWidth: 80,
                     minCropBoxHeight: 80,
-                    zoom: self.actions.saveZoomRatio
-                });
+                    zoom: self.actions.saveZoomRatio,
+                    crop: self.actions.showCropSize,
+                    built: fnBuilt,
+                    cropstart: function (e) {
+                        self.hasChanges = true;
+                    }
+                };
+
+                $.extend(options, extraOptions);
+
+                $(self.imgElementId).cropper(options);
             },
             initActions: function () {
                 $("#zoom_in").on("click", self.actions.zoom_in);
@@ -181,15 +265,21 @@
                 $("#cancel").on("click", self.actions.cancel);
             },
             initFotosFijas: function () {
-                var fotoFijas = {};
 
-                if (typeof parent.FotoFija.foto !== 'undefined') {
-                    fotoFijas = parent.FotoFija.foto.instances;
-                }
+                self.methods.getCurrentTabFotoFija();
+                self.methods.onFotosFijas();
 
-                $.each(fotoFijas, function (i, v) {
-                    if (v.id != "temporal1" && v.id != "temporal2") { // Se usan en la galeria. Se ignoran.
-                        var aspectRatio = parseFloat(v.maxW / v.maxH).toFixed(2);
+            },
+            getCurrentTabFotoFija: function () {
+                var cTab = parent.FotoFija.helper.getCurrentTab();
+
+                parent.$(cTab + ' div[id^="recuadro_FOTOFIJA_"]').each(function() {
+                    var id = $(this).attr("id").replace("recuadro_FOTOFIJA_", "");
+                    var maxW = parent.$('input[name="_MAXWFOTOFIJA_' + id + '"]').val();
+                    var maxH = parent.$('input[name="_MAXHFOTOFIJA_' + id + '"]').val();
+
+                    if (id != "temporal1" && id != "temporal2") { // Se usan en la galeria. Se ignoran.
+                        var aspectRatio = parseFloat(maxW / maxH).toFixed(2);
                         var w = 45;
                         var h = 45;
 
@@ -201,18 +291,53 @@
                             }
                         }
 
-                        $(".fotos-fijas").append('<div class="box" id="'+ v.id + '" data-aspectratio="' + aspectRatio + '"><div class="modelo" style="width:' + w + 'px;height:' + h + 'px;"></div><div class="size">' + v.maxW + 'x' + v.maxH + '</div></div>');
+                        $(".fotos-fijas").append('<div class="box" id="'+ id + '" data-aspectratio="' + aspectRatio + '" data-fotow="' + maxW + '" data-fotoh="' + maxH + '"><div class="modelo" style="width:' + w + 'px;height:' + h + 'px;"></div><div class="size">' + maxW + 'x' + maxH + '</div></div>');
+                    }
+
+                });
+            },
+            onFotosFijas: function () {
+                $(".fotos-fijas .box").on('click', function (e) {
+                    var aspectRatio = $(this).data("aspectratio");
+                    var fotow = $(this).data("fotow");
+                    var fotoh = $(this).data("fotoh");
+
+                    if (aspectRatio == 0) {
+                        self.free = 1;
+                    } else {
+                        self.free = 0;
+                        $('.freesize').hide();
+                    }
+
+                    $(".fotos-fijas .box").removeClass('active');
+                    $(this).addClass('active');
+                    self.activeFotoFija = $(this).attr("id");
+
+                    var imgData = $(self.imgElementId).cropper('getImageData');
+
+                    $('.image-container').css('opacity', 0).animate({opacity: 1}, 250);
+                    $(self.imgElementId).cropper('destroy');
+
+                    self.methods.initCropper({}, function () {
+                        $(self.imgElementId).cropper("setAspectRatio", aspectRatio);
+                        // $(self.imgElementId).cropper("setData", {width: fotow, height: fotoh});
+                    });
+
+                    if (fotow && fotoh) {
+                        self.fotoFijaW = fotow;
+                        self.fotoFijaH = fotoh;
+
+                        if (fotow > imgData.naturalWidth || fotoh > imgData.naturalHeight) {
+                            alert('Advertencia: Las dimensiones de la foto (' + imgData.naturalWidth + 'x' + imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
+                        }
                     }
                 });
 
-                $(".fotos-fijas .box").on('click', function (e) {
-                    var aspectRatio = $(this).data("aspectratio");
-
-                    $(".fotos-fijas .box").removeClass('active');
-                    $(self.imgElementId).cropper("setAspectRatio", aspectRatio);
-                    $(this).addClass('active');
-                    self.activeFotoFija = $(this).attr("id");
-                });
+                $(".fotos-fijas .box").css('opacity', 1);
+            },
+            offFotosFijas: function () {
+                $(".fotos-fijas .box").off('click');
+                $(".fotos-fijas .box").css('opacity', 0.5);
             }
         }
     };

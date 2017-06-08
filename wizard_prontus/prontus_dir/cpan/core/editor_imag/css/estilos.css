@@ -1,7 +1,7 @@
 body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
 
 .editor-container {padding: 5px; width: 1014px;}
-.image-container {float: left; width:875px; height: 530px; margin-left: 4px;}
+.image-container {float: left; width:875px; height: 530px; margin-left: 4px; position: relative;}
 .image-container img {max-width: 100%;}
 .fotos-fijas {float: left; width: 130px; height: 564px; background-color: #e2e2e2; border: 1px solid #8a8a8a; overflow-y: scroll;}
 .tools-container {height: 30px; background-color: #e2e2e2; margin-left: 4px; margin-bottom: 4px; border: 1px solid #8a8a8a;}
@@ -9,6 +9,9 @@ body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-u
 .tools-container .icon {display: block;float: left;}
 .tools-container .zoom {margin-left: 5px;}
 .tools-container .zoom .icon:last-child {margin-left: 0; border-left: 0;}
+
+.tools-container .loading {display: none;}
+.tools-container .loading img {display: block;margin: auto;text-align: center;margin-top: 7px;}
 
 .tools-container .rotate {margin-left: 20px; float: left;}
 .tools-container .rotate .icon:last-child {margin-left: 0; border-left: 0;}
@@ -30,3 +33,4 @@ body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-u
 .fotos-fijas .box .modelo .free {margin-top: 15px; text-align: center; font-weight: bold;}
 .fotos-fijas .box.active {box-shadow: 0px 0px 5px #000;}
 .left {float: left;}
+.freesize {float: left; margin-left: 15px; margin-top: 6px;}

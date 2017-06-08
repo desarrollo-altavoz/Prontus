@@ -53,6 +53,8 @@ main: {
     $FORM{'aspectRatio'}    = &glib_cgi_04::param('aspectRatio');
     $FORM{'zoomRatio'}      = &glib_cgi_04::param('zoomRatio');
     $FORM{'ts'}             = &glib_cgi_04::param('ts');
+    $FORM{'fotow'}          = &glib_cgi_04::param('fotow'); # fotofija
+    $FORM{'fotoh'}          = &glib_cgi_04::param('fotoh'); # fotofija
 
     # Ajusta path_conf para completar path y/o cambiar \ por /
     $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
@@ -130,7 +132,13 @@ main: {
         my $zoomH = $final_h * $FORM{'zoomRatio'};
 
         my ($binfoto, $anchofinal, $altofinal) = &lib_thumb::make_resize($zoomW, $zoomH, $path_img_dst);
-        $path_img_dst =~ s/\.gif$/\.png/i if($path_img_dst =~ /\.gif$/i);
+        &lib_thumb::write_image($path_img_dst, $binfoto);
+    }
+
+    # Se redimensiona al tamaño de la fotofija real, ya que el crop lo deja mas grande.
+    # Si es libre, no se hace nada.
+    if ($FORM{'fotow'} && $FORM{'fotoh'}) {
+        my ($binfoto, $anchofinal, $altofinal) = &lib_thumb::make_resize($FORM{'fotow'}, $FORM{'fotoh'}, $path_img_dst);
         &lib_thumb::write_image($path_img_dst, $binfoto);
     }
 

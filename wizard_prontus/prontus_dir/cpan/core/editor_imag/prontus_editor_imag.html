@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Editor de Fotos</title>
+    <!-- <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" /> -->
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/js-local/cropper/cropper.min.css" />
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery/jquery.js"></script>
@@ -19,7 +20,7 @@
         <div class="left">
             <!-- Lista de proporciones en sidebar izquierdo. -->
             <div class="fotos-fijas">
-                <div class="box active" data-aspectratio="0">
+                <div class="box active" data-aspectratio="0" data-fotow="0" data-fotoh="0">
                     <div class="modelo" style="width: 45px; height: 45px;"></div>
                     <div class="size">Libre</div>
                 </div>
@@ -28,24 +29,26 @@
         <div class="left">
             <!-- Herramientas de la barra superior. -->
             <div class="tools-container">
-                <div class="zoom">
+                <div class="loading"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/loading_bar.gif"></div>
+                <div class="tools zoom">
                     <a href="#" id="zoom_in" class="icon" title="Aumentar Zoom"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/zoom-in.png" width="18px"></a>
                     <a href="#" id="zoom_out" class="icon" title="Disminuir Zoom"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/zoom-out.png" width="18px"></a>
                 </div>
-                <div class="rotate">
+                <div class="tools rotate">
                     <a href="#" id="rotate_left" class="icon" title="Rotar a la izquierda"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/rotate-left.png" width="18px"></a>
                     <a href="#" id="rotate_right" class="icon" title="Rotar a la derecha"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/rotate-right.png" width="18px"></a>
                 </div>
-                <div class="move">
+                <div class="tools move">
                     <a href="#" id="move_left" class="icon" title="Mover imagen hacia la izquierda"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-left.png" width="18px"></a>
                     <a href="#" id="move_right" class="icon" title="Mover imagen hacia la derecha"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-right.png" width="18px"></a>
                     <a href="#" id="move_up" class="icon" title="Mover imagen hacia arriba"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-up.png" width="18px"></a>
                     <a href="#" id="move_down" class="icon" title="Mover imagen hacia abajo"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-down.png" width="18px"></a>
                 </div>
-                <div class="reset">
-                    <a href="#" id="reset" class="icon" title="Reiniciar edición"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/reset.png" width="18px"></a>
+                <div class="freesize"></div>
+                <div class="tools reset">
+                    <a href="#" id="reset" class="icon" title="Reiniciar ediciÃ³n"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/reset.png" width="18px"></a>
                 </div>
-                <div class="actions">
+                <div class="tools actions">
                     <a href="#" id="apply" class="icon" title="Aplicar"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/apply.png" width="18px"></a>
                     <a href="#" id="cancel" class="icon" title="Cancelar"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/cancel.png" width="18px"></a>
                 </div>

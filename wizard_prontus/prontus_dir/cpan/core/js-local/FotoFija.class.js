@@ -18,6 +18,7 @@
     var FotoFija = {
         prontus_id: '',
         draggableBanco: false,
+        imgEditor: false,
         // ---------------------------------------------------------------
         init: function (prontus_id) {
             self = this;
@@ -209,7 +210,13 @@
                         iframe: true,
                         href:"/" + DIR_CGI_CPAN + "/prontus_editor_imag.cgi?&_path_conf=" + Admin.path_conf + "&ts=" + mainFidJs.TS + "&relfoto=" + relfoto,
                         innerWidth: 1024,
-                        innerHeight: 576
+                        innerHeight: 576,
+                        onClosed: function () {
+                            // Se guarda el FID automaticamente si hay cambios en el editor de fotos.
+                            if (self.imgEditor) {
+                                Fid.submitir('save', '_self');
+                            }
+                        }
                     });
                 })
             },
@@ -227,6 +234,22 @@
                     if ($(curr_body).find('[id^="FOTOFIJA_"]').size() > 0) {
                         $("#scroll-banco .botonera .publicar").show();
                     }
+
+                    $('#banco-img').find('img.fotodrag').each(function () {
+                        var $objSinUsar = $(this).parent().next('.datos-foto').find('.sin-usar');
+                        var sinusar = $objSinUsar.text();
+                        var fotosrcbanco = $(this).attr('src');
+
+                        $(curr_body).find('[id^="recuadro_FOTOFIJA_"]').each(function () {
+                            var fotosrc = $(this).find('img').attr("src");
+
+                            if (fotosrc && fotosrc == fotosrcbanco) {
+                                if (sinusar == '(sin usar)') {
+                                    $objSinUsar.text('');
+                                }
+                            }
+                        });
+                    });
                 });
             }
         },
@@ -386,7 +409,10 @@
             // Obtiene el tab actual.
             // ---------------------------------------------------------------
             getCurrentTab: function () {
-                return $('#_curr_body').val();
+                return '#' + $('#_curr_body').val();
+            },
+            submitForm: function () {
+                Fid.submitir('save', '_self');
             }
         }
     };
