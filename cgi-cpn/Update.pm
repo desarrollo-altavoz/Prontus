@@ -256,9 +256,8 @@ sub update_disponible {
         my $rama_instalada = $this->{rama_instalada};
         if ($this->{buffer_last} =~ /$rama_instalada\.([0-9]+)(\.beta\.[0-9]+|\.[0-9]+)?/) {
             my $nro_revision_last = $1;
-            my $beta_rev = defined($2)? $2 : 0;
+            my $beta_rev = defined($2)? $2 : '';
             $last_version_disponible = $rama_instalada . '.' . $nro_revision_last . $beta_rev;
-            print STDERR "$nro_revision_last > $this->{nro_revision_instalada} $beta_rev $last_version_disponible [$this->{buffer_last}]\n";
             # hay una nueva revision, puede ser beta
             if ($nro_revision_last > $this->{nro_revision_instalada}) {
                 return $last_version_disponible;
@@ -271,6 +270,9 @@ sub update_disponible {
                     if (substr($beta_rev, 6) > substr($this->{beta_revision_instalada}, 6)) {
                         return $last_version_disponible;
                     }
+                # esta instalada una beta y hay una release estable
+                } elsif ($this->{beta_revision_instalada} =~ /beta/) {
+                    return $last_version_disponible;
                 # verificamos subrevision
                 } elsif ($beta_rev > $this->{beta_revision_instalada}) {
                     return $last_version_disponible;
