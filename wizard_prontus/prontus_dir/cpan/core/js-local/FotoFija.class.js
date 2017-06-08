@@ -210,17 +210,11 @@
                         iframe: true,
                         href:"/" + DIR_CGI_CPAN + "/prontus_editor_imag.cgi?&_path_conf=" + Admin.path_conf + "&ts=" + mainFidJs.TS + "&relfoto=" + relfoto,
                         innerWidth: 1024,
-                        innerHeight: 576,
-                        onClosed: function () {
-                            // Se guarda el FID automaticamente si hay cambios en el editor de fotos.
-                            if (self.imgEditor) {
-                                Fid.submitir('save', '_self');
-                            }
-                        }
+                        innerHeight: 576
                     });
                 })
             },
-            reloadBancoImagenes: function () {
+            reloadBancoImagenes: function (submitir) {
                 $('#scroll-banco').empty();
 
                 var theurl = './prontus_art_banco.cgi?_ts=' + mainFidJs.TS + '&_path_conf='+Admin.path_conf + '&_all=1';
@@ -250,6 +244,10 @@
                             }
                         });
                     });
+
+                    if (typeof submitir !== 'undefined' && submitir === true) {
+                        self.helper.submitForm();
+                    }
                 });
             }
         },
