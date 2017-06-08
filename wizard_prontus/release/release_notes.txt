@@ -9396,3 +9396,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_mail.pm
 
 
+- Prontus update
+    [mejoras]
+        - Se implementa la detección de sub-revisiones de una versión, por ej: 11.2.96.2,
+        y la detección de versiones de release beta, por ej: 11.2.97.beta.2.
+        Prontus ofrecerá actualizar a la versión superior disponible.
+    [files]
+        /cgi-cpn/prontus_varglb.pm
+        /cgi-cpn/Update.pm
