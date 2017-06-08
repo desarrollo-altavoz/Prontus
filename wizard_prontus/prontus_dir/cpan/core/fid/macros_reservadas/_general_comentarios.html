@@ -38,7 +38,7 @@ $(document).ready(function () {
                 validator.addconstraint('apert_fecha','obligatorio','','Debe indicar fecha apertura.');
                 validator.addconstraint('apert_fecha','fecha','','Fecha apertura no es válida. Ingrese dd/mm/aaaa');
                 validator.addconstraint('apert_hora','obligatorio','','Debe indicar hora apertura.');
-                validator.addconstraint('apert_hora','regex',new RegExp(/^[0-9]{2}:[0-9]{2}$/),'Hora apertura no es v_lida. Ingrese hh:mm');
+                validator.addconstraint('apert_hora','regex',new RegExp(/^[0-9]{2}:[0-9]{2}$/),'Hora apertura no es válida. Ingrese hh:mm');
                 validator.addconstraint('cierre_fecha','obligatorio','','Debe indicar fecha cierre.');
                 validator.addconstraint('cierre_fecha','fecha','','Fecha cierre no es válida. Ingrese dd/mm/aaaa');
                 validator.addconstraint('cierre_hora','obligatorio','','Debe indicar hora cierre.');
