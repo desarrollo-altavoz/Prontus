@@ -115,9 +115,6 @@
                             var wfoto = arr[2];
                             var hfoto = arr[3];
 
-                            // Se actualiza el banco de imagenes.
-                            parent.FotoFija.methods.reloadBancoImagenes();
-
                             // Agregar wfoto y hfoto.  obtener esos datos del banco de imagenes.
                             var html = [
                                 '<input type="hidden" name="_w%%numfoto%%" value="%%wfoto%%">',
@@ -132,6 +129,9 @@
                             }
 
                             parent.$("#_mainFidForm").prepend(html);
+
+                            // Se actualiza el banco de imagenes.
+                            parent.FotoFija.methods.reloadBancoImagenes(true); // Guardar despues de recargar el banco de imagenes.
 
                             // Cerrar colorbox.
                             parent.$.colorbox.close();
@@ -218,6 +218,7 @@
             },
             saveZoomRatio: function (e) {
                 self.zoomRatio = e.ratio;
+                self.hasChanges = true;
             },
             showCropSize: function (e) {
                 if (self.free) {
@@ -244,7 +245,7 @@
                     built: fnBuilt,
                     cropstart: function (e) {
                         self.hasChanges = true;
-                    }
+                    },
                 };
 
                 $.extend(options, extraOptions);
