@@ -275,10 +275,7 @@ sub exec_post_proceso_art {
     my ($postProcesoLista) = $this->{post_proceso_lista}; # lista separada por \t de postprocesos
 
     # Ejecuta en bground el proceso pasandole x param. el path completo al articulo.
-    use FindBin '$Bin';
-    my $rutaScript = $Bin;
-
-    $rutaScript =~ s/\/[^\/]+$/\/$prontus_varglb::DIR_CGI_CPAN/;
+    my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
 
     my $newOrEdit = 'E';
     $newOrEdit = 'N' if ($isNew);
