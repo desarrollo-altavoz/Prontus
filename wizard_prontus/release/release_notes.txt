@@ -9343,7 +9343,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_getcaptcha.cgi
 
 ====================================================================================================
-11.2.97 - XX/XX/2017 - EAG
+11.2.97 - XX/06/2017 - EAG/JOR
 ====================================================================================================
 - Transcodificación
     [cambios]
@@ -9471,7 +9471,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /wizard_prontus/core/js/Wizard.class.js
 
-- Editor de imagenes
+- Editor de imágenes
     [mejoras]
       - Se reconstruye el editor de fotos en el fid de articulos, dejando solo la funcionalidad
       de cropeo de imagenes.
