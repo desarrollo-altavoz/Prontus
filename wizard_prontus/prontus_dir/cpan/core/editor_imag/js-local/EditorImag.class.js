@@ -279,7 +279,7 @@
                     var maxW = parent.$('input[name="_MAXWFOTOFIJA_' + id + '"]').val();
                     var maxH = parent.$('input[name="_MAXHFOTOFIJA_' + id + '"]').val();
 
-                    if (id != "temporal1" && id != "temporal2") { // Se usan en la galeria. Se ignoran.
+                    if (id.indexOf('temporal') == -1) { // Se usan en la galeria. Se ignoran.
                         var aspectRatio = parseFloat(maxW / maxH).toFixed(2);
                         var w = 45;
                         var h = 45;
