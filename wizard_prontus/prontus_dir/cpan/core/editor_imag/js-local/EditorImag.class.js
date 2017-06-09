@@ -27,6 +27,7 @@
         fotoFijaH: null,
         free: false,
         hasChanges: false,
+        imgData: {},
         init: function (path_foto, path_conf, active, ts) {
             self = this;
             self.foto = path_foto;
@@ -35,22 +36,21 @@
 
             self.methods.initCropper({}, function () {
                 var cropData = $(self.imgElementId).cropper('getData', true);
+                self.imgData = $(self.imgElementId).cropper('getImageData');
+
                 if (!active) {
                     self.free = 1;
                     $('.freesize').show();
                     $('.freesize').text(cropData.width + 'x' + cropData.height);
+                } else {
+                    $("#" + active).trigger("click", true);
+                    $('.fotos-fijas').animate({scrollTop: $("#" + active).offset().top}, 500);
+                    self.activeFotoFija = active;
                 }
             });
 
             self.methods.initActions();
             self.methods.initFotosFijas();
-
-            // Set active. La edicion viene desde un campo de fotofija.
-            if (active) {
-                $("#" + active).trigger("click");
-                $('.fotos-fijas').animate({scrollTop: $("#" + active).offset().top}, 500);
-                self.activeFotoFija = active;
-            }
         },
         actions: {
             apply: function (e) {
@@ -245,8 +245,10 @@
                     built: fnBuilt,
                     cropstart: function (e) {
                         self.hasChanges = true;
-                    },
+                    }
                 };
+
+                $(self.imgElementId).cropper('destroy');
 
                 $.extend(options, extraOptions);
 
@@ -297,8 +299,11 @@
 
                 });
             },
+            checkCropperInstance: function () {
+                return $('.cropper-container').length;
+            },
             onFotosFijas: function () {
-                $(".fotos-fijas .box").on('click', function (e) {
+                $(".fotos-fijas .box").on('click', function (e, trigger) {
                     var aspectRatio = $(this).data("aspectratio");
                     var fotow = $(this).data("fotow");
                     var fotoh = $(this).data("fotoh");
@@ -314,28 +319,52 @@
                     $(this).addClass('active');
                     self.activeFotoFija = $(this).attr("id");
 
-                    var imgData = $(self.imgElementId).cropper('getImageData');
-
                     $('.image-container').css('opacity', 0).animate({opacity: 1}, 250);
-                    $(self.imgElementId).cropper('destroy');
 
-                    self.methods.initCropper({}, function () {
+
+                    if (!trigger) {
+                        self.methods.initCropper({}, function () {
+                            $(self.imgElementId).cropper("setAspectRatio", aspectRatio);
+
+                            if (fotow && fotoh) {
+                                self.fotoFijaW = fotow;
+                                self.fotoFijaH = fotoh;
+
+                                if (fotow > self.imgData.naturalWidth || fotoh > self.imgData.naturalHeight) {
+                                    alert('Advertencia: Las dimensiones de la foto (' + self.imgData.naturalWidth + 'x' + self.imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
+                                    // Forzar a quitar el zoom.
+                                    $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
+                                    $(self.imgElementId).cropper('zoom', -10);
+                                } else {
+                                    $('.tools-container .warning').hide();
+                                    $(self.imgElementId).cropper('zoom', -10);
+                                }
+                            }
+                        });
+                    } else {
                         $(self.imgElementId).cropper("setAspectRatio", aspectRatio);
-                        // $(self.imgElementId).cropper("setData", {width: fotow, height: fotoh});
-                    });
 
-                    if (fotow && fotoh) {
-                        self.fotoFijaW = fotow;
-                        self.fotoFijaH = fotoh;
+                        if (fotow && fotoh) {
+                            self.fotoFijaW = fotow;
+                            self.fotoFijaH = fotoh;
 
-                        if (fotow > imgData.naturalWidth || fotoh > imgData.naturalHeight) {
-                            alert('Advertencia: Las dimensiones de la foto (' + imgData.naturalWidth + 'x' + imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
+                            if (fotow > self.imgData.naturalWidth || fotoh > self.imgData.naturalHeight) {
+                                alert('Advertencia: Las dimensiones de la foto (' + self.imgData.naturalWidth + 'x' + self.imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
+                                // Forzar a quitar el zoom.
+                                $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
+                                $(self.imgElementId).cropper('zoom', -10);
+                            } else {
+                                $(self.imgElementId).cropper('zoom', -10);
+                                $('.tools-container .warning').hide();
+                            }
                         }
                     }
+
                 });
 
                 $(".fotos-fijas .box").css('opacity', 1);
             },
+
             offFotosFijas: function () {
                 $(".fotos-fijas .box").off('click');
                 $(".fotos-fijas .box").css('opacity', 0.5);
