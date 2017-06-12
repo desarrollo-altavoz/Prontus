@@ -310,6 +310,7 @@
 
                     if (aspectRatio == 0) {
                         self.free = 1;
+                        $('.tools-container .warning').hide();
                     } else {
                         self.free = 0;
                         $('.freesize').hide();
@@ -330,7 +331,7 @@
                                 self.fotoFijaW = fotow;
                                 self.fotoFijaH = fotoh;
 
-                                if (fotow > self.imgData.naturalWidth || fotoh > self.imgData.naturalHeight) {
+                                if (fotow >= self.imgData.naturalWidth || fotoh >= self.imgData.naturalHeight) {
                                     if (!self.activeFotoFija) {
                                         alert('Advertencia: Las dimensiones de la foto (' + self.imgData.naturalWidth + 'x' + self.imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
                                     }
@@ -350,7 +351,7 @@
                             self.fotoFijaW = fotow;
                             self.fotoFijaH = fotoh;
 
-                            if (fotow > self.imgData.naturalWidth || fotoh > self.imgData.naturalHeight) {
+                            if (fotow >= self.imgData.naturalWidth || fotoh >= self.imgData.naturalHeight) {
                                 if (!self.activeFotoFija) {
                                     alert('Advertencia: Las dimensiones de la foto (' + self.imgData.naturalWidth + 'x' + self.imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
                                 }
