@@ -220,8 +220,6 @@
                 self.zoomRatio = e.ratio;
                 self.hasChanges = true;
 
-                console.log(e.oldRatio - e.ratio);
-
                 if (e.ratio > e.oldRatio) { // zoom in.
                     $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
                 } else { // zoom out.
