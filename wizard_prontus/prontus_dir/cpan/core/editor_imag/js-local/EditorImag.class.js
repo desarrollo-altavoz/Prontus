@@ -219,6 +219,18 @@
             saveZoomRatio: function (e) {
                 self.zoomRatio = e.ratio;
                 self.hasChanges = true;
+
+                console.log(e.oldRatio - e.ratio);
+
+                if (e.ratio > e.oldRatio) { // zoom in.
+                    $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
+                } else { // zoom out.
+                    var data = $(self.imgElementId).cropper("getData");
+                    if (data.x == 0 || data.y == 0) {
+                        $('.tools-container .warning').hide();
+                    }
+
+                }
             },
             showCropSize: function (e) {
                 if (self.free) {
