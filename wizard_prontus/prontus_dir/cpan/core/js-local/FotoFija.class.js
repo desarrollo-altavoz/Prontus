@@ -155,7 +155,10 @@
                         iframe: true,
                         href:"/" + DIR_CGI_CPAN + "/prontus_editor_imag.cgi?&_path_conf=" + Admin.path_conf + "&ts=" + mainFidJs.TS + "&relfoto=" + path + "&w=" + wfoto + "&h=" + hfoto + "&active=" + id,
                         innerWidth: 1024,
-                        innerHeight: 576
+                        innerHeight: 576,
+                        overlayClose: false,
+                        escKey: false,
+                        closeButton: false
                     });
                 }
             },
@@ -210,7 +213,10 @@
                         iframe: true,
                         href:"/" + DIR_CGI_CPAN + "/prontus_editor_imag.cgi?&_path_conf=" + Admin.path_conf + "&ts=" + mainFidJs.TS + "&relfoto=" + relfoto,
                         innerWidth: 1024,
-                        innerHeight: 576
+                        innerHeight: 576,
+                        overlayClose: false,
+                        escKey: false,
+                        closeButton: false
                     });
                 })
             },

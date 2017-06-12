@@ -243,3 +243,4 @@
 .fotofija-container .fotofija .botones label {font-size: 9px;margin: 4px 0px 0px 0px;display: block;}
 .fotofija-container .fotofija.active {outline: 2px solid #0097fb;}
 
+#cboxClose {display: none !important;}

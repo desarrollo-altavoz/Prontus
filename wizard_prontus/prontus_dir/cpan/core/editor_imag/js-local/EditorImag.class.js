@@ -22,7 +22,7 @@
         tsArtic: null,
         imgElementId: "#image",
         msgBoxId: "#msg-box",
-        activeFotoFija: null,
+        activeFotoFija: false,
         fotoFijaW: null,
         fotoFijaH: null,
         free: false,
@@ -331,7 +331,9 @@
                                 self.fotoFijaH = fotoh;
 
                                 if (fotow > self.imgData.naturalWidth || fotoh > self.imgData.naturalHeight) {
-                                    alert('Advertencia: Las dimensiones de la foto (' + self.imgData.naturalWidth + 'x' + self.imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
+                                    if (!self.activeFotoFija) {
+                                        alert('Advertencia: Las dimensiones de la foto (' + self.imgData.naturalWidth + 'x' + self.imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
+                                    }
                                     // Forzar a quitar el zoom.
                                     $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
                                     $(self.imgElementId).cropper('zoom', -10);
@@ -349,7 +351,9 @@
                             self.fotoFijaH = fotoh;
 
                             if (fotow > self.imgData.naturalWidth || fotoh > self.imgData.naturalHeight) {
-                                alert('Advertencia: Las dimensiones de la foto (' + self.imgData.naturalWidth + 'x' + self.imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
+                                if (!self.activeFotoFija) {
+                                    alert('Advertencia: Las dimensiones de la foto (' + self.imgData.naturalWidth + 'x' + self.imgData.naturalHeight + ') son menores al area a recortar (' + fotow + 'x' + fotoh + ').');
+                                }
                                 // Forzar a quitar el zoom.
                                 $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
                                 $(self.imgElementId).cropper('zoom', -10);
