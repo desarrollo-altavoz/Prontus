@@ -220,14 +220,17 @@
                 self.zoomRatio = e.ratio;
                 self.hasChanges = true;
 
-                if (e.ratio > e.oldRatio) { // zoom in.
-                    $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
-                } else { // zoom out.
+                if (self.fotoFijaW && self.fotoFijaH) {
                     var data = $(self.imgElementId).cropper("getData");
-                    if (data.x == 0 || data.y == 0) {
+
+                    console.log(data);
+
+                    if (data.width <= self.fotoFijaW || data.height <= self.fotoFijaH) {
+                        // console.log("pixeleando", data.width, data.height);
+                        $('.tools-container .warning').text("Si aplica zoom la foto esta se verá pixelada.").show();
+                    } else {
                         $('.tools-container .warning').hide();
                     }
-
                 }
             },
             showCropSize: function (e) {
@@ -235,6 +238,7 @@
                     $('.freesize').show();
                     $('.freesize').text(Math.round(e.width) + 'x' + Math.round(e.height));
                 }
+
             }
         },
         methods: {
@@ -331,7 +335,6 @@
                     self.activeFotoFija = $(this).attr("id");
 
                     $('.image-container').css('opacity', 0).animate({opacity: 1}, 250);
-
 
                     if (!trigger) {
                         self.methods.initCropper({}, function () {
