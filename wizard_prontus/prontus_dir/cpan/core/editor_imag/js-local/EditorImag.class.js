@@ -371,8 +371,10 @@
                                 // Forzar a quitar el zoom.
                                 $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
                                 $(self.imgElementId).cropper('zoom', -10);
+                                self.hasChanges = false;
                             } else {
                                 $(self.imgElementId).cropper('zoom', -10);
+                                self.hasChanges = false;
                                 $('.tools-container .warning').hide();
                             }
                         }
