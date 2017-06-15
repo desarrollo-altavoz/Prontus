@@ -203,7 +203,6 @@ main: {
 
 
         # Cod html correspondiente a la combo de templates de articulos
-        my($javascript_tpls) =  " onchange=\"Fid.objFormFid.action='prontus_art_ficha.$prontus_varglb::EXTENSION_CGI';Fid.objFormFid.target='_self'; on_submit('actualiza');\"";
         my $html_tpag = &glib_html_02::generar_popup_from_dir($dir_tpl_pags, '_PLT', '', 1, '', 'SIN_EXT', '', '', 1000000, 'STRASC');
 
         # Filtrar lista de templates de acuerdo a los soportados por el tipo de ficha de articulo.
@@ -861,7 +860,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   # print STDERR "xml_data[$xml_data]\n";
 
   # Cod html correspondiente a la combo de templates de articulos
-  my($javascript_tpls) =  " onchange=\"Fid.objFormFid.action='prontus_art_ficha.$prontus_varglb::EXTENSION_CGI';Fid.objFormFid.target='_self';Fid.objFormFid.submit();\"";
   $html_tpag = &glib_html_02::generar_popup_from_dir($dir_tpl_pags, '_PLT', '', 1, '', 'SIN_EXT', '', '', 1000000, 'STRASC');
 
   # Filtrar lista de templates de acuerdo a los soportados por el tipo de ficha de articulo.

@@ -9337,7 +9337,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Esta variable sirve para indicar si la salida de exito o error se escribe en un archivo con
         el mismo nombre que la plantilla o el nombre tradicional (random).
         /site/cache/form/exito/exito_formulario.html <- con _pag_estatico
-        /site/cache/exito/prontus20170405101724149323958732767.html <- sin _pag_estatico
+        /site/cache/form/exito/prontus20170405101724149323958732767.html <- sin _pag_estatico
     [files]
         /cgi-bin/prontus_form.cgi
         /cgi-bin/prontus_getcaptcha.cgi
