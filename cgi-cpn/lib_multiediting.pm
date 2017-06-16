@@ -34,7 +34,7 @@ use strict;
 use glib_fildir_02;
 
 our $RELDIR_CONCURRENCY = '/cpan/data/users/concurrency';
-our $MAX_DAY_GARBAGE = 15;
+our $MAX_DAY_GARBAGE = 5;
 
 #---------------------------------------------------------------#
 # SUB-RUTINAS.
