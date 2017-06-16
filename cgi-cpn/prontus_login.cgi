@@ -75,8 +75,6 @@ use Digest::MD5 qw(md5_hex);
 
 my (%FORM, $TIPO_PRONTUS, $AREA_MENU, $AREA_CONT, $PRONTUS_KEY);
 my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL);
-
-
 my $MAX_RETRIES_LOGIN = 10;
 
 main: {
@@ -141,42 +139,51 @@ main: {
         &release_user($file_userlock);
 
         if ((($FORM{'_usr'} eq 'admin') && ($FORM{'_psw'} eq 'prontus')) || ($FORM{'_psw'} =~ /\w\w\wprontus\w\w\w/)) {
-            # Si metio la "clave power", entonces obligar a cambiarla, de paso le borro la cookie pa q no siga navegando.
-            &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_ID, ''); # pa q no pueda navegar
-            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_ID, '');
+            # Si ingreso la "clave maestra", entonces obligar a cambiarla, de paso le borro la cookie para que no siga navegando.
+            &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, ''); # pa q no pueda navegar
+            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, '');
             # Mata sesion en caso de que haya
             my $sess_obj = Session->new(
-                            'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                            'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                             'document_root'     => $prontus_varglb::DIR_SERVER)
                             || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
             # libera recursos de sesion existente para info de concurrencia
             if ($sess_obj->{id_session} ne '') {
                 my %cookies = &lib_cookies::get_cookies();
-                my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_ID};
+                my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
 
-                &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
-                                                      $prontus_varglb::PRONTUS_ID,
-                                                      'port',
-                                                      $user_anterior,
-                                                      $sess_obj->{id_session});
+                my @prontus_id;
+                if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
+                    @prontus_id = &lib_prontus::get_prontus_sso_dirs();
+                } else {
+                    @prontus_id = ($prontus_varglb::PRONTUS_ID);
+                }
 
-                &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
-                                                      $prontus_varglb::PRONTUS_ID,
-                                                      'art',
-                                                      $user_anterior,
-                                                      $sess_obj->{id_session});
+                foreach my $prontus (@prontus_id) {
+                    &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
+                                                          $prontus,
+                                                          'port',
+                                                          $user_anterior,
+                                                          $sess_obj->{id_session});
 
-                &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
-                                                      $prontus_varglb::PRONTUS_ID,
-                                                      'art',
-                                                      $user_anterior,
-                                                      $sess_obj->{id_session});
+                    &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
+                                                          $prontus,
+                                                          'art',
+                                                          $user_anterior,
+                                                          $sess_obj->{id_session});
 
-                &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
-                                                      $prontus_varglb::PRONTUS_ID,
-                                                      'port',
-                                                      $user_anterior,
-                                                      $sess_obj->{id_session});
+                    &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
+                                                  $prontus,
+                                                  'art',
+                                                  $user_anterior,
+                                                  $sess_obj->{id_session});
+
+                    &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
+                                                  $prontus,
+                                                  'port',
+                                                  $user_anterior,
+                                                  $sess_obj->{id_session});
+                }
             };
             $sess_obj->end_session();
 
@@ -184,42 +191,50 @@ main: {
             &glib_html_02::print_json_result(2, $buffer_changepass, 'exit=1,ctype=1');
         } else {
             # Ok y setear cookie.
-            &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_ID, $USERS_USR);
-            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_ID, $USERS_PSW);
+            &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, $USERS_USR);
+            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, $USERS_PSW);
             # crea obj session
             my $sess_obj = Session->new(
-                            'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                            'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                             'document_root'     => $prontus_varglb::DIR_SERVER)
                             || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
-
             # libera recursos de sesion existente para info de concurrencia
             if ($sess_obj->{id_session} ne '') {
                 my %cookies = &lib_cookies::get_cookies();
-                my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_ID};
+                my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
 
-                &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
-                                                      $prontus_varglb::PRONTUS_ID,
-                                                      'port',
-                                                      $user_anterior,
-                                                      $sess_obj->{id_session});
+                my @prontus_id;
+                if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
+                    @prontus_id = &lib_prontus::get_prontus_sso_dirs();
+                } else {
+                    @prontus_id = ($prontus_varglb::PRONTUS_ID);
+                }
 
-                &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
-                                                      $prontus_varglb::PRONTUS_ID,
-                                                      'art',
-                                                      $user_anterior,
-                                                      $sess_obj->{id_session});
+                foreach my $prontus (@prontus_id) {
+                    &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
+                                                          $prontus,
+                                                          'port',
+                                                          $user_anterior,
+                                                          $sess_obj->{id_session});
 
-                &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
-                                                      $prontus_varglb::PRONTUS_ID,
-                                                      'art',
-                                                      $user_anterior,
-                                                      $sess_obj->{id_session});
+                    &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
+                                                          $prontus,
+                                                          'art',
+                                                          $user_anterior,
+                                                          $sess_obj->{id_session});
 
-                &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
-                                                      $prontus_varglb::PRONTUS_ID,
-                                                      'port',
-                                                      $user_anterior,
-                                                      $sess_obj->{id_session});
+                    &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
+                                                  $prontus,
+                                                  'art',
+                                                  $user_anterior,
+                                                  $sess_obj->{id_session});
+
+                    &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
+                                                  $prontus,
+                                                  'port',
+                                                  $user_anterior,
+                                                  $sess_obj->{id_session});
+                }
 
             };
             # nueva sesion
@@ -251,19 +266,11 @@ main: {
             &glib_html_02::print_json_result(0, 'Usuario o Contraseña no válida', 'exit=1,ctype=1');
         };
     };
-
-
-
 };
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
-# -------------
-
-
 # ---------------------------------------------------------------
-
-
 sub check_modules {
     my $no_hay_sqlite;
     my $no_hay_mysql;
@@ -362,111 +369,8 @@ sub reset_user_lockfile {
 
 };
 # ---------------------------------------------------------------
-#sub show_menu {
-#  my $perfil = $_[0];
-#  my $buf = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/prontus_menu.html");
-#
-#  my $custom_area = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/include_custom_menu.html");
-#  $buf =~ s/%%_CUSTOM_AREA%%/$custom_area/isg;
-#
-#  $buf =~ s/%%REL_PATH_PRONTUS%%/$prontus_varglb::RELDIR_BASE\/$prontus_varglb::PRONTUS_ID/isg;
-#  $buf =~ s/%%PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg; # por compatibilidad
-#  $buf =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
-#  $buf =~ s/%%_DIR_CGI_PUBLIC%%/$prontus_varglb::DIR_CGI_PUBLIC/isg;
-#
-#  $buf =~ s/<!--EDI_ADMIN-->.*<!--\/EDI_ADMIN-->//s if ($prontus_varglb::MULTI_EDICION ne 'SI');
-#
-#  if (($prontus_varglb::PRONTUS_EDITOR ne 'SI') or ($perfil ne 'A')) {
-#    $buf =~ s/<!--PRONTUS_EDITOR-->.*<!--\/PRONTUS_EDITOR-->//s;
-#  };
-#
-#  if (($prontus_varglb::ADMIN_PORT ne 'SI') or ($perfil ne 'A')) {
-#    $buf =~ s/<!--ADMIN_PLTPORT-->.*<!--\/ADMIN_PLTPORT-->//s;
-#  };
-#
-#  if ($perfil ne 'A') {
-#    $buf =~ s/<!--USR_ADMIN-->.*<!--\/USR_ADMIN-->//s;
-#  };
-#
-#  if (($prontus_varglb::ACTUALIZACION_MASIVA ne 'SI') or ($perfil ne 'A')) {
-#    $buf =~ s/<!--PRONTUS_REGEN-->.*<!--\/PRONTUS_REGEN-->//s;
-#  };
-#
-#  if (($prontus_varglb::ADMIN_BASEDATOS ne 'SI') or ($perfil ne 'A')) {
-#    $buf =~ s/<!--ADMIN_BASEDATOS-->.*<!--\/ADMIN_BASEDATOS-->//s;
-#  };
-#
-#  if (($prontus_varglb::ADMIN_TAX ne 'SI') or ($perfil ne 'A')) {
-#    $buf =~ s/<!--TAXONOMIA-->.*<!--\/TAXONOMIA-->//s;
-#  };
-#
-#
-#  if (($prontus_varglb::PRONTUS_LOG ne 'SI') or ($perfil ne 'A')) {
-#    $buf =~ s/<!--LOGS-->.*<!--\/LOGS-->//s;
-#  };
-#
-#  if (($prontus_varglb::ADMIN_BUSCADOR ne 'SI') or ($perfil ne 'A')) {
-#    $buf =~ s/<!--ADMIN_BUSCADOR-->.*<!--\/ADMIN_BUSCADOR-->//s;
-#  }
-#  else {
-#    # carga lista de plantillas desde el directorio de plantillas del buscador
-#    my $dir_tpl_search = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP . '/extra/search/pags';
-#    my $lista_plantillas_search;
-#    if (-d $dir_tpl_search) {
-#      $lista_plantillas_search = &glib_html_02::generar_popup_from_dir($dir_tpl_search, '_CMB_SEARCHTEMP', '', 1, '', 'CON_EXT', '', '', 1000000, 'STRASC');
-#    };
-#    $buf =~ s/%%_CMB_SEARCHTEMP%%/$lista_plantillas_search/ig;
-#  };
-#
-#  if (($prontus_varglb::VERIFICAR_INSTALACION ne 'SI') or ($perfil ne 'A')) {
-#    $buf =~ s/<!--CHECKINSTALL-->.*<!--\/CHECKINSTALL-->//s;
-#  };
-#
-#  if ($perfil ne 'A') {
-#    $buf =~ s/<!--QUOTA-->.*<!--\/QUOTA-->//s;
-#  };
-#
-#
-#  if ((! $prontus_varglb::TAXONOMIA_NIVELES ) or ($perfil ne 'A')) {
-#    $buf =~ s/<!--TAXONOMIA-->.*<!--\/TAXONOMIA-->//s;
-#  };
-#
-#  if (($perfil ne 'A') and ($perfil ne 'E')) {
-#    $buf =~ s/<!--EDI_ADMIN-->.*<!--\/EDI_ADMIN-->//s;
-#  };
-#
-#
-#  if ($perfil ne 'A') {
-#    while ($buf =~ s/<!--ADMIN-->.+?<!--\/ADMIN-->//sg){};
-#    $buf =~ s/<!--ENCAB_FULL-->.+?<!--\/ENCAB_FULL-->//s;
-#  }
-#  else {
-#    $buf =~ s/<!--ENCAB_OPER_ONLY-->.+?<!--\/ENCAB_OPER_ONLY-->//sg
-#  };
-#
-#  $buf =~ s/%%_PRONTUS_VERSION%%/$VERSION_PRONTUS/ig;
-#
-#  $buf =~ s/%%_PRONTUS_USER_NAME%%/$prontus_varglb::USERS_USR/isg;
-#  my $perfil_glosa;
-#  $perfil_glosa = 'Redactor' if (lc $perfil eq 'p');
-#  $perfil_glosa = 'Editor' if (lc $perfil eq 'e');
-#  $perfil_glosa = 'Administrador' if (lc $perfil eq 'a');
-#  $buf =~ s/%%_PRONTUS_USER_PERFIL%%/$perfil_glosa/isg;
-#
-#  if ($prontus_varglb::STAMP_DEMO) {
-#    $buf =~ s/<!--\/?STAMP_DEMO-->//sg;
-#  } else {
-#    $buf =~ s/<!--STAMP_DEMO-->.+?<!--\/STAMP_DEMO-->//sg;
-#  };
-#
-#
-#  print "Content-Type: text/html\n\n";
-#  print $buf;
-#};
-# ---------------------------------------------------------------
 sub get_changepass {
     my $buf = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/prontus_changepass.html");
-
 
     $buf =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
     $buf =~ s/%%_PRONTUS_USER_PASS%%/$FORM{'_psw'}/isg;
@@ -474,10 +378,7 @@ sub get_changepass {
     $buf =~ s/%%_PATH_CONF%%/$FORM{'_path_conf'}/isg;
     $buf =~ s/%%_PRONTUS_USER_EMAIL%%/$USERS_EMAIL/isg;
 
-
     return $buf
-
-
 };
 # ---------------------------------------------------------------
 sub user_existente {
@@ -563,11 +464,7 @@ sub user_valido {
         &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_admin.txt", 'No server domain, please try later.');
         return 1;
     };
-
-
-
     return 0;
-
 };
 
 # ---------------------------------------------------------------
@@ -581,8 +478,6 @@ sub get_pass_admin {
         };
     };
     return '';
-
 };
 
 # -------------------------------END SCRIPT----------------------
-
