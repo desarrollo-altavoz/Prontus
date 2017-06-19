@@ -888,6 +888,21 @@ sub parseaVars {
         $pagina =~ s/%%EDITOR_ADMINISTRAR_EDICIONES_SI%%//ig;
         $pagina =~ s/%%EDITOR_ADMINISTRAR_EDICIONES_NO%%/ checked="checked"/ig;
     };
+    if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
+        $pagina =~ s/%%PRONTUS_SSO_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%PRONTUS_SSO_NO%%//ig;
+    } else {
+        $pagina =~ s/%%PRONTUS_SSO_SI%%//ig;
+        $pagina =~ s/%%PRONTUS_SSO_NO%%/ checked="checked"/ig;
+    };
+    if ($prontus_varglb::PRONTUS_SSO_MASTER eq 'SI') {
+        $pagina =~ s/%%PRONTUS_SSO_MASTER_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%PRONTUS_SSO_MASTER_NO%%//ig;
+    } else {
+        $pagina =~ s/%%PRONTUS_SSO_MASTER_SI%%//ig;
+        $pagina =~ s/%%PRONTUS_SSO_MASTER_NO%%/ checked="checked"/ig;
+    };
+    $pagina =~ s/%%PRONTUS_SSO_MASTER_ID%%/$prontus_varglb::PRONTUS_SSO_MASTER_ID/ig;
 
     # -tax.cfg
     if ($prontus_varglb::TAXONOMIA_NIVELES eq '0') {

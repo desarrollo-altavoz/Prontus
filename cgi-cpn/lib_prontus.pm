@@ -2296,21 +2296,34 @@ sub get_prontus_sso_dirs {
     my @core_dirs; # core dirs
     # Recorre revisando todas las carpetas de la raiz buscando donde haya *-var.cfg y *-id.cfg
     foreach my $entry (@entries) {
-        next if ($entry =~ /^\./);
-        next if (!-d "$dir/$entry");
-        if ((-f "$dir/$entry/cpan/$entry-var.cfg") && (-f "$dir/$entry/cpan/$entry-id.cfg")) {
-            # leer el dir_cgi.js para saber si este core corresponde a la misma version de cgis de prontus
-            my $buffer_dir_cgi = &glib_fildir_02::read_file("$dir/$entry/cpan/dir_cgi.js"); # DIR_CGI_CPAN = 'cgi-cpn'
-            if ($buffer_dir_cgi =~ /DIR_CGI_CPAN *= *['"]\Q$prontus_varglb::DIR_CGI_CPAN\E['"]/s) {
-                my $buffer_conf = &glib_fildir_02::read_file("$dir/$entry/cpan/$entry-usr.cfg");
-                if ($buffer_conf  =~ /PRONTUS_SSO\s*=\s*["|']SI["|']/ && $buffer_conf =~ /PRONTUS_SSO_MASTER_ID\s*=\s*["|']\Q$prontus_varglb::PRONTUS_SSO_MASTER_ID\E["|']/) {
-                    push(@core_dirs, $entry);
-                }
+        if (&valida_prontus_dir($dir, $entry)) {
+            print STDERR "valid $dir, $entry\n";
+            my $buffer_conf = &glib_fildir_02::read_file("$dir/$entry/cpan/$entry-usr.cfg");
+            if ($buffer_conf  =~ /PRONTUS_SSO\s*=\s*["|']SI["|']/ && $buffer_conf =~ /PRONTUS_SSO_MASTER_ID\s*=\s*["|']\Q$prontus_varglb::PRONTUS_SSO_MASTER_ID\E["|']/) {
+                print STDERR "SSO $entry\n";
+                push(@core_dirs, $entry);
             }
         }
     }
+    # se agrega el directorio del prontus master
+    push(@core_dirs, $prontus_varglb::PRONTUS_SSO_MANAGER_ID);
     return @core_dirs;
 };
+# -------------------------------------------------------------------------#
+sub valida_prontus_dir {
+    my $dir = $_[0];
+    my $entry = $_[1];
+    return 0 if ($entry =~ /^\./);
+    return 0 if (!-d "$dir/$entry");
+    if ((-f "$dir/$entry/cpan/$entry-var.cfg") && (-f "$dir/$entry/cpan/$entry-id.cfg")) {
+        # leer el dir_cgi.js para saber si este core corresponde a la misma version de cgis de prontus
+        my $buffer_dir_cgi = &glib_fildir_02::read_file("$dir/$entry/cpan/dir_cgi.js"); # DIR_CGI_CPAN = 'cgi-cpn'
+        if ($buffer_dir_cgi =~ /DIR_CGI_CPAN *= *['"]\Q$prontus_varglb::DIR_CGI_CPAN\E['"]/s) {
+            return 1;
+        }
+    }
+    return 0;
+}
 # -------------------------------------------------------------------------#
 # 8.0
 sub get_oct_dig {
