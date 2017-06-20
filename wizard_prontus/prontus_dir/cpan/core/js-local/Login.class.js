@@ -110,6 +110,9 @@ var Login = {
                 } else {
                     document.getElementById('prontus-sso').remove();
                 }
+            },
+            error: function() {
+                document.getElementById('prontus-sso').remove();
             }
         });
     },
