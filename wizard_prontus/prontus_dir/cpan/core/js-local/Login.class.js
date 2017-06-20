@@ -101,7 +101,6 @@ var Login = {
             url: '/' + Login.dir_cgi_cpan + '/prontus_sso_get_list.cgi',
             data: "_path_conf=" + window.document.FrmLogin._path_conf.value,
             success: function (data) {
-                console.log(data);
                 if (data.status) {
                     var combo = document.getElementById('prontus-sso-select');
                     for (var i in data.prontus_list) {
