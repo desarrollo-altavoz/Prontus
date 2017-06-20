@@ -9522,6 +9522,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_sso_get_list.cgi
         /cgi-cpn/prontus_cfg_save.cgi
         /cgi-cpn/prontus_check_session.cgi
         /cgi-cpn/prontus_head_info.cgi
