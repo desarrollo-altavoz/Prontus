@@ -85,7 +85,11 @@ sub copy_tree {
 
     my ($ret, @list_dir, $item);
 
-    $ret = opendir (dir_handle, $padre_origen . '/' . $df_origen);
+    if (-d $padre_origen . '/' . $df_origen) {
+        $ret = opendir (dir_handle, $padre_origen . '/' . $df_origen);
+    } else {
+        $ret = 0;
+    }
     # si es un directorio
     if ($ret) {
         if ($nom_destino ne '') {
@@ -108,8 +112,12 @@ sub copy_tree {
 
         }
     } else { # Es un archivo
-        File::Copy::copy($padre_origen . '/' . $df_origen, $df_destino . '/' . $df_origen);
-        # print "copy [$df_destino/$df_origen]\n\n";
+        if (-l $padre_origen . '/' . $df_origen) {
+            system("cp -a $padre_origen/$df_origen $df_destino/$df_origen");
+        } else {
+            File::Copy::copy($padre_origen . '/' . $df_origen, $df_destino . '/' . $df_origen);
+        }
+        print STDERR "copy [$df_destino/$df_origen]\n\n";
     }
 }
 #-------------------------------------------------------------------------#
