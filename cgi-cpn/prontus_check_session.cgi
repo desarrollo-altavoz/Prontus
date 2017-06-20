@@ -15,6 +15,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -24,11 +25,9 @@ use glib_fildir_02;
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use lib_prontus;
-use lib_multiediting;
 
 use Session;
 use Update;
-use strict;
 
 my %FORM;
 

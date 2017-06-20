@@ -2297,10 +2297,9 @@ sub get_prontus_sso_dirs {
     # Recorre revisando todas las carpetas de la raiz buscando donde haya *-var.cfg y *-id.cfg
     foreach my $entry (@entries) {
         if (&valida_prontus_dir($dir, $entry)) {
-            print STDERR "valid $dir, $entry\n";
             my $buffer_conf = &glib_fildir_02::read_file("$dir/$entry/cpan/$entry-usr.cfg");
-            if ($buffer_conf  =~ /PRONTUS_SSO\s*=\s*["|']SI["|']/ && $buffer_conf =~ /PRONTUS_SSO_MASTER_ID\s*=\s*["|']\Q$prontus_varglb::PRONTUS_SSO_MASTER_ID\E["|']/) {
-                print STDERR "SSO $entry\n";
+            if ($buffer_conf  =~ /PRONTUS_SSO\s*=\s*["|']SI["|']/ && $buffer_conf =~ /PRONTUS_SSO_MASTER_ID\s*=\s*["|']\Q$prontus_varglb::PRONTUS_SSO_MANAGER_ID\E["|']/) {
+                print STDERR "SSO Enabled [$entry]\n";
                 push(@core_dirs, $entry);
             }
         }

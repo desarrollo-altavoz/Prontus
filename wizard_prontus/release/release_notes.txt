@@ -9376,6 +9376,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambian las leyendas y rótulos en la verificación de plataforma.
         - Se cambia a "agregar" la escritura del log de operación de Prontus.
         - Se quita botón duplicado para despublicar de portadas.
+        - Baja a 5 dias el garbage de locks al editar artículos.
     [mejoras]
         - Se agrega verificación de instalación de unzip.
         - Correcciones menores en el código y comentarios
@@ -9392,6 +9393,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_check_platform.cgi
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_corrige_friendly4.pl
+        /cgi-cpn/lib_multiediting.pm
         /wizard_prontus/prontus_dir/cpan/core/js-local/Utiles.class.js
         /wizard_prontus/prontus_dir/cpan/core/dam/js-local/Dam.class.js
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_platform.html
@@ -9510,3 +9512,26 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_varglb.pm
         /cgi-cpn/Update.pm
+
+
+- Single Sign ON
+    [mejoras]
+        - Se implementa single sign on en Prontus, se utiliza en una estructura master-slave.
+        - Los usuarios se definen y almacenan en el master y son utilizados por los slaves.
+          Si se desactiva el SSO de un Prontus slave, este pasará a utilizar sus usuarios locales de la forma normal.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_check_session.cgi
+        /cgi-cpn/prontus_head_info.cgi
+        /cgi-cpn/prontus_login.cgi
+        /cgi-cpn/prontus_ping_inuse.cgi
+        /cgi-cpn/prontus_usr_ficha.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_usr.html
+        /wizard_prontus/prontus_dir/cpan/core/css/login.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Login.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_head_info.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_index.html
