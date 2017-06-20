@@ -16,7 +16,6 @@
       $(document).ready(function () {
         $('#_path_conf').val(ProntusDetect.getPathConf());
         Login.init(DIR_CGI_CPAN);
-        Login.checkSession();
       });
     </script>
     <script type="text/javascript">
@@ -54,8 +53,13 @@
               <img src="imag/boto/ing_of.png" onmouseover="Login.chgImgSrc(this, 'imag/boto/ing_on.png');" onmouseout="Login.chgImgSrc(this, 'imag/boto/ing_of.png');" alt="" />
             </a>
             <div style="overflow:hidden; height:1px; width:1px;">
-              <input type="submit" name="_sbmit" id="_sbmit" class="fieldform" value="Enviar" /></div>
-
+              <input type="submit" name="_sbmit" id="_sbmit" class="fieldform" value="Enviar" />
+            </div>
+          </div>
+          <div class="auxi prontus-sso" id="prontus-sso">
+            <p>Seleccione Prontus:<br/>
+              <select id="prontus-sso-select" class="fieldform"></select>
+            </p>
           </div>
           <div class="auxi" id="checkSession">
             <div class="checkSession">
