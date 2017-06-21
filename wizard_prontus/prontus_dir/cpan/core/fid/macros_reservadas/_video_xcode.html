@@ -1,4 +1,5 @@
 <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Transcoding.class.js"></script>
+<script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Player.class.js"></script>
 <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/Embed.class.js"></script>
 <input type="hidden" value="1" name="xcodeInput" id="xcodeInput" />
 <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform tablexcode">
@@ -25,13 +26,13 @@
           <div class="item"><a href="#" onclick="Transcoding.generaScreenshot(); return false;" class="cambia-boton" title="Tomar Captura">
             <img src="/%%_prontus_id%%/cpan/core/imag/xcode/camara_of.png" width="32" height="32" alt="screenshot" /> Screenshot</a></div>
 
-          <div class="item browser-comun browser-normal"><a href="#" onclick="Flash.setMarkerA(); return false;" class="cambia-boton" title="Colocar Marca A">
+          <div class="item"><a href="#" onclick="Player.callbacks.setMarkerA(); return false;" class="cambia-boton" title="Colocar Marca A">
             <img src="/%%_prontus_id%%/cpan/core/imag/xcode/mark1_of.png" width="32" height="32" alt="marca_a" /> Marca A</a></div>
 
-          <div class="item browser-comun browser-normal"><a href="#" onclick="Flash.setMarkerB(); return false;" class="cambia-boton" title="Colocar Marca B">
+          <div class="item"><a href="#" onclick="Player.callbacks.setMarkerB(); return false;" class="cambia-boton" title="Colocar Marca B">
             <img src="/%%_prontus_id%%/cpan/core/imag/xcode/mark2_of.png" width="32" height="32" alt="marca_b" /> Marca B</a></div>
 
-          <div class="item browser-comun browser-normal"><a href="#" onclick="Transcoding.cortarVideo(); return false;" class="cambia-boton" title="Cortar Selección">
+          <div class="item"><a href="#" onclick="Transcoding.cortarVideo(); return false;" class="cambia-boton" title="Cortar Selección">
             <img src="/%%_prontus_id%%/cpan/core/imag/xcode/cortar_of.png" width="32" height="32" alt="cortar" /> Cortar</a></div>
 
           <div><br /><a href="http://develop.prontus.cl/%%_prontus_manual_oper%%/site/artic/20110414/pags/20110414104153.html" target="_blank" title="Ayuda">Ayuda</a>
@@ -46,3 +47,46 @@
     </td>
   </tr>
 </table>
+
+<script type="text/template" id="video_template">
+  <div id="contentId" class="player">
+    <div id="playerContent" class="video_content">
+      <video  id="videoId" class="video_player" ></video>
+      <div class="main-button" id="mainPlayButton"><a ><img style="margin-top:10px !important" src="/%%_PRONTUS_ID%%/cpan/core/imag/player/main_play.png" alt="Reproducir" title="Reproducir" width="40" height="40"></a></div>
+      <div class="main-button" id="rewindButton" style="display:none"><a ><img style="margin-top:10px !important" src="/%%_PRONTUS_ID%%/cpan/core/imag/player/main_replay.png" alt="Reproducir" title="Reproducir" width="40" height="40"></a></div>
+      <div class="main-button" id="loader" style="display:none"><img style="margin-top:10px !important" class="loading" src="/%%_PRONTUS_ID%%/cpan/core/imag/player/pploading.gif"></div>
+    </div>
+    <div class="marks" id="markA" style="display:none">
+        <span class="markText" >A</span>
+    </div>
+    <div class="markIndicator" id="markIndicatorA" style="display:none"></div>
+    <div class="marks" id="markB" style="display:none">
+        <span class="markText" >B</span>
+    </div>
+    <div class="markIndicator" style="display:none" id="markIndicatorB"></div>
+    <div class="controls" id="controlsContentId">
+      <div class="cutBar" id="cutBar" style="display:none">
+        <div class="bar1" id="bar1" style="display:none"></div>
+        <div class="bar2" id="bar2" style="display:none"></div>
+        <div class="bar3" id="bar3" style="display:none"></div>
+      </div>
+      <div class="progressbar">
+        <div class="total-progressbar" id="seekBar">
+            <div class="playing-progressbar" id="playingBar"></div>
+            <div class="playing-totalbar" id="totalbar"></div>
+        </div>
+      </div>
+      <div class="buttons-auxi">
+        <a  class="play-button" id="playButton"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/play_ico.png" alt="Reproducir" title="Reproducir" width="20" height="25"></a>
+        <a  class="pause-button" id="pauseButton" style="display:none"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/pause_ico.png" alt="Pausar" title="Pausar" width="20" height="25"></a>
+        <a  class="volume-button volume" id="volumeButton"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/vol_ico.png" alt="Volúmen" title="Volúmen" width="17" height="21"></a>
+        <a  class="volume-button volume" id="volumeButtonMute" style="display:none"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/mute_ico.png" alt="Volúmen" title="Volúmen" width="17" height="21" ></a>
+        <div id="volumeBarCont" class="volume-progressbar volume">
+            <div id="volumeBar" class="level-progressbar"></div>
+        </div>
+        <span class="date" id="timeContent"></span>
+        <a  class="fullscreen-button" id="fullScreen"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/full_ico.png" alt="Pantalla Completa" title="Pantalla Completa" width="27" height="20"></a>
+      </div>
+    </div>
+  </div>
+</script>

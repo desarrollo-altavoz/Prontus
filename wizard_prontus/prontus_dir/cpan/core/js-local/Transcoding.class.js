@@ -1,4 +1,4 @@
-var Transcoding, Msg, Flash;
+var Transcoding, Msg;
 (function () {
     "use strict";
 
@@ -42,7 +42,7 @@ var Transcoding, Msg, Flash;
                     if(! Transcoding.transcoding) {
                         return;
                     }
-                    Transcoding.reloadVideo();
+                    Player.reloadVideo(Transcoding.linkVideo);
                     return;
                 }
                 Transcoding.initialized = true;
@@ -58,7 +58,6 @@ var Transcoding, Msg, Flash;
                     Msg.setStatusMessage('Chequeando estado del video');
                     Transcoding.checkStatus();
                 } else {
-                    //alert('Transcoding.loadFlash');
                     Transcoding.checkMp4();
                 }
             });
@@ -86,7 +85,7 @@ var Transcoding, Msg, Flash;
                             } else if (data.msg == 'OK') {
                                 Msg.setInfoMessage('El video mp4 se encuentra ajustado para su correcta reproducción.');
                                 setTimeout(function () {
-                                    Transcoding.loadFlash();
+                                    Transcoding.loadVideoPlayer();
                                 }, 250);
                             } else if (data.msg == 'XCODE') {
                                 Msg.setStatusMessage('Generando versiones del video.');
@@ -136,7 +135,7 @@ var Transcoding, Msg, Flash;
                                 Transcoding.transcoding = false;
                                 Msg.setInfoMessage('El video ya fue convertido.');
                                 setTimeout(function () {
-                                    Transcoding.loadFlash();
+                                    Transcoding.loadVideoPlayer();
                                 }, 250);
                             }
                         } else {
@@ -196,7 +195,8 @@ var Transcoding, Msg, Flash;
         },
 
         // -------------------------------------------------------------------------
-        loadFlash: function () {
+        loadVideoPlayer: function () {
+
             if (Transcoding.linkExt !== Transcoding.videoExtension) {
                 Transcoding.linkVideo = Transcoding.linkVideo.substr(0, Transcoding.linkVideo.lastIndexOf('.')) + Transcoding.videoExtension;
                 Transcoding.linkExt = Transcoding.linkVideo.substr(Transcoding.linkVideo.lastIndexOf('.'));
@@ -207,20 +207,14 @@ var Transcoding, Msg, Flash;
                 $(Transcoding.idVideo + " input[name^='_HIDD_']").val(nameVideo);
             }
             $(Transcoding.panelVideo).show();
-            Flash.iniciaFlash('#player-content');
-        },
-
-        // -------------------------------------------------------------------------
-        reloadVideo: function () {
-            //alert('Flash.setMovie');
-            Flash.setMovie(Transcoding.linkVideo);
+            Player.init(Transcoding.linkVideo);
         },
 
         // -------------------------------------------------------------------------
         generaScreenshot: function () {
             try {
                 Msg.setStatusMessage('Generando la captura');
-                var time = Flash.getPlayPoint();
+                var time = Player.callbacks.getPlayPoint();
 
                 if (typeof time === 'undefined') {
                     if (Transcoding.transcoding === true) {
@@ -262,7 +256,7 @@ var Transcoding, Msg, Flash;
         cortarVideo: function () {
             try {
                 Msg.setStatusMessage('Generando el Corte del Video');
-                var marcas = Flash.getMarkers();
+                var marcas = Player.callbacks.getMarkers();
 
                 if (typeof marcas === 'undefined') {
 
@@ -278,7 +272,7 @@ var Transcoding, Msg, Flash;
                 } else {
 
                     if (marcas.length !== 2) {
-                        Msg.setAlertMessage('El formato de las marcas entregado por el Flash no es válido');
+                        Msg.setAlertMessage('El formato de las marcas entregado por el Player no es válido');
                         return;
                     }
                     if (marcas[0] === 0 && marcas[1] === 0) {
@@ -364,175 +358,5 @@ var Transcoding, Msg, Flash;
 
     // -----------------------------------------------------------------------------
     //  Objeto que ejecuta las funciones de internas del flash
-    Flash = {
 
-        html5: false,
-        movieObj: null,
-
-        pooling: 0,
-        maxPooling: 5,
-
-        anchoPlayer: 440,
-        altoPlayer: 350,
-
-        playerVideo: '/cpan/core/flash/player_video/playerVideo.swf',
-        playerId: 'idPlayer',
-        playerName: 'playerVideoName',
-
-        //Inicia el Flash del video, para que funcione en IE
-        iniciaFlash: function (idDiv) {
-            if (Flash.movieObj === null) {
-
-                // Se inserta el player
-                Flash.insertaPlayer(idDiv);
-
-                // Para darle tiempo al flash para que se cargue
-                setTimeout(function () {
-                    Flash.movieObj = Flash.getObject();
-                    //alert('iniciaFlash Flash.movieObj: ' + Flash.movieObj);
-                }, 500);
-
-            }
-        },
-
-        // Inserta el player según corresponda
-        insertaPlayer: function (idDiv) {
-
-            if(!jQuery.browser.flash) {
-                var video = document.createElement('video');
-                video.width = Flash.anchoPlayer;
-                video.height = Flash.altoPlayer;
-                video.id = Flash.playerId;
-                video.src = Transcoding.linkVideo;
-                video.type = "video/mp4";
-                video.controls = "controls";
-                video.onclick = function(){this.paused?this.play():this.pause();}
-                $(idDiv).append(video);
-                Flash.html5 = true;
-            } else {
-                $(idDiv).media({
-                    width: Flash.anchoPlayer,
-                    height: Flash.altoPlayer,
-                    src: '/' + Admin.prontus_id + Flash.playerVideo,
-                    params: {
-                        allowScriptAccess: 'always',
-                        allowFullScreen: 'true',
-                        wmode: 'opaque'
-                        //quality: 'high'
-                    },
-                    attrs: {
-                        id: Flash.playerId,
-                        name: Flash.playerName
-                    },
-                    flashvars: {
-                        XCOD: 'true'
-                    }
-                });
-            }
-
-        },
-
-        // Obtiene el objeto movie
-        getObject: function () {
-            // Se obtiene el objeto
-            var movieObj = window[Flash.playerName];
-            if (typeof movieObj === 'undefined') {
-
-                movieObj = document[Flash.playerName];
-                if (typeof movieObj === 'undefined') {
-
-                    movieObj = document.getElementById(Flash.playerId);
-                }
-            }
-            if (typeof movieObj === 'undefined') {
-                Msg.setAlertMessage('Se ha producido un error cargando el player de video.');
-                movieObj = null;
-            }
-            return movieObj;
-        },
-
-        // Setea el archivo de video en el flash
-        setMovie: function (linkVideo) {
-            try {
-
-                if(Admin.notFlash) {
-                    return;
-                }
-                //alert('Flash.movieObj: ' + Flash.movieObj);
-                if (Flash.movieObj === null) {
-                    Flash.movieObj = Flash.getObject();
-                }
-                if (typeof Flash.movieObj.setMovie === 'function') {
-                    Flash.movieObj.setMovie(linkVideo);
-                    Flash.movieObj.setScreenshot();
-                    Flash.pooling = 0;
-
-                } else {
-                    if (Flash.pooling > Flash.maxPooling) {
-                        Msg.setAlertMessage('Error al invocar función del Flash setMovie()');
-                        return;
-                    }
-                    setTimeout(function () {
-                        Flash.setMovie(linkVideo);
-                    }, 500);
-                    Flash.pooling++;
-                }
-            } catch (e) {
-                Msg.setAlertMessage('Error al invocar función del Flash setMovie():<br/> ' + e);
-            }
-        },
-        // Obtiene el punto actual que se está reproduciendo
-        getPlayPoint: function () {
-            try {
-                if (Flash.movieObj === null) {
-                    return;
-                }
-                if (Flash.html5) {
-                    return Flash.movieObj.currentTime;
-                } else {
-                    return Flash.movieObj.getPlayPoint();
-                }
-            } catch (e) {
-                Msg.setAlertMessage('Error al invocar función del Flash getPlayPoint():<br/> ' + e);
-            }
-        },
-        // Coloca la marca A en el player
-        setMarkerA: function () {
-            try {
-                if (Flash.movieObj === null) {
-                    return;
-                }
-                Flash.movieObj.setMarkerA();
-            } catch (e) {
-                Msg.setAlertMessage('Error al invocar función del Flash setMarkerA():<br/> ' + e);
-            }
-
-        },
-        // Coloca la marca B en el player
-        setMarkerB: function () {
-            try {
-                if (Flash.movieObj === null) {
-                    return;
-                }
-                Flash.movieObj.setMarkerB();
-            } catch (e) {
-                Msg.setAlertMessage('Error al invocar función del Flash setMarkerB():<br/> ' + e);
-            }
-        },
-        // Obtiene las marcas inicio y fin del trozo seleccionado
-        getMarkers: function () {
-
-            try {
-                if (Flash.movieObj === null) {
-                    return;
-                }
-                var markers = Flash.movieObj.getMarkers();
-                //alert(markers);
-                return markers;
-
-            } catch (e) {
-                Msg.setAlertMessage('Error al invocar función del Flash getMarkers():<br/> ' + e);
-            }
-        }
-    };
 })();
