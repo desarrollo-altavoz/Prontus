@@ -42,7 +42,7 @@ var Transcoding, Msg, Flash;
                     if(! Transcoding.transcoding) {
                         return;
                     }
-                    Transcoding.reloadVideo();
+                    Player.reloadVideo(Transcoding.linkVideo);
                     return;
                 }
                 Transcoding.initialized = true;
@@ -58,7 +58,6 @@ var Transcoding, Msg, Flash;
                     Msg.setStatusMessage('Chequeando estado del video');
                     Transcoding.checkStatus();
                 } else {
-                    //alert('Transcoding.loadFlash');
                     Transcoding.checkMp4();
                 }
             });
@@ -86,7 +85,7 @@ var Transcoding, Msg, Flash;
                             } else if (data.msg == 'OK') {
                                 Msg.setInfoMessage('El video mp4 se encuentra ajustado para su correcta reproducción.');
                                 setTimeout(function () {
-                                    Transcoding.loadFlash();
+                                    Transcoding.loadVideoPlayer();
                                 }, 250);
                             } else if (data.msg == 'XCODE') {
                                 Msg.setStatusMessage('Generando versiones del video.');
@@ -136,7 +135,7 @@ var Transcoding, Msg, Flash;
                                 Transcoding.transcoding = false;
                                 Msg.setInfoMessage('El video ya fue convertido.');
                                 setTimeout(function () {
-                                    Transcoding.loadFlash();
+                                    Transcoding.loadVideoPlayer();
                                 }, 250);
                             }
                         } else {
@@ -196,7 +195,8 @@ var Transcoding, Msg, Flash;
         },
 
         // -------------------------------------------------------------------------
-        loadFlash: function () {
+        loadVideoPlayer: function () {
+
             if (Transcoding.linkExt !== Transcoding.videoExtension) {
                 Transcoding.linkVideo = Transcoding.linkVideo.substr(0, Transcoding.linkVideo.lastIndexOf('.')) + Transcoding.videoExtension;
                 Transcoding.linkExt = Transcoding.linkVideo.substr(Transcoding.linkVideo.lastIndexOf('.'));
@@ -207,20 +207,14 @@ var Transcoding, Msg, Flash;
                 $(Transcoding.idVideo + " input[name^='_HIDD_']").val(nameVideo);
             }
             $(Transcoding.panelVideo).show();
-            Flash.iniciaFlash('#player-content');
-        },
-
-        // -------------------------------------------------------------------------
-        reloadVideo: function () {
-            //alert('Flash.setMovie');
-            Flash.setMovie(Transcoding.linkVideo);
+            Player.init(Transcoding.linkVideo);
         },
 
         // -------------------------------------------------------------------------
         generaScreenshot: function () {
             try {
                 Msg.setStatusMessage('Generando la captura');
-                var time = Flash.getPlayPoint();
+                var time = Player.callbacks.getPlayPoint();
 
                 if (typeof time === 'undefined') {
                     if (Transcoding.transcoding === true) {
@@ -262,7 +256,7 @@ var Transcoding, Msg, Flash;
         cortarVideo: function () {
             try {
                 Msg.setStatusMessage('Generando el Corte del Video');
-                var marcas = Flash.getMarkers();
+                var marcas = Player.callbacks.getMarkers();
 
                 if (typeof marcas === 'undefined') {
 
@@ -278,7 +272,7 @@ var Transcoding, Msg, Flash;
                 } else {
 
                     if (marcas.length !== 2) {
-                        Msg.setAlertMessage('El formato de las marcas entregado por el Flash no es válido');
+                        Msg.setAlertMessage('El formato de las marcas entregado por el Player no es válido');
                         return;
                     }
                     if (marcas[0] === 0 && marcas[1] === 0) {
@@ -364,6 +358,7 @@ var Transcoding, Msg, Flash;
 
     // -----------------------------------------------------------------------------
     //  Objeto que ejecuta las funciones de internas del flash
+
     Flash = {
 
         html5: false,
