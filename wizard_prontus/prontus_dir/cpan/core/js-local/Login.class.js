@@ -107,8 +107,9 @@ var Login = {
                         combo.appendChild(new Option(data.prontus_list[i],data.prontus_list[i], data.prontus_list[i] == Login.prontus_id, data.prontus_list[i] == Login.prontus_id));
                     }
                     $('#prontus-sso-select').on('blur', Login.updateCfgPath);
+                    $('#prontus-sso').show();
                 } else {
-                    document.getElementById('prontus-sso').remove();
+                    $('#prontus-sso').remove();
                 }
             },
             error: function() {
