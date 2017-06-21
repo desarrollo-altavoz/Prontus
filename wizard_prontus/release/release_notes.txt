@@ -9353,6 +9353,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se modifica la detección de ejecución por línea de comando de las cgis
         - Los videos subidos se transcodifican automaticamente al guardar el fid. No es necesario
         volver a revisarlo para que sean procesados
+        - Integra player html5 para la transcodificación, esto permite sacar capturas y recortar el
+        video sin necesitar flash. Para Internet Explorer se mantiene el uso de Flash.
     [files]
         /cgi-cpn/prontus_art_sbmit.cgi
         /cgi-cpn/xcoding/prontus_procesar_videos.pl
@@ -9361,6 +9363,35 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videoxcode.cgi
         /cgi-cpn/xcoding/prontus_videoxcodehls.cgi
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/player_video.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_video_xcode.html
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/arrow.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/close_ads.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/close_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/conf_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/fb_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/ffw_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/full_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/gp_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/main_play.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/main_replay.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/mute_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/pause_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/play_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/pploading.gif
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/prontusLogo.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/prontusLogo2.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/prontusLogo3.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/rew_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/share_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/svg-loaders/oval.svg
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/tw_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/unmute_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/vol_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/imag/player/wp_ico.png
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Player.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
 
 - Prontus
     [bugfixes]
