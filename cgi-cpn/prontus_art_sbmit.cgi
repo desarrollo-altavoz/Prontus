@@ -194,7 +194,8 @@ main: {
     my %campos_stst_old = &lib_prontus::getCamposXml($buff_xml_data, '_seccion1,_tema1,_subtema1,_seccion2,_tema2,_subtema2,_seccion3,_tema3,_subtema3');
 
     # Se revisa si se deben regenerar todas las taxport o solo una página
-    my ($ts1, $ts2, $ts3) = &check_taxport2process($buff_xml_data, \%campos_stst_old, $is_new);
+    my %ts_list;
+    ($ts_list{'1'}, $ts_list{'2'}, $ts_list{'3'}) = &check_taxport2process($buff_xml_data, \%campos_stst_old, $is_new);
 
     my $msg_err_save = &lib_artic::save_artic_with_object($is_new);
     &glib_html_02::print_pag_result("Error", $msg_err_save, 0, 'exit=1,ctype=1') if ($msg_err_save);
@@ -244,319 +245,110 @@ main: {
         &call_list_regen($rutaScript, $param_especif_taxport);
     };
 
-    # Tripleta 1
-    if ($regenerar_procesos && $lib_artic::ARTIC_OBJ->{campos}->{'_seccion1'}) {
-        my $xml_id_seccion1 = $campos_stst_old{'_seccion1'};
-        my $xml_id_tema1 = $campos_stst_old{'_tema1'};
-        my $xml_id_subtema1 = $campos_stst_old{'_subtema1'};
+    for (my $i = 1; $i < 4; $i++) {
+        # Tripleta 1
+        print STDERR "Tripleta $i\n";
+        if ($regenerar_procesos && $lib_artic::ARTIC_OBJ->{campos}->{'_seccion'.$i}) {
+            my $xml_id_seccion = $campos_stst_old{'_seccion'.$i};
+            my $xml_id_tema = $campos_stst_old{'_tema'.$i};
+            my $xml_id_subtema = $campos_stst_old{'_subtema'.$i};
 
-        my $id_seccion1 = $lib_artic::ARTIC_OBJ->{campos}->{'_seccion1'};
-        my $id_tema1 = $lib_artic::ARTIC_OBJ->{campos}->{'_tema1'};
-        my $id_subtema1 =  $lib_artic::ARTIC_OBJ->{campos}->{'_subtema1'};
+            my $id_seccion = $lib_artic::ARTIC_OBJ->{campos}->{'_seccion'.$i};
+            my $id_tema = $lib_artic::ARTIC_OBJ->{campos}->{'_tema'.$i};
+            my $id_subtema =  $lib_artic::ARTIC_OBJ->{campos}->{'_subtema'.$i};
 
-        #~ print STDERR "xml_id_seccion1[$xml_id_seccion1] = id_seccion1[$id_seccion1]\n";
-
-        # La sección que viene por POST es distinta a la que está guardada en el XML.
-        if ($xml_id_seccion1 ne $id_seccion1 && $id_seccion1 ne '') {
-            # Se actualiza tax/list para la seccion que viene por POST
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $id_seccion1
-                                      . '/' . $id_tema1
-                                      . '/' . $id_subtema1;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts1);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $id_seccion1
-                                      . '/' . $id_tema1
-                                      . '/' . $id_subtema1;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-            # Se actualiza tax/list para la seccion que estaba en el XML (antigua).
-            if ($xml_id_seccion1 ne '') {
+            # La sección que viene por POST es distinta a la que está guardada en el XML.
+            if ($xml_id_seccion ne $id_seccion && $id_seccion ne '') {
+                # Se actualiza tax/list para la seccion que viene por POST
                 my $param_especif_taxport = $filtro_fid
-                                          . '/' . $xml_id_seccion1
-                                          . '/' . $xml_id_tema1
-                                          . '/' . $xml_id_subtema1;
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts1);
+                                          . '/' . $id_seccion
+                                          . '/' . $id_tema
+                                          . '/' . $id_subtema;
+                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                          . '/' . $xml_id_seccion1
-                                          . '/' . $xml_id_tema1
-                                          . '/' . $xml_id_subtema1;
+                                          . '/' . $id_seccion
+                                          . '/' . $id_tema
+                                          . '/' . $id_subtema;
+                &call_list_regen($rutaScript, $param_especif_taxport);
+                # Se actualiza tax/list para la seccion que estaba en el XML (antigua).
+                if ($xml_id_seccion ne '') {
+                    my $param_especif_taxport = $filtro_fid
+                                              . '/' . $xml_id_seccion
+                                              . '/' . $xml_id_tema
+                                              . '/' . $xml_id_subtema;
+                    &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
+
+                    $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
+                                              . '/' . $xml_id_seccion
+                                              . '/' . $xml_id_tema
+                                              . '/' . $xml_id_subtema;
+                    &call_list_regen($rutaScript, $param_especif_taxport);
+                };
+            } elsif ($xml_id_seccion eq $id_seccion) { # lo que viene es igual a lo que está, se actualiza tax/list.
+                    my $param_especif_taxport = $filtro_fid
+                                              . '/' . $id_seccion
+                                              . '/' . $id_tema
+                                              . '/' . $id_subtema;
+                    &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
+
+                    $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
+                                              . '/' . $id_seccion
+                                              . '/' . $id_tema
+                                              . '/' . $id_subtema;
+                    &call_list_regen($rutaScript, $param_especif_taxport);
+            };
+
+            # El tema que viene por POST es distinto al que está guardado en el XML.
+            if ($xml_id_tema ne $id_tema && $id_tema ne '' && $xml_id_tema ne '') {
+                my $param_especif_taxport = $filtro_fid
+                                          . '/' . $xml_id_seccion
+                                          . '/' . $xml_id_tema
+                                          . '/' . $xml_id_subtema;
+                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
+
+                $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
+                                          . '/' . $xml_id_seccion
+                                          . '/' . $xml_id_tema
+                                          . '/' . $xml_id_subtema;
                 &call_list_regen($rutaScript, $param_especif_taxport);
             };
-        } elsif ($xml_id_seccion1 eq $id_seccion1) { # lo que viene es igual a lo que está, se actualiza tax/list.
+
+            if ($xml_id_subtema ne $id_subtema && $xml_id_subtema ne '' && $id_subtema ne '') { # si cambia la seccion, generar la nueva y la anterior.
                 my $param_especif_taxport = $filtro_fid
-                                          . '/' . $id_seccion1
-                                          . '/' . $id_tema1
-                                          . '/' . $id_subtema1;
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts1);
+                                          . '/' . $xml_id_seccion
+                                          . '/' . $xml_id_tema
+                                          . '/' . $xml_id_subtema;
+                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                          . '/' . $id_seccion1
-                                          . '/' . $id_tema1
-                                          . '/' . $id_subtema1;
-                &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-
-        # El tema que viene por POST es distinto al que está guardado en el XML.
-        if ($xml_id_tema1 ne $id_tema1 && $id_tema1 ne '' && $xml_id_tema1 ne '') {
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion1
-                                      . '/' . $xml_id_tema1
-                                      . '/' . $xml_id_subtema1;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts1);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion1
-                                      . '/' . $xml_id_tema1
-                                      . '/' . $xml_id_subtema1;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-
-        if ($xml_id_subtema1 ne $id_subtema1 && $xml_id_subtema1 ne '' && $id_subtema1 ne '') { # si cambia la seccion, generar la nueva y la anterior.
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion1
-                                      . '/' . $xml_id_tema1
-                                      . '/' . $xml_id_subtema1;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts1);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion1
-                                      . '/' . $xml_id_tema1
-                                      . '/' . $xml_id_subtema1;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-
-    } else {
-        my $xml_id_seccion1 = $campos_stst_old{'_seccion1'};
-        my $xml_id_tema1 = $campos_stst_old{'_tema1'};
-        my $xml_id_subtema1 = $campos_stst_old{'_subtema1'};
-        # No viene la sección por POST
-        if ($xml_id_seccion1 ne '') {
-            # Se actualiza la seccion, tema, subtema antiguos.
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion1
-                                      . '/' . $xml_id_tema1
-                                      . '/' . $xml_id_subtema1;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts1);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion1
-                                      . '/' . $xml_id_tema1
-                                      . '/' . $xml_id_subtema1;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-    };
-
-    # Tripleta 2
-    if ($regenerar_procesos && $lib_artic::ARTIC_OBJ->{campos}->{'_seccion2'}) {
-        my $xml_id_seccion2 = $campos_stst_old{'_seccion2'};
-        my $xml_id_tema2 = $campos_stst_old{'_tema2'};
-        my $xml_id_subtema2 = $campos_stst_old{'_subtema2'};
-
-        my $id_seccion2 = $lib_artic::ARTIC_OBJ->{campos}->{'_seccion2'};
-        my $id_tema2 = $lib_artic::ARTIC_OBJ->{campos}->{'_tema2'};
-        my $id_subtema2 =  $lib_artic::ARTIC_OBJ->{campos}->{'_subtema2'};
-
-        #~ print STDERR "xml_id_seccion1[$xml_id_seccion1] = id_seccion1[$id_seccion1]\n";
-
-        # La sección que viene por POST es distinta a la que está guardada en el XML.
-        if ($xml_id_seccion2 ne $id_seccion2 && $id_seccion2 ne '') {
-            # Se actualiza tax/list para la seccion que viene por POST
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $id_seccion2
-                                      . '/' . $id_tema2
-                                      . '/' . $id_subtema2;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts2);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $id_seccion2
-                                      . '/' . $id_tema2
-                                      . '/' . $id_subtema2;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-
-            # Se actualiza tax/list para la seccion que estaba en el XML (antigua).
-            if ($xml_id_seccion2 ne '') {
-                my $param_especif_taxport = $filtro_fid
-                                          . '/' . $xml_id_seccion2
-                                          . '/' . $xml_id_tema2
-                                          . '/' . $xml_id_subtema2;
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts2);
-
-                $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                          . '/' . $xml_id_seccion2
-                                          . '/' . $xml_id_tema2
-                                          . '/' . $xml_id_subtema2;
+                                          . '/' . $xml_id_seccion
+                                          . '/' . $xml_id_tema
+                                          . '/' . $xml_id_subtema;
                 &call_list_regen($rutaScript, $param_especif_taxport);
             };
-        } elsif ($xml_id_seccion2 eq $id_seccion2) { # lo que viene es igual a lo que está, se actualiza tax/list.
+
+        } else {
+            my $xml_id_seccion = $campos_stst_old{'_seccion'.$i};
+            my $xml_id_tema = $campos_stst_old{'_tema'.$i};
+            my $xml_id_subtema = $campos_stst_old{'_subtema'.$i};
+            # No viene la sección por POST
+            if ($xml_id_seccion ne '') {
+                # Se actualiza la seccion, tema, subtema antiguos.
                 my $param_especif_taxport = $filtro_fid
-                                          . '/' . $id_seccion2
-                                          . '/' . $id_tema2
-                                          . '/' . $id_subtema2;
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts2);
+                                          . '/' . $xml_id_seccion
+                                          . '/' . $xml_id_tema
+                                          . '/' . $xml_id_subtema;
+                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                          . '/' . $id_seccion2
-                                          . '/' . $id_tema2
-                                          . '/' . $id_subtema2;
-                &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-
-        # El tema que viene por POST es distinto al que está guardado en el XML.
-        if ($xml_id_tema2 ne $id_tema2 && $id_tema2 ne '' && $xml_id_tema2 ne '') {
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion2
-                                      . '/' . $xml_id_tema2
-                                      . '/' . $xml_id_subtema2;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts2);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion2
-                                      . '/' . $xml_id_tema2
-                                      . '/' . $xml_id_subtema2;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-
-        if ($xml_id_subtema2 ne $id_subtema2 && $xml_id_subtema2 ne '' && $id_subtema2 ne '') { # si cambia la seccion, generar la nueva y la anterior.
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion2
-                                      . '/' . $xml_id_tema2
-                                      . '/' . $xml_id_subtema2;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts2);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion2
-                                      . '/' . $xml_id_tema2
-                                      . '/' . $xml_id_subtema2;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-
-    } else {
-        my $xml_id_seccion2 = $campos_stst_old{'_seccion2'};
-        my $xml_id_tema2 = $campos_stst_old{'_tema2'};
-        my $xml_id_subtema2 = $campos_stst_old{'_subtema2'};
-        # No viene la sección por POST
-        if ($xml_id_seccion2 ne '') {
-            # Se actualiza la seccion, tema, subtema antiguos.
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion2
-                                      . '/' . $xml_id_tema2
-                                      . '/' . $xml_id_subtema2;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts2);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion2
-                                      . '/' . $xml_id_tema2
-                                      . '/' . $xml_id_subtema2;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-    };
-
-    # Tripleta 3
-    if ($regenerar_procesos && $lib_artic::ARTIC_OBJ->{campos}->{'_seccion3'}) {
-        my $xml_id_seccion3 = $campos_stst_old{'_seccion3'};
-        my $xml_id_tema3 = $campos_stst_old{'_tema3'};
-        my $xml_id_subtema3 = $campos_stst_old{'_subtema3'};
-
-        my $id_seccion3 = $lib_artic::ARTIC_OBJ->{campos}->{'_seccion3'};
-        my $id_tema3 = $lib_artic::ARTIC_OBJ->{campos}->{'_tema3'};
-        my $id_subtema3 =  $lib_artic::ARTIC_OBJ->{campos}->{'_subtema3'};
-
-        #~ print STDERR "xml_id_seccion1[$xml_id_seccion1] = id_seccion1[$id_seccion1]\n";
-
-        # La sección que viene por POST es distinta a la que está guardada en el XML.
-        if ($xml_id_seccion3 ne $id_seccion3 && $id_seccion3 ne '') {
-            # Se actualiza tax/list para la seccion que viene por POST
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $id_seccion3
-                                      . '/' . $id_tema3
-                                      . '/' . $id_subtema3;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts3);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $id_seccion3
-                                      . '/' . $id_tema3
-                                      . '/' . $id_subtema3;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-
-            # Se actualiza tax/list para la seccion que estaba en el XML (antigua).
-            if ($xml_id_seccion3 ne '') {
-                my $param_especif_taxport = $filtro_fid
-                                          . '/' . $xml_id_seccion3
-                                          . '/' . $xml_id_tema3
-                                          . '/' . $xml_id_subtema3;
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts3);
-
-                $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                          . '/' . $xml_id_seccion3
-                                          . '/' . $xml_id_tema3
-                                          . '/' . $xml_id_subtema3;
+                                          . '/' . $xml_id_seccion
+                                          . '/' . $xml_id_tema
+                                          . '/' . $xml_id_subtema;
                 &call_list_regen($rutaScript, $param_especif_taxport);
             };
-        } elsif ($xml_id_seccion3 eq $id_seccion3) { # lo que viene es igual a lo que está, se actualiza tax/list.
-                my $param_especif_taxport = $filtro_fid
-                                          . '/' . $id_seccion3
-                                          . '/' . $id_tema3
-                                          . '/' . $id_subtema3;
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts3);
-
-                $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                          . '/' . $id_seccion3
-                                          . '/' . $id_tema3
-                                          . '/' . $id_subtema3;
-                &call_list_regen($rutaScript, $param_especif_taxport);
         };
-
-        # El tema que viene por POST es distinto al que está guardado en el XML.
-        if ($xml_id_tema3 ne $id_tema3 && $id_tema3 ne '' && $xml_id_tema3 ne '') {
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion3
-                                      . '/' . $xml_id_tema3
-                                      . '/' . $xml_id_subtema3;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts3);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion3
-                                      . '/' . $xml_id_tema3
-                                      . '/' . $xml_id_subtema3;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-
-        if ($xml_id_subtema3 ne $id_subtema3 && $xml_id_subtema3 ne '' && $id_subtema3 ne '') { # si cambia la seccion, generar la nueva y la anterior.
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion3
-                                      . '/' . $xml_id_tema3
-                                      . '/' . $xml_id_subtema3;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts3);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion3
-                                      . '/' . $xml_id_tema3
-                                      . '/' . $xml_id_subtema3;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-
-    } else {
-        my $xml_id_seccion3 = $campos_stst_old{'_seccion3'};
-        my $xml_id_tema3 = $campos_stst_old{'_tema3'};
-        my $xml_id_subtema3 = $campos_stst_old{'_subtema3'};
-        # No viene la sección por POST
-        if ($xml_id_seccion3 ne '') {
-            # Se actualiza la seccion, tema, subtema antiguos.
-            my $param_especif_taxport = $filtro_fid
-                                      . '/' . $xml_id_seccion3
-                                      . '/' . $xml_id_tema3
-                                      . '/' . $xml_id_subtema3;
-            &call_taxports_regen($rutaScript, $param_especif_taxport, $ts3);
-
-            $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
-                                      . '/' . $xml_id_seccion3
-                                      . '/' . $xml_id_tema3
-                                      . '/' . $xml_id_subtema3;
-            &call_list_regen($rutaScript, $param_especif_taxport);
-        };
-    };
+    }
 
     # Regenerar tagonomicas
     if ($regenerar_procesos && $lib_artic::ARTIC_OBJ->{campos}->{'_tags'}) {
