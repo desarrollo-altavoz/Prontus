@@ -49,7 +49,7 @@
 </table>
 
 <script type="text/template" id="video_template">
-  <div id="contentId" class="player">
+  <div id="contentId" class="transplayer-player">
     <div id="playerContent" class="video_content">
       <video  id="videoId" class="video_player" ></video>
       <div class="main-button" id="mainPlayButton"><a ><img style="margin-top:10px !important" src="/%%_PRONTUS_ID%%/cpan/core/imag/player/main_play.png" alt="Reproducir" title="Reproducir" width="40" height="40"></a></div>
@@ -70,13 +70,13 @@
         <div class="bar2" id="bar2" style="display:none"></div>
         <div class="bar3" id="bar3" style="display:none"></div>
       </div>
-      <div class="progressbar">
+      <div class="progressbar" id="progressbar">
         <div class="total-progressbar" id="seekBar">
             <div class="playing-progressbar" id="playingBar"></div>
             <div class="playing-totalbar" id="totalbar"></div>
         </div>
       </div>
-      <div class="buttons-auxi">
+      <div class="buttons-auxi" id="buttons-auxi">
         <a  class="play-button" id="playButton"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/play_ico.png" alt="Reproducir" title="Reproducir" width="20" height="25"></a>
         <a  class="pause-button" id="pauseButton" style="display:none"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/pause_ico.png" alt="Pausar" title="Pausar" width="20" height="25"></a>
         <a  class="volume-button volume" id="volumeButton"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/vol_ico.png" alt="Volúmen" title="Volúmen" width="17" height="21"></a>
@@ -84,7 +84,7 @@
         <div id="volumeBarCont" class="volume-progressbar volume">
             <div id="volumeBar" class="level-progressbar"></div>
         </div>
-        <span class="date" id="timeContent"></span>
+        <span class="transplayer_date" id="timeContent"></span>
         <a  class="fullscreen-button" id="fullScreen"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/player/full_ico.png" alt="Pantalla Completa" title="Pantalla Completa" width="27" height="20"></a>
       </div>
     </div>
