@@ -1,10 +1,10 @@
-.player {
+.transplayer-player {
   width:100%;
   height:100%;
   background:#000;
   position: relative;
 }
-.video_player {
+.transplayer-player .video_player {
     width: 100%;
     height: 100%;
 }
@@ -12,7 +12,7 @@
   overflow: visible !important;
 }
 
-.video_content {
+.transplayer-player .video_content {
     position: relative; /* Dimension para el desplazamiento */
     width: 100%;
     height: 260px;
@@ -21,54 +21,47 @@
     padding: 0px;
 }
 
-.playIcon{
-    border-top: 15px solid transparent;
-    border-left: 30px solid white;
-    border-bottom: 15px solid transparent;
-    position: relative;
-    top: 15px;
-    left: 50px;
-}
-
-.main-button { margin: auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0; width:80px; height: 70px; -webkit-border-radius: 3px;
+.transplayer-player .video_content .main-button { margin: auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0; width:80px; height: 70px; -webkit-border-radius: 3px;
                   -moz-border-radius: 3px; border-radius: 3px; overflow: hidden; opacity: .7; filter: alpha(opacity=70);}
-.main-button img {cursor:pointer;padding: 10px 20px; background: #000000; text-align: center; display: inline-block;-webkit-border-radius: 10px;
+.transplayer-player .video_content .main-button img {cursor:pointer;padding: 10px 20px; background: #000000; text-align: center; display: inline-block;-webkit-border-radius: 10px;
                     -moz-border-radius: 10px;}
 
-.date {color: #FFF;float: left;position: relative;top: 12px;left: 150px;font-size: 0.9em;}
-.controls {position: absolute; bottom: 20px; left:0%; width:100%; height: 30px; padding:0;  min-width: 180px;overflow: visible !important;}
-.controls .progressbar {padding-left:10px;padding-right:10px;}
-.controls .total-progressbar {width:100%; background:#cccccc; height: 8px ;z-index:2;cursor: pointer;overflow: hidden}
-.controls .total-progressbar .playing-progressbar {width: 0%; background:#ce2027; height: 8px; z-index:10; cursor: pointer;position: absolute;top: 0px;}
-.controls .total-progressbar .playing-totalbar {width: 100%; background:#cccccc; height: 8px; z-index:9; cursor: pointer;position: absolute;top: 0px;}
+.transplayer_date {color: #FFF;float: left;position: relative;top: 12px;left: 150px;font-size: 0.9em;}
+.transplayer-player .controls {position: absolute; bottom: 20px; left:0%; width:100%; height: 30px; padding:0;  min-width: 180px;overflow: visible !important;}
+.transplayer-player .controls .progressbar {padding-left:10px;padding-right:10px;}
+.transplayer-player .controls .total-progressbar {width:100%; background:#cccccc; height: 8px ;z-index:2;cursor: pointer;overflow: hidden}
+.transplayer-player .controls .total-progressbar .playing-progressbar {width: 0%; background:#ce2027; height: 8px; z-index:10; cursor: pointer;position: absolute;top: 0px;}
+.transplayer-player .controls .total-progressbar .playing-totalbar {width: 100%; background:#cccccc; height: 8px; z-index:9; cursor: pointer;position: absolute;top: 0px;}
 
-.cutBar {width: 0%; background:#503536; height: 7px; z-index:1; /*cursor: pointer*/;position: absolute;top: -7px;margin-left: 10px}
-.cutBar .bar1 {width: 20%; background:#503536; height: 5px; z-index:4; /*cursor: pointer;*/position: absolute;top: 0px;}
-.cutBar .bar2 {width: 40%; background:#503536; height: 5px; z-index:3; /*cursor: pointer;*/position: absolute;top: 0px;}
-.cutBar .bar3 {width: 60%; background:#503536; height: 5px; z-index:2; /*cursor: pointer;*/position: absolute;top: 0px;}
+.transplayer-player .controls .cutBar {width: 0%; background:#503536; height: 7px; z-index:1; /*cursor: pointer*/;position: absolute;top: -7px;margin-left: 10px}
+.transplayer-player .controls .cutBar .bar1 {width: 20%; background:#503536; height: 5px; z-index:4; /*cursor: pointer;*/position: absolute;top: 0px;}
+.transplayer-player .controls .cutBar .bar2 {width: 40%; background:#503536; height: 5px; z-index:3; /*cursor: pointer;*/position: absolute;top: 0px;}
+.transplayer-player .controls .cutBar .bar3 {width: 60%; background:#503536; height: 5px; z-index:2; /*cursor: pointer;*/position: absolute;top: 0px;}
 
-.barActive{background:#eff54f !important;}
-.marks { position: absolute; bottom: 55px; width:20px; height: 30px; -webkit-border-radius: 3px;
+.transplayer-player .controls .cutBar .barActive{background:#eff54f !important;}
+.transplayer-player .marks { position: absolute; bottom: 55px; width:20px; height: 30px; -webkit-border-radius: 3px;
                        -moz-border-radius: 3px;z-index:10;
                        border-radius: 3px; overflow: hidden; opacity: 1;
                        filter: alpha(opacity=70);background: #FFFFFF}
 
-.markText {z-index:10;font-family: open_sans_lightregular, Arial, Helvetica, sans-serif;font-size:13px;line-height:100%;color: #000;display: block;margin: 0 auto;text-align: center;margin-top: 7px;}
+.transplayer-player .marks .markText {z-index:10;font-family: open_sans_lightregular, Arial, Helvetica, sans-serif;font-size:13px;line-height:100%;color: #000;display: block;margin: 0 auto;text-align: center;margin-top: 7px;}
+
 
 /* Share Nuevo */
-.markIndicator {z-index:200;position: absolute;bottom: 51px;width: 0; height: 0; border-left: 3px solid transparent;border-right: 3px solid transparent;border-top: 5px solid #FFF;}
 
-.buttons-auxi {position: absolute; width:100%; height: 40px; background:rgba(00, 00, 00, .7); -webkit-border-bottom-right-radius: 0px;
+.transplayer-player  .markIndicator {z-index:200;position: absolute;bottom: 51px;width: 0; height: 0; border-left: 3px solid transparent;border-right: 3px solid transparent;border-top: 5px solid #FFF;}
+
+.transplayer-player .controls .buttons-auxi {position: absolute; width:100%; height: 40px; background:rgba(00, 00, 00, .7); -webkit-border-bottom-right-radius: 0px;
                        -webkit-border-bottom-left-radius: 0px;
                        -moz-border-radius-bottomright: 0px;
                        -moz-border-radius-bottomleft: 0px;
                        border-bottom-right-radius: 0px;
                        border-bottom-left-radius: 0px; }
-.buttons-auxi .back-button {position: absolute; top:18px; left:15px;}
-.buttons-auxi .play-button {cursor:pointer;position: absolute; top:8px;left: 20px;}
-.buttons-auxi .pause-button  {cursor:pointer;position: absolute; top:8px;left: 20px; display:none;}
-.buttons-auxi .forward-button {position: absolute; top:18px; left:80px;}
-.buttons-auxi .live-button {position: absolute; top:12px; left:125px; color:#FFFFFF; padding: 5px; border:1px solid #FFF; text-decoration: none; display: block; -webkit-border-radius: 3px;
+.transplayer-player .controls .buttons-auxi .back-button {position: absolute; top:18px; left:15px;}
+.transplayer-player .controls .buttons-auxi .play-button {cursor:pointer;position: absolute; top:8px;left: 20px;}
+.transplayer-player .controls .buttons-auxi .pause-button  {cursor:pointer;position: absolute; top:8px;left: 20px; display:none;}
+.transplayer-player .controls .buttons-auxi .forward-button {position: absolute; top:18px; left:80px;}
+.transplayer-player .controls .buttons-auxi .live-button {position: absolute; top:12px; left:125px; color:#FFFFFF; padding: 5px; border:1px solid #FFF; text-decoration: none; display: block; -webkit-border-radius: 3px;
                                     -moz-border-radius: 3px;
                                     border-radius: 3px; opacity: 0.5;
                                     filter: alpha(opacity=50); /* For IE8 and earlier */ font-size: 14px; -webkit-transition: all 0.2s linear;
@@ -76,13 +69,13 @@
                                     -o-transition: all 0.2s linear;
                                     -ms-transition: all 0.2s linear;
                                     transition: all 0.2s linear;}
-.buttons-auxi .live-button:hover {opacity: 1;
+.transplayer-player .controls .buttons-auxi .live-button:hover {opacity: 1;
                                           filter: alpha(opacity=100); -webkit-transition: all 0.2s linear;
                                           -moz-transition: all 0.2s linear;
                                           -o-transition: all 0.2s linear;
                                           -ms-transition: all 0.2s linear;
                                           transition: all 0.2s linear;}
-.buttons-auxi .live-button.active {opacity: 1;
+.transplayer-player .controls .buttons-auxi .live-button.active {opacity: 1;
                                            filter: alpha(opacity=100); -webkit-transition: all 0.2s linear;
                                            -moz-transition: all 0.2s linear;
                                            -o-transition: all 0.2s linear;
@@ -91,9 +84,9 @@
                                             background:#FFFFFF; color:#333333;}
 
 
-.buttons-auxi .volume-button {cursor:pointer;position: absolute; top:10px;left: 60px;}
+.transplayer-player .controls .buttons-auxi .volume-button {cursor:pointer;position: absolute; top:10px;left: 60px;}
 
-.controls .volume-progressbar {
+.transplayer-player .controls .volume-progressbar {
     width:100%;
     background:#cccccc;
     height: 6px;
@@ -116,37 +109,37 @@
     top:17px;
     left: 90px;
 }
-.controls .volume-progressbar:hover {opacity: 1;
+.transplayer-player .controls .volume-progressbar:hover {opacity: 1;
      filter: alpha(opacity=100); /* For IE8 and earlier */ font-size: 14px; -webkit-transition: all 0.2s linear;
      -moz-transition: all 0.2s linear;
      -o-transition: all 0.2s linear;
      -ms-transition: all 0.2s linear;
      transition: all 0.2s linear;}
-.controls .volume-progressbar .level-progressbar {width:40%; position: absolute !important; background:#ce2027; height: 6px; z-index:2; cursor: pointer; }
+.transplayer-player .controls .volume-progressbar .level-progressbar {width:40%; position: absolute !important; background:#ce2027; height: 6px; z-index:2; cursor: pointer; }
 
 
-.buttons-auxi .config-button {position: absolute; top:15px; right:122px; cursor: pointer;opacity: 0.5;
+.transplayer-player .controls .buttons-auxi .config-button {position: absolute; top:15px; right:122px; cursor: pointer;opacity: 0.5;
     filter: alpha(opacity=50); /* For IE8 and earlier */-webkit-transition: all 0.2s linear;
     -moz-transition: all 0.2s linear;
     -o-transition: all 0.2s linear;
     -ms-transition: all 0.2s linear;
     transition: all 0.2s linear;}
-.buttons-auxi .config-button:hover {opacity: 1;
+.transplayer-player .controls .buttons-auxi .config-button:hover {opacity: 1;
     filter: alpha(opacity=100); /* For IE8 and earlier */-webkit-transition: all 0.2s linear;
     -moz-transition: all 0.2s linear;
     -o-transition: all 0.2s linear;
     -ms-transition: all 0.2s linear;
     transition: all 0.2s linear;}
-.buttons-auxi .config-button .config-auxi {position: relative;}
-.buttons-auxi .fullscreen-button {cursor:pointer;position: absolute; top:10px;right: 20px;}
-.buttons-auxi a img {opacity: 0.5;
+.transplayer-player .controls .buttons-auxi .config-button .config-auxi {position: relative;}
+.transplayer-player .controls .buttons-auxi .fullscreen-button {cursor:pointer;position: absolute; top:10px;right: 20px;}
+.transplayer-player .controls .buttons-auxi a img {opacity: 0.5;
    filter: alpha(opacity=50); /* For IE8 and earlier */
    -webkit-transition: all 0.2s linear;
    -moz-transition: all 0.2s linear;
    -o-transition: all 0.2s linear;
    -ms-transition: all 0.2s linear;
    transition: all 0.2s linear;}
-.buttons-auxi a:hover img {opacity: 1;
+.transplayer-player .controls .buttons-auxi a:hover img {opacity: 1;
    filter: alpha(opacity=100); /* For IE8 and earlier */
    -webkit-transition: all 0.2s linear;
    -moz-transition: all 0.2s linear;
