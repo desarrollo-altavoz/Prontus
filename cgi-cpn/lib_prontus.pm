@@ -2294,6 +2294,9 @@ sub get_prontus_sso_dirs {
     my $dir = $prontus_varglb::DIR_SERVER;
     my @entries = &glib_fildir_02::lee_dir($dir);
     my @core_dirs; # core dirs
+    # se agrega el directorio del prontus master
+    push(@core_dirs, $prontus_varglb::PRONTUS_SSO_MANAGER_ID);
+
     # Recorre revisando todas las carpetas de la raiz buscando donde haya *-var.cfg y *-id.cfg
     foreach my $entry (@entries) {
         if (&valida_prontus_dir($dir, $entry)) {
@@ -2304,8 +2307,6 @@ sub get_prontus_sso_dirs {
             }
         }
     }
-    # se agrega el directorio del prontus master
-    push(@core_dirs, $prontus_varglb::PRONTUS_SSO_MANAGER_ID);
     return @core_dirs;
 };
 # -------------------------------------------------------------------------#
