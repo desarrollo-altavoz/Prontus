@@ -71,7 +71,8 @@ label {cursor:pointer;}
 .userdata b {color:#000000;}
 .userdata a {font-weight:bold; color:#0099ff;}
 .userdata a:hover {color:#FF0000;text-decoration:none;}
-.userdata .bloque1 {float:left; margin:12px 0px 5px 5px;}
+.userdata .bloque1 {float:left; margin:12px 0px 5px 5px; max-width: 555px;}
+.userdata .bloque1 select {width: 130px;}
 .userdata .bloque2 {float:left; margin:10px 0px 2px 10px;}
 .userdata .bloque3 {float:right; margin:12px 0px 5px 0px;}
 .userdata .sesion {float:right; margin-left:10px; margin-right:10px;}
