@@ -561,130 +561,130 @@ sub get_dirfecha_by_ts {
 # ---------------------------------------------------------------
 # Prontus 6.0
 sub open_dbm_files {
-  # Cargar en los hash desde los archivos de textos
-  # USERS
-  my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email);
+    # Cargar en los hash desde los archivos de textos
+    # USERS
+    my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email);
 
-  if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt")) {
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
-    print ARCHIVO "||\n";
-    close ARCHIVO;
-  };
-
-  if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt")) {
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
-    print ARCHIVO "||\n";
-    close ARCHIVO;
-  };
-
-  if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt")) {
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
-    print ARCHIVO "||\n";
-    close ARCHIVO;
-  };
-
-  # print "Content-Type: text/html\n\n"; # debug
-  open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
-  while (<ARCHIVO>) {
-    if ($_ !~ /^\|\|/) {
-      $_ =~ s/\n$//;
-      # print "pesosraya[$_]<br>";
-      ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split(/\|/, $_);
-      $prontus_varglb::USERS{$users_id} = $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email;
-      # print "linea cargada[$users_id y $prontus_varglb::USERS{$users_id}]<br>"
+    if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt")) {
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
+        print ARCHIVO "||\n";
+        close ARCHIVO;
     };
-  };
-  close ARCHIVO;
 
-  # ARTUSERS
-  my ($tipart, $usr1);
-  open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
-  while (<ARCHIVO>) {
-    if ($_ !~ /^\|\|/) {
-      $_ =~ s/\n$//;
-      ($tipart, $usr1) = split(/\|/, $_);
-      $prontus_varglb::ARTUSERS{$tipart . '|' . $usr1} = 'filler';
+    if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt")) {
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
+        print ARCHIVO "||\n";
+        close ARCHIVO;
     };
-  };
-  close ARCHIVO;
 
-  # PORTUSERS
-  my ($port, $usr2);
-  open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
-  while (<ARCHIVO>) {
-    if ($_ !~ /^\|\|/) {
-      $_ =~ s/\n$//;
-      ($port, $usr2) = split(/\|/, $_);
-      $prontus_varglb::PORTUSERS{$port . '|' . $usr2} = 'filler';
+    if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt")) {
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
+        print ARCHIVO "||\n";
+        close ARCHIVO;
     };
-  };
-  close ARCHIVO;
 
-  return 'ok';
+    # print "Content-Type: text/html\n\n"; # debug
+    open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
+    while (<ARCHIVO>) {
+        if ($_ !~ /^\|\|/) {
+            $_ =~ s/\n$//;
+            # print "pesosraya[$_]<br>";
+            ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split(/\|/, $_);
+            if ($users_id ne '' && $users_nom ne '' && $users_usr  ne '' && $users_psw ne '') {
+                $prontus_varglb::USERS{$users_id} = $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email;
+            }
+            # print "linea cargada[$users_id y $prontus_varglb::USERS{$users_id}]<br>"
+        };
+    };
+    close ARCHIVO;
+
+    # ARTUSERS
+    my ($tipart, $usr1);
+    open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
+    while (<ARCHIVO>) {
+        if ($_ !~ /^\|\|/) {
+            $_ =~ s/\n$//;
+            ($tipart, $usr1) = split(/\|/, $_);
+            $prontus_varglb::ARTUSERS{$tipart . '|' . $usr1} = 'filler';
+        };
+    };
+    close ARCHIVO;
+
+    # PORTUSERS
+    my ($port, $usr2);
+    open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
+    while (<ARCHIVO>) {
+        if ($_ !~ /^\|\|/) {
+            $_ =~ s/\n$//;
+            ($port, $usr2) = split(/\|/, $_);
+            $prontus_varglb::PORTUSERS{$port . '|' . $usr2} = 'filler';
+        };
+    };
+    close ARCHIVO;
+
+    return 'ok';
 };
 # ---------------------------------------------------------------
 # Prontus 6.0
 sub close_dbm_files {
-my ($k);
-my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $linea);
-my ($tipart, $port, $usr1, $usr2, $buffer);
+    my ($k);
+    my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $linea);
+    my ($tipart, $port, $usr1, $usr2, $buffer);
 
-  # Salvar los hash a los archivos de texto.
-  # USERS
-  $linea = '';
-  $buffer = '';
-  foreach $k (sort { $a <=> $b } keys %prontus_varglb::USERS) {
-    $users_id = $k;
-    ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$k};
-    $linea = $users_id . '|' . $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email . "\n";
-    $buffer .= $linea;
-  };
-  if ($buffer) {
-    &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.bak");
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
-    print ARCHIVO $buffer;
-    close ARCHIVO;
-  };
+    # Salvar los hash a los archivos de texto.
+    # USERS
+    $linea = '';
+    $buffer = '';
+    foreach $k (sort { $a <=> $b } keys %prontus_varglb::USERS) {
+        $users_id = $k;
+        ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$k};
+        $linea = $users_id . '|' . $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email . "\n";
+        $buffer .= $linea;
+    };
+    if ($buffer) {
+        &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.bak");
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
+        print ARCHIVO $buffer;
+        close ARCHIVO;
+    };
 
-  # ARTUSERS
-  $linea = '';
-  $buffer = '';
-  foreach $k (keys %prontus_varglb::ARTUSERS) {
-    ($tipart, $usr1) = split /\|/, $k;
-    $linea = $tipart . '|' . $usr1 . "\n";
-    $buffer .= $linea;
-  };
-  if ($buffer) {
-    &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.bak");
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
-    print ARCHIVO $buffer;
-    close ARCHIVO;
-  };
+    # ARTUSERS
+    $linea = '';
+    $buffer = '';
+    foreach $k (keys %prontus_varglb::ARTUSERS) {
+        ($tipart, $usr1) = split /\|/, $k;
+        $linea = $tipart . '|' . $usr1 . "\n";
+        $buffer .= $linea;
+    };
+    if ($buffer) {
+        &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.bak");
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
+        print ARCHIVO $buffer;
+        close ARCHIVO;
+    };
 
-
-  # PORTUSERS
-  $linea = '';
-  $buffer = '';
-  foreach $k (keys %prontus_varglb::PORTUSERS) {
-    ($port, $usr2) = split /\|/, $k;
-    $linea = $port . '|' . $usr2 . "\n";
-    $buffer .= $linea;
-  };
-  if ($buffer) {
-    &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.bak");
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
-    print ARCHIVO $buffer;
-    close ARCHIVO;
-  };
-
+    # PORTUSERS
+    $linea = '';
+    $buffer = '';
+    foreach $k (keys %prontus_varglb::PORTUSERS) {
+        ($port, $usr2) = split /\|/, $k;
+        $linea = $port . '|' . $usr2 . "\n";
+        $buffer .= $linea;
+    };
+    if ($buffer) {
+        &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.bak");
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
+        print ARCHIVO $buffer;
+        close ARCHIVO;
+    };
 };
 # ---------------------------------------------------------------
 # Prontus 6.0
 sub get_glosa_perfil {
-  if ($prontus_varglb::USERS_PERFIL eq 'P') { return 'Redactor';}
-  elsif ($prontus_varglb::USERS_PERFIL eq 'E') { return 'Editor';}
-  elsif ($prontus_varglb::USERS_PERFIL eq 'A') { return 'Administrador';}
-  else { return '';};
+    if ($prontus_varglb::USERS_PERFIL eq 'P') { return 'Redactor';}
+    elsif ($prontus_varglb::USERS_PERFIL eq 'E') { return 'Editor';}
+    elsif ($prontus_varglb::USERS_PERFIL eq 'A') { return 'Administrador';}
+    else { return '';};
 };
 # ---------------------------------------------------------------
 # Prontus 6.0

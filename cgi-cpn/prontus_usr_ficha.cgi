@@ -171,13 +171,16 @@ main: {
         $pagina =~ s/<!--SOLONEW-->.*?<!--\/SOLONEW-->//sg;
     } else {
         $pagina =~ s/<!--SOLOEDIT-->.*?<!--\/SOLOEDIT-->//sg;
-    };
+    }
 
-    if ($FORM{'USERS_ID'} eq '1' || $prontus_varglb::PRONTUS_SSO eq 'SI') { # admin
+    if ($FORM{'USERS_ID'} eq '1') { # admin
         # no mostrar listas de seleccion de tipos de art. y portadas.
         $pagina =~ s/<!--LISTAS-->.*?<!--\/LISTAS-->//sg;
         $pagina =~ s/<!--PERFIL-->.*?<!--\/PERFIL-->/<SPAN CLASS="P-LABELTABLA">Administrador<\/SPAN><input type="hidden" name="Cmb_PERFIL" value="A">/sg;
-    };
+    }
+    if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
+        $pagina =~ s/<!--LISTAS-->.*?<!--\/LISTAS-->//sg;
+    }
 
     $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
     $pagina =~ s/<!--\w+-->//sg;

@@ -54,6 +54,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -61,12 +62,7 @@ use lib_stdlog;
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use glib_cgi_04;
-
 use lib_prontus;
-
-
-use strict;
-
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -101,14 +97,8 @@ main: {
     };
 
 
-
-    # &lib_prontus::close_dbm_files();
-
-
     my $pagina = &glib_fildir_02::read_file($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . '/prontus_usr_admin.html');
-
     $pagina = &lib_prontus::set_coreplt_ppal($pagina);
-
 
     $pagina =~ /<!--item_loop-->(.*)<!--\/item_loop-->/is;
     my $loop = $1;
@@ -138,34 +128,28 @@ main: {
 # SUB-RUTINAS.
 # ---------------------------------------------------------------
 sub make_lista {
-# Genera y retorna las filas de la tabla.
-my ($key, $val, %sort_user);
-my ($filas);
-my ($loop) = shift;
+    # Genera y retorna las filas de la tabla.
+    my ($key, $val, %sort_user);
+    my ($filas);
+    my ($loop) = shift;
 
-  # Almacena en un hash los user para poder ordenar por este criterio el hash principal.
-  while ( ($key, $val) = each %prontus_varglb::USERS) {
-    ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $val;
-    $sort_user{$key} = $USERS_USR;
-  };
-  ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = '';
+    # Almacena en un hash los user para poder ordenar por este criterio el hash principal.
+    while ( ($key, $val) = each %prontus_varglb::USERS) {
+        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $val;
+        $sort_user{$key} = $USERS_USR;
+    };
+    ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = ('', '', '', '', '');
 
-  # Genera el cuerpo de la tabla de usuarios ordenada asc. x user.
-  foreach $key (sort {$sort_user{$a} cmp $sort_user{$b}} keys %prontus_varglb::USERS) {
-    $val = $prontus_varglb::USERS{$key};
-    $USERS_ID = $key;
-    ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $val;
-
-    if ($USERS_ID ne '1') {
-      $filas .= &generar_fila($loop);
-
-    }
-  };
-
-
-
-  return $filas;
-
+    # Genera el cuerpo de la tabla de usuarios ordenada asc. x user.
+    foreach $key (sort {$sort_user{$a} cmp $sort_user{$b}} keys %prontus_varglb::USERS) {
+        $val = $prontus_varglb::USERS{$key};
+        $USERS_ID = $key;
+        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $val;
+        if ($USERS_ID ne '1') {
+            $filas .= &generar_fila($loop);
+        }
+    };
+    return $filas;
 };
 # ---------------------------------------------------------------
 sub generar_fila {
@@ -189,5 +173,4 @@ sub generar_fila {
 
     return $loop_row;
 };
-
 # ---- END SCRIPT ---

@@ -280,7 +280,6 @@ sub get_html_port {
 
 
     # Ordenar alfabeticamente. y si la portada no tiene nombre (o port == nombre), queda al ultimo.
-
     my %PORTS_TO_ORDER;
     foreach my $key (sort {$a cmp $b} keys %prontus_varglb::PORT_PLTS) {
         my $name = $key;
@@ -302,15 +301,17 @@ sub get_html_port {
         my $value = $key;
         my $seleccionado;
 
-
         my $incluir_item = 'S';
 
         #~ print STDERR "  \value[$value]\n";
-        if ( ($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E') ) { # Periodista o Editor
-            # Mostrar solo las portadas permitidos al usuario conectado.
-            $incluir_item = &port_asoc($value);
-            # print STDERR "  \nincluir_item[$incluir_item]";
-        };
+
+        if ($prontus_varglb::PRONTUS_SSO ne 'SI') {
+            if ( ($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E') ) { # Periodista o Editor
+                # Mostrar solo las portadas permitidos al usuario conectado.
+                $incluir_item = &port_asoc($value);
+                # print STDERR "  \nincluir_item[$incluir_item]";
+            };
+        }
 
         if ($incluir_item eq 'S') {
             if (! -f "$dir_tpl_port/$value") {
@@ -333,7 +334,6 @@ sub get_html_port {
     return $lista;
 };
 
-
 # ---------------------------------------------------------------
 sub port_asoc {
     my ($p) = $_[0];
@@ -343,13 +343,10 @@ sub port_asoc {
         # print STDERR "\n usr[$usr] y prontus_varglb::USERS_ID[$prontus_varglb::USERS_ID] y port[$port] y p[$p]"; # debug
         if ( ($usr eq $prontus_varglb::USERS_ID) and ($port eq $p) ) {
             return 'S';
-        };
-    };
+        }
+    }
     return 'N';
 };
-
-
-
 
 # ---------------------------------------------------------------
 sub generar_js_spare {

@@ -54,7 +54,8 @@ BEGIN {
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
 };
-
+use utf8;
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -65,9 +66,8 @@ use glib_cgi_04;
 use lib_prontus;
 use glib_str_02;
 use glib_fildir_02;
-use utf8;
-use strict;
 use Digest::MD5 qw(md5_hex);
+
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
@@ -142,8 +142,6 @@ main: {
         utf8::decode($response);
         &glib_html_02::print_json_result(1, $response, 'exit=1,ctype=1');
     };
-
-
 };
 
 # ---------------------------------------------------------------
@@ -207,7 +205,6 @@ sub guardar_usr {
             # Escribe archivo extras (para edit)
             &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/extra.txt", &glib_str_02::random_string(8));
         };
-
     };
 
     return '';
@@ -301,7 +298,6 @@ sub datos_validos {
         };
 
         if ($FORM{'PSW1'} !~ /^.{6,32}$/) {
-            #~ return 'La contraseña debe estar compuesta por, al menos, 6 caracteres y máximo 8 caracteres.';
             return 'La nueva contraseña debe estar compuesta por un mínimo de 6 caracteres y un máximo de 32 caracteres.';
         };
 
@@ -314,12 +310,13 @@ sub datos_validos {
         };
     };
 
-
-    if ($FORM{'USERS_ID'} ne '1') {
-        if (($elems1 eq '') or ($elems2 eq '')) {
-            return 'Usuario debe tener autorizados a lo menos un Artículo y una Portada.';
-        };
-    };
+    if ($prontus_varglb::PRONTUS_SSO ne 'SI') {
+        if ($FORM{'USERS_ID'} ne '1') {
+            if (($elems1 eq '') or ($elems2 eq '')) {
+                return 'Usuario debe tener autorizados a lo menos un Artículo y una Portada.';
+            }
+        }
+    }
 
     return '';
 };
