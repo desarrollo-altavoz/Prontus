@@ -193,7 +193,7 @@ sub generar_popup_tipos {
 
 
 
-    if ( ($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E') ) { # Periodista o Editor
+    if ( (($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E')) && $prontus_varglb::PRONTUS_SSO ne 'SI' ) { # Periodista o Editor
       # Mostrar solo los tipos de articulos permitidos al usuario conectado.
       foreach $key2 (keys %prontus_varglb::ARTUSERS) {
         my ($tipart, $usr) = split /\|/, $key2;
