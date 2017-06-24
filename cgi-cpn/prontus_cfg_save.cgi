@@ -94,6 +94,7 @@ main: {
     $hash_defaultvars{'var'}{'CONTROLAR_ALTA_ARTICULOS'} = 'CONTROLAR_ALTA_ARTICULOS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URL_IMAGES'} = 'FRIENDLY_URL_IMAGES;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'FRIENDLY_V4_INCLUDE_VIEW_NAME'} = 'FRIENDLY_V4_INCLUDE_VIEW_NAME;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_EXCLUDE_FID'} = 'FRIENDLY_V4_EXCLUDE_FID;(\w+);;M';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3|4);1;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_LARGO_TITULAR'} = 'FRIENDLY_URLS_LARGO_TITULAR;^(\d+)$;1;U';

@@ -1148,6 +1148,10 @@ sub load_config {
     $friendly_url_images = $2;
   };
 
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $2;
+    };
     while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
         my $clave = $2;
         $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
@@ -5007,7 +5011,13 @@ sub parse_filef {
                         }
                     }
                     $titular = &ajusta_titular_f4($titular);
-                    $fileurl = "/$prontus_id$tax/$titular";
+                    my $vista = '';
+                    # obtenemos la vista para la url
+                    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
+                        $relpath_artic =~ /\/pags(\-\w+)\//;
+                        $vista = '/'.$1;
+                    }
+                    $fileurl = "/$prontus_id$vista$tax/$titular";
                 } else {
                     $fileurl = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
                 }
