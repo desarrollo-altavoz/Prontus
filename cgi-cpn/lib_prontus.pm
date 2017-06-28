@@ -6161,7 +6161,7 @@ sub get_newer_edic {
 };
 
 # ---------------------------------------------------------------
-sub conectar_prontus_bd() {
+sub conectar_prontus_bd {
 
     my ($motor_bd, $nom_bd, $server_bd, $user_bd, $pwd_bd, $pathfile_sqlite) = @_;
 
