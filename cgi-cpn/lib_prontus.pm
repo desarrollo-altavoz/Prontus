@@ -5014,8 +5014,9 @@ sub parse_filef {
                     my $vista = '';
                     # obtenemos la vista para la url
                     if ($prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
-                        $relpath_artic =~ /\/pags(\-\w+)\//;
-                        $vista = '/'.$1;
+                        if ($relpath_artic =~ /\/pags(\-\w+)\// ) {
+                             $vista = '/'.$1;
+                        }
                     }
                     $fileurl = "/$prontus_id$vista$tax/$titular";
                 } else {
@@ -5026,7 +5027,7 @@ sub parse_filef {
             # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
             $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
         };
-        #~ print STDERR "fileurl[$fileurl]\n";
+        #~ print STDERR "fileurl[$fileurl] relpath_artic[$relpath_artic]\n";
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
     } else {
