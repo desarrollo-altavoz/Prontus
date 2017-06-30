@@ -98,6 +98,7 @@ main: {
     my ($msg, $usado_mb, $quota_asig_mb, $usado_porc, $nousado_porc);
 
     ($msg, $usado, $quota_asig, $usado_porc, $nousado_porc) = &lib_quota::calcula_unix();
+    print STDERR "Info Quota: ($msg, $usado, $quota_asig, $usado_porc, $nousado_porc)\n";
     # ($msg, $usado_mb, $quota_asig_mb, $usado_porc, $nousado_porc) = ('', 111, 222, '40%', '60%');# debug
     my $class_level = 1;
     $usado_porc =~ /^(\d+)/i;
