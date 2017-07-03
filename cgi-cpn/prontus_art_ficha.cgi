@@ -232,8 +232,6 @@ main: {
         # Para no perder el titular
         $pagina =~ s/%%_saved_titular%%/$FORM{'_txt_titular'}/ig;
 
-        my $fid = $FORM{'_fid'};
-        $fid =~ s/\.\w+$//; # borra extension
         my $hiddens = "<input type=\"hidden\" name=\"_file\" value=\"\" />\n"
                     . "<input type=\"hidden\" name=\"_path_conf\" value=\"$FORM{'_path_conf'}\" />\n";
 
