@@ -681,7 +681,7 @@ sub parseaVars {
     my $strcombo = '';
     foreach my $port_file (sort @ports_listado) {
         next if ($port_file =~ /^\./);
-        if ($port_file =~ /(.*?)\.(.*?)/ && $port_file ne '.' && $port_file ne '..') {
+        if ($port_file =~ /^(\w+)\.(\w+)$/ && $port_file ne '.' && $port_file ne '..') {
             if($ports_utilizadas{$port_file} != 1) {
                 $strcombo = $strcombo . '<option value="' . $port_file . '">' . $port_file . '</option>';
             };
@@ -722,7 +722,7 @@ sub parseaVars {
 
         # Portadas preview.
         foreach my $prev_file (sort @preview_listado) {
-            if ($prev_file =~ /(.*?)\.(.*?)/ && $prev_file ne '.' && $prev_file ne '..') {
+            if ($prev_file =~ /^(\w+)\.(\w+)$/ && $prev_file ne '.' && $prev_file ne '..') {
                 if ($prontus_varglb::PORT_PLTS_PREVIEW{$port} =~ $prev_file) {
                     # Marcar option como selected.
                     $option_select = $option_select . '<option value="' . $prev_file . '" selected="selected">' . $prev_file . '</option>';
@@ -794,7 +794,7 @@ sub parseaVars {
 
     my $option_select_prev = '';
     foreach my $prev_file (sort @preview_listado) {
-        if ($prev_file =~ /(.*?)\.(.*?)/ && $prev_file ne '.' && $prev_file ne '..') {
+        if ($prev_file =~ /^(\w+)\.(\w+)$/ && $prev_file ne '.' && $prev_file ne '..') {
             $option_select_prev = $option_select_prev . '<option value="' . $prev_file . '">' . $prev_file . '</option>';
         };
     };
