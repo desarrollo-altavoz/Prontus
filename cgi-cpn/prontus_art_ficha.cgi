@@ -1276,7 +1276,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
         $maxbytes = $1;
         if ($bytes_swf > $maxbytes) {
-          $valor_campo .=   '<br/><span color="#CC0000">Â¡Advertencia! Peso de archivo swf excede lÃ­mite permitido</span>';
+          $valor_campo .=   '<br/><span color="#CC0000">¡Advertencia! Peso de archivo swf excede límite permitido</span>';
         };
       };
       # ----------
@@ -1372,7 +1372,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
   # pagspar
   my $fullpath_pagspar = $relpath_artic;
-  $fullpath_pagspar =~ s/^(.*?)\/pags\/(\d{14})\.(\w+)$/$1\/pagspar\/$2_\*\.$3/isg;
+  $fullpath_pagspar =~ s/^(.*?)\/pags\/(\d{14})\.(\w+)$/$1\/pagspar\/$2_\*/isg;
   my @pagspar = glob("$prontus_varglb::DIR_SERVER$fullpath_pagspar");
   if (scalar @pagspar) {
     my $list_pagspar;
@@ -1794,17 +1794,6 @@ sub carga_buffer_fid {
     # Cargar plantilla del FID
     my $buffer = &glib_fildir_02::read_file($path_ficha);
     $buffer =~ s/%25%25/%%/sg;
-
-#    # Agrega macros reservadas primero
-#    my ($dir_macros_reserv) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/fid/macros_reservadas";
-#    $buffer = &lib_prontus::add_macros($buffer, $dir_macros_reserv, '', '_');
-#    $buffer =~ s/%25%25/%%/sg;
-#
-#
-#    # Agrega macros de usuario
-#    my ($dir_macros) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/fid/macros";
-#    $buffer = &lib_prontus::add_macros($buffer, $dir_macros, '', '');
-#    $buffer =~ s/%25%25/%%/sg;
 
     $buffer = &add_macros_fid($buffer, '');
     $buffer =~ s/%25%25/%%/sg;

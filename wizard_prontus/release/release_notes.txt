@@ -9470,6 +9470,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
         Las fotos se acumulan en sucesivas cargas de archivos, sea un zip o fotos individuales
         Se puede utilizar modo drag and drop para subir archivos de imágenes y zip.
+    [cambios]
+        Se lsitand todas todas las paginas paralelas generadas para un artículo
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_artic.pm
