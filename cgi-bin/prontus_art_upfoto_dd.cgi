@@ -74,6 +74,8 @@ main: {
     # Carga variables de configuracion de prontus.
     &lib_prontus::load_config($path_conf);
 
+    &valida_sesion();
+
     my $nomfile;
     my $ext;
 
@@ -135,9 +137,11 @@ sub valida_invocacion {
         print 0;
         exit;
     };
+}
 
+sub valida_sesion {
     my $sess_obj = Session->new(
-                    'prontus_id'        => $FORM{'prontus_id'},
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
 

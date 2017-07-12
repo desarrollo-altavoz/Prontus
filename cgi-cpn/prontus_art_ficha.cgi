@@ -501,7 +501,7 @@ sub parsea_id_session {
 # parsea id de sesion activa para que pueda enviarsele al prontus_art_upfoto.cgi, dado que este ultimo no tiene acceso a la cookie
     my $pagina = $_[0];
     my $sess_obj = Session->new(
-                    'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
     my $sdata = $sess_obj->{id_session};
