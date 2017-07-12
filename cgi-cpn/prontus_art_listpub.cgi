@@ -246,7 +246,7 @@ sub get_concurrency4port {
 # ---------------------------------------------------------------
 sub get_sess_id {
     my $sess_obj = Session->new(
-                    'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
     return $sess_obj->{id_session};

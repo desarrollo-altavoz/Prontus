@@ -107,6 +107,7 @@ main: {
     &lib_prontus::load_config($path_conf);
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
+    &valida_sesion();
 
     # print STDERR "PASA OK\ntrace_info[$trace_info]\n\n";
 
@@ -202,9 +203,11 @@ sub valida_invocacion {
         print 0;
         exit;
     };
+}
 
+sub valida_sesion {
     my $sess_obj = Session->new(
-                    'prontus_id'        => $FORM{'prontus_id'},
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'id_session_given'  => $FORM{'sdata'}, # en vez de sacarla de la cookie, la saca de aca
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
