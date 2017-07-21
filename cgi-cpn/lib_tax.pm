@@ -840,4 +840,17 @@ sub cargar_fil_cfg {
     };
 };
 
+# -------------------------------------------------------------------------
+# Se buscan los directorios que comiencen con fil_ en las plantillas de taxport.
+sub load_taxport_fil {
+    my $ruta_dir = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_PTEMA";
+    my @listado = glob("$ruta_dir/fil_*");
+
+    foreach my $dir (@listado) {
+        if ($dir =~ /fil_(.*?)$/) {
+            &lib_tax::cargar_fil_cfg("$dir/filtros.cfg", "fil_" . $1);
+        }
+    }
+};
+
 return 1;

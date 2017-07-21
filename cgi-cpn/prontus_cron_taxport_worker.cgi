@@ -30,7 +30,6 @@ use Artic;
 use lib_tax;
 use lib_maxrunning;
 use DBI;
-use Time::HiRes qw(usleep);
 use POSIX qw(strftime ceil);
 
 my $BD;
@@ -115,7 +114,6 @@ sub procesa_queue_worker {
             $tema_id = '' if ($tema_id eq '0');
             $subtema_id = '' if ($subtema_id eq '0');
 
-            #~ &cargar_fil_cfg($fid) if ($fid =~ /^fil_/);
             my $dir = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP/$fid";
             &lib_tax::cargar_fil_cfg("$dir/filtros.cfg", $fid) if ($fid =~ /^fil_/);
             &generar_taxports_thislevel($secc_id, $tema_id, $subtema_id, $fid, $pagina, 0);
