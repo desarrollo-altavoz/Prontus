@@ -36,11 +36,13 @@ use POSIX qw(ceil);
 my (%PARAMS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC, %FIDS);
 my $BD;
 my $RELDIR_PORT_DST = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_PTEMA";
+# el valor de DIR_TEMP cambia despues de cargar la configuracion de prontus
 my $RELDIR_PORT_TMP = "$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_PTEMA";
 my $CURR_DTIME;
 my %WORKERS2TRIGGER;
 my $PATHNICE;
 my $DIR_SEMAF;
+my @FIRST_PAGE_CMD;
 
 main:{
     if ((! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
@@ -87,6 +89,7 @@ main:{
         &queue_procs($PARAMS{'s'}, $PARAMS{'t'}, $PARAMS{'st'}, $fid, $PARAMS{'ts'}) if ($PARAMS{'s'} && $PARAMS{'t'} && $PARAMS{'st'});
     }
 
+    my $sleep_time = $$*10+100000;
     foreach my $worker (keys %WORKERS2TRIGGER) {
         # Solo ejecuta el worker si no esta corriendo.
         my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/worker_$worker");
@@ -94,9 +97,10 @@ main:{
         # revisamos si el proceso corresponde a un worker
         if ($pid ne '') {
             my $data_pid = &lib_maxrunning::isRunningPid($pid);
+            $data_pid =~ s/^\s+|\s+$//g;
             print STDERR "data_pid[$data_pid]\n";
             if ($data_pid eq '') {
-                # si no hay procesos conrriendo con este pid se borra el semaforo y lanza el worker
+                # si no hay procesos corriendo con este pid se borra el semaforo y lanza el worker
                 print STDERR "No hay proceso con pid $pid\n";
                 unlink("$DIR_SEMAF/worker_$worker");
             } elsif ($data_pid !~ /prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $worker/) {
@@ -105,11 +109,27 @@ main:{
                 unlink("$DIR_SEMAF/worker_$worker");
             } else {
                 print STDERR "worker[$worker] ya esta corriendo.\n";
+                next;
             }
         }
         my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $worker >/dev/null 2>&1 &";
-        #print "cmd[$cmd]\n";
+        print STDERR "cmd[$cmd]\n";
         system($cmd);
+        usleep($sleep_time);
+    }
+    # ejecutamos secuencialmente las primeras paginas
+    foreach my $cmd (@FIRST_PAGE_CMD) {
+        # si existe otro proceso igual corriendo, lo mata.
+        # fid/seccion/tema/subtema
+        my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$cmd->{'semaf'}");
+        if ($pid ne '') {
+            print STDERR "Existe otro proceso para pagina 1,... matandolo [$cmd->{'semaf'}].\n";
+            my $ret = `kill -9 $pid`;
+            print STDERR "Killed pid[$pid] ret[$ret]\n";
+        }
+        # se ejecuta el nuevo proceso
+        print STDERR "cmd[$cmd->{'cmd'}]\n";
+        system($cmd->{'cmd'});
     }
 
     $BD->disconnect;
@@ -134,31 +154,16 @@ sub get_fids2process {
         if (-d "$dir/$fname" && $fname =~ /^(\w+)-?/) {
             $fids{$fname} = 1;
         }
+
+        # Se agregan como fids los filtros para usar la misma logica.
+        my @listado_filtros = &get_taxport_fil();
+        foreach my $fil (@listado_filtros) {
+            $fids{$fil} = 1;
+        };
     } else {
-        my @listado = &glib_fildir_02::lee_dir($dir);
-        @listado = grep !/^\./, @listado; # Elimina directorios . y ..
-
-        foreach my $item (@listado) {
-            if (-d "$dir/$item" && $item =~ /^(\w+)-?/) {
-                my $fname = $1;
-                next if ($fname eq 'all');
-                $fids{$fname} = 1 if (exists $FIDS{$fname});
-            }
-        }
+        # si no se indica fid, solo regenera "all"
+        $fids{''} = 1;
     };
-
-    # Se agregan como fids los filtros para usar la misma logica.
-    my @listado_filtros = &get_taxport_fil();
-
-    foreach my $fil (@listado_filtros) {
-        $fids{$fil} = $1;
-    };
-
-    # si se invoca sin fid, considera el filtro sin fid
-    $fids{''} = 1 if ($PARAMS{'fid'} eq '');
-
-    # para uso normal desde el fid, en donde se invoca siempre con fid. Entonces si viene una tax definida, genera para esa tax con el fid, pero tb. para la tax sin fid especifico
-    $fids{''} = 1 if ($PARAMS{'s'});
 
     return %fids;
 };
@@ -216,7 +221,6 @@ sub valida_param {
     if ($PARAMS{'ts'}) {
         $PARAMS{'ts'} = '' if($PARAMS{'ts'} !~ /\d{14}/);
     }
-
 };
 
 sub queue_procs {
@@ -246,24 +250,17 @@ sub queue_procs {
             }
 
             my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $fid/$secc_id/$temas_id/$subtemas_id/$nro_pag >/dev/null 2>&1 &";
+            print STDERR "$cmd\n";
             system($cmd);
         }
 
     } else {
         for (my $x = 1; $x <= $nro_paginas; $x++) {
             if ($x == 1) {
-                # la primera pagina no se encola, se ejecuta como proceso independiente sin espera.
-                # pero si existe otro igual corriendo, lo mata.
-                # fid/seccion/tema/subtema
-                my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$id_level\_$x");
-                if ($pid ne '') {
-                    print STDERR "Existe otro proceso para pagina 1, level $id_level... matandolo.\n";
-                    my $ret = `kill -9 $pid`;
-                    print STDERR "Killed pid[$pid] ret[$ret]\n";
-                }
-
-                my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $fid/$secc_id/$temas_id/$subtemas_id/1 >/dev/null 2>&1 &";
-                system($cmd);
+                my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $fid/$secc_id/$temas_id/$subtemas_id/1 >/dev/null 2>&1";
+                # al final ejecutamos de forma continua todas las primeras paginas
+                my %proc = ('semaf' =>"$id_level\_$x", 'cmd' => $cmd);
+                push (@FIRST_PAGE_CMD, \%proc);
             } else {
                 &put_queue($secc_id, $temas_id, $subtemas_id, $fid, $x);
             }
@@ -381,7 +378,7 @@ sub get_tot_artics {
 # -------------------------------------------------------------------------
 # Se buscan los directorios que comiencen con fil_ en las plantillas de taxport.
 sub get_taxport_fil {
-    my ($ruta_dir) = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$RELDIR_PORT_TMP";
+    my $ruta_dir = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID$RELDIR_PORT_TMP";
     my @listado = glob("$ruta_dir/fil_*");
     my @filtros;
 
