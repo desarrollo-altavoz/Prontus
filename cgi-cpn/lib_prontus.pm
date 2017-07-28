@@ -5286,50 +5286,71 @@ sub generar_popup_multivistas {
 
 # ---------------------------------------------------------------
 sub make_mapa {
-
 # genera mapa del sitio en base a taxonomia
-  my ($mv) = $_[0]; # nombre de la vista
-  my ($bd) = $_[1];
-  my $dir_plt = 'pags'; # rotulos tax
-  $dir_plt .= "-$mv" if ($mv); # rotulos tax
+    my ($mv) = $_[0]; # nombre de la vista
+    my ($bd) = $_[1];
+    my $dir_plt = 'pags'; # rotulos tax
+    $dir_plt .= "-$mv" if ($mv); # rotulos tax
+    my @postprocesos;
 
+    my $ruta_dir = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP/extra/mapa/$dir_plt";
+    my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
+    @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
+    foreach my $plt_file (@lisdir) {
+        next if (! -f "$ruta_dir/$plt_file");
 
-  my $ruta_dir = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP/extra/mapa/$dir_plt";
-  my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
-  @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
-  foreach my $k (@lisdir) {
-    next if (! -f "$ruta_dir/$k");
+        my $mapa_plt = &glib_fildir_02::read_file("$ruta_dir/$plt_file");
+        $mapa_plt = &ajusta_crlf($mapa_plt);
 
-    my $mapa_plt = &glib_fildir_02::read_file("$ruta_dir/$k");
-    $mapa_plt = &ajusta_crlf($mapa_plt);
-    my ($loop_mapa_s, $loop_mapa_t, $loop_mapa_st);
-    if ($mapa_plt =~ /%%(LOOP_SECCION)%%(.*?)%%\/\1%%/s) {
-      $loop_mapa_s = $2;
-      #~ $loop_mapa_s =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
-      #~ $loop_mapa_s =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
-    };
-    if ($mapa_plt =~ /%%(LOOP_TEMA)%%(.*?)%%\/\1%%/s) {
-      $loop_mapa_t = $2;
-      #~ $loop_mapa_t =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
-    };
-    if ($mapa_plt =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
-      $loop_mapa_st = $2;
-    };
-    my $base_indent = '15';
-    my ($mapa_total) = &get_arbol_mapa($loop_mapa_s, $loop_mapa_t, $loop_mapa_st, $mv, $base_indent, $bd);
-    $mapa_plt =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
-    $mapa_plt =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
-    $mapa_plt =~ s/%%(LOOP_SECCION)%%.*?%%\/\1%%/$mapa_total/is;
-    $mapa_plt = &parser_custom_function($mapa_plt);
-    # se parsean variables globales
-    $mapa_plt =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
-    $mapa_plt =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
-    &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt");
-    my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt/$k";
-    &glib_fildir_02::write_file($dst_mapa, $mapa_plt);
-    &lib_prontus::purge_cache($dst_mapa) if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI');
+        my ($loop_mapa_s, $loop_mapa_t, $loop_mapa_st);
+        if ($mapa_plt =~ /%%(LOOP_SECCION)%%(.*?)%%\/\1%%/s) {
+            $loop_mapa_s = $2;
+        }
+        if ($mapa_plt =~ /%%(LOOP_TEMA)%%(.*?)%%\/\1%%/s) {
+            $loop_mapa_t = $2;
+        }
+        if ($mapa_plt =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
+            $loop_mapa_st = $2;
+        }
+        my $base_indent = '15';
+        my ($mapa_total) = &get_arbol_mapa($loop_mapa_s, $loop_mapa_t, $loop_mapa_st, $mv, $base_indent, $bd);
+        $mapa_plt =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
+        $mapa_plt =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
+        $mapa_plt =~ s/%%(LOOP_SECCION)%%.*?%%\/\1%%/$mapa_total/is;
+        $mapa_plt = &parser_custom_function($mapa_plt);
+        # se parsean variables globales
+        $mapa_plt =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+        $mapa_plt =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
 
-  };
+        my ($_plt_nom, $_plt_ext) = &split_nom_y_extension($plt_file);
+        $mapa_plt =~ s/%%_plt_nom%%/$_plt_nom/ig;
+        $mapa_plt =~ s/%%_plt_ext%%/$_plt_ext/ig;
+        $mapa_plt =~ s/%%_vista%%/$mv/ig;
+
+        # rescata el post_proceso
+        if ($mv eq '') {
+            while ($mapa_plt =~ /<!--POST_PROCESO=(.+?)-->/isg) {
+                push(@postprocesos, $1);
+            }
+        }
+        $mapa_plt =~ s/<!--POST_PROCESO=.+?-->//isg;
+
+        # Borra marcas no sustituidas
+        $mapa_plt =~ s/%%.+?%%//g;
+
+        &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt");
+        my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt/$plt_file";
+        &glib_fildir_02::write_file($dst_mapa, $mapa_plt);
+        &lib_prontus::purge_cache($dst_mapa) if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI');
+    }
+
+    # ejecutamos los postprocesos asociados
+    my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
+    foreach my $pproc(@postprocesos) {
+        my $cmd = "$rutaScript/$pproc $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][PPROC]$cmd\n";
+        system $cmd;
+    }
 
 };
 # ---------------------------------------------------------------
