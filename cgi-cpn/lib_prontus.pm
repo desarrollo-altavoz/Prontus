@@ -5013,11 +5013,11 @@ sub parse_filef {
                     my $vista = '';
                     # obtenemos la vista para la url
                     if ($prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
-                        if ($relpath_artic =~ /\/pags(\-\w+)\// ) {
+                        if ($relpath_artic =~ /\/pags\-(\w+)\// ) {
                              $vista = '/'.$1;
                         }
                     }
-                    if ($tax =~ /$titular$/) {
+                    if ($tax =~ /\/$titular$/) {
                         $fileurl = "/$prontus_id$vista$tax";
                     } else {
                         $fileurl = "/$prontus_id$vista$tax/$titular";
