@@ -286,7 +286,7 @@ sub exec_post_proceso_art {
         # lo mas un nivel hacia arriba.
         if ( ($pp =~ /^\w/) || ($pp =~ /^\.\.(\/|\\)\w/) ) {
             my $cmd = "$rutaScript/$pp $pathArticulo $this->{public_server_name} $newOrEdit >/dev/null 2>&1 &";
-            print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+            print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][PPROC]$cmd\n";
             system $cmd;
         };
     };

@@ -9503,6 +9503,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         ya que es innecesario que se regeneren todas las páginas de todos los fids asociadas a la tripleta de artículo.
         Sólo se necesita actualizar el listado "all" y los listados del fid correspondiente.
         - Se restructura parte del código para mejorar legibilidad y mantención.
+        - Implementa postprocesos de mapa de sitio. Se deben colocar en las plantillas de la vista principal de la
+        misma forma que los post procesos de articulo por ej:
+        <!--POST_PROCESO=pproc/pproc_test.cgi mi_parametro-->
+            los parametros que se pasan son
+            0: parametros ingresados por la implementación, en el ejemplo "mi_parametro"
+            1: <prontus_id>
+            2: <public_server_name>
+        - Agrega marcas %%_plt_nom%%, %%_plt_ext%% y %%_vista%% al mapa del sitio
+
     [files]
         /cgi-cpn/lib_tax.pm
         /cgi-cpn/prontus_regenera_taxport.cgi
