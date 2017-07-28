@@ -147,7 +147,6 @@ main: {
 
     &glib_html_02::print_json_result(1, "$relpath_foto;$fotonum;$wfoto;$hfoto", 'exit=1,ctype=1');
 
-    # print $pagina;
 };
 
 sub agrega_foto_artic {
@@ -172,27 +171,23 @@ sub agrega_foto_artic {
     $artic_obj->{xml_data} = &glib_fildir_02::read_file($artic_obj->{fullpath_xml});
 
     my $nomfoto = $artic_obj->_add_foto_filesystem($foto, $nom_orig); # en este punto, aun no se escribe el XML, por si hay errores.
-    my $fechap;
+    my $fechac;
     my $fotonum;
     my $wfoto;
     my $hfoto;
     my $bufferXML = $artic_obj->{xml_data};
 
-    if ($bufferXML =~ /<(_fechap)>(.+?)<\/\1>/i) {
-        $fechap = $2;
-    } else {
-        print STDERR "Articulo sin fechap, se deduce del TS.\n";
-        # Se deduce del TS del articulo.
-        $FORM{'ts'} =~ /(\d{8})/;
-        $fechap = $1;
+    # Se deduce del TS del articulo.
+    if ($FORM{'ts'} =~ /^(\d{8})/) {
+        $fechac = $1;
     }
 
-    if (!$fechap) {
+    if (!$fechac) {
         unlink $path_img_dst; # se elimina foto generada.
-        &glib_html_02::print_json_result(0, "No se pudo obtener del XML la fecha de publicación del artículo (fechap).", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, "No se pudo obtener la fecha de creación del artículo (fechac).", 'exit=1,ctype=1');
     }
 
-    my $relbase_path = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$fechap";
+    my $relbase_path = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . "/$fechac";
     my $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/" . $nomfoto;
 
     if (!-d "$prontus_varglb::DIR_SERVER$relbase_path") {
@@ -254,10 +249,6 @@ sub valida_parametros {
     if ($FORM{'rotate'} && $FORM{'rotate'} !~ /[0-9]+/) {
         &glib_html_02::print_json_result(0, "Ángulo de rotación inválido.", 'exit=1,ctype=1');
     }
-
-    # Unusued.
-    # if ($FORM{'aspectRatio'} eq '') {
-    # }
 
     if ($FORM{'zoomRatio'} && $FORM{'zoomRatio'} !~ /[0-9]+/) {
         &glib_html_02::print_json_result(0, "Zoom ratio inválido.", 'exit=1,ctype=1');
