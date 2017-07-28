@@ -9513,6 +9513,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Agrega marcas %%_plt_nom%%, %%_plt_ext%% y %%_vista%% al mapa del sitio
 
     [files]
+        /cgi-cpn/lib_prontus.pm
         /cgi-cpn/lib_tax.pm
         /cgi-cpn/prontus_regenera_taxport.cgi
         /cgi-cpn/prontus_cron_taxport.cgi
