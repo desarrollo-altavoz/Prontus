@@ -4932,8 +4932,6 @@ sub borra_taxport {
   };
 };
 
-
-
 # ---------------------------------------------------------------
 # 20120723 - JOR - Los ultimos 3 parametros corresponden al nombre de la seccion, tema y subtema para construir la version 2.0 de las friendly url.
 sub parse_filef {
@@ -4971,17 +4969,18 @@ sub parse_filef {
             if ($nom_seccion1 ne '') {
                 $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
                 $tax .= "$nom_seccion1";
-            };
+            }
 
             if ($nom_tema1 ne '') {
                 $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
                 $tax .= "/$nom_tema1";
-            };
+            }
 
             if ($nom_subtema1 ne '') {
                 $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
                 $tax .= "/$nom_subtema1";
-            };
+            }
+
             if ($tax ne '') {
                 $tax = '/' . $tax;
             }
@@ -5018,7 +5017,11 @@ sub parse_filef {
                              $vista = '/'.$1;
                         }
                     }
-                    $fileurl = "/$prontus_id$vista$tax/$titular";
+                    if ($tax =~ /$titular$/) {
+                        $fileurl = "/$prontus_id$vista$tax";
+                    } else {
+                        $fileurl = "/$prontus_id$vista$tax/$titular";
+                    }
                 } else {
                     $fileurl = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
                 }
