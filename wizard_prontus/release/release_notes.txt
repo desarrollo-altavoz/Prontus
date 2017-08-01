@@ -9578,3 +9578,34 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/js-local/Login.class.js
         /wizard_prontus/prontus_dir/cpan/core/prontus_head_info.html
         /wizard_prontus/prontus_dir/cpan/core/prontus_index.html
+
+- Friendly URL 4.5
+    [mejoras]
+        - Implementa nueva version friendly urls para articulos, portadas, taxport y tagport,
+        consiste en incluir el nombre de la vista en la url siguiendo al identificador del prontus
+        -Para utilizarlas se deben activar las friendly url4 en Prontus y agregar la línea:
+        FRIENDLY_V4_INCLUDE_VIEW_NAME = 'SI'
+        al archivo <prontus_id>-var.cfg de la configuracion de Prontus
+        Para nginx se debe agregar la siguiente configuración:
+            # Friendly v4.5, con la vista en la url
+            # prontus -  titular
+            rewrite     "^\/([\w\-]+)\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$"          /$1/site/friendly/links/$2/$3/$2$3$4.html;
+            # prontus - (vista|seccion) -  titular
+            location ~ "^\/([\w\-]+)\/([\w\-]+)\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
+                try_files /$1/site/friendly/links-$2/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;
+                include     global/php2.conf;
+            }
+            # taxports y tagports con vista despues de prontus_id
+            rewrite     "^\/([\w\-]+)\/([\w\-]+)\/(site\/ta[xg]\/port)\/([\w]+)\/(.*)$"   /$1/$3/$4-$2/$5;
+
+            # portadas normales
+            rewrite     "^\/([\w\-]+)\/([\w\-]+)\/(site\/edic\/[\w\-]+/port)\/(.*)$"   /$1/$3-$2/$4;
+
+        Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
+
+        - Agrega parseo del nombre de la vista en portadas usando la marca %%_vista%%.
+
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_tags_ports.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
