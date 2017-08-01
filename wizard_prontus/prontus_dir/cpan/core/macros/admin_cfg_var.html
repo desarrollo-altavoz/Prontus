@@ -29,6 +29,7 @@
                                     <input type="hidden" name="VARNISH_SERVER_NAME" value="" />
                                     <input type="hidden" name="UPDATE_SERVER" value="%%UPDATE_SERVER%%" />
                                     <input type="hidden" name="FRIENDLY_V4_EXCLUDE_FID" value="" />
+                                    <input type="hidden" name="FRIENDLY_V4_INCLUDE_VIEW_NAME" value="%%FRIENDLY_V4_INCLUDE_VIEW_NAME%%" />
 
                                     <tr class="head">
                                         <td>Variable</td>
@@ -283,21 +284,6 @@
                                                 </tr>
                                                 <!--/loop_friendly_exclude_fid-->
                                             </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 300px;" valign="top">
-                                            FRIENDLY_V4_INCLUDE_VIEW_NAME<br>
-                                            <span class="ayuda">Habilita o deshabilita la inclusi&oacute;n del nombre de la vista en la url.<br/><br/>
-                                            SI, genera la forma: /prontus_id/-vista/seccion/tema/subtema/titular<br/>
-                                            NO, genera la forma: /prontus_id/seccion/tema/subtema/titular<br/><br/>
-                                            La vista normal siempre tendra la forma /prontus_id/seccion/tema/subtema/titular
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <input type="radio" name="FRIENDLY_V4_INCLUDE_VIEW_NAME" id="FRIENDLY_V4_INCLUDE_VIEW_NAME_SI" value="SI"%%FRIENDLY_V4_INCLUDE_VIEW_NAME_SI%%/> <label for="FRIENDLY_V4_INCLUDE_VIEW_NAME_SI">SI</label>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="FRIENDLY_V4_INCLUDE_VIEW_NAME" id="FRIENDLY_V4_INCLUDE_VIEW_NAME_NO" value="NO"%%FRIENDLY_V4_INCLUDE_VIEW_NAME_NO%%/> <label for="FRIENDLY_V4_INCLUDE_VIEW_NAME_NO">NO</label>
                                         </td>
                                     </tr>
                                     <tr>

@@ -1189,13 +1189,8 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URLS_NO%%/ checked="checked"/ig;
     };
 
-    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
-        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME_SI%%/ checked="checked"/ig;
-        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME_NO%%//ig;
-    } else {
-        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME_SI%%//ig;
-        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME_NO%%/ checked="checked"/ig;
-    };
+
+    $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME%%/$prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME/ig;
 
     if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%/ checked="checked"/ig;
