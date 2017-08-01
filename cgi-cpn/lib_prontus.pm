@@ -2532,7 +2532,7 @@ sub make_portada {
                 $k_dst =~ /([^\/\\]+\.\w+)$/;
                 $k_dst = $1;
 
-                $links_previews = "<div><a href='$k_dst'>Ver preview de portada $paralela '$k'</a></div>" . $links_previews;
+                $links_previews = "<div><a href=\"$k_dst\">Ver preview de portada $paralela '$k'</a></div>" . $links_previews;
             };
             my $info_string = "<div style=\"width:100%; background-color:#FFF;\"><div>Previsualizando '$cual_viendo'.</div> $links_previews <hr></div>";
             if($buffer =~ /(<body[^>]*?>)/) {
@@ -2546,6 +2546,7 @@ sub make_portada {
               $buffer = $info_string . $buffer;
             };
         };
+        $buffer =~ s/%%_vista%%/$mv/g;
         $buffer =~ s/%%.+?%%//g;
         &glib_fildir_02::write_file($dest_file_clon, $buffer);
         &lib_prontus::purge_cache($dest_file_clon);
@@ -2561,7 +2562,6 @@ sub make_portada {
 
     # Lee archivo de template rss.
     # Se llama igual a la portada pero esta en vez de /port en /rss y tiene extension .xml
-    # $path_tpl =~ s/\/port\/(\w+)\.\w+?$/\/rss\/\1\.xml/;
     $path_tpl =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/;
 
     if ((-s $path_tpl) && (-f $path_tpl)) {
@@ -2570,6 +2570,7 @@ sub make_portada {
 
         # Parseos especificos
         $buffer =~ s/<\/channel>/$stamp_demo_rss\n<\/channel>/is;
+        $buffer =~ s/%%_vista%%/$mv/g;
 
         # Escribe RSS.
         $buffer =~ s/%%.+?%%//g;
@@ -2586,11 +2587,9 @@ sub write_rss_port {
 # Escribe el xml del rss de portada prontus
 
   my ($destrss, $nom_edic, $buffer) = @_;
-  # $destrss =~ s/\/port\/(\w+)\.\w+?$/\/rss\/\1\.xml/; # Deduce del path completo de la portada, el del rss.
   $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/; # Deduce del path completo de la portada, el del rss.
 
-  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual no mas escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija: toma cachito e goma!
-  #~ $buffer = &mini_unescape_html($buffer); # parche heredado de subsecmar para el flash
+  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual se escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija
 
   my $destdir_rss = $destrss;
   $destdir_rss =~ s/\/[\w\.]+$//;
