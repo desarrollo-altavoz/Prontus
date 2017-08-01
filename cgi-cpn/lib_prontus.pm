@@ -1148,6 +1148,10 @@ sub load_config {
     $friendly_url_images = $2;
   };
 
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $2;
+    };
     while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
         my $clave = $2;
         $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
@@ -2528,7 +2532,7 @@ sub make_portada {
                 $k_dst =~ /([^\/\\]+\.\w+)$/;
                 $k_dst = $1;
 
-                $links_previews = "<div><a href='$k_dst'>Ver preview de portada $paralela '$k'</a></div>" . $links_previews;
+                $links_previews = "<div><a href=\"$k_dst\">Ver preview de portada $paralela '$k'</a></div>" . $links_previews;
             };
             my $info_string = "<div style=\"width:100%; background-color:#FFF;\"><div>Previsualizando '$cual_viendo'.</div> $links_previews <hr></div>";
             if($buffer =~ /(<body[^>]*?>)/) {
@@ -2542,6 +2546,7 @@ sub make_portada {
               $buffer = $info_string . $buffer;
             };
         };
+        $buffer =~ s/%%_vista%%/$mv/g;
         $buffer =~ s/%%.+?%%//g;
         &glib_fildir_02::write_file($dest_file_clon, $buffer);
         &lib_prontus::purge_cache($dest_file_clon);
@@ -2557,7 +2562,6 @@ sub make_portada {
 
     # Lee archivo de template rss.
     # Se llama igual a la portada pero esta en vez de /port en /rss y tiene extension .xml
-    # $path_tpl =~ s/\/port\/(\w+)\.\w+?$/\/rss\/\1\.xml/;
     $path_tpl =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/;
 
     if ((-s $path_tpl) && (-f $path_tpl)) {
@@ -2566,6 +2570,7 @@ sub make_portada {
 
         # Parseos especificos
         $buffer =~ s/<\/channel>/$stamp_demo_rss\n<\/channel>/is;
+        $buffer =~ s/%%_vista%%/$mv/g;
 
         # Escribe RSS.
         $buffer =~ s/%%.+?%%//g;
@@ -2582,11 +2587,9 @@ sub write_rss_port {
 # Escribe el xml del rss de portada prontus
 
   my ($destrss, $nom_edic, $buffer) = @_;
-  # $destrss =~ s/\/port\/(\w+)\.\w+?$/\/rss\/\1\.xml/; # Deduce del path completo de la portada, el del rss.
   $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/; # Deduce del path completo de la portada, el del rss.
 
-  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual no mas escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija: toma cachito e goma!
-  #~ $buffer = &mini_unescape_html($buffer); # parche heredado de subsecmar para el flash
+  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual se escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija
 
   my $destdir_rss = $destrss;
   $destdir_rss =~ s/\/[\w\.]+$//;
@@ -4928,8 +4931,6 @@ sub borra_taxport {
   };
 };
 
-
-
 # ---------------------------------------------------------------
 # 20120723 - JOR - Los ultimos 3 parametros corresponden al nombre de la seccion, tema y subtema para construir la version 2.0 de las friendly url.
 sub parse_filef {
@@ -4967,17 +4968,18 @@ sub parse_filef {
             if ($nom_seccion1 ne '') {
                 $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
                 $tax .= "$nom_seccion1";
-            };
+            }
 
             if ($nom_tema1 ne '') {
                 $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
                 $tax .= "/$nom_tema1";
-            };
+            }
 
             if ($nom_subtema1 ne '') {
                 $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
                 $tax .= "/$nom_subtema1";
-            };
+            }
+
             if ($tax ne '') {
                 $tax = '/' . $tax;
             }
@@ -5007,7 +5009,18 @@ sub parse_filef {
                         }
                     }
                     $titular = &ajusta_titular_f4($titular);
-                    $fileurl = "/$prontus_id$tax/$titular";
+                    my $vista = '';
+                    # obtenemos la vista para la url
+                    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
+                        if ($relpath_artic =~ /\/pags\-(\w+)\// ) {
+                             $vista = '/'.$1;
+                        }
+                    }
+                    if ($tax =~ /\/$titular$/) {
+                        $fileurl = "/$prontus_id$vista$tax";
+                    } else {
+                        $fileurl = "/$prontus_id$vista$tax/$titular";
+                    }
                 } else {
                     $fileurl = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
                 }
@@ -5016,7 +5029,7 @@ sub parse_filef {
             # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
             $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
         };
-        #~ print STDERR "fileurl[$fileurl]\n";
+        #~ print STDERR "fileurl[$fileurl] relpath_artic[$relpath_artic]\n";
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
     } else {

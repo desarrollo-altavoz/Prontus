@@ -1189,6 +1189,9 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URLS_NO%%/ checked="checked"/ig;
     };
 
+
+    $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME%%/$prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME/ig;
+
     if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%//ig;
