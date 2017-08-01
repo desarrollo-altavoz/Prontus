@@ -563,10 +563,18 @@ sub incluir_navbar {
     # La navbar
     my $secc_tema_stema_nom;
     # secc
-    # my ($secc_nom, $secc_port) = &get_nombreyport('SECC', $secc_id, 'seccion', $mv); # rotulos tax
     my ($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
     $secc_nom = &lib_prontus::get_nomtax_envista($mv, $secc_nom4vistas) if ($mv);
     $secc_nom = &lib_prontus::escape_html($secc_nom);
+
+    if ($secc_id eq '' && $temas_id eq '' && $subtemas_id eq '') {
+        $pagina =~ s/%%_SECC_TEMA_STEMA_NOM.*?%%//isg;
+        return $pagina;
+    }
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI' && $mv ne '') {
+        $reldir_port_dst =~ s/\/site/\/$mv\/site/ig;
+        $reldir_port_dst =~ s/\-$mv//ig;
+    }
 
     # Se lee el separador
     my $separador = '/';
@@ -579,7 +587,6 @@ sub incluir_navbar {
         $lnk_secc = &lib_prontus::get_tax_link($secc_port);
     }
     else {
-        # $lnk_secc = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv";
         $lnk_secc = "$reldir_port_dst/$nombase" . '_'
         . $secc_id
         . '_'
@@ -587,11 +594,10 @@ sub incluir_navbar {
         . '_' . '1'
         . $extension;
     };
-    $secc_tema_stema_nom = "<a href='$lnk_secc'>$secc_nom</a>";
+    $secc_tema_stema_nom = "<a href=\"$lnk_secc\">$secc_nom</a>";
     # warn "slink[$secc_tema_stema_nom]";
 
     # tem
-    # my ($tem_nom, $tem_port) = &get_nombreyport('TEMAS', $temas_id, 'tema-' . $secc_id, $mv); # rotulos tax
     my ($tem_nom, $tem_port, $filler1, $tem_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
     $tem_nom = &lib_prontus::get_nomtax_envista($mv, $tem_nom4vistas) if ($mv);
     $tem_nom = &lib_prontus::escape_html($tem_nom);
@@ -602,7 +608,6 @@ sub incluir_navbar {
             $lnk_tem = &lib_prontus::get_tax_link($tem_port);
         }
         else {
-            # $lnk_tem = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;tema=$temas_id&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv"; # rotulos tax
             $lnk_tem = "$reldir_port_dst/$nombase" . '_'
             . $secc_id
             . '_' . $temas_id
@@ -611,12 +616,11 @@ sub incluir_navbar {
             . $extension;
 
         };
-        $secc_tema_stema_nom .= " $separador <a href='$lnk_tem'>$tem_nom</a>";
+        $secc_tema_stema_nom .= " $separador <a href=\"$lnk_tem\">$tem_nom</a>";
         # warn "tlink[$secc_tema_stema_nom]";
     };
 
     # stem
-    # my ($stem_nom, $stem_port) = &get_nombreyport('SUBTEMAS', $subtemas_id, 'subtema-' . $temas_id, $mv); # rotulos tax
     my ($stem_nom, $stem_port, $filler2, $stem_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
     $stem_nom = &lib_prontus::get_nomtax_envista($mv, $stem_nom4vistas) if ($mv);
     $stem_nom = &lib_prontus::escape_html($stem_nom);
@@ -627,7 +631,6 @@ sub incluir_navbar {
             $lnk_stem = &lib_prontus::get_tax_link($stem_port);
         }
         else {
-            # $lnk_stem = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;tema=$temas_id&amp;subtema=$subtemas_id&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv"; # rotulos tax
             $lnk_stem = "$reldir_port_dst/$nombase" . '_'
             . $secc_id
             . '_' . $temas_id
@@ -635,10 +638,9 @@ sub incluir_navbar {
             . '_' . '1'
             . $extension;
         };
-        $secc_tema_stema_nom .=  " $separador <a href='$lnk_stem'>$stem_nom</a>";
+        $secc_tema_stema_nom .=  " $separador <a href=\"$lnk_stem\">$stem_nom</a>";
         # warn "stlink[$secc_tema_stema_nom]";
     };
-
     $pagina =~ s/%%_SECC_TEMA_STEMA_NOM.*?%%/$secc_tema_stema_nom/isg;
     return $pagina;
 };
@@ -652,9 +654,13 @@ sub incluir_nrosdepag {
     my $tpl_nropag2 = '<span class="actual">%%cnro_pag%%</span>';
     my $tpl_separador = '...';
 
-    #~ my $cnro_pag = 0;
     my $html_nros_pag = '';
     my $i;
+
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI' && $mv ne '') {
+        $reldir_port_dst =~ s/\/site/\/$mv\/site/ig;
+        $reldir_port_dst =~ s/\-$mv//ig;
+    }
 
     # Carga configuaración.
     my %cfg_paginacion;
