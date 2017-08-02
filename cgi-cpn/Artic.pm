@@ -2255,6 +2255,8 @@ sub generar_vista_art {
 
         $buffer = &lib_prontus::parser_custom_function($buffer);
 
+        $buffer =~ s/%%_vista%%/$mv/g;
+
         # Borra marcas no sustituidas
         $buffer =~ s/%%.+?%%//g;
 
