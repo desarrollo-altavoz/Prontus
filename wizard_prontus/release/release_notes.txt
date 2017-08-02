@@ -9420,7 +9420,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Después de activar la versión 4 en la configuración, ejecutar el script por consola:
         perl prontus_corrige_friendly4.pl <mi_prontus>
         - Se agrega soporte para copiar symlinks en linux, ahora los modelos pueden tener symlinks
+        - Agrega parseo de %%_vista%% a los artículos y portadas
     [files]
+        /cgi-bin/prontus_search.cgi
         /cgi-cpn/Artic.pm
         /cgi-cpn/prontus_art_copy.cgi
         /cgi-cpn/check_platform.cgi
@@ -9620,8 +9622,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             rewrite     "^\/([\w\-]+)\/([\w\-]+)\/(site\/edic\/[\w\-]+/port)\/(.*)$"   /$1/$3-$2/$4;
 
         Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
-
-        - Agrega parseo del nombre de la vista en portadas usando la marca %%_vista%%.
 
     [files]
         /cgi-cpn/lib_prontus.pm

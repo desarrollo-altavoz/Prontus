@@ -208,10 +208,11 @@ sub generar_taxports_thislevel {
         $vistas{''} = 1; # vista default
 
         foreach $mv (keys %vistas) {
+            my $reldir_artic_mv = $RELDIR_ARTIC;
+            $reldir_artic_mv = "$RELDIR_ARTIC-$mv" if ($mv);
             foreach my $nombase_plt (keys %NOMBASE_PLTS) {
                 # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
                 my $loop_plt = &get_loop_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
-
                 next if (!$loop_plt);
 
                 my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
@@ -220,7 +221,7 @@ sub generar_taxports_thislevel {
                     next;
                 }
 
-                my ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pagina);
+                my ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pagina);
 
                 $ART_XML_FIELDS{$art_id} = $auxref if (!exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
                 $ART_XDATA_FIELDS{$art_id} = $auxref2 if (!exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces

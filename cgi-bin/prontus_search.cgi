@@ -694,45 +694,6 @@ sub parsea_marcas_prontus {
 }
 
 # -------------------------------------------------------------------------#
-# Lee y administra el cache de las plantillas del buscador.
-# CVI - Segun se puede ver en el codigo, no se usa para nunca
-# sub leeplantilla {
-#   my($prontus_dir,$search_tmp) = @_;
-#   if ($search_tmp eq '') { $search_tmp = 'search.html'; };
-
-#   my($url) = 'http://' . $ENV{'HTTP_HOST'} . "/$PRONTUS/plantillas/extra/search/pags/$search_tmp";
-#   # print "<br>URL Plantilla=[$url]<br>\n"; # debug
-#   my($plantilla_file) = "$CACHE_DIR/$search_tmp"; # 1.10
-#   my($plantilla,$tiempo);
-#   # Por ahora, lee el archivo directamente.
-#   # return &lib_search::lee_archivo("$prontus_dir/plantillas/extra/search/pags/$search_tmp");
-#   # print 'http://' . $ENV{'HTTP_HOST'} . "$PRONTUS/plantillas/extra/search/pags/$search_tmp"; debug
-#   # Verifica si el cache de la plantilla es lo suficientemente reciente (5 minutos).
-#   if (-f $plantilla_file) {
-#     $tiempo = (stat($plantilla_file))[9];
-#     if ( $tiempo < (time - 300) ) {
-#       $plantilla = &lib_search::getHTML($url);
-#       if ($plantilla ne '') {
-#         &lib_search::escribe_archivo($plantilla_file,$plantilla);
-#       };
-#     }else{
-#       $plantilla = &lib_search::lee_archivo($plantilla_file);
-#     };
-#   }else{
-#     $plantilla = &lib_search::getHTML($url);
-#     if ($plantilla ne '') {
-#       &lib_search::escribe_archivo($plantilla_file,$plantilla);
-#     };
-#   };
-#   # Si la plantilla no esta disponible via http, entonces la lee del disco.
-#   if ($plantilla eq '') {
-#     $plantilla = &lib_search::lee_archivo("$prontus_dir/plantillas/extra/search/pags/$search_tmp");
-#   };
-#   # print "<br>Plantilla=[$plantilla]<br>\n"; # debug
-#   return $plantilla;
-# }; # leeplantilla
-
-# -------------------------------------------------------------------------#
 # Muestra los resultados en el orden requerido.
 # En $RESULTADOS{"$idxdir$fidx"} esta la cantidad de veces que las palabras se encuentran dentro del archivo.
 # En $NUMRESULT{"$idxdir$fidx"} esta el numero de palabras que está en ese archivo.
