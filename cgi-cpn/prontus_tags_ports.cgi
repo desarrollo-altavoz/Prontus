@@ -312,6 +312,8 @@ sub generar_tagonomicas_thislevel {
             %vistas = %prontus_varglb::MULTIVISTAS;
             $vistas{''} = 1; # vista default
             foreach $mv (keys %vistas) {
+                my $reldir_artic_mv = $RELDIR_ARTIC;
+                $reldir_artic_mv = "$RELDIR_ARTIC-$mv" if ($mv);
                 foreach my $nombase_plt (keys %NOMBASE_PLTS) {
                     # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
                     my $loop_plt = &get_loop_plt($tag_id, $fid, $mv, $nombase_plt);
@@ -320,7 +322,7 @@ sub generar_tagonomicas_thislevel {
                     my ($auxref, $auxref2);
 
                     # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
-                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
+                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
 
                     $art_xml_fields{$art_id} = $auxref if (! exists $art_xml_fields{$art_id}); # para no leer 2 veces un xml
                     $art_xdata_fields{$art_id} = $auxref2 if (! exists $art_xdata_fields{$art_id}); # para no leer 2 veces un xml
@@ -754,11 +756,7 @@ sub get_tot_artics {
     $count_art = '0' if $count_art eq '';
     $count_art = $prontus_varglb::TAGPORT_MAXARTICS if ($count_art > $prontus_varglb::TAGPORT_MAXARTICS);
     return $count_art;
-
 };
-
-
-
 
 
 # ---------------------------------------------------------------
