@@ -55,6 +55,7 @@ main: {
     $FORM{'ts'}             = &glib_cgi_04::param('ts');
     $FORM{'fotow'}          = &glib_cgi_04::param('fotow'); # fotofija
     $FORM{'fotoh'}          = &glib_cgi_04::param('fotoh'); # fotofija
+    $FORM{'only_resize'}    = &glib_cgi_04::param('only_resize'); # indica que solo debe aplicar resize.
 
     # Ajusta path_conf para completar path y/o cambiar \ por /
     $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
@@ -74,7 +75,9 @@ main: {
         &glib_html_02::print_json_result(0, 'La imagen no es válida', 'exit=1,ctype=1');
     }
 
-    &valida_parametros();
+    if (!$FORM{'only_resize'}) { # continua normal.
+        &valida_parametros();
+    }
 
     # Directorio de trabajo: /cpan/procs/imgedit
     my $prontus_id = $prontus_varglb::PRONTUS_ID;
@@ -106,6 +109,10 @@ main: {
     }
 
     my $path_img_dst = "$prontus_varglb::DIR_SERVER$relpath_img_dst";
+
+    if ($FORM{'only_resize'}) { # es solo resize de foto.
+        &aplicar_resize($nom_orig_foto, $path_img_dst, $relpath_img_dst);
+    }
 
     # Rotar antes de hacer crop.
     if ($FORM{'rotate'}) {
@@ -147,6 +154,23 @@ main: {
 
     &glib_html_02::print_json_result(1, "$relpath_foto;$fotonum;$wfoto;$hfoto", 'exit=1,ctype=1');
 
+};
+
+sub aplicar_resize {
+    my $nom_orig_foto = $_[0];
+    my $path_img_dst = $_[1];
+    my $relpath_img_dst = $_[2];
+
+    if ($FORM{'fotow'} && $FORM{'fotoh'}) {
+        my ($binfoto, $anchofinal, $altofinal) = &lib_thumb::make_resize($FORM{'fotow'}, $FORM{'fotoh'}, $path_img_dst);
+        &lib_thumb::write_image($path_img_dst, $binfoto);
+
+        my ($fotonum, $relpath_foto, $wfoto, $hfoto) = &agrega_foto_artic($relpath_img_dst, $nom_orig_foto, $path_img_dst);
+
+        &glib_html_02::print_json_result(1, "$relpath_foto;$fotonum;$wfoto;$hfoto", 'exit=1,ctype=1');
+    } else {
+        &glib_html_02::print_json_result(0, "Debe indicar las nuevas dimensiones (ancho y alto) de la foto.", 'exit=1,ctype=1');
+    }
 };
 
 sub agrega_foto_artic {

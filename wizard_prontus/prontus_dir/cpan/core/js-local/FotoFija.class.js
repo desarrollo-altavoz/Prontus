@@ -11,6 +11,8 @@
 // HISTORIAL DE VERSIONES
 // ---------------------------------------------------------------
 // 1.0.0 - 04/11/2015 - JOR - Primera versión.
+// 1.0.1 - 02/08/2017 - JOR - Se agrega preventDefault a click en icono
+//                            de edición de foto.
 // ---------------------------------------------------------------
 
 (function (window) {
@@ -203,7 +205,9 @@
                 });
             },
             bindEditorFotos: function () {
-                $('body').find('.openFotoEditor').off('click').on('click', function () {
+                $('body').find('.openFotoEditor').off('click').on('click', function (e) {
+                    e.preventDefault();
+
                     var nomfoto     = $(this).data("nomfoto");
                     var relfoto     = $(this).data("relfoto");
                     var wfoto       = $(this).data("wfoto");

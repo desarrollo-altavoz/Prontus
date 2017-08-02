@@ -3,6 +3,7 @@ body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-u
 .editor-container {padding: 5px; width: 1014px;}
 .image-container {float: left; width:875px; height: 530px; margin-left: 4px; position: relative;}
 .image-container img {max-width: 100%;}
+.image-container .resizing {position: absolute;margin: auto;left:0;right: 0;top: 0;bottom: 0;}
 .fotos-fijas {float: left; width: 130px; height: 564px; background-color: #e2e2e2; border: 1px solid #8a8a8a; overflow-y: scroll;}
 .tools-container {height: 30px; background-color: #e2e2e2; margin-left: 4px; margin-bottom: 4px; border: 1px solid #8a8a8a;}
 .fotos-fijas .rotulo {}
@@ -17,6 +18,8 @@ body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-u
 .tools-container .rotate .icon:last-child {margin-left: 0; border-left: 0;}
 .tools-container .reset {margin-left: 20px; float: right; margin-right: 5px;}
 .tools-container .reset .icon {}
+.tools-container .resize {margin-left: 20px; float: left;}
+.tools-container .resize-chain {display: none;float: left;}
 .tools-container .move {margin-left: 20px; float: left;}
 .tools-container .move .icon:nth-child(n+2) {margin-left: 0;border-left: 0;}
 
@@ -26,6 +29,7 @@ body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-u
 .tools-container a {background-color: #ffffff; height: 23px; width: 23px; margin-left: 5px; border: 1px solid #8a8a8a; position: relative; border-radius: 2px 2px 2px 2px; margin-top: 2px;}
 .tools-container a:hover {text-decoration: none; background-color: #0097fb; border: 1px solid #ffffff; border-radius: 2px 2px 2px 2px;}
 .tools-container a img { width: 18px; height: 18px; position: absolute; margin: auto; top:0; left:0; right:0;bottom: 0}
+.tools-container .active > a {text-decoration: none; background-color: #0097fb; border: 1px solid #ffffff; border-radius: 2px 2px 2px 2px;}
 
 .fotos-fijas .box {width: 100px; height:100px; margin: 5px; background: #ffffff; position: relative; border: 1px solid #e2e2e2; cursor: pointer; position: relative;}
 .fotos-fijas .box .size {text-align: center; margin-top: 5px;}
@@ -33,5 +37,8 @@ body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-u
 .fotos-fijas .box .modelo .free {margin-top: 15px; text-align: center; font-weight: bold;}
 .fotos-fijas .box.active {box-shadow: 0px 0px 5px #000;}
 .left {float: left;}
-.freesize {float: left; margin-left: 15px; margin-top: 6px;}
+.freesize {float: left; margin-left: 6px; margin-top: 6px;}
+.freesize div {float: left; margin-left: 2px; margin-right: 2px;}
+.freesize input {width: 32px;text-align: center;margin-top: -4px;height: 19px;float: left;}
 .warning {color: red;text-align: center;font-weight: bold;float: left;margin-top: 6px;margin-left: 15px;}
+.ui-resizable-handle {background-color: #0097fb !important;}
