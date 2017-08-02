@@ -4937,7 +4937,7 @@ sub parse_filef {
     my ($buffer, $titular, $ts, $prontus_id, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1) = @_;
 
     return $buffer if (!$ts || !$prontus_id || !$titular);
-    return $buffer unless($buffer =~ /%%_FILEURL%%/i);
+    return $buffer unless($buffer =~ /%%_FILEURL(\(\w+\))?%%/i);
 
     # Ajusta largo de titular para friendly.
     $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
@@ -4963,6 +4963,7 @@ sub parse_filef {
 
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
         my $fileurl = '';
+        my $fileurl_proto = '';
         if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1') {
             my $tax = '';
             if ($nom_seccion1 ne '') {
@@ -5018,8 +5019,10 @@ sub parse_filef {
                     }
                     if ($tax =~ /\/$titular$/) {
                         $fileurl = "/$prontus_id$vista$tax";
+                        $fileurl_proto = $tax;
                     } else {
                         $fileurl = "/$prontus_id$vista$tax/$titular";
+                        $fileurl_proto = "$tax/$titular";
                     }
                 } else {
                     $fileurl = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
@@ -5028,13 +5031,19 @@ sub parse_filef {
         } else {
             # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
             $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
-        };
+        }
         #~ print STDERR "fileurl[$fileurl] relpath_artic[$relpath_artic]\n";
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
+        if ($fileurl_proto ne '' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
+            $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links normal, no friendly
+        } else {
+            $buffer =~ s/%%_FILEURL\(\w+\)%%/$fileurl/isg; # Links friendly
+        }
     } else {
         my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
         $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
+        $buffer =~ s/%%_FILEURL\(\w+\)%%/$file/isg; # Links normal, no friendly
     };
 
     return $buffer;
