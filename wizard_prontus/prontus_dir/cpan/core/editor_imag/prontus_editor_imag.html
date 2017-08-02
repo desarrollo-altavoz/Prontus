@@ -2,10 +2,11 @@
 <html>
 <head>
     <title>Editor de Fotos</title>
-    <!-- <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" /> -->
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/js-local/cropper/cropper.min.css" />
+    <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery/ui/css/jquery-ui.custom.min.css" />
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/jquery/ui/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/cropper/cropper.min.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/dir_cgi.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/editor_imag/js-local/EditorImag.class.js"></script>
@@ -44,7 +45,13 @@
                     <a href="#" id="move_up" class="icon" title="Mover imagen hacia arriba"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-up.png" width="18px"></a>
                     <a href="#" id="move_down" class="icon" title="Mover imagen hacia abajo"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/move-down.png" width="18px"></a>
                 </div>
-                <div class="freesize"></div>
+                <div class="tools resize">
+                    <a href="#" id="resize" class="icon" title="Redimensionar imagen"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/resize.png" width="18px"></a>
+                    <div class="freesize"></div>
+                    <div class="resize-chain">
+                        <a href="#" id="resize_chain" class="icon" title="Mantener proporciones"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/chain.png" width="18px"></a>
+                    </div>
+                </div>
                 <div class="warning"></div>
                 <div class="tools reset">
                     <a href="#" id="reset" class="icon" title="Reiniciar edición"><img src="/%%_prontus_id%%/cpan/core/editor_imag/imag/icons/reset.png" width="18px"></a>

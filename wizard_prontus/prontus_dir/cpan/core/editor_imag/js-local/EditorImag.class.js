@@ -11,6 +11,7 @@
 // HISTORIAL DE VERSIONES
 // ---------------------------------------------------------------
 // 1.0.0 - 24/05/2017 - JOR - Primera versión.
+// 1.1.0 - 01/08/2017 - JOR - Se agrega soporte para resize de imagenes.
 // ---------------------------------------------------------------
 
 (function (window) {
@@ -27,6 +28,11 @@
         fotoFijaH: null,
         free: false,
         hasChanges: false,
+        resizing: false,
+        resizeWidth: null,
+        resizeHeight: null,
+        resizeOrigWidth: null,
+        resizeOrigHeight: null,
         imgData: {},
         init: function (path_foto, path_conf, active, ts) {
             self = this;
@@ -40,8 +46,8 @@
 
                 if (!active) {
                     self.free = 1;
+                    $('.freesize').html('<input maxlength="4" value="' + cropData.width + '" name="freesize_width" disabled="disabled">x<input maxlength="4" value="' + cropData.height + '" name="freesize_height" disabled="disabled"> <div>px</div>');
                     $('.freesize').show();
-                    $('.freesize').text(cropData.width + 'x' + cropData.height);
                 } else {
                     $("#" + active).trigger("click", true);
                     $('.fotos-fijas').animate({scrollTop: $("#" + active).offset().top}, 500);
@@ -98,7 +104,7 @@
                     dataType: "json",
                     data: data,
                     success: function(data) {
-                        if (data.status == '0') {
+                        if (data.status === 0) {
                             alert(data.msg);
 
                             // Si la cgi arroja error, se habilita todo de nuevo para recibir un nuevo intento.
@@ -109,32 +115,7 @@
                             self.actions.onFotosfijas();
 
                         } else {
-                            var arr = data.msg.split(';');
-                            var url = arr[0];
-                            var numfoto = arr[1];
-                            var wfoto = arr[2];
-                            var hfoto = arr[3];
-
-                            // Agregar wfoto y hfoto.  obtener esos datos del banco de imagenes.
-                            var html = [
-                                '<input type="hidden" name="_w%%numfoto%%" value="%%wfoto%%">',
-                                '<input type="hidden" name="_h%%numfoto%%" value="%%hfoto%%">'
-                            ].join("").replace(/%%numfoto%%/g, numfoto).replace(/%%wfoto%%/g, wfoto).replace(/%%hfoto%%/g, hfoto);
-
-
-                            // La edicion de la foto viene desde una fotofija. Asignar la nueva foto a este campo.
-                            if (self.activeFotoFija) {
-                                parent.FotoFija.foto.set(self.activeFotoFija, url, wfoto, hfoto);
-                                parent.FotoFija.imgEditor = true; // Le dice al padre que se hizo una edición y colorbox debe hacer submit.
-                            }
-
-                            parent.$("#_mainFidForm").prepend(html);
-
-                            // Se actualiza el banco de imagenes.
-                            parent.FotoFija.methods.reloadBancoImagenes(true); // Guardar despues de recargar el banco de imagenes.
-
-                            // Cerrar colorbox.
-                            parent.$.colorbox.close();
+                            self.actions.imagGuardarCallback(data);
                         }
                     },
                     error: function() {
@@ -146,6 +127,104 @@
                         self.methods.onFotosfijas();
                     }
                 });
+            },
+            applyResize: function (e) {
+                e.preventDefault();
+
+                if (!self.resizing) {
+                    if (confirm("No hay cambios que aplicar. ¿Desea continuar editando la imagen?")) {
+                        return false;
+                    } else {
+                        parent.$.colorbox.close();
+                        return false;
+                    }
+                }
+
+                if (!confirm("¿Está seguro de aplicar sus cambios?")) {
+                    return false;
+                }
+
+                $('.tools-container .freesize').hide();
+                $('.tools-container .tools').hide();
+                $('.tools-container .loading').show();
+                $('.image-container').css("opacity", 0.5);
+                $('.image-container img').css("margin", "auto");
+
+                $(self.imgElementId).resizable("destroy");
+
+                var data = {
+                    foto: self.foto,
+                    _path_conf: self.path_conf,
+                    ts: self.tsArtic,
+                    fotow: self.resizeWidth,
+                    fotoh: self.resizeHeight,
+                    only_resize: 1
+                };
+
+                $.ajax({
+                    url: "/" + DIR_CGI_CPAN + "/prontus_editor_imag_guardar.cgi",
+                    type: "POST",
+                    dataType: "json",
+                    data: data,
+                    success: function (response) {
+                        if (response.status == 1) {
+                            self.actions.imagGuardarCallback(response);
+                        } else {
+                            alert(response.msg);
+
+                            $('.tools-container .loading').hide();
+                            $('.tools-container .freesize').show();
+                            $('.tools-container .tools').show();
+                            $('.image-container').css("opacity", 1);
+
+                            $(self.imgElementId).css({
+                                width: "auto",
+                                height: "auto",
+                                margin: "auto"
+                            });
+
+                            self.actions.resize(); // lo inicializa de nuevo.
+                        }
+                    },
+                    error: function () {
+                        alert('Ocurrió un error al procesar la imagen, inténtelo nuevamente.');
+
+                        $('.tools-container .loading').hide();
+                        $('.tools-container .freesize').show();
+                        $('.tools-container .tools').show();
+                        $('.image-container').css("opacity", 1);
+
+                        $(self.imgElementId).css({
+                            width: "auto",
+                            height: "auto",
+                            margin: "auto"
+                        });
+
+                        self.actions.resize(); // lo inicializa de nuevo.
+                    }
+                });
+
+            },
+            imagGuardarCallback: function (response) {
+                var arr = response.msg.split(';');
+                var url = arr[0];
+                var numfoto = arr[1];
+                var wfoto = arr[2];
+                var hfoto = arr[3];
+
+                // Agregar wfoto y hfoto.  obtener esos datos del banco de imagenes.
+                var html = [
+                    '<input type="hidden" name="_w%%numfoto%%" value="%%wfoto%%">',
+                    '<input type="hidden" name="_h%%numfoto%%" value="%%hfoto%%">'
+                ].join("").replace(/%%numfoto%%/g, numfoto).replace(/%%wfoto%%/g, wfoto).replace(/%%hfoto%%/g, hfoto);
+
+                parent.$("#_mainFidForm").prepend(html);
+
+                // Se actualiza el banco de imagenes.
+                parent.FotoFija.methods.reloadBancoImagenes(true); // Guardar despues de recargar el banco de imagenes.
+
+                // Cerrar colorbox.
+                parent.$.colorbox.close();
             },
             move_down: function (e) {
                 e.preventDefault();
@@ -172,17 +251,41 @@
                     e.preventDefault();
                 }
 
-                if (self.hasChanges) {
-                    if (confirm("Hay cambios pendientes de aplicar. Si reinicia la edición estos se perderán.")) {
+                // Solo resize de imagen.
+                if (self.resizing) {
+                    if (self.resizeWidth && self.resizeHeight) {
+                        if (!confirm("Hay cambios pendientes de aplicar. Si reinicia la edición estos se perderán.")) {
+                            return false;
+                        }
+                    }
+
+                    self.resizing = false;
+                    self.hasChanges = false;
+
+                    $(".tools.zoom a").css("opacity", 1);
+                    $(".tools.rotate a").css("opacity", 1);
+                    $(".tools.move a").css("opacity", 1);
+                    $(".tools.resize").removeClass("active");
+                    $(".tools.resize .resize-chain").removeClass("active");
+                    $(".tools.resize .resize-chain").hide();
+
+                    $("#resize_chain").off("click");
+
+                    $(self.imgElementId).resizable("destroy");
+                    self.init(self.foto, self.path_conf, self.activeFotoFija, self.tsArtic);
+                } else {
+                    if (self.hasChanges) {
+                        if (confirm("Hay cambios pendientes de aplicar. Si reinicia la edición estos se perderán.")) {
+                            $(self.imgElementId).cropper('clear');
+                            $(self.imgElementId).cropper('reset');
+                            $(self.imgElementId).cropper('crop');
+                            self.hasChanges = false;
+                        }
+                    } else {
                         $(self.imgElementId).cropper('clear');
                         $(self.imgElementId).cropper('reset');
                         $(self.imgElementId).cropper('crop');
-                        self.hasChanges = false;
                     }
-                } else {
-                    $(self.imgElementId).cropper('clear');
-                    $(self.imgElementId).cropper('reset');
-                    $(self.imgElementId).cropper('crop');
                 }
             },
             rotate_right: function (e) {
@@ -216,6 +319,178 @@
                     }
                 }
             },
+            resize: function (e) {
+                if (typeof e !== 'undefined') {
+                    e.preventDefault();
+                }
+
+                self.methods.offFotosFijas();
+                self.resizing = true;
+
+                if ($(".tools.resize").hasClass("active")) {
+                    $(".tools.resize").removeClass("active");
+
+                    self.resizing = false;
+                    self.actions.reset();
+
+                    return false;
+                }
+
+                $(".tools.zoom a").css("opacity", 0.5);
+                $(".tools.rotate a").css("opacity", 0.5);
+                $(".tools.move a").css("opacity", 0.5);
+                $(".tools.resize .resize-chain").show();
+                $(".tools.resize").addClass("active");
+                $('.tools-container .warning').hide();
+
+                // Bindear botones a funcion dummy.
+                $("#zoom_in").off("click").on("click", function (e) {e.preventDefault;});
+                $("#zoom_out").off("click").on("click", function (e) {e.preventDefault;});
+                $("#rotate_left").off("click").on("click", function (e) {e.preventDefault;});
+                $("#rotate_right").off("click").on("click", function (e) {e.preventDefault;});
+                // $("#reset").off("click").on("click", function (e) {e.preventDefault;});
+                $("#move_left").off("click").on("click", function (e) {e.preventDefault;});
+                $("#move_right").off("click").on("click", function (e) {e.preventDefault;});
+                $("#move_up").off("click").on("click", function (e) {e.preventDefault;});
+                $("#move_down").off("click").on("click", function (e) {e.preventDefault;});
+
+                // El metodo para redimensionar se cambia y se deja separado.
+                $("#apply").off("click").on("click", self.actions.applyResize);
+
+                // Redimensión libre o proporcional.
+                $("#resize_chain").off("click").on("click", self.actions.resizeChain);
+
+                $(self.imgElementId).cropper('destroy'); // Quita el cropper.
+                $(self.imgElementId).addClass("resizing");
+
+                $(self.imgElementId).css({
+                    width: "auto",
+                    height: "auto",
+                    margin: "auto"
+                });
+
+                self.resizeOrigWidth = $(self.imgElementId).width();
+                self.resizeOrigHeight = $(self.imgElementId).height();
+
+                if ($(self.imgElementId).hasClass("ui-resizable")) {
+                    return false;
+                }
+
+                self.actions.initResizable(true);
+            },
+            initResizable: function (aspectRatio) {
+                var maxWidth = self.resizeOrigWidth;
+                var maxHeight = self.resizeOrigHeight;
+
+                $(self.imgElementId).resizable({
+                    aspectRatio: aspectRatio,
+                    minHeight: 80,
+                    minWidth: 80,
+                    maxWidth: maxWidth,
+                    maxHeight: maxHeight,
+                    handles: "all",
+                    resize: function(event, ui) {
+                        $(this).css({
+                            "top": 0,
+                            "left": 0,
+                            "right": 0,
+                            "bottom": 0,
+                            "margin": "auto"
+                        });
+
+                        var p1 = ($(self.imgElementId).width() * 100) / maxWidth;
+                        var p2 = ($(self.imgElementId).height() * 100) / maxHeight;
+                        var w = Math.round($(self.imgElementId)[0].naturalWidth * p1/100);
+                        var h = Math.round($(self.imgElementId)[0].naturalHeight * p2/100);
+
+                        $('input[name="freesize_width"]').val(w);
+                        $('input[name="freesize_height"]').val(h);
+
+                        self.resizeWidth = w;
+                        self.resizeHeight = h;
+                        self.hasChanges = true;
+                    },
+                    create: function (event, ui) {
+                        $(this).css({
+                            "top": 0,
+                            "left": 0,
+                            "right": 0,
+                            "bottom": 0,
+                            "margin": "auto"
+                        });
+
+                        $('.freesize').html('<input maxlength="4" value="' + $(self.imgElementId)[0].naturalWidth + '" name="freesize_width" disabled="disabled"><div>x</div><input maxlength="4" value="' + $(self.imgElementId)[0].naturalHeight + '" name="freesize_height" disabled="disabled"> <div>px</div>');
+                        $('.freesize').show();
+                    }
+                });
+            },
+            resizeChain: function (e) {
+                if (typeof e !== 'undefined') {
+                    e.preventDefault();
+                }
+
+                if ($(".tools.resize .resize-chain").hasClass("active")) {
+                    // Deshabilita.
+                    $(".tools.resize .resize-chain").removeClass("active");
+
+                    $(self.imgElementId).resizable("destroy");
+                    $(self.imgElementId).css({
+                        width: "auto",
+                        height: "auto",
+                        margin: "auto"
+                    });
+
+                    self.actions.initResizable(true);
+
+                    $("input[name^='freesize_']").attr("disabled", "disabled");
+
+                } else {
+                    // Habilita.
+                    $(".tools.resize .resize-chain").addClass("active");
+
+                    $(self.imgElementId).resizable("destroy");
+
+                    $(self.imgElementId).css({
+                        width: "auto",
+                        height: "auto",
+                        margin: "auto"
+                    });
+
+                    self.actions.initResizable(false); // Sin respetar proporciones.
+
+                    $("input[name^='freesize_']").removeAttr("disabled");
+
+                    // Eventos.
+                    // keypress de los inputs para cambiar tamaño de la imagen.
+                    $("input[name='freesize_width']").on("keyup", function (e) {
+                        if (e.keyCode == 13) { // enter
+                            self.actions.updateResizeWidth();
+                            self.actions.updateResizeHeight();
+                        }
+                    });
+
+                    $("input[name='freesize_height']").on("keyup", function (e) {
+                        if (e.keyCode == 13) { // enter
+                            self.actions.updateResizeWidth();
+                            self.actions.updateResizeHeight();
+                        }
+                    });
+                }
+            },
+            updateResizeWidth: function () {
+                var val = $("input[name='freesize_width']").val();
+                var w = (val * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
+
+                $(".image-container .ui-wrapper").width(w);
+                $(".image-container .ui-wrapper img").width(w);
+            },
+            updateResizeHeight: function () {
+                var val = $("input[name='freesize_height']").val();
+                var h = (val * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
+
+                $(".image-container .ui-wrapper").height(h);
+                $(".image-container .ui-wrapper img").height(h);
+            },
             saveZoomRatio: function (e) {
                 self.zoomRatio = e.ratio;
                 self.hasChanges = true;
@@ -223,10 +498,7 @@
                 if (self.fotoFijaW && self.fotoFijaH) {
                     var data = $(self.imgElementId).cropper("getData");
 
-                    console.log(data);
-
                     if (data.width <= self.fotoFijaW || data.height <= self.fotoFijaH) {
-                        // console.log("pixeleando", data.width, data.height);
                         $('.tools-container .warning').text("Si aplica zoom la foto esta se verá pixelada.").show();
                     } else {
                         $('.tools-container .warning').hide();
@@ -235,10 +507,9 @@
             },
             showCropSize: function (e) {
                 if (self.free) {
+                    $('.freesize').html('<input maxlength="4" value="' + Math.round(e.width) + '" name="freesize_width" disabled="disabled"><div>x</div><input maxlength="4" value="' + Math.round(e.height) + '" name="freesize_height" disabled="disabled"> <div>px</div>');
                     $('.freesize').show();
-                    $('.freesize').text(Math.round(e.width) + 'x' + Math.round(e.height));
                 }
-
             }
         },
         methods: {
@@ -269,23 +540,22 @@
                 $(self.imgElementId).cropper(options);
             },
             initActions: function () {
-                $("#zoom_in").on("click", self.actions.zoom_in);
-                $("#zoom_out").on("click", self.actions.zoom_out);
-                $("#rotate_left").on("click", self.actions.rotate_left);
-                $("#rotate_right").on("click", self.actions.rotate_right);
-                $("#reset").on("click", self.actions.reset);
-                $("#move_left").on("click", self.actions.move_left);
-                $("#move_right").on("click", self.actions.move_right);
-                $("#move_up").on("click", self.actions.move_up);
-                $("#move_down").on("click", self.actions.move_down);
-                $("#apply").on("click", self.actions.apply);
-                $("#cancel").on("click", self.actions.cancel);
+                $("#zoom_in").off("click").on("click", self.actions.zoom_in);
+                $("#zoom_out").off("click").on("click", self.actions.zoom_out);
+                $("#rotate_left").off("click").on("click", self.actions.rotate_left);
+                $("#rotate_right").off("click").on("click", self.actions.rotate_right);
+                $("#reset").off("click").on("click", self.actions.reset);
+                $("#move_left").off("click").on("click", self.actions.move_left);
+                $("#move_right").off("click").on("click", self.actions.move_right);
+                $("#move_up").off("click").on("click", self.actions.move_up);
+                $("#move_down").off("click").on("click", self.actions.move_down);
+                $("#apply").off("click").on("click", self.actions.apply);
+                $("#cancel").off("click").on("click", self.actions.cancel);
+                $("#resize").off("click").on("click", self.actions.resize);
             },
             initFotosFijas: function () {
-
                 self.methods.getCurrentTabFotoFija();
                 self.methods.onFotosFijas();
-
             },
             getCurrentTabFotoFija: function () {
                 var cTab = parent.FotoFija.helper.getCurrentTab();
@@ -324,6 +594,8 @@
 
                     if (aspectRatio == 0) {
                         self.free = 1;
+                        self.fotoFijaW = 0;
+                        self.fotoFijaH = 0;
                         $('.tools-container .warning').hide();
                     } else {
                         self.free = 0;
@@ -383,11 +655,13 @@
                 });
 
                 $(".fotos-fijas .box").css('opacity', 1);
+                $(".fotos-fijas").css('overflow-y', 'scroll');
             },
 
             offFotosFijas: function () {
                 $(".fotos-fijas .box").off('click');
                 $(".fotos-fijas .box").css('opacity', 0.5);
+                $(".fotos-fijas").css('overflow-y', 'hidden');
             }
         }
     };
