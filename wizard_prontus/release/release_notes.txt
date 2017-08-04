@@ -9606,7 +9606,18 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
         También agrega un párametro a la marca _FILEURL, por ejemplo: %%_FILEURL(en)%%, esto permite parsear la url
         con el indicador de otra vista, el parámetro se parseará tal como se escriba.
-        - Buscador Prontus parsea la marca %%_FILEURL%%
+        - Buscador Prontus parsea la marca %%_FILEURL%%.
+            Si se usa friendly url 4 se debe indexar el titular normal o la url generado será invalida,
+            el titular de otra vista se puede colocar en un metadata para mostrarlo, por ej:
+            TITLEVAR = _txt_titular
+            METADATA1 = txt_titular_en
+            USEFRIENDLYURLS = 1
+
+            y en la plantilla de busqueda usar:
+            <a href="%%_FILEURL%%">%%METADATA1%%</a>
+
+            Si se utiliza friendly 4.5 usar:
+            <a href="%%_FILEURL(en)%%">%%METADATA1%%</a>
 
     [files]
         /cgi-bin/prontus_search.cgi
