@@ -9492,11 +9492,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Taxonomía
     [bugfixes]
         - En los artículos relacionados no se estaba parseando %%_SERVER_NAME%% y %%_PRONTUS_ID%% fuera del loop.
+        - Se corrige la generación de la página de todas las taxonomías para un fid específico,
+        el listado creado incluía todos los artículos del fid aunque no tuvieran taxonomía.
+        - Corrige orden de listados taxonómicos para evitar artículos duplicados, ahora se ordenan siempre por TS
+        como último criterio.
     [cambios]
         - Se centralizan las funciones que se utilizan en los scripts de procesamiento de portadas taxonómicas en la lib_tax.
     [mejoras]
-        - Se corrige la generación de la página de todas las taxonomías para un fid específico,
-        el listado creado incluía todos los artículos del fid aunque no tuvieran taxonomía.
         - Al ejecutar la generación de portadas de un fid especifico se verifica que exista la carpeta
         asociada en el directorio de plantillas para no generar paginas innecesarias.
         - Mejora el rendimiento de la regeneracion de taxport al no procesar fids innecesariamente.

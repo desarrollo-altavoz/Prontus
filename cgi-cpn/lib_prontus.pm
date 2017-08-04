@@ -1979,7 +1979,7 @@ sub load_config {
   $prontus_varglb::TAXPORT_ARTXPAG = $taxport_artxpag;
 
   # TAXPORT_ORDEN
-  $prontus_varglb::TAXPORT_ORDEN = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
+  $prontus_varglb::TAXPORT_ORDEN = 'ART_FECHAPHORAP DESC, ART_ID DESC'; # valor por defecto.
   my $taxport_orden;
   my $taxport_orden_new;
   my $taxport_orden_err;
@@ -1987,13 +1987,13 @@ sub load_config {
     $taxport_orden = $2;
     if ($taxport_orden =~ /^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$/) {
       if ($1 eq 'PUBLICACION') {
-        $taxport_orden_new = "ART_FECHAP $2, ART_HORAP $2";
+        $taxport_orden_new = "ART_FECHAPHORAP $2, ART_ID $2";
       }
       elsif ($1 eq 'TITULAR') {
-        $taxport_orden_new = "ART_TITU $2";
+        $taxport_orden_new = "ART_TITU $2, ART_ID $2";
       }
       elsif ($1 eq 'CREACION') {
-        $taxport_orden_new = "ART_AUTOINC $2";
+        $taxport_orden_new = "ART_AUTOINC $2, ART_ID $2";
       }
       else {
         $taxport_orden_err = 1;
