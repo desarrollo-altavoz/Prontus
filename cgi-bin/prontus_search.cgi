@@ -569,26 +569,23 @@ sub parsea_plantilla2 {
   $yeswords++;
   $MAXPALABRAS++;
   foreach $resultado (@resultados) {
+    $aux = $searchloop_tmp;
     ($numresult,$numrepet,$fechap,$file,$tit,$meta1,$meta2,$meta3,$res,$sec,$tem,$sub,@metadata) = split(/\|/,$resultado); # 1.7
-    # ($ts,$ext) = split(/\./,$file);
     # 1.12 Rescata la extension.
     if ($file =~ /\.([^\.]+)$/) {
       $ext = lc $1;
     };
     $rel = int(100 * ($numresult/$yeswords + $numrepet/($yeswords * $MAXPALABRAS))); # Calcula el ranking de este resultado
-    # $rel = "$numresult $numrepet $yeswords $MAXPALABRAS $rel"; # debug
-    # $dir = substr($file,0,8);
+    $fec = $fechap;
     $lnk = $file;
     if ($lnk =~ /\/([\w\-]+)\/site\/artic\/\d{8}\/pags\/(\d{14})\.\w+$/) { # 1.27 1.27.2
       $prontus_id = $1;
       $ts =  $2;
       if ($CFG{'USEFRIENDLYURLS'} == 1) {
-        #~ $lnk = &lib_search::friendlyUrl($prontus_id,$ts,$tit,$ext); # deprecated.
+        $aux = &lib_prontus::parse_filef($aux, $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
         $lnk = &lib_prontus::parse_filef('%%_FILEURL%%', $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
       };
     };
-    $fec = $fechap;
-    $aux = $searchloop_tmp;
     # Elimina contenido condicional.
     if ($fec eq '') {
       $aux =~ s/%%if\(fec\)%%.+?%%\/if%%//isg;
@@ -1196,28 +1193,30 @@ sub matchSequence() {
     return 0;
   };
 }; # matchSequence
-
+# -------------------------------------------------------------------#
 sub carga_variables_prontus {
+    my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
 
-  my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
+    # Cargar variables de configuración necesarias para friendly url desde archivo -var
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_URLS = $1;
+    };
 
-  # Cargar variables de configuración necesarias para friendly url desde archivo -var
-  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FRIENDLY_URLS = $2;
-  };
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_URLS_VERSION = $1;
+    };
 
-  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
-  };
-
-  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $2;
-  } else {
     $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75;
-  };
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $1;
+    }
 
-  $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75 if (!$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO';
+    if ($buffervarcfg =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $1;
+    }
 
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75 if (!$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
 };
 
 # -------------------------------------------------------------------#
