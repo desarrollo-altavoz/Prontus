@@ -9606,8 +9606,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
         También agrega un párametro a la marca _FILEURL, por ejemplo: %%_FILEURL(en)%%, esto permite parsear la url
         con el indicador de otra vista, el parámetro se parseará tal como se escriba.
+        - Buscador Prontus parsea la marca %%_FILEURL%%
 
     [files]
+        /cgi-bin/prontus_search.cgi
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_tags_ports.cgi
         /cgi-cpn/prontus_cron_taxport_worker.cgi
