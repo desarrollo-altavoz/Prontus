@@ -1,4 +1,4 @@
-/cgi-cpn/prontus_taxport_conf.cfg
+
 # Logs and databases #
 ######################
 *.log
@@ -33,3 +33,4 @@ Thumbs.db
 pproc
 lib_custom.pm
 *.error.log*
+/cgi-cpn/prontus_taxport_conf.cfg

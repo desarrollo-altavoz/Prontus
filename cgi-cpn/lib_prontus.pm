@@ -3521,7 +3521,7 @@ sub parser_condicional {
         my $marca_fin = '%%/' . $sentencia . '%%';
         $fin = index $buffer, $marca_fin;
 
-        if ($cont1 >= 2000) {
+        if ($cont1 >= 3000) {
             #~ print STDERR "[1] $sentencia : condicionales_begin[$cont_condicionales_begin] condicionales_end[$cont_condicionales_end]\n";
             #~ print STDERR "inicio[$inicio] fin[$fin] elif[$elif]\n";
             return $buffer;
@@ -3539,7 +3539,7 @@ sub parser_condicional {
             my $otro;
             do {
                 $cont2++;
-                if ($cont2 >= 2000) {
+                if ($cont2 >= 3000) {
                     return $buffer;
                 };
                 $otro = index $buffer, $marca_ini, $inicio + 1;
@@ -4286,8 +4286,8 @@ sub parsea_subtits {
     $looptit_aux =~ s/%%_SUBTIT%%/$tit/ig;
     $$subtits{$nrotit} = $looptit_aux; # acumula item para ponerlo despues en el menu
 
-    $valor =~ s/%%_SUBTIT%%/<!---_SUBTIT--->$tit<!---\/_SUBTIT--->/i;
-    $valor =~ s/%%_SUBTIT_ANAME%%/T$nrotit/i;
+    $valor =~ s/%%_SUBTIT%%/<!---_SUBTIT--->$tit<!---\/_SUBTIT--->/ig;
+    $valor =~ s/%%_SUBTIT_ANAME%%/T$nrotit/ig;
 
     $nrotit = $nrotit + 1;
   };
