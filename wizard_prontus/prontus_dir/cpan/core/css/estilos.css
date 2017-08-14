@@ -278,7 +278,7 @@ label {cursor:pointer;}
 /*------------------- LOGIN -----------------------*/
 .box-login {width:350px; margin:100px auto;}
 .box-login .logo {clear:both; margin:0 0 8px 0;}
-.box-login .auxi {width:350px; height:220px; clear:both; font-size:15px; color:#FFFFFF; font-weight:bold; background: url("../imag/auxi/login_back.jpg") no-repeat left top;}
+.box-login .auxi {width:350px; height:220px; clear:both; font-size:15px; color:#FFFFFF; font-weight:bold; background-color:#1080cd;}
 .box-login .auxi p { margin:25px 0 10px 55px; text-align:left; }
 .box-login .auxi .fieldform {width:220px; margin:4px 0 0 0; padding:5px 5px; font-size:15px; font-weight:normal; color:#000000; background-color:#FFFFFF; border:none;}
 .box-login .celeste a {font-size:11px;}
