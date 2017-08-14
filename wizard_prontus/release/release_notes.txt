@@ -9411,6 +9411,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se cambia a "agregar" la escritura del log de operación de Prontus.
         - Se quita botón duplicado para despublicar de portadas.
         - Baja a 5 dias el garbage de locks al editar artículos.
+        - Aumenta el contador de ifs a 3000.
     [mejoras]
         - Se agrega verificación de instalación de unzip.
         - Correcciones menores en el código y comentarios

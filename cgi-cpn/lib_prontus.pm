@@ -3521,7 +3521,7 @@ sub parser_condicional {
         my $marca_fin = '%%/' . $sentencia . '%%';
         $fin = index $buffer, $marca_fin;
 
-        if ($cont1 >= 2000) {
+        if ($cont1 >= 3000) {
             #~ print STDERR "[1] $sentencia : condicionales_begin[$cont_condicionales_begin] condicionales_end[$cont_condicionales_end]\n";
             #~ print STDERR "inicio[$inicio] fin[$fin] elif[$elif]\n";
             return $buffer;
@@ -3539,7 +3539,7 @@ sub parser_condicional {
             my $otro;
             do {
                 $cont2++;
-                if ($cont2 >= 2000) {
+                if ($cont2 >= 3000) {
                     return $buffer;
                 };
                 $otro = index $buffer, $marca_ini, $inicio + 1;
