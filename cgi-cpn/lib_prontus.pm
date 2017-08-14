@@ -4286,8 +4286,8 @@ sub parsea_subtits {
     $looptit_aux =~ s/%%_SUBTIT%%/$tit/ig;
     $$subtits{$nrotit} = $looptit_aux; # acumula item para ponerlo despues en el menu
 
-    $valor =~ s/%%_SUBTIT%%/<!---_SUBTIT--->$tit<!---\/_SUBTIT--->/i;
-    $valor =~ s/%%_SUBTIT_ANAME%%/T$nrotit/i;
+    $valor =~ s/%%_SUBTIT%%/<!---_SUBTIT--->$tit<!---\/_SUBTIT--->/ig;
+    $valor =~ s/%%_SUBTIT_ANAME%%/T$nrotit/ig;
 
     $nrotit = $nrotit + 1;
   };

@@ -2730,7 +2730,7 @@ sub _parsing_vtxt {
         # print STDERR "st[$st]\n";
         my $item_menu = $hash_subtits{$st};
         # Reemplazar en la pagina misma.
-        $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%/$item_menu%%_SUBTIT_LOOP_$nom_campo%%$1%%\/_SUBTIT_LOOP_$nom_campo%%/is;
+        $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%/$item_menu%%_SUBTIT_LOOP_$nom_campo%%$1%%\/_SUBTIT_LOOP_$nom_campo%%/isg;
     };
     # Eliminar TITLOOP sobrante.
     $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%//isg;

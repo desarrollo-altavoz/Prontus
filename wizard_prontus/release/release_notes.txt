@@ -9403,6 +9403,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
          datos conocidos por prontus, DIR_SERVER y DIR_CGI_CPAN
         - Corrige validación de nombres de plantillas de portada en el administrador,
         evita que se pueda configurar Prontus de forma incorrecta y deje de funcionar.
+        - Corrige error al parsear los subtitulos de cuerpo, solo se parsaeban una vez por plantilla.
     [cambios]
         - Se cambia mensaje de modal que indica conclicto de urls de artículos
         - Se elimina check_platform.cgi, prontus_check_platform cumple estas funciones
