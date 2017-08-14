@@ -9537,9 +9537,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_art_ficha.cgi
         /cgi-cpn/prontus_art_megalupa.cgi
         /cgi-cpn/prontus_art_megalupa_cargar.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/login.css
         /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_usr.html
-        /wizard_prontus/prontus_dir/cpan/core/css/login.css
         /wizard_prontus/prontus_dir/cpan/core/js-local/Admin.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Login.class.js
         /wizard_prontus/prontus_dir/cpan/core/prontus_head_info.html
