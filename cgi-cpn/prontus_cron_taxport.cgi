@@ -43,6 +43,7 @@ my %WORKERS2TRIGGER;
 my $PATHNICE;
 my $DIR_SEMAF;
 my @FIRST_PAGE_CMD;
+my $TS;
 
 main:{
     if ((! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
@@ -53,8 +54,9 @@ main:{
     $CURR_DTIME = &glib_hrfec_02::get_dtime_pack4();
 
     $PARAMS{'prontus'} = $ARGV[0];
-    $PARAMS{'params'} = $ARGV[1]; # optativo: fid/s/t/st para generar solo para esa taxonomia y fid
+    $PARAMS{'params'} = $ARGV[1]; # fid/s/t/st para generar solo para esa taxonomia y fid
     $PARAMS{'ts'} = $ARGV[2]; # optativo: <ts> en formato: 20131008125012
+    $PARAMS{'regen'} = $ARGV[3]; # modo regenerar, procesa all al indicar de forma explicita
 
     ($PARAMS{'fid'}, $PARAMS{'s'}, $PARAMS{'t'}, $PARAMS{'st'}) = split (/\//, $PARAMS{'params'});
 
@@ -165,6 +167,8 @@ sub get_fids2process {
         $fids{''} = 1;
     };
 
+    $fids{''} = 1 if (!$PARAMS{'regen'});
+
     return %fids;
 };
 
@@ -215,12 +219,13 @@ sub valida_param {
         if (!$PARAMS{'t'}) {
             $PARAMS{'st'} = 0;
         }
-
     }
 
     if ($PARAMS{'ts'}) {
+        $PARAMS{'regen'} = 1 if($PARAMS{'ts'} =~ /RG/);
         $PARAMS{'ts'} = '' if($PARAMS{'ts'} !~ /\d{14}/);
     }
+    $PARAMS{'regen'} = 1 if($PARAMS{'regen'} =~ /RG/);
 };
 
 sub queue_procs {
