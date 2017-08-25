@@ -1865,13 +1865,7 @@ sub borra_artic {
         my ($secc, $tem, $stem) = split /\//, $taxonomia;
 
         $secc = '0' if ($secc < 0); # para evitar el -1, ver dps por que get_taxonomia devuelve -1
-        my $param_especif = '/' . $secc . '/' . $tem . '/' . $stem;
-
-        $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
-        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
-        system $cmd;
-
-        $param_especif = $fid . '/' . $secc . '/' . $tem . '/' . $stem;
+        my $param_especif = $fid . '/' . $secc . '/' . $tem . '/' . $stem;
 
         $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
