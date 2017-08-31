@@ -9557,7 +9557,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Prontus form
     [mejoras]
-        - Se Se deshabilita encriptacion SSL para todos los casos al enviar mail.
+        - Deshabilita encriptacion SSL para todos los casos al enviar mail.
     [files]
         /cgi-cpn/lib_mail.pm
 
