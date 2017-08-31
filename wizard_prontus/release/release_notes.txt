@@ -9393,7 +9393,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/js-local/Player.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
 
-- Prontus
+- Prontus en general
     [bugfixes]
         - Se corrige copia de artículos, no se estaban copiando las fotos si habia friendly url de
         imágenes activada, se copiaban los htmls manteniendo el TS del artículo original y no se estaba
@@ -9423,6 +9423,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         perl prontus_corrige_friendly4.pl <mi_prontus>
         - Se agrega soporte para copiar symlinks en linux, ahora los modelos pueden tener symlinks
         - Agrega parseo de %%_vista%% a los artículos y portadas
+        - Agrega parseo de %%nif%% a resultados de busqueda para validar si un campo no tiene valor
     [files]
         /cgi-bin/prontus_search.cgi
         /cgi-cpn/Artic.pm
@@ -9556,6 +9557,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
       /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
 
 - Prontus form
+    [bugfixes]
+        - Corrige codificación de correos con adjuntos (multipart)
     [mejoras]
         - Deshabilita encriptacion SSL para todos los casos al enviar mail.
     [files]
