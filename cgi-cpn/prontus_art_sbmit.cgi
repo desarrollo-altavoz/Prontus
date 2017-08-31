@@ -263,9 +263,6 @@ main: {
                 my $param_especif_taxport = "$filtro_fid/$id_seccion/$id_tema/$id_subtema";
                 &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
-                $param_especif_taxport = "/$id_seccion/$id_tema/$id_subtema";
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
-
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                           . '/' . $id_seccion
                                           . '/' . $id_tema
@@ -276,9 +273,6 @@ main: {
                     my $param_especif_taxport = "$filtro_fid/$xml_id_seccion/$xml_id_tema/$xml_id_subtema";
                     &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
-                    $param_especif_taxport = "/$xml_id_seccion/$xml_id_tema/$xml_id_subtema";
-                    &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
-
                     $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                               . '/' . $xml_id_seccion
                                               . '/' . $xml_id_tema
@@ -287,9 +281,6 @@ main: {
                 };
             } elsif ($xml_id_seccion eq $id_seccion) { # lo que viene es igual a lo que está, se actualiza tax/list.
                     my $param_especif_taxport = "$filtro_fid/$id_seccion/$id_tema/$id_subtema";
-                    &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
-
-                    $param_especif_taxport = "/$id_seccion/$id_tema/$id_subtema";
                     &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
                     $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
@@ -304,9 +295,6 @@ main: {
                 my $param_especif_taxport = "$filtro_fid/$xml_id_seccion/$xml_id_tema/$xml_id_subtema";
                 &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
-                $param_especif_taxport = "/$xml_id_seccion/$xml_id_tema/$xml_id_subtema";
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
-
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
                                           . '/' . $xml_id_seccion
                                           . '/' . $xml_id_tema
@@ -316,9 +304,6 @@ main: {
 
             if ($xml_id_subtema ne $id_subtema && $xml_id_subtema ne '' && $id_subtema ne '') { # si cambia la seccion, generar la nueva y la anterior.
                 my $param_especif_taxport = "$filtro_fid/$xml_id_seccion/$xml_id_tema/$xml_id_subtema";
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
-
-                $param_especif_taxport = "/$xml_id_seccion/$xml_id_tema/$xml_id_subtema";
                 &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}
@@ -336,9 +321,6 @@ main: {
             if ($xml_id_seccion ne '') {
                 # Se actualiza la seccion, tema, subtema antiguos.
                 my $param_especif_taxport = "$filtro_fid/$xml_id_seccion/$xml_id_tema/$xml_id_subtema";
-                &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
-
-                $param_especif_taxport = "/$xml_id_seccion/$xml_id_tema/$xml_id_subtema";
                 &call_taxports_regen($rutaScript, $param_especif_taxport, $ts_list{$i});
 
                 $param_especif_taxport = $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}

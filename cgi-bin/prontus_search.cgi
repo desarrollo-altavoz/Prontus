@@ -614,6 +614,34 @@ sub parsea_plantilla2 {
         $aux =~ s/%%if\(metadata$i\)%%.+?%%\/if%%//isg;
       };
     };
+    # procesaminto de nifs
+    if ($fec ne '') {
+      $aux =~ s/%%nif\(fec\)%%.+?%%\/nif%%//isg;
+    };
+    if ($sec ne '') {
+      $aux =~ s/%%nif\(sec\)%%.+?%%\/nif%%//isg;
+    };
+    if ($tem ne '') {
+      $aux =~ s/%%nif\(tem\)%%.+?%%\/nif%%//isg;
+    };
+    if ($sub ne '') {
+      $aux =~ s/%%nif\(sub\)%%.+?%%\/nif%%//isg;
+    };
+    # 1.19 Agrega procesamiento de nifs para los campos meta.
+    if ($meta1 ne '') {
+      $aux =~ s/%%nif\(meta1\)%%.+?%%\/nif%%//isg;
+    };
+    if ($meta2 ne '') {
+      $aux =~ s/%%nif\(meta2\)%%.+?%%\/nif%%//isg;
+    };
+    if ($meta3 ne '') {
+      $aux =~ s/%%nif\(meta3\)%%.+?%%\/nif%%//isg;
+    };
+    for ($i=1;$i<=20;$i++) {
+      if ($metadata[$i-1] ne '') {
+        $aux =~ s/%%nif\(metadata$i\)%%.+?%%\/nif%%//isg;
+      };
+    };
     $aux =~ s/%%ext%%/$ext/isg; # 1.12
     $aux =~ s/%%num%%/$num/isg;
     $aux =~ s/%%rel%%/$rel/isg;
