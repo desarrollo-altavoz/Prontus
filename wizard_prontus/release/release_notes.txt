@@ -9404,6 +9404,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige validación de nombres de plantillas de portada en el administrador,
         evita que se pueda configurar Prontus de forma incorrecta y deje de funcionar.
         - Corrige error al parsear los subtitulos de cuerpo, solo se parsaeban una vez por plantilla.
+        - Corrige bug para Chrome 61+, se verifica si existe el metodo Clipboard.isSupported, ya que chrome definió un objeto Clipboard propio.
+        Esto evita que el administrador se inicie correctamente.
     [cambios]
         - Se cambia mensaje de modal que indica conclicto de urls de artículos
         - Se elimina check_platform.cgi, prontus_check_platform cumple estas funciones
