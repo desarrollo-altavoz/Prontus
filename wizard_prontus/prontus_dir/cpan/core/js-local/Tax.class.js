@@ -336,6 +336,12 @@ var Tax  = {
                  if (obj !== false) {
                      $('#lista-temas-'+id).slideToggle();
                  }
+
+                 var current_vista = $('div[class*="vista-"]:visible').attr("data-vista");
+
+                 $('#lista-temas-' +  id).find('div[class*="txt_nom-"]').hide();
+                 $('#lista-temas-' +  id).find('.txt_nom-' + current_vista).show();
+
                  $(obj).parent().find('a').show();
                  $(obj).parent().find('.fila_loading').hide();
                  /* Inicio drag&drop para lista-temas */
@@ -426,6 +432,12 @@ var Tax  = {
                 if (obj !== false) {
                     $('#lista-subtemas-'+id).slideToggle();
                 }
+
+                var current_vista = $('div[class*="vista-"]:visible').attr("data-vista");
+
+                $('#lista-temas-' +  id).find('div[class*="txt_nom-"]').hide();
+                $('#lista-temas-' +  id).find('.txt_nom-' + current_vista).show();
+
                 $(obj).parent().find('a').show();
                 $(obj).parent().find('.fila_loading').hide();
                 $('ul[id="lista-subtemas-'+id+'"]').sortable({
@@ -641,40 +653,19 @@ var Tax  = {
         });
     },
     // -------------------------------------------------------------------------
-    navVista: function(nom_vista, direccion) {
-        if (direccion == 'right') {
-            if ($('.vista-'+nom_vista).next().hasClass('col-anex')) {
-                $('.vista-'+nom_vista).hide();
-                $('.vista-'+nom_vista).next().show();
+    navVista: function(current_vista) {
+        var $elem = $('.vista-' + current_vista).next('div[class*="vista-"]');
+        var next_vista = $elem.attr("data-vista");
 
-                $('.txt_nom-'+nom_vista).hide();
-                $('.txt_nom-'+nom_vista).next().next().show();
-            } else {
-                $('.vista-'+nom_vista).hide();
-                $('[class*="vista-"]:eq(0)').show();
+        // Vuelve al principio.
+        if (!next_vista) {
+            next_vista = $('div[class*="vista-"]').eq(0).attr("data-vista");
+        }
 
-                $('.txt_nom-'+nom_vista).hide();
-                var regx = /txt_nom-(.*)/;
-                var cls = ($('[class*="txt_nom-"]:eq(0)').attr("class")).match(regx);
-                $('[class*="txt_nom-'+cls[1]+'"]').show();
-            };
-        } else if (direccion == 'left') {
-            if ($('.vista-'+nom_vista).prev().hasClass('col-anex')) {
-                $('.vista-'+nom_vista).hide();
-                $('.vista-'+nom_vista).prev().show();
-
-                $('.txt_nom-'+nom_vista).hide();
-                $('.txt_nom-'+nom_vista).prev().prev().show();
-            } else {
-                $('.vista-'+nom_vista).hide();
-                var regx = /vista-(.*)/;
-                var cls = ($('[class*="vista-"]:last').attr("class")).match(regx);
-                $('[class*="vista-'+cls[1]+'"]').show();
-
-                $('.txt_nom-'+nom_vista).hide();
-                $('[class*="txt_nom-'+cls[1]+'"]').show();
-            };
-        };
+        $('.vista-' + current_vista).hide();
+        $('.vista-' + next_vista).show();
+        $('.txt_nom-' + current_vista).hide();
+        $('.txt_nom-' + next_vista).show();
     },
 
     // -------------------------------------------------------------------------
