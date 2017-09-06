@@ -41,7 +41,7 @@ var Admin = {
             Admin.isChrome = true;
         }
 
-        if (typeof Clipboard !== 'undefined') {
+        if (typeof Clipboard !== 'undefined' && typeof Clipboard.isSupported !== 'undefined') {
             Admin.clipboardHtml5 = Clipboard.isSupported();
         }
 
