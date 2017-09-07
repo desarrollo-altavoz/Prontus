@@ -1,4 +1,76 @@
 ====================================================================================================
+11.2.97 - 07/09/2017 - EAG/JOR
+====================================================================================================
+- improvement: Se agrega verificación de instalación de unzip.
+- improvement: Correcciones menores en el código y comentarios
+- improvement: Se ajusta el tamaño del titular y área en el listado de articulos publicados en portada para
+mostrar correctamente ids de artículos hasta 9.999.999
+- improvement: Se mejora deteccion de version de ffmpeg obtenida desde git
+- improvement: Se agrega script para corregir friendly url v4 en Prontus ya existentes en cgi-cpn.
+- improvement: Se agrega soporte para copiar symlinks en linux, ahora los modelos pueden tener symlinks.
+- improvement: Agrega parseo de %%_vista%% a los artículos y portadas
+- improvement: Agrega parseo de %%nif%% a resultados de busqueda para validar si un campo no tiene valor
+- improvement: (xcoding) Se mejora seleccion de xmls a procesar en script de procesamiento masivo de videos.
+- improvement: (xcoding) Se modifica la detección de ejecución por línea de comando de las cgis
+- improvement: (xcoding) Los videos subidos se transcodifican automaticamente al guardar el fid. No es necesario volver a revisarlo para que sean procesados.
+- improvement: (xcoding) Integra player html5 para la transcodificación, esto permite sacar capturas y recortar el video sin necesitar flash. Para Internet Explorer se mantiene el uso de Flash.
+- improvement: (fid) Se integra la galería drag and drop y la carga masiva de fotos via zip. Se requieren
+modificaciones y configuraciones, las cuales están descritas en release_notes.txt
+- improvement: (tax) Al ejecutar la generación de portadas de un fid especifico se verifica que exista la carpeta
+asociada en el directorio de plantillas para no generar paginas innecesarias.
+- improvement: (tax) Mejora el rendimiento de la regeneracion de taxport al no procesar fids innecesariamente.
+- improvement: (tax) Mejora el control de procesos simultáneos para no sobrecargar el servidor.
+- improvement: (tax) Se indica siempre el tipo de fid al guardar un artículo y llamar la regeneración de taxport,
+ya que es innecesario que se regeneren todas las páginas de todos los fids asociadas a la tripleta de artículo.
+Sólo se necesita actualizar el listado "all" y los listados del fid correspondiente.
+- improvement: (tax) Se restructura parte del código para mejorar legibilidad y mantención.
+- improvement: (tax) Implementa postprocesos de mapa de sitio. Se deben colocar en las plantillas de la vista principal de la
+misma forma que los post procesos de articulo.
+- improvement: (tax) Agrega marcas %%_plt_nom%%, %%_plt_ext%% y %%_vista%% al mapa del sitio
+- improvement: (editor_img) Se reconstruye el editor de fotos en el fid de articulos, dejando solo la funcionalidad de cropeo de imagenes.
+- improvement: (editor_img) Se utiliza una interfaz sencilla y limpia.
+- improvement: (editor_img) La edición puede ser desde el banco de imagenes o directamente de un campo de fotofija,
+asignando el resultado directamente en el campo de fotofija seleccionado o simplemente dejando la foto disponible en el banco de imagenes.
+- improvement: (prontus_form) Deshabilita encriptacion SSL para todos los casos al enviar mail.
+- improvement: (prontus_update) Se implementa la detección de sub-revisiones de una versión, por ej: 11.2.96.2,
+y la detección de versiones de release beta, por ej: 11.2.97.beta.2. Prontus ofrecerá actualizar a la versión superior disponible.
+- improvement: (sso) Se implementa single sign on en Prontus, se utiliza en una estructura master-slave.
+- improvement: (sso) Los usuarios se definen y almacenan en el master y son utilizados por los slaves.
+Si se desactiva el SSO de un Prontus slave, este pasará a utilizar sus usuarios locales de la forma normal.
+- improvement: (friendly_v4) Implementa nueva version friendly urls para articulos, portadas, taxport y tagport,
+consiste en incluir el nombre de la vista en la url siguiendo al identificador del prontus. Las indicaciones
+de como utilizarla se encuentran en release_notes.txt
+- bugfixes: Se corrige copia de artículos, no se estaban copiando las fotos si habia friendly url de
+imágenes activada, se copiaban los htmls manteniendo el TS del artículo original y no se estaba actualizando el slug del articulo copiado.
+- bugfixes: Se corrige mensaje incorrecto al validar hora de apertura de comentarios.
+- Se estaba deduciendo malla ruta de los postprocesos, ahora se arma con los
+ datos conocidos por prontus, DIR_SERVER y DIR_CGI_CPAN
+- bugfixes: Corrige validación de nombres de plantillas de portada en el administrador,
+evita que se pueda configurar Prontus de forma incorrecta y deje de funcionar.
+- bugfixes: Corrige error al parsear los subtitulos de cuerpo, solo se parsaeban una vez por plantilla.
+- bugfixes: Corrige bug para Chrome 61+, se verifica si existe el metodo Clipboard.isSupported, ya que chrome definió un objeto Clipboard propio.
+Esto evita que el administrador se inicie correctamente.
+- bugfixes: Corrige botón despublicar de portada, al utilizarlo se genera un error por un llamado de un método inexistente.
+- bugfixes: (tax) En los artículos relacionados no se estaba parseando %%_SERVER_NAME%% y %%_PRONTUS_ID%% fuera del loop.
+- bugfixes: (tax) Se corrige la generación de la página de todas las taxonomías para un fid específico,
+el listado creado incluía todos los artículos del fid aunque no tuvieran taxonomía.
+- bugfixes: (tax) Corrige orden de listados taxonómicos para evitar artículos duplicados, ahora se ordenan siempre por TS
+como último criterio.
+- bugfixes: (wizard) Se corrige validación de password para BD en el wizard, era distinta a la hecha por la cgi del paso siguiente
+- bugfixes: (wizard) Se agrega copia de la configuración de transcodificación desde los modelos.
+- bugfixes: (prontus_from) Corrige codificación de correos con adjuntos (multipart).
+- bugfixes: (tax_admin) Se corrige error al cambiar de vistas, los datos se mostraban de manera errónea.
+- changes: Se cambia mensaje de modal que indica conclicto de urls de artículos.
+- changes: Se elimina check_platform.cgi, prontus_check_platform cumple estas funciones.
+- changes: Se cambian las leyendas y rótulos en la verificación de plataforma.
+- changes: Se cambia a "agregar" la escritura del log de operación de Prontus.
+- changes: Se quita botón duplicado para despublicar de portadas.
+- changes: Baja a 5 dias el garbage de locks al editar artículos.
+- changes: Aumenta el contador de ifs a 3000.
+- changes: (fid) Se listan todas las paginas paralelas generadas para un artículo.
+- changes: (tax) Se centralizan las funciones que se utilizan en los scripts de procesamiento de portadas taxonómicas en la lib_tax.
+
+====================================================================================================
 11.2.96 - 03/05/2017 - EAG/JOR
 ====================================================================================================
 - bugfixes: Se corrige error al leer los formatos multimedia en la lib_prontus

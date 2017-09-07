@@ -9102,8 +9102,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_art_listnopub.cgi
-
-
         /cgi-bin/prontus_art_posting.cgi
 
 - Prontus Form
@@ -9343,7 +9341,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_getcaptcha.cgi
 
 ====================================================================================================
-11.2.97 - XX/06/2017 - EAG/JOR
+11.2.97 - 07/09/2017 - EAG/JOR
 ====================================================================================================
 - Transcodificación
     [cambios]
@@ -9480,7 +9478,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Las fotos se acumulan en sucesivas cargas de archivos, sea un zip o fotos individuales
         Se puede utilizar modo drag and drop para subir archivos de imágenes y zip.
     [cambios]
-        Se lsitand todas todas las paginas paralelas generadas para un artículo
+        - Se listan todas todas las paginas paralelas generadas para un artículo
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_artic.pm
@@ -9559,6 +9557,24 @@ Esto quedó actualizado en el check platform y detallado más abajo.
       /wizard_prontus/prontus_dir/cpan/core/editor_imag/css/estilos.css
       /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.js
       /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/apply.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/apply_blanco.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/cancel.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/cancel_blanco.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/chain.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/link.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/link_open.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/move-down.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/move-left.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/move-right.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/move-up.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/reset.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/reset_blanco.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/resize.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/rotate-left.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/rotate-right.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/zoom-in.png
+      /wizard_prontus/prontus_dir/cpan/core/editor_imag/imag/icons/zoom-out.png
 
 - Prontus form
     [bugfixes]
@@ -9568,7 +9584,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_mail.pm
 
-
 - Prontus update
     [mejoras]
         - Se implementa la detección de sub-revisiones de una versión, por ej: 11.2.96.2,
@@ -9577,7 +9592,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_varglb.pm
         /cgi-cpn/Update.pm
-
 
 - Single Sign ON
     [mejoras]
