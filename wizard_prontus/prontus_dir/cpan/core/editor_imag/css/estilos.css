@@ -1,45 +1,71 @@
 body {padding: 0; margin: 0; background: #f5f5f5-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
-
+a{text-decoration: none;}
 .editor-container {padding: 5px; width: 1014px;}
-.image-container {float: left; width:875px; height: 530px; margin-left: 4px; position: relative;}
-.image-container img {max-width: 100%; max-height: 100%;}
+.image-container {float: left; width: 818px; height: 480px; margin-left: 4px; position: relative;    border: 1px solid #bdbdbd;}
+.image-container img {max-width: 100%;max-height: 100%;}
 .image-container .resizing {position: absolute;margin: auto;left:0;right: 0;top: 0;bottom: 0;}
-.fotos-fijas {float: left; width: 130px; height: 564px; background-color: #e2e2e2; border: 1px solid #8a8a8a; overflow-y: scroll;}
-.tools-container {height: 30px; background-color: #e2e2e2; margin-left: 4px; margin-bottom: 4px; border: 1px solid #8a8a8a;}
+.fotos-fijas {float: right; width: 175px; height: 482px; background-color: #e2e2e2; overflow-y: scroll; margin-left: 15px;}
+.tools-container {height: 30px; margin-left: 4px; margin-top:10px;margin-bottom: 8px;}
 .fotos-fijas .rotulo {}
-.tools-container .icon {display: block;float: left;}
-.tools-container .zoom {margin-left: 5px;}
-.tools-container .zoom .icon:last-child {margin-left: 0; border-left: 0;}
+.tools-container .icon {display: block;float: left; margin-left: 4px;margin-right: 4px;}
+.tools-container .zoom {display:inline-block; margin-left: 15px;}
+.tools-container .pref{font-family: Arial, Helvetica, sans-serif; font-size: 13px;font-weight: bold;margin-top: 6px;margin-right: 5px;}
+.tools-container .size-adj{display: inline-block; bottom: 8px; position: relative;}
+.tools-container .size-adj label{font-family: Arial, Helvetica, sans-serif; font-size: 13px;font-weight: bold;margin-top: 6px;margin-right: 5px;margin-left: 5px;}
+.tools-container .size-adj input{width:80px; height: 23px; position: relative; border-radius: 3px; margin-top: 2px; background-color: #504f52;border: none;font-family: Arial, Helvetica, sans-serif; font-size: 13px;text-align: center;color:#fff;}
+.tools-container .adv {display: none; bottom: 8px; position: relative;font-family: Arial, Helvetica, sans-serif; font-size: 11px; color:#ec4a1e; background-color: #f7ebeb; padding:7px 10px; border-radius: 4px; margin-left: 10px; float: right; width: 157px;}
 
 .tools-container .loading {display: none;}
 .tools-container .loading img {display: block;margin: auto;text-align: center;margin-top: 7px;}
 
-.tools-container .rotate {margin-left: 20px; float: left;}
-.tools-container .rotate .icon:last-child {margin-left: 0; border-left: 0;}
+.tools-container .rotate { display: inline-block; margin-left: 15px;}
 .tools-container .reset {margin-left: 20px; float: right; margin-right: 5px;}
 .tools-container .reset .icon {}
-.tools-container .resize {margin-left: 20px; float: left;}
+.tools.reset{display: inline-block;float: right; margin-right: 8px;}
+.tools.reset a{padding:7px 25px 7px 40px;border: 1px solid #a6a6a6;border-radius: 15px;font-family: Arial, Helvetica, sans-serif;font-size: 12px;color:#2e2e2e;}
+.tools.reset a:hover{background-color:#0099ff; color:#fff; transition: .3s all ease; border: 1px solid #0099ff;}
+.tools.actions{display: inline-block;float: right;}
+.tools.actions a{padding:7px 25px 7px 40px;border: 1px solid #a6a6a6;border-radius: 15px;font-family: Arial, Helvetica, sans-serif;font-size: 12px;color:#2e2e2e; margin-right: 4px;}
+.tools.actions a:last-child{margin-right: 0;}
+.tools.actions a:hover{background-color:#0099ff; color:#fff; transition: .3s all ease;border: 1px solid #0099ff;}
+.tools-container .resize {margin-left: 20px;display: inline-block;}
 .tools-container .resize-chain {display: none;float: left;}
-.tools-container .move {margin-left: 20px; float: left;}
-.tools-container .move .icon:nth-child(n+2) {margin-left: 0;border-left: 0;}
+.tools-container .move {margin-left: 20px;display: inline-block; margin-left: 15px;}
+
+/*Hover íconos botones*/
+#cancel{background-image: url("../imag/icons/cancel.png");background-repeat:no-repeat;background-position: 15px 6px;}
+#cancel:hover{background-image: url("../imag/icons/cancel_blanco.png");background-repeat:no-repeat;background-position: 15px 6px;}
+#apply{background-image: url("../imag/icons/apply.png");background-repeat:no-repeat;background-position: 15px 6px;}
+#apply:hover{background-image: url("../imag/icons/apply_blanco.png");background-repeat:no-repeat;background-position: 15px 6px;}
+#reset{background-image: url("../imag/icons/reset.png");background-repeat:no-repeat;background-position: 15px 6px;}
+#reset:hover{background-image: url("../imag/icons/reset_blanco.png");background-repeat:no-repeat;background-position: 15px 6px;}
 
 .tools-container .actions {margin-left: 20px; float: right;}
 .tools-container .actions .icon:nth-child(n+2) {margin-left: 0;border-left: 0;}
 
-.tools-container a {background-color: #ffffff; height: 23px; width: 23px; margin-left: 5px; border: 1px solid #8a8a8a; position: relative; border-radius: 2px 2px 2px 2px; margin-top: 2px;}
-.tools-container a:hover {text-decoration: none; background-color: #0097fb; border: 1px solid #ffffff; border-radius: 2px 2px 2px 2px;}
-.tools-container a img { width: 18px; height: 18px; position: absolute; margin: auto; top:0; left:0; right:0;bottom: 0}
-.tools-container .active > a {text-decoration: none; background-color: #0097fb; border: 1px solid #ffffff; border-radius: 2px 2px 2px 2px;}
-
-.fotos-fijas .box {width: 100px; height:100px; margin: 5px; background: #ffffff; position: relative; border: 1px solid #e2e2e2; cursor: pointer; position: relative;}
-.fotos-fijas .box .size {text-align: center; margin-top: 5px;}
-.fotos-fijas .box .modelo {background: #0097fb; margin: 25px auto; position: absolute; top:0; left:0; right: 0; bottom: 0;}
+.tools-container a {height: 25px; width: 25px; margin-left: 5px; position: relative; border-radius: 5px; margin-top: 2px; background-color: #504f52;}
+.tools-container a:hover {text-decoration: none; background-color: #0097fb;transition: .2s all ease;}
+.tools-container a img { width:100%; position: absolute; margin: auto; top:0; left:0; right:0;bottom: 0}
+.tools-container .active > a {text-decoration: none; background-color: #0097fb;}
+.fotos-fijas .box {height:90px; margin: 10px 15px; background: #ffffff; position: relative; border: 1px solid #b1b1b0; cursor: pointer; position: relative;}
+.fotos-fijas .box .size {text-align: center; margin-top: 9px; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color:#222221;}
+.fotos-fijas .box .modelo {background: #0097fb; margin: 30px auto; position: absolute; top:0; left:0; right: 0; bottom: 0;}
 .fotos-fijas .box .modelo .free {margin-top: 15px; text-align: center; font-weight: bold;}
-.fotos-fijas .box.active {box-shadow: 0px 0px 5px #000;}
+.fotos-fijas .box.active {background-color:#0099ff;}
+.fotos-fijas .box.active .modelo{background-color: #fff; border:1px solid #a6a6a6;}
+.fotos-fijas .box.active .size{color:#fff;}
+.fotos-fijas .titular-fijas {text-align: center; margin-top: 12px; font-family: Arial, Helvetica, sans-serif; font-size: 13px;font-weight: bold; color:#222221;}
 .left {float: left;}
-.freesize {float: left; margin-left: 6px; margin-top: 6px;}
-.freesize div {float: left; margin-left: 2px; margin-right: 2px;}
-.freesize input {width: 32px;text-align: center;margin-top: -4px;height: 19px;float: left;}
-.warning {color: red;text-align: center;font-weight: bold;float: left;margin-top: 6px;margin-left: 15px;}
+.right {float:right;}
 .ui-resizable-handle {background-color: #0097fb !important;}
-.ui-resizable-se {width: 4px; height: 4px;}
+
+.actionbar-container {background-color: #e2e2e2; margin-left: 4px; margin-bottom: 4px; clear: left;}
+.actionbar-container img{ margin-right: 15px; top: 5px; position: relative;}
+.board-container {margin-bottom: 12px;}
+
+/*custom scrollbar*/
+.fotos-fijas::-webkit-scrollbar { width: 7px; /*background-color:#fff;*/}
+.fotos-fijas::-webkit-scrollbar-track { background-color:#cecece;}
+.fotos-fijas::-webkit-scrollbar-thumb { background-color: #666666; outline: 3px solid #000000; border-left: 13px solid #b2b2b2;background-clip: padding-box;}
+
+input[type="text"]:disabled{background-color: #a7a7a8;}
