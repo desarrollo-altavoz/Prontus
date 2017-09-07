@@ -13,6 +13,7 @@
 // 1.0.0 - 24/05/2017 - JOR - Primera versión.
 // 1.1.0 - 01/08/2017 - JOR - Se agrega soporte para resize de imagenes.
 // 1.1.1 - 11/08/2017 - JOR - Se solucionan problemas con resize de imagenes.
+// 2.0.0 - 07/09/2017 - JOR - Se cambia la gráfica y aplican mejoras y bugfixes.
 // ---------------------------------------------------------------
 
 (function (window) {
@@ -35,6 +36,8 @@
         resizeOrigWidth: null,
         resizeOrigHeight: null,
         resizeChain: true,
+        zooming: 0,
+        fotoFijaClicked: 0,
         imgData: {},
         init: function (path_foto, path_conf, active, ts) {
             self = this;
@@ -48,13 +51,15 @@
 
                 if (!active) {
                     self.free = 1;
-                    $('.freesize').html('<input maxlength="4" value="' + cropData.width + '" name="freesize_width" disabled="disabled">x<input maxlength="4" value="' + cropData.height + '" name="freesize_height" disabled="disabled"> <div>px</div>');
-                    $('.freesize').show();
+                    $('.fotos-fijas .box').eq(0).addClass('active');
                 } else {
                     $("#" + active).trigger("click", true);
                     $('.fotos-fijas').animate({scrollTop: $("#" + active).offset().top}, 500);
                     self.activeFotoFija = active;
                 }
+
+                $('#freesize_width').val(cropData.width);
+                $('#freesize_height').val(cropData.height);
             });
 
             self.methods.initActions();
@@ -265,8 +270,8 @@
                     self.resizing = false;
                     self.hasChanges = false;
 
-                    $('input[name="freesize_width"]').attr("disabled", "disabled");
-                    $('input[name="freesize_height"]').attr("disabled", "disabled");
+                    $('#freesize_width').attr("disabled", "disabled");
+                    $('#freesize_height').attr("disabled", "disabled");
 
                     $(".tools.zoom a").css("opacity", 1);
                     $(".tools.rotate a").css("opacity", 1);
@@ -275,7 +280,7 @@
                     $(".tools.resize .resize-chain").removeClass("active");
                     $(".tools.resize .resize-chain").hide();
 
-                    $("#resize_chain").off("click");
+                    $("#link").off("click");
 
                     $(self.imgElementId).resizable("destroy");
 
@@ -339,6 +344,9 @@
 
                     self.actions.reset();
 
+                    $('#freesize_width').val('');
+                    $('#freesize_height').val('');
+
                     return false;
                 }
 
@@ -363,7 +371,7 @@
                 $("#apply").off("click").on("click", self.actions.applyResize);
 
                 // Redimensión libre o proporcional.
-                $("#resize_chain").off("click").on("click", self.actions.resizeChain);
+                $("#link").off("click").on("click", self.actions.resizeChain);
 
                 $(self.imgElementId).cropper('destroy'); // Quita el cropper.
                 $(self.imgElementId).addClass("resizing");
@@ -381,6 +389,9 @@
                     return false;
                 }
 
+                $('#freesize_width').removeAttr("disabled");
+                $('#freesize_height').removeAttr("disabled");
+
                 self.actions.initResizable(true);
             },
             initResizable: function (aspectRatio) {
@@ -389,9 +400,9 @@
 
                 $(self.imgElementId).resizable({
                     aspectRatio: aspectRatio,
-                    minHeight: 10,
-                    minWidth: 10,
-                    maxWidth: maxWidth,
+                    minHeight: 80,
+                    minWidth: 80,
+                    maxWidth: maxWidth, // ajustar al ancho del container.
                     maxHeight: maxHeight,
                     handles: "all",
                     resize: function(event, ui) {
@@ -408,8 +419,8 @@
                         var w = Math.round($(self.imgElementId)[0].naturalWidth * p1/100);
                         var h = Math.round($(self.imgElementId)[0].naturalHeight * p2/100);
 
-                        $('input[name="freesize_width"]').val(w);
-                        $('input[name="freesize_height"]').val(h);
+                        $('#freesize_width').val(w);
+                        $('#freesize_height').val(h);
 
                         self.resizeWidth = w;
                         self.resizeHeight = h;
@@ -424,11 +435,10 @@
                             margin: "auto"
                         });
 
+                        $('#freesize_width').val($(self.imgElementId)[0].naturalWidth);
+                        $('#freesize_height').val($(self.imgElementId)[0].naturalHeight);
 
-                        $('.freesize').html('<input maxlength="4" value="' + $(self.imgElementId)[0].naturalWidth + '" name="freesize_width" ><div>x</div><input maxlength="4" value="' + $(self.imgElementId)[0].naturalHeight + '" name="freesize_height"> <div>px</div>');
-                        $('.freesize').show();
-
-                        $("input[name='freesize_width']").on("keyup", function (e) {
+                        $("#freesize_width").off('keyup').on("keyup", function (e) {
                             if (e.keyCode == 13) { // enter
                                 if (self.resizeChain) {
                                     self.actions.updateResizeWidth();
@@ -439,7 +449,7 @@
                             }
                         });
 
-                        $("input[name='freesize_height']").on("keyup", function (e) {
+                        $("#freesize_height").off('keyup').on("keyup", function (e) {
                             if (e.keyCode == 13) { // enter
                                 if (self.resizeChain) {
                                     self.actions.updateResizeHeight();
@@ -460,6 +470,7 @@
                 if ($(".tools.resize .resize-chain").hasClass("active")) {
                     // Deshabilita.
                     $(".tools.resize .resize-chain").removeClass("active");
+                    $(".tools.resize .resize-chain img").attr("src", $(".tools.resize .resize-chain img").attr("data-off"));
 
                     $(self.imgElementId).resizable("destroy");
                     $(self.imgElementId).css({
@@ -474,6 +485,7 @@
                 } else {
                     // Habilita.
                     $(".tools.resize .resize-chain").addClass("active");
+                    $(".tools.resize .resize-chain img").attr("src", $(".tools.resize .resize-chain img").attr("data-on"));
 
                     $(self.imgElementId).resizable("destroy");
                     $(self.imgElementId).css({
@@ -487,7 +499,7 @@
                 }
             },
             updateResizeWidth: function () {
-                var val = $("input[name='freesize_width']").val();
+                var val = $("#freesize_width").val();
                 var w = (val * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
 
                 if (val > $(self.imgElementId)[0].naturalWidth) {
@@ -496,14 +508,14 @@
                 }
 
                 if (self.resizeChain) {
-                    var newSize = self.actions.scaleSize($("input[name='freesize_width']").val(), $("input[name='freesize_height']").val(), $(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight);
+                    var newSize = self.actions.scaleSize($("#freesize_width").val(), $("#freesize_height").val(), $(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight);
                     var w = (newSize[0] * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
                     var h = (newSize[1] * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
 
                     self.resizeWidth = newSize[0];
                     self.resizeHeight = newSize[1];
 
-                    $('input[name="freesize_height"]').val(self.resizeHeight);
+                    $('#freesize_height').val(self.resizeHeight);
                     $(".image-container .ui-wrapper").width(w);
                     $(".image-container .ui-wrapper img").width(w);
                     $(".image-container .ui-wrapper").height(h);
@@ -515,7 +527,7 @@
                 }
             },
             updateResizeHeight: function () {
-                var val = $("input[name='freesize_height']").val();
+                var val = $('#freesize_height').val();
                 var h = (val * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
 
                 if (val > $(self.imgElementId)[0].naturalHeight) {
@@ -524,14 +536,14 @@
 
                 if (self.resizeChain) {
                     var newW = ($(self.imgElementId)[0].naturalWidth / $(self.imgElementId)[0].naturalHeight) * val;
-                    var newSize = self.actions.scaleSize(newW, $("input[name='freesize_height']").val(), $(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight);
+                    var newSize = self.actions.scaleSize(newW, $('#freesize_height').val(), $(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight);
                     var w = (newSize[0] * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
                     var h = (newSize[1] * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
 
                     self.resizeWidth = newSize[0];
                     self.resizeHeight = newSize[1];
 
-                    $('input[name="freesize_width"]').val(self.resizeWidth);
+                    $('#freesize_width').val(self.resizeWidth);
                     $(".image-container .ui-wrapper").width(w);
                     $(".image-container .ui-wrapper img").width(w);
                     $(".image-container .ui-wrapper").height(h);
@@ -570,9 +582,15 @@
                 }
             },
             showCropSize: function (e) {
-                if (self.free) {
-                    $('.freesize').html('<input maxlength="4" value="' + Math.round(e.width) + '" name="freesize_width" disabled="disabled"><div>x</div><input maxlength="4" value="' + Math.round(e.height) + '" name="freesize_height" disabled="disabled"> <div>px</div>');
-                    $('.freesize').show();
+                if (self.fotoFijaClicked == 1) {
+                    self.fotoFijaClicked = 0;
+                    $('#freesize_width').val(Math.round(e.width));
+                    $('#freesize_height').val(Math.round(e.height));
+                }
+
+                if (Date.now() - self.zooming > 5) {
+                    $('#freesize_width').val(Math.round(e.width));
+                    $('#freesize_height').val(Math.round(e.height));
                 }
             }
         },
@@ -600,6 +618,10 @@
                 $(self.imgElementId).cropper('destroy');
                 $.extend(options, extraOptions);
                 $(self.imgElementId).cropper(options);
+
+                $(self.imgElementId).off('zoom.cropper').on('zoom.cropper', function (e) {
+                    self.zooming = e.timeStamp;
+                });
             },
             initActions: function () {
                 $("#zoom_in").off("click").on("click", self.actions.zoom_in);
@@ -649,7 +671,7 @@
                 return $('.cropper-container').length;
             },
             onFotosFijas: function () {
-                $(".fotos-fijas .box").on('click', function (e, trigger) {
+                $(".fotos-fijas .box").off('click').on('click', function (e, trigger) {
                     var aspectRatio = $(this).data("aspectratio");
                     var fotow = $(this).data("fotow");
                     var fotoh = $(this).data("fotoh");
@@ -661,8 +683,9 @@
                         $('.tools-container .warning').hide();
                     } else {
                         self.free = 0;
-                        $('.freesize').hide();
                     }
+
+                    self.fotoFijaClicked = 1;
 
                     $(".fotos-fijas .box").removeClass('active');
                     $(this).addClass('active');
@@ -670,9 +693,13 @@
 
                     $('.image-container').css('opacity', 0).animate({opacity: 1}, 250);
 
+                    $('#freesize_width').val('');
+                    $('#freesize_height').val('');
+
                     if (!trigger) {
                         self.methods.initCropper({}, function () {
                             $(self.imgElementId).cropper("setAspectRatio", aspectRatio);
+
 
                             if (fotow && fotoh) {
                                 self.fotoFijaW = fotow;
@@ -684,11 +711,11 @@
                                     }
                                     // Forzar a quitar el zoom.
                                     $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
-                                    $(self.imgElementId).cropper('zoom', -10);
                                 } else {
                                     $('.tools-container .warning').hide();
-                                    $(self.imgElementId).cropper('zoom', -10);
                                 }
+
+                                $(self.imgElementId).cropper('zoom', 0.05);
                             }
                         });
                     } else {
@@ -704,16 +731,15 @@
                                 }
                                 // Forzar a quitar el zoom.
                                 $('.tools-container .warning').text("Si aplica zoom a la foto esta se verá pixelada.").show();
-                                $(self.imgElementId).cropper('zoom', -10);
                                 self.hasChanges = false;
                             } else {
-                                $(self.imgElementId).cropper('zoom', -10);
                                 self.hasChanges = false;
                                 $('.tools-container .warning').hide();
                             }
+
+                            $(self.imgElementId).cropper('zoom', 0.05);
                         }
                     }
-
                 });
 
                 $(".fotos-fijas .box").css('opacity', 1);
