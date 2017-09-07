@@ -203,7 +203,6 @@ main: {
 
 
         # Cod html correspondiente a la combo de templates de articulos
-        my($javascript_tpls) =  " onchange=\"Fid.objFormFid.action='prontus_art_ficha.$prontus_varglb::EXTENSION_CGI';Fid.objFormFid.target='_self'; on_submit('actualiza');\"";
         my $html_tpag = &glib_html_02::generar_popup_from_dir($dir_tpl_pags, '_PLT', '', 1, '', 'SIN_EXT', '', '', 1000000, 'STRASC');
 
         # Filtrar lista de templates de acuerdo a los soportados por el tipo de ficha de articulo.
@@ -500,7 +499,7 @@ sub parsea_id_session {
 # parsea id de sesion activa para que pueda enviarsele al prontus_art_upfoto.cgi, dado que este ultimo no tiene acceso a la cookie
     my $pagina = $_[0];
     my $sess_obj = Session->new(
-                    'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
     my $sdata = $sess_obj->{id_session};
@@ -684,7 +683,7 @@ sub generar_popup_tipos {
 
 
 
-    if ( ($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E') ) { # Periodista o Editor
+    if ( (($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E')) && $prontus_varglb::PRONTUS_SSO ne 'SI' ) { # Periodista o Editor
       # Mostrar solo los tipos de articulos permitidos al usuario conectado.
       foreach $key2 (keys %prontus_varglb::ARTUSERS) {
         my ($tipart, $usr) = split /\|/, $key2;
@@ -859,7 +858,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   # print STDERR "xml_data[$xml_data]\n";
 
   # Cod html correspondiente a la combo de templates de articulos
-  my($javascript_tpls) =  " onchange=\"Fid.objFormFid.action='prontus_art_ficha.$prontus_varglb::EXTENSION_CGI';Fid.objFormFid.target='_self';Fid.objFormFid.submit();\"";
   $html_tpag = &glib_html_02::generar_popup_from_dir($dir_tpl_pags, '_PLT', '', 1, '', 'SIN_EXT', '', '', 1000000, 'STRASC');
 
   # Filtrar lista de templates de acuerdo a los soportados por el tipo de ficha de articulo.
@@ -950,11 +948,9 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   $moldeBancoImg =~ s/%%path_conf%%/$FORM{'_path_conf'}/ig;
 
   while ($xml_data =~ /<(\w+?)>(.*?)<\/\1>/sg) {
-
     $nom_campo = $1;
     $valor_campo = $2;
-
-    # warn "nom_campo[$nom_campo] - valor_campo[$valor_campo]";
+    #~ print STDERR "nom_campo[$nom_campo] - valor_campo[$valor_campo]\n";
 
     if ($nom_campo =~ /^RDO_\w+/i) {
       if ($valor_campo =~ /<!\[CDATA\[(.*?)\]\]>/isg) {
@@ -1197,7 +1193,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $pag =~ s/%%_DIV_$nom_campo%%/$foto_fija_aux/ig;
         $pag =~ s/%%$nom_campo%%/$valor_campo/ig; # para el ver imagen
 
-        print STDERR "nom_campo[$nom_campo] nom_foto_fija[$nom_foto_fija] |$fotos_size{$nom_foto_fija}{'w'}\n";
+        #~ print STDERR "nom_campo[$nom_campo] nom_foto_fija[$nom_foto_fija] |$fotos_size{$nom_foto_fija}{'w'}\n";
 
         $pag =~ s/%%_W$nom_campo%%/$fotos_size{$nom_foto_fija}{'w'}/ig;
         $pag =~ s/%%_H$nom_campo%%/$fotos_size{$nom_foto_fija}{'h'}/ig;
@@ -1226,41 +1222,39 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       my $bytes = -s $base_path_mm . $prontus_varglb::DIR_MMEDIA . "/$nom";
       $size_total += $bytes;
       my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
-      $valor_campo = '<a href="' . $relpath_mm . '" target="_blank" type="video/x-ms-wvx">Reproducir Archivo actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />';
+      $valor_campo = '<a href="' . $relpath_mm . '" target="_blank">Reproducir Archivo Actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">Borrar</label><input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />';
       $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '" />';
       $marca ='%%' . $nom_campo . '%%';
       $pag =~ s/$marca/$valor_campo/ig;
     }
 
-
-
     # Rescatar arch. generico asociado
-    elsif ($nom_campo =~ /^ASOCFILE_\w+/i) {
-
-      $nom = $valor_campo;
-      my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
-
-      my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
-      $size_total += $bytes;
-      my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
-      $valor_campo = '<a href="' . $relpath_af . '" target="_blank">' . $nom . '</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">Borrar</label> <input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />'; # 7.0
-      $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '" />';
-      $marca = '%%' . $nom_campo . '%%';
-      $pag =~ s/$marca/$valor_campo/ig;
+    elsif ($nom_campo =~ /^(ASOCFILE_\w+|_gal_archive)/i) {
+        $valor_campo =~ s/[\n\r]+//sg;
+        next if ($valor_campo eq '');
+        $nom = $valor_campo;
+        my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
+        my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
+        $size_total += $bytes;
+        my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
+        $valor_campo = '<a href="' . $relpath_af . '" target="_blank">' . $nom . '</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">Borrar</label> <input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />'; # 7.0
+        $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '" />';
+        $marca = '%%' . $nom_campo . '%%';
+        $pag =~ s/$marca/$valor_campo/ig;
     }
 
     # Rescatar htmlfiles
     elsif ($nom_campo =~ /^HTMLFILE_\w+/i) {
-      $nom = $valor_campo;
-      my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
+        $nom = $valor_campo;
+        my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
 
-      my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
-      $size_total += $bytes;
+        my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
+        $size_total += $bytes;
 
-      $valor_campo = '<a href="' . $relpath_af . '" target="_blank">Ver HTMLFILE actual</a>&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />'; # 7.0
-      $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '"/>';
-      $marca ='%%' . $nom_campo . '%%';
-      $pag =~ s/$marca/$valor_campo/ig;
+        $valor_campo = '<a href="' . $relpath_af . '" target="_blank">Ver HTMLFILE actual</a>&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />'; # 7.0
+        $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '"/>';
+        $marca ='%%' . $nom_campo . '%%';
+        $pag =~ s/$marca/$valor_campo/ig;
     }
 
 
@@ -1282,7 +1276,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
         $maxbytes = $1;
         if ($bytes_swf > $maxbytes) {
-          $valor_campo .=   '<br/><span color="#CC0000">Â¡Advertencia! Peso de archivo swf excede lÃ­mite permitido</span>';
+          $valor_campo .=   '<br/><span color="#CC0000">¡Advertencia! Peso de archivo swf excede límite permitido</span>';
         };
       };
       # ----------
@@ -1337,13 +1331,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $valor_campo = $fotos_controls{$nom_campo};
     $pag =~ s/$marca/$valor_campo/ig;
 
-# Se cambia sistema por otro mejor
-#    if ((-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/imag/icono_camara.jpg") && ($nro_fotos_banco >= 8)) {
-#      $valor_campo =~ s/src=".+?"/src="$prontus_varglb::DIR_CORE\/imag\/icono_camara\.jpg"/;
-#    };
-
     $nro_fotos_banco++;
-
   };
 
 
@@ -1384,7 +1372,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
   # pagspar
   my $fullpath_pagspar = $relpath_artic;
-  $fullpath_pagspar =~ s/^(.*?)\/pags\/(\d{14})\.(\w+)$/$1\/pagspar\/$2_\*\.$3/isg;
+  $fullpath_pagspar =~ s/^(.*?)\/pags\/(\d{14})\.(\w+)$/$1\/pagspar\/$2_\*/isg;
   my @pagspar = glob("$prontus_varglb::DIR_SERVER$fullpath_pagspar");
   if (scalar @pagspar) {
     my $list_pagspar;
@@ -1807,17 +1795,6 @@ sub carga_buffer_fid {
     my $buffer = &glib_fildir_02::read_file($path_ficha);
     $buffer =~ s/%25%25/%%/sg;
 
-#    # Agrega macros reservadas primero
-#    my ($dir_macros_reserv) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/fid/macros_reservadas";
-#    $buffer = &lib_prontus::add_macros($buffer, $dir_macros_reserv, '', '_');
-#    $buffer =~ s/%25%25/%%/sg;
-#
-#
-#    # Agrega macros de usuario
-#    my ($dir_macros) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/fid/macros";
-#    $buffer = &lib_prontus::add_macros($buffer, $dir_macros, '', '');
-#    $buffer =~ s/%25%25/%%/sg;
-
     $buffer = &add_macros_fid($buffer, '');
     $buffer =~ s/%25%25/%%/sg;
 
@@ -1831,78 +1808,102 @@ sub carga_buffer_fid {
 
 # -------------------------------------------------------------------------
 sub add_macros_fid {
-  # Incluye en el tpl las macros senaladas en el con la marca
-  # %%MACRO(<nomfilemacro>)%%
-  # <nomfilemacro> : Nombre del archivo de la macro (con extension y sin path), ubicado dentro del dir macros
+    # Incluye en el tpl las macros senaladas en el con la marca
+    # %%MACRO(<nomfilemacro>)%%
+    # <nomfilemacro> : Nombre del archivo de la macro (con extension y sin path), ubicado dentro del dir macros
 
-  # Version especifica de esta funcion, para macros de fids, para considerar simultaneamente las
-  # reservadas y las de usuario, permitiendo anidamiento cruzado.
+    # Version especifica de esta funcion, para macros de fids, para considerar simultaneamente las
+    # reservadas y las de usuario, permitiendo anidamiento cruzado.
 
-  my ($textpag) = shift; # buffer de la plantilla conteniendo invocaciones a macros
-  my ($profundidad) = shift; # solo para invocaciones internas, para manejar recursividad
+    my ($textpag) = shift; # buffer de la plantilla conteniendo invocaciones a macros
+    my ($profundidad) = shift; # solo para invocaciones internas, para manejar recursividad
 
 
-  my $pag_aux = $textpag;
+    my $pag_aux = $textpag;
 
-  # Recorre tpl y parsea macros.
-  while ($pag_aux =~ /%%MACRO\((.+?)\)%%/ig) {
-    my $arg_str = $1;
-    my @args_macro = split(",", $arg_str);
+    # Recorre plantillas y parsea macros.
+    while ($pag_aux =~ /%%MACRO\((.+?)\)%%/ig) {
+        my $arg_str = $1;
+        my @args_macro = split(",", $arg_str);
 
-    my $nomfile = $args_macro[0];
-    my $id = $args_macro[1];
+        my $nomfile = $args_macro[0];
+        my $id = $args_macro[1];
 
-    $id =~ s/ //sg;
-    $id = 1 if (!$id);
+        $id =~ s/ //sg;
+        $id = 1 if (!$id);
 
-    my $dir_macros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/fid/macros";
-    if ($nomfile =~ /^_/) {
-        $dir_macros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/fid/macros_reservadas";
-    };
+        my $dir_macros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/fid/macros";
+        if ($nomfile =~ /^_/) {
+            $dir_macros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/fid/macros_reservadas";
+        };
 
-    my $buffer_macro = &glib_fildir_02::read_file("$dir_macros/$nomfile");
-    if (! -f "$dir_macros/$nomfile") {        my $relpath_macro = &lib_prontus::remove_front_string("$dir_macros/$nomfile", $prontus_varglb::DIR_SERVER);
-        $buffer_macro = "Macro '$relpath_macro' no existe!";
+        my $buffer_macro;
+        # si la macro no existe, marcamos la plantilla y continuamos con la siguiente
+        if (! -f "$dir_macros/$nomfile") {
+            my $relpath_macro = &lib_prontus::remove_front_string("$dir_macros/$nomfile", $prontus_varglb::DIR_SERVER);
+            $buffer_macro = "Macro '$relpath_macro' no existe!";
+            $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
+            next;
+        };
+
+        $buffer_macro = &glib_fildir_02::read_file("$dir_macros/$nomfile");
+        $buffer_macro = &lib_prontus::ajusta_crlf($buffer_macro);
+
+        # si es galeria con carga masiva debemos parsear los parametros
+        if ($nomfile eq '_galeria_prontus.html') {
+            $buffer_macro =~ /<!--loop_gal-->[\n\r]*(.*?) *?<!--\/loop_gal-->/is;
+            my $loop_gal= $1;
+            my $loop_gal_temp;
+            my @temp_array = split(/\|/,$id);
+            my $temp_buffer = '';
+            if (scalar @temp_array < 2) {
+                print STDERR "No hay configuracion de galeria, se usan valores por defecto\n";
+                # cargamos valores por defecto
+                $id = '1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_high:800x600';
+                @temp_array = split(/\|/,$id);
+            }
+            my $counter = 1;
+            foreach my $conf_size (@temp_array) {
+                $loop_gal_temp = $loop_gal;
+                my @data_temp = split (/:/, $conf_size);
+                $loop_gal_temp =~ s/##i##/$counter/g;
+                # se cambia x por , para la resolucion
+                $data_temp[2] =~ s/x/,/g;
+                $loop_gal_temp =~ s/##_size##/$data_temp[2]/g;
+                $temp_buffer .= $loop_gal_temp;
+                $counter++;
+            }
+            $buffer_macro =~ s/<!--loop_gal-->.*?<!--\/loop_gal-->/$temp_buffer/s;
+            $temp_buffer = $id;
+            $temp_buffer =~ s/:\d+x\d+//sg;
+            $buffer_macro =~ s/##_gal_conf##/$temp_buffer/s;
+        }
+        $buffer_macro =~ s/##id##/$id/sg;
+
+        my $body;
+        if ($buffer_macro =~ /<body.*?>(.*)<\/body *>/is) {
+            $body = $1;
+        };
+        $buffer_macro = $body if ($body);
+        $profundidad++;
+
+        if ($profundidad > 10) {
+            $buffer_macro = '<b>[Error: Se alcanzo el nivel maximo de anidamiento de macros (max=10)]</b>';
+            $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
+            $profundidad = 0;
+            next;
+        } else {
+            if ($buffer_macro =~ /%%MACRO\(.+?\)%%/is) {
+                $buffer_macro = &add_macros_fid($buffer_macro, $profundidad);
+            };
+        };
+        $profundidad = 0;
         $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
-        next;
     };
 
-    $buffer_macro = &lib_prontus::ajusta_crlf($buffer_macro);
-
-    $buffer_macro =~ s/##id##/$id/sg;
-
-    my $body;
-    if ($buffer_macro =~ /<body.*?>(.*)<\/body *>/is) {
-      $body = $1;
-    };
-    $buffer_macro = $body if ($body);
-    $profundidad++;
-
-    if ($profundidad > 10) {
-      $buffer_macro = '<b>[Error: Se alcanzo el nivel maximo de anidamiento de macros (max=10)]</b>';
-      $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
-      $profundidad = 0;
-      next;
-    }
-    else {
-      if ($buffer_macro =~ /%%MACRO\(.+?\)%%/is) {
-        $buffer_macro = &add_macros_fid($buffer_macro, $profundidad);
-      };
-    };
-
-    $profundidad = 0;
-    $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
-
-  };
-
-  # parsear SERVER_NAME --> sacar despues de aca y poner en una funcion onda init_plantilla
-  $textpag =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
-
-  return $textpag;
-
-
-
+    # parsear SERVER_NAME --> sacar despues de aca y poner en una funcion onda init_plantilla
+    $textpag =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+    return $textpag;
 };
-
 
 # -------------------------------END SCRIPT----------------------

@@ -41,7 +41,7 @@ var Admin = {
             Admin.isChrome = true;
         }
 
-        if (typeof Clipboard !== 'undefined') {
+        if (typeof Clipboard !== 'undefined' && typeof Clipboard.isSupported !== 'undefined') {
             Admin.clipboardHtml5 = Clipboard.isSupported();
         }
 
@@ -54,8 +54,16 @@ var Admin = {
         Admin.randcode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
         Admin.instalaDialogo();
     },
-
-
+    // -------------------------------------------------------------------------
+    changeProntus:  function(event) {
+        var selected = $(event.target).val();
+        if (Admin.prontus_id != selected) {
+            var regexp = new RegExp('(/'+Admin.dir_cgi_cpn + '\/\\w+\\.cgi)')
+            var result = regexp.exec(window.location.href);
+            window.location.href = result[1] + '?' +
+                '_path_conf=/' + selected + '/cpan/' + selected + '.cfg';
+        }
+    },
     // -------------------------------------------------------------------------
     openArtic: function(obj) {
         var lnk = $(obj).attr('href');
@@ -83,14 +91,15 @@ var Admin = {
                 Admin.dir_cgi_cpn = DIR_CGI_CPAN;
                 // Para la carga de la informacion del usuario
                 var datos = { _path_conf: Admin.path_conf };
-                $('#userdata').load('/'+Admin.dir_cgi_cpn+'/'+Admin.urlUserInfo, datos);
+                $('#userdata').load('/'+Admin.dir_cgi_cpn+'/'+Admin.urlUserInfo, datos, function () {
+                        $('#prontus-sso-select').on('blur change', Admin.changeProntus);
+                    } );
             }
         });
     },
 
     // -------------------------------------------------------------------------
     cerrarSesion: function() {
-
         $.ajax({
             url: '/' + Admin.dir_cgi_cpn + '/' + Admin.urlLogout,
             data: {

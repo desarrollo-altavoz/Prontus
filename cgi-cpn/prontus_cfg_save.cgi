@@ -94,6 +94,7 @@ main: {
     $hash_defaultvars{'var'}{'CONTROLAR_ALTA_ARTICULOS'} = 'CONTROLAR_ALTA_ARTICULOS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URL_IMAGES'} = 'FRIENDLY_URL_IMAGES;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'FRIENDLY_V4_INCLUDE_VIEW_NAME'} = 'FRIENDLY_V4_INCLUDE_VIEW_NAME;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_EXCLUDE_FID'} = 'FRIENDLY_V4_EXCLUDE_FID;(\w+);;M';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3|4);1;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_LARGO_TITULAR'} = 'FRIENDLY_URLS_LARGO_TITULAR;^(\d+)$;1;U';
@@ -144,6 +145,9 @@ main: {
     $hash_defaultvars{'usr'}{'EDITOR_VER_ARTICULOS_AJENOS'} = 'EDITOR_VER_ARTICULOS_AJENOS;(SI|NO);SI;U';
     $hash_defaultvars{'usr'}{'EDITOR_EDITAR_ARTICULOS_AJENOS'} = 'EDITOR_EDITAR_ARTICULOS_AJENOS;(SI|NO);SI;U';
     $hash_defaultvars{'usr'}{'EDITOR_ADMINISTRAR_EDICIONES'} = 'EDITOR_ADMINISTRAR_EDICIONES;(SI|NO);SI;U';
+    $hash_defaultvars{'usr'}{'PRONTUS_SSO'} = 'PRONTUS_SSO;(SI|NO);SI;U';
+    $hash_defaultvars{'usr'}{'PRONTUS_SSO_MASTER'} = 'PRONTUS_SSO_MASTER;(SI|NO);SI;U';
+    $hash_defaultvars{'usr'}{'PRONTUS_SSO_MASTER_ID'} = 'PRONTUS_SSO_MASTER_ID;^([\w\_\-\d]+)$;;U';
 
     # -tax.cfg
     $hash_defaultvars{'tax'}{'TAXONOMIA_NIVELES'} = 'TAXONOMIA_NIVELES;[0-3];0;U';
@@ -336,6 +340,8 @@ main: {
                 if ($input_value !~ /$re/) {
                     &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
                 } else {
+                    #~ &validarUsr($var_valida, $input_value, \%hash_vars) if ($FORM{'_cfg'} eq 'usr');
+                    &validarUsr($var_valida, $input_value) if ($FORM{'_cfg'} eq 'usr');
                     &validarPort($var_valida, $input_value) if ($FORM{'_cfg'} eq 'port');
                     &validarTax($var_valida, $input_value) if ($FORM{'_cfg'} eq 'tax');
                     &validarVar($var_valida, $input_value) if ($FORM{'_cfg'} eq 'var');
@@ -529,8 +535,6 @@ sub validarXcoding {
 sub validarCloudFlare {
     my ($var) = shift;
     my ($item) = shift;
-
-    print STDERR "var[$var]\n";
 
     if ($var eq 'CLOUDFLARE_API_KEY' && $item eq '') {
         &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
@@ -908,5 +912,27 @@ sub validarPort {
                 system $cmd;
             };
         };
+    };
+};
+
+sub validarUsr {
+    my $var = $_[0];
+    my $item = $_[1];
+    #~ my %hash_vars = %{ $_[2] };
+
+    if ($var eq 'PRONTUS_SSO_MASTER_ID' && $item ne '') {
+        if (!&lib_prontus::valida_prontus($item)) {
+            &glib_html_02::print_json_result(0, "El campo $var no es válido.", 'exit=1,ctype=1');
+        } else {
+            if (&lib_prontus::valida_prontus_dir($prontus_varglb::DIR_SERVER, $item)) {
+                my $buffer_conf = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER/$item/cpan/$item-usr.cfg");
+                # verificamos que sea un prontus configurado como SSO master
+                if ( !($buffer_conf  =~ /PRONTUS_SSO\s*=\s*["|']SI["|']/ && $buffer_conf  =~ /PRONTUS_SSO_MASTER\s*=\s*["|']SI["|']/)) {
+                    &glib_html_02::print_json_result(0, "El valor '$item' de $var no es un Prontus habilitado para administrar SSO.", 'exit=1,ctype=1');
+                }
+            } else {
+                &glib_html_02::print_json_result(0, "El valor '$item' de $var no un Prontus válido.", 'exit=1,ctype=1');
+            }
+        }
     };
 };

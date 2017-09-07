@@ -10,13 +10,12 @@
     <script type="text/javascript" src="js-local/jquery/plugins/form/jquery.form.js"></script>
     <script type="text/javascript" src="js-local/SubmitForm.class.js"></script>
     <script type="text/javascript" src="js-local/update.js"></script>
-    <link type="text/css" rel="stylesheet" href="css/estilos.css" />
-    <link type="text/css" rel="stylesheet" href="css/login.css" />
+    <link type="text/css" rel="stylesheet" href="css/estilos.css?v1" />
+    <link type="text/css" rel="stylesheet" href="css/login.css?v1" />
     <script type="text/javascript">
       $(document).ready(function () {
         $('#_path_conf').val(ProntusDetect.getPathConf());
         Login.init(DIR_CGI_CPAN);
-        Login.checkSession();
       });
     </script>
     <script type="text/javascript">
@@ -54,8 +53,13 @@
               <img src="imag/boto/ing_of.png" onmouseover="Login.chgImgSrc(this, 'imag/boto/ing_on.png');" onmouseout="Login.chgImgSrc(this, 'imag/boto/ing_of.png');" alt="" />
             </a>
             <div style="overflow:hidden; height:1px; width:1px;">
-              <input type="submit" name="_sbmit" id="_sbmit" class="fieldform" value="Enviar" /></div>
-
+              <input type="submit" name="_sbmit" id="_sbmit" class="fieldform" value="Enviar" />
+            </div>
+          </div>
+          <div class="auxi prontus-sso" id="prontus-sso" style="display: none;">
+            <p>Seleccione Prontus:<br/>
+              <select id="prontus-sso-select" class="fieldform"></select>
+            </p>
           </div>
           <div class="auxi" id="checkSession">
             <div class="checkSession">

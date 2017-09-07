@@ -74,7 +74,7 @@ main: {
     &glib_cgi_04::set_formvar('video', \%FORM);
     &glib_cgi_04::set_formvar('prontus_id', \%FORM);
 
-    if ($ENV{'SERVER_NAME'} eq '') {
+    if ($ENV{'SERVER_NAME'} eq '' ||  scalar @ARGV > 0) {
         $MODO_CLI = 1;
         $FORM{'video'} = $ARGV[0];
         $FORM{'prontus_id'} = $ARGV[1];
@@ -95,8 +95,6 @@ main: {
     my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
     $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
-    $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
-
 
     if (!$MODO_CLI) {
     # User check

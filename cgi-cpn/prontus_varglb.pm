@@ -46,7 +46,7 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   do 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.96 - 03/05/2017';
+  $VERSION_PRONTUS = '11.2.97 - 07/09/2017';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
@@ -101,9 +101,6 @@ sub init { # Prontus 6.0
 
   # MAXIMO DE PROCESOS DE CRON TAXPORT SIMULTANEOS AL REGENERAR
   $TAXPORT_MAX_MASTERS = 3;
-
-  # [CANTIDAD DE SEGUNDOS DE ANTIGUEDAD MAXIMA QUE TENDRAN LAS TAXPORTS]
-  #~ $TAXPORT_REFRESH_SEGS;
 
   # Tiene que cambiar esto
   $ABRIR_FIDS_EN_POP = '';
@@ -328,14 +325,11 @@ sub init { # Prontus 6.0
 sub get_dir_server {
   # DIR_SERVER:
   #   En unix queda algo asi como /sites/misitio.cl/web
-  #   En win queda algo asi como c:/sites/misitio.cl/web
 
     my $dir_server = $ENV{'DOCUMENT_ROOT'};  # Unix y Abyss
-    #$dir_server =~ s/\\/\//g; # cambia \ por /, por si win
     if ($dir_server eq '') {
         use FindBin '$Bin';
         $dir_server = $Bin; # por ej /sites/misitio.cl/web/cgi-cpn
-        #$dir_server =~ s/\\/\//g; # cambia \ por / por si es win
         # Queda por ej /sites/misitio.cl/web, se asume que el script q use este varglb siempre
         # estara en la carpeta cgi-xxx o similar, pero nunca mas niveles hacia adentro.
         $dir_server =~ s/\/[^\/]+$//;

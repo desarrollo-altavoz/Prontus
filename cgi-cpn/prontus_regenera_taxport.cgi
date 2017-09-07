@@ -63,6 +63,7 @@ use glib_fildir_02;
 use strict;
 use DBI;
 use lib_maxrunning;
+use Time::HiRes qw(usleep);
 
 # Soporta sólo 1 copia andando
 if (&lib_maxrunning::maxExcedido(1)) {
@@ -194,26 +195,45 @@ sub gatillar_procesos {
     $pathnice = "$pathnice -n19 " if($pathnice);
     print "TAXPORT_MAX_MASTERS [$prontus_varglb::TAXPORT_MAX_MASTERS]\n";
     print "TAXPORT_MAX_WORKERS [$prontus_varglb::TAXPORT_MAX_WORKERS]\n";
+
     foreach my $fid_name (keys %FIDS2PROCESS) { # key = 'fid_general:General(general.php)'
         foreach my $levels (sort keys %LEVELS2TRIGGER) {
             next unless($LEVELS2TRIGGER{$levels});
 
             while (&check_taxport_running() >= $prontus_varglb::TAXPORT_MAX_MASTERS) {
-                print "Muchos procesos simultaneos... esperando 5 segundos.\n";
-                sleep(5);
+                sleep(1);
             }
             while (&check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
-                print "Muchos procesos worker simultaneos... esperando 5 segundos.\n";
-                sleep(5);
+                sleep(1);
             }
 
             my $param_especif_taxport = "$fid_name/$levels";
-            my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport >/dev/null 2>&1 &";
+            my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif_taxport RG >/dev/null 2>&1 &";
 
             print "[" . &glib_hrfec_02::get_dtime_pack4() . "] $cmd\n";
 
             system $cmd;
+            usleep(100000);
         }
+    }
+
+    # procesamos las taxport de "all"
+    foreach my $levels (sort keys %LEVELS2TRIGGER) {
+        next unless($LEVELS2TRIGGER{$levels});
+
+        while (&check_taxport_running() >= $prontus_varglb::TAXPORT_MAX_MASTERS) {
+            sleep(1);
+        }
+        while (&check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
+            sleep(1);
+        }
+
+        my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID /$levels >/dev/null 2>&1 &";
+
+        print "[" . &glib_hrfec_02::get_dtime_pack4() . "] $cmd\n";
+
+        system $cmd;
+        usleep(100000);
     }
 }
 # ---------------------------------------------------------------
@@ -241,7 +261,7 @@ sub get_fids2process {
     my %fids;
     my %fidswithtax;
     my $fid;
-
+    &lib_tax::load_taxport_fil();
     foreach my $key (keys %prontus_varglb::FORM_PLTS) { # key = 'fid_general:General(general.php)'
         my $fid_name;
         next if ($key !~ /^(\w+) *:/);
@@ -253,9 +273,12 @@ sub get_fids2process {
     my $sql = "select ART_TIPOFICHA from ART where ART_IDSECC1<>0 or ART_IDSECC2<>0 or ART_IDSECC3<>0 group by ART_TIPOFICHA";
     my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($fid));
 
+    my $dir_plt = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_PTEMA";
     while ($salida->fetch) {
         if ($fids{$fid}) {
-            $fidswithtax{$fid} = 1;
+            if(&check_fid_fil($fid) || -d "$dir_plt/$fid") {
+                $fidswithtax{$fid} = 1;
+            }
         }
     }
 
@@ -276,4 +299,17 @@ sub get_fids2process {
 
     return %fidswithtax;
 };
+
+sub check_fid_fil {
+    my $fid = $_[0];
+
+    foreach my $filter (keys %lib_tax::CFG_FIL_TAXPORT) {
+        foreach my $fid_filtro (@{$lib_tax::CFG_FIL_TAXPORT{$filter}{'FIDS'}}) {
+            if ($fid_filtro eq $fid) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 # -------------------------END SCRIPT----------------------

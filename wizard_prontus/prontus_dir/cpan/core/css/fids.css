@@ -105,6 +105,7 @@
 #banco-img .butBancoImg {cursor:pointer;}
 #banco-img .banco-total{margin-left:5px; margin-top:4px; font-size:12px; font-weight:bold; color:#aaa;}
 #banco-img .foto-icon {width:80px;padding-top:4px;}
+#banco-img .foto-icon img.ui-state-disabled.ui-draggable-disabled {opacity:1;}
 .foto-icon img, .fotodrag.ui-draggable {max-width:80px;max-height:80px;}
 #banco-img .datos-foto {padding-left:4px;}
 #banco-img .datos-foto span{font-size:11px;}
@@ -207,62 +208,15 @@
 .uploadify-queue-item.completed {background-color: #E5E5E5;}
 .uploadify-progress {background-color: #E5E5E5;margin-top: 10px;width: 100%;}
 .uploadify-progress-bar {background-color: #0099FF;height: 3px;width: 1px;}
-#dropZone {background-color: #3A3935; height: 200px; margin: 0 auto; width: 315px; border-radius: 10px 10px 10px 10px; border: 1px solid #000000;}
-#dropZone .draghere {color: #FFFFFF; margin-top: 87px; text-shadow: 1px 1px 2px #E6E6E6; text-transform: uppercase;}
-#uploadProgress {margin: 4px auto 0; width: 185px; display: none; height: 18px; width: 186px;}
-#uploadProgressPercent {margin-left: 145px; position: absolute; width: 35px;}
-
-
-/* Editor de fotos fijas. */
-.preview-fotofija {width: 100%;height: 451px;border-bottom: 1px solid #cecece;position: relative;}
-.preview-fotofija .barra {width: 100%;height: 30px;border-bottom: 1px solid #cecece;}
-.preview-fotofija .barra h3 {padding: 5px; font-size: 15px; float: left; color: #4D4D4D;}
-.preview-fotofija .barra .botones {float: right;padding: 5px; display: none;}
-.preview-fotofija .barra .botones a {padding: 2px 2px;float: right;}
-.preview-fotofija .barra .botones a img {}
-.preview-fotofija .barra .botones .crop-aplicar {display: none;}
-.preview-fotofija .barra .botones .crop-aplicar a {padding: 0 10px 0 0; margin-right: 10px;}
-.preview-fotofija .work-area {position: relative;height: 420px;width: 683px;}
-.preview-fotofija .work-area .img {width: 683px;height: 420px;position: relative;}
-.preview-fotofija .work-area .img img {max-height: 100%; max-width: 100%;margin: 0 auto;position: relative;left: 0;right: 0;top: 0;bottom: 0;margin-top: auto;margin-bottom: auto;}
-.preview-fotofija .work-area.cropping .img img {opacity: 0.5;}
-.preview-fotofija .work-area.cropping .img .crop-box .crop-sizer {width: 683px;height: 420px;position: absolute;}
-.preview-fotofija .work-area.cropping .img .crop-box {display: none; position: absolute;z-index: 100;outline: 1px solid;}
-.preview-fotofija .work-area.cropping .img .crop-box .crop-sizer img {opacity: 1;}
-.preview-fotofija .work-area.cropping .img-drag {cursor: move;}
-
-.preview-fotofija .work-area .zoom {display: none;z-index: 200;}
-.preview-fotofija .alert {display: none;position: absolute;width: 650px;height: 50px;background-color: #fcf8e3;margin: 15px;color: #8a6d3b;border:1px solid #faebcc;z-index: 1;}
-.preview-fotofija .alert div {text-align: center;margin: 15px;}
-/*.preview-fotofija .work-area .zoom .plus {background: url('../imag/boto/slider_plus.png') no-repeat; position: absolute;top: 140px; left: 10px; width: 16px; height: 16px;cursor: pointer;}*/
-/*.preview-fotofija .work-area .zoom .minus {background: url('../imag/boto/slider_minus.png') no-repeat; position: absolute;top: 264px; left: 10px; width: 16px; height: 16px;cursor: pointer;}*/
-.preview-fotofija .work-area .zoom .plus {width: 14px;height: 30px;background: #d4d4d4;top: 120px;position: absolute;left: 5px;font-size: 20px;text-align: center;cursor: pointer;z-index: 190;}
-.preview-fotofija .work-area .zoom .minus {width: 14px;height: 24px;background: #d4d4d4;top: 270px;position: absolute;left: 5px;font-size: 20px;text-align: center;padding-top: 5px;cursor: pointer;z-index: 190;}
-.preview-fotofija .work-area .zoom .range {margin-top: auto;margin-bottom: auto;bottom: 0;top: 0;position: absolute;left: 5px;border: 1px solid #ccc;background: #D4D4D4;height: 120px; overflow: visible; border-radius:0;border:0;z-index: 200;}
-.preview-fotofija .work-area .zoom .range .ui-slider-handle {height: 18px; width: 18px;margin-left: 3px;background: #0097fb !important;border-radius: 3px 3px 3px; border: 1px solid #ccc;z-index: 200;}
-.preview-fotofija .foto-list-container {top:0px; left:0px; display: none; width: 100%;height: 100%;position: absolute;background-image:
-  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgOAMAAM8AzbfAeUUAAAAASUVORK5CYII=);z-index: 100;color: #4D4D4D;}
-.preview-fotofija .foto-list-container .foto-list {background-color: #fafafa;width: 300px; height: 300px; overflow: hidden;margin: 40px auto;outline: 5px solid #ccc;}
-.preview-fotofija .foto-list-container h3 {font-size: 15px;padding: 5px;text-align: center;}
-.preview-fotofija .foto-list-container ul {width: 250px;margin: 5px auto;overflow: auto;overflow-x:visible;height: 195px;}
-.preview-fotofija .foto-list-container ul li {list-style: none;}
-.preview-fotofija .foto-list-container .foto-list-botones {width: 140px;margin: 10px auto;}
-
-.fotofija-container {padding: 2px;display: inline-block;}
-.fotofija-container .name {text-align: center;font-size: 12px;color:#aaaaaa;width: 120px;}
-.fotofija-container .size {text-align: center;font-size: 12px;color:#aaaaaa;}
-.fotofija-container .fotofija {width: 120px;height: 120px;outline: 1px solid #e6e6e6;position: relative;}
-.fotofija-container .fotofija .foto-recuadro {width: 120px; height: 120px;border:0;padding: 0;margin: 0;position: relative;}
-.fotofija-container .fotofija .ui-state-active {background: url('../imag/edi/bg_drop.png') no-repeat;}
-.fotofija-container .fotofija .foto-recuadro img {position: absolute;left: 0;right: 0;top: 0;bottom: 0;margin: auto;max-width: 100%;max-height: 100%;}
-.fotofija-container .fotofija .botones {height: 20px; display: none;position: absolute;bottom: 0;width: 100%;background-image:
-  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mO4cO32TAAIFgMbq4lc+QAAAABJRU5ErkJggg==);outline: 1px solid #ccc;}
-.fotofija-container .fotofija .botones a {float: left;display: block;padding: 2px;}
-.fotofija-container .fotofija .botones input {float: left;margin: 4px 2px 0px 2px;display: block;}
-.fotofija-container .fotofija .botones .cuadrar {position: absolute;right: -4px;width:60px;}
-.fotofija-container .fotofija .botones label {font-size: 9px;margin: 4px 0px 0px 0px;display: block;}
-.fotofija-container .fotofija.active {outline: 2px solid #0097fb;}
-.hidde-crop {display: none !important;}
+#dropZone, #_galeria_dropZone {background-color: #3A3935; height: 200px; margin: 0 auto; width: 315px; border-radius: 10px 10px 10px 10px; border: 1px solid #000000;}
+#dropZone .draghere, #_galeria_dropZone .draghere {color: #FFFFFF; margin-top: 87px; text-shadow: 1px 1px 2px #E6E6E6; text-transform: uppercase;}
+#uploadProgress, .uploadProgress {margin: 4px auto 0; width: 185px; display: none; height: 18px; width: 186px;}
+#uploadProgressPercent, .uploadProgressPercent {margin-left: 145px; position: absolute; width: 35px;}
+.uploadProgressContainer {width:182px; height:15px;border:1px solid #666666; float: left;}
+.uploadProgressBar {width:0%; height:15px; float:left;}
+.prontus-imagenescargadas {margin-left:5px;margin-top:10px;width:120px;height:135px;overflow:hidden;display:inline;float:left}
+.prontus-imagenescargadas div.img-error {color:#FFA500;}
+.prontus-imagenescargadas img {max-height: 120px;max-width: 120px;}
 
 /* seleccion de multitag */
 #multitag {width: 100%;}
@@ -279,3 +233,20 @@
 #divCombinaciones table tr th {text-align: left;font-size: 12px;text-align: left;font-weight: bold;}
 #divCombinaciones table tr td {text-align: left;font-size: 12px;text-align: left;}
 #divCombinaciones table tr td .copiar-link-mtag {}
+
+.fotofija-container {padding: 2px;display: inline-block;}
+.fotofija-container .name {text-align: center;font-size: 12px;color:#aaaaaa;width: 120px;}
+.fotofija-container .size {text-align: center;font-size: 12px;color:#aaaaaa;}
+.fotofija-container .fotofija {width: 120px;height: 120px;outline: 1px solid #e6e6e6;position: relative;}
+.fotofija-container .fotofija .foto-recuadro {width: 120px; height: 120px;border:0;padding: 0;margin: 0;position: relative;}
+.fotofija-container .fotofija .ui-state-active {background: url('../imag/edi/bg_drop.png') no-repeat;}
+.fotofija-container .fotofija .foto-recuadro img {position: absolute;left: 0;right: 0;top: 0;bottom: 0;margin: auto;max-width: 100%;max-height: 100%;}
+.fotofija-container .fotofija .botones {height: 20px; display: none;position: absolute;bottom: 0;width: 100%;background-image:
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mO4cO32TAAIFgMbq4lc+QAAAABJRU5ErkJggg==);outline: 1px solid #ccc;}
+.fotofija-container .fotofija .botones a {float: left;display: block;padding: 2px;}
+.fotofija-container .fotofija .botones input {float: left;margin: 4px 2px 0px 2px;display: block;}
+.fotofija-container .fotofija .botones .cuadrar {position: absolute;right: -4px;width:60px;}
+.fotofija-container .fotofija .botones label {font-size: 9px;margin: 4px 0px 0px 0px;display: block;}
+.fotofija-container .fotofija.active {outline: 2px solid #0097fb;}
+
+#cboxClose {display: none !important;}

@@ -77,6 +77,12 @@ our $XML_BASE =
 <_multitag_seccion></_multitag_seccion>
 <_multitag_tema></_multitag_tema>
 <_multitag_subtema></_multitag_subtema>
+<_galeria_prontus_conf></_galeria_prontus_conf>
+<_galeria_flag_imagen_temporal></_galeria_flag_imagen_temporal>
+<_galeria_prontus_str></_galeria_prontus_str>
+<_txt_galeria_description_total></_txt_galeria_description_total>
+<_txt_galeria_credito_total></_txt_galeria_credito_total>
+<_gal_archive></_gal_archive>
 </_private>
 <_public>
 </_public>
@@ -187,8 +193,7 @@ sub _get_fulldir_vista {
 
     my $fulldir_vista = $this->{dst_pags};
     # warn "fulldir_vista1[$fulldir_vista]";
-    no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-    $fulldir_vista =~ s/(\/site\/artic\/\d{8}\/pags)/\1-$mv/ if ($mv);
+    $fulldir_vista =~ s/(\/site\/artic\/\d{8}\/pags)/$1-$mv/ if ($mv);
     # warn "fulldir_vista2[$fulldir_vista] mv[$mv]";
 
     return $fulldir_vista;
@@ -270,10 +275,7 @@ sub exec_post_proceso_art {
     my ($postProcesoLista) = $this->{post_proceso_lista}; # lista separada por \t de postprocesos
 
     # Ejecuta en bground el proceso pasandole x param. el path completo al articulo.
-    use FindBin '$Bin';
-    my $rutaScript = $Bin;
-
-    $rutaScript =~ s/\/[^\/]+$/\/$prontus_varglb::DIR_CGI_CPAN/;
+    my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
 
     my $newOrEdit = 'E';
     $newOrEdit = 'N' if ($isNew);
@@ -284,7 +286,7 @@ sub exec_post_proceso_art {
         # lo mas un nivel hacia arriba.
         if ( ($pp =~ /^\w/) || ($pp =~ /^\.\.(\/|\\)\w/) ) {
             my $cmd = "$rutaScript/$pp $pathArticulo $this->{public_server_name} $newOrEdit >/dev/null 2>&1 &";
-            print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+            print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][PPROC]$cmd\n";
             system $cmd;
         };
     };
@@ -348,17 +350,17 @@ sub generar_xml_artic {
     # Fotos fijas, a continuacion de las fotos
     $this->_guarda_fotosfijas();
 
-    # Fotos subidas masivamente via uploadify
+    # Fotos subidas masivamente via uploadify o drag and drop
     $this->_guarda_fotosbatch();
 
     # Fotos editadas
-#     $this->_guarda_fotoeditada();
+    $this->_guarda_fotoeditada();
     $this->_guarda_fotofromdir('/' . $this->{prontus_id} . '/cpan/procs/imgedit', '_fotoeditada');
 
     foreach my $nom_campo (keys %{$this->{campos}}) {
         # Salta los recursos, ya procesados de manera especial
 
-        next if ($nom_campo =~ /^(asocfile_|swf_|multimedia_|foto_|fotofija_|_wfoto_|_hfoto_)/);
+        next if ($nom_campo =~ /^(asocfile_|swf_|multimedia_|foto_|fotofija_|_wfoto_|_hfoto_|_gal_archive)/);
         my $val_campo = $this->{campos}->{$nom_campo};
 
         # elimina posibles caracteres de control
@@ -399,8 +401,6 @@ sub generar_xml_artic {
 
     # Se escribe el XML a disco
     return $this->_flush_xml();
-
-
 };
 # ---------------------------------------------------------------
 sub _flush_xml {
@@ -465,7 +465,9 @@ sub _guarda_recursos {
 
     foreach my $nom_campo (keys %{$this->{campos}}) {
         my $val_campo = $this->{campos}->{$nom_campo};
-        next if ($nom_campo !~ /^$type\_\w+/);
+        next if ($nom_campo !~ /^$type\_\w+/ && $nom_campo ne '_gal_archive');
+        next if ($nom_campo eq '_gal_archive' && $type ne 'asocfile');
+
         # Ver si hay archivo existente para el recurso
         my $arch_existente = $this->{campos}->{'_hidd_' . $nom_campo}; # ej: foto_1120090528115643.jpg
         my $nom_arch;
@@ -521,16 +523,11 @@ sub _guarda_recursos {
 
                 my $borrar_arch = $this->{campos}->{'_borr_' . $nom_campo};
                 if ($borrar_arch eq 'S') {
-                    # my $full_path_arch = "$dst_dir/$nom_arch";
-                    # unlink $full_path_arch if (-f $full_path_arch);
-
                     # Obtener nombre de arch. sin extension
                     my $nom_sin_ext = $nom_arch;
                     $nom_sin_ext =~ s/\.\w*$//;
 
                     # Borra todos los relacionados
-                    #my $res = unlink glob("$dst_dir/$nom_sin_ext" . '*.*');
-
                     my @archivos_rel = glob("$dst_dir/$nom_sin_ext" . '*');
                     foreach my $archivo_rel (@archivos_rel) {
                         if (-d $archivo_rel) {
@@ -668,7 +665,7 @@ sub _get_aux_mediafile {
     my ($nom_file, $texto_mm);
 
     my $protocolo = 'http';
-    if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
+    if ($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
         $protocolo = 'https';
     }
 
@@ -710,10 +707,8 @@ sub _get_aux_mediafile {
 sub _get_nom_asocfile {
 # retorna nombre de archivo para asocfile_i, con extension y sin path
     my ($this) = shift;
-
     my $texto = shift;
     my $af_existente = shift;
-
 
     my $nomfile = '';
     my $ext = '';
@@ -769,7 +764,7 @@ sub _get_nom_foto {
     my $foto_existente = shift;
     my $nom_foto_orig = shift;
 
-    if($nom_foto_orig) {
+    if ($nom_foto_orig) {
         $nom_foto_orig =~ s/\_/ /sig;
         $nom_foto_orig =~ s/^\s+//;
 
@@ -836,7 +831,6 @@ sub _existe_foto {
             return 1; # encuentra
         };
     };
-
     return 0;
 };
 
@@ -853,7 +847,6 @@ sub _guarda_fotosbatch {
     &glib_fildir_02::check_dir($dir_uploadify);
 
     foreach my $nom_campo (keys %{$this->{campos}}) {
-
         next if ($nom_campo !~ /^_fotobatch\d+/);
         my $val_campo = $this->{campos}->{$nom_campo}; # path de la foto, pero s/doc. root
         my $path_foto_batch = "$document_root$val_campo";
@@ -1023,8 +1016,7 @@ sub _guarda_fotosfijas {
         # foto local al sitio, caso que venga con ../, sacarlos
         # warn("1-nom_campo[$nom_campo] val_campo[$val_campo]");
         if ($val_campo =~ /^\.\.\//) {
-            no warnings 'syntax'; # para evitar el msg "\2 better written as $2"
-            $val_campo =~ s/^(\.\.\/)+(\w)/\/\2/;
+            $val_campo =~ s/^(\.\.\/)+(\w)/\/$2/;
         };
         # warn("2-nom_campo[$nom_campo] val_campo[$val_campo]");
 
@@ -1724,8 +1716,7 @@ sub borra_artic {
     my $mv;
     foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
         my $dir_art_mv = $dirpag;
-        no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-        $dir_art_mv =~ s/(\d{8})\/pags/\1\/pags-$mv/;
+        $dir_art_mv =~ s/(\d{8})\/pags/$1\/pags-$mv/;
         my @files2delete_mv = glob("$dir_art_mv/$ts" . '.*');
         foreach my $file2delete (@files2delete_mv) {
             unlink $file2delete;
@@ -1736,7 +1727,7 @@ sub borra_artic {
 
         # Paginas paralelas
         $dir_art_mv = $dirpagpar;
-        $dir_art_mv =~ s/(\d{8})\/pagspar/\1\/pagspar-$mv/;
+        $dir_art_mv =~ s/(\d{8})\/pagspar/$1\/pagspar-$mv/;
         @files2delete_mv = glob("$dir_art_mv/$ts*" . '.*');
         foreach my $file2delete (@files2delete_mv) {
             unlink $file2delete;
@@ -1868,10 +1859,7 @@ sub borra_artic {
         my ($secc, $tem, $stem) = split /\//, $taxonomia;
 
         $secc = '0' if ($secc < 0); # para evitar el -1, ver dps por que get_taxonomia devuelve -1
-        my $param_especif = $fid
-                                  . '/' . $secc
-                                  . '/' . $tem
-                                  . '/' . $stem;
+        my $param_especif = $fid . '/' . $secc . '/' . $tem . '/' . $stem;
 
         $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
@@ -2257,13 +2245,14 @@ sub generar_vista_art {
         undef %claves_adicionales;
 
         # Stamp demo
-        no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-        $buffer =~ s/<title>(.*?)<\/title>/<title>$stamp_demo\1<\/title>/is;
+        $buffer =~ s/<title>(.*?)<\/title>/<title>$stamp_demo$1<\/title>/is;
 
         # tag Generator
         $buffer = &lib_prontus::add_generator_tag($buffer);
 
         $buffer = &lib_prontus::parser_custom_function($buffer);
+
+        $buffer =~ s/%%_vista%%/$mv/g;
 
         # Borra marcas no sustituidas
         $buffer =~ s/%%.+?%%//g;
@@ -2279,9 +2268,8 @@ sub generar_vista_art {
         $buffer =~ s/<!--POST_PROCESO=.+?-->//isg;
 
     } else {
-        no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
         my $titular = $titular_crudo;
-        $titular =~ s/<\!\[CDATA\[(.*?)\]\]>/\1/i;
+        $titular =~ s/<\!\[CDATA\[(.*?)\]\]>/$1/i;
         $titular = &lib_prontus::saca_tags_rets($titular);
         utf8::decode($titular);
 
@@ -2696,11 +2684,9 @@ sub _parsing_vtxt {
     # Da por sentado que si encuentra alguna ruta relativa, al sacarle los puntos quedara absoluta
     # Esto siempre sera true para imagenes prontus
     if ($val_campo =~ /src *= *("|')\.\.\//i) {
-        no warnings 'syntax'; # para evitar el msg "\2 better written as $2"
-        $val_campo =~ s/src *= *("|')(\.\.\/)+(\w)/src=\1\/\3/ig;
+        $val_campo =~ s/src *= *("|')(\.\.\/)+(\w)/src=$1\/$3/ig;
     } elsif ($val_campo =~ /src *= *("|')\w+?\//i) {
-        no warnings 'syntax'; # para evitar el msg "\2 better written as $2"
-        $val_campo =~ s/(src) *= *("|')(\w+?)\//\1=\2\/\3\//ig;
+        $val_campo =~ s/(src) *= *("|')(\w+?)\//$1=$2\/$3\//ig;
     };
 
     my $vtxt_aux = $val_campo;
@@ -2737,12 +2723,11 @@ sub _parsing_vtxt {
         $curr_nrotit++;
     };
 
-    no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
     foreach my $st (sort{$a <=> $b}(keys %hash_subtits)) {
         # print STDERR "st[$st]\n";
         my $item_menu = $hash_subtits{$st};
         # Reemplazar en la pagina misma.
-        $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%/$item_menu%%_SUBTIT_LOOP_$nom_campo%%\1%%\/_SUBTIT_LOOP_$nom_campo%%/is;
+        $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%/$item_menu%%_SUBTIT_LOOP_$nom_campo%%$1%%\/_SUBTIT_LOOP_$nom_campo%%/isg;
     };
     # Eliminar TITLOOP sobrante.
     $buffer =~ s/%%_SUBTIT_LOOP_$nom_campo%%(.*?)%%\/_SUBTIT_LOOP_$nom_campo%%//isg;

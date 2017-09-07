@@ -217,7 +217,6 @@ var Listartic = {
                 Admin.displayMessage(Listartic.msgChangePort, 'alert');
                 Listartic.instalaPortModProtector();
                 var item = $(this).after();
-                Listartic.quitarVoBo(item);
             });
             return false;
         });
