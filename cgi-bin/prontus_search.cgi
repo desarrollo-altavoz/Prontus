@@ -569,26 +569,23 @@ sub parsea_plantilla2 {
   $yeswords++;
   $MAXPALABRAS++;
   foreach $resultado (@resultados) {
+    $aux = $searchloop_tmp;
     ($numresult,$numrepet,$fechap,$file,$tit,$meta1,$meta2,$meta3,$res,$sec,$tem,$sub,@metadata) = split(/\|/,$resultado); # 1.7
-    # ($ts,$ext) = split(/\./,$file);
     # 1.12 Rescata la extension.
     if ($file =~ /\.([^\.]+)$/) {
       $ext = lc $1;
     };
     $rel = int(100 * ($numresult/$yeswords + $numrepet/($yeswords * $MAXPALABRAS))); # Calcula el ranking de este resultado
-    # $rel = "$numresult $numrepet $yeswords $MAXPALABRAS $rel"; # debug
-    # $dir = substr($file,0,8);
+    $fec = $fechap;
     $lnk = $file;
     if ($lnk =~ /\/([\w\-]+)\/site\/artic\/\d{8}\/pags\/(\d{14})\.\w+$/) { # 1.27 1.27.2
       $prontus_id = $1;
       $ts =  $2;
       if ($CFG{'USEFRIENDLYURLS'} == 1) {
-        #~ $lnk = &lib_search::friendlyUrl($prontus_id,$ts,$tit,$ext); # deprecated.
+        $aux = &lib_prontus::parse_filef($aux, $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
         $lnk = &lib_prontus::parse_filef('%%_FILEURL%%', $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
       };
     };
-    $fec = $fechap;
-    $aux = $searchloop_tmp;
     # Elimina contenido condicional.
     if ($fec eq '') {
       $aux =~ s/%%if\(fec\)%%.+?%%\/if%%//isg;
@@ -615,6 +612,34 @@ sub parsea_plantilla2 {
     for ($i=1;$i<=20;$i++) { # 1.27.2
       if ($metadata[$i-1] eq '') {
         $aux =~ s/%%if\(metadata$i\)%%.+?%%\/if%%//isg;
+      };
+    };
+    # procesaminto de nifs
+    if ($fec ne '') {
+      $aux =~ s/%%nif\(fec\)%%.+?%%\/nif%%//isg;
+    };
+    if ($sec ne '') {
+      $aux =~ s/%%nif\(sec\)%%.+?%%\/nif%%//isg;
+    };
+    if ($tem ne '') {
+      $aux =~ s/%%nif\(tem\)%%.+?%%\/nif%%//isg;
+    };
+    if ($sub ne '') {
+      $aux =~ s/%%nif\(sub\)%%.+?%%\/nif%%//isg;
+    };
+    # 1.19 Agrega procesamiento de nifs para los campos meta.
+    if ($meta1 ne '') {
+      $aux =~ s/%%nif\(meta1\)%%.+?%%\/nif%%//isg;
+    };
+    if ($meta2 ne '') {
+      $aux =~ s/%%nif\(meta2\)%%.+?%%\/nif%%//isg;
+    };
+    if ($meta3 ne '') {
+      $aux =~ s/%%nif\(meta3\)%%.+?%%\/nif%%//isg;
+    };
+    for ($i=1;$i<=20;$i++) {
+      if ($metadata[$i-1] ne '') {
+        $aux =~ s/%%nif\(metadata$i\)%%.+?%%\/nif%%//isg;
       };
     };
     $aux =~ s/%%ext%%/$ext/isg; # 1.12
@@ -692,45 +717,6 @@ sub parsea_marcas_prontus {
 
   return $plantilla;
 }
-
-# -------------------------------------------------------------------------#
-# Lee y administra el cache de las plantillas del buscador.
-# CVI - Segun se puede ver en el codigo, no se usa para nunca
-# sub leeplantilla {
-#   my($prontus_dir,$search_tmp) = @_;
-#   if ($search_tmp eq '') { $search_tmp = 'search.html'; };
-
-#   my($url) = 'http://' . $ENV{'HTTP_HOST'} . "/$PRONTUS/plantillas/extra/search/pags/$search_tmp";
-#   # print "<br>URL Plantilla=[$url]<br>\n"; # debug
-#   my($plantilla_file) = "$CACHE_DIR/$search_tmp"; # 1.10
-#   my($plantilla,$tiempo);
-#   # Por ahora, lee el archivo directamente.
-#   # return &lib_search::lee_archivo("$prontus_dir/plantillas/extra/search/pags/$search_tmp");
-#   # print 'http://' . $ENV{'HTTP_HOST'} . "$PRONTUS/plantillas/extra/search/pags/$search_tmp"; debug
-#   # Verifica si el cache de la plantilla es lo suficientemente reciente (5 minutos).
-#   if (-f $plantilla_file) {
-#     $tiempo = (stat($plantilla_file))[9];
-#     if ( $tiempo < (time - 300) ) {
-#       $plantilla = &lib_search::getHTML($url);
-#       if ($plantilla ne '') {
-#         &lib_search::escribe_archivo($plantilla_file,$plantilla);
-#       };
-#     }else{
-#       $plantilla = &lib_search::lee_archivo($plantilla_file);
-#     };
-#   }else{
-#     $plantilla = &lib_search::getHTML($url);
-#     if ($plantilla ne '') {
-#       &lib_search::escribe_archivo($plantilla_file,$plantilla);
-#     };
-#   };
-#   # Si la plantilla no esta disponible via http, entonces la lee del disco.
-#   if ($plantilla eq '') {
-#     $plantilla = &lib_search::lee_archivo("$prontus_dir/plantillas/extra/search/pags/$search_tmp");
-#   };
-#   # print "<br>Plantilla=[$plantilla]<br>\n"; # debug
-#   return $plantilla;
-# }; # leeplantilla
 
 # -------------------------------------------------------------------------#
 # Muestra los resultados en el orden requerido.
@@ -1235,28 +1221,30 @@ sub matchSequence() {
     return 0;
   };
 }; # matchSequence
-
+# -------------------------------------------------------------------#
 sub carga_variables_prontus {
+    my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
 
-  my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
+    # Cargar variables de configuración necesarias para friendly url desde archivo -var
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_URLS = $1;
+    };
 
-  # Cargar variables de configuración necesarias para friendly url desde archivo -var
-  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FRIENDLY_URLS = $2;
-  };
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_URLS_VERSION = $1;
+    };
 
-  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
-  };
-
-  if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $2;
-  } else {
     $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75;
-  };
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $1;
+    }
 
-  $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75 if (!$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO';
+    if ($buffervarcfg =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $1;
+    }
 
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75 if (!$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
 };
 
 # -------------------------------------------------------------------#

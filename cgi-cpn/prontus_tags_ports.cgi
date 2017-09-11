@@ -312,6 +312,8 @@ sub generar_tagonomicas_thislevel {
             %vistas = %prontus_varglb::MULTIVISTAS;
             $vistas{''} = 1; # vista default
             foreach $mv (keys %vistas) {
+                my $reldir_artic_mv = $RELDIR_ARTIC;
+                $reldir_artic_mv = "$RELDIR_ARTIC-$mv" if ($mv);
                 foreach my $nombase_plt (keys %NOMBASE_PLTS) {
                     # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
                     my $loop_plt = &get_loop_plt($tag_id, $fid, $mv, $nombase_plt);
@@ -320,7 +322,7 @@ sub generar_tagonomicas_thislevel {
                     my ($auxref, $auxref2);
 
                     # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
-                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
+                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
 
                     $art_xml_fields{$art_id} = $auxref if (! exists $art_xml_fields{$art_id}); # para no leer 2 veces un xml
                     $art_xdata_fields{$art_id} = $auxref2 if (! exists $art_xdata_fields{$art_id}); # para no leer 2 veces un xml
@@ -577,7 +579,6 @@ sub write_pag {
 
             $extension = '.' . $extension;
             $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"$mv|$nombase_plt"}/isg;
-            # $pagina = &incluir_navbar($pagina, $tag_id, $mv, $reldir_port_dst, $extension, $nombase);
             $pagina = &incluir_nrosdepag($tot_artics, $pagina, $nro_pag, $tag_id, $mv, $reldir_port_dst, $extension, $nombase);
 
             # reemplazar nombre del prontus
@@ -657,86 +658,6 @@ sub obtieneRelDirDestino {
     return $reldir_port_dst;
 };
 # ---------------------------------------------------------------
-#sub incluir_navbar {
-#    my ($pagina, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
-#    # La navbar
-#    my $secc_tema_stema_nom;
-#    # secc
-#    # my ($secc_nom, $secc_port) = &get_nombreyport('SECC', $secc_id, 'seccion', $mv); # rotulos tax
-#    my ($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
-#    $secc_nom = &lib_prontus::get_nomtax_envista($mv, $secc_nom4vistas) if ($mv);
-#    $secc_nom = &lib_prontus::escape_html($secc_nom);
-#
-#    my $lnk_secc;
-#    if ($secc_port) {
-#        $lnk_secc = &lib_prontus::get_tax_link($secc_port);
-#    }
-#    else {
-#        # $lnk_secc = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv";
-#        $lnk_secc = "$reldir_port_dst/$nombase" . '_'
-#        . $secc_id
-#        . '_'
-#        . '_'
-#        . '_' . '1'
-#        . $extension;
-#    };
-#    $secc_tema_stema_nom = "<a href='$lnk_secc'>$secc_nom</a>";
-#    # warn "slink[$secc_tema_stema_nom]";
-#
-#    # tem
-#    # my ($tem_nom, $tem_port) = &get_nombreyport('TEMAS', $temas_id, 'tema-' . $secc_id, $mv); # rotulos tax
-#    my ($tem_nom, $tem_port, $filler1, $tem_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
-#    $tem_nom = &lib_prontus::get_nomtax_envista($mv, $tem_nom4vistas) if ($mv);
-#    $tem_nom = &lib_prontus::escape_html($tem_nom);
-#
-#    if ($tem_nom) {
-#        my $lnk_tem;
-#        if ($tem_port) {
-#            $lnk_tem = &lib_prontus::get_tax_link($tem_port);
-#        }
-#        else {
-#            # $lnk_tem = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;tema=$temas_id&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv"; # rotulos tax
-#            $lnk_tem = "$reldir_port_dst/$nombase" . '_'
-#            . $secc_id
-#            . '_' . $temas_id
-#            . '_'
-#            . '_' . '1'
-#            . $extension;
-#
-#        };
-#        $secc_tema_stema_nom .= " / <a href='$lnk_tem'>$tem_nom</a>";
-#        # warn "tlink[$secc_tema_stema_nom]";
-#    };
-#
-#    # stem
-#    # my ($stem_nom, $stem_port) = &get_nombreyport('SUBTEMAS', $subtemas_id, 'subtema-' . $temas_id, $mv); # rotulos tax
-#    my ($stem_nom, $stem_port, $filler2, $stem_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
-#    $stem_nom = &lib_prontus::get_nomtax_envista($mv, $stem_nom4vistas) if ($mv);
-#    $stem_nom = &lib_prontus::escape_html($stem_nom);
-#
-#    if ($stem_nom) {
-#        my $lnk_stem;
-#        if ($stem_port) {
-#            $lnk_stem = &lib_prontus::get_tax_link($stem_port);
-#        }
-#        else {
-#            # $lnk_stem = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;tema=$temas_id&amp;subtema=$subtemas_id&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv"; # rotulos tax
-#            $lnk_stem = "$reldir_port_dst/$nombase" . '_'
-#            . $secc_id
-#            . '_' . $temas_id
-#            . '_' . $subtemas_id
-#            . '_' . '1'
-#            . $extension;
-#        };
-#        $secc_tema_stema_nom .=  "/ <a href='$lnk_stem'>$stem_nom</a>";
-#        # warn "stlink[$secc_tema_stema_nom]";
-#    };
-#
-#    $pagina =~ s/%%_SECC_TEMA_STEMA_NOM%%/$secc_tema_stema_nom/isg;
-#    return $pagina;
-#
-#};
-# ---------------------------------------------------------------
 sub incluir_nrosdepag {
     my ($tot_artics, $pagina, $nro_pag, $tag_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
     my $msgs_aux = $MSGS{"$mv|$nombase$extension"};
@@ -749,6 +670,11 @@ sub incluir_nrosdepag {
     my $cnro_pag = 0;
     my $html_nros_pag = '';
     my $i;
+
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI' && $mv ne '') {
+        $reldir_port_dst =~ s/\/site/\/$mv\/site/ig;
+        $reldir_port_dst =~ s/\-$mv//ig;
+    }
 
     # Carga configuaracion.
     my %cfg_paginacion;
@@ -782,8 +708,6 @@ sub incluir_nrosdepag {
             }else{
                 $tpl_nropag_aux = $tpl_nropag;
             };
-
-            # my $lnk = "/$prontus_varglb::DIR_CGI_PUBLIC/prontus_taxport_lista.cgi?seccion=$secc_id&amp;tema=$temas_id&amp;subtema=$subtemas_id&amp;nropag=$cnro_pag&amp;_REL_PATH_PRONTUS=$FORM{'prontus'}&amp;_MV=$mv"; # rotulos tax
 
             my $lnk = "$reldir_port_dst/$nombase" . '_'
                     . $tag_id
@@ -832,11 +756,7 @@ sub get_tot_artics {
     $count_art = '0' if $count_art eq '';
     $count_art = $prontus_varglb::TAGPORT_MAXARTICS if ($count_art > $prontus_varglb::TAGPORT_MAXARTICS);
     return $count_art;
-
 };
-
-
-
 
 
 # ---------------------------------------------------------------

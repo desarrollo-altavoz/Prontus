@@ -105,6 +105,7 @@
 #banco-img .butBancoImg {cursor:pointer;}
 #banco-img .banco-total{margin-left:5px; margin-top:4px; font-size:12px; font-weight:bold; color:#aaa;}
 #banco-img .foto-icon {width:80px;padding-top:4px;}
+#banco-img .foto-icon img.ui-state-disabled.ui-draggable-disabled {opacity:1;}
 .foto-icon img, .fotodrag.ui-draggable {max-width:80px;max-height:80px;}
 #banco-img .datos-foto {padding-left:4px;}
 #banco-img .datos-foto span{font-size:11px;}
@@ -207,10 +208,15 @@
 .uploadify-queue-item.completed {background-color: #E5E5E5;}
 .uploadify-progress {background-color: #E5E5E5;margin-top: 10px;width: 100%;}
 .uploadify-progress-bar {background-color: #0099FF;height: 3px;width: 1px;}
-#dropZone {background-color: #3A3935; height: 200px; margin: 0 auto; width: 315px; border-radius: 10px 10px 10px 10px; border: 1px solid #000000;}
-#dropZone .draghere {color: #FFFFFF; margin-top: 87px; text-shadow: 1px 1px 2px #E6E6E6; text-transform: uppercase;}
-#uploadProgress {margin: 4px auto 0; width: 185px; display: none; height: 18px; width: 186px;}
-#uploadProgressPercent {margin-left: 145px; position: absolute; width: 35px;}
+#dropZone, #_galeria_dropZone {background-color: #3A3935; height: 200px; margin: 0 auto; width: 315px; border-radius: 10px 10px 10px 10px; border: 1px solid #000000;}
+#dropZone .draghere, #_galeria_dropZone .draghere {color: #FFFFFF; margin-top: 87px; text-shadow: 1px 1px 2px #E6E6E6; text-transform: uppercase;}
+#uploadProgress, .uploadProgress {margin: 4px auto 0; width: 185px; display: none; height: 18px; width: 186px;}
+#uploadProgressPercent, .uploadProgressPercent {margin-left: 145px; position: absolute; width: 35px;}
+.uploadProgressContainer {width:182px; height:15px;border:1px solid #666666; float: left;}
+.uploadProgressBar {width:0%; height:15px; float:left;}
+.prontus-imagenescargadas {margin-left:5px;margin-top:10px;width:120px;height:135px;overflow:hidden;display:inline;float:left}
+.prontus-imagenescargadas div.img-error {color:#FFA500;}
+.prontus-imagenescargadas img {max-height: 120px;max-width: 120px;}
 
 /* seleccion de multitag */
 #multitag {width: 100%;}

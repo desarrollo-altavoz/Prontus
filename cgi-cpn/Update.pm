@@ -12,8 +12,6 @@
 package Update;
 use strict;
 use Carp qw(cluck carp);
-use warnings;
-no warnings 'uninitialized';
 
 use DBI;
 use POSIX qw/ceil/;
@@ -25,7 +23,6 @@ use prontus_varglb;
 use glib_hrfec_02;
 use Digest::MD5 qw(md5_hex);
 use File::Compare;
-use lib_prontus;
 # use diagnostics;
 
 
@@ -92,6 +89,7 @@ sub new {
     # $upd_obj->{nom_cgibin_current} = 'cgi-bin-test'; # DEBUG
 
     $upd_obj->{buffer_last} = &glib_fildir_02::read_file($upd_obj->{dir_updates} . '/' . $upd_obj->{nom_file_vdescriptor}); # last.11.0.txt
+    $upd_obj->{buffer_last} =~ s/[\r\n]+$//sg;
     $upd_obj->{last_version_disponible} = $upd_obj->update_disponible();
 
     $upd_obj->{ts_actualizacion} = &glib_hrfec_02::get_dtime_pack4();
@@ -169,7 +167,6 @@ sub get_dir_descarga {
 # Este método realiza todas las validaciones necesarias, antes
 # de comenzar el proceso de update
 sub check_before_update {
-
     my ($this) = shift;
 
     # Ver si estan las carpetas a respaldar (aunque se supone que estan!)
@@ -228,10 +225,11 @@ sub check_before_update {
 sub _set_info_release_instalada {
     my ($this) = shift;
     my $rama_instalada;
-    if ($this->{version_prontus} =~ /([0-9]+\.[0-9]+)\.([0-9]+)(\.beta)?/) {
+    if ($this->{version_prontus} =~ /([0-9]+\.[0-9]+)\.([0-9]+)(\.beta\.[0-9]+|\.[0-9]+)?/) {
         $this->{rama_instalada} = $1;
         $this->{nro_revision_instalada} = $2;
-        $this->{beta_revision_instalada} = $3;
+        # si no hay valor se considera revision 0 de la version para realizar comparaciones
+        $this->{beta_revision_instalada} = defined($3)?$3:0;
         $this->{nom_file_vdescriptor} = 'last.' . $this->{rama_instalada} . '.txt';
     } else {
         cluck 'No se pudo determinar version base instalada, no es posible verificar actualizaciones disponibles.';
@@ -251,22 +249,36 @@ sub update_disponible {
     # Determina y retorna version del update disponible, en caso de haberlo.
     # Lee el archivo ya descargado.
     my ($this) = shift;
-
     my $last_version_disponible;
 
     if ($this->{rama_instalada} ne '')  {
-
-        my $buffer_last_v = $this->{buffer_last};
         my $rama_instalada = $this->{rama_instalada};
-        if ($buffer_last_v =~ /$rama_instalada\.([0-9]+)(\.beta)?/) {
+        if ($this->{buffer_last} =~ /$rama_instalada\.([0-9]+)(\.beta\.[0-9]+|\.[0-9]+)?/) {
             my $nro_revision_last = $1;
-            my $beta = $2;
-            $last_version_disponible = $rama_instalada . '.' . $nro_revision_last . $beta;
+            my $beta_rev = defined($2)? $2 : '';
+            $last_version_disponible = $rama_instalada . '.' . $nro_revision_last . $beta_rev;
+            # hay una nueva revision, puede ser beta
             if ($nro_revision_last > $this->{nro_revision_instalada}) {
                 return $last_version_disponible;
-            };
-        };
-    };
+            }
+            # si es una subrevision/beta nueva
+            if ($nro_revision_last eq $this->{nro_revision_instalada}) {
+                # ambas son versiones beta de la misma revision
+                if ($this->{beta_revision_instalada} =~ /beta/ && $beta_rev =~ /beta/) {
+                    # verificamos beta superior
+                    if (substr($beta_rev, 6) > substr($this->{beta_revision_instalada}, 6)) {
+                        return $last_version_disponible;
+                    }
+                # esta instalada una beta y hay una release estable
+                } elsif ($this->{beta_revision_instalada} =~ /beta/) {
+                    return $last_version_disponible;
+                # verificamos subrevision
+                } elsif ($beta_rev > $this->{beta_revision_instalada}) {
+                    return $last_version_disponible;
+                }
+            }
+        }
+    }
     return '';
 };
 # ---------------------------------------------------------------
@@ -289,7 +301,7 @@ sub get_status_update {
     };
 #    $status_upd = "11.2.6";
 #    $status_upd = "no_updatesf";
-    warn "status_upd[$status_upd]";
+    print STDERR "status_upd[$status_upd]\n";
     return $status_upd;
 };
 
@@ -307,16 +319,16 @@ sub descarga_upd_descriptor {
 
     if ($msg_err) {
         if ($msg_err =~ /^404 /) {
-            warn "No hay actualizacion disponible, 404 - no se encuentra el archivo[$url]";
+            print STDERR "No hay actualizacion disponible, 404 - no se encuentra el archivo[$url]";
             $download_ok = 0;
         } else {
             my $err = "No se pudo descargar información de nuevas versiones disponibles: $msg_err";
-            warn("$err - url[$url] - " . $msg_err . "\n");
+            print STDERR "$err - url[$url] - " . $msg_err . "\n";
             $download_ok = 0;
         };
     } else {
-        if ($last_version_available !~ /[0-9]+\.[0-9]+\.[0-9]+(\.beta)?/) {
-            warn "No hay actualizacion disponible, el archivo [$url] existe pero no contiene info valida, last_version_available[$last_version_available]";
+        if ($last_version_available !~ /[0-9]+\.[0-9]+\.[0-9]+(\.beta\.[0-9]+|\.[0-9]+)?/) {
+            print STDERR "No hay actualizacion disponible, el archivo [$url] existe pero no contiene info valida, last_version_available[$last_version_available]";
             $download_ok = 0;
         };
     };
@@ -539,9 +551,7 @@ sub garbage_dirs_leave3 {
             print STDERR "\tgarbage: borrando [$dir/$entry]\n";
             &glib_fildir_02::borra_dir("$dir/$entry");
         };
-
     };
-
 };
 
 # ---------------------------------------------------------------
@@ -765,9 +775,7 @@ sub install_core_wizard {
     };
 
     return 1;
-
 };
-
 
 # ---------------------------------------------------------------
 sub compareDirs {
@@ -877,19 +885,19 @@ sub get_core_dirs {
         next if ($entry =~ /^\./);
         next if (!-d "$dir/$entry");
         if ((-f "$dir/$entry/cpan/$entry-var.cfg") && (-f "$dir/$entry/cpan/$entry-id.cfg")) {
-            warn "revisando[$dir/$entry/cpan/dir_cgi.js] viendo si contiene DIR_CGI_CPAN = '$nom_cgicpn_current'\n";
+            #~ print STDERR "revisando[$dir/$entry/cpan/dir_cgi.js] si contiene DIR_CGI_CPAN = '$nom_cgicpn_current'\n";
             # leer el dir_cgi.js para saber si este core corresponde a la version de cgis de prontus en donde esta corriendo el actualizador
             my $buffer_dir_cgi = &glib_fildir_02::read_file("$dir/$entry/cpan/dir_cgi.js"); # DIR_CGI_CPAN = 'cgi-cpn'
             if ($buffer_dir_cgi =~ /DIR_CGI_CPAN *= *['"]$nom_cgicpn_current['"]/s) {
                 $core_dirs .= "$entry;";
-                warn "found [$entry]\n";
+                print STDERR "found [$entry]\n";
             } else {
-                warn "not found\n";
+                print STDERR "not found\n";
             };
         };
     };
     $core_dirs =~ s/;$//;
-    warn "core_dirs[$core_dirs]\n";
+    print STDERR "core_dirs[$core_dirs]\n";
     return $core_dirs;
 };
 # ---------------------------------------------------------------

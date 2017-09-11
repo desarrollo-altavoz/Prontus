@@ -209,43 +209,15 @@ main: {
     my $portada_hdd = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/site/edic/$FORM{'_edic'}/port/$FORM{'_port'}";
     print STDERR "portada: $portada_hdd\n";
     if(-f $portada_hdd) {
-        #~ my $fh = open($portada_hdd);
         my $modtime = (stat($portada_hdd))[9];
-        #~ my $localmodtime = localtime $modtime;
         $buffer =~ s/%%_localmodtime%%/$modtime/ig;
         print STDERR "localmodtime: $modtime\n\n";
         #~ print STDERR "buffer: $buffer\n\n";
-
-        #~ eval "require POSIX;";  my $no_hay_libreria = $@;
-        #~ unless($no_hay_libreria) {
-        #~
-            #~ use POSIX qw/strftime/;
-            #~
-            #~ my $moddate = strftime("%d/%m/%Y", );
-            #~ my $modhour = strftime("%d/%m/%Y", localtime $modtime);
-            #~ print STDERR "modtime: \n";
-            #~ print STDERR "modtime: $modhuman\n";
-            #~
-            #~ my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-            #~ my $today = &glib_hrfec_02::fecha_human();
-            #~
-            #~ h    Formato de 12 horas de una hora con ceros iniciales 01 hasta 12
-            #~ H    Formato de 24 horas de una hora con ceros iniciales 00 hasta 23
-            #~ i    Minutos, con ceros iniciales    00 hasta 59
-            #~ s
-            #~
-            #~ <input type="hidden" name="_fecha_mod" value="%%_fecha_mod%%" />
-            #~ <input type="hidden" name="_hora_mod" value="%%_hora_mod%%" />
-            #~
-                        #~
-            #~ my ($)
-        #~ }
     }
 
     $buffer =~ s/%%.*?%%//ig;
 
     #~ %%_fechahora_pub%%
-
 
     # Escribe cache
     &glib_fildir_02::check_dir($dir_cache);
@@ -253,7 +225,6 @@ main: {
     # print STDERR &get_time('Fin');
 
     print $buffer;
-
 };
 
 # ---------------------------------------------------------------
@@ -275,7 +246,7 @@ sub get_concurrency4port {
 # ---------------------------------------------------------------
 sub get_sess_id {
     my $sess_obj = Session->new(
-                    'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
     return $sess_obj->{id_session};
@@ -634,17 +605,21 @@ sub get_artic_parsed {
 
     # Ver si el usuario conectado tiene asignado el FID de este articulo
     my $art_forbidden = 1; # prohibido
-    if ( ($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E') ) { # Periodista o Editor
-        foreach my $key2 (keys %prontus_varglb::ARTUSERS) {
-            my ($tipart, $usr) = split /\|/, $key2;
-            # print STDERR "tipart[$tipart] - tipo_ficha[$fid]\n";
-            if ( ($usr eq $prontus_varglb::USERS_ID) && ($tipart eq $fid) ) {
-                $art_forbidden = 0; # habilitado
+    if ($prontus_varglb::PRONTUS_SSO ne 'SI') {
+        if ( ($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E') ) { # Periodista o Editor
+            foreach my $key2 (keys %prontus_varglb::ARTUSERS) {
+                my ($tipart, $usr) = split /\|/, $key2;
+                # print STDERR "tipart[$tipart] - tipo_ficha[$fid]\n";
+                if ( ($usr eq $prontus_varglb::USERS_ID) && ($tipart eq $fid) ) {
+                    $art_forbidden = 0; # habilitado
+                };
             };
+        } else {
+            $art_forbidden = 0;
         };
     } else {
         $art_forbidden = 0;
-    };
+    }
 
     # Ver si corresponde poner link para editar o no.
     my $editable = 1;

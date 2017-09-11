@@ -83,7 +83,7 @@ BEGIN {
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
 };
-
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -101,9 +101,10 @@ use DBI;
 
 use lib_search;
 
-my ($BD, $RESTAR_ARTICS_PUB, $CURRENT_SPARE, %TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS);
+my ($BD, $RESTAR_ARTICS_PUB, $CURRENT_SPARE, %TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS, %HASH_ORDEN, %HASH_PUB);
 #my (%HASH_NOMPORTS);
-my (%HASH_ARTIC_PUBS);
+my %HASH_ARTIC_PUBS;
+my %FORM;
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
@@ -403,11 +404,17 @@ sub make_lista {
     };
 
     print STDERR "sql busqueda[$sql]\n\n";
-    my ($art_id, $art_dirfecha, $art_tit, $art_seccion, $art_tema, $art_subtema, $art_extension, $art_autoinc, $art_tipoficha, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae);
-    my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($art_id, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_dirfecha, $art_tit, $art_extension, $art_autoinc, $art_tipoficha, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae));
+    my ($art_id, $art_dirfecha, $art_tit, $art_seccion, $art_tema,
+        $art_subtema, $art_extension, $art_autoinc, $art_tipoficha,
+        $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_alta,
+        $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae);
+    my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql,
+                    \($art_id, $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_dirfecha, $art_tit,
+                    $art_extension, $art_autoinc, $art_tipoficha, $art_alta, $art_idusr, $art_fechap, $art_horap, $art_fechae, $art_horae));
     my $nro_filas = 0;
 
     my $artics_parsed;
+    my $lineas = 0;
     while (($salida->fetch) && ($lineas < $prontus_varglb::MAX_NRO_ARTIC)) {
         $art_seccion = $TABLA_SECC{$art_idsecc1};
         $art_tema = $TABLA_TEMAS{$art_idtemas1};
@@ -415,14 +422,17 @@ sub make_lista {
         $nro_filas++;
 
         my $ts_art_ext = $art_id . '.' . $art_extension;
-        $path_artic = $prontus_varglb::DIR_SERVER .
-        $prontus_varglb::DIR_CONTENIDO .
-        $prontus_varglb::DIR_ARTIC . '/' .
-        $art_dirfecha .
-        $prontus_varglb::DIR_PAG . '/' .
-        $ts_art_ext;
+        my $path_artic = $prontus_varglb::DIR_SERVER .
+                         $prontus_varglb::DIR_CONTENIDO .
+                         $prontus_varglb::DIR_ARTIC . '/' .
+                         $art_dirfecha .
+                         $prontus_varglb::DIR_PAG . '/' .
+                         $ts_art_ext;
 
-        $artics_parsed .= &get_artic_parsed($artic_loop, $path_artic, $art_id, $ts_art_ext, $art_tit, $art_tipoficha, $art_seccion, $art_tema, $art_subtema, $art_alta, $art_fechap, $art_horap, $art_fechae, $art_horae, $art_idusr, $art_autoinc);
+        $artics_parsed .= &get_artic_parsed($artic_loop, $path_artic, $art_id,
+                        $ts_art_ext, $art_tit, $art_tipoficha, $art_seccion,
+                        $art_tema, $art_subtema, $art_alta, $art_fechap,
+                        $art_horap, $art_fechae, $art_horae, $art_idusr, $art_autoinc);
         $lineas++;
     };
     $salida->finish;
@@ -868,56 +878,6 @@ sub des_normaliza_fecha_plus {
 
 };
 
-# ---------------------------------------------------------------
-sub generar_hash_articulos_pub {
-# Cargar en un hash de registros la lista total de articulos de la portada
-
-# Obs : Cada archivo de seccion almacena en su pagina html la lista de articulos (con sus areas y prioridades)
-# que estan publicados en ella. Cada articulo esta representado por una linea de la forma
-#      <rowartic>
-#        <dir></dir>
-#        <file></file>
-#        <area></area>
-#        <ord></ord>
-#        <pub></pub>
-#      </rowartic>
-
-    my ($path_port) = $_[0];
-
-    # Deduce del path completo de la portada, el del xml.
-    my ($path_xml) = $path_port;
-    $path_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/\1\.xml/;
-
-    if (-f $path_xml) {
-
-        my $text_port = &read_file_ref($path_xml);
-        # Rescatar la info de c/artic de la seccion
-        while ($$text_port =~ /<rowartic>[ \n]*?<dir>(\d+?)<\/dir>[ \n]*?<file>(.*?)<\/file>[ \n]*?<area>(\d*?)<\/area>[ \n]*?<ord>(\d*?)<\/ord>[ \n]*?(<vb>(\w*?)<\/vb>)?[ \n]*?<?i?n?>?([\w\/\-]*?)<?\/?i?n?>?[ \n]*?<?o?u?t?>?([\w\/\-]*?)<?\/?o?u?t?>?[ \n]*?<?p?u?b?>?(\d?)<?\/?p?u?b?>?[ \n]*?<\/rowartic>/isg) {
-
-            my ($dirfecha,$art,$area,$prio,$ext_art,$pub, $vb) = '';
-            ($dirfecha,$art,$area,$prio,$vb,$pub) = ($1,$2,$3,$4,$6,$9);
-
-            if ($art =~ /(\.\w+$)/) { # obt. extension con punto # 8.0
-                $ext_art = $1;
-            };
-            $art =~ s/\.\w+$//; # saca ext. # 1.4 # 8.0
-
-
-            if ($vb ne 'S') { $vb = '';}; # 1.11
-            $HASH_VB{$art} = $vb; # 1.11 # Visto bueno. # S | N
-
-            $HASH_ORDEN{$art} = $prio; # 1.4
-            $HASH_AREA{$art} = $area; # 1.4
-            $HASH_DIRFECHA{$art} = $dirfecha; # aaaammdd Dir. corresp. al dia donde se ubica el articulo.
-            $HASH_EXT{$art} = $ext_art; # Extension con punto del archivo
-            $HASH_PUB{$art} = $pub; # Indicador de si el art. esta o no publicado en el html
-
-            # $HASH_ARTICULOS{$art . $ext_art . '__' . $HASH_NOMPORTS{$entry}} = $area . '_' . $prio; #1.4
-
-        }# while
-    }# if
-};# sub
-
 #-----------------------------------------------------------------------#
 sub lee_dir {
 # Lee un directorio y entrega la lista ordenada de entries en bruto.
@@ -935,33 +895,6 @@ sub lee_dir {
   # Ordena entries alfabeticamente.
   # @entries = sort @entries;
   return @entries;
-};
-
-
-
-# ---------------------------------------------------------------
-sub get_lisdir_artic {
-# Mete lista de archivos sin extension a un arreglo y lo deja listo para ordenar.
-  my ($lisdir, $full_dir_artic) = @_;
-  my ($nom_archivo, $extension, @archivos_sorted);
-    foreach $nom_archivo (@$lisdir) {
-        # Si se trata de un articulo valido
-        if (($nom_archivo =~ /^\d{14}\.\w+$/) and (-s "$full_dir_artic/$nom_archivo") and (! -d "$full_dir_artic/$nom_archivo")) {
-
-            # obt. extension con punto
-      $nom_archivo =~ /(\.\w+$)/;
-      $extension = $1;
-
-      # saca ext.
-      $nom_archivo =~ s/\.\w+$//;
-      push @archivos_sorted, $nom_archivo;
-
-      # Extension con punto del archivo
-      $HASH_EXT_NOPUBS{$nom_archivo} = $extension;
-
-    };
-  };
-  return @archivos_sorted;
 };
 
 # ---------------------------------------------------------------
@@ -1080,20 +1013,23 @@ sub get_artic_parsed {
     $loop_art_tpl =~ s/%%_ocultar%%/$ocultar_ajeno/g;
 
 
-
     # Ver si el usuario conectado tiene asignado el FID de este articulo
     my $art_forbidden = 1; # prohibido
-    if ( ($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E') ) { # Periodista o Editor
-        foreach my $key2 (keys %prontus_varglb::ARTUSERS) {
-            my ($tipart, $usr) = split /\|/, $key2;
-            # print STDERR "tipart[$tipart] - tipo_ficha[$fid]\n";
-            if ( ($usr eq $prontus_varglb::USERS_ID) && ($tipart eq $fid) ) {
-                $art_forbidden = 0; # habilitado
+    if ($prontus_varglb::PRONTUS_SSO ne 'SI') {
+        if ( ($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E') ) { # Periodista o Editor
+            foreach my $key2 (keys %prontus_varglb::ARTUSERS) {
+                my ($tipart, $usr) = split /\|/, $key2;
+                # print STDERR "tipart[$tipart] - tipo_ficha[$fid]\n";
+                if ( ($usr eq $prontus_varglb::USERS_ID) && ($tipart eq $fid) ) {
+                    $art_forbidden = 0; # habilitado
+                };
             };
-        };
+        } else {
+            $art_forbidden = 0;
+        }
     } else {
         $art_forbidden = 0;
-    };
+    }
 
     # Ver si corresponde poner link para editar o no.
     my $editable = 1;
@@ -1194,7 +1130,7 @@ sub get_path_link {
 # Obtiene el path realivo del articulo
   my ($path_artic) = $_[0];
 
-  $path_link = $path_artic;
+  my $path_link = $path_artic;
   $path_link =~ s/^$prontus_varglb::DIR_SERVER//is; # Path normal al archivo
 
   return $path_link;
@@ -1249,44 +1185,4 @@ my (@entries, $entry, $arch_seccion, $text_seccion, $lista_secc);
   return $lista_secc;
 
 };
-# ---------------------------------------------------------------
-sub tiene_seccion {
-# Revisa si el archivo pasado como parametro se encuentra publicado en alguna seccion de la edicion
-# seleccionada.
-# Si no esta en el hash %HASH_ARTICULOS quiere decir que no tiene seccion asignada.
-
-# Parametros :
-# 0) Nombre del archivo a consultar, con extension y sin path.
-
-# Retorna la lista de secciones donde figura el articulo, separada por comas.
-
-my ($artic) = $_[0];
-my ($key, $secciones, $tiene, $key_aux);
-my (@sorted_secc);
-
-  foreach $key (keys %HASH_ARTICULOS) {
-    $keyaux = $key;
-    $key =~ s/\_\_.*//; # dejar solo la parte de la clave correspondiente al nombre del archivo.
-    if ($key eq $artic) {
-      $keyaux =~ s/.*?\_\_(.*?)\..*?//s; # dejar solo la parte de la clave correspondiente al nombre de la portada.
-      $keyaux = $1;
-      # $secciones .= $keyaux . ', ';      #1.6
-      push @sorted_secc, $keyaux;
-    }
-  }
-
-
-  @sorted_secc = sort {$a cmp $b} (@sorted_secc);
-
-  foreach $key (@sorted_secc) {
-    $secciones .= $key . ', ';
-  };
-  $secciones =~ s/\, $//; # sacar coma y espacio sobrante  #1.6
-
-  return $secciones;
-
-
-};
-
-
 # -------------------------------END SCRIPT----------------------

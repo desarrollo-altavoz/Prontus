@@ -91,13 +91,11 @@ var Wizard = {
 
         $('.description a').live('click', function() {
             var url = $(this).attr('href');
-            //~ alert(url);
             $(this).colorbox({
                 open: true,
                 href: url,
                 width:'900px',
                 height:'650px',
-                //scrolling: false,
                 iframe: true
             });
             return false;
@@ -138,14 +136,14 @@ var Wizard = {
         validator.addconstraint('USER_BD','obligatorio','','Debe indicar el Usuario de BD');
         validator.addconstraint('USER_BD','regex',new RegExp(/^[\w\-]{1,16}$/),"Usuario de BD no es válido.\nCaracteres permitidos:letras minúsculas o mayúsculas, dígitos, guión y underscore, máximo 16.");
         validator.addconstraint('PWD_BD','obligatorio','','Debe indicar la Contraseña para usuario de BD');
-        validator.addconstraint('PWD_BD','regex',new RegExp(/^[\w\-]{1,16}$/),"Contraseña para usuario de BD no es válida.\nCaracteres permitidos:letras minúsculas o mayúsculas, dígitos, y los caracteres ., _, -, @, $, % y !, máximo 16.");
+        validator.addconstraint('PWD_BD','regex',new RegExp(/^[\w\-\.\@\:\$%!]{0,16}$/),"Contraseña para usuario de BD no es válida.\nCaracteres permitidos:letras minúsculas o mayúsculas, dígitos, y los caracteres ., _, -, @, $, % y !, máximo 16.");
 
         /* para creacion BD */
         var superuser = $('input[name="SUPERUSER_BD"]').val();
         if (superuser !== "") {
             validator.addconstraint('SUPERUSER_BD','regex',new RegExp(/^[\w\-]{1,16}$/),"Usuario para creación de BD no es válido.\nCaracteres permitidos:letras minúsculas o mayúsculas, dígitos, guión y underscore, máximo 16.");
             validator.addconstraint('SUPERPWD_BD','obligatorio','','Debe indicar la Contraseña para creación de BD');
-            validator.addconstraint('SUPERPWD_BD','regex',new RegExp(/^[\w\-\.\@\:\$%!]{1,16}$/),"Contraseña para creación de BD no es válida.\nCaracteres permitidos:letras minúsculas o mayúsculas, dígitos, guión y underscore, máximo 16.");
+            validator.addconstraint('SUPERPWD_BD','regex',new RegExp(/^[\w\-\.\@\:\$%!]{1,16}$/),"Contraseña para creación de BD no es válida.\nCaracteres permitidos:letras minúsculas o mayúsculas, dígitos, y los caracteres ., _, -, @, $, % y !, máximo 16.");
         };
 
         validator.addconstraint('PRONTUS_SMTP','obligatorio','','Debe indicar el servidor SMTP');
@@ -465,12 +463,11 @@ var Wizard = {
      * Se deja centralizado para cambiar el tipo de manejo en caso necesario
      **/
     handleError: function(url, XMLHttpRequest, textStatus, errorThrown) {
-
         alert("Server error procesando request ajax:\nURL invocada:"
                 + url + "\ntextStatus="
                 + textStatus + "\nXMLHttpRequest.status="
                 + XMLHttpRequest.status + '-' + XMLHttpRequest.statusText
                 + "\nXMLHttpRequest.responseText=[" + XMLHttpRequest.responseText
-                + "]\nResponseHeaders=" + XMLHttpRequest.getAllResponseHeaders());
+                + "]\nResponseHeaders=" + XMLHttpRequest.getAllResponseHeaders() );
     }
 }

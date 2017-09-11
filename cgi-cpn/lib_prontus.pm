@@ -105,110 +105,100 @@ sub setUtf8 {
 };
 # ---------------------------------------------------------------
 sub check_dirs {
-my ($dir);
+    # TEMPLATES ARTICULOS
+    # Dir. de tpl de las pags de los articulos
+    my $dir = $prontus_varglb::DIR_SERVER .
+           $prontus_varglb::DIR_TEMP .
+           $prontus_varglb::DIR_ARTIC .
+           $prontus_varglb::DIR_FECHA .
+           $prontus_varglb::DIR_PAG;
 
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de plantillas de articulos no es válido");
+        exit;
+    };
 
-  # TEMPLATES ARTICULOS
-  # Dir. de tpl de las pags de los articulos
-  $dir = $prontus_varglb::DIR_SERVER .
-         $prontus_varglb::DIR_TEMP .
-         $prontus_varglb::DIR_ARTIC .
-         $prontus_varglb::DIR_FECHA .
-         $prontus_varglb::DIR_PAG;
+    if (!(&check_contenido_dir($dir))) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de plantillas de artículos está vacío, éste debe contener al menos una plantilla");
+        exit;
+    };
 
+    # DESTINO ARTICULOS -----------------------------
+    # Dir a los articulos existentes hasta antes de la fecha
+    $dir = $prontus_varglb::DIR_SERVER .
+           $prontus_varglb::DIR_CONTENIDO .
+           $prontus_varglb::DIR_ARTIC;
 
-
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de articulos no es válido");
-    exit;
-  };
-
-  if (!(&check_contenido_dir($dir))) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de artículos está vacío, éste debe contener al menos una plantilla");
-    exit;
-  };
-
-
-
-  # DESTINO ARTICULOS -----------------------------
-  # Dir a los articulos existentes hasta antes de la fecha
-  $dir = $prontus_varglb::DIR_SERVER .
-         $prontus_varglb::DIR_CONTENIDO .
-         $prontus_varglb::DIR_ARTIC;
-
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio destino de artículos no es válido");
-    exit;
-  };
-
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio destino de artículos no es válido");
+        exit;
+    };
 
   # TEMPLATES TAXONOMIA
-  if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
-    $dir = $prontus_varglb::DIR_SERVER .
-           $prontus_varglb::DIR_TEMP .
-           $prontus_varglb::DIR_TAXONOMIA;
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        $dir = $prontus_varglb::DIR_SERVER .
+               $prontus_varglb::DIR_TEMP .
+               $prontus_varglb::DIR_TAXONOMIA;
 
-    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-      print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados no es válido");
-      exit;
+        if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados no es válido");
+            exit;
+        };
+        if ( ! (&check_contenido_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados está vacío. Debe haber a lo menos una plantilla.");
+            exit;
+        };
     };
-    if ( ! (&check_contenido_dir($dir)) ) {
-      print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados está vacío. Debe haber a lo menos una plantilla.");
-      exit;
-    };
-
-  };
 
   # DESTINO TAXONOMIA
-  if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
-    $dir = $prontus_varglb::DIR_SERVER .
-           $prontus_varglb::DIR_CONTENIDO .
-           $prontus_varglb::DIR_TAXONOMIA;
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        $dir = $prontus_varglb::DIR_SERVER .
+               $prontus_varglb::DIR_CONTENIDO .
+               $prontus_varglb::DIR_TAXONOMIA;
 
-    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-      print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de destino de art. relacionados no es válido");
-      exit;
+        if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de destino de art. relacionados no es válido");
+            exit;
+        };
     };
-  };
 
   # TEMPLATE portada tipo tema
-  if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
-    $dir = $prontus_varglb::DIR_SERVER .
-           $prontus_varglb::DIR_TEMP .
-           $prontus_varglb::DIR_PTEMA;
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        $dir = $prontus_varglb::DIR_SERVER .
+               $prontus_varglb::DIR_TEMP .
+               $prontus_varglb::DIR_PTEMA;
 
-    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-      print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas tipo tema no es válido");
-      exit;
+        if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas tipo tema no es válido");
+            exit;
+        };
     };
-
-  };
 
   # DESTINO portadas tipo tema
-  if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
-    $dir = $prontus_varglb::DIR_SERVER .
-           $prontus_varglb::DIR_CONTENIDO .
-           $prontus_varglb::DIR_PTEMA;
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        $dir = $prontus_varglb::DIR_SERVER .
+               $prontus_varglb::DIR_CONTENIDO .
+               $prontus_varglb::DIR_PTEMA;
 
-    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-      print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de destino de portadas tipo tema no es válido");
-      exit;
+        if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+            print "Content-Type: text/html\n\n";
+            &glib_html_02::print_pag_result("Error","El directorio de destino de portadas tipo tema no es válido");
+            exit;
+        };
     };
-  };
 
     # Directorio de destino de los includes friendly v4
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
         $dir = $prontus_varglb::DIR_SERVER .
-                $prontus_varglb::DIR_CONTENIDO .
-                $prontus_varglb::DIR_FRIENDLY;
+               $prontus_varglb::DIR_CONTENIDO .
+               $prontus_varglb::DIR_FRIENDLY;
 
         if ( ! (&glib_fildir_02::check_dir($dir)) ) {
             print "Content-Type: text/html\n\n";
@@ -220,8 +210,8 @@ my ($dir);
     # Directorio de cache de multitag
     if ($prontus_varglb::MULTITAG eq 'SI') {
         $dir = $prontus_varglb::DIR_SERVER .
-                $prontus_varglb::DIR_CONTENIDO .
-                $prontus_varglb::DIR_MULTITAG;
+               $prontus_varglb::DIR_CONTENIDO .
+               $prontus_varglb::DIR_MULTITAG;
 
         if ( ! (&glib_fildir_02::check_dir($dir)) ) {
             print "Content-Type: text/html\n\n";
@@ -231,185 +221,179 @@ my ($dir);
     };
 
 
-  # DIRS. DE USO INTERNO  -----------------------------
-  # Dir de los dbm
-  if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_DBM)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de data de usuarios no es válido");
-    exit;
-  };
+    # DIRS. DE USO INTERNO  -----------------------------
+    # Dir de los dbm
+    if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_DBM)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de data de usuarios no es válido");
+        exit;
+    };
 
-  # Dir de los logs
-  if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/log')) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de logs de Prontus no es válido");
-    exit;
-  };
+    # Dir de los logs
+    if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/log')) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de logs de Prontus no es válido");
+        exit;
+    };
 
-  if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/procs')) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de logs de procesos masivos de Prontus no es válido");
-    exit;
-  };
+    if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/procs')) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de logs de procesos masivos de Prontus no es válido");
+        exit;
+    };
 
-  # Dir cpan
-  if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio cpan no es válido");
-    exit;
-  };
+    # Dir cpan
+    if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio cpan no es válido");
+        exit;
+    };
 
-  # Dir cpan/fid
-  if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/fid')) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de FIDs no es válido");
-    exit;
-  };
-  if (!(&check_contenido_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/fid'))) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error", "El directorio de FIDs está vacío, éste debe contener al menos un FID");
-    exit;
-  };
+    # Dir cpan/fid
+    if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/fid')) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de FIDs no es válido");
+        exit;
+    };
+    if (!(&check_contenido_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/fid'))) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error", "El directorio de FIDs está vacío, éste debe contener al menos un FID");
+        exit;
+    };
 
-  # Escribe htaccess en el dir de los FIDs para prohibir acceso http a este.
-  &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/fid/.htaccess", "Order Allow,Deny\nDeny from all");
+    # Escribe htaccess en el dir de los FIDs para prohibir acceso http a este.
+    &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/fid/.htaccess", "Order Allow,Deny\nDeny from all");
 
-  # Escribe htaccess para prohibir acceso http a TODO CFG QUE HAYA EN pRONTUS.
-  if (! -s "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/.htaccess") {
-    &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/.htaccess", "<FilesMatch \"\\\.(cfg)\$\">\nDeny from all\n</FilesMatch>");
-  };
+    # Escribe htaccess para prohibir acceso http a TODO CFG QUE HAYA EN pRONTUS.
+    if (! -s "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/.htaccess") {
+        &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/.htaccess", "<FilesMatch \"\\\.(cfg)\$\">\nDeny from all\n</FilesMatch>");
+    };
 
-
-  # Dir CORE
-  my $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
-  if ( ! (&glib_fildir_02::check_dir($core_dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio cpan no es válido");
-    exit;
-  };
+    # Dir CORE
+    my $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
+    if ( ! (&glib_fildir_02::check_dir($core_dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio cpan no es válido");
+        exit;
+    };
 
 
   # TEMPLATES DE PORTADAS
-  $dir = $prontus_varglb::DIR_SERVER .
-         $prontus_varglb::DIR_TEMP .
-         $prontus_varglb::DIR_EDIC .
-         $prontus_varglb::DIR_NROEDIC .
-         $prontus_varglb::DIR_SECC;
+    $dir = $prontus_varglb::DIR_SERVER .
+           $prontus_varglb::DIR_TEMP .
+           $prontus_varglb::DIR_EDIC .
+           $prontus_varglb::DIR_NROEDIC .
+           $prontus_varglb::DIR_SECC;
 
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas no es válido");
-    exit;
-  };
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas no es válido");
+        exit;
+    };
 
-  if (!(&check_contenido_dir($dir))) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error", "El directorio de plantillas de portadas está vacío, éste debe contener al menos un template");
-    exit;
-  };
+    if (!(&check_contenido_dir($dir))) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error", "El directorio de plantillas de portadas está vacío, éste debe contener al menos un template");
+        exit;
+    };
 
-  # DIR TEMPLATES DE PORTADAS RECAMBIO
-  $dir = $prontus_varglb::DIR_SERVER .
-         $prontus_varglb::DIR_TEMP .
-         $prontus_varglb::DIR_EDIC .
-         $prontus_varglb::DIR_NROEDIC .
-         $prontus_varglb::DIR_SPARE;
+    # DIR TEMPLATES DE PORTADAS RECAMBIO
+    $dir = $prontus_varglb::DIR_SERVER .
+           $prontus_varglb::DIR_TEMP .
+           $prontus_varglb::DIR_EDIC .
+           $prontus_varglb::DIR_NROEDIC .
+           $prontus_varglb::DIR_SPARE;
 
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas de recambio no es válido");
-    exit;
-  };
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas de recambio no es válido");
+        exit;
+    };
 
+    # Tpls. repetidos.
+    if (&tpls_duplicados($dir)) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","Una o más plantillas de portada está repetida dentro del mismo directorio pero con extensión distinta");
+        exit;
+    };
 
-  # Tpls. repetidos.
-  if (&tpls_duplicados($dir)) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Una o más plantillas de portada está repetida dentro del mismo directorio pero con extensión distinta");
-    exit;
-  };
+    # Dir de TEMPLATE de homepages.
+    $dir = $prontus_varglb::DIR_SERVER .
+           $prontus_varglb::DIR_TEMP .
+           $prontus_varglb::DIR_EDIC .
+           $prontus_varglb::DIR_NROEDIC .
+           $prontus_varglb::DIR_HPAGES;
 
-  # Dir de TEMPLATE de homepages.
-  $dir = $prontus_varglb::DIR_SERVER .
-         $prontus_varglb::DIR_TEMP .
-         $prontus_varglb::DIR_EDIC .
-         $prontus_varglb::DIR_NROEDIC .
-         $prontus_varglb::DIR_HPAGES;
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de plantilla de la home page de ediciones no es válido");
+        exit;
+    };
 
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantilla de la home page de ediciones no es válido");
-    exit;
-  };
+    # Archivo Template de homepage de edicion.
+    my $nom_tpl_home = "$dir/$prontus_varglb::INDEX_EDIC"; # 8.0
+    if (! -f $nom_tpl_home) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","Plantilla de homepage de edicion no existe");
+        exit;
+    };
 
-  # Archivo Template de homepage de edicion.
-  my $nom_tpl_home = "$dir/$prontus_varglb::INDEX_EDIC"; # 8.0
-  if (! -f $nom_tpl_home) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Plantilla de homepage de edicion no existe");
-    exit;
-  };
+    # DESTINO EDICIONES
+    $dir = $prontus_varglb::DIR_SERVER .
+           $prontus_varglb::DIR_CONTENIDO .
+           $prontus_varglb::DIR_EDIC;
 
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de destino de ediciones no es válido");
+        exit;
+    };
 
-  # DESTINO EDICIONES
-  $dir = $prontus_varglb::DIR_SERVER .
-         $prontus_varglb::DIR_CONTENIDO .
-         $prontus_varglb::DIR_EDIC;
+    # Pagina de inicializacion para las portadas en construccion.
+    if ( ! (-f "$prontus_varglb::DIR_SERVER$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/$prontus_varglb::PAG_WORKING") ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","Pagina para portada 'en construcción' no existe");
+        exit;
+    };
 
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de ediciones no es válido");
-    exit;
-  };
+    # Dir. destino de Edicion unica
+    $dir = $prontus_varglb::DIR_SERVER .
+           $prontus_varglb::DIR_CONTENIDO .
+           $prontus_varglb::DIR_EDIC .
+           $prontus_varglb::DIR_UNICAEDIC;
 
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de edición única no es válido");
+        exit;
+    };
 
-  # Pagina de inicializacion para las portadas en construccion.
-  if ( ! (-f "$prontus_varglb::DIR_SERVER$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/$prontus_varglb::PAG_WORKING") ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Pagina para portada 'en construcción' no existe");
-    exit;
-  };
+    $dir .= $prontus_varglb::DIR_SECC;
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de destino de las portadas de la edición única no es válido");
+        exit;
+    };
 
-
-  # Dir. destino de Edicion unica
-  $dir = $prontus_varglb::DIR_SERVER .
-         $prontus_varglb::DIR_CONTENIDO .
-         $prontus_varglb::DIR_EDIC .
-         $prontus_varglb::DIR_UNICAEDIC;
-
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de edición única no es válido");
-    exit;
-  };
-
-  $dir .= $prontus_varglb::DIR_SECC;
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de las portadas de la edición única no es válido");
-    exit;
-  };
-
-  # Dir destino de los xml de portada de la ed. unica
-  $dir =~ s/$prontus_varglb::DIR_SECC$/\/xml/;
-  # print STDERR "alfa[$dir]\n";
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino del xml de las portadas de la edición única no es válido");
-    exit;
-  };
+    # Dir destino de los xml de portada de la ed. unica
+    $dir =~ s/$prontus_varglb::DIR_SECC$/\/xml/;
+    # print STDERR "alfa[$dir]\n";
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de destino del xml de las portadas de la edición única no es válido");
+        exit;
+    };
 
   # Dir destino de los rss de portada de la ed. unica
-  $dir =~ s/\/xml$/\/rss/;
-  if ( ! (&glib_fildir_02::check_dir($dir)) ) {
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de los rss de las portadas de la edición única no es válido");
-    exit;
-  };
+    $dir =~ s/\/xml$/\/rss/;
+    if ( ! (&glib_fildir_02::check_dir($dir)) ) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","El directorio de destino de los rss de las portadas de la edición única no es válido");
+        exit;
+    };
 
-  # Escribe htaccess en el dir de plantillas para prohibir acceso http a este.
-  &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP/.htaccess", "Order Allow,Deny\nDeny from all");
-
+    # Escribe htaccess en el dir de plantillas para prohibir acceso http a este.
+    &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP/.htaccess", "Order Allow,Deny\nDeny from all");
 };
 
 # ---------------------------------------------------------------
@@ -577,130 +561,130 @@ sub get_dirfecha_by_ts {
 # ---------------------------------------------------------------
 # Prontus 6.0
 sub open_dbm_files {
-  # Cargar en los hash desde los archivos de textos
-  # USERS
-  my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email);
+    # Cargar en los hash desde los archivos de textos
+    # USERS
+    my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email);
 
-  if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt")) {
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
-    print ARCHIVO "||\n";
-    close ARCHIVO;
-  };
-
-  if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt")) {
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
-    print ARCHIVO "||\n";
-    close ARCHIVO;
-  };
-
-  if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt")) {
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
-    print ARCHIVO "||\n";
-    close ARCHIVO;
-  };
-
-  # print "Content-Type: text/html\n\n"; # debug
-  open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
-  while (<ARCHIVO>) {
-    if ($_ !~ /^\|\|/) {
-      $_ =~ s/\n$//;
-      # print "pesosraya[$_]<br>";
-      ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split(/\|/, $_);
-      $prontus_varglb::USERS{$users_id} = $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email;
-      # print "linea cargada[$users_id y $prontus_varglb::USERS{$users_id}]<br>"
+    if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt")) {
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
+        print ARCHIVO "||\n";
+        close ARCHIVO;
     };
-  };
-  close ARCHIVO;
 
-  # ARTUSERS
-  my ($tipart, $usr1);
-  open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
-  while (<ARCHIVO>) {
-    if ($_ !~ /^\|\|/) {
-      $_ =~ s/\n$//;
-      ($tipart, $usr1) = split(/\|/, $_);
-      $prontus_varglb::ARTUSERS{$tipart . '|' . $usr1} = 'filler';
+    if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt")) {
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
+        print ARCHIVO "||\n";
+        close ARCHIVO;
     };
-  };
-  close ARCHIVO;
 
-  # PORTUSERS
-  my ($port, $usr2);
-  open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
-  while (<ARCHIVO>) {
-    if ($_ !~ /^\|\|/) {
-      $_ =~ s/\n$//;
-      ($port, $usr2) = split(/\|/, $_);
-      $prontus_varglb::PORTUSERS{$port . '|' . $usr2} = 'filler';
+    if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt")) {
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
+        print ARCHIVO "||\n";
+        close ARCHIVO;
     };
-  };
-  close ARCHIVO;
 
-  return 'ok';
+    # print "Content-Type: text/html\n\n"; # debug
+    open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
+    while (<ARCHIVO>) {
+        if ($_ !~ /^\|\|/) {
+            $_ =~ s/\n$//;
+            # print "pesosraya[$_]<br>";
+            ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split(/\|/, $_);
+            if ($users_id ne '' && $users_nom ne '' && $users_usr  ne '' && $users_psw ne '') {
+                $prontus_varglb::USERS{$users_id} = $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email;
+            }
+            # print "linea cargada[$users_id y $prontus_varglb::USERS{$users_id}]<br>"
+        };
+    };
+    close ARCHIVO;
+
+    # ARTUSERS
+    my ($tipart, $usr1);
+    open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
+    while (<ARCHIVO>) {
+        if ($_ !~ /^\|\|/) {
+            $_ =~ s/\n$//;
+            ($tipart, $usr1) = split(/\|/, $_);
+            $prontus_varglb::ARTUSERS{$tipart . '|' . $usr1} = 'filler';
+        };
+    };
+    close ARCHIVO;
+
+    # PORTUSERS
+    my ($port, $usr2);
+    open (ARCHIVO,"<$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
+    while (<ARCHIVO>) {
+        if ($_ !~ /^\|\|/) {
+            $_ =~ s/\n$//;
+            ($port, $usr2) = split(/\|/, $_);
+            $prontus_varglb::PORTUSERS{$port . '|' . $usr2} = 'filler';
+        };
+    };
+    close ARCHIVO;
+
+    return 'ok';
 };
 # ---------------------------------------------------------------
 # Prontus 6.0
 sub close_dbm_files {
-my ($k);
-my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $linea);
-my ($tipart, $port, $usr1, $usr2, $buffer);
+    my ($k);
+    my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $linea);
+    my ($tipart, $port, $usr1, $usr2, $buffer);
 
-  # Salvar los hash a los archivos de texto.
-  # USERS
-  $linea = '';
-  $buffer = '';
-  foreach $k (sort { $a <=> $b } keys %prontus_varglb::USERS) {
-    $users_id = $k;
-    ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$k};
-    $linea = $users_id . '|' . $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email . "\n";
-    $buffer .= $linea;
-  };
-  if ($buffer) {
-    &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.bak");
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
-    print ARCHIVO $buffer;
-    close ARCHIVO;
-  };
+    # Salvar los hash a los archivos de texto.
+    # USERS
+    $linea = '';
+    $buffer = '';
+    foreach $k (sort { $a <=> $b } keys %prontus_varglb::USERS) {
+        $users_id = $k;
+        ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$k};
+        $linea = $users_id . '|' . $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email . "\n";
+        $buffer .= $linea;
+    };
+    if ($buffer) {
+        &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.bak");
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
+        print ARCHIVO $buffer;
+        close ARCHIVO;
+    };
 
-  # ARTUSERS
-  $linea = '';
-  $buffer = '';
-  foreach $k (keys %prontus_varglb::ARTUSERS) {
-    ($tipart, $usr1) = split /\|/, $k;
-    $linea = $tipart . '|' . $usr1 . "\n";
-    $buffer .= $linea;
-  };
-  if ($buffer) {
-    &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.bak");
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
-    print ARCHIVO $buffer;
-    close ARCHIVO;
-  };
+    # ARTUSERS
+    $linea = '';
+    $buffer = '';
+    foreach $k (keys %prontus_varglb::ARTUSERS) {
+        ($tipart, $usr1) = split /\|/, $k;
+        $linea = $tipart . '|' . $usr1 . "\n";
+        $buffer .= $linea;
+    };
+    if ($buffer) {
+        &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.bak");
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/artusers.txt") || return 'no_ok';
+        print ARCHIVO $buffer;
+        close ARCHIVO;
+    };
 
-
-  # PORTUSERS
-  $linea = '';
-  $buffer = '';
-  foreach $k (keys %prontus_varglb::PORTUSERS) {
-    ($port, $usr2) = split /\|/, $k;
-    $linea = $port . '|' . $usr2 . "\n";
-    $buffer .= $linea;
-  };
-  if ($buffer) {
-    &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.bak");
-    open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
-    print ARCHIVO $buffer;
-    close ARCHIVO;
-  };
-
+    # PORTUSERS
+    $linea = '';
+    $buffer = '';
+    foreach $k (keys %prontus_varglb::PORTUSERS) {
+        ($port, $usr2) = split /\|/, $k;
+        $linea = $port . '|' . $usr2 . "\n";
+        $buffer .= $linea;
+    };
+    if ($buffer) {
+        &File::Copy::copy("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt", "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.bak");
+        open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/portusers.txt") || return 'no_ok';
+        print ARCHIVO $buffer;
+        close ARCHIVO;
+    };
 };
 # ---------------------------------------------------------------
 # Prontus 6.0
 sub get_glosa_perfil {
-  if ($prontus_varglb::USERS_PERFIL eq 'P') { return 'Redactor';}
-  elsif ($prontus_varglb::USERS_PERFIL eq 'E') { return 'Editor';}
-  elsif ($prontus_varglb::USERS_PERFIL eq 'A') { return 'Administrador';}
-  else { return '';};
+    if ($prontus_varglb::USERS_PERFIL eq 'P') { return 'Redactor';}
+    elsif ($prontus_varglb::USERS_PERFIL eq 'E') { return 'Editor';}
+    elsif ($prontus_varglb::USERS_PERFIL eq 'A') { return 'Administrador';}
+    else { return '';};
 };
 # ---------------------------------------------------------------
 # Prontus 6.0
@@ -733,12 +717,12 @@ sub check_user {
     my $redir = $_[0]; # redireccion en caso de que no se detecte una sesion activa.
 
     %cookies = &lib_cookies::get_cookies();
-    $username = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_ID};
-    $crypted_pass = $cookies{'KEY_' . $prontus_varglb::PRONTUS_ID}; # CLAVE PRONTUS ENCRIPTADA
+    $username = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
+    $crypted_pass = $cookies{'KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID}; # CLAVE PRONTUS ENCRIPTADA
     $prontus_varglb::USERS_USR = $username;
 
     my $sess_obj = Session->new(
-                    'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
     if ($sess_obj->{id_session} eq '') {
@@ -902,8 +886,7 @@ sub load_artic_pubs {
             my $arch_seccion = "$pathdir_seccs/$port";
 
             my ($arch_xml) = $arch_seccion;
-            no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-            $arch_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/\1\.xml/;
+            $arch_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/$1\.xml/;
 
             next if ((! -f $arch_xml) || ($port =~ /^preview/i));
 
@@ -924,7 +907,7 @@ sub load_artic_pubs {
 
     my $ref_hash_artics = \%hash_artics;
     my $json_artics;
-    if($JSON::VERSION =~ /^1\./) {
+    if ($JSON::VERSION =~ /^1\./) {
         my $json = new JSON;
         $json_artics = $json->objToJson($ref_hash_artics);
     } else {
@@ -1066,10 +1049,10 @@ sub load_config {
 
   my ($path_conf) = $_[0];
 
-  my ($area_menu, $area_cont, $buffer, $tipo_prontus, $dir_contenido);
+  my ($area_menu, $area_cont, $buffer, $dir_contenido);
   my ($dir_temp, $dir_cpan, $i, $server, $prontus_key, $oct_dig, $oct_dig_tipoprontus, $sept_dig, $nro_prontus);
   my ($cfecha, $dir_dbm); # 1.22
-  my ($prontus_id, $multied, $reldir_base, $dir_log); # Prontus 6.0
+  my ($multied, $reldir_base, $dir_log); # Prontus 6.0
   my ($rtext); # rc15
 
 
@@ -1123,15 +1106,12 @@ sub load_config {
     exit;
   };
 
-  if ($buffer =~ m/\s*PRONTUS\_ID\s*=\s*("|')(.*?)("|')/) { # Prontus 6.0
-    $prontus_id = $2;
-  };
+    $prontus_varglb::PRONTUS_ID = '';
+    if ($buffer =~ m/\s*PRONTUS\_ID\s*=\s*("|')(.*?)("|')/) { # Prontus 6.0
+        $prontus_varglb::PRONTUS_ID = $2;
+    };
 
-  $tipo_prontus = 'PRONTUS-04'; # AL FINAL SON TODOS PRONTUS 4 !!
-#  if ($buffer =~ m/\s*TIPO\_PRONTUS\s*=\s*("|')(PRONTUS-\d\d)("|')/) { # 1.6
-#    $tipo_prontus = $2;
-#  };
-
+  $prontus_varglb::TIPO_PRONTUS = 'PRONTUS-04'; # AL FINAL SON TODOS PRONTUS 4 !!
 
   # Directorio relativo al sitio web donde se instalara el publicador.
   # Si no se especifica, se asume la raiz.
@@ -1168,6 +1148,10 @@ sub load_config {
     $friendly_url_images = $2;
   };
 
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $2;
+    };
     while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
         my $clave = $2;
         $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
@@ -1492,10 +1476,7 @@ sub load_config {
       $oct_dig = $1;
     };
     $nro_prontus = '4'; # al final son todos prontus 4 !
-#    $nro_prontus = '0';
-#    if ($tipo_prontus =~ /PRONTUS-\d(\d)/) {
-#      $nro_prontus = $1;
-#    };
+
     $rtext_enabled = '';
     ($oct_dig_tipoprontus, $oct_dig, $rtext_enabled)  = &get_oct_dig($oct_dig);
 
@@ -1530,9 +1511,6 @@ sub load_config {
       $k_laddr =~ s/[^0-9A-Z]//g;
     };
 
-#    print STDERR "\n prontus_key[$prontus_key]";
-#    print STDERR "\n k_name[$k_name]";
-#    print STDERR "\n k_ip[$k_ip]";
 
     if (($k_name ne $prontus_key) and ($k_ip ne $prontus_key) and ($k_saddr ne $prontus_key) and ($k_laddr ne $prontus_key)) {
       $novalid_key = 1;
@@ -1544,7 +1522,6 @@ sub load_config {
     };
 
   }; # while p.key
-
 
 
 
@@ -1560,22 +1537,12 @@ sub load_config {
       $prontus_varglb::STAMP_DEMO = '';
       $prontus_varglb::STAMP_DEMO_RSS = '';
 
-      # 8.0
-#      $prontus_varglb::STAMP_DEMO = 'Prontus X - ';
-#
-#      $prontus_varglb::STAMP_DEMO_RSS = "<item>\n"
-#                                       . "<title>Prontus CMS (r)</title>\n"
-#                                       . "<link>http://www.prontus.cl</link>\n"
-#                                       . "<description>Contenido generado por Prontus</description>\n"
-#                                       . "</item>\n";
-      # print STDERR "No se encontro ninguna PK valida para este sitio. SERVER_NAME[$ENV{'SERVER_NAME'}] HTTP_HOST[$ENV{'HTTP_HOST'}]\n";
   }
   else {
     # clave valida
     $prontus_varglb::STAMP_DEMO = '';
     $prontus_varglb::STAMP_DEMO_RSS = '';
   };
-
 
 
   if ($buffer =~ m/\s*CONTROL\_FECHA\s*=\s*("|')(.*?)("|')/) { # 1.22 valores posibles : SI | NO
@@ -1586,7 +1553,6 @@ sub load_config {
   if ($buffer =~ m/\s*MULTI\_EDICION\s*=\s*("|')(.*?)("|')/) { # 1.22 valores posibles : SI | NO
     $multied = $2;
   };
-
 
 
   my $peditor = 'SI'; # valor por defecto. # 7.0
@@ -1624,31 +1590,47 @@ sub load_config {
     $admin_tax = $2;
   };
 
-  my $p_edit_art_ajenos = 'SI'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*REDACTOR_EDITAR_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $p_edit_art_ajenos = $2;
-  };
+    my $p_edit_art_ajenos = 'SI'; # valor por defecto. # 7.0
+    if ($buffer =~ m/\s*REDACTOR_EDITAR_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
+            $p_edit_art_ajenos = $2;
+    };
 
-  my $p_ver_art_ajenos = 'SI'; # valor por defecto. # 8.0
-  if ($buffer =~ m/\s*REDACTOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $p_ver_art_ajenos = $2;
-  };
+    my $p_ver_art_ajenos = 'SI'; # valor por defecto. # 8.0
+    if ($buffer =~ m/\s*REDACTOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $p_ver_art_ajenos = $2;
+    };
 
+    my $e_edit_art_ajenos = 'SI'; # valor por defecto. # 7.0
+    if ($buffer =~ m/\s*EDITOR_EDITAR_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $e_edit_art_ajenos = $2;
+    };
 
-  my $e_edit_art_ajenos = 'SI'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*EDITOR_EDITAR_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $e_edit_art_ajenos = $2;
-  };
+    my $e_ver_art_ajenos = 'SI'; # valor por defecto. # 8.0
+    if ($buffer =~ m/\s*EDITOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $e_ver_art_ajenos = $2;
+    };
 
-  my $e_ver_art_ajenos = 'SI'; # valor por defecto. # 8.0
-  if ($buffer =~ m/\s*EDITOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $e_ver_art_ajenos = $2;
-  };
+    my $e_adm_ediciones = 'SI'; # valor por defecto. # 8.0
+    if ($buffer =~ m/\s*EDITOR_ADMINISTRAR_EDICIONES\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $e_adm_ediciones = $2;
+    };
 
-  my $e_adm_ediciones = 'SI'; # valor por defecto. # 8.0
-  if ($buffer =~ m/\s*EDITOR_ADMINISTRAR_EDICIONES\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $e_adm_ediciones = $2;
-  };
+    # activar single sign-on
+    $prontus_varglb::PRONTUS_SSO = 'NO';
+    if ($buffer =~ m/\s*PRONTUS_SSO\s*=\s*["|'](.*?)["|']/) { # SI | NO
+        $prontus_varglb::PRONTUS_SSO = $1;
+    };
+
+    # es el prontus que administra todos los usuarios
+    $prontus_varglb::PRONTUS_SSO_MASTER = 'NO';
+    if ($buffer =~ m/\s*PRONTUS_SSO_MASTER\s*=\s*["|'](.*?)["|']/) { # SI | NO
+        $prontus_varglb::PRONTUS_SSO_MASTER = $1;
+    };
+    # id del prontus con los usuarios
+    $prontus_varglb::PRONTUS_SSO_MASTER_ID = '';
+    if ($buffer =~ m/\s*PRONTUS_SSO_MASTER_ID\s*=\s*["|']([\w\_\-\d]+)["|']/) { # id de otro prontus
+        $prontus_varglb::PRONTUS_SSO_MASTER_ID = $1;
+    };
 
   my $port_ini_selected = ''; # valor por defecto. # 7.0
   if ($buffer =~ m/\s*PORT_INI_SELECTED\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -1830,12 +1812,6 @@ sub load_config {
   };
   $prontus_varglb::LIST_PORT_PPROC = $port_pproc;
 
-  #~ # list.LIST_ARTXPAG
-  #~ $prontus_varglb::LIST_ARTXPAG = '20'; # valor por defecto.
-  #~ if ($buffer =~ m/\s*LIST_ARTXPAG\s*=\s*("|')([0-9]+?)("|')/) {
-    #~ $prontus_varglb::LIST_ARTXPAG = $2;
-  #~ };
-
   # list.LIST_MAXARTICS
   $prontus_varglb::LIST_MAXARTICS = '20'; # valor por defecto.
   if ($buffer =~ m/\s*LIST_MAXARTICS\s*=\s*("|')([0-9]+?)("|')/) {
@@ -1933,8 +1909,6 @@ sub load_config {
   };
   #print STDERR "DIR_FFMPEG[$prontus_varglb::DIR_FFMPEG]\n";
 
-
-
   # customizacion de paste mode en vtxt
   my $vtxt_paste_newlines_as_p = 'NO';
   if ($buffer =~ m/\s*VTXT_PASTE_NEWLINES_AS_P\s*=\s*("|')(.*?)("|')/) {
@@ -2005,7 +1979,7 @@ sub load_config {
   $prontus_varglb::TAXPORT_ARTXPAG = $taxport_artxpag;
 
   # TAXPORT_ORDEN
-  $prontus_varglb::TAXPORT_ORDEN = 'ART_FECHAP desc, ART_HORAP desc'; # valor por defecto.
+  $prontus_varglb::TAXPORT_ORDEN = 'ART_FECHAPHORAP DESC, ART_ID DESC'; # valor por defecto.
   my $taxport_orden;
   my $taxport_orden_new;
   my $taxport_orden_err;
@@ -2013,13 +1987,13 @@ sub load_config {
     $taxport_orden = $2;
     if ($taxport_orden =~ /^(PUBLICACION|TITULAR|CREACION)\((ASC|DESC)\)$/) {
       if ($1 eq 'PUBLICACION') {
-        $taxport_orden_new = "ART_FECHAP $2, ART_HORAP $2";
+        $taxport_orden_new = "ART_FECHAPHORAP $2, ART_ID $2";
       }
       elsif ($1 eq 'TITULAR') {
-        $taxport_orden_new = "ART_TITU $2";
+        $taxport_orden_new = "ART_TITU $2, ART_ID $2";
       }
       elsif ($1 eq 'CREACION') {
-        $taxport_orden_new = "ART_AUTOINC $2";
+        $taxport_orden_new = "ART_AUTOINC $2, ART_ID $2";
       }
       else {
         $taxport_orden_err = 1;
@@ -2185,16 +2159,6 @@ sub load_config {
   };
   $prontus_varglb::FORM_CSV_CHARSET = $form_csv_charset;
 
-#  my $pp;
-#  my $pp_tipo;
-#  while ($buffer =~ m/\s*POST\_PROCESO\s*=\s*("|')(.*?)(\((.*?)\))?\((.*?)\)("|')/g) {
-#     $pp_tipo = $2; # ART-BORRAR | ART-GUARDAR | ART-EDITAR | PORT_GUARDAR | etc
-#     $pp_context = $4;
-#     $pp = $5;
-#
-#     $prontus_varglb::POST_PROCESO{$pp_tipo}{} = $pp;
-#  };
-
   my $pp;
   my $pp_tipo;
   while ($buffer =~ m/\s*POST\_PROCESO\s*=\s*("|')(.*?)(\(.*?)("|')/g) {
@@ -2217,16 +2181,10 @@ sub load_config {
     $prontus_varglb::FFMPEG_PARAMS = $1;
   };
 
-  # El valor por defecto es vacio
-  if ($buffer =~ m/\s*MAX_XCODING\s*=\s*("|')(\d*)("|')/) {
-    if ($2 eq '') {
-        $prontus_varglb::MAX_XCODING = '500';
-    } else {
+    $prontus_varglb::MAX_XCODING = '500';
+    if ($buffer =~ m/\s*MAX_XCODING\s*=\s*("|')(\d+)("|')/) {
         $prontus_varglb::MAX_XCODING = $2;
     };
-  } else {
-      $prontus_varglb::MAX_XCODING = '500';
-  };
 
   # El valor por defecto es 0
   if ($buffer =~ m/\s*BLOQUEO_EDICION\s*=\s*("|')(.*?)("|')/) {
@@ -2251,17 +2209,20 @@ sub load_config {
   };
 
   # Prontus 6.0
-  $prontus_varglb::PRONTUS_ID = $prontus_id;
-  $prontus_varglb::RELDIR_BASE = $reldir_base;
-  $prontus_varglb::TIPO_PRONTUS = $tipo_prontus;
+    $prontus_varglb::RELDIR_BASE = $reldir_base;
+    $prontus_varglb::DIR_CONTENIDO = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID$prontus_varglb::DIR_CONTENIDO";
+    $prontus_varglb::DIR_TEMP = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID$prontus_varglb::DIR_TEMP";
 
-  $prontus_varglb::DIR_CONTENIDO = "$reldir_base/$prontus_id$prontus_varglb::DIR_CONTENIDO";
 
-  $prontus_varglb::DIR_TEMP = "$reldir_base/$prontus_id$prontus_varglb::DIR_TEMP";
-  $prontus_varglb::DIR_CPAN = "$reldir_base/$prontus_id$prontus_varglb::DIR_CPAN";
+    if ($prontus_varglb::PRONTUS_SSO eq 'SI' && $prontus_varglb::PRONTUS_SSO_MASTER eq 'NO' && $prontus_varglb::PRONTUS_SSO_MASTER_ID ne '') {
+        $prontus_varglb::DIR_DBM = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_SSO_MASTER_ID$prontus_varglb::DIR_CPAN/data";
+        $prontus_varglb::PRONTUS_SSO_MANAGER_ID = $prontus_varglb::PRONTUS_SSO_MASTER_ID;
+    } else {
+        $prontus_varglb::DIR_DBM = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID$prontus_varglb::DIR_CPAN/data";
+        $prontus_varglb::PRONTUS_SSO_MANAGER_ID = $prontus_varglb::PRONTUS_ID;
+    }
 
-  $prontus_varglb::DIR_DBM = "$prontus_varglb::DIR_CPAN/data";
-
+    $prontus_varglb::DIR_CPAN = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID$prontus_varglb::DIR_CPAN";
 
   $prontus_varglb::AREA_MENU = $area_menu;
   $prontus_varglb::AREA_CONT = $area_cont;
@@ -2317,22 +2278,7 @@ sub load_config {
   $prontus_varglb::FECHA_HOY = &glib_hrfec_02::get_date_pack4();
 
 
-  $prontus_varglb::DIR_CORE = "$reldir_base/$prontus_id$prontus_varglb::DIR_CORE";
-
-  # Solo ambiente web.
-
-#   if ($ENV{'SERVER_NAME'} ne '') {
-#
-#     my $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
-#     my $js_buf = &glib_fildir_02::read_file("$core_dir/secciones_tmp.js");
-#     my $secciones_js;
-#     while ($buffer =~ m/\s*SECCIONES\s*=\s*("|')(.*?)("|')/g) {
-#        $valor = $2;
-#        $secciones_js .= ",'$valor'";
-#     };
-#     $js_buf =~ s/%%secciones%%/$secciones_js/g;
-#     &glib_fildir_02::write_file("$core_dir/secciones.js", $js_buf);
-#   };
+  $prontus_varglb::DIR_CORE = "$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID$prontus_varglb::DIR_CORE";
 
     &check_dirs();
 
@@ -2347,6 +2293,41 @@ sub load_config {
     };
 }
 
+# -------------------------------------------------------------------------#
+sub get_prontus_sso_dirs {
+    my $dir = $prontus_varglb::DIR_SERVER;
+    my @entries = &glib_fildir_02::lee_dir($dir);
+    my @core_dirs; # core dirs
+    # se agrega el directorio del prontus master
+    push(@core_dirs, $prontus_varglb::PRONTUS_SSO_MANAGER_ID);
+
+    # Recorre revisando todas las carpetas de la raiz buscando donde haya *-var.cfg y *-id.cfg
+    foreach my $entry (@entries) {
+        if (&valida_prontus_dir($dir, $entry)) {
+            my $buffer_conf = &glib_fildir_02::read_file("$dir/$entry/cpan/$entry-usr.cfg");
+            if ($buffer_conf  =~ /PRONTUS_SSO\s*=\s*["|']SI["|']/ && $buffer_conf =~ /PRONTUS_SSO_MASTER_ID\s*=\s*["|']\Q$prontus_varglb::PRONTUS_SSO_MANAGER_ID\E["|']/) {
+                print STDERR "SSO Enabled [$entry]\n";
+                push(@core_dirs, $entry);
+            }
+        }
+    }
+    return @core_dirs;
+};
+# -------------------------------------------------------------------------#
+sub valida_prontus_dir {
+    my $dir = $_[0];
+    my $entry = $_[1];
+    return 0 if ($entry =~ /^\./);
+    return 0 if (!-d "$dir/$entry");
+    if ((-f "$dir/$entry/cpan/$entry-var.cfg") && (-f "$dir/$entry/cpan/$entry-id.cfg")) {
+        # leer el dir_cgi.js para saber si este core corresponde a la misma version de cgis de prontus
+        my $buffer_dir_cgi = &glib_fildir_02::read_file("$dir/$entry/cpan/dir_cgi.js"); # DIR_CGI_CPAN = 'cgi-cpn'
+        if ($buffer_dir_cgi =~ /DIR_CGI_CPAN *= *['"]\Q$prontus_varglb::DIR_CGI_CPAN\E['"]/s) {
+            return 1;
+        }
+    }
+    return 0;
+}
 # -------------------------------------------------------------------------#
 # 8.0
 sub get_oct_dig {
@@ -2431,10 +2412,7 @@ sub write_log {
   my ($accion, $objeto, $path, $contexto) = @_;
   my ($linea, $fecha, $hora, $buf, $nom_file, $usr);
   $prontus_varglb::DIR_LOG =~ s/\\/\//g;
-
-  no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-  $prontus_varglb::DIR_LOG =~ s/(\w)\/$/\1/; # Borrar posible ultimo slash.
-
+  $prontus_varglb::DIR_LOG =~ s/(\w)\/$/$1/; # Borrar posible ultimo slash.
 
   if ((-d $prontus_varglb::DIR_LOG) && ($prontus_varglb::PRONTUS_LOG eq 'SI')) {
     # <nombre del publicador>_aaaammdd.log
@@ -2463,9 +2441,7 @@ sub write_log {
       $linea = $fecha . "\t" . $hora . "\t" . $ENV{'REMOTE_ADDR'} . "\t" . $objeto . "\t" . $accion . "\t" . $path . "\n";
     };
 
-    $buf = &glib_fildir_02::read_file($prontus_varglb::DIR_LOG . '/' . $nom_file);
-    $buf = $buf . $linea;
-    &glib_fildir_02::write_file($prontus_varglb::DIR_LOG . '/' . $nom_file, $buf);
+    &glib_fildir_02::append_file($prontus_varglb::DIR_LOG . '/' . $nom_file, $linea);
   };
 
 };
@@ -2556,7 +2532,7 @@ sub make_portada {
                 $k_dst =~ /([^\/\\]+\.\w+)$/;
                 $k_dst = $1;
 
-                $links_previews = "<div><a href='$k_dst'>Ver preview de portada $paralela '$k'</a></div>" . $links_previews;
+                $links_previews = "<div><a href=\"$k_dst\">Ver preview de portada $paralela '$k'</a></div>" . $links_previews;
             };
             my $info_string = "<div style=\"width:100%; background-color:#FFF;\"><div>Previsualizando '$cual_viendo'.</div> $links_previews <hr></div>";
             if($buffer =~ /(<body[^>]*?>)/) {
@@ -2570,6 +2546,7 @@ sub make_portada {
               $buffer = $info_string . $buffer;
             };
         };
+        $buffer =~ s/%%_vista%%/$mv/g;
         $buffer =~ s/%%.+?%%//g;
         &glib_fildir_02::write_file($dest_file_clon, $buffer);
         &lib_prontus::purge_cache($dest_file_clon);
@@ -2585,7 +2562,6 @@ sub make_portada {
 
     # Lee archivo de template rss.
     # Se llama igual a la portada pero esta en vez de /port en /rss y tiene extension .xml
-    # $path_tpl =~ s/\/port\/(\w+)\.\w+?$/\/rss\/\1\.xml/;
     $path_tpl =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/;
 
     if ((-s $path_tpl) && (-f $path_tpl)) {
@@ -2594,6 +2570,7 @@ sub make_portada {
 
         # Parseos especificos
         $buffer =~ s/<\/channel>/$stamp_demo_rss\n<\/channel>/is;
+        $buffer =~ s/%%_vista%%/$mv/g;
 
         # Escribe RSS.
         $buffer =~ s/%%.+?%%//g;
@@ -2610,11 +2587,9 @@ sub write_rss_port {
 # Escribe el xml del rss de portada prontus
 
   my ($destrss, $nom_edic, $buffer) = @_;
-  # $destrss =~ s/\/port\/(\w+)\.\w+?$/\/rss\/\1\.xml/; # Deduce del path completo de la portada, el del rss.
   $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/; # Deduce del path completo de la portada, el del rss.
 
-  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual no mas escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija: toma cachito e goma!
-  #~ $buffer = &mini_unescape_html($buffer); # parche heredado de subsecmar para el flash
+  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual se escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija
 
   my $destdir_rss = $destrss;
   $destdir_rss =~ s/\/[\w\.]+$//;
@@ -3546,7 +3521,7 @@ sub parser_condicional {
         my $marca_fin = '%%/' . $sentencia . '%%';
         $fin = index $buffer, $marca_fin;
 
-        if ($cont1 >= 2000) {
+        if ($cont1 >= 3000) {
             #~ print STDERR "[1] $sentencia : condicionales_begin[$cont_condicionales_begin] condicionales_end[$cont_condicionales_end]\n";
             #~ print STDERR "inicio[$inicio] fin[$fin] elif[$elif]\n";
             return $buffer;
@@ -3564,7 +3539,7 @@ sub parser_condicional {
             my $otro;
             do {
                 $cont2++;
-                if ($cont2 >= 2000) {
+                if ($cont2 >= 3000) {
                     return $buffer;
                 };
                 $otro = index $buffer, $marca_ini, $inicio + 1;
@@ -4311,8 +4286,8 @@ sub parsea_subtits {
     $looptit_aux =~ s/%%_SUBTIT%%/$tit/ig;
     $$subtits{$nrotit} = $looptit_aux; # acumula item para ponerlo despues en el menu
 
-    $valor =~ s/%%_SUBTIT%%/<!---_SUBTIT--->$tit<!---\/_SUBTIT--->/i;
-    $valor =~ s/%%_SUBTIT_ANAME%%/T$nrotit/i;
+    $valor =~ s/%%_SUBTIT%%/<!---_SUBTIT--->$tit<!---\/_SUBTIT--->/ig;
+    $valor =~ s/%%_SUBTIT_ANAME%%/T$nrotit/ig;
 
     $nrotit = $nrotit + 1;
   };
@@ -4956,15 +4931,13 @@ sub borra_taxport {
   };
 };
 
-
-
 # ---------------------------------------------------------------
 # 20120723 - JOR - Los ultimos 3 parametros corresponden al nombre de la seccion, tema y subtema para construir la version 2.0 de las friendly url.
 sub parse_filef {
     my ($buffer, $titular, $ts, $prontus_id, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1) = @_;
 
     return $buffer if (!$ts || !$prontus_id || !$titular);
-    return $buffer unless($buffer =~ /%%_FILEURL%%/i);
+    return $buffer unless($buffer =~ /%%_FILEURL(\(\w+\))?%%/i);
 
     # Ajusta largo de titular para friendly.
     $titular = &ajusta_nchars($titular, $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
@@ -4990,22 +4963,24 @@ sub parse_filef {
 
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
         my $fileurl = '';
+        my $fileurl_proto = '';
         if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1') {
             my $tax = '';
             if ($nom_seccion1 ne '') {
                 $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
                 $tax .= "$nom_seccion1";
-            };
+            }
 
             if ($nom_tema1 ne '') {
                 $nom_tema1 = &despulgar_texto_friendly($nom_tema1);
                 $tax .= "/$nom_tema1";
-            };
+            }
 
             if ($nom_subtema1 ne '') {
                 $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
                 $tax .= "/$nom_subtema1";
-            };
+            }
+
             if ($tax ne '') {
                 $tax = '/' . $tax;
             }
@@ -5035,7 +5010,20 @@ sub parse_filef {
                         }
                     }
                     $titular = &ajusta_titular_f4($titular);
-                    $fileurl = "/$prontus_id$tax/$titular";
+                    my $vista = '';
+                    # obtenemos la vista para la url
+                    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
+                        if ($relpath_artic =~ /\/pags\-(\w+)\// ) {
+                             $vista = '/'.$1;
+                        }
+                    }
+                    if ($tax =~ /\/$titular$/) {
+                        $fileurl = "/$prontus_id$vista$tax";
+                        $fileurl_proto = $tax;
+                    } else {
+                        $fileurl = "/$prontus_id$vista$tax/$titular";
+                        $fileurl_proto = "$tax/$titular";
+                    }
                 } else {
                     $fileurl = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
                 }
@@ -5043,13 +5031,19 @@ sub parse_filef {
         } else {
             # Deja por defecto la versión 1, en caso de que no exista la variable o esté vacia.
             $fileurl = "/$titular/$prontus_id/$fecha4friendly/$hora.$ext";
-        };
-        #~ print STDERR "fileurl[$fileurl]\n";
+        }
+        #~ print STDERR "fileurl[$fileurl] relpath_artic[$relpath_artic]\n";
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
+        if ($fileurl_proto ne '' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
+            $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links normal, no friendly
+        } else {
+            $buffer =~ s/%%_FILEURL\(\w+\)%%/$fileurl/isg; # Links friendly
+        }
     } else {
         my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
         $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
+        $buffer =~ s/%%_FILEURL\(\w+\)%%/$file/isg; # Links normal, no friendly
     };
 
     return $buffer;
@@ -5314,50 +5308,71 @@ sub generar_popup_multivistas {
 
 # ---------------------------------------------------------------
 sub make_mapa {
-
 # genera mapa del sitio en base a taxonomia
-  my ($mv) = $_[0]; # nombre de la vista
-  my ($bd) = $_[1];
-  my $dir_plt = 'pags'; # rotulos tax
-  $dir_plt .= "-$mv" if ($mv); # rotulos tax
+    my ($mv) = $_[0]; # nombre de la vista
+    my ($bd) = $_[1];
+    my $dir_plt = 'pags'; # rotulos tax
+    $dir_plt .= "-$mv" if ($mv); # rotulos tax
+    my @postprocesos;
 
+    my $ruta_dir = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP/extra/mapa/$dir_plt";
+    my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
+    @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
+    foreach my $plt_file (@lisdir) {
+        next if (! -f "$ruta_dir/$plt_file");
 
-  my $ruta_dir = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP/extra/mapa/$dir_plt";
-  my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
-  @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
-  foreach my $k (@lisdir) {
-    next if (! -f "$ruta_dir/$k");
+        my $mapa_plt = &glib_fildir_02::read_file("$ruta_dir/$plt_file");
+        $mapa_plt = &ajusta_crlf($mapa_plt);
 
-    my $mapa_plt = &glib_fildir_02::read_file("$ruta_dir/$k");
-    $mapa_plt = &ajusta_crlf($mapa_plt);
-    my ($loop_mapa_s, $loop_mapa_t, $loop_mapa_st);
-    if ($mapa_plt =~ /%%(LOOP_SECCION)%%(.*?)%%\/\1%%/s) {
-      $loop_mapa_s = $2;
-      #~ $loop_mapa_s =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
-      #~ $loop_mapa_s =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
-    };
-    if ($mapa_plt =~ /%%(LOOP_TEMA)%%(.*?)%%\/\1%%/s) {
-      $loop_mapa_t = $2;
-      #~ $loop_mapa_t =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
-    };
-    if ($mapa_plt =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
-      $loop_mapa_st = $2;
-    };
-    my $base_indent = '15';
-    my ($mapa_total) = &get_arbol_mapa($loop_mapa_s, $loop_mapa_t, $loop_mapa_st, $mv, $base_indent, $bd);
-    $mapa_plt =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
-    $mapa_plt =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
-    $mapa_plt =~ s/%%(LOOP_SECCION)%%.*?%%\/\1%%/$mapa_total/is;
-    $mapa_plt = &parser_custom_function($mapa_plt);
-    # se parsean variables globales
-    $mapa_plt =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
-    $mapa_plt =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
-    &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt");
-    my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt/$k";
-    &glib_fildir_02::write_file($dst_mapa, $mapa_plt);
-    &lib_prontus::purge_cache($dst_mapa) if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI');
+        my ($loop_mapa_s, $loop_mapa_t, $loop_mapa_st);
+        if ($mapa_plt =~ /%%(LOOP_SECCION)%%(.*?)%%\/\1%%/s) {
+            $loop_mapa_s = $2;
+        }
+        if ($mapa_plt =~ /%%(LOOP_TEMA)%%(.*?)%%\/\1%%/s) {
+            $loop_mapa_t = $2;
+        }
+        if ($mapa_plt =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
+            $loop_mapa_st = $2;
+        }
+        my $base_indent = '15';
+        my ($mapa_total) = &get_arbol_mapa($loop_mapa_s, $loop_mapa_t, $loop_mapa_st, $mv, $base_indent, $bd);
+        $mapa_plt =~ s/%%(LOOP_SUBTEMA)%%.*?%%\/\1%%//is;
+        $mapa_plt =~ s/%%(LOOP_TEMA)%%.*?%%\/\1%%//is;
+        $mapa_plt =~ s/%%(LOOP_SECCION)%%.*?%%\/\1%%/$mapa_total/is;
+        $mapa_plt = &parser_custom_function($mapa_plt);
+        # se parsean variables globales
+        $mapa_plt =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+        $mapa_plt =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
 
-  };
+        my ($_plt_nom, $_plt_ext) = &split_nom_y_extension($plt_file);
+        $mapa_plt =~ s/%%_plt_nom%%/$_plt_nom/ig;
+        $mapa_plt =~ s/%%_plt_ext%%/$_plt_ext/ig;
+        $mapa_plt =~ s/%%_vista%%/$mv/ig;
+
+        # rescata el post_proceso
+        if ($mv eq '') {
+            while ($mapa_plt =~ /<!--POST_PROCESO=(.+?)-->/isg) {
+                push(@postprocesos, $1);
+            }
+        }
+        $mapa_plt =~ s/<!--POST_PROCESO=.+?-->//isg;
+
+        # Borra marcas no sustituidas
+        $mapa_plt =~ s/%%.+?%%//g;
+
+        &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt");
+        my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/mapa/$dir_plt/$plt_file";
+        &glib_fildir_02::write_file($dst_mapa, $mapa_plt);
+        &lib_prontus::purge_cache($dst_mapa) if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI');
+    }
+
+    # ejecutamos los postprocesos asociados
+    my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
+    foreach my $pproc(@postprocesos) {
+        my $cmd = "$rutaScript/$pproc $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][PPROC]$cmd\n";
+        system $cmd;
+    }
 
 };
 # ---------------------------------------------------------------
@@ -5908,10 +5923,7 @@ sub artic_parser_fechas {
     }; # foreach fechas
 
     return $buffer;
-
 };
-
-
 
 # --------------------------------------------------------------------#
 sub escapea_bd {
@@ -6182,7 +6194,7 @@ sub get_newer_edic {
 };
 
 # ---------------------------------------------------------------
-sub conectar_prontus_bd() {
+sub conectar_prontus_bd {
 
     my ($motor_bd, $nom_bd, $server_bd, $user_bd, $pwd_bd, $pathfile_sqlite) = @_;
 
@@ -6301,7 +6313,6 @@ sub get_relpathconf_by_prontus_id {
 };
 # ---------------------------------------------------------------
 sub get_path_nice {
-
     my $pathnice = '/usr/bin/nice';
     if (! -f $pathnice) {
       $pathnice = '/usr/local/bin/nice';
@@ -6508,17 +6519,17 @@ sub cerrar_sesion {
 
     # Mata session
     my $sess_obj = Session->new(
-                    'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
 
     # Ver user logueado
     my %cookies = &lib_cookies::get_cookies();
-    my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_ID};
+    my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
 
     # Setear cookie en blanco para dar por terminada la sesion.
-    &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_ID, ''); # pa q no pueda navegar
-    &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_ID, '');
+    &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, ''); # pa q no pueda navegar
+    &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, '');
 
     # libera recursos para info de concurrencia
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,

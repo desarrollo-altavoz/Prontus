@@ -25,12 +25,6 @@ var Dam = {
         Dam.instalaHoverFotoList();
 
         // Instala el plugin de Media
-        //~ $.fn.media.defaults.flvPlayer = '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf';
-        //$.fn.media.defaults.mp3Player = '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf';
-        //~ $('.media').media({
-          //~ width:220,
-          //~ height:150
-        //~ });
         $('.media-audio').each(function() {
             $(this).media({
                 src: '/'+Admin.prontus_id+'/cpan/core/js-local/jquery/plugins/media/mediaplayer.swf',
@@ -207,7 +201,7 @@ var Dam = {
     },
 
     instalaHoverFotoList: function() {
-        $('.foto-list').hover( 
+        $('.foto-list').hover(
             function () {
                 $(this).addClass('bg');
             },

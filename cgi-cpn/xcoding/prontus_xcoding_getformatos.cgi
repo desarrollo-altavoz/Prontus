@@ -74,7 +74,6 @@ main: {
     my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
     $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
     &lib_prontus::load_config($path_conf);
-    $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
     # User check
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();

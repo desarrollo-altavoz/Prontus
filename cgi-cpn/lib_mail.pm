@@ -198,6 +198,7 @@ sub mail_text {   # FROM MAILCENTER
                 to =>$to,
                 subject => $subject,
                 reply => $replyto,
+                tls_allowed => 0 # deshabilita encriptacion SSL
                 #~ debug => \*STDERR,
         })) or return &err_mail("Error al enviar mail via Mail::Sender [$!] [$Mail::Sender::Error] [From=$from][To=$to][SMTP=$smtp]");
 
@@ -281,6 +282,7 @@ sub mail_multipart {   # FROM MAILCENTER
             $sender->Close;
 
         } else {
+            $body = decode("utf8", $body);
             # Envio de email sin html con attachs
             (ref ($sender->MailFile({
                     msg => $body,

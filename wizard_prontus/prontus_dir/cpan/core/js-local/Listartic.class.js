@@ -217,7 +217,6 @@ var Listartic = {
                 Admin.displayMessage(Listartic.msgChangePort, 'alert');
                 Listartic.instalaPortModProtector();
                 var item = $(this).after();
-                Listartic.quitarVoBo(item);
             });
             return false;
         });
@@ -383,7 +382,7 @@ var Listartic = {
     // ajusta el largo de los titulares y los divide si es necesario
     // para que se vean correctamente en el listado
     procesarTitulares: function (listado, elementos) {
-        var maxLength = 48;
+        var maxLength = 43;
         $(listado).each(function () {
             $(this).find(elementos + ' .titulo-left strong a').each(function () {
                 var titular = $(this).html();

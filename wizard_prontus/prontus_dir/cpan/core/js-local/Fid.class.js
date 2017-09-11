@@ -14,13 +14,8 @@ var Fid = {
     waitingProntusForm: 0,
     tooltipId: null,
     tooltipTime: 800,
-    //iframeVoid: '/cpan/core/imag/bg-iframe.gif',
 
     init: function() {
-
-        //Admin.prontus_id = mainFidJs.PRONTUS_ID;
-        //Fid.iframeVoid = '/' + Admin.prontus_id + Fid.iframeVoid;
-
         // Muestra los elementos con class hide-new-artic, cuando el artículo no es nuevo
         if(mainFidJs.TS !== '') {
             $('.hide-new-artic').show();
@@ -120,28 +115,23 @@ var Fid = {
 
         /* Mostrar drag & drop siempre y cuando este soportado. */
         if (Fid.showDragDrop) {
-
             // Iniciar upload Drag & Drop
             $('#uploadNormal').hide();
             $('#uploadDragDrop').show();
             $('#uploadUploadify').show();
             $('#DragDropAndTradicional').show();
 
-            var valoresAdicionales = {
-                prontus_id: mainFidJs.PRONTUS_ID
-            };
-
             $('#fileInputDD').fileupload({
                 dataType: 'text',
                 url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
                 dropZone: $('#dropZone'),
-                formData: valoresAdicionales,
+                formData: { prontus_id: mainFidJs.PRONTUS_ID },
                 done: function (e, data) {
                     var arrResp = [];
                     var response = data.result
                     if (response == '0') {
-                        $('#imagenescargadas').append('<div style="margin-left:10px;margin-top:16px;width:120px;height:135px;overflow:auto;display:inline;float:left">' +
-                                '<div style="color:#FFA500;">Imagen con errores</div>' +
+                        $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
+                                '<div class="img-error">Imagen con errores</div>' +
                                 '</div>');
 
                     } else if (response != '') {
@@ -157,9 +147,9 @@ var Fid = {
                             wFoto = 100;
                         }
 
-                        $('#imagenescargadas').append('<div style="margin-left:10px;margin-top:16px;width:120px;height:135px;overflow:auto;display:inline;float:left">' +
+                        $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
                                 '<div>' + realNomFile + labelSize + '</div>' +
-                                '<img src="' + relPath + '" id="' + idFoto  + '" width="' + wFoto + '">' +
+                                '<img src="' + relPath + '" id="' + idFoto  + '">' +
                                 '</div>' +
                                 '<input type="hidden" name="_fotoreal" value="' + realNomFile + '">' +
                                 '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">');
@@ -370,6 +360,7 @@ var Fid = {
     // -----------------------------------------
     //Muestra el contenido de un div para el div con valor 'thediv'
     showBody: function(thediv) {
+        $('#banco-img').fadeIn(300);
         $('.cabecera').hide();
         $(thediv).show();
         $('.tabs a').removeClass('selected');
@@ -449,9 +440,8 @@ var Fid = {
                     href: urlFoto,
                     maxWidth: '90%',
                     maxHeight: '90%',
-                    scalePhotos: false,
+                    scalePhotos: true,
                     opacity: 0.8
-                    // iframe: true,
             });
         }
     },
@@ -766,6 +756,19 @@ var Fid = {
             }
         }
 
+        if (! GaleriaProntus.verificaArchivoCargado()) {
+            return false;
+        }
+
+        if (GaleriaProntus.pproc_working) {
+            if (!confirm(GaleriaProntus.msg_confirm)) {
+                return false;
+            }
+        }
+
+        GaleriaProntus.guardarGaleriaProntus();
+
+        // si friendly 4 esta activada el guardado se hace acá y no se ejecuta el codigo siguiente
         if (Fid.friendlyVer == 4 && (bot_press == 'save' || bot_press == 'save_new')) {
                 Fid.validaTitular(bot_press);
                 return false;

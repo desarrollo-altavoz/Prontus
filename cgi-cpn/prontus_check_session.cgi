@@ -15,6 +15,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -24,11 +25,9 @@ use glib_fildir_02;
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use lib_prontus;
-use lib_multiediting;
 
 use Session;
 use Update;
-use strict;
 
 my %FORM;
 
@@ -59,7 +58,7 @@ main: {
 
         # crea obj session
         my $sess_obj = Session->new(
-                        'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                        'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                         'document_root'     => $prontus_varglb::DIR_SERVER)
                         || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
 
@@ -69,7 +68,7 @@ main: {
 
         # Descarga archivo descriptor de update
         my $upd_obj = Update->new(
-                        'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                        'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                         'version_prontus'   => $prontus_varglb::VERSION_PRONTUS,
                         'path_conf'         => $FORM{'path_conf'},
                         'document_root'     => $prontus_varglb::DIR_SERVER,

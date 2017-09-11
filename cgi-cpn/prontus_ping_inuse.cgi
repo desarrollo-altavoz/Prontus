@@ -105,7 +105,7 @@ main: {
     };
 
     my $sess_obj = Session->new(
-                    'prontus_id'        => $prontus_varglb::PRONTUS_ID,
+                    'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
 
@@ -147,8 +147,6 @@ main: {
 
     # devuelve la concurrencia para que el js actualice el dato run-time
     #~ &glib_html_02::print_json_result(1, $concurrency, 'exit=1,ctype=1');
-
-
 };
 
 # ---------------------------------------------------------------

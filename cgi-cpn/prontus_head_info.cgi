@@ -66,9 +66,7 @@ my (%FORM);
 # MAIN.
 # -------------
 
-
 main: {
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
@@ -100,6 +98,7 @@ main: {
     my ($msg, $usado_mb, $quota_asig_mb, $usado_porc, $nousado_porc);
 
     ($msg, $usado, $quota_asig, $usado_porc, $nousado_porc) = &lib_quota::calcula_unix();
+    print STDERR "Info Quota: ($msg, $usado, $quota_asig, $usado_porc, $nousado_porc)\n";
     # ($msg, $usado_mb, $quota_asig_mb, $usado_porc, $nousado_porc) = ('', 111, 222, '40%', '60%');# debug
     my $class_level = 1;
     $usado_porc =~ /^(\d+)/i;
@@ -143,16 +142,32 @@ main: {
         $status_upd = 'no_user';
     }
 
+    # se parsea single sign on
+    if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
+        $buffer =~ s/<!--no-sso-->.*?<!--\/no-sso-->//sg;
+        if ($buffer =~ /##item##(.*?)##\/item##/sg) {
+            my $item = $1;
+            my @prontus_list = &lib_prontus::get_prontus_sso_dirs();
+            my $options = '';
+            foreach my $prontus (@prontus_list) {
+                $options .= $item;
+                $options =~ s/##prontus##/$prontus/g;
+                if ($prontus eq $prontus_varglb::PRONTUS_ID) {
+                    $options =~ s/##selected##/selected/sg;
+                } else {
+                    $options =~ s/##selected##//sg;
+                }
+            }
+            $buffer =~ s/##item##.*?##\/item##/$options/g;
+        }
+    } else {
+        $buffer =~ s/<!--sso-->.*?<!--\/sso-->//sg;
+    }
+
     $buffer =~ s/%%_status_upd%%/$status_upd/g;
+    $buffer =~ s/<!--.*?-->//g;
 
     print "Content-Type: text/html\n\n";
     print $buffer;
-
 };
-
-# ---------------------------------------------------------------
-# SUB-RUTINAS.
-# -------------
-
-
 # -------------------------------END SCRIPT----------------------

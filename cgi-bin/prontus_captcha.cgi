@@ -49,7 +49,6 @@ BEGIN {
     do 'dir_cgi.pm';
     $DIR_CGI_CPAN_SCRIPT = $DIR_CGI_CPAN;
     $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN_SCRIPT/;
-    print $pathLibs;
     unshift(@INC,$pathLibs);
 };
 

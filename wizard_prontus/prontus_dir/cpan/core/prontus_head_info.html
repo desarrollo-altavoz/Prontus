@@ -1,5 +1,10 @@
 <div class="bloque1">
-  Hola <b>%%_prontus_user_name%%</b> (%%_prontus_user_perfil%%), estás en <b>%%_prontus_id%%</b>.&nbsp;
+  Hola <b>%%_prontus_user_name%%</b> (%%_prontus_user_perfil%%), estás en <!--no-sso--><b>%%_prontus_id%%</b>.&nbsp;<!--/no-sso-->
+  <!--sso-->
+  <select id="prontus-sso-select">
+      ##item##<option value="##prontus##" ##selected##>##prontus##</option>##/item##
+  </select>
+  <!--/sso-->
   (%%_prontus_version%%)
 </div>
 <div id="update-content" class="bloque2"></div>

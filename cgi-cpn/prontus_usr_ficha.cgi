@@ -133,37 +133,37 @@ main: {
                                                     '%%Cmb_PERFIL%%', $cmb_perfil,'','',
                                                     '%%_path_conf%%', $FORM{'_path_conf'},'','',
                                                     $plantilla);
-    
+
     #~ Se procesan los checks de Tipo de Artículo
     if($FORM{'USERS_ID'} eq '1') {
         $pagina =~ s/%%loop_artics%%(.*?)%%\/loop_artics%%//is;
-        
+
     } elsif($pagina =~ /%%loop_artics%%(.*?)%%\/loop_artics%%/is) {
         my $loop = $1;
         $lst_artdisp = &get_lst_tipoart($loop);
         $pagina =~ s/%%loop_artics%%(.*?)%%\/loop_artics%%/$lst_artdisp/is;
-        
+
     } else {
         print "Content-Type: text/html\n\n";
         &glib_html_02::print_pag_result("Error","Error en la plantilla. No se encuentra el Loop de Artículos");
         exit;
     }
-    
+
     #~ Se procesan los checks de Portada
     if($FORM{'USERS_ID'} eq '1') {
         $pagina =~ s/%%loop_ports%%(.*?)%%\/loop_ports%%//is;
-        
+
     } elsif($pagina =~ /%%loop_ports%%(.*?)%%\/loop_ports%%/is) {
         my $loop = $1;
         $lst_portdisp = &get_lst_port($loop);
         $pagina =~ s/%%loop_ports%%(.*?)%%\/loop_ports%%/$lst_portdisp/is;
-        
+
     } else {
         print "Content-Type: text/html\n\n";
         &glib_html_02::print_pag_result("Error","Error en la plantilla. No se encuentra el Loop de Portadas");
         exit;
     }
-    
+
     # &lib_prontus::close_dbm_files();
     if ($FORM{'USERS_ID'} ne '') {
         # deshabilitar ingreso o modif. de campo usr.
@@ -171,14 +171,17 @@ main: {
         $pagina =~ s/<!--SOLONEW-->.*?<!--\/SOLONEW-->//sg;
     } else {
         $pagina =~ s/<!--SOLOEDIT-->.*?<!--\/SOLOEDIT-->//sg;
-    };
+    }
 
     if ($FORM{'USERS_ID'} eq '1') { # admin
         # no mostrar listas de seleccion de tipos de art. y portadas.
         $pagina =~ s/<!--LISTAS-->.*?<!--\/LISTAS-->//sg;
         $pagina =~ s/<!--PERFIL-->.*?<!--\/PERFIL-->/<SPAN CLASS="P-LABELTABLA">Administrador<\/SPAN><input type="hidden" name="Cmb_PERFIL" value="A">/sg;
-    };
-    
+    }
+    if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
+        $pagina =~ s/<!--LISTAS-->.*?<!--\/LISTAS-->//sg;
+    }
+
     $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
     $pagina =~ s/<!--\w+-->//sg;
     $pagina =~ s/<!--\/\w+-->//sg;
@@ -214,18 +217,18 @@ sub get_cmb_perfil {
 
 # ---------------------------------------------------------------
 sub get_lst_tipoart {
-    
+
     my ($loop) = @_;
     my ($looptot, $looptmp);
     my ($key, $key2, $val_display, $clave, $lista, %tipoart_usr);
-    
+
     foreach $key2 (keys %prontus_varglb::ARTUSERS) {
         my ($tipart, $usr) = split /\|/, $key2;
         if ( ($usr eq $FORM{'USERS_ID'})) {
             $tipoart_usr{$tipart} = 1;
         };
     };
-    
+
     foreach $key (sort keys %prontus_varglb::FORM_PLTS) {
         $val_display = $key;
         $val_display =~ s/^.*://;
@@ -239,34 +242,34 @@ sub get_lst_tipoart {
             $label_class = "class=\"checked\"";
         };
         my $val_display_short = &procesar_nombre($val_display);
-        
+
         $looptmp = $loop;
         $looptmp =~ s/%%clave%%/$clave/isg;
         $looptmp =~ s/%%val_display%%/$val_display/isg;
         $looptmp =~ s/%%val_display_short%%/$val_display_short/isg;
         $looptmp =~ s/%%checked%%/$checked/isg;
         $looptmp =~ s/%%label_class%%/$label_class/isg;
-        
+
         $looptot = $looptot . $looptmp;
     };
-    
+
     return $looptot;
 };
 
 # ---------------------------------------------------------------
 sub get_lst_port {
-    
+
     my ($loop) = @_;
     my ($looptot, $looptmp);
     my ($key, $key2, %port_usr, $val_display, $clave, $lista);
-    
+
     foreach $key2 (keys %prontus_varglb::PORTUSERS) {
         my ($port, $usr) = split /\|/, $key2;
         if ( ($usr eq $FORM{'USERS_ID'})) {
             $port_usr{$port} = 1;
         };
-    };  
-        
+    };
+
     foreach $key (sort keys %prontus_varglb::PORT_PLTS) {
 
         my $nombre = $prontus_varglb::PORT_PLTS_NOM{$key};
@@ -289,27 +292,27 @@ sub get_lst_port {
         $looptmp =~ s/%%val_display_short%%/$val_display_short/isg;
         $looptmp =~ s/%%checked%%/$checked/isg;
         $looptmp =~ s/%%label_class%%/$label_class/isg;
-        
+
         $looptot = $looptot . $looptmp;
         #$lista = $lista . "<div class=\"itemlistado\"><input type=\"checkbox\" value=\"$clave\"  name=\"ports[]\" id=\"$val_display\" $checked\/> <label for=\"$val_display\" $label_class>$val_display<\/label><\/div>";
-    
+
     };
-    
+
     return $looptot;
-    
+
 };
 # ---------------------------------------------------------------
 sub procesar_nombre {
-    
+
     my ($nombre) = shift;
     if(length ($nombre) > $LIMITE_CHARS_NAME) {
-        
+
         my $newname = substr($nombre, 0, $LIMITE_CHARS_NAME - 3);
         $nombre = $newname . '...';
-        
-        
+
+
     };
     return $nombre;
-    
+
 }
 # -------------------------------END SCRIPT----------------------

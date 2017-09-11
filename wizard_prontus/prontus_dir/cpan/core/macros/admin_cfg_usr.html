@@ -83,6 +83,37 @@
                                             <input type="radio" name="EDITOR_ADMINISTRAR_EDICIONES" id="EDITOR_ADMINISTRAR_EDICIONES_NO" value="NO"%%EDITOR_ADMINISTRAR_EDICIONES_NO%%/> <label for="EDITOR_ADMINISTRAR_EDICIONES_NO">NO</label>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            PRONTUS_SSO<br>
+                                            <span class="ayuda">Permite activar el Single Sign-On.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="PRONTUS_SSO" id="PRONTUS_SSO_SI" value="SI"%%PRONTUS_SSO_SI%%/> <label for="PRONTUS_SSO_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="PRONTUS_SSO" id="PRONTUS_SSO_NO" value="NO"%%PRONTUS_SSO_NO%%/> <label for="PRONTUS_SSO_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            PRONTUS_SSO_MASTER<br>
+                                            <span class="ayuda">Configura si este Prontus ser&aacute; el administrador de los usuarios, si marca NO, debe indicar cu&aacute;l es el Prontus que los administra.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="PRONTUS_SSO_MASTER" id="PRONTUS_SSO_MASTER_SI" value="SI"%%PRONTUS_SSO_MASTER_SI%%/> <label for="PRONTUS_SSO_MASTER_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="PRONTUS_SSO_MASTER" id="PRONTUS_SSO_MASTER_NO" value="NO"%%PRONTUS_SSO_MASTER_NO%%/> <label for="PRONTUS_SSO_MASTER_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            PRONTUS_SSO_MASTER_ID<br>
+                                            <span class="ayuda">Prontus que administra los usuarios para el single sign-on</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="PRONTUS_SSO_MASTER_ID" value="%%PRONTUS_SSO_MASTER_ID%%" class="fieldform" maxlength="30" />
+                                        </td>
+                                    </tr>
                                 </table>
                             </form>
                             <div class="botones">
@@ -101,4 +132,4 @@
                                 <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
                             </div>
                         </div> <!--/listado-->
-                    
+

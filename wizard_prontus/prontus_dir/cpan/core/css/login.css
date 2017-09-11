@@ -1,14 +1,17 @@
 .box-login {width:350px; margin:100px auto;}
 .box-login .logo {clear:both; margin:0 0 8px 0;}
-.box-login .auxi {width:350px; height:220px; clear:both; font-size:15px; color:#FFFFFF; font-weight:bold; background: url("../imag/auxi/login_back.jpg") no-repeat left top;}
+.box-login .auxi {width:350px; height:215px; clear:both; font-size:15px; color:#FFFFFF; font-weight:bold; border-top-right-radius: 4px; border-top-left-radius: 4px;}
 .box-login .auxi p { margin:25px 0 10px 55px; text-align:left; }
-.box-login .auxi .fieldform {width:220px; margin:4px 0 0 0; padding:5px 5px; font-size:15px; font-weight:normal; color:#000000; background-color:#FFFFFF; border:none;}
+.box-login .auxi .fieldform {width:220px; margin:4px 0 0 0; padding:8px 8px; font-size:15px; font-weight:normal; color:#000000; background-color:#FFFFFF; border:none;}
 
-.box-login .auxi2 {width:350px; height:220px; clear:both; font-size:13px; color:#FFFFFF; font-weight:bold; background: url("../imag/auxi/login_back.jpg") no-repeat left top; margin: 0 100px;}
+.box-login .auxi2 {width:350px; height:220px; clear:both; font-size:13px; color:#FFFFFF; font-weight:bold; margin: 0 100px;}
 .box-login .auxi2 p { margin:7px 0 10px 55px; text-align:left; }
 .box-login .auxi2 .fieldform {width:220px; margin:4px 0 0 0; padding:5px 5px; font-size:15px; font-weight:normal; color:#000000; background-color:#FFFFFF; border:none;}
+.box-login .boton-ingresar img {margin-top:15px;}
 
-.box-login .celeste a {font-size:11px;}
+.box-login .celeste{padding: 10px 0 40px 0; background-color: #1080cd; margin:0; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px;}
+.box-login .celeste a {font-size:13px; color:#fcfcfc;}
+.box-login .celeste a:hover{text-decoration: none;}
 .box-login .auxi .loading-action {display: none; margin-top: 11px;}
 .box-login .info {background-color: #FDF2AB; border:1px solid #AAAAAA; margin-bottom:15px;}
 .box-login .info p {font-size:12px; padding-bottom:5px; padding-left:20px; padding-top:5px; text-align:left;}
@@ -18,3 +21,5 @@
 
 .checkSession {margin-top: 80px;}
 .checkSession img {margin-top: 15px;}
+.box-login .prontus-sso {height:110px; background-size: 350px 120px; border-top-right-radius: 0; border-top-left-radius: 0;}
+.box-login .prontus-sso .fieldform {width: 235px;}
