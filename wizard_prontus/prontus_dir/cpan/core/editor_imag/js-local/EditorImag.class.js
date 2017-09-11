@@ -14,6 +14,7 @@
 // 1.1.0 - 01/08/2017 - JOR - Se agrega soporte para resize de imagenes.
 // 1.1.1 - 11/08/2017 - JOR - Se solucionan problemas con resize de imagenes.
 // 2.0.0 - 07/09/2017 - JOR - Se cambia la gráfica y aplican mejoras y bugfixes.
+// 2.0.1 - 11/09/2017 - JOR - Se soluciona problema con cálculo de ciertos tamaños de fotos.
 // ---------------------------------------------------------------
 
 (function (window) {
@@ -100,6 +101,7 @@
                 };
 
                 $('.tools-container .tools').hide();
+                $('.tools-container .size-adj').hide();
                 $('.tools-container .loading').show();
                 $('.image-container').css('opacity', 0.5);
                 $(self.imgElementId).cropper('disable');
@@ -117,6 +119,7 @@
 
                             // Si la cgi arroja error, se habilita todo de nuevo para recibir un nuevo intento.
                             $('.tools-container .tools').show();
+                            $('.tools-container .size-adj').show();
                             $('.tools-container .loading').hide();
                             $('.image-container').css('opacity', 1);
                             $(self.imgElementId).cropper('enable');
@@ -129,6 +132,7 @@
                     error: function() {
                         alert('Ocurrió un error al procesar la imagen, inténtelo nuevamente.');
                         $('.tools-container .tools').show();
+                        $('.tools-container .size-adj').show();
                         $('.tools-container .loading').hide();
                         $('.image-container').css('opacity', 1);
                         $(self.imgElementId).cropper('enable');
@@ -154,6 +158,7 @@
 
                 $('.tools-container .freesize').hide();
                 $('.tools-container .tools').hide();
+                $('.tools-container .size-adj').hide();
                 $('.tools-container .loading').show();
                 $('.image-container').css("opacity", 0.5);
                 $('.image-container img').css("margin", "auto");
@@ -181,8 +186,8 @@
                             alert(response.msg);
 
                             $('.tools-container .loading').hide();
-                            $('.tools-container .freesize').show();
                             $('.tools-container .tools').show();
+                            $('.tools-container .size-adj').show();
                             $('.image-container').css("opacity", 1);
 
                             $(self.imgElementId).css({
@@ -198,8 +203,8 @@
                         alert('Ocurrió un error al procesar la imagen, inténtelo nuevamente.');
 
                         $('.tools-container .loading').hide();
-                        $('.tools-container .freesize').show();
                         $('.tools-container .tools').show();
+                        $('.tools-container .size-adj').show();
                         $('.image-container').css("opacity", 1);
 
                         $(self.imgElementId).css({
@@ -500,15 +505,21 @@
             },
             updateResizeWidth: function () {
                 var val = $("#freesize_width").val();
-                var w = (val * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
+                if ($.isNumeric(val) === false) {
+                    alert('El ancho de la foto debe ser numérico.');
+                    return false;
+                }
+
+                var w = Math.round((val * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth);
 
                 if (val > $(self.imgElementId)[0].naturalWidth) {
                     alert("El ancho de la foto redimensionada no puede ser mayor a " + $(self.imgElementId)[0].naturalWidth + " pixeles.");
+
                     return false;
                 }
 
                 if (self.resizeChain) {
-                    var newSize = self.actions.scaleSize($("#freesize_width").val(), $("#freesize_height").val(), $(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight);
+                    var newSize = self.actions.calculateSize($(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight, $("#freesize_width").val(), false);
                     var w = (newSize[0] * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
                     var h = (newSize[1] * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
 
@@ -524,19 +535,30 @@
                 } else {
                     $(".image-container .ui-wrapper").width(w);
                     $(".image-container .ui-wrapper img").width(w);
+
+                    self.resizeWidth = parseInt($('#freesize_width').val());
+                    self.resizeHeight = parseInt($('#freesize_height').val());
                 }
             },
             updateResizeHeight: function () {
                 var val = $('#freesize_height').val();
-                var h = (val * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
+
+                if ($.isNumeric(val) === false) {
+                    alert('El alto de la foto debe ser numérico.');
+                    return false;
+                }
+
+                var h = Math.round((val * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight);
 
                 if (val > $(self.imgElementId)[0].naturalHeight) {
                     alert("El alto de la foto redimensionada no puede ser mayor a " + $(self.imgElementId)[0].naturalHeight + " pixeles.");
+
+                    return false;
                 }
 
                 if (self.resizeChain) {
                     var newW = ($(self.imgElementId)[0].naturalWidth / $(self.imgElementId)[0].naturalHeight) * val;
-                    var newSize = self.actions.scaleSize(newW, $('#freesize_height').val(), $(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight);
+                    var newSize = self.actions.calculateSize($(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight, false, $("#freesize_height").val());
                     var w = (newSize[0] * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
                     var h = (newSize[1] * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
 
@@ -552,20 +574,40 @@
                 } else {
                     $(".image-container .ui-wrapper").height(h);
                     $(".image-container .ui-wrapper img").height(h);
+
+                    self.resizeWidth = parseInt($('#freesize_width').val());
+                    self.resizeHeight = parseInt($('#freesize_height').val());
                 }
             },
-            scaleSize: function(maxW, maxH, currW, currH) {
-                var ratio = currH / currW;
+            // scaleSize: function(maxW, maxH, currW, currH) {
+            //     var ratio = currH / currW;
 
-                if (currW >= maxW && ratio <= 1) {
-                    currW = maxW;
-                    currH = currW * ratio;
-                } else if (currH >= maxH) {
-                    currH = maxH;
-                    currW = currH / ratio;
+            //     if (currW >= maxW && ratio <= 1) {
+            //         currW = maxW;
+            //         currH = currW * ratio;
+            //     } else if (currH >= maxH) {
+            //         currH = maxH;
+            //         currW = currH / ratio;
+            //     }
+
+            //     return [Math.ceil(currW), Math.ceil(currH)];
+            // },
+            calculateSize: function (origwidth, origheight, width, height) {
+                var ratio = origwidth / origheight;
+
+                if (width !== false) {
+                    width = parseFloat(width);
+                    var newheight = width / ratio;
+                    newheight = Math.round(newheight);
+
+                    return [width, newheight];
+                } else if (height !== false) {
+                    height = parseFloat(height);
+                    var newwidth = ratio * height;
+                    newwidth = Math.round(newwidth);
+
+                    return [newwidth, height];
                 }
-
-                return [Math.ceil(currW), Math.ceil(currH)];
             },
             saveZoomRatio: function (e) {
                 self.zoomRatio = e.ratio;
@@ -676,7 +718,7 @@
                     var fotow = $(this).data("fotow");
                     var fotoh = $(this).data("fotoh");
 
-                    if (aspectRatio == 0) {
+                    if (aspectRatio === 0) {
                         self.free = 1;
                         self.fotoFijaW = 0;
                         self.fotoFijaH = 0;
