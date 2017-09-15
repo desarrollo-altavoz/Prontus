@@ -9341,7 +9341,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_getcaptcha.cgi
 
 ====================================================================================================
-11.2.97 - 07/09/2017 - EAG/JOR
+11.2.97 - 07/09/2017 - EAG/JOR/CGC
 ====================================================================================================
 - Transcodificación
     [cambios]
@@ -9676,12 +9676,18 @@ Esto quedó actualizado en el check platform y detallado más abajo.
       /wizard_prontus/prontus_dir/cpan/core/mant_seccs/prontus_seccion_admin.html
 
 ====================================================================================================
-11.2.97.1 - XX/XX/2017 - JOR
+11.2.97.1 - XX/XX/2017 - JOR/CGC
 ====================================================================================================
 - Editor de imágenes
   [bugfixes]
-      - Se corrige ajax loader al momento de aplicar los cambios.
-      - Se corrige calculo de tamaño de fotos al aplicar resize. Para algunos casos el resultado
+      - Corrige ajax loader al momento de aplicar los cambios.
+      - Corrige calculo de tamaño de fotos al aplicar resize. Para algunos casos el resultado
       era incorrecto.
   [files]
       /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.js
+
+- Prontus en general
+    [bugfixes]
+      - Corrige css de cambio de clave por primera vez.
+    [files]
+      /wizard_prontus/prontus_dir/cpan/core/css/login.css
