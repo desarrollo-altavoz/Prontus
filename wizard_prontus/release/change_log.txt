@@ -4,8 +4,8 @@
 - bugfixes: (fid) Corrige ajax loader al momento de aplicar los cambios.
 - bugfixes: (fid) Corrige calculo de tamaño de fotos al aplicar resize. Para algunos casos el resultado era incorrecto.
 - bugfixes: Corrige css de cambio de clave por primera vez.
-- bugfixes: Corrige error en incialización de configuración de transcodificación que impide verificar
- a ubicación de ffmpeg si no está activada la transcodificación avanzada.
+- bugfixes: Corrige error en la inicialización de configuración de transcodificación que impide verificar
+ la ubicación de ffmpeg si no está activada la transcodificación avanzada.
 ====================================================================================================
 11.2.97 - 07/09/2017 - EAG/JOR/CGC
 ====================================================================================================
