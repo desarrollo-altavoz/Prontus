@@ -1,5 +1,22 @@
 ====================================================================================================
-11.2.97 - 07/09/2017 - EAG/JOR
+11.2.97.2 - 27/09/2017 - EAG
+====================================================================================================
+- bugfixes: (fid)  Corrige error al procesar imagenes de la carga masiva, el identificador de la foto
+empezaba en 0, ahora empieza en 1.
+- bugfixes: (fid)  Corrige espaciamiento de los iconos para ver información del artículo y copiar la url, si el id
+del artículo era muy grande los iconos se desplazaban a la segunda línea. Esta correción no lo
+evita totalmente, pero debe ser mucho mayor el id para que ocurra.
+- bugfixes: (fid)  Actualiza tinymce de 3.5.8 a 3.5.12 para solucionar un error en el funcionamiento con Chrome
+====================================================================================================
+11.2.97.1 - 25/09/2017 - JOR/CGC/EAG
+====================================================================================================
+- bugfixes: (fid) Corrige ajax loader al momento de aplicar los cambios.
+- bugfixes: (fid) Corrige calculo de tamaño de fotos al aplicar resize. Para algunos casos el resultado era incorrecto.
+- bugfixes: Corrige css de cambio de clave por primera vez.
+- bugfixes: Corrige error en la inicialización de configuración de transcodificación que impide verificar
+ la ubicación de ffmpeg si no está activada la transcodificación avanzada.
+====================================================================================================
+11.2.97 - 07/09/2017 - EAG/JOR/CGC
 ====================================================================================================
 - improvement: Se agrega verificación de instalación de unzip.
 - improvement: Correcciones menores en el código y comentarios
