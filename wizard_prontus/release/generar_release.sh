@@ -143,9 +143,6 @@ mkdir $BASEDIRTEMP
 cd $BASEDIRTEMP
 cp -rf "$BASEDIR/cgi-bin" .
 cp -rf "$BASEDIR/cgi-cpn" .
-if [ -f "$BASEDIRTEMP/cgi-cpn/lib_custom.pm" ]; then
-    rm "$BASEDIRTEMP/cgi-cpn/lib_custom.pm"
-fi
 mkdir "$BASEDIRTEMP/wizard_prontus"
 cp -rf "$BASEDIR/wizard_prontus/core" "$BASEDIRTEMP/wizard_prontus"
 mkdir "$BASEDIRTEMP/wizard_prontus/prontus_dir"

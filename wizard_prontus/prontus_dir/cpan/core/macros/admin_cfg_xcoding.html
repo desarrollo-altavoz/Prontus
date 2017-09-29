@@ -394,6 +394,16 @@
 </div> <!--/listado-->
 <script>
 $(document).ready(function() {
+    if(Admin.dir_cgi_cpn !== '') {
+        CfgXcoding.init();
+    } else {
+        CfgXcoding.idInterval = setInterval(function() {
+            if(Admin.dir_cgi_cpn !== '') {
+                clearInterval(CfgXcoding.idInterval);
+                CfgXcoding.init();
+            }
+        }, 100);
+    }
     Utiles.showAlert($('input[name=GEN_HLS]:checked')[0]);
     Utiles.showAlert($('input[name=MODO_PARALELO]:checked')[0]);
 });

@@ -576,17 +576,4 @@
                                 <img src="/%%_prontus_id%%/cpan/core/imag/loading.gif" width="32" height="32" alt="loading" />
                             </div>
                         </div> <!--/listado-->
-<script>
-$(document).ready(function() {
-    if(Admin.dir_cgi_cpn !== '') {
-        CfgXcoding.init();
-    } else {
-        CfgXcoding.idInterval = setInterval(function() {
-            if(Admin.dir_cgi_cpn !== '') {
-                clearInterval(CfgXcoding.idInterval);
-                CfgXcoding.init();
-            }
-        }, 100);
-    }
-});
-</script>
+
