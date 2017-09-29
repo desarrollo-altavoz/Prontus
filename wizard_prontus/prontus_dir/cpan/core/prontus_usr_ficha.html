@@ -23,8 +23,17 @@
         </tr>
         <tr>
           <td class="name-field">* Usuario</td>
-          <td><input type="text" name="USR" size="30" value="%%USR%%"></td>
+          <td><input type="text" name="USR" value="%%USR%%"></td>
         </tr>
+        <!--exp_psw-->
+        <tr class="exp-psw">
+          <td class="name-field">* Expiración de contraseña</td>
+          <td>
+            <div class="input-exp"><input type="text" name="EXP_DAYS" id="EXP_DAYS" autocomplete="off" value="%%EXP_DAYS%%"> <label for="EXP_DAYS">día(s)</label></div>
+            <div id="range-slide"></div>
+          </td>
+        </tr>
+        <!--/exp_psw-->
         <!--SOLOEDIT-->
         <tr>
           <td colspan="2" class="ayuda">
@@ -34,11 +43,11 @@
         <!--/SOLOEDIT-->
         <tr>
           <td><!--SOLONEW-->*<!--/SOLONEW--> <!--SOLOEDIT-->Nueva contraseña<!--/SOLOEDIT--><!--SOLONEW-->Contraseña<!--/SOLONEW--></td>
-          <td><input type="password" name="PSW1" size="30" value="" ></td>
+          <td><div class="field-password-container"><input type="password" name="PSW1" id="PSW1" size="30" maxlength="32" value="" class="field-password"><a href="#" id="show_password" title="Mostrar contraseña"><img src="/%%_prontus_id%%/cpan/core/imag/boto/eye_open.png" alt=""></a></div> <div id="psw_strength"><d/div></td>
         </tr>
         <tr>
           <td><!--SOLONEW-->*<!--/SOLONEW--> Confirmar contraseña</td>
-          <td><input type="password" name="PSW2" size="30" value="" ></td>
+          <td><input type="password" name="PSW2" size="30" value="" class="field-password" maxlength="32"></td>
         </tr>
         <tr>
         </tr>

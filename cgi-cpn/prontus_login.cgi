@@ -68,13 +68,14 @@ use Update;
 use Net::FTP;
 use Net::DNS;
 use Digest::MD5 qw(md5_hex);
+use prontus_auth;
 
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
 
 my (%FORM, $TIPO_PRONTUS, $AREA_MENU, $AREA_CONT, $PRONTUS_KEY);
-my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL);
+my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP);
 my $MAX_RETRIES_LOGIN = 10;
 
 main: {
@@ -128,6 +129,13 @@ main: {
     };
 
     my $login_result = &user_valido();
+
+    # La contraseña ha expirado.
+    if ($login_result == 3) {
+      my $buffer_expiredchangepass = &get_expiredchangepass(); # hacer location a cgi
+      &glib_html_02::print_json_result(2, $buffer_expiredchangepass, 'exit=1,ctype=1');
+    }
+
     if ($login_result >= 1) {
 
         my $check_msg;
@@ -192,7 +200,7 @@ main: {
         } else {
             # Ok y setear cookie.
             &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, $USERS_USR);
-            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, $USERS_PSW);
+            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, &prontus_auth::get_hash_for_cookie($USERS_PSW));
             # crea obj session
             my $sess_obj = Session->new(
                             'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
@@ -378,8 +386,20 @@ sub get_changepass {
     $buf =~ s/%%_PATH_CONF%%/$FORM{'_path_conf'}/isg;
     $buf =~ s/%%_PRONTUS_USER_EMAIL%%/$USERS_EMAIL/isg;
 
-    return $buf
+    return $buf;
 };
+
+sub get_expiredchangepass {
+    my $buf = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/prontus_change_expired_pass.html");
+
+    $buf =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
+    $buf =~ s/%%_PRONTUS_USER_PASS%%/$FORM{'_psw'}/isg;
+    $buf =~ s/%%_PRONTUS_USER_NAME%%/$FORM{'_usr'}/isg;
+    $buf =~ s/%%_PATH_CONF%%/$FORM{'_path_conf'}/isg;
+
+    return $buf;
+};
+
 # ---------------------------------------------------------------
 sub user_existente {
 my ($key, $val);
@@ -410,8 +430,7 @@ sub user_valido {
         my $pass_sysadmin = &glib_fildir_02::read_file($flag_sysadmin);
         if (($FORM{'_psw'} eq $pass_sysadmin) && ($FORM{'_usr'} eq 'admin')) {
             $USERS_USR = $FORM{'_usr'};
-            # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
-            $USERS_PSW = md5_hex($pass_sysadmin);
+            $USERS_PSW = &pronntus_auth::encrypt_password_bcrypt($pass_sysadmin);
             return 2;
         } else {
             return -1;
@@ -421,20 +440,27 @@ sub user_valido {
 
     foreach $key (keys %prontus_varglb::USERS) {
         $val = $prontus_varglb::USERS{$key};
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $val;
+        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $val;
         # print STDERR "\n\nTIPEADA[$FORM{'_psw'}] USERS_PSW[$USERS_PSW] CRYPT[" . crypt($FORM{'_psw'}, $USERS_PSW) . "]\n" if ($USERS_USR eq $FORM{'_usr'});
-        # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
         my $crypted_pass;
-        if(length($USERS_PSW) == 32) {
+
+        if (length $USERS_PSW == 60) {
+            if (($USERS_USR eq $FORM{'_usr'}) && &prontus_auth::check_password($FORM{'_psw'}, $USERS_PSW)) {
+              return 3 if (&prontus_auth::if_passwd_expired($USERS_FEC_EXP) && $USERS_FEC_EXP ne '' && $USERS_EXP_DAYS > 0 && $key != 1); # se excluye al admin.
+              return 1;
+            }
+        }
+
+        if (length($USERS_PSW) == 32) {
             $crypted_pass = md5_hex($FORM{'_psw'});
         } else {
             $crypted_pass = crypt($FORM{'_psw'}, $USERS_PSW);
         }
-        if ( ($USERS_USR eq $FORM{'_usr'}) && ($crypted_pass eq $USERS_PSW) ) {
+        if (($USERS_USR eq $FORM{'_usr'}) && ($crypted_pass eq $USERS_PSW)) {
+            return 3 if (&prontus_auth::if_passwd_expired($USERS_FEC_EXP) && $USERS_FEC_EXP ne '' && $USERS_EXP_DAYS > 0 && $key != 1);
             return 1;
-        };
-    };
-
+        }
+    }
 
     # si esta presente este archivo, permite entrar con admin/prontus y luego obliga a cambiar la pass
     my ($flag_file) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_admin.txt";
@@ -442,7 +468,7 @@ sub user_valido {
         # Resetear clave admin
         ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $prontus_varglb::USERS{'1'}; # para rescatar email
         # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
-        $prontus_varglb::USERS{'1'} = 'Administrador|admin|' . md5_hex('prontus') . '|A|' . $USERS_EMAIL;
+        $prontus_varglb::USERS{'1'} = 'Administrador|admin|' . &prontus_auth::encrypt_password_bcrypt('prontus') . '|A|' . $USERS_EMAIL;
         ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $prontus_varglb::USERS{'1'};
 
         # USERS

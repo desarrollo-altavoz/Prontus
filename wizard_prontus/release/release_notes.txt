@@ -9679,9 +9679,39 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.97.1 - XX/XX/2017 - JOR
 ====================================================================================================
 - Editor de imágenes
-  [bugfixes]
-      - Se corrige ajax loader al momento de aplicar los cambios.
-      - Se corrige calculo de tamaño de fotos al aplicar resize. Para algunos casos el resultado
-      era incorrecto.
-  [files]
-      /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.js
+    [bugfixes]
+        - Se corrige ajax loader al momento de aplicar los cambios.
+        - Se corrige calculo de tamaño de fotos al aplicar resize. Para algunos casos el resultado
+        era incorrecto.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.js
+
+- Login y usuarios
+    [mejoras]
+        - Se cambia la encriptación de las contraseñas por blowfish.
+        Se utilizará este algoritmo solo si está instalado el módulo perl correspondiente.
+        cpan: Crypt::Eksblowfish::Bcrypt, debian: libcrypt-eksblowfish-perl
+        - Se agrega caducidad de contraseñas, configurable por cada usuario. Desactivado o de 1 a 365 días.
+        - Cuando la contraseña expira, prontus pedirá que se cambie por una nueva (se verifica en el login).
+        - Se valida que las contraseñas sean robustas. Deben cumplir con lo siguiente:
+          - 8 caracteres como mínimo, máximo 32.
+          - al menos un número.
+          - al menos una mayúscula.
+          - al menos un caracter especial !%&@#$^*?_
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_auth.pm
+        /cgi-cpn/prontus_changepass.cgi
+        /cgi-cpn/prontus_check_platform.cgi
+        /cgi-cpn/prontus_login.cgi
+        /cgi-cpn/prontus_usr_chgpass_sbmit.cgi
+        /cgi-cpn/prontus_usr_ficha.cgi
+        /cgi-cpn/prontus_usr_sbmit.cgi
+        /wizard_prontus/prontus_dir/cpan/core/prontus_changepass.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_usr_ficha.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_change_expired_pass.html
+        /wizard_prontus/prontus_dir/cpan/core/css/login.css
+        /wizard_prontus/prontus_dir/cpan/core/css/usradmin.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/ChangeExpiredPass.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/UsrAdmin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/eye_open.png
