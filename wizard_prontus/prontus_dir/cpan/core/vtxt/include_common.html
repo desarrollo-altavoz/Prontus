@@ -206,7 +206,7 @@ tinyMCE.init({
                 var style_div = 'style="width:' + ancho_tabla + ';' + floating + '"';
 
                 // rescata html de la imagen para componer la tabla y meter la imagen dentro.
-                var imagen_html = ed.selection.getContent();
+                var imagen_html = elemSel.outerHTML;
                 var classTable = 'marcoFoto';
                 /*
                 var html = '<table class="' + classTable + '" cellspacing="1" border="0" cellpadding="1" ' + floating + ' width="' + ancho_tabla + '">';
