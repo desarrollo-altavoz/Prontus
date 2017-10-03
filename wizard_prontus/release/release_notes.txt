@@ -9706,8 +9706,32 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige espaciamiento de los iconos para ver información del artículo y copiar la url, si el id
         del artículo era muy grande los iconos se desplazaban a la segunda línea. Esta correción no lo
         evita totalmente, pero debe ser mucho mayor el id para que ocurra.
+        - Actualiza tinymce de 3.5.8 a 3.5.12 para solucionar un error en el funcionamiento con Chrome
     [files]
         - /cgi-cpn/galeria/prontus_galeria_procesar.cgi
         - /wizard_prontus/prontus_dir/cpan/core/css/fids.css
         - /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
         - /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/fullscreen/editor_plugin.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/fullscreen/fullscreen.htm
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/inlinepopups/editor_plugin.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/editor_plugin.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/js/media.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/media.htm
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/paste/editor_plugin.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/searchreplace/js/searchreplace.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/spellchecker/editor_plugin.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/spellchecker/editor_plugin_src.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/cell.htm
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/editor_plugin.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/js/cell.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/js/table.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/table.htm
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/editor_template.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/editor_template_src.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/content.css
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/ui.css
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce-min.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce-src.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce.js
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce_popup.js

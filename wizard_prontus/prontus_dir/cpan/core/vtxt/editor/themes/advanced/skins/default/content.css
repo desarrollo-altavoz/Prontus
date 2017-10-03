@@ -20,9 +20,6 @@ del {color:red; text-decoration:line-through}
 cite {border-bottom:1px dashed blue}
 acronym {border-bottom:1px dotted #CCC; cursor:help}
 abbr {border-bottom:1px dashed #CCC; cursor:help}
-/* table-transparente */
-table.table-transparente td, table.table-transparente th {border:1px dashed #BBB !important;}
-table.table-transparente {border:1px dashed #BBB !important;}
 
 /* IE */
 * html body {
@@ -48,6 +45,7 @@ font[face=mceinline] {font-family:inherit !important}
 .mceItemRealMedia {background-image:url(../../img/realmedia.gif)}
 .mceItemVideo {background-image:url(../../img/video.gif)}
 .mceItemAudio {background-image:url(../../img/video.gif)}
+.mceItemObject {background-image:url(../../img/video.gif)}
 .mceItemEmbeddedAudio {background-image:url(../../img/video.gif)}
 .mceItemIframe {background-image:url(../../img/iframe.gif)}
 .mcePageBreak {display:block;border:0;width:100%;height:12px;border-top:1px dotted #ccc;margin-top:15px;background:#fff url(../../img/pagebreak.gif) no-repeat center top;}
