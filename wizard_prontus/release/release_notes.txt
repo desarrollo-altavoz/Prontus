@@ -9697,7 +9697,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 
 ====================================================================================================
-11.2.97.2 - 27/09/2017 - EAG
+11.2.97.2 - 03/10/2017 - EAG
 ====================================================================================================
 - FID
     [bugfixes]
