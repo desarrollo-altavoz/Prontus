@@ -106,15 +106,15 @@ sub validar_datos {
     };
 
     if ($FORM{'pwd_nuevo'} !~ /([a-z].*[A-Z])|([A-Z].*[a-z])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
     }
 
     if ($FORM{'pwd_nuevo'} !~ /([0-9])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
     }
 
-    if ($FORM{'pwd_nuevo'} !~ /([\!%&@#\$\^\*\?_])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+    if ($FORM{'pwd_nuevo'} !~ /([\!%&@#\$\^\*\?_\.])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
     }
 
     if ($FORM{'pwd_actual'} eq $FORM{'pwd_nuevo'}) {

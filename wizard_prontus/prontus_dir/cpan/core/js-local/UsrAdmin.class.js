@@ -132,7 +132,7 @@ var UsrAdmin = {
             return 'Incluye al menos un número';
         } else if (!password.match(/([!,%,&,@,#,$,^,*,?,_])/)) {
             $('#psw_strength').removeClass().addClass('good');
-            return 'Te falta incluir un caracter especial: !%&@#$^*?_';
+            return 'Te falta incluir un caracter especial: !%&@#$^*?_.';
         } else {
             $('#psw_strength').removeClass().addClass('strong');
             return 'Excelente!';

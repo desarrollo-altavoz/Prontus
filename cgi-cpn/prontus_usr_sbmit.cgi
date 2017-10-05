@@ -325,15 +325,15 @@ sub datos_validos {
         };
 
         if ($FORM{'PSW1'} !~ /([a-z].*[A-Z])|([A-Z].*[a-z])/) {
-            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
         }
 
         if ($FORM{'PSW1'} !~ /([0-9])/) {
-            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
         }
 
-        if ($FORM{'PSW1'} !~ /([\!%&@#\$\^\*\?_])/) {
-            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+        if ($FORM{'PSW1'} !~ /([\!%&@#\$\^\*\?_\.])/) {
+            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
         }
 
         if ($FORM{'PSW1'} ne $FORM{'PSW2'}) {

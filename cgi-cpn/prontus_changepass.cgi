@@ -173,15 +173,15 @@ sub valida_datos {
     };
 
     if ($FORM{'_new_psw'} !~ /([a-z].*[A-Z])|([A-Z].*[a-z])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
     }
 
     if ($FORM{'_new_psw'} !~ /([0-9])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
     }
 
-    if ($FORM{'_new_psw'} !~ /([\!%&@#\$\^\*\?_])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_';
+    if ($FORM{'_new_psw'} !~ /([\!%&@#\$\^\*\?_\.])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
     }
 
     if ($FORM{'_expired'} eq '' && $FORM{'_token'} eq ''  && $FORM{'_email'} !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {

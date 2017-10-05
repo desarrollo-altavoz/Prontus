@@ -116,7 +116,7 @@ sub generate_password {
     my $length = $_[0];
     my $chars1 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; # al menos 1 en mayuscula.
     my $chars2 = '0987654321';
-    my $chars3 = '!%&@#$^*?_~';
+    my $chars3 = '!%&@#$^*?_~.';
     my @passwd;
 
     $length = 8 if ($length < 8);
