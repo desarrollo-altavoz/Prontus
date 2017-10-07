@@ -102,7 +102,6 @@ use DBI;
 use lib_search;
 
 my ($BD, $RESTAR_ARTICS_PUB, $CURRENT_SPARE, %TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS, %HASH_ORDEN, %HASH_PUB);
-#my (%HASH_NOMPORTS);
 my %HASH_ARTIC_PUBS;
 my %FORM;
 # ---------------------------------------------------------------
@@ -977,7 +976,7 @@ sub get_artic_parsed {
         $loop_art_tpl =~ s/%%_artic_pub_resumen%%/El art&iacute;culo no est&aacute; publicado/g;
     }
 
-    # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
+    # CVI - 29/03/2011 - Para habilitar las friendly urls
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
       $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $nom_seccion_orig, $nom_tema, $nom_subtema);
     }

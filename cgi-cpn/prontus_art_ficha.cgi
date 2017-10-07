@@ -126,6 +126,7 @@ use Session;
 my $ART_AUTOINC;
 my $BD;
 my (%ID_SECCIONES, %ID_TEMAS, %ID_SUBTEMAS, %FORM);
+my (%TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS);
 my $PATH_FICHA;
 
 # ---------------------------------------------------------------
@@ -181,6 +182,19 @@ main: {
                     . $prontus_varglb::DIR_ARTIC
                     . $prontus_varglb::DIR_FECHA
                     . $prontus_varglb::DIR_PAG;
+
+
+    # Conectar a BD
+    my $msg_err_bd;
+    ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
+    if (! ref($BD)) {
+        &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1');
+    };
+
+    # Carga la tabla de secciones
+    &carga_tabla_secc();
+    &carga_tabla_temas();
+    &carga_tabla_subtemas();
 
     # Nuevo
     my $ts;   # rc15
@@ -299,11 +313,6 @@ main: {
             my ($port_nom, $ext_port) = &lib_prontus::split_nom_y_extension($FORM{'_port'});
             $label_pub_directa .= "Portada '" . $port_nom . "'" . ' - &Aacute;rea ' . $FORM{'_area'};
 
-            # Enmarca el label, para que se destaque.
-    #        $label_pub_directa = '<div style="display:inline; background-color:white; color:#003d7a; font-weight:bold; border:1px solid red; margin-left:20%">&nbsp;'
-    #                           . $label_pub_directa
-    #                           . '&nbsp;&nbsp;</div>';
-
             $pagina =~ s/%%_LABEL_PUB_DIRECTA%%/$label_pub_directa/g;
         } else {
             $pagina =~ s/%%_LABEL_PUB_DIRECTA%%//g;
@@ -323,13 +332,6 @@ main: {
 
     my $hidden_dirfecha = '<input type="hidden" name="_dir_fecha" value="' . $FORM{'_dir_fecha'} . '" />';
     $pagina =~ s/<form (.*?)>/<form $1>\n$hidden_dirfecha/is;
-
-    # Conectar a BD
-    my $msg_err_bd;
-    ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
-    if (! ref($BD)) {
-        &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1');
-    };
 
     my $pathrel_arr_tst = $prontus_varglb::DIR_CPAN . '/procs/tax4fids/tax4fids.js';
     my $str_random_tax = &glib_str_02::random_string(10);
@@ -606,19 +608,13 @@ sub posicionar_combo {
   $pagina =~ s/\(/##abc/isg;
   $pagina =~ s/\)/##cba/isg;
 
-
   $pagina =~ /(<select name="$nom_combo".*?<\/select>)/is;
-
   $combo = $1;
-
-
 
   $combo_aux = $combo;
   $combo =~ s/selected//isg;
   $combo =~ s/option value="$val_combo"/option value="$val_combo" selected="selected"/is;
   $pagina =~ s/\Q$combo_aux\E/$combo/is;
-
-
 
   $pagina =~ s/##abc/\(/isg;
   $pagina =~ s/##cba/\)/isg;
@@ -682,7 +678,6 @@ sub generar_popup_tipos {
     };
 
 
-
     if ( (($prontus_varglb::USERS_PERFIL eq 'P') or ($prontus_varglb::USERS_PERFIL eq 'E')) && $prontus_varglb::PRONTUS_SSO ne 'SI' ) { # Periodista o Editor
       # Mostrar solo los tipos de articulos permitidos al usuario conectado.
       foreach $key2 (keys %prontus_varglb::ARTUSERS) {
@@ -708,11 +703,8 @@ sub generar_popup_tipos {
 
   };
 
-
   $lista = $lista . q{</select>};
-
   return $lista;
-
 };
 # ---------------------------------------------------------------
 sub get_first_fid {
@@ -1385,8 +1377,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $pag =~ s/<!--list_pagspar-->.*?<!--\/list_pagspar-->//isg;
   };
 
-  my $fileurl = &lib_prontus::parse_filef('%%_fileurl%%', $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $nom_seccion1, $nom_tema1, $nom_subtema1);
-  print STDERR "$titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $fileurl\n";
+  my $fileurl = &lib_prontus::parse_filef('%%_fileurl%%', $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $TABLA_SECC{$ID_SECCIONES{'_SECCION1'}}, $TABLA_TEMAS{$ID_TEMAS{'_TEMA1'}}, $TABLA_SUBTEMAS{$ID_SUBTEMAS{'_SUBTEMA1'}});
+  print STDERR "Editar: $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $fileurl\n";
   $pag =~ s/%%_fileurl%%/$fileurl/ig;
   if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
     $pag =~ s/%%_fileurlinfo%%/$fileurl/ig;
@@ -1904,6 +1896,41 @@ sub add_macros_fid {
     # parsear SERVER_NAME --> sacar despues de aca y poner en una funcion onda init_plantilla
     $textpag =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
     return $textpag;
+};
+# ---------------------------------------------------------------
+sub carga_tabla_secc {
+  my ($sql, $salida, $nom, $id);
+
+  $sql = "select SECC_ID, SECC_NOM from SECC ";
+  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
+  while ($salida->fetch) {
+    $TABLA_SECC{$id} = $nom;
+  };
+  $salida->finish;
+};
+
+# ---------------------------------------------------------------
+sub carga_tabla_temas {
+  my ($sql, $salida, $nom, $id);
+
+  $sql = "select TEMAS_ID, TEMAS_NOM from TEMAS ";
+  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
+  while ($salida->fetch) {
+    $TABLA_TEMAS{$id} = $nom;
+  };
+  $salida->finish;
+};
+
+# ---------------------------------------------------------------
+sub carga_tabla_subtemas {
+  my ($sql, $salida, $nom, $id);
+
+  $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM from SUBTEMAS ";
+  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
+  while ($salida->fetch) {
+    $TABLA_SUBTEMAS{$id} = $nom;
+  };
+  $salida->finish;
 };
 
 # -------------------------------END SCRIPT----------------------
