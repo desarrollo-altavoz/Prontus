@@ -120,6 +120,7 @@ use lib_secc;
 use lib_tags;
 use lib_waitlock; # Bloqueos tipo espera.
 use lib_quota;
+use lib_tax;
 use Session;
 
 # variables globales del script
@@ -192,9 +193,9 @@ main: {
     };
 
     # Carga la tabla de secciones
-    &carga_tabla_secc();
-    &carga_tabla_temas();
-    &carga_tabla_subtemas();
+    %TABLA_SECC = &lib_tax::carga_hash_seccion($BD);
+    %TABLA_TEMAS = &lib_tax::carga_hash_temas($BD);
+    %TABLA_SUBTEMAS = &lib_tax::carga_hash_subtemas($BD);
 
     # Nuevo
     my $ts;   # rc15
@@ -1377,14 +1378,19 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     $pag =~ s/<!--list_pagspar-->.*?<!--\/list_pagspar-->//isg;
   };
 
-  my $fileurl = &lib_prontus::parse_filef('%%_fileurl%%', $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $TABLA_SECC{$ID_SECCIONES{'_SECCION1'}}, $TABLA_TEMAS{$ID_TEMAS{'_TEMA1'}}, $TABLA_SUBTEMAS{$ID_SUBTEMAS{'_SUBTEMA1'}});
-  print STDERR "Editar: $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $fileurl\n";
-  $pag =~ s/%%_fileurl%%/$fileurl/ig;
-  if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-    $pag =~ s/%%_fileurlinfo%%/$fileurl/ig;
-  } else {
-    $pag =~ s/%%_fileurlinfo%%/Friendly URLs no se encuentran activadas/ig;
-  };
+    my $nom_seccion = $TABLA_SECC{$ID_SECCIONES{'_SECCION1'}}{'nombre'};
+    my $nom_tema = $TABLA_TEMAS{$ID_TEMAS{'_TEMA1'}}{'nombre'};
+    my $nom_subtema = $TABLA_SUBTEMAS{$ID_SUBTEMAS{'_SUBTEMA1'}}{'nombre'};
+
+    my $fileurl = &lib_prontus::parse_filef('%%_fileurl%%', $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $nom_seccion, $nom_tema, $nom_subtema);
+    print STDERR "Editar: $titular, $ts, $prontus_varglb::PRONTUS_ID, $relpath_artic, $fileurl\n";
+
+    $pag =~ s/%%_fileurl%%/$fileurl/ig;
+    if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
+        $pag =~ s/%%_fileurlinfo%%/$fileurl/ig;
+    } else {
+        $pag =~ s/%%_fileurlinfo%%/Friendly URLs no se encuentran activadas/ig;
+    }
 
   if ($prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC eq 'SI') {
     my $protocolo = "http";
@@ -1896,41 +1902,6 @@ sub add_macros_fid {
     # parsear SERVER_NAME --> sacar despues de aca y poner en una funcion onda init_plantilla
     $textpag =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
     return $textpag;
-};
-# ---------------------------------------------------------------
-sub carga_tabla_secc {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select SECC_ID, SECC_NOM from SECC ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_SECC{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_temas {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select TEMAS_ID, TEMAS_NOM from TEMAS ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_TEMAS{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_subtemas {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM from SUBTEMAS ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_SUBTEMAS{$id} = $nom;
-  };
-  $salida->finish;
 };
 
 # -------------------------------END SCRIPT----------------------

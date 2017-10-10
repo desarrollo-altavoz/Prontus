@@ -97,6 +97,7 @@ use lib_prontus;
 use glib_hrfec_02;
 use glib_cgi_04;
 use glib_dbi_02;
+use lib_tax;
 use DBI;
 
 use lib_search;
@@ -163,8 +164,8 @@ main: {
     if ((-s $path_cache) && (!$FORM{'_search'})) {
         my $buffer_cache = &glib_fildir_02::read_file($path_cache);
         # warn("usando cache");
-        print $buffer_cache;
-        exit;
+        #~ print $buffer_cache;
+        #~ exit;
     };
 
     # CVI - 06/02/2012 - Se carga el Hash de Articulos publicados en portadas
@@ -380,9 +381,9 @@ sub make_lista {
     my $artic_loop = shift;
 
     # Carga la tabla de secciones de una sola vez.
-    &carga_tabla_secc();
-    &carga_tabla_temas();
-    &carga_tabla_subtemas();
+    %TABLA_SECC = &lib_tax::carga_hash_seccion($BD);
+    %TABLA_TEMAS = &lib_tax::carga_hash_temas($BD);
+    %TABLA_SUBTEMAS = &lib_tax::carga_hash_subtemas($BD);
 
     #  'F' (fecha public, default)  / 'T' (titular)
     my $orderby;
@@ -415,9 +416,10 @@ sub make_lista {
     my $artics_parsed;
     my $lineas = 0;
     while (($salida->fetch) && ($lineas < $prontus_varglb::MAX_NRO_ARTIC)) {
-        $art_seccion = $TABLA_SECC{$art_idsecc1};
-        $art_tema = $TABLA_TEMAS{$art_idtemas1};
-        $art_subtema = $TABLA_SUBTEMAS{$art_idsubtemas1};
+        $art_seccion = $TABLA_SECC{$art_idsecc1}{'nombre'};
+        $art_tema = $TABLA_TEMAS{$art_idtemas1}{'nombre'};
+        $art_subtema = $TABLA_SUBTEMAS{$art_idsubtemas1}{'nombre'};
+
         $nro_filas++;
 
         my $ts_art_ext = $art_id . '.' . $art_extension;
@@ -438,42 +440,6 @@ sub make_lista {
 
     return ($artics_parsed, $nro_filas, $sql, $ftexto);
 
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_secc {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select SECC_ID, SECC_NOM from SECC ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_SECC{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_temas {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select TEMAS_ID, TEMAS_NOM from TEMAS ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_TEMAS{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_subtemas {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM from SUBTEMAS ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_SUBTEMAS{$id} = $nom;
-  };
-  $salida->finish;
 };
 
 # ---------------------------------------------------------------

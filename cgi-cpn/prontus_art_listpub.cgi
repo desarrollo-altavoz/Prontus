@@ -103,6 +103,7 @@ use glib_dbi_02;
 use glib_fildir_02;
 use DBI;
 use lib_dd;
+use lib_tax;
 
 my ($BD, $RESTAR_ARTICS_PUB, %TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS);
 my (%HASH_NOMPORTS, %FORM);
@@ -146,8 +147,8 @@ main: {
     if (-s $path_cache) {
         my $buffer_cache = &glib_fildir_02::read_file($path_cache);
         $buffer_cache = &port_dd_check_compatible($buffer_cache);
-        print $buffer_cache;
-        exit;
+        #~ print $buffer_cache;
+        #~ exit;
     };
 
     # CVI - 06/02/2012 - Se carga el Hash de Articulos publicados en portadas
@@ -359,42 +360,6 @@ sub generar_hash_articulos_pub {
 };# sub
 
 # ---------------------------------------------------------------
-sub carga_tabla_secc {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select SECC_ID, SECC_NOM from SECC ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_SECC{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_temas {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select TEMAS_ID, TEMAS_NOM from TEMAS ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_TEMAS{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_subtemas {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM from SUBTEMAS ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_SUBTEMAS{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
 sub generar_lista_artic_pub {
 # Genera el html correspondiente a la lista de
 # articulos publicados en la portada seleccionada.
@@ -406,9 +371,9 @@ sub generar_lista_artic_pub {
     };
 
     # Carga la tabla de secciones de una sola vez.
-    &carga_tabla_secc();
-    &carga_tabla_temas();
-    &carga_tabla_subtemas();
+    %TABLA_SECC = &lib_tax::carga_hash_seccion($BD);
+    %TABLA_TEMAS = &lib_tax::carga_hash_temas($BD);
+    %TABLA_SUBTEMAS = &lib_tax::carga_hash_subtemas($BD);
 
     my $area_loop = shift;
     # print STDERR "area_loop[$area_loop]\n";
@@ -614,7 +579,10 @@ sub get_artic_parsed {
 
     # CVI - 29/03/2011 - Para habilitar las friendly urls
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-      $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $TABLA_SECC{$campos_xml{'_seccion1'}}, $TABLA_TEMAS{$campos_xml{'_tema1'}}, $TABLA_SUBTEMAS{$campos_xml{'_subtema1'}});
+        my $nom_seccion = $TABLA_SECC{$campos_xml{'_seccion1'}}{'nombre'};
+        my $nom_tema = $TABLA_TEMAS{$campos_xml{'_tema1'}}{'nombre'};
+        my $nom_subtema = $TABLA_SUBTEMAS{$campos_xml{'_subtema1'}}{'nombre'};
+        $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $nom_seccion, $nom_tema, $nom_subtema);
     }
     $loop_art_tpl =~ s/%%_file%%/$marca_file/g;
     $loop_art_tpl =~ s/%%_autoinc%%/$art_autoinc/g;
