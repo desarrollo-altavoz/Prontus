@@ -160,12 +160,12 @@ main: {
     $file_cache =~ s/[^\w\-]//g;
     my $path_cache = "$dir_cache/$file_cache.html";
     # print "_search[$FORM{'_search'}]";
-    # warn($path_cache);
+
     if ((-s $path_cache) && (!$FORM{'_search'})) {
         my $buffer_cache = &glib_fildir_02::read_file($path_cache);
         # warn("usando cache");
-        #~ print $buffer_cache;
-        #~ exit;
+        print $buffer_cache;
+        exit;
     };
 
     # CVI - 06/02/2012 - Se carga el Hash de Articulos publicados en portadas

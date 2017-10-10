@@ -147,8 +147,8 @@ main: {
     if (-s $path_cache) {
         my $buffer_cache = &glib_fildir_02::read_file($path_cache);
         $buffer_cache = &port_dd_check_compatible($buffer_cache);
-        #~ print $buffer_cache;
-        #~ exit;
+        print $buffer_cache;
+        exit;
     };
 
     # CVI - 06/02/2012 - Se carga el Hash de Articulos publicados en portadas
