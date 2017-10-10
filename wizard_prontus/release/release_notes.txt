@@ -9739,6 +9739,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 11.2.98 - XX/XX/2017 - EAG
 ====================================================================================================
+Carga nombres de taxonomia desde DB en caso de que solo este el id.
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_listpub.cgi
@@ -9746,3 +9747,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 Se agrega strict
 /var/www/prontus_release/cgi-cpn/lib_dd.pm
+
+Al guardar un articulo completa los nombres de la taxonomia desde DB.
+/var/www/prontus_release/cgi-cpn/lib_artic.pm
