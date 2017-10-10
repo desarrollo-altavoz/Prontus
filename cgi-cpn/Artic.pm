@@ -337,8 +337,6 @@ sub generar_xml_artic {
     # restaura a utf8
     utf8::encode($this->{campos}->{'_tags'});
 
-
-
     $this->_artic_ajusta_horas();
 
     # Guarda recursos del articulo

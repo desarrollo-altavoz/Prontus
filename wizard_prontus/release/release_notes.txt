@@ -9742,5 +9742,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_listpub.cgi
+/var/www/prontus_release/cgi-cpn/lib_tax.pm
 
+Se agrega strict
 /var/www/prontus_release/cgi-cpn/lib_dd.pm
