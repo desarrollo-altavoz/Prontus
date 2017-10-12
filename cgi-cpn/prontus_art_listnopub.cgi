@@ -536,24 +536,29 @@ sub genera_filtros {
     $FORM{'autor'} =~ s/ +$//g;
     $FORM{'autor'} =~ s/ {2,}/ /g;
     if ($FORM{'autor'} ne '') {
-      my $autor4query = $FORM{'autor'};
+        my $autor4query = $FORM{'autor'};
 
-      if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
-        $autor4query =~ s/ / \+/g; # mysql
-        $autor4query =~ s/^/+/;    # mysql
-        $filtros .= " and MATCH (ART_AUTOR) AGAINST (\"$autor4query\")" if $filtros ne ''; # mysql
-        $filtros = " MATCH (ART_AUTOR) AGAINST (\"$autor4query\")" if $filtros eq '';      # mysql
-      };
+        if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
+            $autor4query =~ s/\"/ /g; # eliminamos las comillas que traiga el string completo
+            my @search_words = split(' ', $autor4query);
+            $autor4query = '';
+            foreach my $word (@search_words) {
+                $autor4query .= "AND ART_AUTOR LIKE \'%$word%\' ";
+            }
+            $autor4query = substr($autor4query, 4);
+            $filtros .= " AND $autor4query" if $filtros ne ''; # mysql
+            $filtros = " $autor4query" if $filtros eq '';      # mysql
+        }
 
-      if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
-        $filtros .= " and ART_AUTOR like (\"%$autor4query%\")" if $filtros ne ''; # sqlite
-        $filtros = " ART_AUTOR like (\"%$autor4query%\")" if $filtros eq '';      # sqlite
-      };
+        if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
+            $filtros .= " and ART_AUTOR like (\"%$autor4query%\")" if $filtros ne ''; # sqlite
+            $filtros = " ART_AUTOR like (\"%$autor4query%\")" if $filtros eq '';      # sqlite
+        }
 
-      my $esc_value = &lib_prontus::escape_html($FORM{'autor'});
-      $filtros_texto .= " | <b>Autor:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Autor:</b> $esc_value" if $filtros_texto eq '';
-    };
+        my $esc_value = &lib_prontus::escape_html($FORM{'autor'});
+        $filtros_texto .= " | <b>Autor:</b> $esc_value" if $filtros_texto ne '';
+        $filtros_texto = "<b>Autor:</b> $esc_value" if $filtros_texto eq '';
+    }
 
     $FORM{'titu'} =~ s/\+//g;
     $FORM{'titu'} =~ s/^ +//g;
@@ -564,42 +569,33 @@ sub genera_filtros {
 
       if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
         # eliminamos espacios al principio y final
-        $titu4query =~ s/^\s+|\s+$//g;
         if ($titu4query =~ /^"(.*)"$/) { # si el string de busqueda esta envuelto en " se busca completo
             my $string_busqueda = $1;
             # eliminamos las comillas que puedan estar en el interior del string de busqueda
             $string_busqueda =~ s/\"//g;
-            # volvemos agregar las comillas que rodean el string de busqueda
-            $titu4query = "\"$string_busqueda\"";
-            $filtros .= " and MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros ne '';
-            $filtros = " MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros eq '';
+            $filtros .= " AND ART_TITU LIKE '%$string_busqueda%'" if $filtros ne '';
+            $filtros = " ART_TITU LIKE '%$string_busqueda%'" if $filtros eq '';
         } else {
             $titu4query =~ s/\"/ /g; # eliminamos las comillas que traiga el string completo
-            $titu4query =~ s/[ ]+/ /g; # reemplazamos multiples espacios por 1
             my @search_words = split(' ',$titu4query);
             $titu4query = '';
             foreach my $word (@search_words) {
-                # si el largo es mayor a 3 caracteres se encierra en comillas
-                if (length($word) > 3) {
-                    $word = "\"$word\"";
-                }
-
-                $titu4query .= "+$word ";
+                $titu4query .= "AND ART_TITU LIKE \'%$word%\' ";
             }
-            $filtros .= " and MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros ne ''; # mysql
-            $filtros = " MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
+            $titu4query = substr($titu4query, 4);
+            $filtros .= " AND $titu4query" if $filtros ne ''; # mysql
+            $filtros = " $titu4query" if $filtros eq '';      # mysql
         };
       };
 
-
-      if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
-        $filtros .= " and ART_TITU like (\"%$titu4query%\")" if $filtros ne ''; # sqlite
-        $filtros = " ART_TITU like (\"%$titu4query%\")" if $filtros eq '';      # sqlite
-      };
-      my $esc_value = &lib_prontus::escape_html($FORM{'titu'});
-      $esc_value =~ s/\\//sig;
-      $filtros_texto .= " | <b>Titular:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Titular:</b> $esc_value" if $filtros_texto eq '';
+        if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
+            $filtros .= " and ART_TITU like (\"%$titu4query%\")" if $filtros ne ''; # sqlite
+            $filtros = " ART_TITU like (\"%$titu4query%\")" if $filtros eq '';      # sqlite
+        };
+        my $esc_value = &lib_prontus::escape_html($FORM{'titu'});
+        $esc_value =~ s/\\//sig;
+        $filtros_texto .= " | <b>Titular:</b> $esc_value" if $filtros_texto ne '';
+        $filtros_texto = "<b>Titular:</b> $esc_value" if $filtros_texto eq '';
     };
 
 
@@ -608,24 +604,29 @@ sub genera_filtros {
     $FORM{'baja'} =~ s/ +$//g;
     $FORM{'baja'} =~ s/ {2,}/ /g;
     if ($FORM{'baja'} ne '') {
-      my $baja4query = $FORM{'baja'};
+        my $baja4query = $FORM{'baja'};
+        if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
+            $baja4query =~ s/\"/ /g; # eliminamos las comillas que traiga el string completo
+            my @search_words = split(' ',$baja4query);
+            $baja4query = '';
+            foreach my $word (@search_words) {
+                $baja4query .= "AND ART_BAJA LIKE \'%$word%\' ";
+            }
+            $baja4query = substr($baja4query, 4);
 
-      if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
-        $baja4query =~ s/ / \+/g; # mysql
-        $baja4query =~ s/^/+/;    # mysql
-        $filtros .= " and MATCH (ART_BAJA) AGAINST (\"$baja4query\")" if $filtros ne ''; # mysql
-        $filtros = " MATCH (ART_BAJA) AGAINST (\"$baja4query\")" if $filtros eq '';      # mysql
-      };
+            $filtros .= " AND $baja4query" if $filtros ne ''; # mysql
+            $filtros = " $baja4query" if $filtros eq '';      # mysql
+        }
 
-      if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
-        $filtros .= " and ART_BAJA like (\"%$baja4query%\")" if $filtros ne ''; # sqlite
-        $filtros = " ART_BAJA like (\"%$baja4query%\")" if $filtros eq '';      # sqlite
-      };
+        if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
+            $filtros .= " and ART_BAJA like (\"%$baja4query%\")" if $filtros ne ''; # sqlite
+            $filtros = " ART_BAJA like (\"%$baja4query%\")" if $filtros eq '';      # sqlite
+        }
 
-      my $esc_value = &lib_prontus::escape_html($FORM{'baja'});
-      $filtros_texto .= " | <b>Bajada:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Bajada:</b> $esc_value" if $filtros_texto eq '';
-    };
+        my $esc_value = &lib_prontus::escape_html($FORM{'baja'});
+        $filtros_texto .= " | <b>Bajada:</b> $esc_value" if $filtros_texto ne '';
+        $filtros_texto = "<b>Bajada:</b> $esc_value" if $filtros_texto eq '';
+    }
 
     if ($FORM{'dia'} ne '' && $FORM{'diahasta'} eq '') {
       $filtros .= " and ART_DIRFECHA = \"$FORM{'dia'}\"" if $filtros ne '';
