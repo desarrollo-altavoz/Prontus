@@ -9739,6 +9739,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 11.2.98 - XX/XX/2017 - EAG
 ====================================================================================================
+[bugfixes]
 Carga nombres de taxonomia desde DB en caso de que solo este el id.
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 /var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
@@ -9748,5 +9749,11 @@ Carga nombres de taxonomia desde DB en caso de que solo este el id.
 Se agrega strict
 /var/www/prontus_release/cgi-cpn/lib_dd.pm
 
+[bugfixes]
 Al guardar un articulo completa los nombres de la taxonomia desde DB.
 /var/www/prontus_release/cgi-cpn/lib_artic.pm
+
+[bugfixes]
+Corrige errores el uso de la libreria JSON en versiones < 2.
+Corrige el llamado a la funcion para abortar ejecución.
+/var/www/prontus_release/cgi-bin/prontus_form.cgi
