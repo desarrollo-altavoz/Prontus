@@ -66,8 +66,9 @@ sub check_if_new_hash {
 };
 
 sub encrypt_password_bcrypt {
+    my $password = shift;
+
     if (&load_module()) {
-        my $password = shift;
         my $salt = shift || &generate_salt();
         my $settings = '$2a$10$' . $salt;
 
