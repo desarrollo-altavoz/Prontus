@@ -1673,9 +1673,6 @@ sub borra_artic {
     my $dirswf      = $this->{dst_swf};
     my $dirmmedia   = $this->{dst_multimedia};
 
-    use FindBin '$Bin';
-    my $rutaScript = $Bin;
-
     my $pathnice = &lib_prontus::get_path_nice();
     $pathnice = "$pathnice -n19 " if($pathnice);
 
@@ -1839,7 +1836,7 @@ sub borra_artic {
         # Regenerar portadas tagonomicas.
         my $param_especif_tagonomicas = $tags_data;
         $param_especif_tagonomicas =~ s/,/\//sg;
-        my $cmd = "$pathnice $rutaScript/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $param_especif_tagonomicas $fid >/dev/null 2>&1 &";
+        my $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $param_especif_tagonomicas $fid >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
     };
@@ -1859,18 +1856,18 @@ sub borra_artic {
         $secc = '0' if ($secc < 0); # para evitar el -1, ver dps por que get_taxonomia devuelve -1
         my $param_especif = $fid . '/' . $secc . '/' . $tem . '/' . $stem;
 
-        $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
+        $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
 
         # Regenera las salidas List
-        $cmd = "$pathnice $rutaScript/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
+        $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
     };
 
     # Regenera la tabla del DAM
-    $cmd = "$pathnice $rutaScript/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME  >/dev/null 2>&1 &";
+    $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/dam/prontus_dam_ppart_delete.cgi $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME  >/dev/null 2>&1 &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
 
