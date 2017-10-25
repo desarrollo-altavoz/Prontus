@@ -97,12 +97,12 @@ use lib_prontus;
 use glib_hrfec_02;
 use glib_cgi_04;
 use glib_dbi_02;
+use lib_tax;
 use DBI;
 
 use lib_search;
 
 my ($BD, $RESTAR_ARTICS_PUB, $CURRENT_SPARE, %TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS, %HASH_ORDEN, %HASH_PUB);
-#my (%HASH_NOMPORTS);
 my %HASH_ARTIC_PUBS;
 my %FORM;
 # ---------------------------------------------------------------
@@ -160,7 +160,7 @@ main: {
     $file_cache =~ s/[^\w\-]//g;
     my $path_cache = "$dir_cache/$file_cache.html";
     # print "_search[$FORM{'_search'}]";
-    # warn($path_cache);
+
     if ((-s $path_cache) && (!$FORM{'_search'})) {
         my $buffer_cache = &glib_fildir_02::read_file($path_cache);
         # warn("usando cache");
@@ -381,9 +381,9 @@ sub make_lista {
     my $artic_loop = shift;
 
     # Carga la tabla de secciones de una sola vez.
-    &carga_tabla_secc();
-    &carga_tabla_temas();
-    &carga_tabla_subtemas();
+    %TABLA_SECC = &lib_tax::carga_hash_seccion($BD);
+    %TABLA_TEMAS = &lib_tax::carga_hash_temas($BD);
+    %TABLA_SUBTEMAS = &lib_tax::carga_hash_subtemas($BD);
 
     #  'F' (fecha public, default)  / 'T' (titular)
     my $orderby;
@@ -416,9 +416,10 @@ sub make_lista {
     my $artics_parsed;
     my $lineas = 0;
     while (($salida->fetch) && ($lineas < $prontus_varglb::MAX_NRO_ARTIC)) {
-        $art_seccion = $TABLA_SECC{$art_idsecc1};
-        $art_tema = $TABLA_TEMAS{$art_idtemas1};
-        $art_subtema = $TABLA_SUBTEMAS{$art_idsubtemas1};
+        $art_seccion = $TABLA_SECC{$art_idsecc1}{'nombre'};
+        $art_tema = $TABLA_TEMAS{$art_idtemas1}{'nombre'};
+        $art_subtema = $TABLA_SUBTEMAS{$art_idsubtemas1}{'nombre'};
+
         $nro_filas++;
 
         my $ts_art_ext = $art_id . '.' . $art_extension;
@@ -439,42 +440,6 @@ sub make_lista {
 
     return ($artics_parsed, $nro_filas, $sql, $ftexto);
 
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_secc {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select SECC_ID, SECC_NOM from SECC ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_SECC{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_temas {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select TEMAS_ID, TEMAS_NOM from TEMAS ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_TEMAS{$id} = $nom;
-  };
-  $salida->finish;
-};
-
-# ---------------------------------------------------------------
-sub carga_tabla_subtemas {
-  my ($sql, $salida, $nom, $id);
-
-  $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM from SUBTEMAS ";
-  $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom));
-  while ($salida->fetch) {
-    $TABLA_SUBTEMAS{$id} = $nom;
-  };
-  $salida->finish;
 };
 
 # ---------------------------------------------------------------
@@ -571,24 +536,29 @@ sub genera_filtros {
     $FORM{'autor'} =~ s/ +$//g;
     $FORM{'autor'} =~ s/ {2,}/ /g;
     if ($FORM{'autor'} ne '') {
-      my $autor4query = $FORM{'autor'};
+        my $autor4query = $FORM{'autor'};
 
-      if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
-        $autor4query =~ s/ / \+/g; # mysql
-        $autor4query =~ s/^/+/;    # mysql
-        $filtros .= " and MATCH (ART_AUTOR) AGAINST (\"$autor4query\")" if $filtros ne ''; # mysql
-        $filtros = " MATCH (ART_AUTOR) AGAINST (\"$autor4query\")" if $filtros eq '';      # mysql
-      };
+        if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
+            $autor4query =~ s/\"/ /g; # eliminamos las comillas que traiga el string completo
+            my @search_words = split(' ', $autor4query);
+            $autor4query = '';
+            foreach my $word (@search_words) {
+                $autor4query .= "AND ART_AUTOR LIKE \'%$word%\' ";
+            }
+            $autor4query = substr($autor4query, 4);
+            $filtros .= " AND $autor4query" if $filtros ne ''; # mysql
+            $filtros = " $autor4query" if $filtros eq '';      # mysql
+        }
 
-      if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
-        $filtros .= " and ART_AUTOR like (\"%$autor4query%\")" if $filtros ne ''; # sqlite
-        $filtros = " ART_AUTOR like (\"%$autor4query%\")" if $filtros eq '';      # sqlite
-      };
+        if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
+            $filtros .= " and ART_AUTOR like (\"%$autor4query%\")" if $filtros ne ''; # sqlite
+            $filtros = " ART_AUTOR like (\"%$autor4query%\")" if $filtros eq '';      # sqlite
+        }
 
-      my $esc_value = &lib_prontus::escape_html($FORM{'autor'});
-      $filtros_texto .= " | <b>Autor:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Autor:</b> $esc_value" if $filtros_texto eq '';
-    };
+        my $esc_value = &lib_prontus::escape_html($FORM{'autor'});
+        $filtros_texto .= " | <b>Autor:</b> $esc_value" if $filtros_texto ne '';
+        $filtros_texto = "<b>Autor:</b> $esc_value" if $filtros_texto eq '';
+    }
 
     $FORM{'titu'} =~ s/\+//g;
     $FORM{'titu'} =~ s/^ +//g;
@@ -599,42 +569,33 @@ sub genera_filtros {
 
       if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
         # eliminamos espacios al principio y final
-        $titu4query =~ s/^\s+|\s+$//g;
         if ($titu4query =~ /^"(.*)"$/) { # si el string de busqueda esta envuelto en " se busca completo
             my $string_busqueda = $1;
             # eliminamos las comillas que puedan estar en el interior del string de busqueda
             $string_busqueda =~ s/\"//g;
-            # volvemos agregar las comillas que rodean el string de busqueda
-            $titu4query = "\"$string_busqueda\"";
-            $filtros .= " and MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros ne '';
-            $filtros = " MATCH (ART_TITU) AGAINST ('$titu4query' IN BOOLEAN MODE)" if $filtros eq '';
+            $filtros .= " AND ART_TITU LIKE '%$string_busqueda%'" if $filtros ne '';
+            $filtros = " ART_TITU LIKE '%$string_busqueda%'" if $filtros eq '';
         } else {
             $titu4query =~ s/\"/ /g; # eliminamos las comillas que traiga el string completo
-            $titu4query =~ s/[ ]+/ /g; # reemplazamos multiples espacios por 1
             my @search_words = split(' ',$titu4query);
             $titu4query = '';
             foreach my $word (@search_words) {
-                # si el largo es mayor a 3 caracteres se encierra en comillas
-                if (length($word) > 3) {
-                    $word = "\"$word\"";
-                }
-
-                $titu4query .= "+$word ";
+                $titu4query .= "AND ART_TITU LIKE \'%$word%\' ";
             }
-            $filtros .= " and MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros ne ''; # mysql
-            $filtros = " MATCH (ART_TITU) AGAINST (\'$titu4query\' IN BOOLEAN MODE)" if $filtros eq '';      # mysql
+            $titu4query = substr($titu4query, 4);
+            $filtros .= " AND $titu4query" if $filtros ne ''; # mysql
+            $filtros = " $titu4query" if $filtros eq '';      # mysql
         };
       };
 
-
-      if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
-        $filtros .= " and ART_TITU like (\"%$titu4query%\")" if $filtros ne ''; # sqlite
-        $filtros = " ART_TITU like (\"%$titu4query%\")" if $filtros eq '';      # sqlite
-      };
-      my $esc_value = &lib_prontus::escape_html($FORM{'titu'});
-      $esc_value =~ s/\\//sig;
-      $filtros_texto .= " | <b>Titular:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Titular:</b> $esc_value" if $filtros_texto eq '';
+        if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
+            $filtros .= " and ART_TITU like (\"%$titu4query%\")" if $filtros ne ''; # sqlite
+            $filtros = " ART_TITU like (\"%$titu4query%\")" if $filtros eq '';      # sqlite
+        };
+        my $esc_value = &lib_prontus::escape_html($FORM{'titu'});
+        $esc_value =~ s/\\//sig;
+        $filtros_texto .= " | <b>Titular:</b> $esc_value" if $filtros_texto ne '';
+        $filtros_texto = "<b>Titular:</b> $esc_value" if $filtros_texto eq '';
     };
 
 
@@ -643,24 +604,29 @@ sub genera_filtros {
     $FORM{'baja'} =~ s/ +$//g;
     $FORM{'baja'} =~ s/ {2,}/ /g;
     if ($FORM{'baja'} ne '') {
-      my $baja4query = $FORM{'baja'};
+        my $baja4query = $FORM{'baja'};
+        if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
+            $baja4query =~ s/\"/ /g; # eliminamos las comillas que traiga el string completo
+            my @search_words = split(' ',$baja4query);
+            $baja4query = '';
+            foreach my $word (@search_words) {
+                $baja4query .= "AND ART_BAJA LIKE \'%$word%\' ";
+            }
+            $baja4query = substr($baja4query, 4);
 
-      if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
-        $baja4query =~ s/ / \+/g; # mysql
-        $baja4query =~ s/^/+/;    # mysql
-        $filtros .= " and MATCH (ART_BAJA) AGAINST (\"$baja4query\")" if $filtros ne ''; # mysql
-        $filtros = " MATCH (ART_BAJA) AGAINST (\"$baja4query\")" if $filtros eq '';      # mysql
-      };
+            $filtros .= " AND $baja4query" if $filtros ne ''; # mysql
+            $filtros = " $baja4query" if $filtros eq '';      # mysql
+        }
 
-      if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
-        $filtros .= " and ART_BAJA like (\"%$baja4query%\")" if $filtros ne ''; # sqlite
-        $filtros = " ART_BAJA like (\"%$baja4query%\")" if $filtros eq '';      # sqlite
-      };
+        if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {
+            $filtros .= " and ART_BAJA like (\"%$baja4query%\")" if $filtros ne ''; # sqlite
+            $filtros = " ART_BAJA like (\"%$baja4query%\")" if $filtros eq '';      # sqlite
+        }
 
-      my $esc_value = &lib_prontus::escape_html($FORM{'baja'});
-      $filtros_texto .= " | <b>Bajada:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Bajada:</b> $esc_value" if $filtros_texto eq '';
-    };
+        my $esc_value = &lib_prontus::escape_html($FORM{'baja'});
+        $filtros_texto .= " | <b>Bajada:</b> $esc_value" if $filtros_texto ne '';
+        $filtros_texto = "<b>Bajada:</b> $esc_value" if $filtros_texto eq '';
+    }
 
     if ($FORM{'dia'} ne '' && $FORM{'diahasta'} eq '') {
       $filtros .= " and ART_DIRFECHA = \"$FORM{'dia'}\"" if $filtros ne '';
@@ -977,7 +943,7 @@ sub get_artic_parsed {
         $loop_art_tpl =~ s/%%_artic_pub_resumen%%/El art&iacute;culo no est&aacute; publicado/g;
     }
 
-    # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
+    # CVI - 29/03/2011 - Para habilitar las friendly urls
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
       $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $nom_seccion_orig, $nom_tema, $nom_subtema);
     }

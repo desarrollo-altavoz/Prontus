@@ -9,19 +9,20 @@
 
 package lib_dd;
 
+use strict;
 use glib_fildir_02;
 
-%FORM = ();
-$INCLUCONT = 0;
-$MAXLEVEL = 3;
-%PORTLEVELS = ();
+our %FORM = ();
+our $INCLUCONT = 0;
+our $MAXLEVEL = 3;
+our %PORTLEVELS = ();
 
 # ---------------------------------------------------------------
 # Verifica si una portada es compatible con la interfaz drag & drop.
 sub check_portada {
     my $path_plt = $_[0];
     my $path_site = $_[0];
-    
+
     if (-f $path_plt) {
         if ($path_plt =~ /\/port\/_(.*?)$/is) {
             print STDERR "Esta interfaz no está disponible para las portadas que comienzan con _ (underscore).\n";
@@ -34,14 +35,14 @@ sub check_portada {
             print STDERR "La plantilla tiene deshabilitada la interfaz drag & drop via CFG.\n";
             return "La plantilla no tiene habilitada la interfaz drag & drop en la configuraci&oacute;n.";
         };
-        
+
         my $buffer_plt = &glib_fildir_02::read_file($path_plt);
 
         if ($buffer_plt =~ /<!--cfg_dd=no-->/isg) {
             print STDERR "La plantilla tiene deshabilitada la interfaz drag & drop.\n";
             return "La plantilla tiene deshabilitada la interfaz drag & drop.";
         }
-        
+
         my %loops = &_get_loops($buffer_plt);
         my $loop_count = keys(%loops);
         # Revisar que la plantilla tenga al menos 1 loop.
@@ -106,7 +107,7 @@ sub encuentra_includes {
     my $newbuff = $buffer;
 
     #~ print STDERR "INCLUCONT[$INCLUCONT]\n";
-    
+
     $INCLUCONT++;
 
     #~ my $tmpfiledir = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/site/tmp";
@@ -129,7 +130,7 @@ sub encuentra_includes {
                         $newbuff =~ s/$port/dd_$port/isg;
                     };
                 };
-            };            
+            };
         };
     };
 
@@ -146,7 +147,7 @@ sub encuentra_includes {
                 };
             };
         };
-        
+
     };
 
     return $newbuff;
@@ -162,7 +163,7 @@ sub genera_vista_include {
     $port =~ /(.*?)\.(.*?)$/i;
     my $port_xml_filename = "$1.xml";
     my $portname = $1;
-    
+
     my $dstsitefile = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/site/edic/$edic/port/dd_$port";
     my $dstpltfile = $prontus_varglb::DIR_SERVER . "/" . $prontus_varglb::PRONTUS_ID . "/cpan/procs/dd/port/$port";
     my $port_xml_path = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EDIC . "/$edic/xml/$port_xml_filename";
@@ -173,19 +174,19 @@ sub genera_vista_include {
         return '';
     }
 
-    my ($buffer_include) = &prepara_loops($buffer_include, $buffer_include, $level);
+    $buffer_include = &prepara_loops($buffer_include, $buffer_include, $level);
 
     $buffer_include =~ s/%%_port%%/$port/isg;
     $buffer_include =~ s/%%_portname%%/$portname/isg;
     $buffer_include =~ s/%%_edic%%/$edic/isg;
     $buffer_include = &parse_common_vars($buffer_include);
-    
+
 
     # parsear portada.
     #~ print STDERR "genera_vista_include: port[$port]\n";
     &cargar_areas($port_xml_path, '', $port);
     &glib_fildir_02::write_file($dstpltfile, $buffer_include);
-    
+
     &lib_prontus::make_portada($dstsitefile, $dstpltfile, $prontus_varglb::DIR_SERVER, $prontus_varglb::PRONTUS_ID,
         '', $prontus_varglb::PUBLIC_SERVER_NAME, $prontus_varglb::PRONTUS_KEY, $prontus_varglb::STAMP_DEMO,
         $edic, '1', $prontus_varglb::STAMP_DEMO_RSS, $prontus_varglb::CONTROL_FECHA,
@@ -194,10 +195,7 @@ sub genera_vista_include {
     # Reemplazar marcas de vob y ord.
     my $buffer = &glib_fildir_02::read_file($dstsitefile);
     $buffer = &parse_ord_vb($buffer);
-    #~ if ($INCLUCONT < $MAXLEVEL) {
-        #~ $buffer = &encuentra_includes($buffer, $edic);
-    #~ };
-    
+
     &glib_fildir_02::write_file($dstsitefile, $buffer);
 
 };
@@ -206,7 +204,6 @@ sub prepara_loops {
     my $buffer = $_[0];
     my $port_dd = $_[1];
     my $level = $_[2];
-    #~ my $is_include = $_[2];
     my $newbuffer = $buffer;
 
     my $tpl = 'plt_item_area.html';
@@ -222,10 +219,10 @@ sub prepara_loops {
     };
 
     #~ print STDERR "level[$level], tpl[$tpl]\n";
-    
+
     my $plantilla_item_area = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/port_dd/$tpl";
     my $buffer_item_area = &glib_fildir_02::read_file($plantilla_item_area);
-    
+
     while ($buffer =~ /(%%LOOP(\d+)(\([^)]+?\))?%%(.*?)%%\/LOOP%%)/isg) {
         my $loop = $1;
         my $loop_num = $2;
@@ -240,7 +237,7 @@ sub prepara_loops {
         my $url_editar = 'prontus_art_ficha.cgi?_file=%%_ts%%.html&_fid=%%_fid%%&_path_conf=%%_path_conf%%&fotosvtxt=/1/2/3/4';
         $new_item_loop =~ s/%%url_editar%%/$url_editar/is;
         $new_item_loop =~ s/%%item_loop%%/$inside_loop/is;
-        
+
         $port_dd =~ s/%%LOOP$loop_num(\([^)]+?\))?%%(.*?)%%\/LOOP%%/$new_item_loop/is;
 
         $new_item_loop =~ s/%%LOOP(.*?)%%//isg;
@@ -277,7 +274,7 @@ sub cargar_areas {
     %lib_prontus::VB = ();
 
     my @campos = keys(%FORM);
-    
+
     if (!$from_xml && $FORM{'_accion'} eq 'update') {
         #~ print STDERR "Carga1\n";
         # La informacion del orden y articulos viene por post.
@@ -293,7 +290,7 @@ sub cargar_areas {
                     $lib_prontus::PRIO{$ts} = $FORM{"_orden_$ts"};
                     $lib_prontus::VB{$ts} = $FORM{"_vb_$ts"};
                     my $is_corrupt = $FORM{"_corrupt_$ts"}; # '1' | ''
-                    
+
                     # Si no se especifica area o prioridad, los articulos no se publican en la portada
                     if (($lib_prontus::PRIO{$ts} eq '') || ($lib_prontus::PRIO{$ts} eq '0') || ($lib_prontus::AREA{$ts} eq '') || ($lib_prontus::AREA{$ts} eq '0') || ($is_corrupt == 1)) {
                         $lib_prontus::AREA{$ts} = '';
@@ -345,7 +342,7 @@ sub cargar_areas {
         #~ print STDERR "Carga2\n";
         &_carga_areas_from_xml($xml_path);
     };
-    
+
 };
 
 sub _carga_areas_from_xml {
@@ -375,7 +372,7 @@ sub parse_ord_vb {
         my $find = "<input type=\"hidden\" name=\"_orden_$ts\" value=\"\" />";
         my $replace = "<input type=\"hidden\" name=\"_orden_$ts\" value=\"$lib_prontus::PRIO{$ts}\" />";
         $buffer =~ s/$find/$replace/isg;
-        
+
         $find = "<input type=\"hidden\" name=\"_vb_$ts\" value=\"\" />";
         $replace = "<input type=\"hidden\" name=\"_vb_$ts\" value=\"$lib_prontus::VB{$ts}\" />";
         $buffer =~ s/$find/$replace/isg;
@@ -389,7 +386,7 @@ sub parse_common_vars {
     $FORM{'port'} =~ /^(.*?)\.(.*?)$/is;
     my $portname = $1;
     my $nom_recurso = "$FORM{'_edic'}-$portname";
-    
+
     $buffer =~ s/%%nom_recurso%%/$nom_recurso/sig;
     $buffer =~ s/%%_path_conf%%/$FORM{'_path_conf'}/sig;
     $buffer =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/sig;
@@ -412,7 +409,7 @@ sub get_loop_portada {
 
     my $level = $PORTLEVELS{$port};
     #~ print STDERR "get_loop_portada: level[$level], port[$port], area[$area]\n";
-    
+
     while ($buffer =~ /(%%LOOP(\d+)(\([^)]+?\))?%%(.*?)%%\/LOOP%%)/isg) {
         if ($2 eq $area) {
             $buffer_loop = $1;
@@ -420,9 +417,9 @@ sub get_loop_portada {
         };
     };
 
-    
+
     $buffer_loop = &prepara_loops($buffer_loop, $buffer_loop, $level);
-    
+
     $buffer_loop =~ /%%LOOP(\d+)(\([^)]+?\))?%%(.*?)%%\/LOOP%%/is;
     $buffer_loop = $3;
     $buffer_loop =~ s/%%_port%%/$port/isg;

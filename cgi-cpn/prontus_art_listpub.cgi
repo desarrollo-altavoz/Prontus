@@ -85,6 +85,7 @@ BEGIN {
 };
 
 # Captura STDERR
+use strict;
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
@@ -102,14 +103,15 @@ use glib_dbi_02;
 use glib_fildir_02;
 use DBI;
 use lib_dd;
+use lib_tax;
 
-my ($BD, $RESTAR_ARTICS_PUB, %TABLA_SECC);
-my (%HASH_NOMPORTS);
+my ($BD, $RESTAR_ARTICS_PUB, %TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS);
+my (%HASH_NOMPORTS, %FORM);
+my (%HASH_ARTIC_PUBS, %HASH_ORDEN, %HASH_AREA, %HASH_DIRFECHA, %HASH_PUB, %HASH_VB);
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
   # print STDERR "\n" . &get_time('Inicio');
-
 
 main: {
 
@@ -217,8 +219,6 @@ main: {
 
     $buffer =~ s/%%.*?%%//ig;
 
-    #~ %%_fechahora_pub%%
-
     # Escribe cache
     &glib_fildir_02::check_dir($dir_cache);
     &glib_fildir_02::write_file($path_cache, $buffer);
@@ -234,14 +234,6 @@ sub get_nom_recurso_concurrency {
     my $nom_recurso = $FORM{'_edic'} . '-' . $FORM{'_port'};
     $nom_recurso =~ s/\.\w+$//; # borra ext.
     return $nom_recurso;
-};
-# ---------------------------------------------------------------
-sub get_concurrency4port {
-# Obtiene otros usuarios concurrentes a esta portada
-    my $nom_recurso = shift;
-    my $id_session  = shift;
-    my $concurrency =
-    return $concurrency;
 };
 # ---------------------------------------------------------------
 sub get_sess_id {
@@ -341,7 +333,7 @@ sub generar_hash_articulos_pub {
 
     # Deduce del path completo de la portada, el del xml.
     my ($path_xml) = $path_port;
-    $path_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/\1\.xml/;
+    $path_xml =~ s/\/port\/(\w+?)\.\w*$/\/xml\/$1\.xml/;
 
     if (-f $path_xml) {
 
@@ -367,11 +359,21 @@ sub generar_hash_articulos_pub {
 
 };# sub
 
-
 # ---------------------------------------------------------------
 sub generar_lista_artic_pub {
 # Genera el html correspondiente a la lista de
 # articulos publicados en la portada seleccionada.
+
+    my $msg_err_bd;
+    ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
+    if (! ref($BD)) {
+        &glib_html_02::print_pag_result("Error",$msg_err_bd,0,'exit=1,,link=nolink');
+    };
+
+    # Carga la tabla de secciones de una sola vez.
+    %TABLA_SECC = &lib_tax::carga_hash_seccion($BD);
+    %TABLA_TEMAS = &lib_tax::carga_hash_temas($BD);
+    %TABLA_SUBTEMAS = &lib_tax::carga_hash_subtemas($BD);
 
     my $area_loop = shift;
     # print STDERR "area_loop[$area_loop]\n";
@@ -575,9 +577,12 @@ sub get_artic_parsed {
         $loop_art_tpl =~ s/%%_artic_pub_resumen%%/El art&iacute;culo no est&aacute; publicado/g;
     }
 
-    # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
+    # CVI - 29/03/2011 - Para habilitar las friendly urls
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-      $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $campos_xml{'_nom_seccion1'}, $campos_xml{'_nom_tema1'}, $campos_xml{'_nom_subtema1'});
+        my $nom_seccion = $TABLA_SECC{$campos_xml{'_seccion1'}}{'nombre'};
+        my $nom_tema = $TABLA_TEMAS{$campos_xml{'_tema1'}}{'nombre'};
+        my $nom_subtema = $TABLA_SUBTEMAS{$campos_xml{'_subtema1'}}{'nombre'};
+        $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $nom_seccion, $nom_tema, $nom_subtema);
     }
     $loop_art_tpl =~ s/%%_file%%/$marca_file/g;
     $loop_art_tpl =~ s/%%_autoinc%%/$art_autoinc/g;
