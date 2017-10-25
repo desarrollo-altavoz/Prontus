@@ -191,8 +191,6 @@ sub guardar_usr {
             $users_fec_exp = time + (int($FORM{'EXP_DAYS'}) * 86400) if ($FORM{'EXP_DAYS'} > 0);
         }
 
-        print STDERR "crypted_pass[$users_psw]\n";
-
         # Actualiza registro.
         if ($FORM{'USERS_ID'} ne '1') {
 
