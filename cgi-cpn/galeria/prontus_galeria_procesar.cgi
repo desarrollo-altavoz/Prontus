@@ -274,7 +274,7 @@ sub procesar_zip {
             my $idx = ($counter+1);
             foreach my $num (keys %HASHSIZES) {
                 my $fotofija = $HASHSIZES{$num}{'nombre'};
-                $fotofija =~ s/%%/$idx/g;
+                $fotofija =~ s/@@/$idx/g;
                 my %nomfoto = &lib_prontus::getCamposXml($bufferxml, $fotofija);
                 $nomfoto{$fotofija} =~ s/^.*?\/(foto_\d+\.\w+)$/$1/;
                 $strfotos{$num} = $nomfoto{$fotofija} .'|'. $strfotos{$num};
@@ -341,7 +341,8 @@ sub procesar_zip {
             $nomfoto = $artic_obj->_add_foto_filesystem($newimage, $nom_foto_orig);
             $strfotos{$num} = $nomfoto .'|'. $strfotos{$num};
             my $pathfoto = "/".$prontus_varglb::PRONTUS_ID."/site/artic/$fechac/imag/$nomfoto";
-            $fotofija =~ s/@@/$counter/g;
+            my $idx = ($counter+1);
+            $fotofija =~ s/@@/$idx/g;
 
             # agregamos creditos y descripcion dummy
             if ($num eq '1') {
@@ -453,7 +454,7 @@ sub existe_imagen_xml {
 
     foreach my $num (keys %HASHSIZES) {
         my $fotofija = $HASHSIZES{$num}{'nombre'};
-        $fotofija =~ s/%%/$idx/g;
+        $fotofija =~ s/@@/$idx/g;
         my %foto = &lib_prontus::getCamposXml($bufferxml, $fotofija);
         return 1 if($foto{$fotofija});
     }

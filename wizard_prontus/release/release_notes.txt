@@ -9741,8 +9741,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 - Administrador y FID
     [bugfixes]
-        - Carga nombres de taxonomia desde DB en caso de que solo este el id.
-        - Al guardar un articulo completa los nombres de la taxonomia desde DB.
+        - Carga nombres de taxonomía desde DB en caso de que solo este el id.
+        - Al guardar un artículo completa los nombres de la taxonomía desde DB.
     [mejoras]
         Cambios menores en el cóodigo
     [files]
