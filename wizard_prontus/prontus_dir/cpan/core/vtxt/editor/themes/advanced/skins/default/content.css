@@ -20,6 +20,9 @@ del {color:red; text-decoration:line-through}
 cite {border-bottom:1px dashed blue}
 acronym {border-bottom:1px dotted #CCC; cursor:help}
 abbr {border-bottom:1px dashed #CCC; cursor:help}
+/* table-transparente */
+table.table-transparente td, table.table-transparente th {border:1px dashed #BBB !important;}
+table.table-transparente {border:1px dashed #BBB !important;}
 
 /* IE */
 * html body {

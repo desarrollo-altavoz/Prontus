@@ -56,6 +56,7 @@ use prontus_varglb; &prontus_varglb::init();
 use lib_prontus;
 use glib_fildir_02;
 
+#~ use Data::Dumper;
 
 my $MAXITEM = 100;
 my @FOTOS;

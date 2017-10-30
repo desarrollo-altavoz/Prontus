@@ -120,7 +120,7 @@
             this.formToData();
             editor.execCommand('mceRepaint');
             tinyMCEPopup.restoreSelection();
-			editor.selection.setNode(editor.plugins.media.dataToImg(this.data));
+	    editor.selection.setNode(editor.plugins.media.dataToImg(this.data));
             tinyMCEPopup.close();
         },
 
