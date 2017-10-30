@@ -18,8 +18,13 @@
 .boton-gris3 {margin-left: 99px; margin-top: 10px;}
 
 .box-changepass {width: 550px;}
+.box-changepass .auxi {width:350px; height:280px; clear:both; font-size:15px; color:#FFFFFF; font-weight:bold; border-top-right-radius: 4px; border-top-left-radius: 4px;}
 
 .checkSession {margin-top: 80px;}
 .checkSession img {margin-top: 15px;}
 .box-login .prontus-sso {height:110px; background-size: 350px 120px; border-top-right-radius: 0; border-top-left-radius: 0;}
 .box-login .prontus-sso .fieldform {width: 235px;}
+.auxi-newpass {height: 280px !important; margin: 0 auto;}
+.auxi-newexpiredpass {height: 220px !important; margin: 0 auto;}
+.auxi-newexpiredpass p {margin: 20px 0 10px 60px !important;}
+#info-password {font-size: 13px; height: 15px;}

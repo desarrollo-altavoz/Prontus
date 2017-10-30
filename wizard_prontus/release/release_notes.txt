@@ -9708,30 +9708,99 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         evita totalmente, pero debe ser mucho mayor el id para que ocurra.
         - Actualiza tinymce de 3.5.8 a 3.5.12 para solucionar un error en el funcionamiento con Chrome
     [files]
-        - /cgi-cpn/galeria/prontus_galeria_procesar.cgi
-        - /wizard_prontus/prontus_dir/cpan/core/css/fids.css
-        - /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
-        - /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/fullscreen/editor_plugin.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/fullscreen/fullscreen.htm
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/inlinepopups/editor_plugin.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/editor_plugin.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/js/media.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/media.htm
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/paste/editor_plugin.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/searchreplace/js/searchreplace.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/spellchecker/editor_plugin.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/spellchecker/editor_plugin_src.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/cell.htm
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/editor_plugin.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/js/cell.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/js/table.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/table.htm
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/editor_template.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/editor_template_src.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/content.css
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/ui.css
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce-min.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce-src.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce.js
-        - /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce_popup.js
+        /cgi-cpn/galeria/prontus_galeria_procesar.cgi
+        /wizard_prontus/prontus_dir/cpan/core/css/fids.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_head.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_titulo_principal.html
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/fullscreen/editor_plugin.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/fullscreen/fullscreen.htm
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/inlinepopups/editor_plugin.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/editor_plugin.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/js/media.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/media/media.htm
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/paste/editor_plugin.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/searchreplace/js/searchreplace.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/spellchecker/editor_plugin.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/spellchecker/editor_plugin_src.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/cell.htm
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/editor_plugin.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/js/cell.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/js/table.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/plugins/table/table.htm
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/editor_template.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/editor_template_src.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/content.css
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/themes/advanced/skins/default/ui.css
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce-min.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce-src.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce.js
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce_popup.js
+
+====================================================================================================
+11.2.98 - 30/10/2017 - JOR/EAG/CSS
+====================================================================================================
+- Administrador y FID
+    [bugfixes]
+        - Carga nombres de taxonomía desde DB en caso de que solo este el id.
+        - Al guardar un artículo completa los nombres de la taxonomía desde DB.
+    [mejoras]
+        Cambios menores en el cóodigo
+    [files]
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/lib_dd.pm
+
+- Login y usuarios
+    [mejoras]
+        - Se cambia la encriptación de las contraseñas por blowfish.
+        Se utilizará este algoritmo solo si está instalado el módulo perl correspondiente.
+        cpan: Crypt::Eksblowfish::Bcrypt, debian: libcrypt-eksblowfish-perl
+        - Se agrega caducidad de contraseñas, configurable por cada usuario. Desactivado o de 1 a 365 días.
+        - Cuando la contraseña expira, prontus pedirá que se cambie por una nueva (se verifica en el login).
+        - Se valida que las contraseñas sean robustas. Deben cumplir con lo siguiente:
+          - 8 caracteres como mínimo, máximo 32.
+          - al menos un número.
+          - al menos una mayúscula.
+          - al menos un caracter especial !%&@#$^*?_.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_auth.pm
+        /cgi-cpn/prontus_changepass.cgi
+        /cgi-cpn/prontus_check_platform.cgi
+        /cgi-cpn/prontus_login.cgi
+        /cgi-cpn/prontus_usr_chgpass_sbmit.cgi
+        /cgi-cpn/prontus_usr_ficha.cgi
+        /cgi-cpn/prontus_usr_sbmit.cgi
+        /wizard_prontus/prontus_dir/cpan/core/prontus_changepass.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_usr_ficha.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_change_expired_pass.html
+        /wizard_prontus/prontus_dir/cpan/core/css/login.css
+        /wizard_prontus/prontus_dir/cpan/core/css/usradmin.css
+        /wizard_prontus/prontus_dir/cpan/core/js-local/ChangeExpiredPass.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/UsrAdmin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/imag/boto/eye_open.png
+
+- Prontus Form
+    [bugfixes]
+        - Corrige errores el uso de la libreria JSON en versiones < 2.
+        - Corrige el llamado a la funcion para abortar ejecución.
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Artículos
+    [bugfixes]
+        - Corrige error al ejecutar procesos de borrado de articulos
+        - La ruta utilizada se determinaba relativa al script que llamaba al método,
+        si el script no estaba en cgi-cpn producia invocaciones erróneas.
+        Ahora usa la ruta de la configuración: DIR_SERVER + DIR_CGI_CPAN, para ejecutar los procesos
+    [files]
+        /cgi-cpn/Artic.pm
+
+- Ayuda Prontus
+    [mejoras]
+        - Agrega video-tutoriales para usar prontus.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/prontus_help_main.html

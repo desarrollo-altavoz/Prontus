@@ -73,7 +73,7 @@ my $LIMITE_CHARS_NAME = 28;
 # MAIN.
 # -------------
 my (%COOKIES, %FORM);
-my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL);
+my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP);
 
 main: {
     my ($value, $pagina, $plantilla, $cmb_perfil, $lst_artasoc, $lst_artdisp, $dir_tpl_seccs, $lst_portasoc, $lst_portdisp);
@@ -113,7 +113,7 @@ main: {
     # Si se trata de editar
     if ($FORM{'USERS_ID'} ne '') {
         $value = $prontus_varglb::USERS{$FORM{'USERS_ID'}};
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $value;
+        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $value;
     };
 
     #~ $lst_artdisp = &get_lst_tipoart();
@@ -125,11 +125,14 @@ main: {
 
     $cmb_perfil = &get_cmb_perfil();
 
+    $USERS_EXP_DAYS = '0' if (!$USERS_EXP_DAYS);
+
     $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . '/prontus_usr_ficha.html';
     $pagina = &glib_html_02::rellenar_plantilla(10, '%%USERS_ID%%', $FORM{'USERS_ID'},'','',
                                                     '%%EMAIL%%', $USERS_EMAIL,'','',
                                                     '%%NOM%%', $USERS_NOM,'','',
                                                     '%%USR%%', $USERS_USR,'','',
+                                                    '%%EXP_DAYS%%', $USERS_EXP_DAYS,'','',
                                                     '%%Cmb_PERFIL%%', $cmb_perfil,'','',
                                                     '%%_path_conf%%', $FORM{'_path_conf'},'','',
                                                     $plantilla);
@@ -176,6 +179,7 @@ main: {
     if ($FORM{'USERS_ID'} eq '1') { # admin
         # no mostrar listas de seleccion de tipos de art. y portadas.
         $pagina =~ s/<!--LISTAS-->.*?<!--\/LISTAS-->//sg;
+        $pagina =~ s/<!--exp_psw-->.*?<!--\/exp_psw-->//is;
         $pagina =~ s/<!--PERFIL-->.*?<!--\/PERFIL-->/<SPAN CLASS="P-LABELTABLA">Administrador<\/SPAN><input type="hidden" name="Cmb_PERFIL" value="A">/sg;
     }
     if ($prontus_varglb::PRONTUS_SSO eq 'SI') {

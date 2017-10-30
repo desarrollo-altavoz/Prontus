@@ -39,10 +39,10 @@ var UsrAdmin = {
     },
     // -------------------------------------------------------------------------
     initFicha: function() {
-
         $('.list input[type="checkbox"]').bind('click', function() {
             UsrAdmin.toggleChecked($(this));
         });
+
         $(document).tooltip({
             position: {
                 my: "center center",
@@ -60,6 +60,83 @@ var UsrAdmin = {
                 return title;
             }
         });
+
+        $("#range-slide").slider({
+            range: "min",
+            value: 0,
+            min: 0,
+            max: 365,
+            slide: function (e, ui) {
+                $('#EXP_DAYS').val(ui.value);
+            }
+        });
+
+        $("#range-slide").slider("option", "value", $('#EXP_DAYS').val());
+
+        $('#EXP_DAYS').on('keyup', function (e) {
+            if (e.keyCode == 13) {
+                if ($(this).val() < 0) {
+                    $(this).val(0);
+                    $("#range-slide").slider("option", "value", 0);
+                } else if ($(this).val() > 365) {
+                    $(this).val(365);
+                    $("#range-slide").slider("option", "value", 365);
+                } else {
+                    $("#range-slide").slider("option", "value", $(this).val());
+                }
+            }
+        });
+
+        UsrAdmin.bindCheckPasswordStrength();
+
+        $('#show_password').on('click', function (e) {
+            e.preventDefault();
+            var $element =  $('#PSW1');
+            var value = $element.val();
+
+            if ($element.attr('type') == 'text') {
+                $('<input type="password" name="PSW1" id="PSW1" size="30" value="' + value + '" class="field-password" maxlength="32">').insertBefore($element);
+                $element.remove();
+                UsrAdmin.bindCheckPasswordStrength();
+            } else {
+                $('<input type="text" name="PSW1" id="PSW1" size="30" value="' + value + '" class="field-password" maxlength="32">').insertBefore($element);
+                $element.remove();
+                UsrAdmin.bindCheckPasswordStrength();
+            }
+        })
+    },
+    bindCheckPasswordStrength: function () {
+        $('#PSW1').on('keyup', function (e) {
+            $('#psw_strength').html(UsrAdmin.checkPasswordStrength($(this).val()));
+        });
+    },
+    checkPasswordStrength: function (password) {
+        if (password.length == 0) return '';
+        if (password.length < 8) {
+            $('#psw_strength').removeClass().addClass('short');
+
+            return 'Muy corta';
+        }
+
+        // if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength += 1;
+        // if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) strength += 1;
+        // if (password.match(/([!,%,&,@,#,$,^,*,?,_])/)) strength += 1;
+
+        if (!password.match(/([a-z])/)) {
+            return 'Incluye letras minúsculas';
+        } else if (!password.match(/([A-Z])/))  {
+            $('#psw_strength').removeClass().addClass('weak');
+            return 'Incluye al menos una mayúscula';
+        } else if (!password.match(/([0-9])/)) {
+            $('#psw_strength').removeClass().addClass('weak');
+            return 'Incluye al menos un número';
+        } else if (!password.match(/([!,%,&,@,#,$,^,*,?,_])/)) {
+            $('#psw_strength').removeClass().addClass('good');
+            return 'Te falta incluir un caracter especial: !%&@#$^*?_.';
+        } else {
+            $('#psw_strength').removeClass().addClass('strong');
+            return 'Excelente!';
+        }
     },
     // -------------------------------------------------------------------------
     borrar: function(id) {

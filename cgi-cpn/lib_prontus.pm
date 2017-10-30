@@ -84,6 +84,7 @@ require Artic;
 use lib_cookies;
 use Session;
 use Digest::MD5 qw(md5_hex);
+use prontus_auth;
 
 our $CRLF = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # usar asi: $buffer =~ s/$CRLF/<p>/sg;
 our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
@@ -563,7 +564,7 @@ sub get_dirfecha_by_ts {
 sub open_dbm_files {
     # Cargar en los hash desde los archivos de textos
     # USERS
-    my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email);
+    my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp);
 
     if (!(-f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt")) {
         open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 'no_ok';
@@ -589,9 +590,9 @@ sub open_dbm_files {
         if ($_ !~ /^\|\|/) {
             $_ =~ s/\n$//;
             # print "pesosraya[$_]<br>";
-            ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split(/\|/, $_);
+            ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split(/\|/, $_);
             if ($users_id ne '' && $users_nom ne '' && $users_usr  ne '' && $users_psw ne '') {
-                $prontus_varglb::USERS{$users_id} = $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email;
+                $prontus_varglb::USERS{$users_id} = $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email . '|' . $users_exp_days . '|' . $users_fec_exp;
             }
             # print "linea cargada[$users_id y $prontus_varglb::USERS{$users_id}]<br>"
         };
@@ -628,7 +629,7 @@ sub open_dbm_files {
 # Prontus 6.0
 sub close_dbm_files {
     my ($k);
-    my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $linea);
+    my ($users_id, $users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp, $linea);
     my ($tipart, $port, $usr1, $usr2, $buffer);
 
     # Salvar los hash a los archivos de texto.
@@ -637,8 +638,8 @@ sub close_dbm_files {
     $buffer = '';
     foreach $k (sort { $a <=> $b } keys %prontus_varglb::USERS) {
         $users_id = $k;
-        ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$k};
-        $linea = $users_id . '|' . $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email . "\n";
+        ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$k};
+        $linea = $users_id . '|' . $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email . '|' . $users_exp_days . '|' . $users_fec_exp . "\n";
         $buffer .= $linea;
     };
     if ($buffer) {
@@ -737,41 +738,56 @@ sub check_user {
         };
     };
 
+    if (&lib_prontus::open_dbm_files() ne 'ok') {
+        return ('', 'No fue posible cargar archivos de privilegios de usuario');
+        print STDERR "No fue posible cargar archivos de privilegios de usuario.\n";
+    };
+
+    # Devuelve el password encriptado que corresponda. Si es nuevo, lo devuelve completo, ya que en la cookie
+    # se almacena solo el hash.
+    $crypted_pass = &prontus_auth::check_if_new_hash($username, $crypted_pass);
+
     # Si esta este archivo, solo deja pasar con user admin y la pass contenida en el.
     # Los demas usuarios son bloqueados.
     my ($flag_sysadmin) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_sysadmin.txt";
     if (-f $flag_sysadmin) { # sysadmin
         my $pass_sysadmin = &glib_fildir_02::read_file($flag_sysadmin);
-        # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
         my $crypted_sys_pass;
+
         if(length($crypted_pass) == 32) {
             $crypted_sys_pass = md5_hex($pass_sysadmin);
+        } elsif (length $crypted_pass == 60) {
+            $crypted_sys_pass = &prontus_auth::encrypt_password_bcrypt($pass_sysadmin);
         } else {
             $crypted_sys_pass = crypt($pass_sysadmin, 'Av');
         }
-        if ( ($username eq 'admin') && ($crypted_pass eq $crypted_sys_pass) ) {
+
+        if (($username eq 'admin') && ($crypted_pass eq $crypted_sys_pass)) {
             return (1, 'A');
         } else {
             return ('', $prontus_varglb::MSG_BLOQUEOSYSADMIN); # sysadmin es para mostrar mensaje mas amigable
-        };
+        }
     } else { # users normales
-        if (&lib_prontus::open_dbm_files() ne 'ok') {
-            return ('', 'No fue posible cargar archivos de privilegios de usuario');
-            print STDERR "No fue posible cargar archivos de privilegios de usuario.\n";
-        };
-
         foreach $key (keys %prontus_varglb::USERS) {
             # print "key[$key] y value[$value]<br>";
             $value = $prontus_varglb::USERS{$key};
-            my ($users_nom, $users_usr, $users_psw, $users_perfil) = split /\|/, $value;
+            my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $value;
+
             if (($users_usr eq $username) && ($crypted_pass eq $users_psw)) {
                 ($id, $perfil) = ($key, $users_perfil);
+
+                # print STDERR "users_exp_days[$users_exp_days] users_fec_exp[$users_fec_exp]\n";
+
+                if (&prontus_auth::if_passwd_expired($users_fec_exp) && $users_fec_exp ne '' && $users_fec_exp > 0 && $key != 1) {
+                    return ('', 'Su contrase&ntilde;a ha expirado. Inicie sesi&oacute;n nuevamente y c&aacute;mbiela.');
+                }
+
                 last;
-            };
-        };
+            }
+        }
         $perfil = 'Usuario o Contrase&ntilde;a no v&aacute;lida.' if (!$id);
         return ($id, $perfil);
-    };
+    }
 
 };
 

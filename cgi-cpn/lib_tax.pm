@@ -618,6 +618,102 @@ sub carga_tabla_seccion {
 };
 
 # ---------------------------------------------------------------
+sub carga_hash_seccion {
+    my $base = shift;
+    my $only_enabled = shift;
+    my ($sql, $salida, %hash_datos);
+    $sql = "select SECC_ID, SECC_NOM, SECC_PORT, SECC_NOM4VISTAS from SECC ";
+    if ($only_enabled) {
+        $sql .= "where SECC_MOSTRAR = '1'";
+    }
+    $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
+
+    while (my $row = $salida->fetchrow_hashref) {
+        my @vistas = split(/\n/, $row->{'SECC_NOM4VISTAS'});
+        my %hash_temp = ();
+        foreach my $vista (@vistas) {
+            my @temp = split(/\t/, $vista);
+            $hash_temp{$temp[0]} = $temp[1];
+        }
+        $hash_datos{$row->{'SECC_ID'}}{'nombre'} = $row->{'SECC_NOM'};
+        $hash_datos{$row->{'SECC_ID'}}{'port'} = $row->{'SECC_PORT'};
+        $hash_datos{$row->{'SECC_ID'}}{'vistas'} = \%hash_temp;
+    }
+
+    $salida->finish;
+    return %hash_datos;
+}
+# ---------------------------------------------------------------
+sub carga_hash_temas {
+    my $base = shift;
+    my $only_enabled = shift;
+    my $id_padre = shift;
+    my ($sql, $salida, %hash_datos, @filtros);
+    $sql = "select TEMAS_ID, TEMAS_NOM, TEMAS_PORT, TEMAS_IDSECC, TEMAS_NOM4VISTAS from TEMAS ";
+
+    if ($id_padre) {
+        push(@filtros, "TEMAS_IDSECC='$id_padre'");
+    }
+    if ($only_enabled) {
+        push(@filtros, "TEMAS_MOSTRAR = '1'");
+    }
+    if (scalar(@filtros) > 0) {
+        $sql .= 'where ' .join(' and ', @filtros);
+    }
+    $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
+
+    while (my $row = $salida->fetchrow_hashref) {
+        my @vistas = split(/\n/, $row->{'TEMAS_NOM4VISTAS'});
+        my %hash_temp = ();
+        foreach my $vista (@vistas) {
+            my @temp = split(/\t/, $vista);
+            $hash_temp{$temp[0]} = $temp[1];
+        }
+        $hash_datos{$row->{'TEMAS_ID'}}{'id_padre'} = $row->{'TEMAS_IDSECC'} if (!$id_padre);
+        $hash_datos{$row->{'TEMAS_ID'}}{'nombre'} = $row->{'TEMAS_NOM'};
+        $hash_datos{$row->{'TEMAS_ID'}}{'port'} = $row->{'TEMAS_PORT'};
+        $hash_datos{$row->{'TEMAS_ID'}}{'vistas'} = \%hash_temp;
+    }
+
+    $salida->finish;
+    return %hash_datos;
+}
+
+# ---------------------------------------------------------------
+sub carga_hash_subtemas {
+    my $base = shift;
+    my $only_enabled = shift;
+    my $id_padre = shift;
+    my ($sql, $salida, %hash_datos, @filtros);
+    $sql = "select SUBTEMAS_ID, SUBTEMAS_NOM, SUBTEMAS_PORT, SUBTEMAS_IDTEMAS, SUBTEMAS_NOM4VISTAS from SUBTEMAS ";
+    if ($id_padre) {
+        push(@filtros, "SUBTEMAS_IDTEMAS='$id_padre'");
+    }
+    if ($only_enabled) {
+        push(@filtros, "SUBTEMAS_MOSTRAR = '1'");
+    }
+    if (scalar(@filtros) > 0) {
+        $sql .= 'where ' .join(' and ', @filtros);
+    }
+    $salida = &glib_dbi_02::ejecutar_sql($base, $sql);
+
+    while (my $row = $salida->fetchrow_hashref) {
+        my @vistas = split(/\n/, $row->{'SUBTEMAS_NOM4VISTAS'});
+        my %hash_temp = ();
+        foreach my $vista (@vistas) {
+            my @temp = split(/\t/, $vista);
+            $hash_temp{$temp[0]} = $temp[1];
+        }
+        $hash_datos{$row->{'SUBTEMAS_ID'}}{'id_padre'} = $row->{'SUBTEMAS_IDTEMAS'} if (!$id_padre);
+        $hash_datos{$row->{'SUBTEMAS_ID'}}{'nombre'} = $row->{'SUBTEMAS_NOM'};
+        $hash_datos{$row->{'SUBTEMAS_ID'}}{'port'} = $row->{'SUBTEMAS_PORT'};
+        $hash_datos{$row->{'SUBTEMAS_ID'}}{'vistas'} = \%hash_temp;
+    }
+    $salida->finish;
+    return %hash_datos;
+}
+
+# ---------------------------------------------------------------
 sub procesar_condicional_extra {
     my ($buffer, $loopcounter) = @_;
     my $localbuf = $buffer;

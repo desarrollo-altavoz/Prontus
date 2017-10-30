@@ -26,6 +26,7 @@ use lib_prontus;
 use strict;
 use utf8;
 use Digest::MD5 qw(md5_hex);
+use prontus_auth;
 
 my (%COOKIES, %FORM);
 
@@ -56,12 +57,12 @@ main: {
         &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para usuario editor y redactor.', 1, 'exit=1,ctype=1');
         exit;
     };
-    
+
     if (&lib_prontus::open_dbm_files() ne 'ok') {
         &glib_html_02::print_json_result(0, "No fue posible abrir archivos dbm.", 'exit=1,ctype=1');
         exit;
     };
-    
+
     # Validar datos del formulario.
     my $error_validacion = &validar_datos();
     if ($error_validacion ne '') {
@@ -69,7 +70,7 @@ main: {
         &glib_html_02::print_json_result(0, $error_validacion, 'exit=1,ctype=1');
         exit;
     };
-    
+
     # Realizar cambio de contraseña.
     &actualizar_password();
     &lib_prontus::close_dbm_files();
@@ -78,54 +79,81 @@ main: {
 };
 # --------------------------------------------------------------------------------------------------
 sub validar_datos {
-    my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$prontus_varglb::USERS_ID};
-    
+    my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$prontus_varglb::USERS_ID};
+
     if (!$FORM{'pwd_actual'}) {
         return 'Porfavor, ingrese su contraseña actual.';
     };
-    
+
     if (!$FORM{'pwd_nuevo'}) {
         return 'Por favor, ingrese su nueva contraseña.';
     };
-    
+
     if (!$FORM{'pwd_confirm'}) {
         return 'Por favor, ingrese su la confirmación de su nueva contraseña.';
     };
-    
+
     if ($FORM{'pwd_nuevo'} =~ /^\s+$/) {
         return 'La contraseña no puede contener espacios.';
     };
-    
-    if ($FORM{'pwd_nuevo'} !~ /^.{6,32}$/) {
-        return 'La nueva contraseña debe estar compuesta por un mínimo de 6 caracteres y máximo 32 caracteres.';
+
+    if ($FORM{'pwd_nuevo'} !~ /^.{8,32}$/) {
+        return 'La nueva contraseña debe estar compuesta por un mínimo de 8 caracteres y máximo 32 caracteres.';
     };
-    
+
     if (lc $FORM{'pwd_nuevo'} eq 'prontus') {
         return "La contraseña es inválida, ya que no puede ser \"$FORM{'pwd_nuevo'}\", por favor ingrese una distinta.";
     };
-    
+
+    if ($FORM{'pwd_nuevo'} !~ /([a-z].*[A-Z])|([A-Z].*[a-z])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+
+    if ($FORM{'pwd_nuevo'} !~ /([0-9])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+
+    if ($FORM{'pwd_nuevo'} !~ /([\!%&@#\$\^\*\?_\.])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+
+    if ($FORM{'pwd_actual'} eq $FORM{'pwd_nuevo'}) {
+        return 'La nueva contraseña no puede ser igual a la actual.';
+    }
+
     # Validar contraseña actual.
-    # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
     my $pwd_actual_cryp;
+
+    if (length $users_psw == 60) {
+        if (!&prontus_auth::check_password($FORM{'pwd_actual'}, $users_psw)) {
+            return 'La contraseña actual ingresada no corresponde.';
+        } else {
+            return;
+        }
+    }
+
     if(length($users_psw) == 32) {
         $pwd_actual_cryp = md5_hex($FORM{'pwd_actual'});
     } else {
         $pwd_actual_cryp = crypt($FORM{'pwd_actual'}, 'Av');
     }
+
     if ($pwd_actual_cryp ne $users_psw) {
         return 'La contraseña actual ingresada no corresponde.';
-    };
-    
+    }
+
     if ($FORM{'pwd_nuevo'} ne $FORM{'pwd_confirm'}) {
         return 'La nueva contraseña y la confirmación no coinciden.';
-    };
-    
+    }
+
 };
 # --------------------------------------------------------------------------------------------------
 sub actualizar_password {
-    my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$prontus_varglb::USERS_ID};
-    # my $pwd_nuevo_cryp = crypt($FORM{'pwd_nuevo'}, 'Av');
-    # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
-    my $pwd_nuevo_cryp = md5_hex($FORM{'pwd_nuevo'});        
-    $prontus_varglb::USERS{$prontus_varglb::USERS_ID} = $users_nom. '|' . $users_usr . '|' . $pwd_nuevo_cryp . '|' . $users_perfil . '|' . $users_email;
+    my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$prontus_varglb::USERS_ID};
+    my $pwd_nuevo_cryp = &prontus_auth::encrypt_password_bcrypt($FORM{'pwd_nuevo'});
+
+    # Al cambiar contraseña se actualiza la fecha de expiracion.
+    $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
+
+    $prontus_varglb::USERS{$prontus_varglb::USERS_ID} = $users_nom. '|' . $users_usr . '|' . $pwd_nuevo_cryp . '|' . $users_perfil . '|' . $users_email . '|' . $users_exp_days . '|' . $users_fec_exp;
 };

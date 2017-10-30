@@ -45,6 +45,23 @@ sub save_artic_with_object {
     my $autoinc = 0;
     my $post_proceso_lista;
 
+    my %tabla_secc = &lib_tax::carga_hash_seccion($base);
+    my %tabla_temas = &lib_tax::carga_hash_temas($base);
+    my %tabla_subtemas = &lib_tax::carga_hash_subtemas($base);
+
+    # se completan los nombres de la taxonomía
+    for (my $i = 1; $i < 4; $i++) {
+        if ($ARTIC_OBJ->{campos}{'_seccion' . $i} ne '') {
+            $ARTIC_OBJ->{campos}{'_nom_seccion' . $i} = $tabla_secc{$ARTIC_OBJ->{campos}{'_seccion' . $i}}{'nombre'};
+            if ($ARTIC_OBJ->{campos}{'_tema' . $i} ne '') {
+                $ARTIC_OBJ->{campos}{'_nom_tema' . $i} = $tabla_temas{$ARTIC_OBJ->{campos}{'_tema' . $i}}{'nombre'};
+                if ($ARTIC_OBJ->{campos}{'_subtema' . $i} ne '') {
+                    $ARTIC_OBJ->{campos}{'_nom_subtema' . $i} = $tabla_subtemas{$ARTIC_OBJ->{campos}{'_subtema' . $i}}{'nombre'};
+                }
+            }
+        }
+    }
+
     # regenera los <tag>.txt para los tags q tenía el artículo antes de ser modificado
     my %campos_xml_old;
     my $tags_old;

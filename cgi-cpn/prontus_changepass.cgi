@@ -52,6 +52,7 @@ use lib_prontus;
 use strict;
 use File::Copy;
 use Digest::MD5 qw(md5_hex);
+use prontus_auth;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -62,7 +63,6 @@ my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_ID);
 my $USERID;
 
 main: {
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
@@ -76,6 +76,7 @@ main: {
     $FORM{'_new_psw_confirm'} = &glib_cgi_04::param('_new_psw_confirm');
     $FORM{'_email'} = &glib_cgi_04::param('_email');
     $FORM{'_token'} = &glib_cgi_04::param('_token');
+    $FORM{'_expired'} = &glib_cgi_04::param('_expired');
 
     # Carga var. globales con los datos del arch. conf.
     &lib_prontus::load_config($FORM{'_path_conf'});   # Prontus 6.0
@@ -84,7 +85,7 @@ main: {
     if (&lib_prontus::open_dbm_files() ne 'ok') {
         &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios', 'exit=1,ctype=1');
     };
-    
+
     # Cambio de contraseña por recuperación.
     if ($FORM{'_token'} ne '' && $FORM{'_usr'} ne '') {
         if (&validacion_token()) {
@@ -94,15 +95,18 @@ main: {
             };
             if (&is_user_valido()) {
                 my $val = $prontus_varglb::USERS{$USERID};
-                my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail) = split /\|/, $val;
-                $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . md5_hex($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail;
+                my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $val;
+
+                $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
+
+                $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password_bcrypt($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
                 &lib_prontus::close_dbm_files();
                 unlink "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass/$FORM{'_usr'}.txt";
                 &glib_html_02::print_json_result(1, 'La contraseña se cambió correctamente.', 'exit=1,ctype=1');
             } else {
                 &glib_html_02::print_json_result(0, 'El usuario es inválido.', 'exit=1,ctype=1');
             };
-            
+
         } else {
             &glib_html_02::print_json_result(0, 'Token inválido o expirado.', 'exit=1,ctype=1');
         };
@@ -114,17 +118,19 @@ main: {
     };
 
     if (&user_valido() eq 'S') {
-		
+
 		my $val = $prontus_varglb::USERS{$USERID};
-		my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail) = split /\|/, $val;
-        # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
-        $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . md5_hex($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $FORM{'_email'};
+		my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $val;
+
+        $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
+
+        $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password_bcrypt($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
         &lib_prontus::close_dbm_files();
 
         # Escribe archivo extras (para edit)
         &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/extra.txt", &glib_str_02::random_string(8));
 
-        &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(1, 'La contraseña ha sido cambiada con éxito.', 'exit=1,ctype=1');
 
     }
     else {
@@ -157,18 +163,34 @@ sub valida_datos {
     return 'Password no puede contener solamente espacios.';
     };
 
-    if ($FORM{'_new_psw'} !~ /^.{6,32}$/) {
-    return 'La nueva contraseña debe estar compuesta por un mínimo de 6 caracteres y máximo 32 caracteres.';
+    if ($FORM{'_new_psw'} !~ /^.{8,32}$/) {
+        return 'La nueva contraseña debe estar compuesta por un mínimo de 8 caracteres y máximo 32 caracteres.';
     # return 'Password debe estar compuesta por, al menos, 6 caracteres.';
     };
 
     if (lc $FORM{'_new_psw'} eq 'prontus') {
-    return "Contraseña no válida.<br>Su contraseña no puede ser \"$FORM{'_new_psw'}\", por favor ingrese una distinta";
+        return "Contraseña no válida.<br>Su contraseña no puede ser \"$FORM{'_new_psw'}\", por favor ingrese una distinta";
     };
 
-    if ($FORM{'_token'} eq ''  && $FORM{'_email'} !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {
-    return 'Email no válido';
+    if ($FORM{'_new_psw'} !~ /([a-z].*[A-Z])|([A-Z].*[a-z])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+
+    if ($FORM{'_new_psw'} !~ /([0-9])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+
+    if ($FORM{'_new_psw'} !~ /([\!%&@#\$\^\*\?_\.])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+
+    if ($FORM{'_expired'} eq '' && $FORM{'_token'} eq ''  && $FORM{'_email'} !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {
+        return 'Email no válido';
     };
+
+    if ($FORM{'_expired'} eq '1' && $FORM{'_new_psw'} eq $FORM{'_psw'}) {
+        return 'La nueva contraseña no puede ser igual a la actual.';
+    }
 
     return '';
 };
@@ -180,20 +202,29 @@ sub user_valido {
     foreach $key (keys %prontus_varglb::USERS) {
         $val = $prontus_varglb::USERS{$key};
         ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL) = split /\|/, $val;
-        # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
         my $crypted_pass;
-        if(length($USERS_PSW) == 32) {
+
+        if (length $USERS_PSW == 60) {
+            if (($USERS_USR eq $FORM{'_usr'}) && &prontus_auth::check_password($FORM{'_psw'}, $USERS_PSW)) {
+                $USERID = $key;
+
+                return 'S';
+            }
+        }
+
+        if (length($USERS_PSW) == 32) {
             $crypted_pass = md5_hex($FORM{'_psw'});
         } else {
             $crypted_pass = crypt($FORM{'_psw'}, $USERS_PSW);
         }
-        if ( ($USERS_USR eq $FORM{'_usr'}) and ($crypted_pass eq $USERS_PSW) ) {
+
+        if (($USERS_USR eq $FORM{'_usr'}) and ($crypted_pass eq $USERS_PSW)) {
             $USERID = $key;
             return 'S';
-        };
-    };
-    return 'N';
+        }
+    }
 
+    return 'N';
 };
 
 sub is_user_valido {

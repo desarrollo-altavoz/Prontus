@@ -34,3 +34,19 @@
 
 .ui-tooltip-content .tooltip-ficha {font-size:12px;}
 .seleccion {font-size: 11px !important; text-align: right !important; font-weight: normal !important;}
+
+.exp-psw {}
+.exp-psw label {margin-top: 3px; float: left;}
+.exp-psw .input-exp {float: left; overflow: visible;}
+.exp-psw .input-exp input {width: 100px !important;float: left;margin-right: 5px;}
+#range-slide {width: 200px; float: left;overflow: visible !important; margin-left: 20px; margin-top: 4px;}
+.ui-slider-handle, .ui-state-hover, .ui-state-active {background: #1c94c4 !important;}
+.ui-slider-range {background: #cecece !important;}
+.field-password {width: 280px !important;}
+.field-password-container {position: relative; width: 290px;}
+#show_password {display: block; position: absolute; top:0; right: 10px;}
+#psw_strength {margin-top: 3px; height: 14px; font-size: 12px;}
+#psw_strength.short {color:#FF0000;}
+#psw_strength.weak {color:orange;}
+#psw_strength.good {color:#2D98F3;}
+#psw_strength.strong {color:limegreen;}

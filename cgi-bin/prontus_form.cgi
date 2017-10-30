@@ -234,7 +234,7 @@ $MSGS{'rut'} = 'RUT';
 
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(5)) {
-    &aborta("Error: Servidor ocupado. Intente otra vez m&aacute;s tarde."); # 1.3.1 # 1.10
+    &lib_form::aborta("Error: Servidor ocupado. Intente otra vez m&aacute;s tarde."); # 1.3.1 # 1.10
 };
 
 # Variables globales.
@@ -352,7 +352,7 @@ sub data_management {
 
     if($JSON::VERSION =~ /^1\./) {
         my $json = new JSON;
-        &glib_fildir_02::write_file("$backupdir/order.json", &json->objToJson($order_data));
+        &glib_fildir_02::write_file("$backupdir/order.json", $json->objToJson($order_data));
     } else {
         &glib_fildir_02::write_file("$backupdir/order.json", &JSON::to_json($order_data));
     }
@@ -472,7 +472,7 @@ sub data_management {
 
         if($JSON::VERSION =~ /^1\./) {
             my $json = new JSON;
-            &glib_fildir_02::write_file($filejson, &json->objToJson($resp));
+            &glib_fildir_02::write_file($filejson, $json->objToJson($resp));
         } else {
             &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
         }
