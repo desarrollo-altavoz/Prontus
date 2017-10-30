@@ -9737,7 +9737,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/vtxt/editor/tiny_mce_popup.js
 
 ====================================================================================================
-11.2.98 - XX/XX/2017 - EAG
+11.2.98 - XX/XX/2017 - JOR/EAG/CSS
 ====================================================================================================
 - Administrador y FID
     [bugfixes]
@@ -9798,3 +9798,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Ahora usa la ruta de la configuración: DIR_SERVER + DIR_CGI_CPAN, para ejecutar los procesos
     [files]
         /cgi-cpn/Artic.pm
+
+- Ayuda Prontus
+    [mejoras]
+        - Agrega video-tutoriales para usar prontus.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/prontus_help_main.html
