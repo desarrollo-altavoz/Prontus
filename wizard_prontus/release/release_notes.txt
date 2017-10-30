@@ -9763,3 +9763,9 @@ Corrige error al ejecutar procesos de borrado de articulos
 La ruta utilizada se determinaba relativa al script que llamaba al metodo, si el scirpt no estaba en cgi-cpn producia invocaciones erroneas.
 Ahora usa la ruta de prontus: DIR_SERVER + DIR_CGI_CPAN, apra ejecutar los procesos
 /var/www/prontus_release/cgi-cpn/Artic.pm
+
+
+    [mejoras]
+        - Agrega video-tutoriales para usar prontus.
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/prontus_help_main.html
