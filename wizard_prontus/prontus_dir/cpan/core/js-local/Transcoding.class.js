@@ -159,7 +159,7 @@ var Transcoding, Msg, Flash;
             var opciones = {
                 video: Transcoding.linkVideo,
                 prontus_id: Admin.prontus_id,
-                generar_versiones: 0,
+                generar_versiones: 0
             };
 
             if (typeof generar_versiones != 'undefined') {
