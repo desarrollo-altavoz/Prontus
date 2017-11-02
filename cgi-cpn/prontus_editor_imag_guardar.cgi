@@ -223,7 +223,7 @@ sub agrega_foto_artic {
 
     if (!-f "$prontus_varglb::DIR_SERVER$relpath_foto") {
         unlink $path_img_dst; # se elimina foto generada.
-        &glib_html_02::print_json_result(0, "La foto generada por objeto Artic existe.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, "La foto generada por objeto Artic no existe.", 'exit=1,ctype=1');
     }
 
     if ($nomfoto =~ /^(foto_\d{8}).*/i) {

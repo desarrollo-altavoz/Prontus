@@ -233,6 +233,11 @@
 
                 parent.$("#_mainFidForm").prepend(html);
 
+                // Asigna al campo de fotofija que fue seleccionado.
+                if (self.activeFotoFija) {
+                    parent.FotoFija.foto.set(self.activeFotoFija, url, wfoto, hfoto);
+                }
+
                 // Se actualiza el banco de imagenes.
                 parent.FotoFija.methods.reloadBancoImagenes(true); // Guardar despues de recargar el banco de imagenes.
 
