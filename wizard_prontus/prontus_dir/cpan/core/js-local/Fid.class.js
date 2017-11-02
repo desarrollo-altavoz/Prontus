@@ -1061,7 +1061,10 @@ var Fid = {
         if(fecha) {
             var dia = now.getDate();
             var mes = now.getMonth() + 1;
-            var anio = now.getYear() + 1900;
+            var anio = now.getYear();
+            if (anio < 1000) {
+                anio = anio + 1900;
+            }
             fecha.val(normaliza2Digitos(dia)+'/'+normaliza2Digitos(mes)+'/'+normaliza2Digitos(anio));
         }
     },
