@@ -134,13 +134,6 @@ sub start_xcode {
         return (0, 'Error: Se detectó un proceso activo de transcodificación para el video indicado.');
     };
 
-    if ($prontus_varglb::ADVANCED_XCODING eq 'NO') {
-        # No transcodifica peliculas que ya son mp4.
-        if ($origen =~ /\.mp4$/i) {
-            return (0, "Error: El video ya es mp4, no es necesario transcodificarlo.");
-        };
-    }
-
     my $pathnice = &lib_prontus::get_path_nice();
     my $cmd = "$pathnice /usr/bin/perl $Bin/prontus_videodoxcode.cgi $origen $prontus_id";
 
@@ -149,6 +142,13 @@ sub start_xcode {
         system("$cmd 1 >/dev/null 2>&1 &");
         return (1, 'Transcodificación en proceso...');
     };
+
+    if ($prontus_varglb::ADVANCED_XCODING eq 'NO') {
+        # No transcodifica peliculas que ya son mp4.
+        if ($origen =~ /\.mp4$/i) {
+            return (0, "Error: El video ya es mp4, no es necesario transcodificarlo.");
+        };
+    }
 
     # Gatilla la transcodificacion en background.
     print STDERR "gatillando[$cmd 0]\n";
