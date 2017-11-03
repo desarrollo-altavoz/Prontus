@@ -9824,6 +9824,9 @@ Soluciona inconsistencias en llamados
 cgi-cpn/prontus_editor_imag_guardar.cgi
 wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.js
 
+
+Mejora mensajes de diagnostico
 Corrige error al procesar videos de articulo, se estaban procesando siempre en modo batch
 /var/www/prontus_release/cgi-cpn/prontus_art_sbmit.cgi
 /var/www/prontus_release/cgi-cpn/xcoding/prontus_procesar_videos.pl
+/var/www/prontus_release/cgi-cpn/xcoding/prontus_qtfaststart_check.cgi

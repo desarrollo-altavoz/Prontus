@@ -71,7 +71,7 @@ use glib_hrfec_02;
 use lib_prontus;
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
-use Data::Dumper;
+#~ use Data::Dumper;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -193,7 +193,7 @@ sub procesa_file {
                 $titular = $1;
             }
             if ($found ne '') {
-                print STDERR "Procesar [$ts][$titular][$campo][$found]\n";
+                print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Procesar [$ts][$titular][$campo][$found]\n";
                 $video =  "/$PRONTUS_ID/site/mm/". substr($ts ,0, 8) ."/mmedia/$found";
                 if ($found =~ /\.mp4$/) { # si es mp4 revisamos los atoms
                     $cmd = "perl $Bin/prontus_qtfaststart_check.cgi $video $PRONTUS_ID";
