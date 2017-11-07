@@ -1,4 +1,14 @@
 ====================================================================================================
+11.2.98.1 - 07/11/2017 - JOR/EAG
+====================================================================================================
+- bugfixes: (fid) Corrige errores para mejorar compatibilidad con IE 7-8
+- bugfixes: (fid) Corrige actualizacion de fecha de publicación en IE 7-8
+- bugfixes: (fid) Arregla mensaje de cuando una foto no pudo ser generada y se soluciona problema con asignacion de foto recien editada a un campo de fotofija.
+- bugfixes: (fid) Soluciona inconsistencias en llamados de javascript en el editor del fotos
+- bugfixes: (xcoding) Corrige error que evitaba generar versiones de un video al usar transcodificación no avanzada
+- bugfixes: (xcoding) Mejora mensajes de diagnostico
+- bugfixes: (xcoding) Corrige error al procesar videos de articulo, se estaban procesando siempre en modo batch
+====================================================================================================
 11.2.98 - 30/10/2017 - JOR/EAG/CSS
 ====================================================================================================
 - improvement: (admin) Cambios menores en el código.

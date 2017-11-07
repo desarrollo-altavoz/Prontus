@@ -9804,3 +9804,31 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Agrega video-tutoriales para usar prontus.
     [files]
         /wizard_prontus/prontus_dir/cpan/core/prontus_help_main.html
+
+====================================================================================================
+11.2.98.1 - 07/11/2017 - JOR/EAG
+====================================================================================================
+- FID
+    [bugfixes]
+        - Corrige errores para mejorar compatibilidad con IE 7-8
+        - Corrige actualizacion de fecha de publicación en IE 7-8
+        - Arregla mensaje de cuando una foto no pudo ser generada y se soluciona problema con asignacion de foto recien editada a un campo de fotofija.
+        - Soluciona inconsistencias en llamados de javascript en el editor del fotos
+    [files]
+        /cgi-cpn/prontus_editor_imag_guardar.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/GaleriaProntus.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Player.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.
+
+- Transcodificación
+    [bugfixes]
+        - Corrige error que evitaba generar versiones de un video al usar transcodificación no avanzada
+        - Mejora mensajes de diagnostico
+        - Corrige error al procesar videos de articulo, se estaban procesando siempre en modo batch
+    [files]
+        /var/www/prontus_release/cgi-cpn/prontus_art_sbmit.cgi
+        /var/www/prontus_release/cgi-cpn/xcoding/prontus_procesar_videos.pl
+        /var/www/prontus_release/cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi

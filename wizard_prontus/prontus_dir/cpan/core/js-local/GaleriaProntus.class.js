@@ -619,7 +619,7 @@ var GaleriaProntus = {
                         GaleriaProntus.actualizaEstado(ts, prontus_id);
                     }, 5000);
                 }
-            },
+            }
         });
     },
 

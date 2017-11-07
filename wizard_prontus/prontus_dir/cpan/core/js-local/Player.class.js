@@ -414,7 +414,7 @@ var Player,Flash;
                     case 'html5':
                         break;
                 }
-            },
+            }
         },
         helper:{
             formatTime: function (seconds) {

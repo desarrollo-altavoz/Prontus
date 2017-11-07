@@ -123,8 +123,8 @@
                             $('.tools-container .loading').hide();
                             $('.image-container').css('opacity', 1);
                             $(self.imgElementId).cropper('enable');
-                            self.actions.onFotosfijas();
 
+                            self.methods.onFotosFijas();
                         } else {
                             self.actions.imagGuardarCallback(data);
                         }
@@ -136,7 +136,7 @@
                         $('.tools-container .loading').hide();
                         $('.image-container').css('opacity', 1);
                         $(self.imgElementId).cropper('enable');
-                        self.methods.onFotosfijas();
+                        self.methods.onFotosFijas();
                     }
                 });
             },
@@ -232,6 +232,11 @@
                 ].join("").replace(/%%numfoto%%/g, numfoto).replace(/%%wfoto%%/g, wfoto).replace(/%%hfoto%%/g, hfoto);
 
                 parent.$("#_mainFidForm").prepend(html);
+
+                // Asigna al campo de fotofija que fue seleccionado.
+                if (self.activeFotoFija) {
+                    parent.FotoFija.foto.set(self.activeFotoFija, url, wfoto, hfoto);
+                }
 
                 // Se actualiza el banco de imagenes.
                 parent.FotoFija.methods.reloadBancoImagenes(true); // Guardar despues de recargar el banco de imagenes.
@@ -363,14 +368,14 @@
                 $('.tools-container .warning').hide();
 
                 // Bindear botones a funcion dummy.
-                $("#zoom_in").off("click").on("click", function (e) {e.preventDefault; return false;});
-                $("#zoom_out").off("click").on("click", function (e) {e.preventDefault; return false;});
-                $("#rotate_left").off("click").on("click", function (e) {e.preventDefault; return false;});
-                $("#rotate_right").off("click").on("click", function (e) {e.preventDefault; return false;});
-                $("#move_left").off("click").on("click", function (e) {e.preventDefault; return false;});
-                $("#move_right").off("click").on("click", function (e) {e.preventDefault; return false;});
-                $("#move_up").off("click").on("click", function (e) {e.preventDefault; return false;});
-                $("#move_down").off("click").on("click", function (e) {e.preventDefault; return false;});
+                $("#zoom_in").off("click").on("click", function (e) {e.preventDefault(); return false;});
+                $("#zoom_out").off("click").on("click", function (e) {e.preventDefault(); return false;});
+                $("#rotate_left").off("click").on("click", function (e) {e.preventDefault(); return false;});
+                $("#rotate_right").off("click").on("click", function (e) {e.preventDefault(); return false;});
+                $("#move_left").off("click").on("click", function (e) {e.preventDefault(); return false;});
+                $("#move_right").off("click").on("click", function (e) {e.preventDefault(); return false;});
+                $("#move_up").off("click").on("click", function (e) {e.preventDefault(); return false;});
+                $("#move_down").off("click").on("click", function (e) {e.preventDefault(); return false;});
 
                 // El metodo para redimensionar se cambia y se deja separado.
                 $("#apply").off("click").on("click", self.actions.applyResize);
@@ -520,7 +525,7 @@
 
                 if (self.resizeChain) {
                     var newSize = self.actions.calculateSize($(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight, $("#freesize_width").val(), false);
-                    var w = (newSize[0] * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
+                    w = (newSize[0] * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
                     var h = (newSize[1] * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
 
                     self.resizeWidth = newSize[0];
@@ -560,7 +565,7 @@
                     var newW = ($(self.imgElementId)[0].naturalWidth / $(self.imgElementId)[0].naturalHeight) * val;
                     var newSize = self.actions.calculateSize($(self.imgElementId)[0].naturalWidth, $(self.imgElementId)[0].naturalHeight, false, $("#freesize_height").val());
                     var w = (newSize[0] * self.resizeOrigWidth) / $(self.imgElementId)[0].naturalWidth;
-                    var h = (newSize[1] * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
+                    h = (newSize[1] * self.resizeOrigHeight) / $(self.imgElementId)[0].naturalHeight;
 
                     self.resizeWidth = newSize[0];
                     self.resizeHeight = newSize[1];

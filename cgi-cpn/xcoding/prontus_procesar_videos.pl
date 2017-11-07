@@ -71,7 +71,7 @@ use glib_hrfec_02;
 use lib_prontus;
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
-use Data::Dumper;
+#~ use Data::Dumper;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -104,9 +104,9 @@ main:{
         exit;
     }
 
-    if ($ARGV[1] !~ /^\d{14}$/) {
+    if ($ARGV[1] =~ /^\d{14}$/) {
         $TS = $ARGV[1];
-    } elsif ($ARGV[1] !~ /^fid\_/) {
+    } elsif ($ARGV[1] =~ /^fid\_/) {
         $FID = $ARGV[1];
     }
 
@@ -121,16 +121,16 @@ main:{
     $input =~ s/\/[^\/]+\/?$//;
     $input .= "/$PRONTUS_ID/site/artic/";
 
-    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Inicio Proceso\n";
+    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Inicio Proceso [$PRONTUS_ID][$TS][$FID]\n";
 
     if ($TS ne '') {
-        $input .= substr(0, 8, $TS). "/xml/";
+        $input .= substr($TS, 0, 8). "/xml/";
         &procesa_file("$TS.xml", $input);
     } else {
         &procesa_dir($input);
     }
     print STDERR 'Se procesaron ' . $COUNTER .  " videos \n" if $COUNTER;
-    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Fin Proceso\n";
+    print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Fin Proceso [$PRONTUS_ID][$TS][$FID]\n";
 };
 
 #-----------------------------------------------------------------------#
@@ -173,6 +173,7 @@ sub procesa_file {
         if ($FID ne ''  && $file !~ /$FID/is) {
             return;
         }
+        # print STDERR "XML valido $filepath\n";
         my %data;
         my $cmd = '';
         my $result = '';
@@ -192,7 +193,7 @@ sub procesa_file {
                 $titular = $1;
             }
             if ($found ne '') {
-                print STDERR "Procesar [$ts][$titular][$campo][$found]\n";
+                print STDERR "[".&glib_hrfec_02::fecha_human()." ". &glib_hrfec_02::hora_human()."] Procesar [$ts][$titular][$campo][$found]\n";
                 $video =  "/$PRONTUS_ID/site/mm/". substr($ts ,0, 8) ."/mmedia/$found";
                 if ($found =~ /\.mp4$/) { # si es mp4 revisamos los atoms
                     $cmd = "perl $Bin/prontus_qtfaststart_check.cgi $video $PRONTUS_ID";
@@ -238,7 +239,7 @@ sub procesa_file {
 };
 
 #-----------------------------------------------------------------------#
-# Funciones de apoyo, tomadas de la glin_fildir_02.pm
+# Funciones de apoyo, tomadas de la glib_fildir_02.pm
 #-----------------------------------------------------------------------#
 sub lee_dir {
 # Lee un directorio y entrega la lista ordenada de entries en bruto.

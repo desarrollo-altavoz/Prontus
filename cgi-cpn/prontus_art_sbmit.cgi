@@ -223,7 +223,7 @@ main: {
 
     # Xcoding
     if (keys %marcas_multimedia_art) {
-        &call_xcoding($rutaScript, $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}, join(',', keys %marcas_multimedia_art), $lib_artic::ARTIC_OBJ->{ts});
+        &call_xcoding($rutaScript, $lib_artic::ARTIC_OBJ->{campos}->{'_fid'}, join(',', sort(keys %marcas_multimedia_art)), $lib_artic::ARTIC_OBJ->{ts});
     }
 
     # DAM

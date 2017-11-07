@@ -199,15 +199,15 @@ main: {
             $key = lc $key;
             my $file = "$path$key.$ext";
             if (!-f $file) {
-                print STDERR "[$file]\n";
+                print STDERR "[$file] No existe \n";
                 $pendiente_xcoding++;
             } else {
                 # Si existe, ver si necesita corrección.
                 my $check_result = &checkMp4($file);
                 if ($check_result) {
-                    print STDERR "[$file] no necesita correccion\n";
+                    print STDERR "[$file] No necesita correccion\n";
                 } else {
-                    print STDERR "[$file] necesita correccion\n";
+                    print STDERR "[$file] Necesita correccion\n";
                     &startFix($file);
                 };
             };
