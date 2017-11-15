@@ -373,6 +373,17 @@ sub write_pag {
             $tax_fixedurl = &lib_prontus::get_tax_link($tax_fixedurl, $mv);
             $pagina =~ s/%%_FIXED_URL%%/$tax_fixedurl/isg;
 
+            # Parsea marcas
+            # %%_prevpag%% (numero pagina anterior)
+            # %%_nextpag%% (numero pagina siguiente)
+            # %%_prevlink%% (link a pagina anterior)
+            # %%_nextlink%% (link a pagina siguiente)
+            #
+            # Quedan vacios si no hay mas paginas.
+            #
+            my ($prevpag, $nextpag, $prevlink, $nextlink);
+            ($pagina, $prevpag, $nextpag, $prevlink, $nextlink) = &incluir_next_y_prev($tot_artics, $pagina, $nro_pag, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase);
+
             # Lee el nombre de tema y subtema
             my ($temas_nom, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$temas_id});
             my ($subtemas_nom, $filler3, $filler4) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
@@ -383,7 +394,7 @@ sub write_pag {
 
             my %claves_compatibles = ('_seccion1' => $secc_id, '_tema1' => $temas_id, '_subtema1' => $subtemas_id,
                     '_nom_seccion1' => $secc_nom, '_nom_tema1' => $temas_nom, '_nom_subtema1' => $subtemas_nom,
-                    '_vista' => $mv, '_nropagina' => $nro_pag, '_tax_fid' => $fid);
+                    '_vista' => $mv, '_nropagina' => $nro_pag, '_tax_fid' => $fid, '_nextpag' => $nextpag, '_prevpag' => $prevpag, '_nextlink' => $nextlink, '_prevlink' => $prevlink);
 
             $pagina = &lib_prontus::procesa_condicional($pagina, \%claves, \%claves_compatibles);
 
@@ -642,6 +653,45 @@ sub incluir_navbar {
     };
     $pagina =~ s/%%_SECC_TEMA_STEMA_NOM.*?%%/$secc_tema_stema_nom/isg;
     return $pagina;
+};
+
+sub incluir_next_y_prev {
+    my ($tot_artics, $pagina, $nro_pag, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
+    my $nro_paginas_totales = ceil($tot_artics / $prontus_varglb::TAXPORT_ARTXPAG);
+    my ($prevpag, $nextpag, $prevlink, $nextlink);
+
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI' && $mv ne '') {
+        $reldir_port_dst =~ s/\/site/\/$mv\/site/ig;
+        $reldir_port_dst =~ s/\-$mv//ig;
+    }
+
+    $nextpag = ($nro_pag + 1) if (($nro_pag + 1) <= $nro_paginas_totales);
+    $prevpag = ($nro_pag - 1) if (($nro_pag - 1) > 0);
+
+    if ($prevpag) {
+        $prevlink = "$reldir_port_dst/$nombase" . '_'
+            . $secc_id
+            . '_' . $temas_id
+            . '_' . $subtemas_id
+            . '_' . $prevpag
+            . $extension;
+    }
+
+    if ($nextpag) {
+        $nextlink = "$reldir_port_dst/$nombase" . '_'
+            . $secc_id
+            . '_' . $temas_id
+            . '_' . $subtemas_id
+            . '_' . $nextpag
+            . $extension;
+    }
+
+    $pagina =~ s/%%_prevpag%%/$prevpag/ig;
+    $pagina =~ s/%%_nextpag%%/$nextpag/ig;
+    $pagina =~ s/%%_prevlink%%/$prevlink/ig;
+    $pagina =~ s/%%_nextlink%%/$nextlink/ig;
+
+    return ($pagina, $prevpag, $nextpag, $prevlink, $nextlink);
 };
 
 sub incluir_nrosdepag {

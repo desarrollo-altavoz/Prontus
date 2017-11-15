@@ -593,8 +593,19 @@ sub write_pag {
             my $tag_nom = $tag_noms{$mv};
             $pagina =~ s/%%_tag_nom%%/$tag_nom/isg;
 
+            # Parsea marcas
+            # %%_prevpag%% (numero pagina anterior)
+            # %%_nextpag%% (numero pagina siguiente)
+            # %%_prevlink%% (link a pagina anterior)
+            # %%_nextlink%% (link a pagina siguiente)
+            #
+            # Quedan vacios si no hay mas paginas.
+            #
+            my ($prevpag, $nextpag, $prevlink, $nextlink);
+            ($pagina, $prevpag, $nextpag, $prevlink, $nextlink) = &incluir_next_y_prev($tot_artics, $pagina, $nro_pag, $tag_id, $mv, $reldir_port_dst, $extension, $nombase);
+
             my %claves = ('_nropagina' => $nro_pag, '_vista' => $mv, '_tag_id' => $tag_id,
-                    '_tag_nom' => $tag_nom, '_tag_fid' => $fid);
+                    '_tag_nom' => $tag_nom, '_tag_fid' => $fid, '_nextpag' => $nextpag, '_prevpag' => $prevpag, '_nextlink' => $nextlink, '_prevlink' => $prevlink);
 
             $pagina = &lib_prontus::procesa_condicional($pagina, \%claves);
 
@@ -732,6 +743,40 @@ sub incluir_nrosdepag {
 
 };
 
+sub incluir_next_y_prev {
+    my ($tot_artics, $pagina, $nro_pag, $tag_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
+    my $nro_paginas_totales = ceil($tot_artics / $prontus_varglb::TAXPORT_ARTXPAG);
+    my ($prevpag, $nextpag, $prevlink, $nextlink);
+
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI' && $mv ne '') {
+        $reldir_port_dst =~ s/\/site/\/$mv\/site/ig;
+        $reldir_port_dst =~ s/\-$mv//ig;
+    }
+
+    $nextpag = ($nro_pag + 1) if (($nro_pag + 1) <= $nro_paginas_totales);
+    $prevpag = ($nro_pag - 1) if (($nro_pag - 1) > 0);
+
+    if ($prevpag) {
+        $prevlink = "$reldir_port_dst/$nombase" . '_'
+                . $tag_id
+                . '_' . $prevpag
+                . $extension;
+    }
+
+    if ($nextpag) {
+        $nextlink = "$reldir_port_dst/$nombase" . '_'
+                . $tag_id
+                . '_' . $nextpag
+                . $extension;
+    }
+
+    $pagina =~ s/%%_prevpag%%/$prevpag/ig;
+    $pagina =~ s/%%_nextpag%%/$nextpag/ig;
+    $pagina =~ s/%%_prevlink%%/$prevlink/ig;
+    $pagina =~ s/%%_nextlink%%/$nextlink/ig;
+
+    return ($pagina, $prevpag, $nextpag, $prevlink, $nextlink);
+};
 
 # ---------------------------------------------------------------
 sub get_tot_artics {
