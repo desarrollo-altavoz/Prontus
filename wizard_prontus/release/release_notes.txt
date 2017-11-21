@@ -9864,7 +9864,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Esta version es compatible con la 4.1, sin necesidad de reconfigurar el servidor web cuando se hagan cambios de configuración en prontus,
         pero no es compatible con multivistas configuradas por cookie.
             # Friendly 4.2
-            set $prontus "prontus_develop";
+            set $prontus "<prontus_id>";
 
             # location matchea:
             # /prontus_id/seccion/tema/subtema/titular
