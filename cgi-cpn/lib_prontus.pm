@@ -1143,45 +1143,51 @@ sub load_config {
     $prontus_log = $2;
   };
 
-  my $friendly_urls = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_urls = $2;
-  };
+    $prontus_varglb::FRIENDLY_URLS = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_URLS = $2;
+    }
 
-  my $friendly_urls_version = '1'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(\d)("|')/) { # Es un digito, valor 1 a 4
-    $friendly_urls_version = $2;
-  };
+    $prontus_varglb::FRIENDLY_URLS_VERSION = '1'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(\d)("|')/) { # Es un digito, valor 1 a 4
+        $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
+    }
 
-  my $friendly_urls_largo_titular = '75'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_urls_largo_titular = $2;
-  };
-  $friendly_urls_largo_titular = '75' if (!$friendly_urls_largo_titular);
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = '75'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $2;
+    }
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = '75' if (!$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
 
-  my $friendly_url_images = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URL_IMAGES\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_url_images = $2;
-  };
+    $prontus_varglb::FRIENDLY_URL_IMAGES = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URL_IMAGES\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_URL_IMAGES = $2;
+    }
 
     $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO'; # valor por defecto.
     if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $2;
-    };
+    }
+
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = 'SI'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_PRONTUS_ID\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = $2;
+    }
+
     while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
         my $clave = $2;
         $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
-    };
+    }
 
     $prontus_varglb::MULTITAG = 'NO'; # valor por defecto.
     if ($buffer =~ m/\s*MULTITAG\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::MULTITAG = $2;
-    };
+    }
 
     $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
     if ($buffer =~ m/\s*RECAPTCHA_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::RECAPTCHA_API_URL = $2;
-    };
+    }
 
     $prontus_varglb::RECAPTCHA_SECRET_CODE = ''; # valor por defecto.
     if ($buffer =~ m/\s*RECAPTCHA_SECRET_CODE\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -2249,11 +2255,6 @@ sub load_config {
   $prontus_varglb::MULTI_EDICION = $multied;
   $prontus_varglb::DIR_LOG = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/log";
   $prontus_varglb::PRONTUS_LOG = $prontus_log;
-
-  $prontus_varglb::FRIENDLY_URLS = $friendly_urls;
-  $prontus_varglb::FRIENDLY_URL_IMAGES = $friendly_url_images;
-  $prontus_varglb::FRIENDLY_URLS_VERSION = $friendly_urls_version;
-  $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $friendly_urls_largo_titular;
 
   $prontus_varglb::MAX_NRO_ARTIC = $max_nro_artic;
 
@@ -5033,11 +5034,18 @@ sub parse_filef {
                              $vista = '/'.$1;
                         }
                     }
+
+                    my $prontus_proto = '';
+                    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+                        $prontus_proto = "/$prontus_id";
+                    } else {
+                        $prontus_proto = "";
+                    }
                     if ($tax =~ /\/$titular$/) {
-                        $fileurl = "/$prontus_id$vista$tax";
+                        $fileurl = "$prontus_proto$vista$tax";
                         $fileurl_proto = $tax;
                     } else {
-                        $fileurl = "/$prontus_id$vista$tax/$titular";
+                        $fileurl = "$prontus_proto$vista$tax/$titular";
                         $fileurl_proto = "$tax/$titular";
                     }
                 } else {
@@ -5052,7 +5060,11 @@ sub parse_filef {
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
         if ($fileurl_proto ne '' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
-            $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links normal, no friendly
+            if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+                $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links friendly con vista
+            } else {
+                $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$1$fileurl_proto/isg; # Links friendly con vista sin prontus
+            }
         } else {
             $buffer =~ s/%%_FILEURL\(\w+\)%%/$fileurl/isg; # Links friendly
         }
@@ -5060,7 +5072,7 @@ sub parse_filef {
         my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
         $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
         $buffer =~ s/%%_FILEURL\(\w+\)%%/$file/isg; # Links normal, no friendly
-    };
+    }
 
     return $buffer;
 };

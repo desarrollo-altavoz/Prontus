@@ -1189,8 +1189,15 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URLS_NO%%/ checked="checked"/ig;
     };
 
-
     $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME%%/$prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME/ig;
+
+    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO%%//ig;
+    } else {
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI%%//ig;
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO%%/ checked="checked"/ig;
+    }
 
     if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%/ checked="checked"/ig;
@@ -1198,7 +1205,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%//ig;
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%/ checked="checked"/ig;
-    };
+    }
 
     if ($prontus_varglb::MULTITAG eq 'SI') {
         $pagina =~ s/%%MULTITAG_SI%%/ checked="checked"/ig;
@@ -1206,7 +1213,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%MULTITAG_SI%%//ig;
         $pagina =~ s/%%MULTITAG_NO%%/ checked="checked"/ig;
-    };
+    }
 
     # variables para configurar recaptcha google
     $pagina =~ s/%%RECAPTCHA_API_URL%%/$prontus_varglb::RECAPTCHA_API_URL/ig;
@@ -1225,7 +1232,7 @@ sub parseaVars {
         $pagina =~ s/%%BLOQUEO_EDICION_V0%%//ig;
         $pagina =~ s/%%BLOQUEO_EDICION_V1%%//ig;
         $pagina =~ s/%%BLOQUEO_EDICION_V2%%/ checked="checked"/ig;
-    };
+    }
 
     my $friendlyVer = '%%FRIENDLY_URLS_V'.$prontus_varglb::FRIENDLY_URLS_VERSION.'%%';
     $pagina =~ s/$friendlyVer/ checked="checked"/ig;

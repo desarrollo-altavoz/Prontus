@@ -9624,7 +9624,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/prontus_head_info.html
         /wizard_prontus/prontus_dir/cpan/core/prontus_index.html
 
-- Friendly URL 4.5
+- Friendly URL 4.1
     [mejoras]
         - Implementa nueva version friendly urls para articulos, portadas, taxport y tagport,
         consiste en incluir el nombre de la vista en la url siguiendo al identificador del prontus
@@ -9632,7 +9632,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         FRIENDLY_V4_INCLUDE_VIEW_NAME = 'SI'
         al archivo <prontus_id>-var.cfg de la configuracion de Prontus
         Para nginx se debe agregar la siguiente configuración:
-            # Friendly v4.5, con la vista en la url
+            # Friendly v4.1, con la vista en la url
             # prontus -  titular
             rewrite     "^\/([\w\-]+)\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$"          /$1/site/friendly/links/$2/$3/$2$3$4.html;
             # prontus - (vista|seccion) -  titular
@@ -9659,7 +9659,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             y en la plantilla de busqueda usar:
             <a href="%%_FILEURL%%">%%METADATA1%%</a>
 
-            Si se utiliza friendly 4.5 usar:
+            Si se utiliza friendly 4.1 usar:
             <a href="%%_FILEURL(en)%%">%%METADATA1%%</a>
 
     [files]
@@ -9834,7 +9834,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
-11.2.98.2 - XX/XX/XXX - JOR
+11.2.99 - XX/XX/XXX - JOR/EAG
 ====================================================================================================
 - Taxports y Tagsports
     [mejoras]
@@ -9848,3 +9848,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_cron_taxport_worker.cgi
         /cgi-cpn/prontus_tags_ports.cgi
+
+- Friendly URL 4.2
+    [mejoras]
+        - Se implementa nueva version de friendly url para articulos que no incluye el prontus_id
+            Esta version es compatible con la 4.1, sin necesidad de reconfigurar el servidor web
+    [cambios
+        - Retroactivamente la version 4.5 de friendly url se redefine a 4.1
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
