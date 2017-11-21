@@ -9834,7 +9834,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
-11.2.98.2 - XX/XX/XXX - JOR
+11.2.98.2 - XX/11/2017 - JOR/EAG
 ====================================================================================================
 - Taxports y Tagsports
     [mejoras]
@@ -9848,3 +9848,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_cron_taxport_worker.cgi
         /cgi-cpn/prontus_tags_ports.cgi
+
+
+- Artículos
+    [cambios]
+        - Ahora se permite hasta 100 "prontus insert" en el cuerpo de un artículo.
+    [files]
+        /cgi-cpn/Artic.pm

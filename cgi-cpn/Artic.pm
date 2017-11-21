@@ -2754,7 +2754,7 @@ sub _parsing_vtxt {
         my $attrs = $2;
 
         $safe_counter++;
-        if($safe_counter > 10) {
+        if($safe_counter > 100) {
             print STDERR "[vtxt] Salida de seguridad <prontus:insert>\n";
             $vtxt_aux_consubtit =~ s/<prontus:insert(.*?)>.*?<\/prontus:insert>//isg;
             last;
