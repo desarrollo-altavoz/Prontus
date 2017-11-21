@@ -9834,7 +9834,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
-11.2.99 - XX/XX/XXX - JOR/EAG
+11.2.99 - XX/11/2017 - JOR/EAG
 ====================================================================================================
 - Taxports y Tagsports
     [mejoras]
@@ -9851,8 +9851,63 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Friendly URL 4.2
     [mejoras]
-        - Se implementa nueva version de friendly url para articulos que no incluye el prontus_id
-            Esta version es compatible con la 4.1, sin necesidad de reconfigurar el servidor web
+        - Se implementa nueva version de friendly url para articulos que no incluye el prontus_id, este
+        se debe definir en la configuracion del servidor.
+          Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
+        Para nginx se debe agregar la siguiente configuración:
+            # Friendly 4.2
+            rewrite     "^\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"          /<prontus_id>/site/friendly/links/$2/$3/$2$3$4.html;
+
+        Esta version es compatible con la 4.1, sin necesidad de reconfigurar el servidor web cuando se hagan cambios de configuración en prontus,
+        pero no es compatible con multivistas configuradas por cookie.
+            # Friendly 4.2
+            set $prontus "prontus_develop";
+
+            # location matchea:
+            # /prontus_id/seccion/tema/subtema/titular
+            # /prontus_id/seccion/tema/titular
+            # /prontus_id/seccion/titular
+            # /$1/site/friendly/links/$3/$4/$3$4$5.html
+            # /seccion/tema/subtema/titular
+            # /seccion/tema/titular
+            # /$prontus/site/friendly/links/$3/$4/$3$4$5.html
+            #
+            # con vista en la url
+            # /prontus_id/vista/seccion/tema/subtema/titular
+            # /prontus_id/vista/seccion/tema/titular
+            # /prontus_id/vista/seccion/titular
+            # /prontus_id/vista/titular
+            # /$1/site/friendly/links-$2/$3/$4/$3$4$5.html
+            # /vista/seccion/tema/subtema/titular
+            # /vista/seccion/tema/titular
+            # /vista/seccion/titular
+            # /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html
+            location ~ "^\/([\w\-]+)\/([\w\-]+)\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
+                add_header X-debug-message "1 args: /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
+                # echo "1 args: try_files /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;";
+                try_files /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links-$2/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;
+                include     global/php2.conf;
+            }
+
+            # location matchea:
+            # /prontus_id/titular
+            # /$1/site/friendly/links/$2/$3/$2$3$4.html
+            # /seccion/titular
+            # /$prontus/site/friendly/links/$2/$3/$2$3$4.html
+            #
+            # con vista en la url
+            # /vista/titular
+            # /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html
+            location ~ "^\/([\w\-]+)\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
+                add_header X-debug-message "2 args: /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
+                #echo "2 args: /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
+                try_files /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html =404;
+                include     global/php2.conf;
+            }
+
+            # matchea solo titular
+            rewrite "^\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" /$prontus/site/friendly/links/$1/$2/$1$2$3.html;
+
     [cambios
         - Retroactivamente la version 4.5 de friendly url se redefine a 4.1
     [files]
