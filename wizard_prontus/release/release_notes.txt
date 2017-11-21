@@ -9853,6 +9853,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Se implementa nueva version de friendly url para articulos que no incluye el prontus_id, este
         se debe definir en la configuracion del servidor.
+        La función es contolada por la variable de configuracion: FRIENDLY_V4_INCLUDE_PRONTUS_ID.
+        Por defecto el valor es 'SI', todas las urls llevan el prontus id, al cambiarlo a NO, solo llevarán
+        la taxonomía y el titular.
           Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
         Para nginx se debe agregar la siguiente configuración:
             # Friendly 4.2
