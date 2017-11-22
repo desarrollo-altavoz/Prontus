@@ -1453,18 +1453,25 @@ sub load_config {
   };
 
 
-  my $server_name;
-  if ($buffer =~ m/\s*PUBLIC\_SERVER\_NAME\s*=\s*("|')(.*?)("|')/) {
-     $server_name = $2;
-  };
-  if (!$server_name) {
-    $server_name = $ENV{'HTTP_HOST'};
-  };
-  $prontus_varglb::PUBLIC_SERVER_NAME = $server_name;
-  if (!$prontus_varglb::IP_SERVER) {
-    $prontus_varglb::IP_SERVER = $prontus_varglb::PUBLIC_SERVER_NAME
-  };
+    $prontus_varglb::PUBLIC_SERVER_NAME = '';
+    if ($buffer =~ m/\s*PUBLIC_SERVER_NAME\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::PUBLIC_SERVER_NAME = $1;
+    }
+    if ($prontus_varglb::PUBLIC_SERVER_NAME eq '') {
+        $prontus_varglb::PUBLIC_SERVER_NAME = $ENV{'HTTP_HOST'};
+    }
 
+    if (!$prontus_varglb::IP_SERVER) {
+        $prontus_varglb::IP_SERVER = $prontus_varglb::PUBLIC_SERVER_NAME
+    }
+
+    $prontus_varglb::CPAN_SERVER_NAME = '';
+    if ($buffer =~ m/\s*CPAN_SERVER_NAME\s*=\s*['"](.*?)['"]/) {
+        $prontus_varglb::CPAN_SERVER_NAME = $1;
+    }
+    if ($prontus_varglb::CPAN_SERVER_NAME eq '') {
+        $prontus_varglb::CPAN_SERVER_NAME = $prontus_varglb::PUBLIC_SERVER_NAME;
+    }
 
   # Chequeo de prontus key.
   my ($novalid_key) = 1;

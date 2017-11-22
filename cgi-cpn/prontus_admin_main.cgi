@@ -1189,7 +1189,6 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URLS_NO%%/ checked="checked"/ig;
     };
 
-
     $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME%%/$prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME/ig;
 
     if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
@@ -1256,6 +1255,7 @@ sub parseaVars {
 
     $pagina =~ s/%%SERVER_SMTP%%/$prontus_varglb::SERVER_SMTP/ig;
     $pagina =~ s/%%PUBLIC_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+    $pagina =~ s/%%CPAN_SERVER_NAME%%/$prontus_varglb::CPAN_SERVER_NAME/ig;
 
     my $permitidos_vista = $prontus_varglb::UPLOADS_PERMITIDOS;
     $permitidos_vista =~ s/(,)/, /ig;
