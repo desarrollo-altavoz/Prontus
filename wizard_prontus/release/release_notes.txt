@@ -9855,3 +9855,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Ahora se permite hasta 100 "prontus insert" en el cuerpo de un artículo.
     [files]
         /cgi-cpn/Artic.pm
+
+- Prontus
+    [mejoras]
+        - Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
+         de prontus, por ejemplo: prontus.misitio.cl.
+          En caso de no estar configurada tiene el valor de PUBLIC_SERVER_NAME
+    [cambios]
+        - El correo de recuperacion de contraseña genera los links con CPAN_SERVER_NAME
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_recordarpass.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
