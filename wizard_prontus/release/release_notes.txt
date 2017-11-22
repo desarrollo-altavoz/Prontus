@@ -9859,7 +9859,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
           Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
         Para nginx se debe agregar la siguiente configuración:
             # Friendly 4.2
-            rewrite     "^\/?.*?\/([^\/\.]{2})([^\/\.]{2})([^\/\.]+?)\/?$"          /<prontus_id>/site/friendly/links/$2/$3/$2$3$4.html;
+            rewrite     "^\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$"          /<prontus_id>/site/friendly/links/$1/$2/$1$2$3.html;
 
         Esta version es compatible con la 4.1, sin necesidad de reconfigurar el servidor web cuando se hagan cambios de configuración en prontus,
         pero no es compatible con multivistas configuradas por cookie.
