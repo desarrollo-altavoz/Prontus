@@ -1,4 +1,14 @@
 ====================================================================================================
+11.2.99 - XX/11/2017 - JOR/EAG
+====================================================================================================
+- improvement: (tax y tag) Se parsean marcas individuales de paginación que se pueden usar en cualquier parte de las plantillas.
+- improvement: (friendly_v4) Se implementa nueva version de friendly url para articulos que no incluye el prontus_id.
+Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
+- improvement: (admin) Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
+ de prontus, por ejemplo: prontus.misitio.cl.
+- changes: (login) El correo de recuperacion de contraseña genera los links con CPAN_SERVER_NAME
+- changes: (art) Ahora se permite hasta 100 "prontus insert" en el cuerpo de un artículo.
+====================================================================================================
 11.2.98.1 - 07/11/2017 - JOR/EAG
 ====================================================================================================
 - bugfixes: (fid) Corrige errores para mejorar compatibilidad con IE 7-8
