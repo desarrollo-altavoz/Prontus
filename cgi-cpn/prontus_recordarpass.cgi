@@ -103,7 +103,7 @@ main: {
         &glib_html_02::print_json_result(1, "Se ha enviado un mensaje de confirmación a tu correo electrónico ($casilla@*****) registrado en Prontus.", 'exit=1,ctype=1');
     }
     else {
-        &glib_html_02::print_json_result(0, "Usuario no existe o código no es válido.\nImportante: El Sistema distingue mayúsculas y minúsculas para el 'usuario' ingresado.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, "Usuario no existe o código no es válido.\nImportante: El Sistema distingue mayúsculas y minúsculas para los datos ingresado.", 'exit=1,ctype=1');
     };
 
 };
@@ -135,14 +135,14 @@ sub is_user_valido {
 
 # ---------------------------------------------------------------
 sub is_captcha_valido {
-    
+
     # Usando la nueva lib_captcha se manejan ambos formatos
     my $captcha_input = $FORM{'_code'};
     my $captcha_type = 'cpan'; # custom
     my $captcha_img = &glib_cgi_04::param('_captcha_img');
     my $captcha_code = &glib_cgi_04::param('_captcha_code');
     $captcha_input = &glib_cgi_04::param('_captcha_text') unless($captcha_input);
-    #~ require 'dir_cgi.pm'; 
+    #~ require 'dir_cgi.pm';
     &lib_captcha2::init($prontus_varglb::DIR_SERVER, $prontus_varglb::DIR_CGI_CPAN);
     my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
     if ($msg_err_captcha ne '') {
@@ -159,17 +159,17 @@ sub is_captcha_valido {
     #~ my ($replyto_name) = 'Prontus CMS';
     #~ my ($replyto_email) =  'prontus@altavoz.net';
     #~ my ($asunto) = "Claves Prontus para $prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID";
-#~ 
+#~
     #~ my ($texto) = "Estimado usuario:\nTus claves para ingresar al Panel de Control Prontus en $prontus_varglb::PUBLIC_SERVER_NAME son:\n\nUsuario: $FORM{'_usr'}\nContraseña: $new_pass\n\n---\nEmail automático, favor no lo respondas.\nSi crees que este correo no corresponde, ponte en contacto con tu WebMaster.";
     #~ # Codifica en UTF8
     #~ utf8::encode($texto);
-#~ 
+#~
     #~ my ($htmldoc) = '';
     #~ my ($attach) = '';
     #~ my ($url) = '';
     #~ my ($dir_attach) = '';
     #~ my ($smtp) = $prontus_varglb::SERVER_SMTP;
-#~ 
+#~
     #~ &lib_mail::enviar_mail($email, $from, $replyto_name, $replyto_email, $asunto, $texto, $htmldoc, $attach, $url, $dir_attach, $smtp);
 #~ };
 
@@ -178,11 +178,11 @@ sub enviar_confirmacion {
     my $email = $_[1];
     my ($asunto, $cuerpo, $token);
     my ($dirproc, $filepath, $urltoken);
-    
+
     $dirproc = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass";
     &glib_fildir_02::check_dir($dirproc);
     $filepath = "$dirproc/$user.txt";
-    
+
     if (-f $filepath) {
         # Si el archivo existe, ya tiene una confirmacion de cambio de contraseña pendiente.
         # Verificar fecha de modificacion del archivo, si es mayor a 1 hora, volver a generar un nuevo token.
@@ -204,16 +204,16 @@ sub enviar_confirmacion {
 
     &glib_fildir_02::write_file($filepath, $token);
 
-    
+
     my $protocolo = 'http';
     if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
         $protocolo = 'https';
-    }   
-    $urltoken = "$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::DIR_CGI_CPAN/prontus_olvidopass.cgi?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg&_token=$token&_usr=$user";
+    }
+    $urltoken = "$protocolo://$prontus_varglb::CPAN_SERVER_NAME/$prontus_varglb::DIR_CGI_CPAN/prontus_olvidopass.cgi?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg&_token=$token&_usr=$user";
 
-    $asunto = "[$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID] Confirmación de recuperación de contraseña";
+    $asunto = "[$protocolo://$prontus_varglb::CPAN_SERVER_NAME/$prontus_varglb::PRONTUS_ID] Confirmación de recuperación de contraseña";
     $cuerpo = "Estimado usuario ($user):<br/><br/>";
-    $cuerpo .= "Alguien ha solicitado restablecer la contraseña de tu cuenta para acceder al Panel de Control Prontus en <a href=\"$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan\">$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan</a>.<br/><br/>Visita el siguiente enlace para iniciar el proceso de recuperación, de lo contrario puedes ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
+    $cuerpo .= "Alguien ha solicitado restablecer la contraseña de tu cuenta para acceder al Panel de Control Prontus en <a href=\"$protocolo://$prontus_varglb::CPAN_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan\">$protocolo://$prontus_varglb::CPAN_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan</a>.<br/><br/>Visita el siguiente enlace para iniciar el proceso de recuperación, de lo contrario puedes ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
     utf8::encode($cuerpo);
     utf8::encode($asunto);
 
@@ -226,7 +226,7 @@ sub enviar_confirmacion {
     my ($smtp) = $prontus_varglb::SERVER_SMTP;
 
     &lib_mail::enviar_mail($email, $from, $replyto_name, $replyto_email, $asunto, '', $cuerpo, $attach, $url, $dir_attach, $smtp);
-    
+
 };
 
 # -------------------------------END SCRIPT----------------------
