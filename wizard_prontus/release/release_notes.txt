@@ -9834,7 +9834,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
-11.2.99 - XX/11/2017 - JOR/EAG
+11.2.99 - 27/11/2017 - JOR/EAG
 ====================================================================================================
 - Taxports y Tagsports
     [mejoras]

@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.99 - XX/11/2017 - JOR/EAG
+11.2.99 - 27/11/2017 - JOR/EAG
 ====================================================================================================
 - improvement: (tax y tag) Se parsean marcas individuales de paginación que se pueden usar en cualquier parte de las plantillas.
 - improvement: (friendly_v4) Se implementa nueva version de friendly url para articulos que no incluye el prontus_id.
