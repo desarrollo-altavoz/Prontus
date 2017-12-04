@@ -1109,6 +1109,14 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%ACTUALIZACIONES_SI%%//ig;
         $pagina =~ s/%%ACTUALIZACIONES_NO%%/ checked="checked"/ig;
+    }
+
+    if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI') {
+        $pagina =~ s/%%VTXT_RELPATH_LINK_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%VTXT_RELPATH_LINK_NO%%//ig;
+    } else {
+        $pagina =~ s/%%VTXT_RELPATH_LINK_SI%%//ig;
+        $pagina =~ s/%%VTXT_RELPATH_LINK_NO%%/ checked="checked"/ig;
     };
 
     if ($prontus_varglb::ACTUALIZACION_MASIVA eq 'SI') {

@@ -1981,6 +1981,10 @@ sub load_config {
   };
   $prontus_varglb::ACTUALIZACIONES = $actualizaciones;
 
+    $prontus_varglb::VTXT_RELPATH_LINK = 'SI';
+    if ($buffer =~ m/\s*VTXT_RELPATH_LINK\s*=\s*["'](.*?)["']/) { # SI | NO
+        $prontus_varglb::VTXT_RELPATH_LINK = $1;
+    }
 
   # Para saber si el FID se abre en pop o no
   my $abrir_fids_en_pop = 'NO';

@@ -91,6 +91,7 @@ main: {
     $hash_defaultvars{'var'}{'SERVER_SMTP'} = 'SERVER_SMTP;(\w+);localhost;U';
     $hash_defaultvars{'var'}{'PUBLIC_SERVER_NAME'} = 'PUBLIC_SERVER_NAME;(\w+);;U';
     $hash_defaultvars{'var'}{'CPAN_SERVER_NAME'} = 'CPAN_SERVER_NAME;(\w+);;U';
+    $hash_defaultvars{'var'}{'VTXT_RELPATH_LINK'} = 'VTXT_RELPATH_LINK;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'CONTROL_FECHA'} = 'CONTROL_FECHA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'CONTROLAR_ALTA_ARTICULOS'} = 'CONTROLAR_ALTA_ARTICULOS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';

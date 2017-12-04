@@ -383,9 +383,9 @@ sub generar_xml_artic {
         my $parse_as_cdata = 0;
         $parse_as_cdata = 1 if ($nom_campo =~ /^(_?txt_|vtxt_)/i);
         $parse_as_cdata = 1 if ($nom_campo !~ /^_/); # aplica cdata cualquier campo no reservado
-        if ($nom_campo =~ /^vtxt_/i) {
-            $val_campo =~ s/https?:\/\/$this->{cpan_server_name}//isg;
-            $val_campo =~ s/https?:\/\/$this->{public_server_name}//isg;
+        if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI' && $nom_campo =~ /^vtxt_/i) {
+            $val_campo =~ s/https?:\/\/$this->{cpan_server_name}\//\//isg;
+            $val_campo =~ s/https?:\/\/$this->{public_server_name}\//\//isg;
         };
         $this->{xml_data} = &lib_prontus::replace_in_xml($this->{xml_data},
                                                                  $nom_campo,
@@ -2665,9 +2665,11 @@ sub _parsing_vtxt {
     my %hash_subtits;
 
 
-    # Saca el server name.
-    $val_campo =~ s/https?:\/\/$this->{cpan_server_name}//isg;
-    $val_campo =~ s/https?:\/\/$this->{public_server_name}//isg;
+    if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI') {
+        # Saca el server name.
+        $val_campo =~ s/https?:\/\/$this->{cpan_server_name}\//\//isg;
+        $val_campo =~ s/https?:\/\/$this->{public_server_name}\//\//isg;
+    }
 
     $val_campo =~ s/^[ \s]+//isg;
     $val_campo =~ s/^(&nbsp;)+//isg;
