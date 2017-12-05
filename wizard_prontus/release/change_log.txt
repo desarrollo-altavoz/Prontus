@@ -1,13 +1,15 @@
 ====================================================================================================
-11.2.99 - 27/11/2017 - JOR/EAG
+11.2.99 - 05/12/2017 - JOR/EAG
 ====================================================================================================
 - improvement: (tax y tag) Se parsean marcas individuales de paginación que se pueden usar en cualquier parte de las plantillas.
 - improvement: (friendly_v4) Se implementa nueva version de friendly url para articulos que no incluye el prontus_id.
 Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
 - improvement: (admin) Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
  de prontus, por ejemplo: prontus.misitio.cl.
+- improvement: (admin) Agrega variable para permitir habilitar y deshabilitar la conversion de urls relativas a absolutas en el VTXT
 - changes: (login) El correo de recuperacion de contraseña genera los links con CPAN_SERVER_NAME
 - changes: (art) Ahora se permite hasta 100 "prontus insert" en el cuerpo de un artículo.
+
 ====================================================================================================
 11.2.98.1 - 07/11/2017 - JOR/EAG
 ====================================================================================================
@@ -18,6 +20,7 @@ Esta opción no es compatible con otras configuraciones de friendly urls de Pron
 - bugfixes: (xcoding) Corrige error que evitaba generar versiones de un video al usar transcodificación no avanzada
 - bugfixes: (xcoding) Mejora mensajes de diagnostico
 - bugfixes: (xcoding) Corrige error al procesar videos de articulo, se estaban procesando siempre en modo batch
+
 ====================================================================================================
 11.2.98 - 30/10/2017 - JOR/EAG/CSS
 ====================================================================================================

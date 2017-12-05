@@ -9834,7 +9834,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
-11.2.99 - 27/11/2017 - JOR/EAG
+11.2.99 - 05/12/2017 - JOR/EAG
 ====================================================================================================
 - Taxports y Tagsports
     [mejoras]
@@ -9930,9 +9930,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
          de prontus, por ejemplo: prontus.misitio.cl.
           En caso de no estar configurada tiene el valor de PUBLIC_SERVER_NAME
+        - Agrega variable VTXT_RELPATH_LINK para permitir habilitar o deshabilitar la conversión
+         de URLs relativas (/noticias/site/.....) a URLs absolutas (http://dominio.cl/noticias/site...)
+         ingresadas en el campo VTXT.
+
+ Por defecto quedará habilitada la opción de URLs relativas
     [cambios]
-        - El correo de recuperacion de contraseña genera los links con CPAN_SERVER_NAME
+        - El correo de recuperación de contraseña genera los links con CPAN_SERVER_NAME
     [files]
+        /cgi-cpn/Artic.pm
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_admin_main.cgi
         /cgi-cpn/prontus_cfg_save.cgi
