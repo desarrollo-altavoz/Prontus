@@ -4992,7 +4992,7 @@ sub parse_filef {
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
         my $fileurl = '';
         my $fileurl_proto = '';
-        if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1') {
+        if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1' && $prontus_varglb::FRIENDLY_URLS_VERSION ne '') {
             my $tax = '';
             if ($nom_seccion1 ne '') {
                 $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
