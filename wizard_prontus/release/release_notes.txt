@@ -9941,6 +9941,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [cambios]
         - El correo de recuperación de contraseña genera los links con CPAN_SERVER_NAME
     [files]
+        /cgi-bin/prontus_search.cgi
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_admin_main.cgi
