@@ -1,6 +1,8 @@
 ====================================================================================================
-11.2.99 - 05/12/2017 - JOR/EAG
+11.2.99 - 07/12/2017 - JOR/EAG
 ====================================================================================================
+- bugfixes: (general) Corrige la generacion de friendly url para no fallar en caso de configuración incompleta.
+- bugfixes: (buscador) Corrige el buscador para que cargue una configuración de friendly url por defecto.
 - improvement: (tax y tag) Se parsean marcas individuales de paginación que se pueden usar en cualquier parte de las plantillas.
 - improvement: (friendly_v4) Se implementa nueva version de friendly url para articulos que no incluye el prontus_id.
 Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.

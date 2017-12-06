@@ -9834,7 +9834,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
-11.2.99 - 05/12/2017 - JOR/EAG
+11.2.99 - 07/12/2017 - JOR/EAG
 ====================================================================================================
 - Taxports y Tagsports
     [mejoras]
@@ -9926,6 +9926,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Artic.pm
 
 - Prontus
+    [bugfixes]
+        - Corrige la generacion de friendly url para no fallar en caso de configuración incompleta.
+        - Corrige el buscador para que cargue una configuración de friendly url por defecto.
     [mejoras]
         - Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
          de prontus, por ejemplo: prontus.misitio.cl.
