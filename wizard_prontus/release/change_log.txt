@@ -1,6 +1,8 @@
 ====================================================================================================
-11.2.99 - 07/12/2017 - JOR/EAG
+11.2.99 - 19/12/2017 - JOR/EAG
 ====================================================================================================
+- bugfixes: (multitag) Corrige parseo de plantillas, ahora no se distingue mayusculas y minusculas en las
+ marcas prontus. Se eliminan todas las marcas no parseadas
 - bugfixes: (general) Corrige la generacion de friendly url para no fallar en caso de configuración incompleta.
 - bugfixes: (buscador) Corrige el buscador para que cargue una configuración de friendly url por defecto.
 - improvement: (tax y tag) Se parsean marcas individuales de paginación que se pueden usar en cualquier parte de las plantillas.
