@@ -85,10 +85,12 @@
 # Las plantillas a utilizar se especifican en el formulario mediante los datos:
 # _pag_exito = Plantilla de exito del sistema (solo el nombre del archivo, sin extension).
 # _pag_error = Plantilla de error del sistema (solo el nombre del archivo, sin extension).
+# _pag_email_remitente = Plantilla html opcional de autorespuesta para el remitente 
+# (solo el nombre del archivo, sin extension).
 #
 # Si estos datos no son incluidos, el Formulario Prontus empleara las plantillas:
 #
-# /<prontus_id>/plantillas/extra/form/pags/exito.<ext> - Plantilla de exito por defecto.
+# /<prontus_id>/plantillas/extra/form/pags/exito.<ext> - Plantilla de exito y autorespuesta por defecto.
 # /<prontus_id>/plantillas/extra/form/pags/error.<ext> - Plantilla de error por defecto.
 #
 # La extension debe ser la misma usada en el formulario, ya que se deduce de este.
@@ -135,6 +137,8 @@
 # 1.12  18/03/2016 - NAR - Se agrega campo de correo fijo de remitente
 # 2.0.0 04/11/2016 - SCT - Se agrega validación contra reCaptcha de google.
 # 2.0.1 13/01/2017 - EAG - Se agrega función custom para el ordenamiento de campos
+# 2.0.2 26/01/2017 - MTC - Se agrega plantilla opcional html para autorespuesta de prontus form, 
+#                          se corrigen warnings de prontus form.
 # To-Do:
 # - Revisar sensibilidad a las mayusculas.
 
