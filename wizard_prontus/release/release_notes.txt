@@ -9465,7 +9465,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
         Un ejemplo completo de uso:
         %%MACRO(_galeria_prontus.html, 1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_mid:400x300|3:fotofija_galeria@@_high:1280x720)%%
-        Este incluye 2 tamaños, baja, media y alta resolución.
+        Este incluye 3 tamaños, baja, media y alta resolución.
 
         Se deben pasar como mínimo 2 tamaños de fotos para que funcione el sistema, en caso contrario se
         utilizará la configuración por defecto:
