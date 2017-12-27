@@ -936,7 +936,7 @@ sub parseaVars {
     my $txport_orden = $prontus_varglb::TAXPORT_ORDEN;
     my $direccion = '';
 
-    if ($txport_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
+    if ($txport_orden =~ /ART_FECHAPHORAP (DESC|ASC)/i || $txport_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
         $direccion = $1;
         $pagina =~ s/%%TAXPORT_ORDEN_TIT%%//ig;
         $pagina =~ s/%%TAXPORT_ORDEN_CRE%%//ig;
