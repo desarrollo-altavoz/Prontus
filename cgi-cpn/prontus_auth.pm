@@ -227,5 +227,35 @@ sub user_valido {
     return 0;
 };
 
+# ---------------------------------------------------------------
+sub valid_password {
+    my $psw = $_[0];
+
+    if ($FORM{'_new_psw'} =~ /^\s+$/) {
+        return 'Password no puede contener solamente espacios.';
+    }
+
+    if ($FORM{'_new_psw'} !~ /^.{8,32}$/) {
+        return 'La nueva contraseña debe estar compuesta por un mínimo de 8 caracteres y máximo 32 caracteres.';
+    };
+
+    if (lc $FORM{'_new_psw'} eq 'prontus') {
+        return "Contraseña no válida.<br>Su contraseña no puede ser \"$FORM{'_new_psw'}\", por favor ingrese una distinta";
+    };
+
+    if ($FORM{'_new_psw'} !~ /([a-z].*[A-Z])|([A-Z].*[a-z])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+
+    if ($FORM{'_new_psw'} !~ /([0-9])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+
+    if ($FORM{'_new_psw'} !~ /([\!%&@#\$\^\*\?_\.])/) {
+        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+    }
+    return '';
+};
+
 
 return 1;
