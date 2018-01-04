@@ -21,6 +21,9 @@ if ($@) {
     $BCRYPT_AVAILABLE = 1;
 }
 
+our $PWS_MAX_LENGTH = 32;
+our $PWS_MIN_LENGTH = 8;
+our $USERS_USR_ID;
 our $USERS_USR;
 our $USERS_PSW;
 our $USERS_NOM;
@@ -31,7 +34,7 @@ our $USERS_FEC_EXP;
 
 
 # ---------------------------------------------------------------
-sub login_valido {
+sub check_valid_login {
 # retorna:
 # 0: user no valido normal
 # 1: user valido normal
@@ -47,6 +50,7 @@ sub login_valido {
         if ($usr eq 'admin') {
             my $pass_sysadmin = &glib_fildir_02::read_file($flag_sysadmin);
             if ($psw eq $pass_sysadmin) {
+                $USERS_USR_ID = '1';
                 $USERS_USR = $usr;
                 $USERS_PSW = &encrypt_password($pass_sysadmin);
                 return 2;
@@ -55,16 +59,16 @@ sub login_valido {
         return -1;
     }
 
-    foreach my $key (keys %prontus_varglb::USERS) {
-        my $val = $prontus_varglb::USERS{$key};
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $val;
+    foreach my $user_id (keys %prontus_varglb::USERS) {
+        $USERS_USR_ID = $user_id;
+        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $prontus_varglb::USERS{$USERS_USR_ID};
         if ($USERS_USR eq $usr) {
             my $crypted_pass = '';
 
             if (length($USERS_PSW) == 60) {
                 if (&check_password($psw, $USERS_PSW)) {
                   # se excluye al admin.
-                  return 3 if (&if_passwd_expired($USERS_FEC_EXP, $USERS_EXP_DAYS) && $key != 1);
+                  return 3 if (&if_passwd_expired($USERS_FEC_EXP, $USERS_EXP_DAYS, $USERS_USR_ID));
                   return 1;
                 }
             }
@@ -75,7 +79,7 @@ sub login_valido {
                 $crypted_pass = crypt($psw, $USERS_PSW);
             }
             if ($crypted_pass eq $USERS_PSW) {
-                return 3 if (&if_passwd_expired($USERS_FEC_EXP, $USERS_EXP_DAYS) && $key != 1);
+                return 3 if (&if_passwd_expired($USERS_FEC_EXP, $USERS_EXP_DAYS,$USERS_USR_ID));
                 return 1;
             }
         }
@@ -85,7 +89,6 @@ sub login_valido {
     my $flag_file = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_admin.txt";
     if ($usr eq 'admin' && $psw eq 'prontus') {
         if (!(-f $flag_file)) {
-            print STDERR Dumper(\%prontus_varglb::USERS);
             # Resetear clave admin
             ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $prontus_varglb::USERS{'1'}; # para rescatar email
             $USERS_PSW = &encrypt_password('prontus');
@@ -113,6 +116,7 @@ sub login_valido {
 sub if_passwd_expired {
     my $fec_exp = $_[0];
     my $fec_exp_days = $_[1];
+    my $user_id = $_[2];
 
     if ($fec_exp_days < 1) {
         return 0;
@@ -225,7 +229,6 @@ sub generate_password {
 
     return $str;
 }
-
 # ---------------------------------------------------------------
 sub is_valid_password {
     my $psw = $_[0];
@@ -234,8 +237,9 @@ sub is_valid_password {
         return 'Password no puede contener solamente espacios.';
     }
 
-    if ($psw !~ /^.{8,32}$/) {
-        return 'La nueva contraseña debe estar compuesta por un mínimo de 8 caracteres y máximo 32 caracteres.';
+    my $psw_length = length($psw);
+    if ($psw_length > $PWS_MAX_LENGTH || $psw_length < $PWS_MIN_LENGTH) {
+        return "La nueva contraseña debe estar compuesta por un mínimo de $PWS_MIN_LENGTH caracteres y máximo $PWS_MAX_LENGTH caracteres.";
     }
 
     if (lc $psw eq 'prontus') {
@@ -254,7 +258,18 @@ sub is_valid_password {
         return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
     }
     return '';
-};
-
+}
+# ---------------------------------------------------------------
+sub is_user_valido {
+    my $usr = $_[0];
+    foreach my  $key (keys %prontus_varglb::USERS) {
+        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $prontus_varglb::USERS{$USERS_USR_ID};
+        if ($USERS_USR eq $usr)  {
+            $USERS_USR_ID = $key;
+            return 1;
+        }
+    }
+    return 0;
+}
 
 return 1;

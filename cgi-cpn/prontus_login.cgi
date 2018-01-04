@@ -126,7 +126,7 @@ main: {
         &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios.', 'exit=1,ctype=1');
     };
 
-    my $login_result = &prontus_auth::login_valido($FORM{'_usr'}, $FORM{'_psw'});
+    my $login_result = &prontus_auth::check_valid_login($FORM{'_usr'}, $FORM{'_psw'});
 
     # La contraseña ha expirado.
     if ($login_result == 3) {
