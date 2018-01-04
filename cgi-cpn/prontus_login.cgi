@@ -79,8 +79,6 @@ my (%FORM, $TIPO_PRONTUS, $AREA_MENU, $AREA_CONT, $PRONTUS_KEY);
 my $MAX_RETRIES_LOGIN = 10;
 
 main: {
-    my ($lnk);
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
@@ -128,7 +126,7 @@ main: {
         &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios.', 'exit=1,ctype=1');
     };
 
-    my $login_result = &prontus_auth::user_valido($FORM{'_usr'}, $FORM{'_psw'});
+    my $login_result = &prontus_auth::login_valido($FORM{'_usr'}, $FORM{'_psw'});
 
     # La contraseña ha expirado.
     if ($login_result == 3) {
@@ -402,10 +400,8 @@ sub get_expiredchangepass {
 
 # ---------------------------------------------------------------
 sub user_existente {
-my ($key, $val);
-
-  foreach $key (keys %prontus_varglb::USERS) {
-    $val = $prontus_varglb::USERS{$key};
+  foreach my $key (keys %prontus_varglb::USERS) {
+    my $val = $prontus_varglb::USERS{$key};
     my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $val;
     if ($users_usr eq $FORM{'_usr'}) {
       return 1;
@@ -413,17 +409,4 @@ my ($key, $val);
   };
   return 0;
 };
-
-# ---------------------------------------------------------------
-sub get_pass_admin {
-    foreach my $key (keys %prontus_varglb::USERS) {
-        my $val = $prontus_varglb::USERS{$key};
-        my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $val;
-        if  ($users_usr eq 'admin')  {
-            return $users_psw;
-        };
-    };
-    return '';
-};
-
 # -------------------------------END SCRIPT----------------------

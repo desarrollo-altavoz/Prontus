@@ -165,7 +165,7 @@ sub guardar_usr {
 
         $new_id = &get_new_id();
         # CVI - 05/07/2012 - Los nuevos usuarios se guardan si o si con md5
-        $prontus_varglb::USERS{$new_id} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '|' . &prontus_auth::encrypt_password_bcrypt($FORM{'PSW1'}) . '|' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '|' . $FORM{'EXP_DAYS'} . '|' . $fec_exp;
+        $prontus_varglb::USERS{$new_id} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '|' . &prontus_auth::encrypt_password($FORM{'PSW1'}) . '|' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '|' . $FORM{'EXP_DAYS'} . '|' . $fec_exp;
 
         &insert_artusers($new_id);
         &insert_portusers($new_id);
@@ -187,7 +187,7 @@ sub guardar_usr {
 
         # Actualiza clave si corresponde
         if ($FORM{'PSW1'}) {
-            $users_psw =  &prontus_auth::encrypt_password_bcrypt($FORM{'PSW1'});
+            $users_psw =  &prontus_auth::encrypt_password($FORM{'PSW1'});
             $users_fec_exp = time + (int($FORM{'EXP_DAYS'}) * 86400) if ($FORM{'EXP_DAYS'} > 0);
         }
 
@@ -217,7 +217,7 @@ sub guardar_usr {
 
         } else { # Especial para usuario admin, sin actualizacion de art. y portadas asociadas.
             # Actualiza hash USERS
-            $prontus_varglb::USERS{$FORM{'USERS_ID'}} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '|' . $users_psw . '|' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '||';
+            $prontus_varglb::USERS{$FORM{'USERS_ID'}} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '|' . $users_psw . '|' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '|0|0';
 
             # Escribe archivo extras (para edit)
             &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/extra.txt", &glib_str_02::random_string(8));

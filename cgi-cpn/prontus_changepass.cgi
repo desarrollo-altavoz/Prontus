@@ -86,7 +86,7 @@ main: {
         &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios', 'exit=1,ctype=1');
     };
 
-    # Cambio de contraseña por recuperación.
+    # Cambio de contraseña por recuperación. contraseña olvidada
     if ($FORM{'_token'} ne '' && $FORM{'_usr'} ne '') {
         if (&validacion_token()) {
             my $msg = &valida_datos();
@@ -94,12 +94,11 @@ main: {
                 &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
             };
             if (&is_user_valido()) {
-                my $val = $prontus_varglb::USERS{$USERID};
-                my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $val;
+                my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$USERID};;
 
                 $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
 
-                $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password_bcrypt($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
+                $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
                 &lib_prontus::close_dbm_files();
                 unlink "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass/$FORM{'_usr'}.txt";
                 &glib_html_02::print_json_result(1, 'La contraseña se cambió correctamente.', 'exit=1,ctype=1');
@@ -112,19 +111,18 @@ main: {
         };
     };
 
+    # cambio de pass para admin
     my $msg = &valida_datos();
     if ($msg) {
         &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
     };
 
     if (&user_valido() eq 'S') {
-
-		my $val = $prontus_varglb::USERS{$USERID};
-		my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $val;
+        my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$USERID};
 
         $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
 
-        $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password_bcrypt($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
+        $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
         &lib_prontus::close_dbm_files();
 
         # Escribe archivo extras (para edit)
@@ -132,12 +130,9 @@ main: {
 
         &glib_html_02::print_json_result(1, 'La contraseña ha sido cambiada con éxito.', 'exit=1,ctype=1');
 
-    }
-    else {
+    } else {
         &glib_html_02::print_json_result(0, 'Usuario o contraseña anterior no corresponden', 'exit=1,ctype=1');
-    };
-
-
+    }
 };
 
 # ---------------------------------------------------------------
@@ -197,30 +192,30 @@ sub valida_datos {
 
 # ---------------------------------------------------------------
 sub user_valido {
-    my ($key, $val);
-
-    foreach $key (keys %prontus_varglb::USERS) {
-        $val = $prontus_varglb::USERS{$key};
+    foreach my $key (keys %prontus_varglb::USERS) {
+        my $val = $prontus_varglb::USERS{$key};
         ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL) = split /\|/, $val;
-        my $crypted_pass;
+        if ($USERS_USR eq $FORM{'_usr'}) {
+            my $crypted_pass;
 
-        if (length $USERS_PSW == 60) {
-            if (($USERS_USR eq $FORM{'_usr'}) && &prontus_auth::check_password($FORM{'_psw'}, $USERS_PSW)) {
+            if (length $USERS_PSW == 60) {
+                if ( &prontus_auth::check_password($FORM{'_psw'}, $USERS_PSW)) {
+                    $USERID = $key;
+
+                    return 'S';
+                }
+            }
+
+            if (length($USERS_PSW) == 32) {
+                $crypted_pass = md5_hex($FORM{'_psw'});
+            } else {
+                $crypted_pass = crypt($FORM{'_psw'}, $USERS_PSW);
+            }
+
+            if (($USERS_USR eq $FORM{'_usr'}) and ($crypted_pass eq $USERS_PSW)) {
                 $USERID = $key;
-
                 return 'S';
             }
-        }
-
-        if (length($USERS_PSW) == 32) {
-            $crypted_pass = md5_hex($FORM{'_psw'});
-        } else {
-            $crypted_pass = crypt($FORM{'_psw'}, $USERS_PSW);
-        }
-
-        if (($USERS_USR eq $FORM{'_usr'}) and ($crypted_pass eq $USERS_PSW)) {
-            $USERID = $key;
-            return 'S';
         }
     }
 

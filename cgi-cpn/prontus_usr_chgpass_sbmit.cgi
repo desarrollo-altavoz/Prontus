@@ -132,7 +132,7 @@ sub validar_datos {
         }
     }
 
-    if(length($users_psw) == 32) {
+    if (length($users_psw) == 32) {
         $pwd_actual_cryp = md5_hex($FORM{'pwd_actual'});
     } else {
         $pwd_actual_cryp = crypt($FORM{'pwd_actual'}, 'Av');
@@ -150,7 +150,7 @@ sub validar_datos {
 # --------------------------------------------------------------------------------------------------
 sub actualizar_password {
     my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$prontus_varglb::USERS_ID};
-    my $pwd_nuevo_cryp = &prontus_auth::encrypt_password_bcrypt($FORM{'pwd_nuevo'});
+    my $pwd_nuevo_cryp = &prontus_auth::encrypt_password($FORM{'pwd_nuevo'});
 
     # Al cambiar contraseña se actualiza la fecha de expiracion.
     $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);

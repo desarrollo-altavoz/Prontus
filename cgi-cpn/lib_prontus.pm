@@ -89,9 +89,7 @@ use prontus_auth;
 our $CRLF = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # usar asi: $buffer =~ s/$CRLF/<p>/sg;
 our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
 
-
 our $DEBUG_FECHAS = 0;
-
 our $DISABLE_PURGE_CACHE = 0;
 
 # ---------------------------------------------------------------
@@ -739,8 +737,8 @@ sub check_user {
     };
 
     if (&lib_prontus::open_dbm_files() ne 'ok') {
-        return ('', 'No fue posible cargar archivos de privilegios de usuario');
         print STDERR "No fue posible cargar archivos de privilegios de usuario.\n";
+        return ('', 'No fue posible cargar archivos de privilegios de usuario');
     };
 
     # Devuelve el password encriptado que corresponda. Si es nuevo, lo devuelve completo, ya que en la cookie
@@ -757,7 +755,7 @@ sub check_user {
         if(length($crypted_pass) == 32) {
             $crypted_sys_pass = md5_hex($pass_sysadmin);
         } elsif (length $crypted_pass == 60) {
-            $crypted_sys_pass = &prontus_auth::encrypt_password_bcrypt($pass_sysadmin);
+            $crypted_sys_pass = &prontus_auth::encrypt_password($pass_sysadmin);
         } else {
             $crypted_sys_pass = crypt($pass_sysadmin, 'Av');
         }
