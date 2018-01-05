@@ -9987,3 +9987,6 @@ Extra seguridad:
 /cgi-cpn/prontus_usr_chgpass_sbmit.cgi
 /cgi-cpn/prontus_usr_ficha.cgi
 /cgi-cpn/prontus_usr_sbmit.cgi
+/cgi-cpn/prontus_usr_admin.cgi
+/wizard_prontus/prontus_dir/cpan/core/js-local/UsrAdmin.class.js
+/wizard_prontus/prontus_dir/cpan/core/prontus_usr_admin.html
