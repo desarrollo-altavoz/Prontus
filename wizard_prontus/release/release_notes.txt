@@ -9973,3 +9973,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_editor_imag.cgi
         /cgi-cpn/prontus_help_main.cgi
         /cgi-cpn/prontus_sso_get_list.cgi
+        /cgi-cpn/prontus_ping_inuse.cgi
+
+Extra seguridad:
+
+
+/cgi-cpn/lib_prontus.pm
+/cgi-cpn/prontus_auth.pm
+/cgi-cpn/prontus_changepass.cgi
+/cgi-cpn/prontus_login.cgi
+/cgi-cpn/prontus_olvidopass.cgi
+/cgi-cpn/prontus_recordarpass.cgi
+/cgi-cpn/prontus_usr_chgpass_sbmit.cgi
+/cgi-cpn/prontus_usr_ficha.cgi
+/cgi-cpn/prontus_usr_sbmit.cgi

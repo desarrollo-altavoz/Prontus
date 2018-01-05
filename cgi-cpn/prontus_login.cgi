@@ -257,7 +257,7 @@ main: {
 
             $upd_obj->descarga_upd_descriptor();
 
-            &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(1, 'Ingreso correcto', 'exit=1,ctype=1');
         };
     } else {
         if ($login_result == -1) { # flag_sysadmin.txt pero no se supo la clave

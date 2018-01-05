@@ -94,12 +94,11 @@ main: {
                 &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
             };
             if (&prontus_auth::is_user_valido($FORM{'_usr'})) {
-                my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$prontus_auth::USERS_USR_ID};
-
-                $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
-
-                $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
-                &lib_prontus::close_dbm_files();
+                my $change_result = &prontus_auth::save_new_password($prontus_auth::USERS_USR_ID, $FORM{'_new_psw'}, $FORM{'_email'});
+                if ($change_result ne '') {
+                    utf8::decode($change_result);
+                    &glib_html_02::print_json_result(0, $change_result, 'exit=1,ctype=1');
+                }
                 unlink "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass/$FORM{'_usr'}.txt";
                 &glib_html_02::print_json_result(1, 'La contraseña se cambió correctamente.', 'exit=1,ctype=1');
             } else {
@@ -119,13 +118,11 @@ main: {
 
     my $login = &prontus_auth::check_valid_login($FORM{'_usr'}, $FORM{'_psw'});
     if ($login  >= 1) {
-        my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$prontus_auth::USERS_USR_ID};
-
-        $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
-
-        $prontus_varglb::USERS{$prontus_auth::USERS_USR_ID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
-        &lib_prontus::close_dbm_files();
-
+        my $change_result = &prontus_auth::save_new_password($prontus_auth::USERS_USR_ID, $FORM{'_new_psw'}, $FORM{'_email'});
+        if ($change_result ne '') {
+            utf8::decode($change_result);
+            &glib_html_02::print_json_result(0, $change_result, 'exit=1,ctype=1');
+        }
         # Escribe archivo extras (para edit)
         &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/extra.txt", &glib_str_02::random_string(8));
 

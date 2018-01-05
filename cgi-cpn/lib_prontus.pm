@@ -732,6 +732,7 @@ sub check_user {
             print "<script type='text/javascript'>window.location.href='/$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html';</script>";
             exit;
         } else {
+            print STDERR "No se detect&oacute; una sesi&oacute;n activa\n";
             return ('', 'No se detect&oacute; una sesi&oacute;n activa');
         };
     };
@@ -741,52 +742,28 @@ sub check_user {
         return ('', 'No fue posible cargar archivos de privilegios de usuario');
     };
 
-    # Devuelve el password encriptado que corresponda. Si es nuevo, lo devuelve completo, ya que en la cookie
-    # se almacena solo el hash.
-    $crypted_pass = &prontus_auth::check_if_new_hash($username, $crypted_pass);
+    my $login_result = &prontus_auth::check_valid_hash_psw($username, $crypted_pass);
 
-    # Si esta este archivo, solo deja pasar con user admin y la pass contenida en el.
-    # Los demas usuarios son bloqueados.
-    my ($flag_sysadmin) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_sysadmin.txt";
-    if (-f $flag_sysadmin) { # sysadmin
-        my $pass_sysadmin = &glib_fildir_02::read_file($flag_sysadmin);
-        my $crypted_sys_pass;
-
-        if(length($crypted_pass) == 32) {
-            $crypted_sys_pass = md5_hex($pass_sysadmin);
-        } elsif (length $crypted_pass == 60) {
-            $crypted_sys_pass = &prontus_auth::encrypt_password($pass_sysadmin);
-        } else {
-            $crypted_sys_pass = crypt($pass_sysadmin, 'Av');
-        }
-
-        if (($username eq 'admin') && ($crypted_pass eq $crypted_sys_pass)) {
-            return (1, 'A');
-        } else {
-            return ('', $prontus_varglb::MSG_BLOQUEOSYSADMIN); # sysadmin es para mostrar mensaje mas amigable
-        }
-    } else { # users normales
-        foreach $key (keys %prontus_varglb::USERS) {
-            # print "key[$key] y value[$value]<br>";
-            $value = $prontus_varglb::USERS{$key};
-            my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $value;
-
-            if (($users_usr eq $username) && ($crypted_pass eq $users_psw)) {
-                ($id, $perfil) = ($key, $users_perfil);
-
-                # print STDERR "users_exp_days[$users_exp_days] users_fec_exp[$users_fec_exp]\n";
-
-                if (&prontus_auth::if_passwd_expired($users_fec_exp) && $users_fec_exp ne '' && $users_fec_exp > 0 && $key != 1) {
-                    return ('', 'Su contrase&ntilde;a ha expirado. Inicie sesi&oacute;n nuevamente y c&aacute;mbiela.');
-                }
-
-                last;
-            }
-        }
-        $perfil = 'Usuario o Contrase&ntilde;a no v&aacute;lida.' if (!$id);
-        return ($id, $perfil);
+    # caso mas comun, usuario logeado correctamente
+    if ($login_result == 1) {
+        return ($prontus_auth::USERS_USR_ID, $prontus_auth::USERS_PERFIL);
     }
-
+    # contraseña expirada
+    if ($login_result == 3) {
+        return ('', 'Su contrase&ntilde;a ha expirado. Inicie sesi&oacute;n nuevamente y c&aacute;mbiela.');
+    }
+    # contraseña invalida
+    if ($login_result == 0) {
+        return ('', 'Usuario o Contrase&ntilde;a no v&aacute;lida.')
+    }
+    # login de admin con flag_sysadmin.txt correcto
+    if ($login_result == 2) {
+        return ($prontus_auth::USERS_USR_ID, $prontus_auth::USERS_PERFIL);
+    }
+    # login de admin con flag_sysadmin.txt incorrecto
+    if ($login_result == -1) {
+        return ('', $prontus_varglb::MSG_BLOQUEOSYSADMIN); # sysadmin es para mostrar mensaje mas amigable
+    }
 };
 
 # ---------------------------------------------------------------
