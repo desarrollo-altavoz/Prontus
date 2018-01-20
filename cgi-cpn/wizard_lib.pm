@@ -77,7 +77,7 @@ sub get_prontus_id {
 
     my $buffer_prontus = shift;
     if($buffer_prontus =~ /PRONTUS_ID=(.+?)\n/) {
-        $prontus_id = $1;
+        my $prontus_id = $1;
         if(&lib_prontus::valida_prontus($prontus_id)) {
             return $prontus_id;
         }

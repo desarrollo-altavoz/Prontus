@@ -9990,3 +9990,14 @@ Extra seguridad:
 /cgi-cpn/prontus_usr_admin.cgi
 /wizard_prontus/prontus_dir/cpan/core/js-local/UsrAdmin.class.js
 /wizard_prontus/prontus_dir/cpan/core/prontus_usr_admin.html
+
+Otros
+agrega NIFLOOP a parseo de portadas
+/cgi-cpn/lib_prontus.pm
+
+corrige declaracion de variables de la libreria
+/home/xs/Documentos/Proyectos/Prontus/11.2/cgi-cpn/lib_thumb.pm
+/home/xs/Documentos/Proyectos/Prontus/11.2/cgi-cpn/lib_tax.pm
+
+corrige error en nombre de variable
+/home/xs/Documentos/Proyectos/Prontus/11.2/cgi-cpn/multitag/prontus_multitag_load_data.cgi
