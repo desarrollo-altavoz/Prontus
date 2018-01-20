@@ -1046,7 +1046,6 @@ sub load_config {
   my ($multied, $reldir_base, $dir_log); # Prontus 6.0
   my ($rtext); # rc15
 
-
   my $nomcfg;
   if ($path_conf =~ /(.*)\.cfg$/) {
     $nomcfg = $1;
@@ -2592,7 +2591,9 @@ sub write_rss_port {
   my ($destrss, $nom_edic, $buffer) = @_;
   $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/; # Deduce del path completo de la portada, el del rss.
 
-  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual se escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija
+   # si es una edicion normal, igual se escribe en el dir de la edic base
+   # ya que los rss deben estar en una ubicacion fija
+  $destrss =~ s/$nom_edic/base/ig;
 
   my $destdir_rss = $destrss;
   $destdir_rss =~ s/\/[\w\.]+$//;
@@ -2690,16 +2691,20 @@ sub generic_parse_port {
   #~ my $repet_areas = '1';
   my %areas;
   my %area_cont;
+    my %area_check;
+
   # while ($buffer =~ /%%LOOP(\d+)%%(.*?)%%\/LOOP%%/isg) {
   while ($buffer =~ /%%LOOP(\d+)(\([^)]+?\))?%%(.*?)%%\/LOOP%%/isg) {
     my ($are,$tmp) = ($1,$3);
     my $pure_are = $are;
     if (!exists $area_cont{$pure_are}) {
         $area_cont{$pure_are} = 1;
+        $area_check{$pure_are} = 1;
     };
     if (exists $areas{$are}) {
       $are .= '_' . $area_cont{$pure_are};
       $area_cont{$pure_are}++;
+      $area_check{$are} = 1;
     };
     # Parsea el area usando $2 como template parcial.
     $areas{$are} = &parser_area($pure_are,$tmp, $dir_server, $prontus_id,
@@ -2715,6 +2720,13 @@ sub generic_parse_port {
     $buffer =~ s/%%LOOP$key(\([^)]+?\))?%%(.*?)%%\/LOOP%%/$aux/is;
   };
 
+    # Parseo de nifloop.
+    foreach my $key (keys %area_check) {
+        if ($areas{$key}) { # el area no esta vacia.
+            $key =~ s/_\d+$//;
+            $buffer =~ s/%%NIFLOOP$key%%(.*?)%%\/NIFLOOP%%//is;
+        }
+    }
 
   # Borra todos los tags IFV que quedaron en la pagina.
   $buffer =~ s/%%IFVC?\(\d+\, *\d+\)%%//isg;
@@ -3129,7 +3141,7 @@ sub procesa_loop_artic {
           $totloop = $totloop . $looptemp;
       }
       #~ print STDERR "totloop[$totloop]\n";
-      $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
+      $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is;
   }
   return $buffer;
 }; #procesa_loop_artic
@@ -5494,7 +5506,7 @@ sub get_arbol_mapa {
         $mapa_st_total = $mapa_st_total . $mapa_st;
       };
       if($mapa_t =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
-        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st_total/s
+        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st_total/s;
       } else {
         $mapa_t = $mapa_t . $mapa_st_total;
       };
@@ -5508,7 +5520,7 @@ sub get_arbol_mapa {
       $salida_st->finish;
     };
     if($nested_s) {
-      $mapa_s =~ s/%%(LOOP_TEMA)%%(.*?)%%\/\1%%/$mapa_total_t/s
+      $mapa_s =~ s/%%(LOOP_TEMA)%%(.*?)%%\/\1%%/$mapa_total_t/s;
     } else {
       $mapa_s = $mapa_s . $mapa_total_t;
     };
