@@ -9397,7 +9397,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         imágenes activada, se copiaban los htmls manteniendo el TS del artículo original y no se estaba
         actualizando el slug del articulo copiado.
         - Se corrige mensaje incorrecto al validar hora de apertura de comentarios.
-        - Se estaba deduciendo malla ruta de los postprocesos, ahora se arma con los
+        - Se estaba deduciendo mal la ruta de los postprocesos, ahora se arma con los
          datos conocidos por prontus, DIR_SERVER y DIR_CGI_CPAN
         - Corrige validación de nombres de plantillas de portada en el administrador,
         evita que se pueda configurar Prontus de forma incorrecta y deje de funcionar.
@@ -9976,7 +9976,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_ping_inuse.cgi
 
 Extra seguridad:
-
 
 /cgi-cpn/lib_prontus.pm
 /cgi-cpn/prontus_auth.pm
