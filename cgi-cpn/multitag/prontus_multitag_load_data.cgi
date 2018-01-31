@@ -108,7 +108,7 @@ main: {
 
 sub cargar_secciones {
     my ($sql, $salida);
-    my ($mtag_s_id, $multitag_s_nombre, $multitag_s_friendly, $multitag_s_estado);
+    my ($multitag_s_id, $multitag_s_nombre, $multitag_s_friendly, $multitag_s_estado);
     my @secciones;
 
     $sql = "SELECT MULTITAG_S_ID, MULTITAG_S_NOMBRE, MULTITAG_S_FRIENDLY, MULTITAG_S_ESTADO FROM MULTITAG_S ORDER BY MULTITAG_S_NOMBRE";

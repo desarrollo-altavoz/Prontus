@@ -50,10 +50,9 @@ main: {
     &lib_prontus::load_config($FORM{'path_conf'});
     $FORM{'path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
-    my @prontus_list = &lib_prontus::get_prontus_sso_dirs();
-
     print "Content-type: application/json; charset=utf-8\n\n";
     if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
+        my @prontus_list = &lib_prontus::get_prontus_sso_dirs();
         if (scalar(@prontus_list) > 1) {
             my %hash = ('status' => 1, 'msg' => 'Listado generado', 'prontus_list'=> \@prontus_list);
             &glib_html_02::print_json_result_hash(\%hash, 'exit=1,ctype=0');

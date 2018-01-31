@@ -69,12 +69,7 @@ use utf8;
 my (%FORM, $TIPO_PRONTUS, $AREA_MENU, $AREA_CONT, $PRONTUS_KEY);
 my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL);
 
-#~ my $VERSION_PRONTUS = '10.15.2.beta - 07/07/2010';
-my $MAX_RETRIES_LOGIN = 5;
-
 main: {
-    my ($lnk);
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
@@ -142,16 +137,9 @@ main: {
     $resp->{'msg'} = $concurrency;
     $resp->{'lock'} = $lock_recurso;
     &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=1');
-
-    #~ exit;
-
-    # devuelve la concurrencia para que el js actualice el dato run-time
-    #~ &glib_html_02::print_json_result(1, $concurrency, 'exit=1,ctype=1');
 };
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
 # -------------
-
 # -------------------------------END SCRIPT----------------------
-

@@ -7,6 +7,8 @@ var UsrAdmin = {
     heightNormal: 680,
     widthAdmin: 735,
     heightAdmin: 390,
+    maxLength: 32,
+    minLength: 8,
     idAdmin: 1,
 
     // -------------------------------------------------------------------------
@@ -95,11 +97,11 @@ var UsrAdmin = {
             var value = $element.val();
 
             if ($element.attr('type') == 'text') {
-                $('<input type="password" name="PSW1" id="PSW1" size="30" value="' + value + '" class="field-password" maxlength="32">').insertBefore($element);
+                $('<input type="password" name="PSW1" id="PSW1" size="30" value="' + value + '" class="field-password" maxlength="' + UsrAdmin.minLength +'">').insertBefore($element);
                 $element.remove();
                 UsrAdmin.bindCheckPasswordStrength();
             } else {
-                $('<input type="text" name="PSW1" id="PSW1" size="30" value="' + value + '" class="field-password" maxlength="32">').insertBefore($element);
+                $('<input type="text" name="PSW1" id="PSW1" size="30" value="' + value + '" class="field-password" maxlength="'+ UsrAdmin.maxLength +'">').insertBefore($element);
                 $element.remove();
                 UsrAdmin.bindCheckPasswordStrength();
             }
@@ -112,7 +114,7 @@ var UsrAdmin = {
     },
     checkPasswordStrength: function (password) {
         if (password.length == 0) return '';
-        if (password.length < 8) {
+        if (password.length < UsrAdmin.minLength) {
             $('#psw_strength').removeClass().addClass('short');
 
             return 'Muy corta';
