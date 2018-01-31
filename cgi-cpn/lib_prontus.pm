@@ -2310,7 +2310,7 @@ sub load_config {
 
     &check_dirs();
 
-    #~ Para configurar la externalizacion de la multimedia
+    # Para configurar la externalizacion de la multimedia
     my $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/mmedia.cfg");
     if ($customcfg =~ m/\s*EXTERNAL_MMEDIA\s*=\s*("|')1("|')/) {
       $prontus_varglb::EXTERNAL_MMEDIA = 1;
@@ -2318,7 +2318,22 @@ sub load_config {
     } else {
       $prontus_varglb::EXTERNAL_MMEDIA = 0;
       $prontus_varglb::DIR_EXMEDIA = '/artic';
-    };
+    }
+
+    # Para configurar la externalizacion de la multimedia
+    $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/asocfile.cfg");
+    if ($customcfg =~ m/\s*EXTERNAL_ASOCFILE\s*=\s*["']1["']/s) {
+        $prontus_varglb::EXTERNAL_ASOCFILE = 1;
+        if ($customcfg =~ m/\s*ASOCFILE_PATH\s*=\s*["'](\w+)["']/s) {
+            $prontus_varglb::DIR_EXASOCFILE = "/$1";
+        } else {
+            $prontus_varglb::DIR_EXASOCFILE = "/docs";
+        }
+    } else {
+        $prontus_varglb::EXTERNAL_ASOCFILE = 0;
+        $prontus_varglb::DIR_EXASOCFILE = '/artic';
+    }
+    print STDERR "[$prontus_varglb::EXTERNAL_ASOCFILE] [$prontus_varglb::DIR_EXASOCFILE]\n"
 }
 
 # -------------------------------------------------------------------------#

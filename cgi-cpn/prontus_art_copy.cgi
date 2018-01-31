@@ -175,6 +175,7 @@ sub copia_archivos {
 
     my $dir_base = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC;
     my $dir_base_mm = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXMEDIA;
+    my $dir_base_asoc = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXASOCFILE;
 
     # Se crean los nuevos directorios
     my $res = 1;
@@ -183,7 +184,7 @@ sub copia_archivos {
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_PAG"));
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_IMAG"));
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_SWF"));
-    $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE"));
+    $res = 0 unless(&glib_fildir_02::check_dir("$dir_base_asoc/$newfechac$prontus_varglb::DIR_ASOCFILE"));
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base_mm/$newfechac$prontus_varglb::DIR_MMEDIA"));
     if(! $res) {
         &glib_html_02::print_json_result(0, "Error al crear los directorios", 'exit=1,ctype=1');
@@ -202,15 +203,15 @@ sub copia_archivos {
     }
 
     # Los archivos adjuntos
-    if(-d "$dir_base/$oldfechac$prontus_varglb::DIR_ASOCFILE/$oldts") {
-        &glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
-        &glib_fildir_02::copy_tree("$dir_base/$oldfechac$prontus_varglb::DIR_ASOCFILE", $oldts, "$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE", $newts);
-        # Se renombran por si las moscas
-        my @asoc = &glib_fildir_02::lee_dir("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
+    if(-d "$dir_base_asoc/$oldfechac$prontus_varglb::DIR_ASOCFILE/$oldts") {
+        &glib_fildir_02::check_dir("$dir_base_asoc/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
+        &glib_fildir_02::copy_tree("$dir_base_asoc/$oldfechac$prontus_varglb::DIR_ASOCFILE", $oldts, "$dir_base_asoc/$newfechac$prontus_varglb::DIR_ASOCFILE", $newts);
+        # Se renombran para prevenir errores
+        my @asoc = &glib_fildir_02::lee_dir("$dir_base_asoc/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts");
         foreach my $file (@asoc) {
             if ($file =~ /^(.*?)$oldts(.*?)$/) {
                 my $newasoc = $1.$newts.$2;
-                &File::Copy::move("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$file", "$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$newasoc");
+                &File::Copy::move("$dir_base_asoc/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$file", "$dir_base_asoc/$newfechac$prontus_varglb::DIR_ASOCFILE/$newts/$newasoc");
             }
         }
     }

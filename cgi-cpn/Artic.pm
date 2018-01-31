@@ -210,10 +210,14 @@ sub _set_dirs {
                           . "/$this->{prontus_id}"
                           . "/site$prontus_varglb::DIR_EXMEDIA/$this->{fechac}";
 
+    $this->{dst_base_asoc} = $this->{document_root}
+                          . "/$this->{prontus_id}"
+                          . "/site$prontus_varglb::DIR_EXASOCFILE/$this->{fechac}";
+
     $this->{dst_xml}        = "$this->{dst_base}/xml";
     $this->{dst_pags}       = "$this->{dst_base}/pags";
     $this->{dst_pagspar}    = "$this->{dst_base}/pagspar";
-    $this->{dst_asocfile}   = "$this->{dst_base}/asocfile/$this->{ts}";
+    $this->{dst_asocfile}   = "$this->{dst_base_asoc}/asocfile/$this->{ts}";
     $this->{dst_foto}       = "$this->{dst_base}/imag";
     $this->{dst_swf}        = "$this->{dst_base}/swf";
     $this->{dst_multimedia} = "$this->{dst_base_mm}/mmedia";
