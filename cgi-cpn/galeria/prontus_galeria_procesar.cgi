@@ -98,7 +98,7 @@ main:{
 
     # Se lee la configuración para saber cuantas fotos hay
     my %campos_xml = &lib_prontus::getCamposXml($bufferxml, "_galeria_prontus_conf,_gal_archive");
-    my $filezip = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/$fechac$prontus_varglb::DIR_ASOCFILE/$TS/$campos_xml{'_gal_archive'}";
+    my $filezip = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXASOCFILE/$fechac$prontus_varglb::DIR_ASOCFILE/$TS/$campos_xml{'_gal_archive'}";
 
     # No se hace nada si no viene el archivo
     if ($filezip =~ /[^\/]+\.zip$/i) {
