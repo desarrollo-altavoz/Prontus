@@ -461,9 +461,9 @@ main: {
 
     # se parsea el numero de version de friendly urls en uso
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-        $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig
+        $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig;
     } else {
-        $pagina =~ s/%%_friendly_urls_ver%%/0/ig
+        $pagina =~ s/%%_friendly_urls_ver%%/0/ig;
     }
 
     if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && !exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$FORM{'_fid'}}) {

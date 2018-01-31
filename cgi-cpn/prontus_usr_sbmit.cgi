@@ -78,8 +78,6 @@ my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL);
 my (@Lst_ARTASOC, @Lst_PORTASOC);
 
 main: {
-    my ($lnk);
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');

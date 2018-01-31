@@ -37,7 +37,7 @@
 # ---------------------------
 # 01_00  - 03/04/2002 - Primera Version.
 # 1.1 - 03/05/2002 - Soporte para editar xml y xsl
-# 1.2 - 06/05/2002 - Siu el usr. no es admin, tira un &nbsp;, para que no se repita el msg. de error junto con el de prontus_edit_file.exe
+# 1.2 - 06/05/2002 - Si el usr. no es admin, tira un &nbsp;, para que no se repita el msg. de error junto con el de prontus_edit_file.exe
 # ---------------------------------------------------------------
 # Revision Prontus 8.0 - ych - 23/05/2002
 # ---------------------------------------------------------------
@@ -294,7 +294,7 @@ sub parseaCrontab {
   };
   if (!$lines) {
     $pagina =~ s/<!--loop_crons-->.*?<!--\/loop_crons-->//sig;
-    $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->/\1/sig;
+    $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->/$1/sig;
   } else {
     $pagina =~ s/<!--loop_crons-->.*?<!--\/loop_crons-->/$loop_total/sig;
     $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->//sig;
@@ -1114,13 +1114,13 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%VTXT_RELPATH_LINK_SI%%//ig;
         $pagina =~ s/%%VTXT_RELPATH_LINK_NO%%/ checked="checked"/ig;
-    };
+    }
 
     if ($prontus_varglb::ACTUALIZACION_MASIVA eq 'SI') {
         $pagina =~ s/%%ACTUALIZACION_MASIVA%%/ checked="checked"/ig;
     } else {
         $pagina =~ s/%%ACTUALIZACION_MASIVA%%//ig;
-    };
+    }
 
     if ($prontus_varglb::COMENTARIOS eq 'SI') {
         $pagina =~ s/%%COMENTARIOS_SI%%/ checked="checked"/ig;

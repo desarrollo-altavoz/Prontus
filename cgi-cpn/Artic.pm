@@ -2200,7 +2200,7 @@ sub generar_vista_art {
                 $totloop = $totloop . $looptemp;
             }
             #~ print STDERR "totloop[$totloop]\n";
-            $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
+            $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is;
         }
 
         my %claves_adicionales; # que no estan en el xml del artic
@@ -2633,10 +2633,6 @@ sub _parsing_fotos {
         $buffer =~ s/%%_H$nom_campo%%/$foto_dimy/ig;
     }
     elsif ($val_campo =~ /https?:\/\//i) { # url externa
-#        foreach my $k (keys %campos) {
-#            next if ($k !~ /fotofija/i);
-#            warn "k[$k] val[$campos{$k}]";
-#        };
         # parseo dimensiones
         $foto_dimx = $campos{"_w$nom_campo"}; # _wfotofija_art200
         # warn "foto externa nom_campo[$nom_campo] nom_campo_w[_w$nom_campo] foto_dimx[$foto_dimx]";
@@ -2813,7 +2809,6 @@ sub _parsing_vtxt {
     $buffer = &lib_prontus::replace_in_artic($vtxt_aux_consubtit, $nom_campo, $buffer, $noescape);
 
     return $buffer;
-    # return ($vtxt_aux_consubtit, $curr_nrotit, %hash_subtits);
 };
 # --------------------------------------------------------------------
 sub _get_data4subtit {
