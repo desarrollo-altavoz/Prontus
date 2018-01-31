@@ -308,7 +308,7 @@ sub store_old_passwords {
 sub is_user_valido {
     my $usr = $_[0];
     foreach my  $key (keys %prontus_varglb::USERS) {
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $prontus_varglb::USERS{$USERS_USR_ID};
+        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $prontus_varglb::USERS{$key};
         if ($USERS_USR eq $usr)  {
             $USERS_USR_ID = $key;
             return 1;
