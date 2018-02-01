@@ -117,7 +117,7 @@ sub copy_tree {
         } else {
             File::Copy::copy($padre_origen . '/' . $df_origen, $df_destino . '/' . $df_origen);
         }
-        print STDERR "copy [$df_destino/$df_origen]\n\n";
+        # print STDERR "copy [$df_destino/$df_origen]\n\n";
     }
 }
 #-------------------------------------------------------------------------#

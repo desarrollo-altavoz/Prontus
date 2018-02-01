@@ -97,7 +97,7 @@ var UsrAdmin = {
             var value = $element.val();
 
             if ($element.attr('type') == 'text') {
-                $('<input type="password" name="PSW1" id="PSW1" size="30" value="' + value + '" class="field-password" maxlength="' + UsrAdmin.minLength +'">').insertBefore($element);
+                $('<input type="password" name="PSW1" id="PSW1" size="30" value="' + value + '" class="field-password" maxlength="' + UsrAdmin.maxLength +'">').insertBefore($element);
                 $element.remove();
                 UsrAdmin.bindCheckPasswordStrength();
             } else {
