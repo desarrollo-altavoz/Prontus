@@ -2307,7 +2307,6 @@ sub load_config {
         $prontus_varglb::EXTERNAL_ASOCFILE = 0;
         $prontus_varglb::DIR_EXASOCFILE = '/artic';
     }
-    print STDERR "[$prontus_varglb::EXTERNAL_ASOCFILE] [$prontus_varglb::DIR_EXASOCFILE]\n"
 }
 
 # -------------------------------------------------------------------------#
