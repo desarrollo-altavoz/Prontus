@@ -21,7 +21,7 @@ var Player,Flash;
             _self = this;
             _self.selectPlayer();
             if(_self.vars.currentPlayer == 'html5'){
-                _self.vars.videoSrc = video + '?t='+ (new Date().getTime);;
+                _self.vars.videoSrc = video + '?t='+ (new Date().getTime());
                 _self.vars.videoTemplate = $('#video_template').html();
                 $(".panel-player").append(_self.vars.videoTemplate);
                 _self.ui.initUI();

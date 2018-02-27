@@ -799,7 +799,7 @@ var Fid = {
     // Inicia el valor del slug y comportamiento del fid al cargar el articulo
     iniciaSlug: function() {
         if (Fid.friendlyVer == 4) {
-            if ($('#_custom_slug').val() == '' || $('#_slug').val() == '') {
+            if ($('#_custom_slug').val() == '' || $('#_slug').val() == '' || $('#_custom_slug').val() == 'NO') {
                 $('#_custom_slug').val('NO');
                 Fid.slugEditable(false);
             } else if ($('#_custom_slug').val() == 'SI') {

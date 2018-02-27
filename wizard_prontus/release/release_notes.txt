@@ -9929,6 +9929,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Corrige la generacion de friendly url para no fallar en caso de configuración incompleta.
         - Corrige el buscador para que cargue una configuración de friendly url por defecto.
+        - Corrige deteccion de slug desactivado en el fid se veia con estilo grafico incorrecto
+        - Corrige el uso del timestamp al instanciar player de video en el fid
     [mejoras]
         - Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
           de prontus, por ejemplo: prontus.misitio.cl.
@@ -9960,6 +9962,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cron_fechas.cgi
         /cgi-cpn/prontus_dropbox_backup.cgi
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Player.class.js
 
 - Multitag
     [bugfixes]
