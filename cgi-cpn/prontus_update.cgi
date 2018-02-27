@@ -97,8 +97,8 @@ main: {
     }
     &lib_loading::update_loading('100', '0');
 
+    &lib_prontus::write_log('Actualizacion de Prontus', 'Usuario inicia actualizacion', '');
     my $result_page = "..$prontus_varglb::DIR_CPAN/core/prontus_loading_prontus_update.html";
-
     &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER, 'prontus_update_real', $result_page, $params);
 
     exit;
