@@ -33,6 +33,7 @@ our $USERS_PERFIL;
 our $USERS_EMAIL;
 our $USERS_EXP_DAYS = 0;
 our $USERS_FEC_EXP = 0;
+our $EXTERNAL_PROCESS = '';
 
 eval "use prontus_auth_custom;";
 
@@ -245,7 +246,7 @@ sub get_hash_for_cookie {
 };
 # ---------------------------------------------------------------
 sub save_new_password {
-    #  si el usuario ya existe validar que la clave es disinta a las anteriores
+    #  si el usuario ya existe validar que la clave es distinta a las anteriores
     my ($user_id, $new_psw, $new_mail) = @_;
     my ($users_nom, $users_usr, $old_users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$user_id};
 
@@ -268,11 +269,18 @@ sub save_new_password {
         $users_mail = $new_mail;
     }
 
-    $prontus_varglb::USERS{$user_id} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password($new_psw) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
+    my $new_psw_hash = &prontus_auth::encrypt_password($new_psw);
+
+    $prontus_varglb::USERS{$user_id} = $users_nom . '|' .  $users_usr . '|' . $new_psw_hash . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
 
     &store_old_passwords($user_id, $old_users_psw);
 
     &lib_prontus::close_dbm_files();
+
+    if ($EXTERNAL_PROCESS ne '') {
+        print STDERR "save_new_password exec[$EXTERNAL_PROCESS $prontus_varglb::PRONTUS_ID]\n";
+        system("$prontus_varglb::DIR_SERVER$EXTERNAL_PROCESS $prontus_varglb::PRONTUS_ID $new_psw_hash 1>/dev/null 2>/dev/null &");
+    }
     return '';
 }
 # ---------------------------------------------------------------

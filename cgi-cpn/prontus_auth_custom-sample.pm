@@ -16,5 +16,6 @@ $prontus_auth::PWS_MAX_LENGTH = 32; # largo máximo de psw en caracteres
 $prontus_auth::PWS_MIN_LENGTH = 6;  # largo mínimo de psw en caracteres
 $prontus_auth::PWS_TO_REMEMBER = 3; # passwords antiguas a recordar
 $prontus_auth::PWS_COMPARE_PREVIOUS = 1; # prevenir la reutilización de claves
+$prontus_auth::EXTERNAL_PROCESS = ''; #path completo para ejecutar un script externo
 
 return 1;
