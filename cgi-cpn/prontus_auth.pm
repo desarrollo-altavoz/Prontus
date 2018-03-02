@@ -279,7 +279,7 @@ sub save_new_password {
 
     if ($EXTERNAL_PROCESS ne '') {
         print STDERR "save_new_password exec[$EXTERNAL_PROCESS $prontus_varglb::PRONTUS_ID]\n";
-        system("$prontus_varglb::DIR_SERVER$EXTERNAL_PROCESS $prontus_varglb::PRONTUS_ID $new_psw_hash 1>/dev/null 2>/dev/null &");
+        system("$EXTERNAL_PROCESS $prontus_varglb::PRONTUS_ID $users_usr $new_psw_hash 1>/dev/null 2>/dev/null &");
     }
     return '';
 }
