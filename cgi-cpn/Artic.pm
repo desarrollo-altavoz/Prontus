@@ -767,15 +767,24 @@ sub _get_nom_foto {
     my $nom_foto_orig = shift;
 
     if ($nom_foto_orig) {
+        # procesa el nombre sin la extension
+        my $ext = '';
+        if ($nom_foto_orig =~ /(.*)(\.\w+)$/) {
+            $nom_foto_orig = $1;
+            $ext = $2;
+        }
+
         $nom_foto_orig =~ s/\_/ /sig;
         $nom_foto_orig =~ s/^\s+//;
+        $nom_foto_orig =~ s/-/ /sig;
 
         $nom_foto_orig = &lib_prontus::ajusta_nchars($nom_foto_orig, 50);
         $nom_foto_orig =~ s/ /\_/sig;
         $nom_foto_orig =~ s/\.\.\.//si;
         $nom_foto_orig =~ s/\s*$//;
 
-        $nom_foto_orig = "_".$nom_foto_orig;
+        $nom_foto_orig = "_"."$nom_foto_orig$ext";
+        $nom_foto_orig = lc $nom_foto_orig;
     };
 
     my $regexp = "--regexp='".$this->{ts}.'\_*[a-zA-Z0-9\_\-]\{0,\}\.[a-zA-Z]\{1,\}$'."'";

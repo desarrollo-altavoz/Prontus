@@ -9983,6 +9983,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Limpieza de código y correcciones menores
         - Agrega actualización de Prontus al log de operación
+        - Se previene la posibilidad de perder la extension de las imagenes al tener nombres muy largos.
     [bugfixes]
         - Correciones generales al código
     [files]
