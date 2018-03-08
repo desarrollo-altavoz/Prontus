@@ -5,12 +5,22 @@
  marcas prontus. Se eliminan todas las marcas no parseadas
 - bugfixes: (general) Corrige la generacion de friendly url para no fallar en caso de configuración incompleta.
 - bugfixes: (buscador) Corrige el buscador para que cargue una configuración de friendly url por defecto.
+- bugfixes: (general) Corrige deteccion de slug desactivado en el fid, se veia con estilo grafico incorrecto
+- bugfixes: (general) Corrige el uso del timestamp al instanciar player de video en el fid
+- bugfixes: (config) Se corrige un error que no cargaba/mostraba adecuadamente la configuración del orden de
+ categorías (TAXPORT_ORDEN), cuando esta estaba configurada como "Publicación".
+- bugfixes: (art) Se previene la posibilidad de perder la extension de las imagenes al tener nombres muy largos.
 - improvement: (tax y tag) Se parsean marcas individuales de paginación que se pueden usar en cualquier parte de las plantillas.
 - improvement: (friendly_v4) Se implementa nueva version de friendly url para articulos que no incluye el prontus_id.
 Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
 - improvement: (admin) Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
  de prontus, por ejemplo: prontus.misitio.cl.
 - improvement: (admin) Agrega variable para permitir habilitar y deshabilitar la conversion de urls relativas a absolutas en el VTXT
+- improvement: (art) La ruta de archivos asociados es configurable al igual que la ruta de multimedia
+- improvement: (log) Agrega actualización de Prontus al log de operación
+- improvement: (security) Aumenta la seguridad de las claves, se puede configurar el largo minimo, máximo y si se deben
+ almacenar las claves antiguas para prevenir su reutilizacion
+- improvement: (port) Agrega NIFLOOP a parseo de portadas, se parsea en caso de que un loop de portada esté vacío
 - changes: (login) El correo de recuperacion de contraseña genera los links con CPAN_SERVER_NAME
 - changes: (art) Ahora se permite hasta 100 "prontus insert" en el cuerpo de un artículo.
 

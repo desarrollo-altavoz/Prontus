@@ -9834,7 +9834,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
-11.2.99 - 01/02/2018 - JOR/EAG/MTC
+11.2.99 - 08/03/2018 - JOR/EAG/MTC
 ====================================================================================================
 - Taxports y Tagsports
     [mejoras]
@@ -10016,12 +10016,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         almacenar las claves antiguas para prevenir su reutilizacion
         Para configurar esto se debe crear el archivo
         /cgi-cpn/prontus_auth_custom.pm
-        con la configuración:
+        con las siguientes variables de configuración, todas son opcionales:
 
         $prontus_auth::PWS_MAX_LENGTH = 32; #largo máximo de psw en caracteres
         $prontus_auth::PWS_MIN_LENGTH = 6;  #largo mínimo de psw en caracteres
         $prontus_auth::PWS_TO_REMEMBER = 3; #passwords antiguas a recordar
         $prontus_auth::PWS_COMPARE_PREVIOUS = 1; #prevenir la reutilización de claves
+        $prontus_auth::EXTERNAL_PROCESS = 'miproceso.sh' # ejecutar un proceso externo al guardar una nueva clave
+            los parametros que se pasan son <prontus_id> <usuario> <hash_nueva_password>
+            por ejemplo: "miproceso.sh <prontus_id> <usuario> <hash_nueva_password>"
 
         Se incluye el archivo /cgi-cpn/prontus_auth_custom-sample.pm para crear una configuración base.
     [files]
