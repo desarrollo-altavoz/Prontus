@@ -255,6 +255,7 @@ sub save_new_password {
         my @stored = split /\|/, $buffer;
         push (@stored, $old_users_psw) if ($old_users_psw ne '');
         for (my $i = 0; $i < scalar @stored; $i++) {
+            if ($stored[$i] eq '') { next; }
             if (&check_password($new_psw, $stored[$i])) {
                 print STDERR "Esta contraseña ya ha sido usada previamente\n";
                 return "Esta contraseña ya ha sido usada previamente";
