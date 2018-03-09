@@ -196,6 +196,12 @@ sub procesa_art {
             &recurseDirs("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dir_fecha",
                                                     "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXMEDIA/$dir_fecha");
         };
+
+        # Se incluyen los archivos asociados externos.
+        if ($prontus_varglb::EXTERNAL_ASOCFILE == 1) {
+            &recurseDirs("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXASOCFILE/$dir_fecha",
+                                                    "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXASOCFILE/$dir_fecha");
+        };
     };
 }; # procesa_art
 

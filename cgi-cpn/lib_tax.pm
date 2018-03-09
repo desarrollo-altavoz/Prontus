@@ -41,14 +41,14 @@ use DBI;
 use POSIX qw(strftime ceil);
 
 # Limite maximo permitido.
-my $MAX_LIMIT = 50;
-my $RELDIR_ARTIC;
+our $MAX_LIMIT = 50;
+our $RELDIR_ARTIC;
 
-my $RELDIR_ARTIC_RELAC;
-my $NUM_RELAC_DEFAULT;
+our $RELDIR_ARTIC_RELAC;
+our $NUM_RELAC_DEFAULT;
 
-my $RELDIR_DST_ARTIC_RELAC;
-my $CONTROLAR_ALTA_ARTICULOS;
+our $RELDIR_DST_ARTIC_RELAC;
+our $CONTROLAR_ALTA_ARTICULOS;
 our %CFG_FIL_TAXPORT;
 # ---------------------------------------------------------------
 # SUB-RUTINAS.

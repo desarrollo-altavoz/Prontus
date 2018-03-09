@@ -298,12 +298,9 @@ sub get_lst_port {
         $looptmp =~ s/%%label_class%%/$label_class/isg;
 
         $looptot = $looptot . $looptmp;
-        #$lista = $lista . "<div class=\"itemlistado\"><input type=\"checkbox\" value=\"$clave\"  name=\"ports[]\" id=\"$val_display\" $checked\/> <label for=\"$val_display\" $label_class>$val_display<\/label><\/div>";
-
-    };
+    }
 
     return $looptot;
-
 };
 # ---------------------------------------------------------------
 sub procesar_nombre {
@@ -317,6 +314,5 @@ sub procesar_nombre {
 
     };
     return $nombre;
-
 }
 # -------------------------------END SCRIPT----------------------

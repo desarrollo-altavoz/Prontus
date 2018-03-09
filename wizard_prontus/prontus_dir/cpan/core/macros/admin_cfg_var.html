@@ -37,7 +37,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            ARTIC_ACTUALIZA_PORTS<br>
+                                            ARTIC_ACTUALIZA_PORTS<br />
                                             <span class="ayuda">Habilita o deshabilita la actualización de todas las portadas donde está publicado un artículo, al guardarlo.</span>
                                         </td>
                                         <td>
@@ -48,7 +48,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            ACTUALIZACIONES<br>
+                                            ACTUALIZACIONES<br />
                                             <span class="ayuda">Permite habilitar o deshabilitar las actualizaciones automáticas.</span>
                                         </td>
                                         <td>
@@ -59,35 +59,53 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            PUBLIC_SERVER_NAME<br>
-                                            <span class="ayuda">Se debe indicar el nombre del servidor, necesario para la ejecución de los crons.</span>
+                                            PUBLIC_SERVER_NAME<br />
+                                            <span class="ayuda">Se debe indicar el nombre del servidor, necesario para la ejecución de los crons, por ejemplo: www.misitio.cl</span>
                                         </td>
                                         <td><input type="text" name="PUBLIC_SERVER_NAME" class="fieldform" value="%%PUBLIC_SERVER_NAME%%"/></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            RECAPTCHA_API_URL<br>
+                                            CPAN_SERVER_NAME<br />
+                                            <span class="ayuda">Nombre del servidor donde funciona el administrador prontus, por ejemplo: prontus.misitio.cl</span>
+                                        </td>
+                                        <td><input type="text" name="CPAN_SERVER_NAME" class="fieldform" value="%%CPAN_SERVER_NAME%%"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            VTXT_RELPATH_LINK<br />
+                                            <span class="ayuda">Permite habilitar o deshabilitar la conversión de URLs relativas (/noticias/site/.....) a URLs absolutas (http://dominio.cl/noticias/site...)  ingresadas en el campo VTXT. <br /><br /> Por defecto quedará habilitada la opción de URLs relativas</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="VTXT_RELPATH_LINK" id="VTXT_RELPATH_LINK_SI" value="SI"%%VTXT_RELPATH_LINK_SI%%/> <label for="VTXT_RELPATH_LINK_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="VTXT_RELPATH_LINK" id="VTXT_RELPATH_LINK_NO" value="NO"%%VTXT_RELPATH_LINK_NO%%/> <label for="VTXT_RELPATH_LINK_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            RECAPTCHA_API_URL<br />
                                             <span class="ayuda">Por lo general: https://www.google.com/recaptcha/api/siteverify</span>
                                         </td>
                                         <td><input type="text" name="RECAPTCHA_API_URL" class="fieldform" value="%%RECAPTCHA_API_URL%%"/></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            RECAPTCHA_SECRET_CODE<br>
+                                            RECAPTCHA_SECRET_CODE<br />
                                             <span class="ayuda">Se obtiene al momento de crear una aplicación.</span>
                                         </td>
                                         <td><input type="text" name="RECAPTCHA_SECRET_CODE" class="fieldform" value="%%RECAPTCHA_SECRET_CODE%%"/></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            SERVER_SMTP<br>
+                                            SERVER_SMTP<br />
                                             <span class="ayuda">Indica el servidor SMTP a utilizar en el sitio Prontus.</span>
                                         </td>
                                         <td><input type="text" name="SERVER_SMTP" class="fieldform" value="%%SERVER_SMTP%%"/></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            CONTROL_FECHA<br>
+                                            CONTROL_FECHA<br />
                                             <span class="ayuda">Activa o desactiva la opción para controlar la fecha y hora de publicación y de expiración de artículos, lo cual permite que las portadas se actualicen según estos valores al ser guardadas manualmente o mediante un proceso cron.</span>
                                         </td>
                                         <td>
@@ -98,7 +116,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            CONTROLAR_ALTA_ARTICULOS<br>
+                                            CONTROLAR_ALTA_ARTICULOS<br />
                                             <span class="ayuda">Activa o desactiva el control de la disponibilidad de un artículo para ser incluido en portadas, artículos relacionados, portadas taxonómicas y buscador.</span>
                                         </td>
                                         <td>
@@ -109,7 +127,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            ABRIR_FIDS_EN_POP<br>
+                                            ABRIR_FIDS_EN_POP<br />
                                             <span class="ayuda">Define si los artículos se abrirán en una popup como en el sistema antiguo.</span>
                                         </td>
                                         <td>
@@ -121,7 +139,7 @@
 
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            USAR_PUBLIC_SERVER_NAME_VER_ARTIC<br>
+                                            USAR_PUBLIC_SERVER_NAME_VER_ARTIC<br />
                                             <span class="ayuda">Define si al hacer click en "Ver Artículo" desde el FID se usará la ruta absoluta del artículo usando el nombre del servidor (PUBLIC_SERVER_NAME).<br/>Por ejemplo:<br/> http://%%PUBLIC_SERVER_NAME%%/%%_PRONTUS_ID%%/site/artic/...<br/>
                                             Por defecto se utiliza la ruta relativa.
                                             </span>
@@ -135,7 +153,7 @@
 
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            COMENTARIOS<br>
+                                            COMENTARIOS<br />
                                             <span class="ayuda">Habilita o deshabilita el sistema de comentarios.</span>
                                         </td>
                                         <td>
@@ -146,7 +164,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            MULTITAG<br>
+                                            MULTITAG<br />
                                             <span class="ayuda">Habilita o deshabilita el sistema de Multitags de Prontus.</span>
                                         </td>
                                         <td>
@@ -157,7 +175,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            VTXT_PASTE_NEWLINES_AS_P<br>
+                                            VTXT_PASTE_NEWLINES_AS_P<br />
                                             <span class="ayuda">Habilita o deshabilita la transformación de saltos de linea a &lt;p&gt;.</span>
                                         </td>
                                         <td>
@@ -168,7 +186,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            VTXT_DTD<br>
+                                            VTXT_DTD<br />
                                             <span class="ayuda">Permite definir el uso de xhtml 1.0 strict o transitional para el código generado en el VTXT.</span>
                                         </td>
                                         <td>
@@ -181,8 +199,8 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            VTXT_ENCODE_CHARS<br>
-                                            <span class="ayuda">Hace un encode de los caracteres sensibles. Es el responsable de escapear los tags HTML colocando espacios entre los signos &lt; y &gt;.<br>Ayuda: Configurar en NO, si se requiere que el VTXT parsee código (por ejemplo en manuales o ejemplos)</span>
+                                            VTXT_ENCODE_CHARS<br />
+                                            <span class="ayuda">Hace un encode de los caracteres sensibles. Es el responsable de escapear los tags HTML colocando espacios entre los signos &lt; y &gt;.<br />Ayuda: Configurar en NO, si se requiere que el VTXT parsee código (por ejemplo en manuales o ejemplos)</span>
                                         </td>
                                         <td>
                                             <input type="radio" name="VTXT_ENCODE_CHARS" id="VTXT_ENCODE_CHARS_SI" value="SI"%%VTXT_ENCODE_CHARS_SI%%/> <label for="VTXT_ENCODE_CHARS_SI">SI</label>
@@ -192,7 +210,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            VTXT_MEDIA_SCRIPT<br>
+                                            VTXT_MEDIA_SCRIPT<br />
                                             <span class="ayuda">Indica si se usará el embed tradicional o JavaScript.<br/>
                                             Al habilitarlo, las etiquetas &lt;object&gt; se convierten a código JavaScript, por ejemplo: writeFlash(...)
                                             </span>
@@ -205,7 +223,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FRIENDLY_URLS<br>
+                                            FRIENDLY_URLS<br />
                                             <span class="ayuda">Habilita o deshabilita las url amigables. <br/><br/>
                                             Para el correcto funcionamiento se necesita habilitar el soporte en el servidor web (Apache o NGINX).<br/>
                                             Para mayor informaci&oacute;n revisar los siguientes art&iacute;culos:<br/>
@@ -226,7 +244,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FRIENDLY_URLS_VERSION<br>
+                                            FRIENDLY_URLS_VERSION<br />
                                             <span class="ayuda">Especifica la versión de las url amigables que se utilizará.</span>
                                         </td>
                                         <td>
@@ -260,7 +278,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FRIENDLY_V4_EXCLUDE_FID<br>
+                                            FRIENDLY_V4_EXCLUDE_FID<br />
                                             <span class="ayuda">Tipos de artículos para los que no se debe generar friendly url version 4, por ejemplo: fid_link.</span>
                                         </td>
                                         <td>
@@ -288,7 +306,18 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FRIENDLY_URLS_LARGO_TITULAR<br>
+                                            FRIENDLY_V4_INCLUDE_PRONTUS_ID<br />
+                                            <span class="ayuda">Habilita o deshabilita las url amigables para imágenes.</span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="FRIENDLY_V4_INCLUDE_PRONTUS_ID" id="FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI" value="SI"%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI%%/> <label for="FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="FRIENDLY_V4_INCLUDE_PRONTUS_ID" id="FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO" value="NO"%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO%%/> <label for="FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            FRIENDLY_URLS_LARGO_TITULAR<br />
                                             <span class="ayuda">Define el largo máximo que tendrá el titular en las Friendly URL. Se recomienda no exceder los 75 caracteres.</span>
                                         </td>
                                         <td>
@@ -297,7 +326,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FRIENDLY_URL_IMAGES<br>
+                                            FRIENDLY_URL_IMAGES<br />
                                             <span class="ayuda">Habilita o deshabilita las url amigables para imágenes.</span>
                                         </td>
                                         <td>
@@ -308,7 +337,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            MULTIVISTAS<br>
+                                            MULTIVISTAS<br />
                                             <span class="ayuda">Define las vistas que tendrá Prontus, además de la vista por defecto (vista principal).</span>
                                         </td>
                                         <td>
@@ -337,7 +366,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            UPLOADS_PERMITIDOS<br>
+                                            UPLOADS_PERMITIDOS<br />
                                             <span class="ayuda">Especifica que tipo de documentos (extensiones) estarán permitidas al momento de subir archivos en los fids.</span>
                                         </td>
                                         <td>
@@ -354,7 +383,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            SERVER_PROTOCOLO_HTTPS<br>
+                                            SERVER_PROTOCOLO_HTTPS<br />
                                             <span class="ayuda">Indica si se usará un servidor https tanto en el Frontend, como en el Backend.</span>
                                         </td>
                                         <td>
@@ -366,7 +395,7 @@
 
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            VARNISH_SERVER_NAME<br>
+                                            VARNISH_SERVER_NAME<br />
                                             <span class="ayuda">Define los servidores de <a target="_blank" href="http://en.wikipedia.org/wiki/Varnish_%28software%29">Varnish Cache</a>.</span>
                                         </td>
                                         <td>
@@ -385,7 +414,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            VARNISH_GLOBAL_PURGE<br>
+                                            VARNISH_GLOBAL_PURGE<br />
                                             <span class="ayuda">Indicar las rutas serán expiradas cada vez que se haga purge. Se recomienda indicar sólo lo necesario para no sobrecargar el sistema.
                                                 Una ruta por línea (no debe incluír el dominio).<br/><br/>Ejemplos:<br/>
                                                 /prontus/site/edic/base/port/portada.html<br/>
@@ -399,7 +428,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FORM_CSV_CHARSET<br>
+                                            FORM_CSV_CHARSET<br />
                                             <span class="ayuda">
                                                 Define el charset del archivo de Respaldo del Prontus Form.<br/>
                                                 Si al importar dicho archivo, aparecen caracteres extraños, se recomienda probar otro valor.</span>
@@ -413,7 +442,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            POST_PROCESO de borrado de artículos<br>
+                                            POST_PROCESO de borrado de artículos<br />
                                             <span class="ayuda">
                                                 El proceso o script que indique, se ejecutará cada vez que se borre un artículo.<br/>
                                                 Para que sea un script válido, debe ubicarse en el mismo dir. de CGIs de Prontus, o a lo más, un nivel hacia arriba.</span>
@@ -427,7 +456,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            SCRIPT_QUOTA<br>
+                                            SCRIPT_QUOTA<br />
                                             <span class="ayuda">
                                                 Script para el cálculo de quota. Puede ser PHP o Perl y será invocado desde la raíz de sitio. <br/>
                                                 Ejemplo: /cgi-cpn/mi_script_quota.pl</span>
@@ -438,7 +467,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FOTO_MAX_PIXEL<br>
+                                            FOTO_MAX_PIXEL<br />
                                             <span class="ayuda">
                                                 Se indica el tamaño máximo en pixels que tendrán las fotos al ser subidas al banco de imágenes. De tal forma que si una foto supera el máximo,
                                                 esta será redimensionada para estar por debajo del limite establecido, por ejemplo: 1920x1080<br/><br/>
@@ -451,7 +480,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            BLOQUEO_EDICION<br>
+                                            BLOQUEO_EDICION<br />
                                             <span class="ayuda">Especifica la modalidad de bloqueo de edición de artículos y portadas.</span>
                                         </td>
                                         <td>
@@ -473,7 +502,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            DROPBOX<br>
+                                            DROPBOX<br />
                                             <span class="ayuda">Activa o desactiva el respaldo de archivos en <a href="https://www.dropbox.com">Dropbox</a>.</span>
                                         </td>
                                         <td>
@@ -484,7 +513,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            CLOUDFLARE<br>
+                                            CLOUDFLARE<br />
                                             <span class="ayuda">Activa o desactiva la opción de hacer purge de contenido prontus en <a href="https://www.cloudflare.com/">CloudFlare</a>. Al activar esta opción, Varnish quedará deshabilitado.</span>
                                         </td>
                                         <td>
@@ -502,14 +531,14 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            MAX_XCODING<br>
+                                            MAX_XCODING<br />
                                             <span class="ayuda">Tamaño máximo (en MB) para la transcodificación de videos.</span>
                                         </td>
                                         <td><input type="text" name="MAX_XCODING" class="fieldform" value="%%MAX_XCODING%%" /></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            DIR_FFMPEG<br>
+                                            DIR_FFMPEG<br />
                                             <span class="ayuda">Indica la ruta a la carpeta donde se encuentra el ejecutable de ffmpeg.</span>
                                         </td>
                                         <td><input type="text" name="DIR_FFMPEG" id="DIR_FFMPEG" class="fieldform" value="%%DIR_FFMPEG%%" /><br /><br />
@@ -522,7 +551,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            FFMPEG_PARAMS<br>
+                                            FFMPEG_PARAMS<br />
                                             <span class="ayuda">
                                                 Parámetros que se utilizarán con el comando ffmpeg en la transcodificación de videos.
                                             </span>
@@ -533,7 +562,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            USAR_LIB_FDK<br>
+                                            USAR_LIB_FDK<br />
                                             <span class="ayuda">Activa el uso de la librer&iacute;a libfdk_aac.
                                                 <br /><br />Requiere FFMPEG con libfdk_aac instalada. Si no se encuentra disponible, la transcodificaci&oacute;n fallar&aacute;<br />
                                             </span>
@@ -546,7 +575,7 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            ADVANCED_XCODING<br>
+                                            ADVANCED_XCODING<br />
                                             <span class="ayuda">Activa las opciones avanzadas de transcodificaci&oacute;n.<br />
                                                 Las opciones de configuración avanzada aparecerán bajo el ítem del menú "Transcodificación +"
                                                 <br /><br />Requiere FFMPEG version 1 o mayor<br />

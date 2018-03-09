@@ -78,8 +78,6 @@ my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL);
 my (@Lst_ARTASOC, @Lst_PORTASOC);
 
 main: {
-    my ($lnk);
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
@@ -127,23 +125,18 @@ main: {
     $msg = &guardar_usr();
     &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1') if ($msg);
 
-    &lib_prontus::close_dbm_files();
-
-
     # Borra cache de lista de articulos
     &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
 
 
+    my $response = '';
     # cambio de clave admin
     if (($FORM{'USERS_ID'} eq '1') && ($FORM{'PSW1'})) {
-        my $response = 'Sus datos han sido guardados correctamente.';
-        utf8::decode($response);
-        &glib_html_02::print_json_result(1, $response, 'exit=1,ctype=1');
+        $response = 'Sus datos han sido guardados correctamente.';
     } else {
-        my $response = 'Los datos han sido guardados correctamente.';
-        utf8::decode($response);
-        &glib_html_02::print_json_result(1, $response, 'exit=1,ctype=1');
-    };
+        $response = 'Los datos han sido guardados correctamente.';
+    }
+    &glib_html_02::print_json_result(1, $response, 'exit=1,ctype=1');
 };
 
 # ---------------------------------------------------------------
@@ -154,47 +147,41 @@ sub guardar_usr {
 
     # Nuevo registro
     if ($FORM{'USERS_ID'} eq '') {
-
         if (&usr_repetido() eq 'S') {
             return "Usuario repetido";
-        };
-
-        my $fec_exp = '';
-
-        $fec_exp = time + (int($FORM{'EXP_DAYS'}) * 86400) if ($FORM{'EXP_DAYS'} > 0);
+        }
 
         $new_id = &get_new_id();
-        # CVI - 05/07/2012 - Los nuevos usuarios se guardan si o si con md5
-        $prontus_varglb::USERS{$new_id} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '|' . &prontus_auth::encrypt_password_bcrypt($FORM{'PSW1'}) . '|' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '|' . $FORM{'EXP_DAYS'} . '|' . $fec_exp;
+        $prontus_varglb::USERS{$new_id} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '||' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '|' . $FORM{'EXP_DAYS'} . '|';
 
         &insert_artusers($new_id);
         &insert_portusers($new_id);
+
+        my $change_result = &prontus_auth::save_new_password($new_id, $FORM{'PSW1'}, $FORM{'EMAIL'});
+        if ($change_result ne '') {
+            utf8::decode($change_result);
+            &glib_html_02::print_json_result(0, $change_result, 'exit=1,ctype=1');
+        }
 
     } else { # Actualizar registro
 
         # Rescata datos actuales del user
         my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $prontus_varglb::USERS{$FORM{'USERS_ID'}};
 
+        # actualiza fecha de expiracion si se cambian los dias
         if ($users_exp_days != $FORM{'EXP_DAYS'}) {
             $users_exp_days = $FORM{'EXP_DAYS'};
 
             if ($FORM{'EXP_DAYS'} == 0) {
-                $users_fec_exp = '';
+                $users_fec_exp = 0;
             } else {
                 $users_fec_exp = time + (int($FORM{'EXP_DAYS'}) * 86400);
             }
         }
 
-        # Actualiza clave si corresponde
-        if ($FORM{'PSW1'}) {
-            $users_psw =  &prontus_auth::encrypt_password_bcrypt($FORM{'PSW1'});
-            $users_fec_exp = time + (int($FORM{'EXP_DAYS'}) * 86400) if ($FORM{'EXP_DAYS'} > 0);
-        }
-
         # Actualiza registro.
         if ($FORM{'USERS_ID'} ne '1') {
-
-            # Actualiza
+            # Actualiza hash USERS
             $prontus_varglb::USERS{$FORM{'USERS_ID'}} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '|' . $users_psw . '|' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '|' . $users_exp_days . '|' . $users_fec_exp;
 
             # Actualiza hash ARTUSERS, eliminando para ello los registros previos del usr correspondiente y luego insertando los nuevos.
@@ -214,14 +201,25 @@ sub guardar_usr {
                 };
             };
             &insert_portusers($FORM{'USERS_ID'});
-
         } else { # Especial para usuario admin, sin actualizacion de art. y portadas asociadas.
             # Actualiza hash USERS
-            $prontus_varglb::USERS{$FORM{'USERS_ID'}} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '|' . $users_psw . '|' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '||';
+            $prontus_varglb::USERS{$FORM{'USERS_ID'}} = $FORM{'NOM'} . '|' . $FORM{'USR'} . '|' . $users_psw . '|' . $FORM{'Cmb_PERFIL'} . '|' . $FORM{'EMAIL'} . '|0|0';
+        }
+        if ($FORM{'PSW1'}) {
+            # actualiza fecha de expiracion si se cambia la clave del usuario
+            my $change_result = &prontus_auth::save_new_password($FORM{'USERS_ID'}, $FORM{'PSW1'}, $FORM{'EMAIL'});
+            if ($change_result ne '') {
+                utf8::decode($change_result);
+                &glib_html_02::print_json_result(0, $change_result, 'exit=1,ctype=1');
+            }
+        } else {
+            &lib_prontus::close_dbm_files();
+        }
 
+        if ($FORM{'USERS_ID'} eq '1') {
             # Escribe archivo extras (para edit)
             &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/extra.txt", &glib_str_02::random_string(8));
-        };
+        }
     };
 
     return '';
@@ -310,33 +308,14 @@ sub datos_validos {
 
 
     if ($FORM{'PSW1'}) {
-        if ($FORM{'PSW1'} =~ /^\s+$/) {
-            return 'La contraseña no puede contener solamente espacios.';
-        };
-
-        if ($FORM{'PSW1'} !~ /^.{8,32}$/) {
-            return 'La nueva contraseña debe estar compuesta por un mínimo de 8 caracteres y un máximo de 32 caracteres.';
-        };
-
-        if (lc $FORM{'PSW1'} eq 'prontus') {
-            return "La contraseña es inválida, ya que no puede ser \"$FORM{'PSW1'}\", por favor ingrese una distinta.";
-        };
-
-        if ($FORM{'PSW1'} !~ /([a-z].*[A-Z])|([A-Z].*[a-z])/) {
-            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
-        }
-
-        if ($FORM{'PSW1'} !~ /([0-9])/) {
-            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
-        }
-
-        if ($FORM{'PSW1'} !~ /([\!%&@#\$\^\*\?_\.])/) {
-            return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
-        }
-
         if ($FORM{'PSW1'} ne $FORM{'PSW2'}) {
             return "La contraseña y su confirmación no coinciden.\nPor favor especifique el mismo valor para ambos campos.";
         };
+        # validacion final de nueva pass
+        my $valid_msg = &prontus_auth::is_valid_password($FORM{'PSW1'});
+        if ($valid_msg ne '') {
+            return $valid_msg;
+        }
     };
 
     if ($prontus_varglb::PRONTUS_SSO ne 'SI') {

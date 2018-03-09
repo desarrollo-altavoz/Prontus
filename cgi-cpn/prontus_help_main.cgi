@@ -74,9 +74,6 @@ main: {
   &glib_cgi_04::new();
   $FORM{'path_conf'} = &glib_cgi_04::param('_path_conf');
 
-  # Deduce path conf del referer, en caso de no ser suministrado.
-  $FORM{'path_conf'} = &get_path_conf() if ($FORM{'path_conf'} eq '');
-
   # Ajusta path_conf para completar path y/o cambiar \ por /
   $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
 

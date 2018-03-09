@@ -210,10 +210,14 @@ sub _set_dirs {
                           . "/$this->{prontus_id}"
                           . "/site$prontus_varglb::DIR_EXMEDIA/$this->{fechac}";
 
+    $this->{dst_base_asoc} = $this->{document_root}
+                          . "/$this->{prontus_id}"
+                          . "/site$prontus_varglb::DIR_EXASOCFILE/$this->{fechac}";
+
     $this->{dst_xml}        = "$this->{dst_base}/xml";
     $this->{dst_pags}       = "$this->{dst_base}/pags";
     $this->{dst_pagspar}    = "$this->{dst_base}/pagspar";
-    $this->{dst_asocfile}   = "$this->{dst_base}/asocfile/$this->{ts}";
+    $this->{dst_asocfile}   = "$this->{dst_base_asoc}/asocfile/$this->{ts}";
     $this->{dst_foto}       = "$this->{dst_base}/imag";
     $this->{dst_swf}        = "$this->{dst_base}/swf";
     $this->{dst_multimedia} = "$this->{dst_base_mm}/mmedia";
@@ -383,9 +387,9 @@ sub generar_xml_artic {
         my $parse_as_cdata = 0;
         $parse_as_cdata = 1 if ($nom_campo =~ /^(_?txt_|vtxt_)/i);
         $parse_as_cdata = 1 if ($nom_campo !~ /^_/); # aplica cdata cualquier campo no reservado
-        if ($nom_campo =~ /^vtxt_/i) {
-            $val_campo =~ s/https?:\/\/$this->{cpan_server_name}//isg;
-            $val_campo =~ s/https?:\/\/$this->{public_server_name}//isg;
+        if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI' && $nom_campo =~ /^vtxt_/i) {
+            $val_campo =~ s/https?:\/\/$this->{cpan_server_name}\//\//isg;
+            $val_campo =~ s/https?:\/\/$this->{public_server_name}\//\//isg;
         };
         $this->{xml_data} = &lib_prontus::replace_in_xml($this->{xml_data},
                                                                  $nom_campo,
@@ -763,15 +767,24 @@ sub _get_nom_foto {
     my $nom_foto_orig = shift;
 
     if ($nom_foto_orig) {
+        # procesa el nombre sin la extension
+        my $ext = '';
+        if ($nom_foto_orig =~ /(.*)(\.\w+)$/) {
+            $nom_foto_orig = $1;
+            $ext = $2;
+        }
+
         $nom_foto_orig =~ s/\_/ /sig;
         $nom_foto_orig =~ s/^\s+//;
+        $nom_foto_orig =~ s/-/ /sig;
 
         $nom_foto_orig = &lib_prontus::ajusta_nchars($nom_foto_orig, 50);
         $nom_foto_orig =~ s/ /\_/sig;
         $nom_foto_orig =~ s/\.\.\.//si;
         $nom_foto_orig =~ s/\s*$//;
 
-        $nom_foto_orig = "_".$nom_foto_orig;
+        $nom_foto_orig = "_"."$nom_foto_orig$ext";
+        $nom_foto_orig = lc $nom_foto_orig;
     };
 
     my $regexp = "--regexp='".$this->{ts}.'\_*[a-zA-Z0-9\_\-]\{0,\}\.[a-zA-Z]\{1,\}$'."'";
@@ -2200,7 +2213,7 @@ sub generar_vista_art {
                 $totloop = $totloop . $looptemp;
             }
             #~ print STDERR "totloop[$totloop]\n";
-            $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
+            $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is;
         }
 
         my %claves_adicionales; # que no estan en el xml del artic
@@ -2633,10 +2646,6 @@ sub _parsing_fotos {
         $buffer =~ s/%%_H$nom_campo%%/$foto_dimy/ig;
     }
     elsif ($val_campo =~ /https?:\/\//i) { # url externa
-#        foreach my $k (keys %campos) {
-#            next if ($k !~ /fotofija/i);
-#            warn "k[$k] val[$campos{$k}]";
-#        };
         # parseo dimensiones
         $foto_dimx = $campos{"_w$nom_campo"}; # _wfotofija_art200
         # warn "foto externa nom_campo[$nom_campo] nom_campo_w[_w$nom_campo] foto_dimx[$foto_dimx]";
@@ -2665,9 +2674,11 @@ sub _parsing_vtxt {
     my %hash_subtits;
 
 
-    # Saca el server name.
-    $val_campo =~ s/https?:\/\/$this->{cpan_server_name}//isg;
-    $val_campo =~ s/https?:\/\/$this->{public_server_name}//isg;
+    if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI') {
+        # Saca el server name.
+        $val_campo =~ s/https?:\/\/$this->{cpan_server_name}\//\//isg;
+        $val_campo =~ s/https?:\/\/$this->{public_server_name}\//\//isg;
+    }
 
     $val_campo =~ s/^[ \s]+//isg;
     $val_campo =~ s/^(&nbsp;)+//isg;
@@ -2754,7 +2765,7 @@ sub _parsing_vtxt {
         my $attrs = $2;
 
         $safe_counter++;
-        if($safe_counter > 10) {
+        if($safe_counter > 100) {
             print STDERR "[vtxt] Salida de seguridad <prontus:insert>\n";
             $vtxt_aux_consubtit =~ s/<prontus:insert(.*?)>.*?<\/prontus:insert>//isg;
             last;
@@ -2811,7 +2822,6 @@ sub _parsing_vtxt {
     $buffer = &lib_prontus::replace_in_artic($vtxt_aux_consubtit, $nom_campo, $buffer, $noescape);
 
     return $buffer;
-    # return ($vtxt_aux_consubtit, $curr_nrotit, %hash_subtits);
 };
 # --------------------------------------------------------------------
 sub _get_data4subtit {

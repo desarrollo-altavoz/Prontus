@@ -46,7 +46,7 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   do 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.98.1 - 07/11/2017';
+  $VERSION_PRONTUS = '11.2.99 - 08/03/2018';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
@@ -172,7 +172,7 @@ sub init { # Prontus 6.0
 
     # variables para friendly url v4
     $DIR_FRIENDLY = '/friendly/links'; # directorio donde se almacenaran los includes de friendly urls
-    $URL_NUMBER = 1478228400; # numero base de epoch para restar de forma de no generar ids adicionales muy grandes pero siempre crecientes para diferenciar las urls
+    $URL_NUMBER = 1514775600; # numero base de epoch para restar de forma de no generar ids adicionales muy grandes pero siempre crecientes para diferenciar las urls
 
     # directorio cache multitag
     $DIR_MULTITAG = '/cache/multitag';

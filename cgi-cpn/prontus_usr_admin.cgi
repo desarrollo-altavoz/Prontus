@@ -63,6 +63,7 @@ use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
+use prontus_auth;
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -111,9 +112,9 @@ main: {
     };
 
     $pagina =~ s/%%_path_conf%%/$FORM{'_path_conf'}/ig;
-
-
-    $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
+    $pagina =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/ig;
+    $pagina =~ s/%%_psw_maxlength%%/$prontus_auth::PWS_MAX_LENGTH/ig;
+    $pagina =~ s/%%_psw_minlength%%/$prontus_auth::PWS_MIN_LENGTH/ig;
 
     print "Cache-Control: no-cache\n";
     print "Cache-Control: max-age=0\n";

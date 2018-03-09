@@ -84,23 +84,21 @@ main: {
 
     if (&lib_prontus::open_dbm_files() ne 'ok') {
         &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios', 'exit=1,ctype=1');
-    };
+    }
 
-    # Cambio de contraseña por recuperación.
+    # Cambio de contraseña por recuperación. contraseña olvidada
     if ($FORM{'_token'} ne '' && $FORM{'_usr'} ne '') {
         if (&validacion_token()) {
             my $msg = &valida_datos();
             if ($msg) {
                 &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
             };
-            if (&is_user_valido()) {
-                my $val = $prontus_varglb::USERS{$USERID};
-                my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $val;
-
-                $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
-
-                $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password_bcrypt($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
-                &lib_prontus::close_dbm_files();
+            if (&prontus_auth::is_user_valido($FORM{'_usr'})) {
+                my $change_result = &prontus_auth::save_new_password($prontus_auth::USERS_USR_ID, $FORM{'_new_psw'}, $FORM{'_email'});
+                if ($change_result ne '') {
+                    utf8::decode($change_result);
+                    &glib_html_02::print_json_result(0, $change_result, 'exit=1,ctype=1');
+                }
                 unlink "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass/$FORM{'_usr'}.txt";
                 &glib_html_02::print_json_result(1, 'La contraseña se cambió correctamente.', 'exit=1,ctype=1');
             } else {
@@ -112,134 +110,56 @@ main: {
         };
     };
 
+    # cambio de pass para admin
     my $msg = &valida_datos();
     if ($msg) {
         &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
     };
 
-    if (&user_valido() eq 'S') {
-
-		my $val = $prontus_varglb::USERS{$USERID};
-		my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_mail, $users_exp_days, $users_fec_exp) = split /\|/, $val;
-
-        $users_fec_exp = time + (int($users_exp_days) * 86400) if ($users_exp_days > 0);
-
-        $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . &prontus_auth::encrypt_password_bcrypt($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail . '|' . $users_exp_days . '|' . $users_fec_exp;
-        &lib_prontus::close_dbm_files();
-
+    my $login = &prontus_auth::check_valid_login($FORM{'_usr'}, $FORM{'_psw'});
+    if ($login  >= 1) {
+        my $change_result = &prontus_auth::save_new_password($prontus_auth::USERS_USR_ID, $FORM{'_new_psw'}, $FORM{'_email'});
+        if ($change_result ne '') {
+            utf8::decode($change_result);
+            &glib_html_02::print_json_result(0, $change_result, 'exit=1,ctype=1');
+        }
         # Escribe archivo extras (para edit)
         &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/extra.txt", &glib_str_02::random_string(8));
 
         &glib_html_02::print_json_result(1, 'La contraseña ha sido cambiada con éxito.', 'exit=1,ctype=1');
 
-    }
-    else {
+    } else {
         &glib_html_02::print_json_result(0, 'Usuario o contraseña anterior no corresponden', 'exit=1,ctype=1');
-    };
-
-
+    }
 };
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
 # -------------
 sub valida_datos {
-
     if ($FORM{'_token'} eq '' && (($FORM{'_usr'} eq '') or ($FORM{'_psw'} eq ''))) {
-    return 'Solicitud de ejecución no válida.';
-    };
-
+        return 'Solicitud de ejecución no válida.';
+    }
 
     if ( ($FORM{'_new_psw'} eq '') or ($FORM{'_new_psw_confirm'} eq '') ) {
-    return 'Por favor ingrese y confirme su contraseña.';
-    };
+        return 'Por favor ingrese y confirme su contraseña.';
+    }
 
     if ($FORM{'_new_psw'} ne $FORM{'_new_psw_confirm'}) {
-    return 'La contraseña ingresada y su confirmación son distintas, éstas deben ser idénticas.';
-    };
-
-
-    if ($FORM{'_new_psw'} =~ /^\s+$/) {
-    return 'Password no puede contener solamente espacios.';
-    };
-
-    if ($FORM{'_new_psw'} !~ /^.{8,32}$/) {
-        return 'La nueva contraseña debe estar compuesta por un mínimo de 8 caracteres y máximo 32 caracteres.';
-    # return 'Password debe estar compuesta por, al menos, 6 caracteres.';
-    };
-
-    if (lc $FORM{'_new_psw'} eq 'prontus') {
-        return "Contraseña no válida.<br>Su contraseña no puede ser \"$FORM{'_new_psw'}\", por favor ingrese una distinta";
-    };
-
-    if ($FORM{'_new_psw'} !~ /([a-z].*[A-Z])|([A-Z].*[a-z])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
+        return 'La contraseña ingresada y su confirmación son distintas, éstas deben ser idénticas.';
     }
-
-    if ($FORM{'_new_psw'} !~ /([0-9])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
-    }
-
-    if ($FORM{'_new_psw'} !~ /([\!%&@#\$\^\*\?_\.])/) {
-        return 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial: !%&@#$^*?_.';
-    }
-
-    if ($FORM{'_expired'} eq '' && $FORM{'_token'} eq ''  && $FORM{'_email'} !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {
-        return 'Email no válido';
-    };
 
     if ($FORM{'_expired'} eq '1' && $FORM{'_new_psw'} eq $FORM{'_psw'}) {
         return 'La nueva contraseña no puede ser igual a la actual.';
     }
 
-    return '';
-};
-
-# ---------------------------------------------------------------
-sub user_valido {
-    my ($key, $val);
-
-    foreach $key (keys %prontus_varglb::USERS) {
-        $val = $prontus_varglb::USERS{$key};
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL) = split /\|/, $val;
-        my $crypted_pass;
-
-        if (length $USERS_PSW == 60) {
-            if (($USERS_USR eq $FORM{'_usr'}) && &prontus_auth::check_password($FORM{'_psw'}, $USERS_PSW)) {
-                $USERID = $key;
-
-                return 'S';
-            }
-        }
-
-        if (length($USERS_PSW) == 32) {
-            $crypted_pass = md5_hex($FORM{'_psw'});
-        } else {
-            $crypted_pass = crypt($FORM{'_psw'}, $USERS_PSW);
-        }
-
-        if (($USERS_USR eq $FORM{'_usr'}) and ($crypted_pass eq $USERS_PSW)) {
-            $USERID = $key;
-            return 'S';
-        }
+    if ($FORM{'_expired'} eq '' && $FORM{'_token'} eq ''  && $FORM{'_email'} !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {
+        return 'Email no válido';
     }
 
-    return 'N';
+    return &prontus_auth::is_valid_password($FORM{'_new_psw'});
 };
-
-sub is_user_valido {
-    my ($key, $val);
-    foreach $key (keys %prontus_varglb::USERS) {
-        $val = $prontus_varglb::USERS{$key};
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $val;
-        if ($USERS_USR eq $FORM{'_usr'})  {
-            $USERID = $key;
-            return 1;
-        };
-    };
-    return 0;
-};
-
+# ---------------------------------------------------------------
 sub validacion_token {
     my $dirprocuser = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass/$FORM{'_usr'}.txt";
     #~ print STDERR "dirprocuser[$dirprocuser]\n";

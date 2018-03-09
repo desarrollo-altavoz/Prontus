@@ -191,7 +191,7 @@ main:{
     $salida->fetch;
     $salida->finish;
 
-    my $link_base = "prontus_tags_admin.cgi?_path_conf=$FORM{'_path_conf'}&amp;search=$FORM{'search'}";
+    my $link_base = "prontus_multitag_admin.cgi?_path_conf=$FORM{'_path_conf'}&amp;search=$FORM{'search'}";
     if ($FORM{'vistas'} eq 1) {
         $link_base .= "&vistas=1";
     };
