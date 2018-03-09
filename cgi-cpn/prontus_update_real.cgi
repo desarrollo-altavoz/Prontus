@@ -13,23 +13,7 @@
 # ---------------------------------------------------------------
 # PROPOSITO.
 # -----------
-# Exportar secciones, temas y subtemas a Prontus, hacia un arch. de texto.
-
-# El formato del archivo es el sgte:
-
-# Archivo txt con seis columnas separadas por tabuladores:
-# Columna 0: Id de sección.
-# Columna 1: Nombre de sección.
-# Columna 2: Id de tema.
-# Columna 3: Nombre de tema.
-# Columna 4: Id de subtema.
-# Columna 5: Nombre de subtema.
-# Columna 6: Mostrar
-# Columna 7: Portada
-# Columna 8: Orden en mapa
-# Al exportar, se exporta con 'no' o 'si'.
-
-# En cada línea va un solo dato. No se mezclan secciones, temas y subtemas.
+# Actualizar Prontus a la version mas reciente
 
 # ---------------------------------------------------------------
 # LLAMADAS A ARCHIVOS EXTERNOS.
@@ -115,6 +99,8 @@ main:{
     print STDERR "PATH_CONF: [$PATH_CONF]\n";
 
     if (! -d $prontus_varglb::DIR_SERVER) {
+        &lib_prontus::write_log('Actualizacion de Prontus', 'Error: DIR_SERVER no valido.', '');
+
         print STDERR "ERROR: DIR_SERVER no válido[$prontus_varglb::DIR_SERVER]\n";
         exit;
     };
@@ -122,6 +108,7 @@ main:{
     &lib_prontus::load_config($PATH_CONF);
 
     if ($prontus_varglb::ACTUALIZACIONES ne 'SI') {
+        &lib_prontus::write_log('Actualizacion de Prontus', 'Error: actualizaciones automaticas deshabilitadas.', '');
         &lib_logproc::add_to_log_finish("Error: las actualizaciones automáticas se encuentran deshabilitadas por configuración del producto.", 1);
     };
 
@@ -135,8 +122,9 @@ main:{
     # Detecta semaforo.
     my ($lock_obj) = &lib_lock::lock_file($LOCK_FILE);
     if (!ref $lock_obj) { # si ya tiene un bloqueo anterior, aborta.
-        &lib_loading::finish_loading(0, "Proceso en ejecución. Por favor espere hasta que la importación anterior termine.");
-        &lib_logproc::add_to_log_finish("Proceso en ejecución. Por favor espere hasta que la importación anterior termine.", 1);
+        &lib_prontus::write_log('Actualizacion de Prontus', 'Error: Actualizacion anterior ejecutandose.', '');
+        &lib_loading::finish_loading(0, "Proceso en ejecución. Por favor espere hasta que la actualizacion anterior termine.");
+        &lib_logproc::add_to_log_finish("Proceso en ejecución. Por favor espere hasta que la actualizacion anterior termine.", 1);
     };
 
     my $ret = &lib_loading::init('result_prontus_update.js');
@@ -149,14 +137,17 @@ main:{
     &lib_logproc::flush_log();
     &lib_logproc::writeRule();
     &lib_logproc::add_to_log_count("INICIANDO PROCESO DE ACTUALIZACION");
+    &lib_prontus::write_log('Actualizacion de Prontus', 'Inicio de actualizacion', '');
     my $error_msg = &actualizar_prontus($PATH_CONF);
     my ($respuesta, $mensaje);
     if ($error_msg eq '') {
         $respuesta = 1;
         $mensaje = "Actualización Finalizada OK";
+        &lib_prontus::write_log('Actualizacion de Prontus', 'Actualizacion Finalizada OK', '');
     } else {
         $respuesta = 0;
         $mensaje = "<b>Actualización finalizada con errores:</b><br/>$error_msg";
+        &lib_prontus::write_log('Actualizacion de Prontus', "Error: $error_msg", '');
         &enviar_mail_error($EMAIL_SOPORTE_PRONTUS, $mensaje);
     };
 

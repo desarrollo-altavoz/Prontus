@@ -91,11 +91,13 @@ main: {
     $hash_defaultvars{'var'}{'SERVER_SMTP'} = 'SERVER_SMTP;(\w+);localhost;U';
     $hash_defaultvars{'var'}{'PUBLIC_SERVER_NAME'} = 'PUBLIC_SERVER_NAME;(\w+);;U';
     $hash_defaultvars{'var'}{'CPAN_SERVER_NAME'} = 'CPAN_SERVER_NAME;(\w+);;U';
+    $hash_defaultvars{'var'}{'VTXT_RELPATH_LINK'} = 'VTXT_RELPATH_LINK;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'CONTROL_FECHA'} = 'CONTROL_FECHA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'CONTROLAR_ALTA_ARTICULOS'} = 'CONTROLAR_ALTA_ARTICULOS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URL_IMAGES'} = 'FRIENDLY_URL_IMAGES;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_INCLUDE_VIEW_NAME'} = 'FRIENDLY_V4_INCLUDE_VIEW_NAME;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'FRIENDLY_V4_INCLUDE_PRONTUS_ID'} = 'FRIENDLY_V4_INCLUDE_PRONTUS_ID;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_EXCLUDE_FID'} = 'FRIENDLY_V4_EXCLUDE_FID;(\w+);;M';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3|4);1;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_LARGO_TITULAR'} = 'FRIENDLY_URLS_LARGO_TITULAR;^(\d+)$;1;U';
@@ -341,7 +343,6 @@ main: {
                 if ($input_value !~ /$re/) {
                     &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
                 } else {
-                    #~ &validarUsr($var_valida, $input_value, \%hash_vars) if ($FORM{'_cfg'} eq 'usr');
                     &validarUsr($var_valida, $input_value) if ($FORM{'_cfg'} eq 'usr');
                     &validarPort($var_valida, $input_value) if ($FORM{'_cfg'} eq 'port');
                     &validarTax($var_valida, $input_value) if ($FORM{'_cfg'} eq 'tax');
@@ -919,7 +920,6 @@ sub validarPort {
 sub validarUsr {
     my $var = $_[0];
     my $item = $_[1];
-    #~ my %hash_vars = %{ $_[2] };
 
     if ($var eq 'PRONTUS_SSO_MASTER_ID' && $item ne '') {
         if (!&lib_prontus::valida_prontus($item)) {

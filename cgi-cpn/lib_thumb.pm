@@ -33,7 +33,7 @@ use strict;
 require lib_prontus;
 use glib_fildir_02;
 
-my $JPEG_COMPRESSION = 85;
+our $JPEG_COMPRESSION = 85;
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.

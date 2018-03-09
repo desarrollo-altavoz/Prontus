@@ -179,6 +179,7 @@ sub check_prontus {
         &get_main_data();
         &check_portadas();
     };
+
     # Borra cache de listas de articulos del cpan
     &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
 };
@@ -216,7 +217,7 @@ sub get_main_data {
     $DST_WMEDIA = $prontus_varglb::DIR_SERVER . $DIRMMEDIA . $prontus_varglb::DIR_MMEDIA;
 
     # Path absoluto a Directorio destino de los archivos genericos asociados. # 1.2
-    $DST_ASOCFILE = $prontus_varglb::DIR_SERVER . $DDIR . $prontus_varglb::DIR_ASOCFILE;
+    $DST_ASOCFILE = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EXASOCFILE . '/%%DIR_FECHA%%' . $prontus_varglb::DIR_ASOCFILE;
 };
 # --------------------------------------------------------------------#
 sub is_base_port {

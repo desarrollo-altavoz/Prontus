@@ -75,12 +75,10 @@ use prontus_auth;
 # -------------
 
 my (%FORM, $TIPO_PRONTUS, $AREA_MENU, $AREA_CONT, $PRONTUS_KEY);
-my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP);
+#~ my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP);
 my $MAX_RETRIES_LOGIN = 10;
 
 main: {
-    my ($lnk);
-
     # Rescatar parametros recibidos
     &glib_cgi_04::new();
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
@@ -128,7 +126,7 @@ main: {
         &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios.', 'exit=1,ctype=1');
     };
 
-    my $login_result = &user_valido();
+    my $login_result = &prontus_auth::check_valid_login($FORM{'_usr'}, $FORM{'_psw'});
 
     # La contraseña ha expirado.
     if ($login_result == 3) {
@@ -199,8 +197,8 @@ main: {
             &glib_html_02::print_json_result(2, $buffer_changepass, 'exit=1,ctype=1');
         } else {
             # Ok y setear cookie.
-            &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, $USERS_USR);
-            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, &prontus_auth::get_hash_for_cookie($USERS_PSW));
+            &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, $prontus_auth::USERS_USR);
+            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, &prontus_auth::get_hash_for_cookie($prontus_auth::USERS_PSW));
             # crea obj session
             my $sess_obj = Session->new(
                             'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
@@ -259,7 +257,7 @@ main: {
 
             $upd_obj->descarga_upd_descriptor();
 
-            &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(1, 'Ingreso correcto', 'exit=1,ctype=1');
         };
     } else {
         if ($login_result == -1) { # flag_sysadmin.txt pero no se supo la clave
@@ -384,7 +382,7 @@ sub get_changepass {
     $buf =~ s/%%_PRONTUS_USER_PASS%%/$FORM{'_psw'}/isg;
     $buf =~ s/%%_PRONTUS_USER_NAME%%/$FORM{'_usr'}/isg;
     $buf =~ s/%%_PATH_CONF%%/$FORM{'_path_conf'}/isg;
-    $buf =~ s/%%_PRONTUS_USER_EMAIL%%/$USERS_EMAIL/isg;
+    $buf =~ s/%%_PRONTUS_USER_EMAIL%%/$prontus_auth::USERS_EMAIL/isg;
 
     return $buf;
 };
@@ -402,10 +400,8 @@ sub get_expiredchangepass {
 
 # ---------------------------------------------------------------
 sub user_existente {
-my ($key, $val);
-
-  foreach $key (keys %prontus_varglb::USERS) {
-    $val = $prontus_varglb::USERS{$key};
+  foreach my $key (keys %prontus_varglb::USERS) {
+    my $val = $prontus_varglb::USERS{$key};
     my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $val;
     if ($users_usr eq $FORM{'_usr'}) {
       return 1;
@@ -413,97 +409,4 @@ my ($key, $val);
   };
   return 0;
 };
-# ---------------------------------------------------------------
-sub user_valido {
-# retorna:
-# 0: user no valido normal
-# 1: user valido normal
-# -1 : user no valido por existir prontus_flag_sysadmin.txt
-# 2: user valido luego de comprobar clave contra prontus_flag_sysadmin.txt
-
-    my ($key, $val);
-
-    # Si esta este archivo, solo deja pasar con user admin y la pass contenida en el.
-    # Los demas usuarios son bloqueados.
-    my ($flag_sysadmin) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_sysadmin.txt";
-    if (-f $flag_sysadmin) {
-        my $pass_sysadmin = &glib_fildir_02::read_file($flag_sysadmin);
-        if (($FORM{'_psw'} eq $pass_sysadmin) && ($FORM{'_usr'} eq 'admin')) {
-            $USERS_USR = $FORM{'_usr'};
-            $USERS_PSW = &pronntus_auth::encrypt_password_bcrypt($pass_sysadmin);
-            return 2;
-        } else {
-            return -1;
-        };
-    };
-
-
-    foreach $key (keys %prontus_varglb::USERS) {
-        $val = $prontus_varglb::USERS{$key};
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $val;
-        # print STDERR "\n\nTIPEADA[$FORM{'_psw'}] USERS_PSW[$USERS_PSW] CRYPT[" . crypt($FORM{'_psw'}, $USERS_PSW) . "]\n" if ($USERS_USR eq $FORM{'_usr'});
-        my $crypted_pass;
-
-        if (length $USERS_PSW == 60) {
-            if (($USERS_USR eq $FORM{'_usr'}) && &prontus_auth::check_password($FORM{'_psw'}, $USERS_PSW)) {
-              return 3 if (&prontus_auth::if_passwd_expired($USERS_FEC_EXP) && $USERS_FEC_EXP ne '' && $USERS_EXP_DAYS > 0 && $key != 1); # se excluye al admin.
-              return 1;
-            }
-        }
-
-        if (length($USERS_PSW) == 32) {
-            $crypted_pass = md5_hex($FORM{'_psw'});
-        } else {
-            $crypted_pass = crypt($FORM{'_psw'}, $USERS_PSW);
-        }
-        if (($USERS_USR eq $FORM{'_usr'}) && ($crypted_pass eq $USERS_PSW)) {
-            return 3 if (&prontus_auth::if_passwd_expired($USERS_FEC_EXP) && $USERS_FEC_EXP ne '' && $USERS_EXP_DAYS > 0 && $key != 1);
-            return 1;
-        }
-    }
-
-    # si esta presente este archivo, permite entrar con admin/prontus y luego obliga a cambiar la pass
-    my ($flag_file) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_admin.txt";
-    if ( (!(-f $flag_file)) && ($FORM{'_usr'} eq 'admin') && ($FORM{'_psw'} eq 'prontus') ) {
-        # Resetear clave admin
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $prontus_varglb::USERS{'1'}; # para rescatar email
-        # CVI - 05/07/2012 - Ahora se usa md5 para encriptar la contraseña
-        $prontus_varglb::USERS{'1'} = 'Administrador|admin|' . &prontus_auth::encrypt_password_bcrypt('prontus') . '|A|' . $USERS_EMAIL;
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $prontus_varglb::USERS{'1'};
-
-        # USERS
-        my $linea = '';
-        my $buffer = '';
-        my $k;
-        foreach $k (keys %prontus_varglb::USERS) {
-            my $users_id = $k;
-            my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$k};
-            $linea = $users_id . '|' . $users_nom . '|' . $users_usr . '|' . $users_psw . '|' . $users_perfil . '|' . $users_email . "\n";
-            $buffer .= $linea;
-        };
-        if ($buffer) {
-            open (ARCHIVO,">$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/users.txt") || return 0;
-            print ARCHIVO $buffer;
-            close ARCHIVO;
-        };
-
-        &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_admin.txt", 'No server domain, please try later.');
-        return 1;
-    };
-    return 0;
-};
-
-# ---------------------------------------------------------------
-sub get_pass_admin {
-    my $pass;
-    foreach my $key (keys %prontus_varglb::USERS) {
-        my $val = $prontus_varglb::USERS{$key};
-        my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $val;
-        if  ($users_usr eq 'admin')  {
-            return $users_psw;
-        };
-    };
-    return '';
-};
-
 # -------------------------------END SCRIPT----------------------

@@ -156,18 +156,18 @@ main: {
 
     $pagina = &buscar_articulos($pagina);
 
-    $pagina =~ s/%%_prontus_id%%/$FORM{'prontus_id'}/sg;
-    $pagina =~ s/%%_s%%/$FORM{'s'}/sg;
-    $pagina =~ s/%%_t%%/$FORM{'t'}/sg;
-    $pagina =~ s/%%_st%%/$FORM{'st'}/sg;
+    $pagina =~ s/%%_prontus_id%%/$FORM{'prontus_id'}/isg;
+    $pagina =~ s/%%_s%%/$FORM{'s'}/isg;
+    $pagina =~ s/%%_t%%/$FORM{'t'}/isg;
+    $pagina =~ s/%%_st%%/$FORM{'st'}/isg;
 
-    $pagina =~ s/%%_nom_s%%/$nom_s/sg;
-    $pagina =~ s/%%_nom_t%%/$nom_t/sg;
-    $pagina =~ s/%%_nom_st%%/$nom_st/sg;
+    $pagina =~ s/%%_nom_s%%/$nom_s/isg;
+    $pagina =~ s/%%_nom_t%%/$nom_t/isg;
+    $pagina =~ s/%%_nom_st%%/$nom_st/isg;
 
-    $pagina =~ s/%%_friendly_s%%/$friendly_s/sg;
-    $pagina =~ s/%%_friendly_t%%/$friendly_t/sg;
-    $pagina =~ s/%%_friendly_st%%/$friendly_st/sg;
+    $pagina =~ s/%%_friendly_s%%/$friendly_s/isg;
+    $pagina =~ s/%%_friendly_t%%/$friendly_t/isg;
+    $pagina =~ s/%%_friendly_st%%/$friendly_st/isg;
 
     my %campos = (
         '_s'                => $FORM{'s'},
@@ -183,6 +183,9 @@ main: {
 
     $pagina = &lib_prontus::procesa_condicional($pagina, \%campos);
     $pagina = &parse_include($pagina);
+
+    # elimina marcas no parseadas
+    $pagina =~ s/%%.*?%%//sg;
 
     &guarda_cache($pagina);
 
@@ -223,12 +226,12 @@ sub buscar_articulos {
 
     $salida->finish;
 
-    $pagina =~ s/%%loop%%.*?%%\/loop%%/$output/sg;
+    $pagina =~ s/%%loop%%.*?%%\/loop%%/$output/isg;
 
     if (!$output) {
-        $pagina =~ s/<!--resultados-->.*?<!--\/resultados-->//sg;
+        $pagina =~ s/<!--resultados-->.*?<!--\/resultados-->//isg;
     } else {
-        $pagina =~ s/<!--sin_resultados-->.*?<!--\/sin_resultados-->//sg;
+        $pagina =~ s/<!--sin_resultados-->.*?<!--\/sin_resultados-->//isg;
     }
 
     $pagina = &parsea_paginacion($pagina, $total_pags);
@@ -249,20 +252,20 @@ sub parsea_paginacion {
             my $link = "/cgi-bin/multitag/prontus_multitag_list.cgi" . &get_query_string() . "&p=$x";
             my $link_friendly = &get_link_friendly() . "/p/$x";
 
-            $tmp =~ s/%%link%%/$link/sg;
-            $tmp =~ s/%%link_friendly%%/$link_friendly/sg;
-            $tmp =~ s/%%pag%%/$x/sg;
+            $tmp =~ s/%%link%%/$link/isg;
+            $tmp =~ s/%%link_friendly%%/$link_friendly/isg;
+            $tmp =~ s/%%pag%%/$x/isg;
 
             if ($FORM{'p'} == $x) {
-                $tmp =~ s/%%current%%/actual/sg;
+                $tmp =~ s/%%current%%/actual/isg;
             } else {
-                $tmp =~ s/%%current%%//sg;
+                $tmp =~ s/%%current%%//isg;
             }
 
             $output .= $tmp;
         }
 
-        $pagina =~ s/%%paginacion%%.*?%%\/paginacion%%/$output/sg;
+        $pagina =~ s/%%paginacion%%.*?%%\/paginacion%%/$output/isg;
     }
 
     return $pagina;

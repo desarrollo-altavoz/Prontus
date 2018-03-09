@@ -85,6 +85,7 @@ use lib_tax;
 # MAIN.
 # ---------------------------------------------------------------
 my ($ARTIC_OBJ);
+my %FORM;
 
 &main();
 exit;
@@ -140,7 +141,7 @@ sub main {
 # detectar utf8
 
     my $messages = $pop3->list();
-    foreach $msg_id (keys(%$messages)) {
+    foreach my $msg_id (keys(%$messages)) {
         my $uid = $pop3->uidl($msg_id);
         # print "reading msg[$msg_id][$uid]\n";
         my $fh = $pop3->getfh($msg_id) || die "No se pudo obtener mensaje nro [$msg_id] $!\n";
@@ -310,7 +311,6 @@ sub get_path_foto_from_email {
     my $path_foto;
     my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir);
     @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
-    my $path_foto;
     foreach my $part (@lisdir) {
         next if (! -f "$ruta_dir/$part");
         next if ($part !~ /\.jpg$/i);

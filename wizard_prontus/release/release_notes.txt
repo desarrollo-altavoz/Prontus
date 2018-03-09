@@ -9397,7 +9397,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         imágenes activada, se copiaban los htmls manteniendo el TS del artículo original y no se estaba
         actualizando el slug del articulo copiado.
         - Se corrige mensaje incorrecto al validar hora de apertura de comentarios.
-        - Se estaba deduciendo malla ruta de los postprocesos, ahora se arma con los
+        - Se estaba deduciendo mal la ruta de los postprocesos, ahora se arma con los
          datos conocidos por prontus, DIR_SERVER y DIR_CGI_CPAN
         - Corrige validación de nombres de plantillas de portada en el administrador,
         evita que se pueda configurar Prontus de forma incorrecta y deje de funcionar.
@@ -9465,7 +9465,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
         Un ejemplo completo de uso:
         %%MACRO(_galeria_prontus.html, 1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_mid:400x300|3:fotofija_galeria@@_high:1280x720)%%
-        Este incluye 2 tamaños, baja, media y alta resolución.
+        Este incluye 3 tamaños, baja, media y alta resolución.
 
         Se deben pasar como mínimo 2 tamaños de fotos para que funcione el sistema, en caso contrario se
         utilizará la configuración por defecto:
@@ -9820,7 +9820,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/js-local/Player.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
-        /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.
+        /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.js
 
 - Transcodificación
     [bugfixes]
@@ -9834,7 +9834,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
-11.2.98.2 - XX/11/2017 - JOR/EAG
+11.2.99 - 08/03/2018 - JOR/EAG/MTC
 ====================================================================================================
 - Taxports y Tagsports
     [mejoras]
@@ -9849,6 +9849,75 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cron_taxport_worker.cgi
         /cgi-cpn/prontus_tags_ports.cgi
 
+- Friendly URL 4.2
+    [mejoras]
+        - Se implementa nueva version de friendly url para articulos que no incluye el prontus_id, este
+        se debe definir en la configuracion del servidor.
+        La función es contolada por la variable de configuracion: FRIENDLY_V4_INCLUDE_PRONTUS_ID.
+        Por defecto el valor es 'SI', todas las urls llevan el prontus id, al cambiarlo a NO, solo llevarán
+        la taxonomía y el titular.
+          Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
+        Para nginx se debe agregar la siguiente configuración:
+            # Friendly 4.2
+            rewrite     "^\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$"          /<prontus_id>/site/friendly/links/$1/$2/$1$2$3.html;
+
+        Esta version es compatible con la 4.1, sin necesidad de reconfigurar el servidor web cuando se hagan cambios de configuración en prontus,
+        pero no es compatible con multivistas configuradas por cookie.
+            # Friendly 4.2
+            set $prontus "<prontus_id>";
+
+            # location matchea:
+            # /prontus_id/seccion/tema/subtema/titular
+            # /prontus_id/seccion/tema/titular
+            # /prontus_id/seccion/titular
+            # /$1/site/friendly/links/$3/$4/$3$4$5.html
+            # /seccion/tema/subtema/titular
+            # /seccion/tema/titular
+            # /$prontus/site/friendly/links/$3/$4/$3$4$5.html
+            #
+            # con vista en la url
+            # /prontus_id/vista/seccion/tema/subtema/titular
+            # /prontus_id/vista/seccion/tema/titular
+            # /prontus_id/vista/seccion/titular
+            # /prontus_id/vista/titular
+            # /$1/site/friendly/links-$2/$3/$4/$3$4$5.html
+            # /vista/seccion/tema/subtema/titular
+            # /vista/seccion/tema/titular
+            # /vista/seccion/titular
+            # /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html
+            location ~ "^\/([\w\-]+)\/([\w\-]+)\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
+                add_header X-debug-message "1 args: /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
+                # echo "1 args: try_files /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;";
+                try_files /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links-$2/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;
+                include     global/php2.conf;
+            }
+
+            # location matchea:
+            # /prontus_id/titular
+            # /$1/site/friendly/links/$2/$3/$2$3$4.html
+            # /seccion/titular
+            # /$prontus/site/friendly/links/$2/$3/$2$3$4.html
+            #
+            # con vista en la url
+            # /vista/titular
+            # /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html
+            location ~ "^\/([\w\-]+)\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
+                add_header X-debug-message "2 args: /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
+                #echo "2 args: /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
+                try_files /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html =404;
+                include     global/php2.conf;
+            }
+
+            # matchea solo titular
+            rewrite "^\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" /$prontus/site/friendly/links/$1/$2/$1$2$3.html;
+
+    [cambios]
+        - Retroactivamente la version 4.5 de friendly url se redefine a 4.1
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 
 - Artículos
     [cambios]
@@ -9857,15 +9926,124 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Artic.pm
 
 - Prontus
+    [bugfixes]
+        - Corrige la generacion de friendly url para no fallar en caso de configuración incompleta.
+        - Corrige el buscador para que cargue una configuración de friendly url por defecto.
+        - Corrige deteccion de slug desactivado en el fid se veia con estilo grafico incorrecto
+        - Corrige el uso del timestamp al instanciar player de video en el fid
     [mejoras]
         - Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
-         de prontus, por ejemplo: prontus.misitio.cl.
+          de prontus, por ejemplo: prontus.misitio.cl.
           En caso de no estar configurada tiene el valor de PUBLIC_SERVER_NAME
+        - Agrega variable VTXT_RELPATH_LINK para permitir habilitar o deshabilitar la conversión
+          de URLs relativas (/noticias/site/.....) a URLs absolutas (http://dominio.cl/noticias/site...)
+          ingresadas en el campo VTXT.
+          Por defecto quedará habilitada la opción de URLs relativas
+        - La ruta de archivos asociados es configurable. Se debe crear el archivo:
+        /<prontusid>/cpan/data/customcfg/asocfile.cfg
+        con el contenido:
+        EXTERNAL_ASOCFILE = '1'
+        ASOCFILE_PATH = 'docs'
+
+        ASOCFILE_PATH define el nombre de la carpeta donde se guardarn los archivos adjuntos, por ejemplo
+        /<prontus_id>/site/docs/<fecha_dia>/asocfile/<ts>/<nombre_archivo.ext>
     [cambios]
-        - El correo de recuperacion de contraseña genera los links con CPAN_SERVER_NAME
+        - El correo de recuperación de contraseña genera los links con CPAN_SERVER_NAME
     [files]
+        /cgi-bin/prontus_search.cgi
+        /cgi-cpn/Artic.pm
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_admin_main.cgi
         /cgi-cpn/prontus_cfg_save.cgi
         /cgi-cpn/prontus_recordarpass.cgi
+        /cgi-cpn/galeria/prontus_galeria_procesar.cgi
+        /cgi-cpn/prontus_art_copy.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_cron_fechas.cgi
+        /cgi-cpn/prontus_dropbox_backup.cgi
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Player.class.js
+
+- Multitag
+    [bugfixes]
+        - Corrige parseo de plantillas, ahora no se distingue mayusculas y minusculas en las marcas prontus.
+        - Se eliminan todas las marcas no parseadas
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+
+- Administración de configuración
+    [bugfixes]
+        - Se corrige un error que no cargaba/mostraba adecuadamente la configuración del orden de
+        categorías (TAXPORT_ORDEN), cuando esta estaba configurada como "Publicación".
+    [files]
+        /var/www/prontus_release/cgi-cpn/prontus_admin_main.cgi
+
+ - General
+    [mejoras]
+        - Limpieza de código y correcciones menores
+        - Agrega actualización de Prontus al log de operación
+        - Se previene la posibilidad de perder la extension de las imagenes al tener nombres muy largos.
+    [bugfixes]
+        - Correciones generales al código
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/multitag/prontus_multitag_admin.cgi
+        /cgi-cpn/multitag/prontus_multitag_load_data.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_sso_get_list.cgi
+        /cgi-cpn/prontus_usr_sbmit.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_megalupa_borrar.cgi
+        /cgi-cpn/prontus_art_megalupa_cargar.cgi
+        /cgi-cpn/prontus_check_session.cgi
+        /cgi-cpn/prontus_editor_imag.cgi
+        /cgi-cpn/prontus_help_main.cgi
+        /cgi-cpn/prontus_sso_get_list.cgi
+        /cgi-cpn/prontus_ping_inuse.cgi
+        /cgi-cpn/prontus_update.cgi
+        /cgi-cpn/prontus_update_real.cgi
+
+- Seguridad de Claves
+    [mejoras]
+        Aumenta la seguridad de las claves, se puede configurar el largo minimo, máximo y si se deben
+        almacenar las claves antiguas para prevenir su reutilizacion
+        Para configurar esto se debe crear el archivo
+        /cgi-cpn/prontus_auth_custom.pm
+        con las siguientes variables de configuración, todas son opcionales:
+
+        $prontus_auth::PWS_MAX_LENGTH = 32; #largo máximo de psw en caracteres
+        $prontus_auth::PWS_MIN_LENGTH = 6;  #largo mínimo de psw en caracteres
+        $prontus_auth::PWS_TO_REMEMBER = 3; #passwords antiguas a recordar
+        $prontus_auth::PWS_COMPARE_PREVIOUS = 1; #prevenir la reutilización de claves
+        $prontus_auth::EXTERNAL_PROCESS = 'miproceso.sh' # ejecutar un proceso externo al guardar una nueva clave
+            los parametros que se pasan son <prontus_id> <usuario> <hash_nueva_password>
+            por ejemplo: "miproceso.sh <prontus_id> <usuario> <hash_nueva_password>"
+
+        Se incluye el archivo /cgi-cpn/prontus_auth_custom-sample.pm para crear una configuración base.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_auth.pm
+        /cgi-cpn/prontus_auth_custom-sample.pm
+        /cgi-cpn/prontus_changepass.cgi
+        /cgi-cpn/prontus_login.cgi
+        /cgi-cpn/prontus_olvidopass.cgi
+        /cgi-cpn/prontus_recordarpass.cgi
+        /cgi-cpn/prontus_usr_chgpass_sbmit.cgi
+        /cgi-cpn/prontus_usr_ficha.cgi
+        /cgi-cpn/prontus_usr_sbmit.cgi
+        /cgi-cpn/prontus_usr_admin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/UsrAdmin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_usr_admin.html
+
+ - Portadas
+    [mejoras]
+        Agrega NIFLOOP a parseo de portadas, se parsea en caso de que un loop de portada esté vacío
+    [files]
+        /cgi-cpn/lib_prontus.pm

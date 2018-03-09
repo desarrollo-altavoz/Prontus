@@ -461,9 +461,9 @@ main: {
 
     # se parsea el numero de version de friendly urls en uso
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-        $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig
+        $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig;
     } else {
-        $pagina =~ s/%%_friendly_urls_ver%%/0/ig
+        $pagina =~ s/%%_friendly_urls_ver%%/0/ig;
     }
 
     if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && !exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$FORM{'_fid'}}) {
@@ -930,7 +930,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   $ts =~ s/\.[\w\-]*$//; # saca extension
 
 
-
   # se lee plantilla para banco de imagenes
   my $tplBancoImg = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/fid/macro_banco_imagenes.html";
   my $tplBancoImg2 = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/fid/macro_banco_imagenes_noimg.html";
@@ -1226,8 +1225,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $valor_campo =~ s/[\n\r]+//sg;
         next if ($valor_campo eq '');
         $nom = $valor_campo;
-        my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
-        my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
+        my $relpath_af = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXASOCFILE/$FORM{'_dir_fecha'}$prontus_varglb::DIR_ASOCFILE/$ts/$nom";
+        my $bytes = -s "$prontus_varglb::DIR_SERVER$relpath_af";
         $size_total += $bytes;
         my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
         $valor_campo = '<a href="' . $relpath_af . '" target="_blank">' . $nom . '</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">Borrar</label> <input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />'; # 7.0
@@ -1239,9 +1238,9 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     # Rescatar htmlfiles
     elsif ($nom_campo =~ /^HTMLFILE_\w+/i) {
         $nom = $valor_campo;
-        my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
 
-        my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
+        my $relpath_af = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXASOCFILE/$FORM{'_dir_fecha'}$prontus_varglb::DIR_ASOCFILE/$nom";
+        my $bytes = -s "$prontus_varglb::DIR_SERVER$relpath_af";
         $size_total += $bytes;
 
         $valor_campo = '<a href="' . $relpath_af . '" target="_blank">Ver HTMLFILE actual</a>&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />'; # 7.0

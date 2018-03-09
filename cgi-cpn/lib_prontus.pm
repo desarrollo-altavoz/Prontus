@@ -89,9 +89,7 @@ use prontus_auth;
 our $CRLF = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # usar asi: $buffer =~ s/$CRLF/<p>/sg;
 our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
 
-
 our $DEBUG_FECHAS = 0;
-
 our $DISABLE_PURGE_CACHE = 0;
 
 # ---------------------------------------------------------------
@@ -734,61 +732,38 @@ sub check_user {
             print "<script type='text/javascript'>window.location.href='/$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html';</script>";
             exit;
         } else {
+            print STDERR "No se detect&oacute; una sesi&oacute;n activa\n";
             return ('', 'No se detect&oacute; una sesi&oacute;n activa');
         };
     };
 
     if (&lib_prontus::open_dbm_files() ne 'ok') {
-        return ('', 'No fue posible cargar archivos de privilegios de usuario');
         print STDERR "No fue posible cargar archivos de privilegios de usuario.\n";
+        return ('', 'No fue posible cargar archivos de privilegios de usuario');
     };
 
-    # Devuelve el password encriptado que corresponda. Si es nuevo, lo devuelve completo, ya que en la cookie
-    # se almacena solo el hash.
-    $crypted_pass = &prontus_auth::check_if_new_hash($username, $crypted_pass);
+    my $login_result = &prontus_auth::check_valid_hash_psw($username, $crypted_pass);
 
-    # Si esta este archivo, solo deja pasar con user admin y la pass contenida en el.
-    # Los demas usuarios son bloqueados.
-    my ($flag_sysadmin) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_sysadmin.txt";
-    if (-f $flag_sysadmin) { # sysadmin
-        my $pass_sysadmin = &glib_fildir_02::read_file($flag_sysadmin);
-        my $crypted_sys_pass;
-
-        if(length($crypted_pass) == 32) {
-            $crypted_sys_pass = md5_hex($pass_sysadmin);
-        } elsif (length $crypted_pass == 60) {
-            $crypted_sys_pass = &prontus_auth::encrypt_password_bcrypt($pass_sysadmin);
-        } else {
-            $crypted_sys_pass = crypt($pass_sysadmin, 'Av');
-        }
-
-        if (($username eq 'admin') && ($crypted_pass eq $crypted_sys_pass)) {
-            return (1, 'A');
-        } else {
-            return ('', $prontus_varglb::MSG_BLOQUEOSYSADMIN); # sysadmin es para mostrar mensaje mas amigable
-        }
-    } else { # users normales
-        foreach $key (keys %prontus_varglb::USERS) {
-            # print "key[$key] y value[$value]<br>";
-            $value = $prontus_varglb::USERS{$key};
-            my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $value;
-
-            if (($users_usr eq $username) && ($crypted_pass eq $users_psw)) {
-                ($id, $perfil) = ($key, $users_perfil);
-
-                # print STDERR "users_exp_days[$users_exp_days] users_fec_exp[$users_fec_exp]\n";
-
-                if (&prontus_auth::if_passwd_expired($users_fec_exp) && $users_fec_exp ne '' && $users_fec_exp > 0 && $key != 1) {
-                    return ('', 'Su contrase&ntilde;a ha expirado. Inicie sesi&oacute;n nuevamente y c&aacute;mbiela.');
-                }
-
-                last;
-            }
-        }
-        $perfil = 'Usuario o Contrase&ntilde;a no v&aacute;lida.' if (!$id);
-        return ($id, $perfil);
+    # caso mas comun, usuario logeado correctamente
+    if ($login_result == 1) {
+        return ($prontus_auth::USERS_USR_ID, $prontus_auth::USERS_PERFIL);
     }
-
+    # contraseña expirada
+    if ($login_result == 3) {
+        return ('', 'Su contrase&ntilde;a ha expirado. Inicie sesi&oacute;n nuevamente y c&aacute;mbiela.');
+    }
+    # contraseña invalida
+    if ($login_result == 0) {
+        return ('', 'Usuario o Contrase&ntilde;a no v&aacute;lida.')
+    }
+    # login de admin con flag_sysadmin.txt correcto
+    if ($login_result == 2) {
+        return ($prontus_auth::USERS_USR_ID, $prontus_auth::USERS_PERFIL);
+    }
+    # login de admin con flag_sysadmin.txt incorrecto
+    if ($login_result == -1) {
+        return ('', $prontus_varglb::MSG_BLOQUEOSYSADMIN); # sysadmin es para mostrar mensaje mas amigable
+    }
 };
 
 # ---------------------------------------------------------------
@@ -1071,7 +1046,6 @@ sub load_config {
   my ($multied, $reldir_base, $dir_log); # Prontus 6.0
   my ($rtext); # rc15
 
-
   my $nomcfg;
   if ($path_conf =~ /(.*)\.cfg$/) {
     $nomcfg = $1;
@@ -1143,45 +1117,51 @@ sub load_config {
     $prontus_log = $2;
   };
 
-  my $friendly_urls = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_urls = $2;
-  };
+    $prontus_varglb::FRIENDLY_URLS = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_URLS = $2;
+    }
 
-  my $friendly_urls_version = '1'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(\d)("|')/) { # Es un digito, valor 1 a 4
-    $friendly_urls_version = $2;
-  };
+    $prontus_varglb::FRIENDLY_URLS_VERSION = '1'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(\d)("|')/) { # Es un digito, valor 1 a 4
+        $prontus_varglb::FRIENDLY_URLS_VERSION = $2;
+    }
 
-  my $friendly_urls_largo_titular = '75'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_urls_largo_titular = $2;
-  };
-  $friendly_urls_largo_titular = '75' if (!$friendly_urls_largo_titular);
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = '75'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $2;
+    }
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = '75' if (!$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
 
-  my $friendly_url_images = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URL_IMAGES\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_url_images = $2;
-  };
+    $prontus_varglb::FRIENDLY_URL_IMAGES = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URL_IMAGES\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_URL_IMAGES = $2;
+    }
 
     $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO'; # valor por defecto.
     if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $2;
-    };
+    }
+
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = 'SI'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_PRONTUS_ID\s*=\s*("|')(.*?)("|')/) { # SI | NO
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = $2;
+    }
+
     while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
         my $clave = $2;
         $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
-    };
+    }
 
     $prontus_varglb::MULTITAG = 'NO'; # valor por defecto.
     if ($buffer =~ m/\s*MULTITAG\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::MULTITAG = $2;
-    };
+    }
 
     $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
     if ($buffer =~ m/\s*RECAPTCHA_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
         $prontus_varglb::RECAPTCHA_API_URL = $2;
-    };
+    }
 
     $prontus_varglb::RECAPTCHA_SECRET_CODE = ''; # valor por defecto.
     if ($buffer =~ m/\s*RECAPTCHA_SECRET_CODE\s*=\s*("|')(.*?)("|')/) { # SI | NO
@@ -1975,6 +1955,10 @@ sub load_config {
   };
   $prontus_varglb::ACTUALIZACIONES = $actualizaciones;
 
+    $prontus_varglb::VTXT_RELPATH_LINK = 'SI';
+    if ($buffer =~ m/\s*VTXT_RELPATH_LINK\s*=\s*["'](.*?)["']/) { # SI | NO
+        $prontus_varglb::VTXT_RELPATH_LINK = $1;
+    }
 
   # Para saber si el FID se abre en pop o no
   my $abrir_fids_en_pop = 'NO';
@@ -2257,11 +2241,6 @@ sub load_config {
   $prontus_varglb::DIR_LOG = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/log";
   $prontus_varglb::PRONTUS_LOG = $prontus_log;
 
-  $prontus_varglb::FRIENDLY_URLS = $friendly_urls;
-  $prontus_varglb::FRIENDLY_URL_IMAGES = $friendly_url_images;
-  $prontus_varglb::FRIENDLY_URLS_VERSION = $friendly_urls_version;
-  $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $friendly_urls_largo_titular;
-
   $prontus_varglb::MAX_NRO_ARTIC = $max_nro_artic;
 
   $prontus_varglb::MOTOR_BD = $motor_bd;
@@ -2305,7 +2284,7 @@ sub load_config {
 
     &check_dirs();
 
-    #~ Para configurar la externalizacion de la multimedia
+    # Para configurar la externalizacion de la multimedia
     my $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/mmedia.cfg");
     if ($customcfg =~ m/\s*EXTERNAL_MMEDIA\s*=\s*("|')1("|')/) {
       $prontus_varglb::EXTERNAL_MMEDIA = 1;
@@ -2313,7 +2292,21 @@ sub load_config {
     } else {
       $prontus_varglb::EXTERNAL_MMEDIA = 0;
       $prontus_varglb::DIR_EXMEDIA = '/artic';
-    };
+    }
+
+    # Para configurar la externalizacion de la multimedia
+    $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/asocfile.cfg");
+    if ($customcfg =~ m/\s*EXTERNAL_ASOCFILE\s*=\s*["']1["']/s) {
+        $prontus_varglb::EXTERNAL_ASOCFILE = 1;
+        if ($customcfg =~ m/\s*ASOCFILE_PATH\s*=\s*["'](\w+)["']/s) {
+            $prontus_varglb::DIR_EXASOCFILE = "/$1";
+        } else {
+            $prontus_varglb::DIR_EXASOCFILE = "/docs";
+        }
+    } else {
+        $prontus_varglb::EXTERNAL_ASOCFILE = 0;
+        $prontus_varglb::DIR_EXASOCFILE = '/artic';
+    }
 }
 
 # -------------------------------------------------------------------------#
@@ -2612,7 +2605,9 @@ sub write_rss_port {
   my ($destrss, $nom_edic, $buffer) = @_;
   $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/; # Deduce del path completo de la portada, el del rss.
 
-  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual se escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija
+   # si es una edicion normal, igual se escribe en el dir de la edic base
+   # ya que los rss deben estar en una ubicacion fija
+  $destrss =~ s/$nom_edic/base/ig;
 
   my $destdir_rss = $destrss;
   $destdir_rss =~ s/\/[\w\.]+$//;
@@ -2710,16 +2705,20 @@ sub generic_parse_port {
   #~ my $repet_areas = '1';
   my %areas;
   my %area_cont;
+    my %area_check;
+
   # while ($buffer =~ /%%LOOP(\d+)%%(.*?)%%\/LOOP%%/isg) {
   while ($buffer =~ /%%LOOP(\d+)(\([^)]+?\))?%%(.*?)%%\/LOOP%%/isg) {
     my ($are,$tmp) = ($1,$3);
     my $pure_are = $are;
     if (!exists $area_cont{$pure_are}) {
         $area_cont{$pure_are} = 1;
+        $area_check{$pure_are} = 1;
     };
     if (exists $areas{$are}) {
       $are .= '_' . $area_cont{$pure_are};
       $area_cont{$pure_are}++;
+      $area_check{$are} = 1;
     };
     # Parsea el area usando $2 como template parcial.
     $areas{$are} = &parser_area($pure_are,$tmp, $dir_server, $prontus_id,
@@ -2735,6 +2734,13 @@ sub generic_parse_port {
     $buffer =~ s/%%LOOP$key(\([^)]+?\))?%%(.*?)%%\/LOOP%%/$aux/is;
   };
 
+    # Parseo de nifloop.
+    foreach my $key (keys %area_check) {
+        if ($areas{$key}) { # el area no esta vacia.
+            $key =~ s/_\d+$//;
+            $buffer =~ s/%%NIFLOOP$key%%(.*?)%%\/NIFLOOP%%//is;
+        }
+    }
 
   # Borra todos los tags IFV que quedaron en la pagina.
   $buffer =~ s/%%IFVC?\(\d+\, *\d+\)%%//isg;
@@ -3149,7 +3155,7 @@ sub procesa_loop_artic {
           $totloop = $totloop . $looptemp;
       }
       #~ print STDERR "totloop[$totloop]\n";
-      $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
+      $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is;
   }
   return $buffer;
 }; #procesa_loop_artic
@@ -4987,7 +4993,7 @@ sub parse_filef {
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
         my $fileurl = '';
         my $fileurl_proto = '';
-        if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1') {
+        if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1' && $prontus_varglb::FRIENDLY_URLS_VERSION ne '') {
             my $tax = '';
             if ($nom_seccion1 ne '') {
                 $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
@@ -5040,11 +5046,18 @@ sub parse_filef {
                              $vista = '/'.$1;
                         }
                     }
+
+                    my $prontus_proto = '';
+                    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+                        $prontus_proto = "/$prontus_id";
+                    } else {
+                        $prontus_proto = "";
+                    }
                     if ($tax =~ /\/$titular$/) {
-                        $fileurl = "/$prontus_id$vista$tax";
+                        $fileurl = "$prontus_proto$vista$tax";
                         $fileurl_proto = $tax;
                     } else {
-                        $fileurl = "/$prontus_id$vista$tax/$titular";
+                        $fileurl = "$prontus_proto$vista$tax/$titular";
                         $fileurl_proto = "$tax/$titular";
                     }
                 } else {
@@ -5059,7 +5072,11 @@ sub parse_filef {
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
         if ($fileurl_proto ne '' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
-            $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links normal, no friendly
+            if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+                $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links friendly con vista
+            } else {
+                $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$1$fileurl_proto/isg; # Links friendly con vista sin prontus
+            }
         } else {
             $buffer =~ s/%%_FILEURL\(\w+\)%%/$fileurl/isg; # Links friendly
         }
@@ -5067,7 +5084,7 @@ sub parse_filef {
         my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
         $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
         $buffer =~ s/%%_FILEURL\(\w+\)%%/$file/isg; # Links normal, no friendly
-    };
+    }
 
     return $buffer;
 };
@@ -5503,7 +5520,7 @@ sub get_arbol_mapa {
         $mapa_st_total = $mapa_st_total . $mapa_st;
       };
       if($mapa_t =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
-        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st_total/s
+        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st_total/s;
       } else {
         $mapa_t = $mapa_t . $mapa_st_total;
       };
@@ -5517,7 +5534,7 @@ sub get_arbol_mapa {
       $salida_st->finish;
     };
     if($nested_s) {
-      $mapa_s =~ s/%%(LOOP_TEMA)%%(.*?)%%\/\1%%/$mapa_total_t/s
+      $mapa_s =~ s/%%(LOOP_TEMA)%%(.*?)%%\/\1%%/$mapa_total_t/s;
     } else {
       $mapa_s = $mapa_s . $mapa_total_t;
     };

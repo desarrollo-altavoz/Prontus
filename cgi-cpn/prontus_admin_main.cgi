@@ -37,7 +37,7 @@
 # ---------------------------
 # 01_00  - 03/04/2002 - Primera Version.
 # 1.1 - 03/05/2002 - Soporte para editar xml y xsl
-# 1.2 - 06/05/2002 - Siu el usr. no es admin, tira un &nbsp;, para que no se repita el msg. de error junto con el de prontus_edit_file.exe
+# 1.2 - 06/05/2002 - Si el usr. no es admin, tira un &nbsp;, para que no se repita el msg. de error junto con el de prontus_edit_file.exe
 # ---------------------------------------------------------------
 # Revision Prontus 8.0 - ych - 23/05/2002
 # ---------------------------------------------------------------
@@ -84,9 +84,6 @@ main: {
   $FORM{'path_conf'} = &glib_cgi_04::param('_path_conf');
 
   $FORM{'tab'} = &glib_cgi_04::param('tab');
-
-  # Deduce path conf del referer, en caso de no ser suministrado.
-  $FORM{'path_conf'} = &get_path_conf() if ($FORM{'path_conf'} eq '');
 
   # Ajusta path_conf para completar path y/o cambiar \ por /
   $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
@@ -297,7 +294,7 @@ sub parseaCrontab {
   };
   if (!$lines) {
     $pagina =~ s/<!--loop_crons-->.*?<!--\/loop_crons-->//sig;
-    $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->/\1/sig;
+    $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->/$1/sig;
   } else {
     $pagina =~ s/<!--loop_crons-->.*?<!--\/loop_crons-->/$loop_total/sig;
     $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->//sig;
@@ -936,7 +933,7 @@ sub parseaVars {
     my $txport_orden = $prontus_varglb::TAXPORT_ORDEN;
     my $direccion = '';
 
-    if ($txport_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
+    if ($txport_orden =~ /ART_FECHAPHORAP (DESC|ASC)/i || $txport_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
         $direccion = $1;
         $pagina =~ s/%%TAXPORT_ORDEN_TIT%%//ig;
         $pagina =~ s/%%TAXPORT_ORDEN_CRE%%//ig;
@@ -1109,13 +1106,21 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%ACTUALIZACIONES_SI%%//ig;
         $pagina =~ s/%%ACTUALIZACIONES_NO%%/ checked="checked"/ig;
-    };
+    }
+
+    if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI') {
+        $pagina =~ s/%%VTXT_RELPATH_LINK_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%VTXT_RELPATH_LINK_NO%%//ig;
+    } else {
+        $pagina =~ s/%%VTXT_RELPATH_LINK_SI%%//ig;
+        $pagina =~ s/%%VTXT_RELPATH_LINK_NO%%/ checked="checked"/ig;
+    }
 
     if ($prontus_varglb::ACTUALIZACION_MASIVA eq 'SI') {
         $pagina =~ s/%%ACTUALIZACION_MASIVA%%/ checked="checked"/ig;
     } else {
         $pagina =~ s/%%ACTUALIZACION_MASIVA%%//ig;
-    };
+    }
 
     if ($prontus_varglb::COMENTARIOS eq 'SI') {
         $pagina =~ s/%%COMENTARIOS_SI%%/ checked="checked"/ig;
@@ -1191,13 +1196,21 @@ sub parseaVars {
 
     $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME%%/$prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME/ig;
 
+    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO%%//ig;
+    } else {
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI%%//ig;
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO%%/ checked="checked"/ig;
+    }
+
     if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%//ig;
     } else {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%//ig;
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%/ checked="checked"/ig;
-    };
+    }
 
     if ($prontus_varglb::MULTITAG eq 'SI') {
         $pagina =~ s/%%MULTITAG_SI%%/ checked="checked"/ig;
@@ -1205,7 +1218,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%MULTITAG_SI%%//ig;
         $pagina =~ s/%%MULTITAG_NO%%/ checked="checked"/ig;
-    };
+    }
 
     # variables para configurar recaptcha google
     $pagina =~ s/%%RECAPTCHA_API_URL%%/$prontus_varglb::RECAPTCHA_API_URL/ig;
@@ -1224,7 +1237,7 @@ sub parseaVars {
         $pagina =~ s/%%BLOQUEO_EDICION_V0%%//ig;
         $pagina =~ s/%%BLOQUEO_EDICION_V1%%//ig;
         $pagina =~ s/%%BLOQUEO_EDICION_V2%%/ checked="checked"/ig;
-    };
+    }
 
     my $friendlyVer = '%%FRIENDLY_URLS_V'.$prontus_varglb::FRIENDLY_URLS_VERSION.'%%';
     $pagina =~ s/$friendlyVer/ checked="checked"/ig;

@@ -114,8 +114,7 @@ main: {
 sub is_user_valido {
     my ($key, $val);
     foreach $key (keys %prontus_varglb::USERS) {
-        $val = $prontus_varglb::USERS{$key};
-        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $val;
+        ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL) = split /\|/, $prontus_varglb::USERS{$key};
         if ($USERS_USR eq $FORM{'_usr'})  {
             $USERS_ID = $key;
             return 1;

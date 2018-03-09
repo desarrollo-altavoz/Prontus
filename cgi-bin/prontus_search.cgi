@@ -1226,10 +1226,12 @@ sub carga_variables_prontus {
     my($buffervarcfg) = &lib_search::lee_archivo("$PRONTUS_DIR/cpan/$PRONTUS-var.cfg");
 
     # Cargar variables de configuración necesarias para friendly url desde archivo -var
+    $prontus_varglb::FRIENDLY_URLS = 'NO';
     if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*["'](.*?)["']/) {
         $prontus_varglb::FRIENDLY_URLS = $1;
     };
 
+    $prontus_varglb::FRIENDLY_URLS_VERSION = '1';
     if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*["'](.*?)["']/) {
         $prontus_varglb::FRIENDLY_URLS_VERSION = $1;
     };
