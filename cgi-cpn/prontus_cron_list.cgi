@@ -239,6 +239,10 @@ sub procesar_plantilla {
                                                                 $art_tipoficha, $art_idtemas1, $art_baja));
 
     my $tot_artics = &get_tot_artics($filtros, $base);
+    if ($tot_artics > $maxartics) {
+        $tot_artics = $maxartics;
+    }
+
     my $nro_filas = 0;
 
     my $buffer = $CONTENT_PLTS{$nombase_plt};
@@ -365,10 +369,8 @@ sub get_tot_artics {
     $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($count_art));
     $salida->fetch;
     $salida->finish;
-    $count_art = '0' if $count_art eq '';
-    $count_art = $prontus_varglb::LIST_MAXARTICS if ($count_art > $prontus_varglb::LIST_MAXARTICS);
+    $count_art = 0 if $count_art eq '';
     return $count_art;
-
 };
 
 # ---------------------------------------------------------------

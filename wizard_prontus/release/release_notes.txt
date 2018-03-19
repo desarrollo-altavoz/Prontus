@@ -10047,3 +10047,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         Agrega NIFLOOP a parseo de portadas, se parsea en caso de que un loop de portada esté vacío
     [files]
         /cgi-cpn/lib_prontus.pm
+
+
+====================================================================================================
+11.2.99.1 - 19/03/2018 - EAG
+====================================================================================================
+- General
+    [bugfixes]
+        - Corrige problema en ejecución de generación de taxports
+        - Corrige maximo de articulos en listas, no se respetaba el valor de LIST_MAXARTICS.
+    [files]
+        /cgi-cpn/prontus_cron_list.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
