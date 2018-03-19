@@ -197,7 +197,7 @@ sub generar_taxports_thislevel {
     my $nro_filas = 0;
     my %filas;
     my ($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha, $art_idtemas1, $art_baja);
-}    my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha, $art_idtemas1, $art_baja));
+    my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha, $art_idtemas1, $art_baja));
 
     while ($salida->fetch) {
         $nro_filas++;

@@ -1,4 +1,9 @@
 ====================================================================================================
+11.2.99.1 - 19/03/2018 - EAG
+====================================================================================================
+- bugfixes: (general) Corrige problema en ejecución de generación de taxports
+- bugfixes: (general) Corrige maximo de articulos en listas, no se respetaba el valor de LIST_MAXARTICS.
+====================================================================================================
 11.2.99 - 08/03/2018 - JOR/EAG/MTC
 ====================================================================================================
 - bugfixes: (multitag) Corrige parseo de plantillas, ahora no se distingue mayusculas y minusculas en las
