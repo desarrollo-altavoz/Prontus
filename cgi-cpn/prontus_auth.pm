@@ -10,6 +10,7 @@
 # ---------------------------------------------------------------
 
 package prontus_auth;
+use utf8;
 use strict;
 use Digest::MD5 qw(md5_hex);
 
