@@ -90,8 +90,6 @@ sub validar_datos {
 
     if (!&prontus_auth::check_password($FORM{'pwd_actual'}, $users_psw)) {
         return 'La contraseña actual ingresada no es correcta.';
-    } else {
-        return '';
     }
 
     if (!$FORM{'pwd_nuevo'}) {
