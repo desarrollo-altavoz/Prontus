@@ -6,12 +6,12 @@
 # Hacer un chequeo de sintaxis de todas las CGIs de Prontus.
 # Util para usarlo antes de generar una release o cuando se
 # hacen cambios en muchas CGIs al mismo tiempo
-# 
+#
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 # ------------------------
 #  1.0.0    - 09/04/2002 - CVI - Primera Version.
-# 
+#
 
 use strict;
 
@@ -35,30 +35,30 @@ unshift(@DIRS, '/cgi-bin/coment');
 main: {
 
 
-	foreach my $dir (@DIRS) {
+    foreach my $dir (@DIRS) {
 
-		next unless (-d "$DOCUMENT_ROOT$dir");
-		print STDOUT "Chequeando [$dir]\n";
-		&procesar_directorio("$DOCUMENT_ROOT$dir");
-	}
+        next unless (-d "$DOCUMENT_ROOT$dir");
+        print STDOUT "Chequeando [$dir]\n";
+        &procesar_directorio("$DOCUMENT_ROOT$dir");
+    }
 }
 
 # -----------------------------------------------------------------------------
 sub procesar_directorio {
 
-	my $dir = shift;
-	next unless(-d $dir);
+    my $dir = shift;
+    next unless(-d $dir);
 
-	opendir(my $dh, $dir) || die "No se pudo abrir el directorio [$dir]\n";
+    opendir(my $dh, $dir) || die "No se pudo abrir el directorio [$dir]\n";
     while(readdir $dh) {
-    	my $archivo = $_;
-    	next unless(-f "$dir/$archivo");
+        my $archivo = $_;
+        next unless(-f "$dir/$archivo");
 
-    	next unless($archivo =~ /(\.cgi|\.pl)$/);
-        my $check = `perl -c "$dir/$archivo" 2>&1`;
+        next unless($archivo =~ /(\.cgi|\.pl)$/);
+        my $check = `perl -cw "$dir/$archivo" 2>&1`;
         if($check !~ /syntax OK/) {
-        	print "Error de Sintaxis [$dir/$archivo]\n";
-        	print "Respuesta[$check]\n-----------------------------\n";
+            print "Error de Sintaxis [$dir/$archivo]\n";
+            print "Respuesta[$check]\n-----------------------------\n";
         }
     }
 }
