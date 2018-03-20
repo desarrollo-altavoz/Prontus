@@ -3,6 +3,8 @@
 ====================================================================================================
 - bugfixes: (general)  Corrige problema en almacenamiento de claves antiguas
 - bugfixes: (general) Corrige validación de ingreso de nueva clave al realizar cambio
+- bugfixes: (prontus_form) Agrega captura de error al decodificar json's invalidos al reconstruir csv de datos recibidos,
+de esta forma la generacion del csv no falla.
 ====================================================================================================
 11.2.99.1 - 19/03/2018 - EAG
 ====================================================================================================
