@@ -132,9 +132,14 @@ main: {
             my $jsonhashref;
             if($JSON::VERSION =~ /^1\./) {
                 my $jsonobj = new JSON;
-                $jsonhashref = $jsonobj->jsonToObj($json);
+                eval { $jsonhashref = $jsonobj->jsonToObj($json); }
             } else {
-                $jsonhashref = &JSON::from_json($json);
+                eval { $jsonhashref = &JSON::from_json($json); }
+            }
+
+            if ($@) {
+                print STDERR "Error al decodificar json $@, file[$file] json:[$json]\n";
+                next;
             }
             my %jsonhash = %$jsonhashref;
             my $filesref = $jsonhash{'_files'};

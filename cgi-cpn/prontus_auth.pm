@@ -10,6 +10,7 @@
 # ---------------------------------------------------------------
 
 package prontus_auth;
+use utf8;
 use strict;
 use Digest::MD5 qw(md5_hex);
 
@@ -305,7 +306,7 @@ sub store_old_passwords {
         my $i = 1;
         # se decrementa ya que una de las antiguas se almacena en los usuarios
         $PWS_TO_REMEMBER--;
-        while ($i < $PWS_TO_REMEMBER && $i < scalar(@stored)) {
+        while ($i < $PWS_TO_REMEMBER && $i <= scalar(@stored)) {
             $output .= $stored[$i - 1] .'|';
             $i++;
         }
