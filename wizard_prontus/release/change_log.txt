@@ -5,6 +5,7 @@
 - bugfixes: (general) Corrige validación de ingreso de nueva clave al realizar cambio
 - bugfixes: (prontus_form) Agrega captura de error al decodificar json's invalidos al reconstruir csv de datos recibidos,
 de esta forma la generacion del csv no falla.
+- bugfixes: (general) Corrige descripción de variable FRIENDLY_V4_INCLUDE_PRONTUS_ID
 ====================================================================================================
 11.2.99.1 - 19/03/2018 - EAG
 ====================================================================================================
