@@ -10078,3 +10078,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         de esta forma la generacion del csv no falla.
     [files]
         /cgi-cpn/prontus_form_download_real.cgi
+
+====================================================================================================
+11.2.99.3 - 27/03/2018 - EAG
+====================================================================================================
+- Buscador
+    [bugfixes]
+        - Corrige problema al armar url de resultados de busqueda, si era friendly v4 no estaba incluyendo el prontus id
+    [files]
+        /cgi-bin/prontus_search.cgi

@@ -204,7 +204,7 @@ BEGIN {
     unshift(@INC, $pathLibs);
     require 'dir_cgi.pm';
 
-    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
 };
 
@@ -1244,6 +1244,11 @@ sub carga_variables_prontus {
     $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO';
     if ($buffervarcfg =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*["'](.*?)["']/) {
         $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $1;
+    }
+
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = 'SI';
+    if ($buffervarcfg =~ m/\s*FRIENDLY_V4_INCLUDE_PRONTUS_ID\s*=\s*["'](.*?)["']/) {
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = $1;
     }
 
     $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75 if (!$prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR);
