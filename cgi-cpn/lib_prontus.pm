@@ -4485,7 +4485,7 @@ my (@entries, $entry);
   };
 };
 # ---------------------------------------------------------------
-sub check_dirs_edic() {
+sub check_dirs_edic {
 # Chequea existencia de dirs. de trabajo de la edicion seleccionada.
 
   my ($dir_dest_edic) = $_[0];
