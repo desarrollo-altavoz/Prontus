@@ -9886,9 +9886,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             # /vista/seccion/titular
             # /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html
             location ~ "^\/([\w\-]+)\/([\w\-]+)\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
-                add_header X-debug-message "1 args: /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
-                # echo "1 args: try_files /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;";
                 try_files /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links-$2/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;
+                # configuracion de php si es necesaria, no lleva try
                 include     global/php2.conf;
             }
 
@@ -9902,9 +9901,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             # /vista/titular
             # /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html
             location ~ "^\/([\w\-]+)\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
-                add_header X-debug-message "2 args: /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
-                #echo "2 args: /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
                 try_files /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html =404;
+                # configuracion de php si es necesaria, no lleva try
                 include     global/php2.conf;
             }
 
@@ -10087,3 +10085,16 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige problema al armar url de resultados de busqueda, si era friendly v4 no estaba incluyendo el prontus id
     [files]
         /cgi-bin/prontus_search.cgi
+
+====================================================================================================
+11.2.100 - XX/XX/2018 - EAG
+====================================================================================================
+- Fid
+    [mejoras]
+        - Agrega estilos especiales para mejorar la usabilidad del editor vtxt, en visualizacion de tablas
+          y para el ancho de las imagenes en sitios responsivos
+        - Mejora compatibilidad de fid al usar estilos desde servidores externos
+    [files]
+        - /cgi-cpn/prontus_art_ficha.cgi
+        - /wizard_prontus/prontus_dir/cpan/core/vtxt/css/vtxt_extras.css
+

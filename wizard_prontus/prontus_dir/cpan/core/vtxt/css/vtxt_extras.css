@@ -1,0 +1,2 @@
+.mce-content-body td { border: 1px solid #c1c3d1!important; } /* para mostrar bordes de tablas en tinymce independientemente de los estilos del sitio. */
+.mce-content-body img {width:initial;} /* para no aplicar ancho responsivo a las imagenes
