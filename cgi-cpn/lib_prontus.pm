@@ -890,7 +890,7 @@ sub load_artic_pubs {
                 my ($dirfecha,$art,$area,$prio,$pub,$ext_art,$vb) = '';
                 ($dirfecha,$art,$area,$prio,$vb,$pub) = ($1,$2,$3,$4,$6,$9);
 
-                $hash_artics{$art}{$edic}{$port} = 1;
+                $hash_artics{$art}{$edic}{$port} = $area;
             };
 
         };
