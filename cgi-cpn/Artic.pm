@@ -1823,16 +1823,14 @@ sub borra_artic {
 
     # Regenera relacionados
     if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
-        &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO, $prontus_varglb::DIR_ARTIC, $prontus_varglb::DIR_PAG, $prontus_varglb::DIR_TEMP, $prontus_varglb::DIR_TAXONOMIA, $prontus_varglb::DIR_CONTENIDO, $prontus_varglb::NUM_RELAC_DEFAULT, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS);
+        &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO, $prontus_varglb::DIR_ARTIC, $prontus_varglb::DIR_PAG, $prontus_varglb::DIR_TEMP, $prontus_varglb::DIR_TAXONOMIA, $prontus_varglb::NUM_RELAC_DEFAULT, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS);
         for(my $i = 1; $i <= $prontus_varglb::TAXONOMIA_NIVELES; $i++) {
             if (defined $hashtemp{$i}) {
                 my $taxonomia = $hashtemp{$i};
                 my ($secc, $tem, $stem) = split /\//, $taxonomia;
-                &lib_tax::generar_relacionados($secc, $tem, $stem, $base);
+                &lib_tax::generar_relacionados($secc, $tem, $stem, $base, '');
                 # Ahora parsea art relacionados para MVs
                 foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
-
-                    print STDERR "generar_relacionados [$secc, $tem, $stem]\n";
                     &lib_tax::generar_relacionados($secc, $tem, $stem, $base, $mv);
                 };
             };
@@ -1842,7 +1840,7 @@ sub borra_artic {
     # regenera taxports
     my $fid;
     if ($buffer_artic =~ /<_fid>(.+?)<\/_fid>/is) {
-      $fid = $1;
+        $fid = $1;
     };
 
     if ($tags_data) {
