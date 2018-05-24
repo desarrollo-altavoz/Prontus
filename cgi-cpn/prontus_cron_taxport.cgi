@@ -47,7 +47,7 @@ my $TS;
 
 main:{
     if ((! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
-        print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
+        print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /var/www/misitio/web \n";
         exit;
     };
 
@@ -84,7 +84,7 @@ main:{
     my $filter;
 
     foreach my $fid (keys %fids2process) {
-        print STDERR "fid[$fid]\n";
+        #print STDERR "fid[$fid]\n";
         &queue_procs(0, 0, 0, $fid, $PARAMS{'ts'});
         &queue_procs($PARAMS{'s'}, 0, 0, $fid, $PARAMS{'ts'}) if ($PARAMS{'s'});
         &queue_procs($PARAMS{'s'}, $PARAMS{'t'}, 0, $fid, $PARAMS{'ts'}) if ($PARAMS{'s'} && $PARAMS{'t'});
@@ -100,7 +100,7 @@ main:{
         if ($pid ne '') {
             my $data_pid = &lib_maxrunning::isRunningPid($pid);
             $data_pid =~ s/^\s+|\s+$//g;
-            print STDERR "data_pid[$data_pid]\n";
+            # print STDERR "data_pid[$data_pid]\n";
             if ($data_pid eq '') {
                 # si no hay procesos corriendo con este pid se borra el semaforo y lanza el worker
                 print STDERR "No hay proceso con pid $pid\n";
@@ -187,7 +187,7 @@ sub conecta_db {
 
 sub valida_param {
     if ((! -d "$prontus_varglb::DIR_SERVER/$PARAMS{'prontus'}") || ($PARAMS{'prontus'} eq '')  || ($PARAMS{'prontus'} =~ /^\//))  {
-        print STDERR "\nError: Directorio del publicador no es válido.";
+        print STDERR "\nError: Directorio del publicador no es valido.";
         print STDERR "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como parametro de esta CGI\n";
         exit;
     };
