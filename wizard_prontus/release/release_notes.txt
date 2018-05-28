@@ -10101,6 +10101,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - General
     [bugfixes]
         - Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
+        - Agrega primera keys faltantes a tablas de multitag, solo afecta a creacion de neuvas tablas.
+    [mejoras]
+        - Agrega información para saber que articulo tiene demasiados includes
     [files]
         - /cgi-cpn/Artic.pm
         - /cgi-cpn/lib_tax.pm
+        - /cgi-cpn/lib_setbd.pm
+
