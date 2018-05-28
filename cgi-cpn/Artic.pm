@@ -2766,11 +2766,10 @@ sub _parsing_vtxt {
 
         $safe_counter++;
         if($safe_counter > 100) {
-            print STDERR "[vtxt] Salida de seguridad <prontus:insert>\n";
+            print STDERR "[vtxt] Salida de seguridad <prontus_insert> $this->{ts}\n";
             $vtxt_aux_consubtit =~ s/<prontus:insert(.*?)>.*?<\/prontus:insert>//isg;
             last;
         }
-#~ <prontus:insert type="js" code="var%20myvar%20%3D%20'Hello'%3B%0D%0Aalert(myvar)%3B">Código Javascript</prontus:insert>
 #~ <prontus:insert type="js" code="var%20myvar%20%3D%20'Hello'%3B%0D%0Aalert(myvar)%3B">Código Javascript</prontus:insert>
 
         my $newnode = '';
