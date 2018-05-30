@@ -526,6 +526,7 @@ sub crear_tabla_multitag_art_s {
                 `MULTITAG_ART_S_ID` INT NOT NULL,
                 `MULTITAG_ART_S_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_ART_S_ART_ID` CHAR(14) NOT NULL,
+                PRIMARY KEY (`MULTITAG_ART_S_ID`),
                 INDEX `index1` (`MULTITAG_ART_S_ID`),
                 INDEX `index2` (`MULTITAG_ART_S_ART_ID`),
                 INDEX `index3` (`MULTITAG_ART_S_ART_ID`, `MULTITAG_ART_S_ID`))
@@ -553,6 +554,7 @@ sub crear_tabla_multitag_art_t {
                 `MULTITAG_ART_T_ID` INT NOT NULL,
                 `MULTITAG_ART_T_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_ART_T_ART_ID` CHAR(14) NOT NULL,
+                PRIMARY KEY (`MULTITAG_ART_T_ID`),
                 INDEX `index1` (`MULTITAG_ART_T_ID`),
                 INDEX `index2` (`MULTITAG_ART_T_ART_ID`),
                 INDEX `index3` (`MULTITAG_ART_T_ART_ID`, `MULTITAG_ART_T_ID`))
@@ -580,6 +582,7 @@ sub crear_tabla_multitag_art_st {
                 `MULTITAG_ART_ST_ID` INT NOT NULL,
                 `MULTITAG_ART_ST_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_ART_ST_ART_ID` CHAR(14) NOT NULL,
+                PRIMARY KEY (`MULTITAG_ART_ST_ID`),
                 INDEX `index1` (`MULTITAG_ART_ST_ID`),
                 INDEX `index2` (`MULTITAG_ART_ST_ART_ID`),
                 INDEX `index3` (`MULTITAG_ART_ST_ART_ID`, `MULTITAG_ART_ST_ID`))
