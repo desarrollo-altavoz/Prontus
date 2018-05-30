@@ -23,7 +23,7 @@
 # ---------------------------------------------------------------
 # PROPOSITO.
 # -----------
-# Geenerar portadas taxonomicas en modo batch, todas de una vez.
+# Geenerar portadas tagonomicas en modo batch, todas de una vez.
 # ---------------------------------------------------------------
 # LLAMADAS A SCRIPTS.
 # ------------------------
@@ -32,67 +32,67 @@
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-# como cron, con lo sgtes. params:
+# como cron, con los sgtes. params:
 # $ARGV[0] : Nombre del prontus (ej. prontus_noticias)
-# $ARGV[1] : s/t/st a procesar, optativo
+# $ARGV[1] : ids de tag a procesar, optativo, separados por /
+# $ARGV[2] : fid específico a regenerar, optativo
 # ---------------------------------------------------------------
 # ARCHIVOS DE ENTRADA.
 # ------------------------
 # Plantillas:
-# /<_prontus_id>/plantillas/tax/port/(all|<_fid>)[-<_mv>]/taxport[_<_seccion>][_<_tema>][_<_subtema>].<ext>
+# /<_prontus_id>/plantillas/tag/port/(all|<_fid>)[-<_mv>]/tagport[_<_id>].<ext>
 
 # + all           : Aca van las plantillas por defecto.
 # + <_fid>        : Aca van las plantillas que se utilizaran en caso de que se indique filtro
-#                   por un tipo de art. especifico, ademas de la taxonomia.
+#                   por un tipo de art. especifico, ademas de la tagonomia.
 #                   Si no hay plantillas en la carpeta <fidname>, entonces se utilizan las de 'all'
-# + <_seccion>,
-#   <_tema>,
-#   <_subtema>    : son optativos, sirven para utilizar una plantilla especifica para un nivel
-#                   taxonomico especifico. El caso simple es taxport.<ext>
+# + <_ids>         : son optativos, sirven para utilizar una plantilla especifica para un tag
+#                   especifico. El caso simple es tagport.<ext>
 # + -<_mv>        : optativo, para configurar plantillas distintas para cada vista
 
 # Determinacion de la plantilla a usar:
 # Se busca primero la plantilla mas especifica y si no se encuentra se va bajando hasta
-# llegar a la plantilla basica .../all/taxport.html
+# llegar a la plantilla basica .../all/tagport.html
 
 
 # ---------------------------------------------------------------
 # ARCHIVOS DE SALIDA.
 # ------------------------
-# /<prontus_dir>/site/tax/port/(all|<fidname>)[-<vista>]/<s>_<t>_<st>_<nropag>.<ext>
-# <s>, <t>, <st>: ids de taxonomia, siempre van, si alguno no aplica, se pone un 0 (cero).
+# /<prontus_dir>/site/tag/port/(all|<fidname>)[-<vista>]/<i>_<nropag>.<ext>
+# <ids>: ids de tagonomia separados por / , siempre van, si uno no aplica, se pone un 0 (cero).
 # <nropag>      : Nro. de pagina de resultados [1..n]
-
 
 
 # ---------------------------------------------------------------
 # Tablas.
 # ------------------------
-# BD: la configurada en Prontus. Tablas: 'ART', 'SECC', 'TEMAS', 'SUBTEMAS'
+# BD: la configurada en Prontus. Tablas: 'ART', 'TAGS'
 # ---------------------------------------------------------------
 
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0 - 05/2007 - YCH - Primera Version.
-# 1.1 - 09/2016 - SCT - Se agrega paginación custom, basado en paginación de taxport.
+# 1.1 - 09/2016 - SCT - Se agrega paginación custom, basado en paginación de tagport.
 
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
 
+
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-};
+}
 
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
-use prontus_varglb; &prontus_varglb::init();
+use prontus_varglb;
+&prontus_varglb::init();
 use lib_prontus;
 use glib_hrfec_02;
 use glib_dbi_02;
@@ -104,6 +104,7 @@ use DBI;
 use POSIX qw(strftime ceil);
 
 close STDOUT;
+
 # ---------------------------------------------------------------
 # MAIN.
 # ---------------------------------------------------------------
@@ -111,13 +112,14 @@ close STDOUT;
 my ($LOOP, %FORM, $NOM_PRONTUS, %NOM_TAGS);
 my %NOMBASE_PLTS;
 my %CFG_FIL_TAGPORT;
+
 # my %HASH_FILES;
 my ($FILASXPAG);
 
-if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
-  print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
-  exit;
-};
+if ( (!-d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
+    print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /var/www/misitio/web \n";
+    exit;
+}
 $FORM{'prontus'} = $ARGV[0]; # obligatorio
 $FORM{'tags_id'} = $ARGV[1]; # obligatorio, uno o mas IDs separados por /
 $FORM{'fid_especif'} = $ARGV[2]; # optativo
@@ -145,22 +147,24 @@ use Time::HiRes qw ( time ); # debug
 
 # ---------------------------------------------------------------
 main:{
-  my $ini_t = time; # debug
-  $FILASXPAG = $prontus_varglb::TAGPORT_ARTXPAG;
-  &generar_tagonomicas();
-  my $delta_t = time - $ini_t;
-  # print STDERR "exec_time[$delta_t]\n"; # debug
+    my $ini_t = time; # debug
+    $FILASXPAG = $prontus_varglb::TAGPORT_ARTXPAG;
+    &generar_tagonomicas();
+    my $delta_t = time - $ini_t;
 
-};
+    # print STDERR "exec_time[$delta_t]\n"; # debug
+
+}
+
 # ---------------------------------------------------------------
 sub generar_tagonomicas {
 
     # Conectar a BD
     my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
-    if (! ref($base)) {
+    if (!ref($base)) {
         print STDERR "ERROR: $msg_err_bd\n";
         exit;
-    };
+    }
     $base->{mysql_auto_reconnect} = 1;
     $base->{InactiveDestroy} = 1;
 
@@ -174,15 +178,15 @@ sub generar_tagonomicas {
     if (!$res_check_col) {
         print STDERR "ERROR: No se pudo crear la columna TAGS_NOM4VISTAS, DBI Error Code: [$DBI::err][$DBI::errstr]\n";
         exit;
-    };
+    }
 
     foreach my $tag_id (@tags2process) {
         &generar_tagonomicas_thislevel($tag_id, \%fids2process, $base);
-    };
+    }
 
     $base->disconnect;
 
-};
+}
 
 # ---------------------------------------------------------------
 sub get_tag_noms {
@@ -200,38 +204,41 @@ sub get_tag_noms {
             my $vista = $2;
             my $nom = $3;
             $tag_noms{$vista} = &lib_prontus::escape_html($nom); # nombre en cada vista
-        };
-    };
+        }
+    }
     $salida->finish;
     return %tag_noms;
-};
+}
 
 # ---------------------------------------------------------------
 sub get_tpl {
-# Obtiene nombre del q sera el tpl de la portada, es el primer archivo q se encuentre.
+
+    # Obtiene nombre del q sera el tpl de la portada, es el primer archivo q se encuentre.
     my ($ruta_dir) = $_[0];
     my (@lisdir, $k);
-    &glib_fildir_02::check_dir($ruta_dir) if (! -d $ruta_dir);
+    &glib_fildir_02::check_dir($ruta_dir) if (!-d $ruta_dir);
     @lisdir = &glib_fildir_02::lee_dir($ruta_dir);
     @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
 
     foreach $k (@lisdir) {
         if (-f "$ruta_dir/$k") {
             return $k;
-        };
-    };
+        }
+    }
     return '';
-};
+}
 
 # ---------------------------------------------------------------
 sub generar_tagonomicas_thislevel {
-# Genera todas las portadas tax (de la 1..n) correspondientes
-# a este nivel taxonomico, para todas las vistas declaradas y fids.
+
+    # Genera todas las portadas tax (de la 1..n) correspondientes
+    # a este nivel taxonomico, para todas las vistas declaradas y fids.
 
 
     my ($tag_id, $ref_hash, $base) = @_;
 
     my %fids2process = %$ref_hash;
+
     # si se invoca sin fid, considera el filtro sin fid
     $fids2process{''} = 1 if ($FORM{'fid_especif'} eq '');
 
@@ -242,10 +249,11 @@ sub generar_tagonomicas_thislevel {
     my %art_xdata_fields;
 
     my $dir_semaf = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/tagport_smf";
-    &glib_fildir_02::check_dir($dir_semaf) if (! -d $dir_semaf);
+    &glib_fildir_02::check_dir($dir_semaf) if (!-d $dir_semaf);
     my $pid_propio = $$;
 
     foreach my $fid (keys %fids2process) {
+
         # Escribe los semaforos de los id levels q va a utilizar (en realidad solo cambia el fid)
         # y borra los escritos por otros procesos para este mismo level, para provocar q aborten
         my $id_level = $tag_id . '_' . $fid;
@@ -254,11 +262,12 @@ sub generar_tagonomicas_thislevel {
 
             if ($file2delete !~ /\.$pid_propio$/) {
                 unlink $file2delete;
+
                 # print STDERR "\n[$$] hice abortar al: $file2delete !\n";
-            };
-        };
+            }
+        }
         &glib_fildir_02::write_file("$dir_semaf/$id_level.$pid_propio", '1');
-    };
+    }
 
     # Obtiene nombre del tag y tb en las vistas
     my %tag_noms = &get_tag_noms($base, $tag_id); # ret. hash indexado por la vista y value=nombre
@@ -266,45 +275,47 @@ sub generar_tagonomicas_thislevel {
     foreach my $fid (keys %fids2process) {
         my $id_level = $tag_id . '_' . $fid;
         if (-f "$dir_semaf/$id_level.$pid_propio") {
+
             # print STDERR "\n[$$] PROCESAR LEVEL[$id_level] iniciando\n";
         } else {
+
             # print STDERR "\n[$$] PROCESAR LEVEL[$id_level] hasta aca no mas llegamos!\n";
             return;
-        };
+        }
         my $filtros = &genera_filtros_tagports($tag_id, $fid, $CURR_DTIME);
         my $tot_artics = &get_tot_artics($filtros, $base);
+
         # print STDERR "[$$] PROCESANDO LEVEL [$tag_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
 
-        my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
-                . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA from ART, TAGSART "
-                . "%%FILTRO%% order by $prontus_varglb::TAGPORT_ORDEN LIMIT 0, $prontus_varglb::TAGPORT_MAXARTICS";
+        my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, ". "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA from ART, TAGSART ". "%%FILTRO%% order by $prontus_varglb::TAGPORT_ORDEN LIMIT 0, $prontus_varglb::TAGPORT_MAXARTICS";
 
         if ($filtros ne '') {
             $sql =~ s/%%FILTRO%%/ where $filtros /;
-        }
-        else {
+        } else {
             $sql =~ s/%%FILTRO%%/$filtros/;
-        };
+        }
 
         my ($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension, $art_tipoficha);
 
-        my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($art_id, $art_fecha, $art_horap, $art_titu,
-                                                                    $art_dirfecha, $art_extension, $art_tipoficha));
+        my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($art_id, $art_fecha, $art_horap, $art_titu,$art_dirfecha, $art_extension, $art_tipoficha));
         my $nro_filas = 0;
         my $nro_pag = 0;
         my %filas;
+
         # print STDERR "[$$] FETCHING:\n";
         while ($salida->fetch) {
             my $nro_pag_to_write;
             $nro_filas++;
             if (-f "$dir_semaf/$id_level.$pid_propio") {
                 $nro_pag_to_write = $nro_pag + 1;
+
                 # print STDERR "\r                   pag[$nro_pag_to_write] row[$nro_filas]";
                 # sleep (1) if ($nro_filas > 98);
             } else {
+
                 # print STDERR "\n[$$] FETCHING: hasta aca no mas llegamos!\n";
                 return;
-            };
+            }
 
             # parsea en todas las multivistas
             my $mv;
@@ -315,20 +326,25 @@ sub generar_tagonomicas_thislevel {
                 my $reldir_artic_mv = $RELDIR_ARTIC;
                 $reldir_artic_mv = "$RELDIR_ARTIC-$mv" if ($mv);
                 foreach my $nombase_plt (keys %NOMBASE_PLTS) {
+
                     # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
-                    my $loop_plt = &get_loop_plt($tag_id, $fid, $mv, $nombase_plt);
-                    next if (!$loop_plt);
+                    my @loops_plt = &get_loops_plt($tag_id, $fid, $mv, $nombase_plt);
+                    next if (!@loops_plt);
                     my $fila_content;
                     my ($auxref, $auxref2);
+                    my $loop_id = 0;
+                    foreach my $loop_plt (@loops_plt) {
 
-                    # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
-                    ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
+                        # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
+                        ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
 
-                    $art_xml_fields{$art_id} = $auxref if (! exists $art_xml_fields{$art_id}); # para no leer 2 veces un xml
-                    $art_xdata_fields{$art_id} = $auxref2 if (! exists $art_xdata_fields{$art_id}); # para no leer 2 veces un xml
-                    $filas{"$mv|$nombase_plt"} .= $fila_content;
-                };
-            };
+                        $art_xml_fields{$art_id} = $auxref if (!exists $art_xml_fields{$art_id}); # para no leer 2 veces un xml
+                        $art_xdata_fields{$art_id} = $auxref2 if (!exists $art_xdata_fields{$art_id}); # para no leer 2 veces un xml
+                        $filas{"$mv|$nombase_plt"}[$loop_id] .= $fila_content;
+                        $loop_id++;
+                    }
+                }
+            }
 
             # escribir la pag actual y cambiar a la pagina siguiente
             if ($nro_filas >= $FILASXPAG) {
@@ -336,8 +352,8 @@ sub generar_tagonomicas_thislevel {
                 &write_pag($fid, $tot_artics, $nro_pag, $tag_id, \%filas, \%tag_noms);
                 $nro_filas = 0; # resetea conta de filas para empezar del ppio en la pagina que viene.
                 %filas = ();
-            };
-        };
+            }
+        }
 
 
         $nro_pag++; # avanza pag
@@ -347,54 +363,57 @@ sub generar_tagonomicas_thislevel {
         $salida->finish;
         if (-f "$dir_semaf/$id_level.$pid_propio") {
             unlink "$dir_semaf/$id_level.$pid_propio";
+
             # print STDERR "\n[$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
-        };
-    };
+        }
+    }
+}
 
-
-};
 # ---------------------------------------------------------------
-sub get_loop_plt {
-    # Obtiene buffer del loop del tpl de la portada tipo tema, de acuerdo a s, t y st + fid y mv.
+sub get_loops_plt {
+
+    # Obtiene buffers de los loops del tpl de la portada tipo tema, de acuerdo a id + fid y mv.
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
     my ($dir_macros) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_MACROS";
 
     # Si fue cargado el tpl, lo retorna
     my $key_hash = "$tag_id|$fid|$mv|$nombase_plt";
-    return $BUF_PLT_LOOP{$key_hash} if ($BUF_PLT_LOOP{$key_hash});
+    return @{$BUF_PLT_LOOP{$key_hash}} if ($BUF_PLT_LOOP{$key_hash});
 
     # Si no, lo obtiene.
     my $plt = &obtiene_plt($tag_id, $fid, $mv, $nombase_plt);
 
-    return '' if (!$plt);
+    return () if (!$plt);
+
     # print STDERR "determinando plt para s[$secc_id]t[$temas_id]st[$subtemas_id]fid[$fid]mv[$mv] -> plt[$plt]\n";
 
     if ($LOADED_NAMES_PLT{$plt}) { # si ya fue leida esta plt para algun otro key_hash, lo saco de ahi
         my $key_hash_anterior = $LOADED_NAMES_PLT{$plt};
-        $BUF_PLT_LOOP{$key_hash} = $BUF_PLT_LOOP{$key_hash_anterior};
+        push(@{$BUF_PLT_LOOP{$key_hash}}, @{$BUF_PLT_LOOP{$key_hash_anterior}});
         $BUF_PLT{$key_hash} = $BUF_PLT{$key_hash_anterior};
-        return $BUF_PLT_LOOP{$key_hash};
-    };
+        return @{$BUF_PLT_LOOP{$key_hash}};
+    }
 
     my $buffer = &glib_fildir_02::read_file($plt);
 
     $buffer = &lib_prontus::add_macros($buffer, $dir_macros);
 
-    my $loop;
-    if ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
-        $loop = $1;
-    };
+    my @loops = ();
+    while ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
+        push(@loops, $1);
+    }
 
     # Carga en ram plantillas
-    $BUF_PLT_LOOP{$key_hash} = $loop;
+    push( @{$BUF_PLT_LOOP{$key_hash}}, @loops);
     $BUF_PLT{$key_hash} = $buffer;
     $LOADED_NAMES_PLT{$plt} = $key_hash;
-    return $loop;
+    return @loops;
 
-};
+}
 
 # ---------------------------------------------------------------
 sub get_buffer_plt {
+
     # Obtiene buffer del tpl de la portada tipo tema, de acuerdo a s, t y st.
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
     my ($dir_macros) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_MACROS";
@@ -411,48 +430,47 @@ sub get_buffer_plt {
     # si ya fue leida esta plt para algun otro key_hash, lo saco de ahi para no leer de nuevo de FS
     if ($LOADED_NAMES_PLT{$plt}) {
         my $key_hash_anterior = $LOADED_NAMES_PLT{$plt};
-        $BUF_PLT_LOOP{$key_hash} = $BUF_PLT_LOOP{$key_hash_anterior};
+        push(@{$BUF_PLT_LOOP{$key_hash}}, @{$BUF_PLT_LOOP{$key_hash_anterior}});
         $BUF_PLT{$key_hash} = $BUF_PLT{$key_hash_anterior};
         return $BUF_PLT{$key_hash};
-    };
+    }
 
     my $buffer = &glib_fildir_02::read_file($plt);
 
     $buffer = &lib_prontus::add_macros($buffer, $dir_macros);
 
 
-    my $loop;
-    if ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
-        $loop = $1;
-    };
+    my @loops = ();
+    while ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
+        push(@loops, $1);
+    }
+
     # Carga en ram plantillas
-    $BUF_PLT_LOOP{$key_hash} = $loop;
+    push(@{$BUF_PLT_LOOP{$key_hash}}, @loops);
     $BUF_PLT{$key_hash} = $buffer;
     $LOADED_NAMES_PLT{$plt} = $key_hash;
 
     return $buffer;
 
-};
+}
 
 
 # ---------------------------------------------------------------
 sub obtiene_plt {
-# Obtiene nombre del q sera el tpl de la portada tipo tema, de acuerdo a s, t y st.
-#  O sea, si taxonomia de entrada es:
-#  seccion=sN
-#  tema=tN
-#  subtema=stN
-#  Se busca si existe una plantilla que se llame taxport_sN_tN_stN.html
-#  Si no existe, se busca taxport_sN_tN.html
-#  Si no existe, se busca taxport_sN.html
-#  Si no existe, se usa taxport.html
-# La plantilla es del tipo:
-# /<_prontus_id>/plantillas/tax/port/(all|<_fid>)[-<_mv>]/taxport[_<_seccion>][_<_tema>][_<_subtema>].<ext>
+
+    # Obtiene nombre del q sera el tpl de la portada tipo tema, de acuerdo a s, t y st.
+    #  O sea, si tagonomia de entrada es:
+    #  id = N
+    #  Se busca si existe una plantilla que se llame tagport_N.html
+    #  Si no existe, se usa tagport.html
+    # La plantilla es del tipo:
+    # /<_prontus_id>/plantillas/tag/port/(all|<_fid>)[-<_mv>]/tagport[_<_id>.<ext>
 
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
 
     my ($dir_plt) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP";
-    &glib_fildir_02::check_dir($dir_plt) if (! -d $dir_plt);
+    &glib_fildir_02::check_dir($dir_plt) if (!-d $dir_plt);
+
     # Obtiene extension (con punto) de la plantilla a usar.
     my ($nombase, $ext_port_tmp) = &lib_prontus::split_nom_y_extension($nombase_plt);
     $ext_port_tmp = '.' . $ext_port_tmp;
@@ -462,6 +480,7 @@ sub obtiene_plt {
     $EXT_PORT_TMP{$key_hash} = $ext_port_tmp;
 
     my ($plt);
+
     # Intenta obtener plantilla para filtro por fid
     if ($fid) {
         my $dir_plt_fid = $dir_plt . "/$fid";
@@ -470,40 +489,44 @@ sub obtiene_plt {
             $plt = &obtienePltPorTag($tag_id, $dir_plt_fid_vista, $ext_port_tmp, $nombase);
 
             return $plt if (-f $plt);
+
             # return ''; # si no hay plantilla para la vista, retorna vacio
         } else {
             $plt = &obtienePltPorTag($tag_id, $dir_plt_fid, $ext_port_tmp, $nombase);
             return $plt if ( -f $plt);
-        };
-    };
+        }
+    }
 
     # Ahora la intenta obtener sin filtro de fid
     my $dir_plt_all = $dir_plt . '/all';
 
     if ($mv) {
+
         # Intenta con la vista
         my $dir_plt_all_vista = $dir_plt_all . '-' . $mv;
         $plt = &obtienePltPorTag($tag_id, $dir_plt_all_vista, $ext_port_tmp, $nombase);
         return $plt if (-f $plt);
         return ''; # si no hay plantilla para la vista, retorna vacio
     } else {
+
         # intenta obtener plantilla estandar
         $plt = &obtienePltPorTag($tag_id, $dir_plt_all, $ext_port_tmp, $nombase);
         return $plt if (-f $plt);
-    };
+    }
 
     # No se enontro ninguna plantilla
     return '';
 
-};
+}
 
 
 # ---------------------------------------------------------------
 sub carga_nombase_plts {
-# Obtiene nombres de las multiples plantillas, las lee siempre del /all
+
+    # Obtiene nombres de las multiples plantillas, las lee siempre del /all
 
     my ($ruta_dir) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP/all";
-    &glib_fildir_02::check_dir($ruta_dir) if (! -d $ruta_dir);
+    &glib_fildir_02::check_dir($ruta_dir) if (!-d $ruta_dir);
     my @lisdir = &glib_fildir_02::lee_dir($ruta_dir);
     @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
 
@@ -511,22 +534,23 @@ sub carga_nombase_plts {
     foreach my $k (@lisdir) {
         if ((-f "$ruta_dir/$k") && ($k =~ /^([a-z]+\.\w+)$/)) {
             $NOMBASE_PLTS{$1} = 1;
-        };
-    };
+        }
+    }
 
-};
+}
 
 # ---------------------------------------------------------------
 sub obtienePltPorTag {
-# Obtiene nombre de plantilla taxonomica, de acuerdo a s, t y st.
-#  O sea, si taxonomia de entrada es:
-#  seccion=sN
-#  tema=tN
-#  subtema=stN
-#  Se busca si existe una plantilla que se llame taxport_sN_tN_stN.<ext>
-#  Si no existe, se busca taxport_sN_tN.<ext>
-#  Si no existe, se busca taxport_sN.<ext>
-#  Si no existe, se usa taxport.<ext>
+
+    # Obtiene nombre de plantilla taxonomica, de acuerdo a s, t y st.
+    #  O sea, si taxonomia de entrada es:
+    #  seccion=sN
+    #  tema=tN
+    #  subtema=stN
+    #  Se busca si existe una plantilla que se llame taxport_sN_tN_stN.<ext>
+    #  Si no existe, se busca taxport_sN_tN.<ext>
+    #  Si no existe, se busca taxport_sN.<ext>
+    #  Si no existe, se usa taxport.<ext>
     my ($tag_id, $ruta_dir, $ext_port_tmp, $nombase) = @_;
     my $tpl;
 
@@ -540,10 +564,10 @@ sub obtienePltPorTag {
     # return $ruta_dir;
     return '';
 
-};
+}
+
 # ---------------------------------------------------------------
 sub write_pag {
-
     my ($fid, $tot_artics, $nro_pag, $tag_id, $filas_hashref, $tag_noms_hashref) = @_;
     my %filas = %$filas_hashref;
     my %tag_noms = %$tag_noms_hashref;
@@ -552,8 +576,8 @@ sub write_pag {
     my %vistas; # incluye las mv y la normal
     %vistas = %prontus_varglb::MULTIVISTAS;
     $vistas{''} = 1;
-    my $mv;
-    foreach $mv (keys %vistas) {
+
+    foreach my $mv (keys %vistas) {
         foreach my $nombase_plt (keys %NOMBASE_PLTS) {
             next if ((!$filas{"$mv|$nombase_plt"}) && ($nro_pag > 1)); # para evitar pagina sobrante sin items
             # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
@@ -563,11 +587,12 @@ sub write_pag {
             # Solo para filtros. Si estan configuradas las plantillas, solo se consideran esas.
             if ($fid =~ /^fil_/ && defined $CFG_FIL_TAGPORT{$fid}{'PLANTILLAS'} && !defined $CFG_FIL_TAGPORT{$fid}{'PLANTILLAS'}{$nombase_plt}) {
                 next;
-            };
+            }
 
             ($pagina, $MSGS{"$mv|$nombase_plt"}) = &carga_mensajes($pagina); # 1.8
             $pagina =~ s/%%_totartics%%/$tot_artics/ig;
             my $key_hash = "$tag_id|$fid|$mv|$nombase_plt";
+
             # warn "$key_hash lista[$lista]";
             my $reldir_port_dst = &obtieneRelDirDestino($fid, $mv);
             my ($nombase, $extension) = &lib_prontus::split_nom_y_extension($nombase_plt);
@@ -578,7 +603,9 @@ sub write_pag {
             $pagina =~ s/%%_tag_fid%%/all/isg if (!$fid);
 
             $extension = '.' . $extension;
-            $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"$mv|$nombase_plt"}/isg;
+            foreach my $loop (@{$filas{"$mv|$nombase_plt"}}) {
+                $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$loop/is;
+            }
             $pagina = &incluir_nrosdepag($tot_artics, $pagina, $nro_pag, $tag_id, $mv, $reldir_port_dst, $extension, $nombase);
 
             # reemplazar nombre del prontus
@@ -604,8 +631,17 @@ sub write_pag {
             my ($prevpag, $nextpag, $prevlink, $nextlink);
             ($pagina, $prevpag, $nextpag, $prevlink, $nextlink) = &incluir_next_y_prev($tot_artics, $pagina, $nro_pag, $tag_id, $mv, $reldir_port_dst, $extension, $nombase);
 
-            my %claves = ('_nropagina' => $nro_pag, '_vista' => $mv, '_tag_id' => $tag_id,
-                    '_tag_nom' => $tag_nom, '_tag_fid' => $fid, '_nextpag' => $nextpag, '_prevpag' => $prevpag, '_nextlink' => $nextlink, '_prevlink' => $prevlink);
+            my %claves = (
+                '_nropagina' => $nro_pag,
+                '_vista' => $mv,
+                '_tag_id' => $tag_id,
+                '_tag_nom' => $tag_nom,
+                '_tag_fid' => $fid,
+                '_nextpag' => $nextpag,
+                '_prevpag' => $prevpag,
+                '_nextlink' => $nextlink,
+                '_prevlink' => $prevlink
+            );
 
             $pagina = &lib_prontus::procesa_condicional($pagina, \%claves);
 
@@ -619,18 +655,15 @@ sub write_pag {
             # Escribe pagina
             my $fullpath_dir = "$prontus_varglb::DIR_SERVER$reldir_port_dst";
 
-            &glib_fildir_02::check_dir($fullpath_dir) if (! -d $fullpath_dir);
-            my $k = "$fullpath_dir/$nombase" . '_'
-                                        . $tag_id
-                                        . '_' . $nro_pag
-                                    . $extension;
-#            # debug
-#            if (! exists $HASH_FILES{$k}) {
-#                $HASH_FILES{$k} = 1;
-#            } else {
-#                print STDERR "escrito de nuevo!![$k]\n";
-#            };
+            &glib_fildir_02::check_dir($fullpath_dir) if (!-d $fullpath_dir);
+            my $k = "$fullpath_dir/$nombase" . '_'. $tag_id. '_' . $nro_pag. $extension;
 
+            #            # debug
+            #            if (! exists $HASH_FILES{$k}) {
+            #                $HASH_FILES{$k} = 1;
+            #            } else {
+            #                print STDERR "escrito de nuevo!![$k]\n";
+            #            };
 
 
             &glib_fildir_02::write_file($k, $pagina);
@@ -639,35 +672,40 @@ sub write_pag {
                 if ($prontus_varglb::CACHE_PURGE_TAGPORT_MV eq 'SI') {
                     &lib_prontus::purge_cache($k);
                 } else {
+
                     # Si está desactivada la opción de hacer purge a la vistas, solo se hace a la principal.
                     if ($mv eq '') {
                         &lib_prontus::purge_cache($k);
                     }
                 }
             }
+
             # print STDERR "writing [$k]\n";
 
-        };
+        }
 
-    };
+    }
 
-};
+}
+
 # ---------------------------------------------------------------
 sub obtieneRelDirDestino {
-# Obtiene directorio de destino (relativo al doc root) donde sera almacenada
-# la portada taxonomica generada
+
+    # Obtiene directorio de destino (relativo al doc root) donde sera almacenada
+    # la portada taxonomica generada
     my ($fid, $mv) = @_;
     my $reldir_port_dst = $RELDIR_PORT_DST;
     if ($fid) {
         $reldir_port_dst .= "/$fid";
     } else {
         $reldir_port_dst .= '/all';
-    };
+    }
     if ($mv) { # nombre de la vista.
         $reldir_port_dst .= '-' . $mv;
-    };
+    }
     return $reldir_port_dst;
-};
+}
+
 # ---------------------------------------------------------------
 sub incluir_nrosdepag {
     my ($tot_artics, $pagina, $nro_pag, $tag_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
@@ -698,7 +736,7 @@ sub incluir_nrosdepag {
         $tpl_nropag = $value if ($name eq 'HTML_NRO_PAG');
         $tpl_nropag2 = $value if ($name eq 'HTML_PAG_ACTUAL');
         $tpl_separador = $value if ($name eq 'HTML_SEPARADOR');
-    };
+    }
 
     # Quitar comentarios de configuración.
     $pagina =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
@@ -718,30 +756,27 @@ sub incluir_nrosdepag {
                 $tpl_nropag_aux = $tpl_nropag2;
             }else{
                 $tpl_nropag_aux = $tpl_nropag;
-            };
+            }
 
-            my $lnk = "$reldir_port_dst/$nombase" . '_'
-                    . $tag_id
-                    . '_' . $cnro_pag
-                    . $extension;
+            my $lnk = "$reldir_port_dst/$nombase" . '_'. $tag_id. '_' . $cnro_pag. $extension;
 
             $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
             $tpl_nropag_aux =~ s/%%cnro_pag%%/$cnro_pag/;
             $html_nros_pag .= "$tpl_nropag_aux\n";
-        };
-    };
+        }
+    }
 
     if ($html_nros_pag ne '') {
         $pagina =~ s/%%_HTML_NROS_PAG%%/ $html_nros_pag /ig;
-    }
-    else {
+    }else {
         $pagina =~ s/%%_HTML_NROS_PAG%%//ig;
         $pagina =~ s/%%_msg%%.*?%%\/_msg%%/$msgs{'no_results'}/is; # 1.8
-    };
+    }
 
     return $pagina;
 
-};
+}
+
 
 sub incluir_next_y_prev {
     my ($tot_artics, $pagina, $nro_pag, $tag_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
@@ -757,17 +792,11 @@ sub incluir_next_y_prev {
     $prevpag = ($nro_pag - 1) if (($nro_pag - 1) > 0);
 
     if ($prevpag) {
-        $prevlink = "$reldir_port_dst/$nombase" . '_'
-                . $tag_id
-                . '_' . $prevpag
-                . $extension;
+        $prevlink = "$reldir_port_dst/$nombase" . '_'. $tag_id. '_' . $prevpag. $extension;
     }
 
     if ($nextpag) {
-        $nextlink = "$reldir_port_dst/$nombase" . '_'
-                . $tag_id
-                . '_' . $nextpag
-                . $extension;
+        $nextlink = "$reldir_port_dst/$nombase" . '_'. $tag_id. '_' . $nextpag. $extension;
     }
 
     $pagina =~ s/%%_prevpag%%/$prevpag/ig;
@@ -776,7 +805,7 @@ sub incluir_next_y_prev {
     $pagina =~ s/%%_nextlink%%/$nextlink/ig;
 
     return ($pagina, $prevpag, $nextpag, $prevlink, $nextlink);
-};
+}
 
 # ---------------------------------------------------------------
 sub get_tot_artics {
@@ -789,10 +818,10 @@ sub get_tot_artics {
     if ($filtros ne '') {
         $sql =~ s/%%FILTRO%%/ where $filtros /;
         $sql =~ s/group by ART_ID//i;
-    }
-    else {
+    }else {
         $sql =~ s/%%FILTRO%%//;
-    };
+    }
+
     # print STDERR "$sql contar[$sql]";
     # &glib_fildir_02::write_file('tipotema.sql', $sql); # debug
     $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($count_art));
@@ -801,55 +830,60 @@ sub get_tot_artics {
     $count_art = '0' if $count_art eq '';
     $count_art = $prontus_varglb::TAGPORT_MAXARTICS if ($count_art > $prontus_varglb::TAGPORT_MAXARTICS);
     return $count_art;
-};
+}
 
 
 # ---------------------------------------------------------------
 sub valida_param {
     my $sintaxis = 'prontus_tags_ports.cgi {<prontus_id>} {<id tags separados por slash (/)>} [<fid>]';
 
-    if ( (! -d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} eq '')  || ($FORM{'prontus'} =~ /^\//) )  {
+    if ( (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} eq '')  || ($FORM{'prontus'} =~ /^\//) )  {
         print STDERR "\nError: Directorio del publicador no es valido.";
         print STDERR "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como primer parametro de esta CGI\nSintaxis: $sintaxis\n";
         exit;
-    };
+    }
 
     if ($FORM{'tags_id'} !~ /^[0-9]+(\/[0-9]+)*$/) {
         print STDERR "\nprontus_tags_ports.cgi: Ids de tags no es válido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
         exit;
-    };
+    }
 
     if ($FORM{'fid_especif'} !~ /^[\w\-\.]*$/) {
         print STDERR "\nprontus_tags_ports.cgi: Fid no es válido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
         exit;
-    };
+    }
 
-};
+}
+
 # -------------------------------------------------------------------------#
 sub carga_mensajes {
-# Busca, inicializa y elimina mensajes dentro de la plantilla.
-# Carga hash de mensajes
-#     <!-- MSG xxx = xxx -->
+
+    # Busca, inicializa y elimina mensajes dentro de la plantilla.
+    # Carga hash de mensajes
+    #     <!-- MSG xxx = xxx -->
 
     my($plantilla) = $_[0];
     my %msgs;
+
     # Mensajes por defecto.
     $msgs{'no_results'} = 'No se encontraron resultados.';
 
     while ($plantilla =~ /<!--\s*MSG\s*(\w+)\s*=\s*(.+?)\s*-->/sg) {
         $msgs{$1} = $2;
-    };
+    }
+
     # Elimina mensajes de la plantilla.
     $plantilla =~ s/<!--\s*MSG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
 
     return ($plantilla, \%msgs);
-};
+}
 
 # ---------------------------------------------------------------
 sub get_fids2process {
-# Obtiene fids para los cuales se generaran portadas tagonomicas.
-# Estos son solo los que cuenten con plantilla tagonomica en el dir correspondiente:
-# /<_prontus_id>/plantillas/tag/port/<_fid>[-<_mv>]/tagport[_<_tag_id>].<ext>
+
+    # Obtiene fids para los cuales se generaran portadas tagonomicas.
+    # Estos son solo los que cuenten con plantilla tagonomica en el dir correspondiente:
+    # /<_prontus_id>/plantillas/tag/port/<_fid>[-<_mv>]/tagport[_<_tag_id>].<ext>
 
     my %fids;
 
@@ -868,24 +902,24 @@ sub get_fids2process {
             foreach my $mv (keys %multivistas) {
                 $mv = '-' . $mv if ($mv ne '');
                 my $dir = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP/$fid_name$mv";
-                next if (! -d $dir);
+                next if (!-d $dir);
                 my $plt = &get_tpl($dir);
                 next if ( (!-f "$dir/$plt") || (!$plt));
                 $fids{$fid_name} = 1;
-            };
-        };
-    };
+            }
+        }
+    }
 
     # Se agregan como fids los filtros para usar la misma logica.
     my @listado_filtros = &get_tagport_fil();
 
     foreach my $fil (@listado_filtros) {
         $fids{$fil} = $1;
-    };
+    }
 
     return %fids;
 
-};
+}
 
 #-----------------------------------------------------------------------
 sub get_tagport_fil {
@@ -897,12 +931,12 @@ sub get_tagport_fil {
         if ($dir =~ /fil_(.*?)$/) {
             push @filtros, "fil_" . $1;
             &cargar_fil_cfg("$dir/filtros.cfg", "fil_" . $1);
-        };
+        }
 
-    };
+    }
 
     return @filtros;
-};
+}
 
 #-----------------------------------------------------------------------
 sub cargar_fil_cfg {
@@ -927,7 +961,7 @@ sub cargar_fil_cfg {
         $CFG_FIL_TAGPORT{$fil}{'FIDS'} = \@valores;
 
         #print STDERR "CFG_FIL_TAGPORT! fil[$fil] value[$value]\n";
-    };
+    }
 
     if ($cfg =~ m/\s*TAGPORT_PLANTILLAS\s*=\s*("|')(.*?)("|')/s) {
         my $value = $2;
@@ -943,10 +977,10 @@ sub cargar_fil_cfg {
 
         foreach my $tpl (@valores) {
             $CFG_FIL_TAGPORT{$fil}{'PLANTILLAS'}{$tpl} = 1;
-        };
+        }
 
         #print STDERR "CFG CFG_FIL_TAGPORT! fil[$fil] value[$value]\n";
-    };
+    }
 
     if ($cfg =~ m/\s*TAGPORT_FECHA_DESDE\s*=\s*("|')(.*?)("|')/s) {
         my $value = $2;
@@ -963,32 +997,33 @@ sub cargar_fil_cfg {
         $CFG_FIL_TAGPORT{$fil}{'FECHA_DESDE'} = $value;
 
         #print STDERR "CFG CFG_FIL_TAGPORT! fil[$fil] value[$value]\n";
-    };
+    }
 
-};
+}
 
 #-----------------------------------------------------------------------
 sub stat_arch {
-# Determina si el archivo es mas antiguo que N segundos, de acuerdo a fecha/hora de modificacion.
+
+    # Determina si el archivo es mas antiguo que N segundos, de acuerdo a fecha/hora de modificacion.
     my ($pathArch) = shift;
 
     # Obtener estadisticas del arch.
-    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,
-        $mtime, $ctime,  $blksize,  $blocks)= stat $pathArch;
+    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,$mtime, $ctime,  $blksize,  $blocks)= stat $pathArch;
     return ($mtime, $size);
-};
+}
 
 # ---------------------------------------------------------------
 sub genera_filtros_tagports {
-# Genera segmento variable del sql para encontrar los articulos.
-# Aplica a portadas tax normales y a portadillas de calendarios taxonomicos
+
+    # Genera segmento variable del sql para encontrar los articulos.
+    # Aplica a portadas tax normales y a portadillas de calendarios taxonomicos
 
     my ($tag_id, $fid, $curr_dtime) = @_;
     my $fid_fil = $fid;
 
     if ($fid =~ /^fil_/) {
         $fid = '';
-    };
+    }
 
     $curr_dtime =~ /^(\d{8})(\d\d\d\d)/;
     my $dt_system = $1;
@@ -998,12 +1033,12 @@ sub genera_filtros_tagports {
 
     if ($tag_id) {
         $filtros = "(ART_ID = TAGSART_IDART and TAGSART_IDTAGS = \"$tag_id\")";
-    };
+    }
 
     if ($fid) {
         $filtros .= " and " if ($filtros);
         $filtros .= " (ART_TIPOFICHA = \"$fid\") ";
-    };
+    }
 
     if ($fid_fil && defined $CFG_FIL_TAGPORT{$fid_fil}{'FIDS'}) {
         my @fidlist = @{$CFG_FIL_TAGPORT{$fid_fil}{'FIDS'}};
@@ -1012,14 +1047,14 @@ sub genera_filtros_tagports {
         if (scalar @fidlist) {
             foreach my $filfid (@fidlist) {
                 $filtro_fids .= "ART_TIPOFICHA = '$filfid' OR ";
-            };
+            }
 
             $filtro_fids = substr($filtro_fids, 0, (length($filtro_fids)-3));
 
             $filtros .= " and " if ($filtros);
             $filtros .= "($filtro_fids)";
-        };
-    };
+        }
+    }
 
     $filtros .= " and " if ($filtros);
 
@@ -1027,17 +1062,17 @@ sub genera_filtros_tagports {
         $filtros .= " (ART_FECHAP >= \"$CFG_FIL_TAGPORT{$fid_fil}{'FECHA_DESDE'}\") ";
     } else {
         $filtros .= " (ART_FECHAPHORAP <= \"$dt_system$hhmm_system\") ";
-    };
+    }
 
     $filtros .= " and (ART_ALTA = \"1\") " if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI');
 
     if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
         $filtros .= " and ( (ART_FECHAEHORAE >= \"$dt_system$hhmm_system\") OR ( (ART_FECHAEHORAE < \"$dt_system$hhmm_system\") AND (ART_SOLOPORTADAS = \"1\") ) )";
-    };
+    }
 
 
     return $filtros;
 
-};
+}
 
 # -------------------------END SCRIPT----------------------

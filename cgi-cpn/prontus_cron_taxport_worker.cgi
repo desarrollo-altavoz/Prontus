@@ -34,7 +34,7 @@ use lib_tax;
 use lib_maxrunning;
 use DBI;
 use POSIX qw(strftime ceil);
-use Data::Dumper;
+#use Data::Dumper;
 
 my $BD;
 my (%PARAMS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC, %FIDS);
