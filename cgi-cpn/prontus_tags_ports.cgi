@@ -23,7 +23,7 @@
 # ---------------------------------------------------------------
 # PROPOSITO.
 # -----------
-# Geenerar portadas tagonomicas en modo batch, todas de una vez.
+# Generar portadas tagonomicas en modo batch, todas de una vez.
 # ---------------------------------------------------------------
 # LLAMADAS A SCRIPTS.
 # ------------------------
@@ -35,7 +35,7 @@
 # como cron, con los sgtes. params:
 # $ARGV[0] : Nombre del prontus (ej. prontus_noticias)
 # $ARGV[1] : ids de tag a procesar, optativo, separados por /
-# $ARGV[2] : fid especï¿½fico a regenerar, optativo
+# $ARGV[2] : fid especifico a regenerar, optativo
 # ---------------------------------------------------------------
 # ARCHIVOS DE ENTRADA.
 # ------------------------
@@ -73,7 +73,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0 - 05/2007 - YCH - Primera Version.
-# 1.1 - 09/2016 - SCT - Se agrega paginaciï¿½n custom, basado en paginaciï¿½n de tagport.
+# 1.1 - 09/2016 - SCT - Se agrega paginación custom, basado en paginación de tagport.
 
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -211,9 +211,9 @@ sub get_tag_noms {
 }
 
 # ---------------------------------------------------------------
+# Obtiene nombre del q sera el tpl de la portada, es el primer archivo q se encuentre.
 sub get_tpl {
 
-    # Obtiene nombre del q sera el tpl de la portada, es el primer archivo q se encuentre.
     my ($ruta_dir) = $_[0];
     my (@lisdir, $k);
     &glib_fildir_02::check_dir($ruta_dir) if (!-d $ruta_dir);
@@ -288,7 +288,7 @@ sub generar_tagonomicas_thislevel {
 
         if ($filtros ne '') {
             $sql =~ s/%%FILTRO%%/ where $filtros /;
-        } else {
+        }else {
             $sql =~ s/%%FILTRO%%/$filtros/;
         }
 
@@ -324,11 +324,13 @@ sub generar_tagonomicas_thislevel {
                 $reldir_artic_mv = "$RELDIR_ARTIC-$mv" if ($mv);
                 foreach my $nombase_plt (keys %NOMBASE_PLTS) {
 
-                    # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
+                    # Obtiene plantilla, de acuerdo al nivel tagonomico especificado, fid y mv
                     my @loops_plt = &get_loops_plt($tag_id, $fid, $mv, $nombase_plt);
                     next if (!@loops_plt);
                     my $fila_content;
                     my ($auxref, $auxref2);
+
+                    # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
                     my $loop_id = 0;
                     foreach my $loop_plt (@loops_plt) {
                         ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
@@ -362,12 +364,13 @@ sub generar_tagonomicas_thislevel {
             # print STDERR "\n[$$] PROCESAR LEVEL[$id_level] proceso completado OK!\n";
         }
     }
+
 }
 
 # ---------------------------------------------------------------
+# Obtiene buffer del loop del tpl de la portada tag, de acuerdo a id_tag + fid y mv.
 sub get_loops_plt {
 
-    # Obtiene buffers de los loops del tpl de la portada tipo tema, de acuerdo a id + fid y mv.
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
     my ($dir_macros) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_MACROS";
 
@@ -407,8 +410,9 @@ sub get_loops_plt {
 }
 
 # ---------------------------------------------------------------
-# Obtiene buffer del tpl de la portada tagonomica, de acuerdo a nombre y tag_id.
+# Obtiene buffer del tpl de la portada tipo tema, de acuerdo a tag_id
 sub get_buffer_plt {
+
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
     my ($dir_macros) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_MACROS";
 
@@ -449,15 +453,14 @@ sub get_buffer_plt {
 
 
 # ---------------------------------------------------------------
+# Obtiene nombre del q sera el tpl de la portada tipo tag, de acuerdo al id de tag
+#  O sea, si tagonomia de entrada es:
+#  id = iN
+#  Se busca si existe una plantilla que se llame tagport_iN.html
+#  Si no existe, se usa tagport.html
+# La plantilla es del tipo:
+# /<_prontus_id>/plantillas/tag/port/(all|<_fid>)[-<_mv>]/tagport[_<_id>.<ext>
 sub obtiene_plt {
-
-    # Obtiene nombre del q sera el tpl de la portada tipo tema, de acuerdo a s, t y st.
-    #  O sea, si tagonomia de entrada es:
-    #  id = N
-    #  Se busca si existe una plantilla que se llame tagport_N.html
-    #  Si no existe, se usa tagport.html
-    # La plantilla es del tipo:
-    # /<_prontus_id>/plantillas/tag/port/(all|<_fid>)[-<_mv>]/tagport[_<_id>.<ext>
 
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
 
@@ -514,9 +517,8 @@ sub obtiene_plt {
 
 
 # ---------------------------------------------------------------
+# Obtiene nombres de las multiples plantillas, las lee siempre del /all
 sub carga_nombase_plts {
-
-    # Obtiene nombres de las multiples plantillas, las lee siempre del /all
 
     my ($ruta_dir) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP/all";
     &glib_fildir_02::check_dir($ruta_dir) if (!-d $ruta_dir);
@@ -533,17 +535,13 @@ sub carga_nombase_plts {
 }
 
 # ---------------------------------------------------------------
+# Obtiene nombre de plantilla tagonomica, de acuerdo al id de tag
+#  O sea, si tagonomia de entrada es:
+#  tag_id=iN
+#  Se busca si existe una plantilla que se llame tagport_iN.<ext>
+#  Si no existe, se usa tagport.<ext>
 sub obtienePltPorTag {
 
-    # Obtiene nombre de plantilla taxonomica, de acuerdo a s, t y st.
-    #  O sea, si taxonomia de entrada es:
-    #  seccion=sN
-    #  tema=tN
-    #  subtema=stN
-    #  Se busca si existe una plantilla que se llame taxport_sN_tN_stN.<ext>
-    #  Si no existe, se busca taxport_sN_tN.<ext>
-    #  Si no existe, se busca taxport_sN.<ext>
-    #  Si no existe, se usa taxport.<ext>
     my ($tag_id, $ruta_dir, $ext_port_tmp, $nombase) = @_;
     my $tpl;
 
@@ -560,7 +558,9 @@ sub obtienePltPorTag {
 }
 
 # ---------------------------------------------------------------
+# escribe pagina en todas las vistas incluida la normal
 sub write_pag {
+
     my ($fid, $tot_artics, $nro_pag, $tag_id, $filas_hashref, $tag_noms_hashref) = @_;
     my %filas = %$filas_hashref;
     my %tag_noms = %$tag_noms_hashref;
@@ -573,7 +573,7 @@ sub write_pag {
     foreach my $mv (keys %vistas) {
         foreach my $nombase_plt (keys %NOMBASE_PLTS) {
             next if ((!$filas{"$mv|$nombase_plt"}) && ($nro_pag > 1)); # para evitar pagina sobrante sin items
-            # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
+            # Obtiene plantilla, de acuerdo al nivel tagonomico especificado, fid y mv
             my $pagina = &get_buffer_plt($tag_id, $fid, $mv, $nombase_plt);
             next if (!$pagina);
 
@@ -666,7 +666,7 @@ sub write_pag {
                     &lib_prontus::purge_cache($k);
                 } else {
 
-                    # Si estï¿½ desactivada la opciï¿½n de hacer purge a la vistas, solo se hace a la principal.
+                    # Si está desactivada la opción de hacer purge a la vistas, solo se hace a la principal.
                     if ($mv eq '') {
                         &lib_prontus::purge_cache($k);
                     }
@@ -682,10 +682,10 @@ sub write_pag {
 }
 
 # ---------------------------------------------------------------
+# Obtiene directorio de destino (relativo al doc root) donde sera almacenada
+# la portada tagonomica generada
 sub obtieneRelDirDestino {
 
-    # Obtiene directorio de destino (relativo al doc root) donde sera almacenada
-    # la portada taxonomica generada
     my ($fid, $mv) = @_;
     my $reldir_port_dst = $RELDIR_PORT_DST;
     if ($fid) {
@@ -731,7 +731,7 @@ sub incluir_nrosdepag {
         $tpl_separador = $value if ($name eq 'HTML_SEPARADOR');
     }
 
-    # Quitar comentarios de configuraciï¿½n.
+    # Quitar comentarios de configuración.
     $pagina =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
 
     my $nro_paginas_totales = ceil($tot_artics / $prontus_varglb::TAGPORT_ARTXPAG);
@@ -837,23 +837,23 @@ sub valida_param {
     }
 
     if ($FORM{'tags_id'} !~ /^[0-9]+(\/[0-9]+)*$/) {
-        print STDERR "\nprontus_tags_ports.cgi: Ids de tags no es vï¿½lido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
+        print STDERR "\nprontus_tags_ports.cgi: Ids de tags no es válido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
         exit;
     }
 
     if ($FORM{'fid_especif'} !~ /^[\w\-\.]*$/) {
-        print STDERR "\nprontus_tags_ports.cgi: Fid no es vï¿½lido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
+        print STDERR "\nprontus_tags_ports.cgi: Fid no es válido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
         exit;
     }
 
 }
 
-# -------------------------------------------------------------------------#
-sub carga_mensajes {
+# -------------------------------------------------------------------
 
-    # Busca, inicializa y elimina mensajes dentro de la plantilla.
-    # Carga hash de mensajes
-    #     <!-- MSG xxx = xxx -->
+# Busca, inicializa y elimina mensajes dentro de la plantilla.
+# Carga hash de mensajes
+#     <!-- MSG xxx = xxx -->
+sub carga_mensajes {
 
     my($plantilla) = $_[0];
     my %msgs;
@@ -872,11 +872,10 @@ sub carga_mensajes {
 }
 
 # ---------------------------------------------------------------
+# Obtiene fids para los cuales se generaran portadas tagonomicas.
+# Estos son solo los que cuenten con plantilla tagonomica en el dir correspondiente:
+# /<_prontus_id>/plantillas/tag/port/<_fid>[-<_mv>]/tagport[_<_tag_id>].<ext>
 sub get_fids2process {
-
-    # Obtiene fids para los cuales se generaran portadas tagonomicas.
-    # Estos son solo los que cuenten con plantilla tagonomica en el dir correspondiente:
-    # /<_prontus_id>/plantillas/tag/port/<_fid>[-<_mv>]/tagport[_<_tag_id>].<ext>
 
     my %fids;
 
@@ -994,10 +993,10 @@ sub cargar_fil_cfg {
 
 }
 
-#-----------------------------------------------------------------------
+#-------------------------------------------------------------------
+# Determina si el archivo es mas antiguo que N segundos, de acuerdo a fecha/hora de modificacion.
 sub stat_arch {
 
-    # Determina si el archivo es mas antiguo que N segundos, de acuerdo a fecha/hora de modificacion.
     my ($pathArch) = shift;
 
     # Obtener estadisticas del arch.
@@ -1006,10 +1005,9 @@ sub stat_arch {
 }
 
 # ---------------------------------------------------------------
+# Genera segmento variable del sql para encontrar los articulos.
+# Aplica a portadas tax normales y a portadillas de calendarios tagonomicos
 sub genera_filtros_tagports {
-
-    # Genera segmento variable del sql para encontrar los articulos.
-    # Aplica a portadas tax normales y a portadillas de calendarios taxonomicos
 
     my ($tag_id, $fid, $curr_dtime) = @_;
     my $fid_fil = $fid;
@@ -1063,9 +1061,7 @@ sub genera_filtros_tagports {
         $filtros .= " and ( (ART_FECHAEHORAE >= \"$dt_system$hhmm_system\") OR ( (ART_FECHAEHORAE < \"$dt_system$hhmm_system\") AND (ART_SOLOPORTADAS = \"1\") ) )";
     }
 
-
     return $filtros;
-
 }
 
 # -------------------------END SCRIPT----------------------
