@@ -35,7 +35,7 @@
 # como cron, con los sgtes. params:
 # $ARGV[0] : Nombre del prontus (ej. prontus_noticias)
 # $ARGV[1] : ids de tag a procesar, optativo, separados por /
-# $ARGV[2] : fid específico a regenerar, optativo
+# $ARGV[2] : fid especï¿½fico a regenerar, optativo
 # ---------------------------------------------------------------
 # ARCHIVOS DE ENTRADA.
 # ------------------------
@@ -73,7 +73,7 @@
 # HISTORIAL DE VERSIONES.
 # ---------------------------
 # 1.0 - 05/2007 - YCH - Primera Version.
-# 1.1 - 09/2016 - SCT - Se agrega paginación custom, basado en paginación de tagport.
+# 1.1 - 09/2016 - SCT - Se agrega paginaciï¿½n custom, basado en paginaciï¿½n de tagport.
 
 # -------------------------------BEGIN SCRIPT--------------------
 # ---------------------------------------------------------------
@@ -229,11 +229,8 @@ sub get_tpl {
 }
 
 # ---------------------------------------------------------------
+# Genera todas las portadas tag (de la 1..n) para todas las vistas declaradas y fids.
 sub generar_tagonomicas_thislevel {
-
-    # Genera todas las portadas tax (de la 1..n) correspondientes
-    # a este nivel taxonomico, para todas las vistas declaradas y fids.
-
 
     my ($tag_id, $ref_hash, $base) = @_;
 
@@ -334,8 +331,6 @@ sub generar_tagonomicas_thislevel {
                     my ($auxref, $auxref2);
                     my $loop_id = 0;
                     foreach my $loop_plt (@loops_plt) {
-
-                        # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
                         ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $art_xml_fields{$art_id}, $art_xdata_fields{$art_id}, $nro_pag_to_write);
 
                         $art_xml_fields{$art_id} = $auxref if (!exists $art_xml_fields{$art_id}); # para no leer 2 veces un xml
@@ -412,9 +407,8 @@ sub get_loops_plt {
 }
 
 # ---------------------------------------------------------------
+# Obtiene buffer del tpl de la portada tagonomica, de acuerdo a nombre y tag_id.
 sub get_buffer_plt {
-
-    # Obtiene buffer del tpl de la portada tipo tema, de acuerdo a s, t y st.
     my ($tag_id, $fid, $mv, $nombase_plt) = @_;
     my ($dir_macros) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_MACROS";
 
@@ -438,7 +432,6 @@ sub get_buffer_plt {
     my $buffer = &glib_fildir_02::read_file($plt);
 
     $buffer = &lib_prontus::add_macros($buffer, $dir_macros);
-
 
     my @loops = ();
     while ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
@@ -673,7 +666,7 @@ sub write_pag {
                     &lib_prontus::purge_cache($k);
                 } else {
 
-                    # Si está desactivada la opción de hacer purge a la vistas, solo se hace a la principal.
+                    # Si estï¿½ desactivada la opciï¿½n de hacer purge a la vistas, solo se hace a la principal.
                     if ($mv eq '') {
                         &lib_prontus::purge_cache($k);
                     }
@@ -738,7 +731,7 @@ sub incluir_nrosdepag {
         $tpl_separador = $value if ($name eq 'HTML_SEPARADOR');
     }
 
-    # Quitar comentarios de configuración.
+    # Quitar comentarios de configuraciï¿½n.
     $pagina =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
 
     my $nro_paginas_totales = ceil($tot_artics / $prontus_varglb::TAGPORT_ARTXPAG);
@@ -844,12 +837,12 @@ sub valida_param {
     }
 
     if ($FORM{'tags_id'} !~ /^[0-9]+(\/[0-9]+)*$/) {
-        print STDERR "\nprontus_tags_ports.cgi: Ids de tags no es válido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
+        print STDERR "\nprontus_tags_ports.cgi: Ids de tags no es vï¿½lido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
         exit;
     }
 
     if ($FORM{'fid_especif'} !~ /^[\w\-\.]*$/) {
-        print STDERR "\nprontus_tags_ports.cgi: Fid no es válido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
+        print STDERR "\nprontus_tags_ports.cgi: Fid no es vï¿½lido. Se aborta ejecucion.\nSintaxis: $sintaxis\n";
         exit;
     }
 
