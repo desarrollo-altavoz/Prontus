@@ -123,7 +123,7 @@ main: {
         my $newheaderorder = 0;
 
         my @files =  &glib_fildir_02::lee_dir("$prontus_varglb::DIR_SERVER$DIRFORM");
-
+        my %orderreal_values;
         foreach my $file (sort @files) {
 
             next unless($file =~ /\d{14}\.json$/);
@@ -153,9 +153,10 @@ main: {
             }
 
             # Lo que no estaba antes, se agrega ahora y se agrega al orden
+            %orderreal_values = map {$_ => 1 } @orderreal;
             foreach my $name (sort keys %jsonhash) {
                 $CSV = $CSV . &lib_form::add_to_csv($jsonhash{$name});
-                push(@orderreal, $name);
+                push(@orderreal, $name) if (!$orderreal_values{$name});
             }
 
             # Se agregan los archivos si es que hay.
@@ -175,7 +176,7 @@ main: {
         }
 
         foreach my $name (sort { $newheader{$a} <=> $newheader{$b} } keys %newheader) {
-            push(@orderreal, $name);
+            push(@orderreal, $name) if (!$orderreal_values{$name});
         };
 
         splice(@orderreal,0,3,'Fecha','Hora','IP');
