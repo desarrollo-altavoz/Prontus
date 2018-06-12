@@ -15,6 +15,7 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+imag/
 
 # Server Files #
 ###############
@@ -34,3 +35,4 @@ pproc
 lib_custom.pm
 *.error.log*
 /cgi-cpn/prontus_taxport_conf.cfg
+.vagrant

@@ -334,9 +334,10 @@ sub data_management {
 
             $filename = $nomfile.$ext;
             $filedata = &glib_cgi_04::param($key);
+            print "filedata: $filedata\n" if $DEBUG;
             $files{$key}{'_name'} = 'file_' . $random.'--'.$filename;
             $files{$key}{'_temp'} = $filedata;
-            $body .= sprintf('%-15s',$key) . " = $filename\n";
+            $body .= sprintf('%-15s',$key) . " = $prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/$DATA_DIR/$TS/$files{$key}{'_name'}\n";
             $backupdata .= "\"file_$random--$filename\"$SEPARADOR"; # Pega el random para que el nombre sea unico.
         } else {
             $order_data->{$counter} = $key;
@@ -391,7 +392,7 @@ sub data_management {
     $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
     foreach my $email (@ADMIN_MAILS) {
         $to = $email;
-        $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$filedata);
+        $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
 
     };
     # Forma cuerpo para el remitente (autorrespuesta).
@@ -442,6 +443,7 @@ sub data_management {
     my $files_json;
 
     # Genera el backup, si es pertinente.
+    # Solamente guarda archivos adjuntos si está activa esta opción!
     if ($PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
         if (-e "$backupdir/backup.csv") { # Si existe ya el archivo, no inserta la linea de encabezados.
             &glib_fildir_02::append_file("$backupdir/backup.csv","$backupdata\r\n");
@@ -451,6 +453,7 @@ sub data_management {
         #if (keys %files) {
             # Mueve todos los archivos adjuntos.
             foreach my $file (keys %files) {
+                print "file: $file\n" if $DEBUG;
                 my $name = $files{$file}{'_name'};
                 my $temp = $files{$file}{'_temp'};
                 File::Copy::move($temp,"$backupdir/$name");
