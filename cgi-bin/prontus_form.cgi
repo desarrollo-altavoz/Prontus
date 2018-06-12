@@ -806,7 +806,7 @@ sub salida {
 
     # Define directorio de las respuestas y la identificacion de esta.
     # Solicitaron tener las respuestas en un dir separado para cada form, con el titular "slugificado".
-    my $titular = $PRONTUS_VARS{'_txt_titular '};
+    my $titular = $PRONTUS_VARS{'_txt_titular'};
     $titular = &lib_prontus::ajusta_titular_f4($titular);
     $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/$titular/exito";
     if ($hay_error) {
