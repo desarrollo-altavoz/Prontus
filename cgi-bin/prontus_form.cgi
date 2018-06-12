@@ -655,20 +655,20 @@ sub valida_data {
 
     # Chequea campos requeridos.
     if($PRONTUS_VARS{'chk_form_multivista_strict'}) {
-        print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
+        #print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
 
-        print STDERR "Vistas: \n";
+        #print STDERR "Vistas: \n";
         foreach my $v (keys %lib_form::MULTIVISTAS) {
-            print STDERR "[$v]\n";
+        #    print STDERR "[$v]\n";
         }
 
         foreach $key (keys %PRONTUS_VARS) {
             next unless($key =~ /chk_form_required_(\w+)/);
 
             $nombre = $1;
-            print STDERR "check encontrado: [$key]\n";
-            print STDERR "vistavar: [$VISTAVAR]\n";
-            print STDERR "nombre: [$nombre]\n";
+         #   print STDERR "check encontrado: [$key]\n";
+         #   print STDERR "vistavar: [$VISTAVAR]\n";
+         #   print STDERR "nombre: [$nombre]\n";
 
             # Estamos en una vista, por lo tanto se valida sólo si el nombre termina en esa vista
             if($VISTAVAR) {
@@ -683,8 +683,8 @@ sub valida_data {
             # Si no viene la vista no puede terminar en ninguna de las vistas
             } elsif($nombre =~ /_([^_]+?)$/) {
                 my $posiblevista = $1;
-                print STDERR "posiblevista: $posiblevista\n";
-                print STDERR "validando: $prontus_varglb::MULTIVISTAS{$posiblevista}\n";
+         #      print STDERR "posiblevista: $posiblevista\n";
+         #      print STDERR "validando: $prontus_varglb::MULTIVISTAS{$posiblevista}\n";
 
                 if(! $lib_form::MULTIVISTAS{$posiblevista}) {
                     $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
@@ -805,11 +805,14 @@ sub salida {
     my ($msg,$string_error,$plantilla,$hay_error) = @_;
 
     # Define directorio de las respuestas y la identificacion de esta.
-    $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/exito";
+    # Solicitaron tener las respuestas en un dir separado para cada form, con el titular "slugificado".
+    my $titular = $PRONTUS_VARS{'_txt_titular '};
+    $titular = &lib_prontus::ajusta_titular_f4($titular);
+    $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/$titular/exito";
     if ($hay_error) {
         # CVI - 02/06/2014 - Para el error_log
         print STDERR "[prontus_form] Error: $msg\n";
-        $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/error";
+        $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/$titular/error";
     }
 
     # Verifica que existe el directorios de cache y los crea si no es asi.
@@ -847,7 +850,7 @@ sub salida {
     $plantilla =~ s/%\w+%//sg;
 
 
-    # Salida estatica y existe plantilla exito estatica
+    # Salida estatica y existe plantilla exito estatica, exito
     if ($SALIDA_ESTATICA && $NOM_PLT_EXITO && !$hay_error) {
         # Escribe el archivo de respuesta.
         my $archivo = "$ROOTDIR/$ANSWERS_DIR/$NOM_PLT_EXITO";
@@ -859,7 +862,7 @@ sub salida {
         exit;
     }
 
-    # Salida estatica y existe plantilla exito estatica
+    # Salida estatica y existe plantilla exito estatica, error.
     if ($SALIDA_ESTATICA && $NOM_PLT_ERROR && $hay_error) {
         # Escribe el archivo de respuesta.
         my $archivo = "$ROOTDIR/$ANSWERS_DIR/$NOM_PLT_ERROR";
