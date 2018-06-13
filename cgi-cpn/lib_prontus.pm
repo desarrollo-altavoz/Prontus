@@ -2184,14 +2184,36 @@ sub load_config {
     $prontus_varglb::FOTO_MAX_PIXEL = $2;
   };
 
+  # El valor por defecto es SI
+  $prontus_varglb::REDUCIR_CALIDAD_JPEGS = 'SI';
+  if ($buffer =~ m/\s*REDUCIR_CALIDAD_JPEGS\s*=\s*["'](SI|NO)["']/s) {
+      $prontus_varglb::REDUCIR_CALIDAD_JPEGS = $1;
+  }
+
+  # El valor por defecto es 85. Sólo acepto valores en dígitos enteros entre 0 y 100. 
+  # 0 es "usar el default": https://libgd.github.io/manuals/2.2.5/files/gd_jpeg-c.html
+  $prontus_varglb::NIVEL_OPTIMIZACION_JPG = '85';
+  if ($prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'SI') {
+      if ($buffer =~ m/\s*NIVEL_OPTIMIZACION_JPG\s*=\s*["'](\d{1,3})["']/) {
+          my $tmp_optimizacion = $1;
+          if ($tmp_optimizacion >= 0 && $tmp_optimizacion <= 100) {
+              $prontus_varglb::NIVEL_OPTIMIZACION_JPG = $tmp_optimizacion;
+          } else {
+              $prontus_varglb::NIVEL_OPTIMIZACION_JPG = 0; # default;
+          }
+      }
+  } else { # si deshabilitaron la reducción de calidad, dejo el valor en el máximo, para evitar pérdidas involuntarias de calidad.
+      $prontus_varglb::NIVEL_OPTIMIZACION_JPG = 100;
+  }
+
   if ($buffer =~ m/\s*FFMPEG_PARAMS\s*=\s*'(.*?)'/) {
     $prontus_varglb::FFMPEG_PARAMS = $1;
   };
 
-    $prontus_varglb::MAX_XCODING = '500';
-    if ($buffer =~ m/\s*MAX_XCODING\s*=\s*("|')(\d+)("|')/) {
-        $prontus_varglb::MAX_XCODING = $2;
-    };
+  $prontus_varglb::MAX_XCODING = '500';
+  if ($buffer =~ m/\s*MAX_XCODING\s*=\s*("|')(\d+)("|')/) {
+      $prontus_varglb::MAX_XCODING = $2;
+  };
 
   # El valor por defecto es 0
   if ($buffer =~ m/\s*BLOQUEO_EDICION\s*=\s*("|')(.*?)("|')/) {

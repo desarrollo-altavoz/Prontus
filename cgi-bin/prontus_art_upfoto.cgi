@@ -162,8 +162,8 @@ main: {
             print 0;
             exit;
         }
-        # Redimencionar imagen si es que supera los limites configurados.
-        if ($prontus_varglb::FOTO_MAX_PIXEL ne '') { # si está vacio no se hace nada.
+        # Redimensionar imagen si es que supera los limites configurados.
+        if ($prontus_varglb::FOTO_MAX_PIXEL ne '') { # si está vacio se reduce calidad de jpg, si corresponde.
             my ($wmax, $hmax) = split("x", $prontus_varglb::FOTO_MAX_PIXEL);
             if ($wfoto > $wmax || $hfoto > $hmax) {
                 my ($wnew, $hnew) = &lib_thumb::calcular_proporcion_img($wfoto, $hfoto, $wmax, $hmax);
@@ -171,6 +171,14 @@ main: {
                 $dst_path =~ s/\.gif$/\.png/i if($dst_path =~ /\.gif$/i);
                 &lib_thumb::write_image($dst_path, $binfoto);
             };
+        } else {
+            my $tipo = &lib_thumb::get_imag_extension($dst_path);
+            # Si es un JPEG, y está habilitada la reducción de calidad de las imágenes, lo guardamos con la calidad especificada en prontus_varglb::NIVEL_OPTIMIZACION_JPG.
+            if ($tipo eq 'jpg' && $prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'SI') {
+                my ($ancho, $alto, $ratio) = &lib_thumb::get_propiedades($dst_path);
+                my ($binfoto, $wfoto, $hfoto) = &lib_thumb::make_resize($ancho, $alto, $dst_path);
+                &lib_thumb::write_image($dst_path, $binfoto);
+            }
         };
 
         print "$idFoto,$wfoto,$hfoto,$rel_dst_path,$nomfile,$FORM{'filename'}"; # se devuelve para presentarlo en la pagina y tb. para guardarlo en hiddens
@@ -179,7 +187,6 @@ main: {
         print STDERR "error al subir imagen:\n$trace_info";
         print 0;
     };
-
 
 };
 
