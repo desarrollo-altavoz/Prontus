@@ -66,6 +66,19 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
+                                            USAR_PUBLIC_SERVER_NAME_VER_ARTIC<br />
+                                            <span class="ayuda">Define si al hacer click en "Ver Artículo" desde el FID se usará la ruta absoluta del artículo usando el nombre del servidor (PUBLIC_SERVER_NAME).<br/>Por ejemplo:<br/> http://%%PUBLIC_SERVER_NAME%%/%%_PRONTUS_ID%%/site/artic/...<br/>
+                                            Por defecto se utiliza la ruta relativa.
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI" value="SI"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI">SI</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO" value="NO"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO">NO</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
                                             CPAN_SERVER_NAME<br />
                                             <span class="ayuda">Nombre del servidor donde funciona el administrador prontus, por ejemplo: prontus.misitio.cl</span>
                                         </td>
@@ -134,20 +147,6 @@
                                             <input type="radio" name="ABRIR_FIDS_EN_POP" id="ABRIR_FIDS_EN_POP_SI" value="SI"%%ABRIR_FIDS_EN_POP_SI%%/> <label for="ABRIR_FIDS_EN_POP_SI">SI</label>
                                             &nbsp;&nbsp;&nbsp;
                                             <input type="radio" name="ABRIR_FIDS_EN_POP" id="ABRIR_FIDS_EN_POP_NO" value="NO"%%ABRIR_FIDS_EN_POP_NO%%/> <label for="ABRIR_FIDS_EN_POP_NO">NO</label>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td style="width: 300px;" valign="top">
-                                            USAR_PUBLIC_SERVER_NAME_VER_ARTIC<br />
-                                            <span class="ayuda">Define si al hacer click en "Ver Artículo" desde el FID se usará la ruta absoluta del artículo usando el nombre del servidor (PUBLIC_SERVER_NAME).<br/>Por ejemplo:<br/> http://%%PUBLIC_SERVER_NAME%%/%%_PRONTUS_ID%%/site/artic/...<br/>
-                                            Por defecto se utiliza la ruta relativa.
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI" value="SI"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI">SI</label>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO" value="NO"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO">NO</label>
                                         </td>
                                     </tr>
 
@@ -477,6 +476,31 @@
                                         </td>
                                         <td>
                                             <input type="text" name="FOTO_MAX_PIXEL" value="%%FOTO_MAX_PIXEL%%" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            REDUCIR_CALIDAD_JPEGS<br />
+                                            <span class="ayuda">
+                                                Si se indica, reducirá la calidad de las imágenes JPEG cargadas o redimensionadas para mejorar sus características SEO.<br/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="REDUCIR_CALIDAD_JPEGS" id="REDUCIR_CALIDAD_JPEGS_SI" value="SI" %%REDUCIR_CALIDAD_JPEGS_SI%%>
+                                            <label for="REDUCIR_CALIDAD_JPEGS_SI">REDUCIR CALIDAD</label><br>
+                                            <input type="radio" name="REDUCIR_CALIDAD_JPEGS" id="REDUCIR_CALIDAD_JPEGS_NO" value="NO" %%REDUCIR_CALIDAD_JPEGS_NO%%>
+                                            <label for="REDUCIR_CALIDAD_JPEGS_NO">MANTENER CALIDAD</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 300px;" valign="top">
+                                            NIVEL_OPTIMIZACION_JPG<br />
+                                            <span class="ayuda">
+                                                Indica el valor de optimización deseado para las imágenes en formato JPEG. Debe ingresarse un número entero entre 0 y 100. Mayores niveles de optimización resultan en archivos más pesados e imágenes de mejor calidad.<br/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                           <input type="text" name="NIVEL_OPTIMIZACION_JPG" value="%%NIVEL_OPTIMIZACION_JPG%%" class="fieldform">
                                         </td>
                                     </tr>
                                     <tr>
