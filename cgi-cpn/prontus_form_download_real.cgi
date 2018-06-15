@@ -163,7 +163,7 @@ main: {
                 my %files = %{$filesref};
 
                 foreach my $fieldname (keys %files) {
-                    my $ruta = "http://$prontus_varglb::PUBLIC_SERVER_NAME$files{$fieldname}";
+                    my $ruta = "http://$prontus_varglb::CPAN_SERVER_NAME$files{$fieldname}";
                     $CSV = $CSV . &lib_form::add_to_csv($ruta);
                     if (!exists $newheader{$fieldname}) {
                         $newheaderorder++;
