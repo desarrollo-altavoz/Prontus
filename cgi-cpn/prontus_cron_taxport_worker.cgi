@@ -9,18 +9,21 @@
 # http://www.prontus.cl/license.html
 # ---------------------------------------------------------------
 
+
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-};
+}
 
 use strict;
+
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
-use prontus_varglb; &prontus_varglb::init();
+use prontus_varglb;
+&prontus_varglb::init();
 use lib_prontus;
 use glib_hrfec_02;
 use glib_dbi_02;
@@ -31,6 +34,7 @@ use lib_tax;
 use lib_maxrunning;
 use DBI;
 use POSIX qw(strftime ceil);
+#use Data::Dumper;
 
 my $BD;
 my (%PARAMS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC, %FIDS);
@@ -47,16 +51,16 @@ my %ART_XDATA_FIELDS;
 
 main: {
     if ((!-d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq ''))  {
-        print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
+        print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /var/www/misitio/web \n";
         exit;
-    };
+    }
 
     $CURR_DTIME = &glib_hrfec_02::get_dtime_pack4();
 
     $PARAMS{'prontus'} = $ARGV[0];
     $PARAMS{'params'} = $ARGV[1]; # puede ser el numero del worker o fid/s/t/st
 
-    ($PARAMS{'fid'}, $PARAMS{'s'}, $PARAMS{'t'}, $PARAMS{'st'}, $PARAMS{'pag'}) = split (/\//, $PARAMS{'params'});
+    ($PARAMS{'fid'}, $PARAMS{'s'}, $PARAMS{'t'}, $PARAMS{'st'}, $PARAMS{'pag'}) = split(/\//, $PARAMS{'params'});
     &valida_param();
 
     # Carga variables de configuracion de prontus.
@@ -68,7 +72,7 @@ main: {
     $DIR_SEMAF = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_DBM/taxport_smf";
     $RELDIR_ARTIC = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/%%DIRFECHA%%$prontus_varglb::DIR_PAG";
 
-    &glib_fildir_02::check_dir($DIR_SEMAF) if (! -d $DIR_SEMAF); # ¿necesario?
+    &glib_fildir_02::check_dir($DIR_SEMAF) if (!-d $DIR_SEMAF); # ¿necesario?
 
     &conecta_db();
     &carga_nombase_plts();
@@ -86,7 +90,8 @@ main: {
         &lib_tax::cargar_fil_cfg("$dir/filtros.cfg", $PARAMS{'fid'}) if ($PARAMS{'fid'} =~ /^fil_/);
         &generar_taxports_thislevel($PARAMS{'s'}, $PARAMS{'t'}, $PARAMS{'st'}, $PARAMS{'fid'}, $PARAMS{'pag'}, 1); # solo pagina 1.
     }
-};
+}
+
 
 sub procesa_queue_worker {
     my $worker = $_[0];
@@ -122,6 +127,7 @@ sub procesa_queue_worker {
         unlink $job;
 
         if (!scalar @jobs) {
+
             # Buscar mas...
             @jobs = glob("$dir_queue/$worker\_*.txt");
         }
@@ -130,11 +136,12 @@ sub procesa_queue_worker {
     print STDERR "[$$][$worker] Fin.\n";
 
     unlink $semaforo;
-};
+}
 
 # ---------------------------------------------------------------
 sub carga_nombase_plts {
-# Obtiene nombres de las multiples plantillas, las lee siempre del /all
+
+    # Obtiene nombres de las multiples plantillas, las lee siempre del /all
 
     my ($ruta_dir) = "$prontus_varglb::DIR_SERVER$RELDIR_PORT_TMP/all";
     my @lisdir = &glib_fildir_02::lee_dir($ruta_dir);
@@ -143,11 +150,13 @@ sub carga_nombase_plts {
     foreach my $k (@lisdir) {
         if ((-f "$ruta_dir/$k") && ($k =~ /^([a-z]+\.\w+)$/)) {
             $NOMBASE_PLTS{$1} = 1;
-        };
-    };
+        }
+    }
 
-};
+}
+
 sub conecta_db {
+
     # Conectar a BD
     my $msg_err_bd;
     ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
@@ -155,10 +164,10 @@ sub conecta_db {
     if (!ref($BD)) {
         print STDERR "ERROR: $msg_err_bd\n";
         exit;
-    };
+    }
 
     $BD->{mysql_auto_reconnect} = 1;
-};
+}
 
 # ---------------------------------------------------------------
 sub generar_taxports_thislevel {
@@ -176,23 +185,21 @@ sub generar_taxports_thislevel {
     my $p = $nro_pagina - 1;
     my $limit = $p * $prontus_varglb::TAXPORT_ARTXPAG;
 
-    my ($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
-    my ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
-    my ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
+    my ($secc_nom, $secc_port, $secc_nom4vistas) = split(/\t\t/, $TABLA_SECC{$secc_id});
+    my ($temas_nom, $temas_port, $temas_idparent, $temas_nom4vistas) = split(/\t\t/, $TABLA_TEM{$temas_id});
+    my ($subtemas_nom, $subtemas_port, $subtemas_idparent, $subtemas_nom4vistas) = split(/\t\t/, $TABLA_STEM{$subtemas_id});
 
     $tax_fixedurl = $secc_port if ($secc_id && !$temas_id && !$subtemas_id);
     $tax_fixedurl = $temas_port if ($secc_id && $temas_id && !$subtemas_id);
     $tax_fixedurl = $subtemas_port if ($secc_id && $temas_id && $subtemas_id);
 
-    my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
-    . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
-    . "%%FILTRO%% order by $taxport_order LIMIT $limit, $prontus_varglb::TAXPORT_ARTXPAG";
+    my $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, ". "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART ". "%%FILTRO%% order by $taxport_order LIMIT $limit, $prontus_varglb::TAXPORT_ARTXPAG";
 
     if ($filtros ne '') {
         $sql =~ s/%%FILTRO%%/ where $filtros /;
     } else {
         $sql =~ s/%%FILTRO%%/$filtros/;
-    };
+    }
 
     my $nro_filas = 0;
     my %filas;
@@ -211,9 +218,10 @@ sub generar_taxports_thislevel {
             my $reldir_artic_mv = $RELDIR_ARTIC;
             $reldir_artic_mv = "$RELDIR_ARTIC-$mv" if ($mv);
             foreach my $nombase_plt (keys %NOMBASE_PLTS) {
+
                 # Obtiene plantilla, de acuerdo al nivel taxonomico especificado, fid y mv
-                my $loop_plt = &get_loop_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
-                next if (!$loop_plt);
+                my (@loops_plt) = &get_loops_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
+                next if (!@loops_plt);
 
                 my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
 
@@ -221,12 +229,17 @@ sub generar_taxports_thislevel {
                     next;
                 }
 
-                my ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pagina);
+                my $loop_id = 0;
+                foreach my $loop_plt (@loops_plt) {
 
-                $ART_XML_FIELDS{$art_id} = $auxref if (!exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
-                $ART_XDATA_FIELDS{$art_id} = $auxref2 if (!exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
+                    my ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($reldir_artic_mv, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id}, $nro_pagina);
 
-                $filas{"$mv|$nombase_plt"} .= $fila_content;
+                    $ART_XML_FIELDS{$art_id} = $auxref if (!exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
+                    $ART_XDATA_FIELDS{$art_id} = $auxref2 if (!exists $ART_XDATA_FIELDS{$art_id}); # para no leer las xdata 2 veces
+
+                    $filas{"$mv|$nombase_plt"}[$loop_id] .= $fila_content;
+                    $loop_id++;
+                }
             }
         }
     }
@@ -238,49 +251,50 @@ sub generar_taxports_thislevel {
     $BD->disconnect;
 
     unlink "$DIR_SEMAF/$id_level" if ($semaf);
-};
+}
 
 # ---------------------------------------------------------------
-sub get_loop_plt {
-# Obtiene buffer del loop del tpl de la portada tipo tema, de acuerdo a s, t y st + fid y mv.
+# Obtiene buffers de los loops del tpl de la portada tipo tema, de acuerdo a s, t y st + fid y mv.
+sub get_loops_plt {
 
     my ($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt) = @_;
 
     # Si fue cargado el tpl, lo retorna
     my $key_hash = "$secc_id|$temas_id|$subtemas_id|$fid|$mv|$nombase_plt";
-    return $BUF_PLT_LOOP{$key_hash} if ($BUF_PLT_LOOP{$key_hash});
-
+    return @{$BUF_PLT_LOOP{$key_hash}} if ($BUF_PLT_LOOP{$key_hash});
 
     # Si no, lo obtiene.
     my $plt = &obtiene_plt($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt);
 
-    return '' if (!$plt);
+    return () if (!$plt);
+
     # print STDERR "determinando plt para s[$secc_id]t[$temas_id]st[$subtemas_id]fid[$fid]mv[$mv] -> plt[$plt]\n";
 
     if ($LOADED_NAMES_PLT{$plt}) { # si ya fue leida esta plt para algun otro key_hash, lo saco de ahi
         my $key_hash_anterior = $LOADED_NAMES_PLT{$plt};
-        $BUF_PLT_LOOP{$key_hash} = $BUF_PLT_LOOP{$key_hash_anterior};
+        push(@{$BUF_PLT_LOOP{$key_hash}}, @{$BUF_PLT_LOOP{$key_hash_anterior}});
         $BUF_PLT{$key_hash} = $BUF_PLT{$key_hash_anterior};
-        return $BUF_PLT_LOOP{$key_hash};
+        return @{$BUF_PLT_LOOP{$key_hash}};
     }
 
     my $buffer = &glib_fildir_02::read_file($plt);
     my $dirmacros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_PTEMA_MACROS";
-    my $loop;
 
     $buffer = &lib_prontus::add_macros($buffer, $dirmacros) if(-d $dirmacros);
 
-    if ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
-        $loop = $1;
+    my @loops = ();
+    while ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
+        push(@loops, $1);
     }
 
     # Carga en ram plantillas
-    $BUF_PLT_LOOP{$key_hash} = $loop;
+    push( @{$BUF_PLT_LOOP{$key_hash}}, @loops);
     $BUF_PLT{$key_hash} = $buffer;
     $LOADED_NAMES_PLT{$plt} = $key_hash;
 
-    return $loop;
-};
+    return @loops;
+}
+
 
 sub get_buffer_plt {
     my ($secc_id, $temas_id, $subtemas_id, $fid, $mv, $nombase_plt) = @_;
@@ -296,28 +310,28 @@ sub get_buffer_plt {
     # si ya fue leida esta plt para algun otro key_hash, lo saco de ahi para no leer de nuevo de FS
     if ($LOADED_NAMES_PLT{$plt}) {
         my $key_hash_anterior = $LOADED_NAMES_PLT{$plt};
-        $BUF_PLT_LOOP{$key_hash} = $BUF_PLT_LOOP{$key_hash_anterior};
+        push(@{$BUF_PLT_LOOP{$key_hash}}, @{$BUF_PLT_LOOP{$key_hash_anterior}});
         $BUF_PLT{$key_hash} = $BUF_PLT{$key_hash_anterior};
         return $BUF_PLT{$key_hash};
     }
 
     my $buffer = &glib_fildir_02::read_file($plt);
     my $dirmacros = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_PTEMA_MACROS";
-    my $loop;
 
     $buffer = &lib_prontus::add_macros($buffer, $dirmacros) if(-d $dirmacros);
 
-    if ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
-        $loop = $1;
+    my @loops = ();
+    while ($buffer =~ /%%LOOP%%(.*?)%%\/LOOP%%/isg) {
+        push(@loops, $1);
     }
 
     # Carga en ram plantillas
-    $BUF_PLT_LOOP{$key_hash} = $loop;
+    push(@{$BUF_PLT_LOOP{$key_hash}}, @loops);
     $BUF_PLT{$key_hash} = $buffer;
     $LOADED_NAMES_PLT{$plt} = $key_hash;
 
     return $buffer;
-};
+}
 
 
 # ---------------------------------------------------------------
@@ -359,10 +373,13 @@ sub write_pag {
             $pagina =~ s/%%_tax_fid%%/all/isg if (!$fid);
 
             $extension = '.' . $extension;
-            $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$filas{"$mv|$nombase_plt"}/isg;
+            foreach my $loop (@{$filas{"$mv|$nombase_plt"}}) {
+                $pagina =~ s/%%LOOP%%(.*?)%%\/LOOP%%/$loop/is;
+            }
             $pagina = &incluir_navbar($pagina, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase);
             $pagina = &incluir_nrosdepag($tot_artics, $pagina, $nro_pag, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase);
             $pagina =~ s/%%NOMSECC%%/$secc_nom/isg;
+
             # reemplazar nombre del prontus
             $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
             $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/isg;
@@ -385,16 +402,34 @@ sub write_pag {
             ($pagina, $prevpag, $nextpag, $prevlink, $nextlink) = &incluir_next_y_prev($tot_artics, $pagina, $nro_pag, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase);
 
             # Lee el nombre de tema y subtema
-            my ($temas_nom, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$temas_id});
-            my ($subtemas_nom, $filler3, $filler4) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
+            my ($temas_nom, $filler1, $filler2) = split(/\t\t/, $TABLA_TEM{$temas_id});
+            my ($subtemas_nom, $filler3, $filler4) = split(/\t\t/, $TABLA_STEM{$subtemas_id});
 
             # Para poder hacer IF de seccion, tema y subtema
-            my %claves = ('_tax_seccion' => $secc_id, '_tax_tema' => $temas_id, '_tax_subtema' => $subtemas_id,
-                    '_tax_nom_seccion' => $secc_nom, '_tax_nom_tema' => $temas_nom, '_tax_nom_subtema' => $subtemas_nom);
+            my %claves = (
+                '_tax_seccion' => $secc_id,
+                '_tax_tema' => $temas_id,
+                '_tax_subtema' => $subtemas_id,
+                '_tax_nom_seccion' => $secc_nom,
+                '_tax_nom_tema' => $temas_nom,
+                '_tax_nom_subtema' => $subtemas_nom
+            );
 
-            my %claves_compatibles = ('_seccion1' => $secc_id, '_tema1' => $temas_id, '_subtema1' => $subtemas_id,
-                    '_nom_seccion1' => $secc_nom, '_nom_tema1' => $temas_nom, '_nom_subtema1' => $subtemas_nom,
-                    '_vista' => $mv, '_nropagina' => $nro_pag, '_tax_fid' => $fid, '_nextpag' => $nextpag, '_prevpag' => $prevpag, '_nextlink' => $nextlink, '_prevlink' => $prevlink);
+            my %claves_compatibles = (
+                '_seccion1' => $secc_id,
+                '_tema1' => $temas_id,
+                '_subtema1' => $subtemas_id,
+                '_nom_seccion1' => $secc_nom,
+                '_nom_tema1' => $temas_nom,
+                '_nom_subtema1' => $subtemas_nom,
+                '_vista' => $mv,
+                '_nropagina' => $nro_pag,
+                '_tax_fid' => $fid,
+                '_nextpag' => $nextpag,
+                '_prevpag' => $prevpag,
+                '_nextlink' => $nextlink,
+                '_prevlink' => $prevlink
+            );
 
             $pagina = &lib_prontus::procesa_condicional($pagina, \%claves, \%claves_compatibles);
 
@@ -424,7 +459,7 @@ sub write_pag {
                 $pagina =~ s/%%_nom_seccion[1-3]_$mv%%/$mv_nom_seccion1/isg;
                 $pagina =~ s/%%_nom_tema[1-3]_$mv%%/$mv_nom_tema1/isg;
                 $pagina =~ s/%%_nom_subtema[1-3]_$mv%%/$mv_nom_subtema1/isg;
-            };
+            }
 
             my $path_include = &lib_prontus::get_path_croncgi();
             $pagina = &lib_prontus::parser_custom_function($pagina, $path_include);
@@ -436,14 +471,9 @@ sub write_pag {
             # Escribe pagina
             my $fullpath_dir = "$prontus_varglb::DIR_SERVER$reldir_port_dst";
 
-            &glib_fildir_02::check_dir($fullpath_dir) if (! -d $fullpath_dir);
+            &glib_fildir_02::check_dir($fullpath_dir) if (!-d $fullpath_dir);
 
-            my $k = "$fullpath_dir/$nombase" . '_'
-                                        . $secc_id
-                                        . '_' . $temas_id
-                                        . '_' . $subtemas_id
-                                        . '_' . $nro_pag
-                                    . $extension;
+            my $k = "$fullpath_dir/$nombase" . '_'. $secc_id. '_' . $temas_id. '_' . $subtemas_id. '_' . $nro_pag. $extension;
 
             &glib_fildir_02::write_file($k, $pagina);
 
@@ -452,6 +482,7 @@ sub write_pag {
                 if ($prontus_varglb::CACHE_PURGE_TAXPORT_MV eq 'SI') {
                     &lib_prontus::purge_cache($k);
                 } else {
+
                     # Si está desactivada la opción de hacer purge a la vistas, solo se hace a la principal.
                     if ($mv eq '') {
                         &lib_prontus::purge_cache($k);
@@ -462,7 +493,7 @@ sub write_pag {
             # print STDERR "writing [$k]\n";
         }
     }
-};
+}
 
 # ---------------------------------------------------------------
 sub obtiene_plt {
@@ -478,6 +509,7 @@ sub obtiene_plt {
     $EXT_PORT_TMP{$key_hash} = $ext_port_tmp;
 
     my ($plt);
+
     # Intenta obtener plantilla para filtro por fid
     if ($fid) {
         my $dir_plt_fid = $dir_plt . "/$fid";
@@ -486,31 +518,34 @@ sub obtiene_plt {
             $plt = &obtienePltPorTax($secc_id, $temas_id, $subtemas_id, $dir_plt_fid_vista, $ext_port_tmp, $nombase);
 
             return $plt if (-f $plt);
+
             # return ''; # si no hay plantilla para la vista, retorna vacio
         } else {
             $plt = &obtienePltPorTax($secc_id, $temas_id, $subtemas_id, $dir_plt_fid, $ext_port_tmp, $nombase);
             return $plt if ( -f $plt);
-        };
-    };
+        }
+    }
 
     # Ahora la intenta obtener sin filtro de fid
     my $dir_plt_all = $dir_plt . '/all';
 
     if ($mv) {
+
         # Intenta con la vista
         my $dir_plt_all_vista = $dir_plt_all . '-' . $mv;
         $plt = &obtienePltPorTax($secc_id, $temas_id, $subtemas_id, $dir_plt_all_vista, $ext_port_tmp, $nombase);
         return $plt if (-f $plt);
         return ''; # si no hay plantilla para la vista, retorna vacio
     } else {
+
         # intenta obtener plantilla estandar
         $plt = &obtienePltPorTax($secc_id, $temas_id, $subtemas_id, $dir_plt_all, $ext_port_tmp, $nombase);
         return $plt if (-f $plt);
-    };
+    }
 
     # No se enontro ninguna plantilla
     return '';
-};
+}
 
 # ---------------------------------------------------------------
 sub obtienePltPorTax {
@@ -531,49 +566,58 @@ sub obtienePltPorTax {
     return $tpl if (-f $tpl);
 
     return '';
-};
+}
+
 
 sub obtieneRelDirDestino {
-# Obtiene directorio de destino (relativo al doc root) donde sera almacenada
-# la portada taxonomica generada
+
+    # Obtiene directorio de destino (relativo al doc root) donde sera almacenada
+    # la portada taxonomica generada
     my ($fid, $mv) = @_;
     my $reldir_port_dst = $RELDIR_PORT_DST;
     if ($fid) {
         $reldir_port_dst .= "/$fid";
     } else {
         $reldir_port_dst .= '/all';
-    };
+    }
     if ($mv) { # nombre de la vista.
         $reldir_port_dst .= '-' . $mv;
-    };
+    }
     return $reldir_port_dst;
-};
+}
+
 
 sub carga_mensajes {
-# Busca, inicializa y elimina mensajes dentro de la plantilla.
-# Carga hash de mensajes
-#     <!-- MSG xxx = xxx -->
+
+    # Busca, inicializa y elimina mensajes dentro de la plantilla.
+    # Carga hash de mensajes
+    #     <!-- MSG xxx = xxx -->
 
     my($plantilla) = $_[0];
     my %msgs;
+
     # Mensajes por defecto.
     $msgs{'no_results'} = 'No se encontraron resultados.';
 
     while ($plantilla =~ /<!--\s*MSG\s*(\w+)\s*=\s*(.+?)\s*-->/sg) {
         $msgs{$1} = $2;
-    };
+    }
+
     # Elimina mensajes de la plantilla.
     $plantilla =~ s/<!--\s*MSG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
 
     return ($plantilla, \%msgs);
-};
+}
+
 
 sub incluir_navbar {
     my ($pagina, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
+
     # La navbar
     my $secc_tema_stema_nom;
+
     # secc
-    my ($secc_nom, $secc_port, $secc_nom4vistas) = split (/\t\t/, $TABLA_SECC{$secc_id});
+    my ($secc_nom, $secc_port, $secc_nom4vistas) = split(/\t\t/, $TABLA_SECC{$secc_id});
     $secc_nom = &lib_prontus::get_nomtax_envista($mv, $secc_nom4vistas) if ($mv);
     $secc_nom = &lib_prontus::escape_html($secc_nom);
 
@@ -589,26 +633,21 @@ sub incluir_navbar {
     # Se lee el separador
     my $separador = '/';
     if($pagina =~ /%%_secc_tema_stema_nom\((.*?)\)%%/i) {
-      $separador = $1;
+        $separador = $1;
     }
 
     my $lnk_secc;
     if ($secc_port) {
         $lnk_secc = &lib_prontus::get_tax_link($secc_port);
+    }else {
+        $lnk_secc = "$reldir_port_dst/$nombase" . '_'. $secc_id. '_'. '_'. '_' . '1'. $extension;
     }
-    else {
-        $lnk_secc = "$reldir_port_dst/$nombase" . '_'
-        . $secc_id
-        . '_'
-        . '_'
-        . '_' . '1'
-        . $extension;
-    };
     $secc_tema_stema_nom = "<a href=\"$lnk_secc\">$secc_nom</a>";
+
     # warn "slink[$secc_tema_stema_nom]";
 
     # tem
-    my ($tem_nom, $tem_port, $filler1, $tem_nom4vistas) = split (/\t\t/, $TABLA_TEM{$temas_id});
+    my ($tem_nom, $tem_port, $filler1, $tem_nom4vistas) = split(/\t\t/, $TABLA_TEM{$temas_id});
     $tem_nom = &lib_prontus::get_nomtax_envista($mv, $tem_nom4vistas) if ($mv);
     $tem_nom = &lib_prontus::escape_html($tem_nom);
 
@@ -616,22 +655,17 @@ sub incluir_navbar {
         my $lnk_tem;
         if ($tem_port) {
             $lnk_tem = &lib_prontus::get_tax_link($tem_port);
-        }
-        else {
-            $lnk_tem = "$reldir_port_dst/$nombase" . '_'
-            . $secc_id
-            . '_' . $temas_id
-            . '_'
-            . '_' . '1'
-            . $extension;
+        }else {
+            $lnk_tem = "$reldir_port_dst/$nombase" . '_'. $secc_id. '_' . $temas_id. '_'. '_' . '1'. $extension;
 
-        };
+        }
         $secc_tema_stema_nom .= " $separador <a href=\"$lnk_tem\">$tem_nom</a>";
+
         # warn "tlink[$secc_tema_stema_nom]";
-    };
+    }
 
     # stem
-    my ($stem_nom, $stem_port, $filler2, $stem_nom4vistas) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
+    my ($stem_nom, $stem_port, $filler2, $stem_nom4vistas) = split(/\t\t/, $TABLA_STEM{$subtemas_id});
     $stem_nom = &lib_prontus::get_nomtax_envista($mv, $stem_nom4vistas) if ($mv);
     $stem_nom = &lib_prontus::escape_html($stem_nom);
 
@@ -639,21 +673,17 @@ sub incluir_navbar {
         my $lnk_stem;
         if ($stem_port) {
             $lnk_stem = &lib_prontus::get_tax_link($stem_port);
+        }else {
+            $lnk_stem = "$reldir_port_dst/$nombase" . '_'. $secc_id. '_' . $temas_id. '_' . $subtemas_id. '_' . '1'. $extension;
         }
-        else {
-            $lnk_stem = "$reldir_port_dst/$nombase" . '_'
-            . $secc_id
-            . '_' . $temas_id
-            . '_' . $subtemas_id
-            . '_' . '1'
-            . $extension;
-        };
         $secc_tema_stema_nom .=  " $separador <a href=\"$lnk_stem\">$stem_nom</a>";
+
         # warn "stlink[$secc_tema_stema_nom]";
-    };
+    }
     $pagina =~ s/%%_SECC_TEMA_STEMA_NOM.*?%%/$secc_tema_stema_nom/isg;
     return $pagina;
-};
+}
+
 
 sub incluir_next_y_prev {
     my ($tot_artics, $pagina, $nro_pag, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
@@ -669,21 +699,11 @@ sub incluir_next_y_prev {
     $prevpag = ($nro_pag - 1) if (($nro_pag - 1) > 0);
 
     if ($prevpag) {
-        $prevlink = "$reldir_port_dst/$nombase" . '_'
-            . $secc_id
-            . '_' . $temas_id
-            . '_' . $subtemas_id
-            . '_' . $prevpag
-            . $extension;
+        $prevlink = "$reldir_port_dst/$nombase" . '_'. $secc_id. '_' . $temas_id. '_' . $subtemas_id. '_' . $prevpag. $extension;
     }
 
     if ($nextpag) {
-        $nextlink = "$reldir_port_dst/$nombase" . '_'
-            . $secc_id
-            . '_' . $temas_id
-            . '_' . $subtemas_id
-            . '_' . $nextpag
-            . $extension;
+        $nextlink = "$reldir_port_dst/$nombase" . '_'. $secc_id. '_' . $temas_id. '_' . $subtemas_id. '_' . $nextpag. $extension;
     }
 
     $pagina =~ s/%%_prevpag%%/$prevpag/ig;
@@ -692,7 +712,8 @@ sub incluir_next_y_prev {
     $pagina =~ s/%%_nextlink%%/$nextlink/ig;
 
     return ($pagina, $prevpag, $nextpag, $prevlink, $nextlink);
-};
+}
+
 
 sub incluir_nrosdepag {
     my ($tot_artics, $pagina, $nro_pag, $secc_id, $temas_id, $subtemas_id, $mv, $reldir_port_dst, $extension, $nombase) = @_;
@@ -722,7 +743,7 @@ sub incluir_nrosdepag {
         $tpl_nropag = $value if ($name eq 'HTML_NRO_PAG');
         $tpl_nropag2 = $value if ($name eq 'HTML_PAG_ACTUAL');
         $tpl_separador = $value if ($name eq 'HTML_SEPARADOR');
-    };
+    }
 
     # Quitar comentarios de configuración.
     $pagina =~ s/<!--\s*CONFIG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
@@ -738,18 +759,13 @@ sub incluir_nrosdepag {
             $ini = 1;
         } else {
             $ini = $ini + 1;
-            my $lnk = "$reldir_port_dst/$nombase" . '_'
-                . $secc_id
-                . '_' . $temas_id
-                . '_' . $subtemas_id
-                . '_' . 1
-                . $extension;
+            my $lnk = "$reldir_port_dst/$nombase" . '_'. $secc_id. '_' . $temas_id. '_' . $subtemas_id. '_' . 1 . $extension;
             my $pag = '1';
             my $tpl_nropag_aux = $tpl_nropag;
             $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
             $tpl_nropag_aux =~ s/%%cnro_pag%%/$pag/;
             $prevlink =  $tpl_nropag_aux . ' ' . $tpl_separador . ' ';
-        };
+        }
 
         # Se procesan las páginas hacia arriba
         $fin = ($nro_pag + $prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS);
@@ -757,18 +773,13 @@ sub incluir_nrosdepag {
             $fin = $nro_paginas_totales;
         } else {
             $fin = $fin - 1;
-            my $lnk = "$reldir_port_dst/$nombase" . '_'
-                . $secc_id
-                . '_' . $temas_id
-                . '_' . $subtemas_id
-                . '_' . $nro_paginas_totales
-                . $extension;
+            my $lnk = "$reldir_port_dst/$nombase" . '_'. $secc_id. '_' . $temas_id. '_' . $subtemas_id. '_' . $nro_paginas_totales. $extension;
             my $pag = $nro_paginas_totales;
             my $tpl_nropag_aux = $tpl_nropag;
             $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
             $tpl_nropag_aux =~ s/%%cnro_pag%%/$pag/;
             $nextlink =  ' ' . $tpl_separador . ' ' . $tpl_nropag_aux;
-        };
+        }
 
     } else {
         $ini = 1;
@@ -781,30 +792,25 @@ sub incluir_nrosdepag {
             $tpl_nropag_aux = $tpl_nropag2;
         }else{
             $tpl_nropag_aux = $tpl_nropag;
-        };
-        my $lnk = "$reldir_port_dst/$nombase" . '_'
-                . $secc_id
-                . '_' . $temas_id
-                . '_' . $subtemas_id
-                . '_' . $pag
-                . $extension;
+        }
+        my $lnk = "$reldir_port_dst/$nombase" . '_'. $secc_id. '_' . $temas_id. '_' . $subtemas_id. '_' . $pag. $extension;
 
         $tpl_nropag_aux =~ s/%%lnk%%/$lnk/;
         $tpl_nropag_aux =~ s/%%cnro_pag%%/$pag/;
         $html_nros_pag .= "$tpl_nropag_aux\n";
-    };
+    }
     $html_nros_pag = $prevlink . $html_nros_pag . $nextlink;
 
     if ($html_nros_pag ne '') {
         $pagina =~ s/%%_HTML_NROS_PAG%%/ $html_nros_pag /ig;
-    }
-    else {
+    }else {
         $pagina =~ s/%%_HTML_NROS_PAG%%//ig;
         $pagina =~ s/%%_msg%%.*?%%\/_msg%%/$msgs{'no_results'}/is; # 1.8
-    };
+    }
 
     return $pagina;
-};
+}
+
 
 sub genera_orden_taxports {
     my $fid = $_[0];
@@ -819,7 +825,8 @@ sub genera_orden_taxports {
         return $prontus_varglb::TAXPORT_ORDEN;
     }
 
-};
+}
+
 
 sub get_tot_artics {
     my $filtros = shift;
@@ -834,7 +841,7 @@ sub get_tot_artics {
         $sql =~ s/group by ART_ID//i;
     } else {
         $sql =~ s/%%FILTRO%%//;
-    };
+    }
 
     $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($count_art));
     $salida->fetch;
@@ -844,7 +851,8 @@ sub get_tot_artics {
     $count_art = $prontus_varglb::TAXPORT_MAXARTICS if ($count_art > $prontus_varglb::TAXPORT_MAXARTICS);
 
     return $count_art;
-};
+}
+
 
 sub valida_param {
     $PARAMS{'s'} =~ s/[^0-9]//g;
@@ -855,4 +863,4 @@ sub valida_param {
     $PARAMS{'t'} = '' if ($PARAMS{'t'} eq '0');
     $PARAMS{'st'} = '' if ($PARAMS{'st'} eq '0');
     $PARAMS{'pag'} = 1 if ($PARAMS{'pag'} eq '');
-};
+}
