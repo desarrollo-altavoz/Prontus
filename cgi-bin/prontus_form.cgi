@@ -334,9 +334,10 @@ sub data_management {
 
             $filename = $nomfile.$ext;
             $filedata = &glib_cgi_04::param($key);
+            print "filedata: $filedata\n" if $DEBUG;
             $files{$key}{'_name'} = 'file_' . $random.'--'.$filename;
             $files{$key}{'_temp'} = $filedata;
-            $body .= sprintf('%-15s',$key) . " = $filename\n";
+            $body .= sprintf('%-15s',$key) . " = $prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/$DATA_DIR/$TS/$files{$key}{'_name'}\n";
             $backupdata .= "\"file_$random--$filename\"$SEPARADOR"; # Pega el random para que el nombre sea unico.
         } else {
             $order_data->{$counter} = $key;
@@ -391,7 +392,7 @@ sub data_management {
     $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
     foreach my $email (@ADMIN_MAILS) {
         $to = $email;
-        $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$filedata);
+        $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
 
     };
     # Forma cuerpo para el remitente (autorrespuesta).
@@ -442,6 +443,7 @@ sub data_management {
     my $files_json;
 
     # Genera el backup, si es pertinente.
+    # Solamente guarda archivos adjuntos si está activa esta opción!
     if ($PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
         if (-e "$backupdir/backup.csv") { # Si existe ya el archivo, no inserta la linea de encabezados.
             &glib_fildir_02::append_file("$backupdir/backup.csv","$backupdata\r\n");
@@ -451,6 +453,7 @@ sub data_management {
         #if (keys %files) {
             # Mueve todos los archivos adjuntos.
             foreach my $file (keys %files) {
+                print "file: $file\n" if $DEBUG;
                 my $name = $files{$file}{'_name'};
                 my $temp = $files{$file}{'_temp'};
                 File::Copy::move($temp,"$backupdir/$name");
@@ -652,20 +655,20 @@ sub valida_data {
 
     # Chequea campos requeridos.
     if($PRONTUS_VARS{'chk_form_multivista_strict'}) {
-        print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
+        #print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
 
-        print STDERR "Vistas: \n";
+        #print STDERR "Vistas: \n";
         foreach my $v (keys %lib_form::MULTIVISTAS) {
-            print STDERR "[$v]\n";
+        #    print STDERR "[$v]\n";
         }
 
         foreach $key (keys %PRONTUS_VARS) {
             next unless($key =~ /chk_form_required_(\w+)/);
 
             $nombre = $1;
-            print STDERR "check encontrado: [$key]\n";
-            print STDERR "vistavar: [$VISTAVAR]\n";
-            print STDERR "nombre: [$nombre]\n";
+         #   print STDERR "check encontrado: [$key]\n";
+         #   print STDERR "vistavar: [$VISTAVAR]\n";
+         #   print STDERR "nombre: [$nombre]\n";
 
             # Estamos en una vista, por lo tanto se valida sólo si el nombre termina en esa vista
             if($VISTAVAR) {
@@ -680,8 +683,8 @@ sub valida_data {
             # Si no viene la vista no puede terminar en ninguna de las vistas
             } elsif($nombre =~ /_([^_]+?)$/) {
                 my $posiblevista = $1;
-                print STDERR "posiblevista: $posiblevista\n";
-                print STDERR "validando: $prontus_varglb::MULTIVISTAS{$posiblevista}\n";
+         #      print STDERR "posiblevista: $posiblevista\n";
+         #      print STDERR "validando: $prontus_varglb::MULTIVISTAS{$posiblevista}\n";
 
                 if(! $lib_form::MULTIVISTAS{$posiblevista}) {
                     $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
@@ -802,11 +805,14 @@ sub salida {
     my ($msg,$string_error,$plantilla,$hay_error) = @_;
 
     # Define directorio de las respuestas y la identificacion de esta.
-    $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/exito";
+    # Solicitaron tener las respuestas en un dir separado para cada form, con el titular "slugificado".
+    my $titular = $PRONTUS_VARS{'_txt_titular'};
+    $titular = &lib_prontus::ajusta_titular_f4($titular);
+    $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/$titular/exito";
     if ($hay_error) {
         # CVI - 02/06/2014 - Para el error_log
         print STDERR "[prontus_form] Error: $msg\n";
-        $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/error";
+        $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/$titular/error";
     }
 
     # Verifica que existe el directorios de cache y los crea si no es asi.
@@ -844,7 +850,7 @@ sub salida {
     $plantilla =~ s/%\w+%//sg;
 
 
-    # Salida estatica y existe plantilla exito estatica
+    # Salida estatica y existe plantilla exito estatica, exito
     if ($SALIDA_ESTATICA && $NOM_PLT_EXITO && !$hay_error) {
         # Escribe el archivo de respuesta.
         my $archivo = "$ROOTDIR/$ANSWERS_DIR/$NOM_PLT_EXITO";
@@ -856,7 +862,7 @@ sub salida {
         exit;
     }
 
-    # Salida estatica y existe plantilla exito estatica
+    # Salida estatica y existe plantilla exito estatica, error.
     if ($SALIDA_ESTATICA && $NOM_PLT_ERROR && $hay_error) {
         # Escribe el archivo de respuesta.
         my $archivo = "$ROOTDIR/$ANSWERS_DIR/$NOM_PLT_ERROR";
