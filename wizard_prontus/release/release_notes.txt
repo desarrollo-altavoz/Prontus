@@ -10109,3 +10109,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - /cgi-cpn/lib_tax.pm
         - /cgi-cpn/lib_setbd.pm
 
+- Prontus Form
+    [mejoras]
+        - Sustituye el único archivo adjunto en emails al admin por enlaces para descargar cada archivo desde el servidor.
+        - Muestra el timestamp del form en la URL de la página de éxito o error luego de enviar el formulario
+    [bugfixes]
+        - Despliega los archivos correctamente en el listado de datos almacenados del form.
+        - Corrige duplicación de items en encabezado del archivo CSV a descargar.
+    [files]
+        - /cgi-bin/prontus_form.cgi
+        - /cgi-cpn/prontus_form_list.cgi
+        - /cgi-cpn/prontus_form_download_real.cgi
