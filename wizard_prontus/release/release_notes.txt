@@ -10108,4 +10108,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - /cgi-cpn/Artic.pm
         - /cgi-cpn/lib_tax.pm
         - /cgi-cpn/lib_setbd.pm
-
+- Taxports, Tagports y Listados
+    [mejoras] 
+        - Implementa múltiples loops en taxports y tagports
+    [files]
+        - /cgi-cpn/prontus_cron_taxport.cgi
+        - /cgi-cpn/prontus_cron_taxport_worker.cgi
+        - /cgi-cpn/prontus_cron_list.cgi
+        - /cgi-cpn/prontus_cron_taxport_worker.cgi
+        - /cgi-cpn/prontus_tags_ports.cgi
+        - /cgi-cpn/prontus_regenera_tagport.cgi
