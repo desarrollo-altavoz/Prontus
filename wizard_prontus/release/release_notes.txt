@@ -10098,3 +10098,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - /cgi-cpn/prontus_art_ficha.cgi
         - /wizard_prontus/prontus_dir/cpan/core/vtxt/css/vtxt_extras.css
 
+- General
+    [mejoras]
+        - Fuerza la regeneración de cache de prontus_art_listpub.html si detecta que la plantilla de la portada correspondiente fue modificada luego de la creación del cache.
+    [files]
+        - /cgi-cpn/lib_prontus.pm
+        - /cgi-cpn/prontus_art_listpub.cgi
+        - /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        - /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
