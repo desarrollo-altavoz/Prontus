@@ -10097,4 +10097,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         - /cgi-cpn/prontus_art_ficha.cgi
         - /wizard_prontus/prontus_dir/cpan/core/vtxt/css/vtxt_extras.css
-
+- General
+    [bugfixes]
+        - Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
+    [files]
+        - /cgi-cpn/Artic.pm
+        - /cgi-cpn/lib_tax.pm
