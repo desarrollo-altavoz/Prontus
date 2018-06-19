@@ -10116,8 +10116,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Agrega primera keys faltantes a tablas de multitag, solo afecta a creacion de neuvas tablas.
     [mejoras]
         - Agrega información para saber que articulo tiene demasiados includes
+        - Mueve la opción de config USAR_PUBLIC_SERVER_NAME_VER_ARTIC junto a PUBLIC_SERVER_NAME.
     [files]
         - /cgi-cpn/Artic.pm
         - /cgi-cpn/lib_tax.pm
         - /cgi-cpn/lib_setbd.pm
+        - /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 
