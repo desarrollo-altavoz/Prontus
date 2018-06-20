@@ -1329,14 +1329,14 @@ sub parseaVars {
 
     $pagina =~ s/%%FOTO_MAX_PIXEL%%/$prontus_varglb::FOTO_MAX_PIXEL/ig;
 
-    if ($prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'NO') {
-        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%//ig;
-        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%/ checked="checked"/ig;
-        $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/100/ig;
-    } else {
+    if ($prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'SI') {
         $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%//ig;
         $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/$prontus_varglb::NIVEL_OPTIMIZACION_JPG/ig;
+    } else {
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%//ig;
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%/ checked="checked"/ig;
+        $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/100/ig;
     }
 
     $buffer = '';

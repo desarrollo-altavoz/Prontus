@@ -2184,8 +2184,8 @@ sub load_config {
     $prontus_varglb::FOTO_MAX_PIXEL = $2;
   };
 
-  # El valor por defecto es SI
-  $prontus_varglb::REDUCIR_CALIDAD_JPEGS = 'SI';
+  # El valor por defecto es NO
+  $prontus_varglb::REDUCIR_CALIDAD_JPEGS = 'NO';
   if ($buffer =~ m/\s*REDUCIR_CALIDAD_JPEGS\s*=\s*["'](SI|NO)["']/s) {
       $prontus_varglb::REDUCIR_CALIDAD_JPEGS = $1;
   }
