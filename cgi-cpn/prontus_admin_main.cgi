@@ -17,15 +17,16 @@
 # ---------------------------------------------------------------
 # LLAMADAS A ARCHIVOS EXTERNOS.
 # ------------------------------
-# Genera el link para que se invoque a /cgi-cpn/prontus_edit_file.exe para editar el archivo clickeado.
+# Muestra las opciones de configuración de Prontus.
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-# Desde el web sin parametros o pasando por parametro el dir., relativo a la raiz del publicador, que se quiere examinar.
+# Desde el web, pasando por parametro el path al archivo de 
+# configuración del Prontus a modificar.
 # ---------------------------------------------------------------
 # PLANTILLAS HTML UTILIZADAS.
 # ----------------------------
-# <dir_publicador>/cpan/core/prontus_edit/prontus_edit_arbol.html
+# <prontus_dir>/cpan/core/prontus_admin_main.html
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # TABLAS UTILIZADAS.
@@ -1327,6 +1328,16 @@ sub parseaVars {
     $pagina =~ s/%%SCRIPT_QUOTA%%/$prontus_varglb::SCRIPT_QUOTA/ig;
 
     $pagina =~ s/%%FOTO_MAX_PIXEL%%/$prontus_varglb::FOTO_MAX_PIXEL/ig;
+
+    if ($prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'NO') {
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%//ig;
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%/ checked="checked"/ig;
+        $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/100/ig;
+    } else {
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%//ig;
+        $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/$prontus_varglb::NIVEL_OPTIMIZACION_JPG/ig;
+    }
 
     $buffer = '';
     $pagina =~ /<!--loop_multivista-->(.*?)<!--\/loop_multivista-->/s;
