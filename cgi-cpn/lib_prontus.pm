@@ -2190,7 +2190,7 @@ sub load_config {
       $prontus_varglb::REDUCIR_CALIDAD_JPEGS = $1;
   }
 
-  # El valor por defecto es 85. Sólo acepto valores en dígitos enteros entre 0 y 100. 
+  # El valor por defecto es 85. Sólo acepto valores en dígitos enteros entre 0 y 100.
   # 0 es "usar el default": https://libgd.github.io/manuals/2.2.5/files/gd_jpeg-c.html
   $prontus_varglb::NIVEL_OPTIMIZACION_JPG = '85';
   if ($prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'SI') {
