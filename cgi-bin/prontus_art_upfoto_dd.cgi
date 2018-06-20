@@ -112,7 +112,7 @@ main: {
             my ($wnew, $hnew) = &lib_thumb::calcular_proporcion_img($wfoto, $hfoto, $wmax, $hmax);
             my ($binfoto, $wfoto, $hfoto) = &lib_thumb::make_resize($wnew, $hnew, $dst_path);
             $dst_path =~ s/\.gif$/\.png/i if($dst_path =~ /\.gif$/i);
-            &glib_fildir_02::write_file($dst_path, $binfoto) if ($binfoto);
+            &lib_thumb::write_image($dst_path, $binfoto) if ($binfoto);
         };
     } else {
         my $tipo = &lib_thumb::get_imag_extension($dst_path);
@@ -121,7 +121,7 @@ main: {
             #print STDERR "Reduciendo calidad a $prontus_varglb::NIVEL_OPTIMIZACION_JPG\n";
             my ($ancho, $alto, $ratio) = &lib_thumb::get_propiedades($dst_path);
             my ($binfoto, $wfoto, $hfoto) = &lib_thumb::make_resize($ancho, $alto, $dst_path);
-            &lib_thumb::write_image($dst_path, $binfoto);
+            &lib_thumb::write_image($dst_path, $binfoto) if ($binfoto);
         }
     };
 
