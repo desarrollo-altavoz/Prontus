@@ -1537,7 +1537,17 @@ sub genera_friendly_v4 {
 # genera todo lo que necesita la friendly v4 para funcionar
 # guarda el titular formateado en la BD
 # genera el archivo con el include en el filesystem
+
+    # si no esta activada friendly 4 no se hace nada
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '4') {
+        return 1;
+    }
+
     my ($this, $base) = @_;
+
+    if ($this->{ts} eq 'preview') {
+        return 1;
+    }
 
     my $num_elem = keys(%{$this->{xml_content}});
     if (!$num_elem) {
