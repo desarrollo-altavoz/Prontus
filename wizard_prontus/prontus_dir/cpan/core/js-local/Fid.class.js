@@ -116,7 +116,7 @@ var Fid = {
         /* Mostrar drag & drop siempre y cuando este soportado. */
         if (Fid.showDragDrop) {
             // Iniciar upload Drag & Drop
-            $('#uploadNormal').hide();
+            $('#uploadNormal').show();
             $('#uploadDragDrop').show();
             $('#uploadUploadify').show();
             $('#DragDropAndTradicional').show();
@@ -172,6 +172,76 @@ var Fid = {
                     }, 1000);
                 },
                 drop: function (e, data) {
+                    /* Validar extensiones de archivo. */
+                    var fail = false;
+                    $.each(data.files, function (index, file) {
+                        var ext = (file.name).split('.').pop().toLowerCase();
+                        if ($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+                            alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, jpg o jpeg.");
+                            fail = true;
+                            return false; /* break. */
+                        }
+                    });
+
+                    if (fail) {
+                        return false; /* al retornar false, se detiene la ejecución del plugin. */
+                    }
+
+                    $('#uploadProgress').show();
+                    $('#uploadUploadify').hide();
+                }
+            });
+            $('#fileInputSelect').fileupload({
+                dataType: 'text',
+                url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
+                fileInput: $('#fileInputSelect'),
+                formData: { prontus_id: mainFidJs.PRONTUS_ID },
+                done: function (e, data) {
+                    var arrResp = [];
+                    var response = data.result
+                    if (response == '0') {
+                        $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
+                                '<div class="img-error">Imagen con errores</div>' +
+                                '</div>');
+
+                    } else if (response != '') {
+                        arrResp = response.split(",");
+                        var idFoto = arrResp[0];
+                        var wFoto = arrResp[1];
+                        var hFoto = arrResp[2];
+                        var relPath = arrResp[3];
+                        var nomFile = arrResp[4];
+                        var realNomFile = arrResp[5];
+                        var labelSize = '<br/><span class="ST">(' + wFoto + ' x ' + hFoto + ')</span>';
+                        if (wFoto > 100) {
+                            wFoto = 100;
+                        }
+
+                        $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
+                                '<div>' + realNomFile + labelSize + '</div>' +
+                                '<img src="' + relPath + '" id="' + idFoto  + '">' +
+                                '</div>' +
+                                '<input type="hidden" name="_fotoreal" value="' + realNomFile + '">' +
+                                '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">');
+                    }
+                },
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#uploadProgressBar').css('width', progress + '%');
+                    $('#uploadProgressPercent').text(progress+'%');
+                },
+                stop: function (e) {
+                    $('#uploadProgressBar').css('width', '100%');
+                    $('#uploadProgressPercent').text('100%');
+                    $('#fileInputSelect').fileupload('disable');
+                    $('#dropZone').css('cursor', 'not-allowed');
+                    setTimeout(function () {
+                        $('#uploadProgressContainer').hide();
+                        $('#uploadcomplete').show();
+                        Fid.submitir('Guardar', '_self');
+                    }, 1000);
+                },
+                change: function (e, data) {
                     /* Validar extensiones de archivo. */
                     var fail = false;
                     $.each(data.files, function (index, file) {

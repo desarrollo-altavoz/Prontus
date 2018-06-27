@@ -1,68 +1,69 @@
 
 <table class="tableform">
-  <tr id="uploadNormal">
-    <td class="campo-titu-center" colspan="2">
-      Escoja las im&aacute;genes que desea subir simult&aacute;neamente.<br/>
-      <span class="ayuda">Estas quedar&aacute;n disponibles en el "Banco de Im&aacute;genes" de este formulario.</span><br /><br/>
-    </td>
-  </tr>
-  <tr id="uploadDragDrop" style="display: none;">
-    <td class="campo-titu-center" colspan="2">
-        Arrastre las imágenes a esta &aacute;rea y se subirán autom&aacute;ticamente.<br/>
-        <span class="ayuda">Estas quedar&aacute;n disponibles en el "Banco de Im&aacute;genes" de este formulario.</span><br /><br/>
-        <div id="dropZone">
-            <div class="draghere">Arrastre sus imágenes hasta aqu&iacute;</div>
-        </div>
-        <div id="uploadProgress">
-            <div id="uploadProgressContainer" style="width:182px; height:15px;border:1px solid #666666; float: left;">
-                <div id="uploadProgressBar" style="width:0%; height:15px; background-image: url('/%%_prontus_id%%/cpan/core/imag/auxi/avancebg.gif'); float:left;"></div>
-                <div id="uploadProgressPercent">0%</div>
+    <tr id="uploadNormal">
+        <td class="campo-titu-center" colspan="2">
+            Escoja las im&aacute;genes que desea subir simult&aacute;neamente.<br/>
+            <span class="ayuda">Estas quedar&aacute;n disponibles en el "Banco de Im&aacute;genes" de este formulario.</span><br /><br/>
+            <input id="fileInputSelect" name="fileInputSelect" type="file" multiple="multiple" />
+        </td>
+    </tr>
+    <tr id="uploadDragDrop" style="display: none;">
+        <td class="campo-titu-center" colspan="2">
+            Arrastre las im&aacute;genes a esta &aacute;rea y se subir&aacute;n autom&aacute;ticamente.<br/>
+            <span class="ayuda">Estas quedar&aacute;n disponibles en el "Banco de Im&aacute;genes" de este formulario.</span><br /><br/>
+            <div id="dropZone">
+                <div class="draghere">Arrastre sus im&aacute;genes hasta aqu&iacute;</div>
             </div>
-        </div>
-        <div class="input-fileupload">
-          <input id="fileInputDD" name="fileInputDD" type="file" />
-        </div>
-    </td>
-  </tr>
-  <tr>
-    <td id="uploadUploadify" colspan="2" class="campo-titu-center">
-        <div id="DragDropAndTradicional" style="display: none;">O utilice la forma tradicional, escogiendo los archivos que desea subir simultaneamente.<br/><br/></div>
-        <input id="fileInput" name="fileInput" type="file" />
-    </td>
-  </tr>
-  <tr>
-    <td  colspan="2"><br/>
-      <div id="uploadcomplete" style="color:red">
-        Carga de imágenes terminada, guardando artículo...
-      </div>
-      <div id="imagenescargadas" >
-      </div>
-    </td>
-  </tr>
+            <div id="uploadProgress">
+                <div id="uploadProgressContainer" style="width:182px; height:15px;border:1px solid #666666; float: left;">
+                    <div id="uploadProgressBar" style="width:0%; height:15px; background-image: url('/%%_prontus_id%%/cpan/core/imag/auxi/avancebg.gif'); float:left;"></div>
+                    <div id="uploadProgressPercent">0%</div>
+                </div>
+            </div>
+            <div class="input-fileupload">
+                <input id="fileInputDD" name="fileInputDD" type="file" />
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td id="uploadUploadify" colspan="2" class="campo-titu-center">
+            <div id="DragDropAndTradicional">O utilice la forma tradicional, escogiendo los archivos que desea subir simultaneamente.<br/><br/></div>
+            <input id="fileInput" name="fileInput" type="file" multiple="multiple" />
+        </td>
+    </tr>
+    <tr>
+        <td  colspan="2"><br/>
+            <div id="uploadcomplete" style="color:red">
+                Carga de im&aacute;genes terminada, guardando art&iacute;culo...
+            </div>
+            <div id="imagenescargadas" >
+            </div>
+        </td>
+    </tr>
 </table>
 
 <table class="tableform browser-comun browser-noflash">
-  <tr>
-    <td class="campo-titu-center" colspan="3">
-      Escoja las im&aacute;genes que desea subir.<br/>
-      <span class="ayuda">Estas quedar&aacute;n disponibles en el "Banco de Im&aacute;genes" de este formulario.</span>
-    </td>
-  </tr>
-  <tr class="ipad-mult">
-    <td><input type="file" name="FOTO_N1" /></td>
-    <td><input type="file" name="FOTO_N2" /></td>
-  </tr>
-  <tr class="ipad-mult">
-    <td><input type="file" name="FOTO_N3" /></td>
-    <td><input type="file" name="FOTO_N4" /></td>
-  </tr>
-  <tr class="ipad-mult">
-    <td><input type="file" name="FOTO_N5" /></td>
-    <td><input type="file" name="FOTO_N6" /></td>
-  </tr>
-  <tr class="ipad-mult">
-    <td><input type="file" name="FOTO_N7" /></td>
-    <td><input type="file" name="FOTO_N8" /></td>
-  </tr>
+    <tr>
+        <td class="campo-titu-center" colspan="3">
+            Escoja las im&aacute;genes que desea subir.<br/>
+            <span class="ayuda">Estas quedar&aacute;n disponibles en el "Banco de Im&aacute;genes" de este formulario.</span>
+        </td>
+    </tr>
+    <tr class="ipad-mult">
+        <td><input type="file" name="FOTO_N1" /></td>
+        <td><input type="file" name="FOTO_N2" /></td>
+    </tr>
+    <tr class="ipad-mult">
+        <td><input type="file" name="FOTO_N3" /></td>
+        <td><input type="file" name="FOTO_N4" /></td>
+    </tr>
+    <tr class="ipad-mult">
+        <td><input type="file" name="FOTO_N5" /></td>
+        <td><input type="file" name="FOTO_N6" /></td>
+    </tr>
+    <tr class="ipad-mult">
+        <td><input type="file" name="FOTO_N7" /></td>
+        <td><input type="file" name="FOTO_N8" /></td>
+    </tr>
 </table>
 

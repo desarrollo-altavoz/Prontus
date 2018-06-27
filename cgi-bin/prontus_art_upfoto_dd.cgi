@@ -62,6 +62,9 @@ main: {
     &glib_cgi_04::new();
 
     $FORM{'files'} = &glib_cgi_04::param('fileInputDD');
+    if (!$FORM{'files'}) {
+        $FORM{'files'} = &glib_cgi_04::param('fileInputSelect');
+    }
     $FORM{'prontus_id'} = &glib_cgi_04::param('prontus_id');
     # $FORM{'prontus_id'} =~ s/[^\w\-]//sg; No es necesario se valida dentro de valida_invocacion()
 
