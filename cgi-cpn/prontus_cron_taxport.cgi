@@ -13,7 +13,7 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-};
+}
 
 use strict;
 # Captura STDERR
@@ -36,6 +36,7 @@ use POSIX qw(ceil);
 my (%PARAMS, %TABLA_TEM, %TABLA_STEM, %TABLA_SECC, %FIDS);
 my $BD;
 my $RELDIR_PORT_DST = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_PTEMA";
+
 # el valor de DIR_TEMP cambia despues de cargar la configuracion de prontus
 my $RELDIR_PORT_TMP = "$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_PTEMA";
 my $CURR_DTIME;
@@ -43,13 +44,14 @@ my %WORKERS2TRIGGER;
 my $PATHNICE;
 my $DIR_SEMAF;
 my @FIRST_PAGE_CMD;
+my @UNIQ_PAGE_CMD;
 my $TS;
 
 main:{
     if ((! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
         print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /var/www/misitio/web \n";
         exit;
-    };
+    }
 
     $CURR_DTIME = &glib_hrfec_02::get_dtime_pack4();
 
@@ -71,7 +73,7 @@ main:{
 
     $DIR_SEMAF = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/taxport_smf";
 
-    &glib_fildir_02::check_dir($DIR_SEMAF) if (! -d $DIR_SEMAF); # ¿necesario?
+    &glib_fildir_02::check_dir($DIR_SEMAF);
 
     &conecta_db();
     $PATHNICE = &lib_prontus::get_path_nice();
@@ -92,6 +94,27 @@ main:{
     }
 
     my $sleep_time = $$*10+100000;
+
+    # ejecutamos las primeras paginas unicas
+    foreach my $cmd (@UNIQ_PAGE_CMD) {
+        # esperamos si hay muchos procesos simultaneos
+        while (&lib_tax::check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
+            sleep(1);
+        }
+        # si existe otro proceso igual corriendo, lo mata.
+        # fid/seccion/tema/subtema
+        my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$cmd->{'semaf'}");
+        if ($pid ne '') {
+            print STDERR "Existe otro proceso para pagina $cmd->{'semaf'}, matandolo.\n";
+            my $ret = `kill -9 $pid`;
+            print STDERR "Killed pid[$pid] ret[$ret]\n";
+        }
+        # se ejecuta el nuevo proceso
+        print STDERR "Actualizar pagina unica [$cmd->{'cmd'}]\n";
+        system("$cmd->{'cmd'} &");
+        usleep($sleep_time);
+    }
+
     foreach my $worker (keys %WORKERS2TRIGGER) {
         # Solo ejecuta el worker si no esta corriendo.
         my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/worker_$worker");
@@ -103,7 +126,7 @@ main:{
             # print STDERR "data_pid[$data_pid]\n";
             if ($data_pid eq '') {
                 # si no hay procesos corriendo con este pid se borra el semaforo y lanza el worker
-                print STDERR "No hay proceso con pid $pid\n";
+                print STDERR "No hay proceso con pid[$pid]\n";
                 unlink("$DIR_SEMAF/worker_$worker");
             } elsif ($data_pid !~ /prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $worker/) {
                 # si no es un proceso worker eliminamos el semaforo para lanzar el proceso correcto
@@ -119,23 +142,24 @@ main:{
         system($cmd);
         usleep($sleep_time);
     }
+
     # ejecutamos secuencialmente las primeras paginas
     foreach my $cmd (@FIRST_PAGE_CMD) {
         # si existe otro proceso igual corriendo, lo mata.
         # fid/seccion/tema/subtema
         my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$cmd->{'semaf'}");
         if ($pid ne '') {
-            print STDERR "Existe otro proceso para pagina 1,... matandolo [$cmd->{'semaf'}].\n";
+            print STDERR "Existe otro proceso para pagina 1, matandolo [$cmd->{'semaf'}].\n";
             my $ret = `kill -9 $pid`;
             print STDERR "Killed pid[$pid] ret[$ret]\n";
         }
         # se ejecuta el nuevo proceso
-        print STDERR "cmd[$cmd->{'cmd'}]\n";
+        print STDERR "Actualizar primera pagina [$cmd->{'cmd'}]\n";
         system($cmd->{'cmd'});
     }
 
     $BD->disconnect;
-};
+}
 
 sub carga_fids {
     foreach my $key (keys %prontus_varglb::FORM_PLTS) { # key = 'fid_general:General(general.php)'
@@ -144,7 +168,7 @@ sub carga_fids {
         $fid_name = $1;
         $FIDS{$fid_name}  = 1;
     }
-};
+}
 
 sub get_fids2process {
     my %fids;
@@ -161,16 +185,16 @@ sub get_fids2process {
         my @listado_filtros = &get_taxport_fil();
         foreach my $fil (@listado_filtros) {
             $fids{$fil} = 1;
-        };
+        }
     } else {
         # si no se indica fid, solo regenera "all"
         $fids{''} = 1;
-    };
+    }
 
     $fids{''} = 1 if (!$PARAMS{'regen'});
 
     return %fids;
-};
+}
 
 sub conecta_db {
     # Conectar a BD
@@ -180,17 +204,17 @@ sub conecta_db {
     if (!ref($BD)) {
         print STDERR "ERROR: $msg_err_bd\n";
         exit;
-    };
+    }
 
     $BD->{mysql_auto_reconnect} = 1;
-};
+}
 
 sub valida_param {
     if ((! -d "$prontus_varglb::DIR_SERVER/$PARAMS{'prontus'}") || ($PARAMS{'prontus'} eq '')  || ($PARAMS{'prontus'} =~ /^\//))  {
         print STDERR "\nError: Directorio del publicador no es valido.";
         print STDERR "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como parametro de esta CGI\n";
         exit;
-    };
+    }
 
     if ($PARAMS{'params'}) {
         if ($PARAMS{'params'} !~ /^[0-9A-Za-z_\-]*\/[0-9]*\/[0-9]*\/[0-9]*$/) {
@@ -243,26 +267,17 @@ sub queue_procs {
 
     if ($ts) {
         my $nro_pag = &get_pagina_artic($ts, $filtros, $nro_paginas, $taxport_order, $BD);
-
         if ($nro_pag) {
-            print STDERR "Actualiza pagina especifica nro_pag[$nro_pag]\n";
-
-            my $pid = &glib_fildir_02::read_file("$DIR_SEMAF/$id_level\_$nro_pag");
-            if ($pid ne '') {
-                print STDERR "Existe otro proceso para pagina $nro_pag, level $id_level... matandolo.\n";
-                my $ret = `kill -9 $pid`;
-                print STDERR "Killed pid[$pid] ret[$ret]\n";
-            }
-
-            my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $fid/$secc_id/$temas_id/$subtemas_id/$nro_pag >/dev/null 2>&1 &";
-            print STDERR "$cmd\n";
-            system($cmd);
+            my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $fid/$secc_id/$temas_id/$subtemas_id/$nro_pag >/dev/null 2>&1";
+            my %proc = ('semaf' =>"$id_level\_$nro_pag", 'cmd' => $cmd);
+            push (@UNIQ_PAGE_CMD, \%proc);
         }
 
     } else {
         for (my $x = 1; $x <= $nro_paginas; $x++) {
             if ($x == 1) {
                 my $cmd = "$PATHNICE /usr/bin/perl $Bin/prontus_cron_taxport_worker.cgi $prontus_varglb::PRONTUS_ID $fid/$secc_id/$temas_id/$subtemas_id/1 >/dev/null 2>&1";
+
                 # al final ejecutamos de forma continua todas las primeras paginas
                 my %proc = ('semaf' =>"$id_level\_$x", 'cmd' => $cmd);
                 push (@FIRST_PAGE_CMD, \%proc);
@@ -271,7 +286,7 @@ sub queue_procs {
             }
         }
     }
-};
+}
 
 sub get_pagina_artic {
     my $ts = $_[0];
@@ -298,13 +313,13 @@ sub get_pagina_artic {
     }
 
     return '';
-};
+}
 
 sub put_queue {
     my ($secc_id, $temas_id, $subtemas_id, $fid, $pagina) = @_;
     my $dir_queue = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/taxqueue";
 
-    &glib_fildir_02::check_dir($dir_queue) if (! -d $dir_queue); # ¿necesario?
+    &glib_fildir_02::check_dir($dir_queue);
 
     my $worker = &get_queue_worker($dir_queue); # buscar el worker que tiene menos trabajo.
     my $file = "$fid\_$secc_id\_$temas_id\_$subtemas_id\_$pagina.txt";
@@ -322,7 +337,7 @@ sub put_queue {
     $WORKERS2TRIGGER{$worker} = 1;
 
     &glib_fildir_02::write_file("$dir_queue/$worker\_$file", 1);
-};
+}
 
 # devuelve el que tiene menos trabajo.
 sub get_queue_worker {
@@ -338,7 +353,7 @@ sub get_queue_worker {
     my $min = (sort { $workers{$a} <=> $workers{$b} } keys %workers)[0];
 
     return $min;
-};
+}
 
 sub genera_orden_taxports {
     my $fid = $_[0];
@@ -353,7 +368,7 @@ sub genera_orden_taxports {
         return $prontus_varglb::TAXPORT_ORDEN;
     }
 
-};
+}
 
 sub get_tot_artics {
     my $filtros = shift;
@@ -368,7 +383,7 @@ sub get_tot_artics {
         $sql =~ s/group by ART_ID//i;
     } else {
         $sql =~ s/%%FILTRO%%//;
-    };
+    }
 
     $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($count_art));
     $salida->fetch;
@@ -378,7 +393,7 @@ sub get_tot_artics {
     $count_art = $prontus_varglb::TAXPORT_MAXARTICS if ($count_art > $prontus_varglb::TAXPORT_MAXARTICS);
 
     return $count_art;
-};
+}
 
 # -------------------------------------------------------------------------
 # Se buscan los directorios que comiencen con fil_ en las plantillas de taxport.
@@ -391,7 +406,7 @@ sub get_taxport_fil {
         if ($dir =~ /fil_(.*?)$/) {
             push @filtros, "fil_" . $1;
             &lib_tax::cargar_fil_cfg("$dir/filtros.cfg", "fil_" . $1);
-        };
-    };
+        }
+    }
     return @filtros;
-};
+}
