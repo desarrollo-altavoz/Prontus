@@ -252,7 +252,7 @@ sub make_lista {
 
     my ($sql) = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, ART_DIRFECHA, ART_EXTENSION, "
     . "ART_TIPOFICHA from ART %%FILTRO%% order by ART_FECHAP desc, ART_HORAP desc LIMIT $limit";
-    
+
     if ($nom_tabla_exclude) {
         $filtros .= " AND ART_ID NOT IN (SELECT EXCLUDE_ART_ID FROM $nom_tabla_exclude)" if ($filtros);
         $filtros = " WHERE ART_ID NOT IN (SELECT EXCLUDE_ART_ID FROM $nom_tabla_exclude)" if (!$filtros);
@@ -958,5 +958,21 @@ sub load_taxport_fil {
         }
     }
 };
+# ---------------------------------------------------------------
+sub check_taxport_running {
+    my($res) = qx/ps axww | grep 'prontus_cron_taxport.cgi' | grep -v grep | grep -v 'sh -c' | grep -v tail | wc -l/;
+
+    $res =~ s/\D//gs;
+    $res += 0; # para forzar el casteo a numero
+    return $res;
+}
+# ---------------------------------------------------------------
+sub check_worker_running {
+    my($res) = qx/ps axww | grep 'prontus_cron_taxport_worker.cgi' | grep -v grep | grep -v 'sh -c' | grep -v tail | wc -l/;
+
+    $res =~ s/\D//gs;
+    $res += 0; # para forzar el casteo a numero
+    return $res;
+}
 
 return 1;
