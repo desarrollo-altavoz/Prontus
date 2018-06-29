@@ -203,7 +203,7 @@ var Admin = {
         $('#main').find('.main-left').append(html);
         $('.lockscreen').height(height);
         if (tipo == 'art') {
-            $('.lockscreen').css('top', 143); // !!! no me rete cesar!
+            $('.lockscreen').css('top', 143);
         }
     },
 
