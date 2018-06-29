@@ -890,7 +890,7 @@ sub load_artic_pubs {
                 my ($dirfecha,$art,$area,$prio,$pub,$ext_art,$vb) = '';
                 ($dirfecha,$art,$area,$prio,$vb,$pub) = ($1,$2,$3,$4,$6,$9);
 
-                $hash_artics{$art}{$edic}{$port} = 1;
+                $hash_artics{$art}{$edic}{$port} = $area;
             };
 
         };
@@ -2474,9 +2474,27 @@ sub write_log {
 };
 # -------------------------------------------------------------------------#
 
+#
+sub parse_plantilla_portada {
+    my ($path_tpl, $dir_server, $prontus_id, $mv, $public_server_name,
+    $prontus_key, $nom_edic, $sin_regen_xml,
+    $controlar_alta_articulos, $users_perfil) = @_;
+    # $path_tpl: full path de la plantilla de portada, incluyendo extension
+
+    # Carga plantilla y realiza parseos normales
+    my $buffer = &generic_parse_port($path_tpl, $dir_server, $prontus_id, $public_server_name, $nom_edic,
+    0, 0, 0, $users_perfil, $mv);
+    # print STDERR "buffer[$buffer]\n";
+    # Parseos especificos
+    $buffer = &lib_prontus::add_generator_tag($buffer);
+
+    # En los preview, poner links a los demas previews
+    $buffer =~ s/%%_vista%%/$mv/g;
+    $buffer =~ s/%%.+?%%//g;
+    return $buffer;
+}
 
 # Genera la portada de acuerdo al template escogido.
-
 sub make_portada {
     my($dest_file, $path_tpl, $dir_server, $prontus_id, $mv, $public_server_name,
     $prontus_key, $stamp_demo, $nom_edic, $sin_regen_xml, $stamp_demo_rss,

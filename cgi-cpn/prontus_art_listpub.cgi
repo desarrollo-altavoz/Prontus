@@ -82,7 +82,7 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-};
+}
 
 # Captura STDERR
 use strict;
@@ -104,10 +104,12 @@ use glib_fildir_02;
 use DBI;
 use lib_dd;
 use lib_tax;
+use Digest::MD5 qw(md5_hex);
 
 my ($BD, $RESTAR_ARTICS_PUB, %TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS);
 my (%HASH_NOMPORTS, %FORM);
 my (%HASH_ARTIC_PUBS, %HASH_ORDEN, %HASH_AREA, %HASH_DIRFECHA, %HASH_PUB, %HASH_VB);
+
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
@@ -132,7 +134,7 @@ main: {
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     if ($prontus_varglb::USERS_ID eq '') {
         &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
-    };
+    }
 
     print "Cache-Control: no-cache\n";
     print "Cache-Control: max-age=0\n";
@@ -144,12 +146,20 @@ main: {
     $file_cache =~ s/[^\w\-]//g;
     my $path_cache = "$dir_cache/$file_cache.html";
 
+    # revisamos el md5 de la plantilla de portada para ver si fue modificada luego de haber guardado este cache.
+    my $md5_plt = &get_md5_portada('');
+    my $md5_cache = '';
     if (-s $path_cache) {
         my $buffer_cache = &glib_fildir_02::read_file($path_cache);
         $buffer_cache = &port_dd_check_compatible($buffer_cache);
-        print $buffer_cache;
-        exit;
-    };
+        if ($buffer_cache =~ /data-md5-plt="(.*?)"/i) {
+            $md5_cache = $1;
+        }
+        if ($md5_plt eq $md5_cache) {
+            print $buffer_cache;
+            exit;
+        }
+    }
 
     # CVI - 06/02/2012 - Se carga el Hash de Articulos publicados en portadas
     %HASH_ARTIC_PUBS = &lib_prontus::load_artic_pubs();
@@ -172,20 +182,10 @@ main: {
     my $nom_recurso_concurrency = &get_nom_recurso_concurrency();
 
     # envia ping
-    &lib_multiediting::send_ping($prontus_varglb::DIR_SERVER,
-                                 $prontus_varglb::PRONTUS_ID,
-                                 $nom_recurso_concurrency,
-                                 'port',
-                                 $prontus_varglb::USERS_USR,
-                                 $id_session);
+    &lib_multiediting::send_ping($prontus_varglb::DIR_SERVER,$prontus_varglb::PRONTUS_ID,$nom_recurso_concurrency,'port',$prontus_varglb::USERS_USR,$id_session);
 
     # ve si hay alguien mas editando el recurso
-    my $concurrency = &lib_multiediting::get_concurrency( $prontus_varglb::DIR_SERVER,
-                                                          $prontus_varglb::PRONTUS_ID,
-                                                          $nom_recurso_concurrency,
-                                                          'port',
-                                                          $prontus_varglb::USERS_USR,
-                                                          $id_session);
+    my $concurrency = &lib_multiediting::get_concurrency( $prontus_varglb::DIR_SERVER,$prontus_varglb::PRONTUS_ID,$nom_recurso_concurrency,'port',$prontus_varglb::USERS_USR,$id_session);
 
     $buffer =~ s/%%_concurrency%%/otros users editando esta port: $concurrency/g;
 
@@ -200,6 +200,8 @@ main: {
     $buffer =~ s/>($crlf| )+</>\x0a</sg;
     $buffer =~ s/ +/ /sg;
     $buffer =~ s/($crlf)+/\x0a/sg;
+    # guardamos el md5 de la plantilla de portada para comparaciones posteriores como en prontus_art_listpub
+    $buffer =~ s/data-md5-plt="(.*?)"/data-md5-plt="$md5_plt"/gi;
 
     # CVI - 16/06/2011
     my $open_fid_in_pop = 'open_normally';
@@ -225,7 +227,7 @@ main: {
     # print STDERR &get_time('Fin');
 
     print $buffer;
-};
+}
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -234,7 +236,7 @@ sub get_nom_recurso_concurrency {
     my $nom_recurso = $FORM{'_edic'} . '-' . $FORM{'_port'};
     $nom_recurso =~ s/\.\w+$//; # borra ext.
     return $nom_recurso;
-};
+}
 # ---------------------------------------------------------------
 sub get_sess_id {
     my $sess_obj = Session->new(
@@ -244,7 +246,24 @@ sub get_sess_id {
     return $sess_obj->{id_session};
 };
 # ---------------------------------------------------------------
+# Parsea una plantilla de portada completa, procesando macros, y genera un md5.
+# Usada para verificar si la plantilla ha cambiado desde la última vez que se generó un cache.
+sub get_md5_portada {
+    my $mv = shift; # la vista a procesar.
+    # Path absoluto al dir. donde residen los templates de portadas.
+    my $DST_TSEC = $prontus_varglb::DIR_SERVER .
+    $prontus_varglb::DIR_TEMP .
+    $prontus_varglb::DIR_EDIC .
+    $prontus_varglb::DIR_NROEDIC .
+    $prontus_varglb::DIR_SECC;
+    my $buffer = &lib_prontus::parse_plantilla_portada($DST_TSEC . "/$FORM{'_port'}", $prontus_varglb::DIR_SERVER, $prontus_varglb::PRONTUS_ID,
+        $mv, $prontus_varglb::PUBLIC_SERVER_NAME, $prontus_varglb::PRONTUS_KEY,
+        $FORM{'_edic'}, '', $prontus_varglb::USERS_PERFIL);
+    # print STDERR "================\n$buffer\n================\n";
+    return md5_hex($buffer);
+}
 
+# ---------------------------------------------------------------
 sub print_date_or_time {
   # Escribe la fecha u hora, dependiendo si la fecha del art. es de hoy o no.
   my ($aaaammdd_art, $hhmmss_art) = @_;
@@ -595,7 +614,7 @@ sub get_artic_parsed {
         }
         $marca_file = $public_server_name . $marca_file;
     }
-    
+
     $loop_art_tpl =~ s/%%_file%%/$marca_file/g;
     $loop_art_tpl =~ s/%%_autoinc%%/$art_autoinc/g;
     $loop_art_tpl =~ s/%%_titular%%/$titulo/g;
@@ -678,7 +697,7 @@ sub get_artic_parsed {
             }
             else {
                 $art_horae = '00:00';
-            };
+            }
             $expiracion = &glib_hrfec_02::des_normaliza_fecha($art_fechae) . ' ' . $art_horae . 'hrs.';
         };
         $loop_art_tpl =~ s/%%_fec_expiracion%%/$expiracion/g;
@@ -708,6 +727,8 @@ sub get_glosa_tipo_ficha {
   return $glosa;
 };
 
+# ---------------------------------------------------------------
+# revisa si una plantilla de portada es compatible con la funcionalidad drag&drop de Prontus
 sub port_dd_check_compatible {
     my $buffer = $_[0];
     my $path_port_plt = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_TEMP . "/edic/nroedic/port/$FORM{'_port'}";

@@ -10118,6 +10118,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Evita la generacion de symlinks para friendly 4 si se está haciendo preview de un artículo
         - Hace mas estricta la carga de configuracion para no dejar variables vacías sin su valor por defecto
     [mejoras]
+        - Fuerza la regeneración de cache de prontus_art_listpub.html si detecta que la plantilla de la portada correspondiente fue modificada luego de la creación del cache.
         - Agrega información para saber que articulo tiene demasiados includes
         - Mueve la opción de config USAR_PUBLIC_SERVER_NAME_VER_ARTIC junto a PUBLIC_SERVER_NAME.
         - Implementa nivel de optimización configurable para JPEGs. Altera la calidad de imagen al hacer
@@ -10132,6 +10133,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - /cgi-bin/prontus_art_upfoto.cgi
         - /cgi-bin/prontus_art_upfoto_dd.cgi
         - /cgi-cpn/lib_prontus.pm
+        - /cgi-cpn/prontus_art_listpub.cgi
+        - /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        - /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
         - /cgi-cpn/lib_thumb.pm
         - /cgi-cpn/prontus_admin_main.cgi
         - /cgi-cpn/prontus_cfg_save.cgi
