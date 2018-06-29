@@ -10115,6 +10115,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
         - Agrega primera keys faltantes a tablas de multitag, solo afecta a creacion de nuevas tablas.
         - Evita la generacion de symlinks para friendly 4 si se está haciendo preview de un artículo
+        - Hace mas estricta la carga de configuracion para no dejar variables vacías sin su valor por defecto
     [mejoras]
         - Agrega información para saber que articulo tiene demasiados includes
         - Mueve la opción de config USAR_PUBLIC_SERVER_NAME_VER_ARTIC junto a PUBLIC_SERVER_NAME.
