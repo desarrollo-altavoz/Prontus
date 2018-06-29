@@ -10114,6 +10114,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
         - Agrega primera keys faltantes a tablas de multitag, solo afecta a creacion de nuevas tablas.
+        - Usa el valor de PUBLIC_SERVER_NAME para ver archivos y portadas desde los listados si está habilitada USAR_PUBLIC_SERVER_NAME_VER_ARTIC
         - Evita la generacion de symlinks para friendly 4 si se está haciendo preview de un artículo
         - Hace mas estricta la carga de configuracion para no dejar variables vacías sin su valor por defecto
     [mejoras]
@@ -10126,6 +10127,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - /cgi-cpn/Artic.pm
         - /cgi-cpn/lib_tax.pm
         - /cgi-cpn/lib_setbd.pm
+        - /cgi-cpn/prontus_art_listnopub.cgi
+        - /cgi-cpn/prontus_art_listpub.cgi
         - /cgi-bin/prontus_art_upfoto.cgi
         - /cgi-bin/prontus_art_upfoto_dd.cgi
         - /cgi-cpn/lib_prontus.pm
