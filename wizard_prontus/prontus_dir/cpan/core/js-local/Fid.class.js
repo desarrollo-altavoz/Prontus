@@ -135,18 +135,6 @@ var Fid = {
 
         }
 
-        // gestionamos el input via dialogo
-        $('#fileInputSelect').fileupload({
-            dataType: 'text',
-            url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
-            fileInput: $('#fileInputSelect'),
-            formData: { prontus_id: mainFidJs.PRONTUS_ID },
-            done: Fid.uploadDone,
-            progressall: Fid.uploadProgressAll,
-            stop: Fid.uploadStop,
-            change: Fid.uploadChange
-        });
-
         Fid.setGUIProcesando(false);
 
         // Muestra por lo menos un body
@@ -184,7 +172,19 @@ var Fid = {
             $('#uploadUploadify').remove();
             if (Fid.showDragDrop) {
                 $('.browser-noflash').remove();
-            }
+            } 
+            // gestionamos el input via dialogo
+            $('#uploadNormal').show();
+            $('#fileInputSelect').fileupload({
+                dataType: 'text',
+                url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
+                fileInput: $('#fileInputSelect'),
+                formData: { prontus_id: mainFidJs.PRONTUS_ID },
+                done: Fid.uploadDone,
+                progressall: Fid.uploadProgressAll,
+                stop: Fid.uploadStop,
+                change: Fid.uploadChange
+            });
         } else {
 
             /* Uploadify */

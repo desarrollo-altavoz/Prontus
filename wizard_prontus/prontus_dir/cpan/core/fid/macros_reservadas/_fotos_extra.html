@@ -1,12 +1,5 @@
 
 <table class="tableform">
-    <tr id="uploadNormal">
-        <td class="campo-titu-center" colspan="2">
-            Escoja las im&aacute;genes que desea subir simult&aacute;neamente.<br/>
-            <span class="ayuda">Estas quedar&aacute;n disponibles en el "Banco de Im&aacute;genes" de este formulario.</span><br /><br/>
-            <input id="fileInputSelect" name="fileInputSelect" type="file" multiple="multiple" />
-        </td>
-    </tr>
     <tr id="uploadDragDrop" style="display: none;">
         <td class="campo-titu-center" colspan="2">
             Arrastre las im&aacute;genes a esta &aacute;rea y se subir&aacute;n autom&aacute;ticamente.<br/>
@@ -28,7 +21,7 @@
     <tr>
         <td id="uploadUploadify" colspan="2" class="campo-titu-center">
             <div id="DragDropAndTradicional">O utilice la forma tradicional, escogiendo los archivos que desea subir simultaneamente.<br/><br/></div>
-            <input id="fileInput" name="fileInput" type="file" multiple="multiple" />
+            <input id="fileInput" name="fileInput" type="file" />
         </td>
     </tr>
     <tr>
@@ -38,6 +31,13 @@
             </div>
             <div id="imagenescargadas" >
             </div>
+        </td>
+    </tr>
+    <tr id="uploadNormal" style="display:none;">
+        <td class="campo-titu-center" colspan="2">
+            Escoja las im&aacute;genes que desea subir simult&aacute;neamente.<br/>
+            <span class="ayuda">Estas quedar&aacute;n disponibles en el "Banco de Im&aacute;genes" de este formulario.</span><br /><br/>
+            <input id="fileInputSelect" name="fileInputSelect" type="file" multiple="multiple" />
         </td>
     </tr>
 </table>
