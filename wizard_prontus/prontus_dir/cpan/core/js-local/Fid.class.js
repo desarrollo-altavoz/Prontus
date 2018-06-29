@@ -130,10 +130,22 @@ var Fid = {
                 done: Fid.uploadDone,
                 progressall: Fid.uploadProgressAll,
                 stop: Fid.uploadStop,
-                drop: Fid.uploadDrop
+                change: Fid.uploadChange
             });
 
         }
+
+        // gestionamos el input via dialogo
+        $('#fileInputSelect').fileupload({
+            dataType: 'text',
+            url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
+            fileInput: $('#fileInputSelect'),
+            formData: { prontus_id: mainFidJs.PRONTUS_ID },
+            done: Fid.uploadDone,
+            progressall: Fid.uploadProgressAll,
+            stop: Fid.uploadStop,
+            change: Fid.uploadChange
+        });
 
         Fid.setGUIProcesando(false);
 
@@ -169,26 +181,11 @@ var Fid = {
 
         // Codigo para soporte de flash general
         if(!jQuery.browser.flash) {
-            $('.browser-comun').not('.browser-noflash').remove();
             $('#uploadUploadify').remove();
             if (Fid.showDragDrop) {
                 $('.browser-noflash').remove();
-            } else {
-                // gestionamos el input via dialogo
-                $('#uploadNormal').show();
-                $('#fileInputSelect').fileupload({
-                    dataType: 'text',
-                    url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
-                    fileInput: $('#fileInputSelect'),
-                    formData: { prontus_id: mainFidJs.PRONTUS_ID },
-                    done: Fid.uploadDone,
-                    progressall: Fid.uploadProgressAll,
-                    stop: Fid.uploadStop,
-                    change: Fid.uploadChange
-                });
             }
         } else {
-            $('.browser-comun').not('.browser-normal').remove();
 
             /* Uploadify */
             var cgiuploadify = '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi';
