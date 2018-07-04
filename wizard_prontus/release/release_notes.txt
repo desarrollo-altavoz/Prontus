@@ -10087,7 +10087,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_search.cgi
 
 ====================================================================================================
-11.2.100 - XX/XX/2018 - EAG
+11.2.100 - XX/XX/2018 - AVP/EAG
 ====================================================================================================
 - Fid
     [mejoras]
@@ -10098,6 +10098,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         - /cgi-cpn/prontus_art_ficha.cgi
         - /wizard_prontus/prontus_dir/cpan/core/vtxt/css/vtxt_extras.css
+
 -Multitag
     [mejoras]
         - La cantidad de items por página ahora se configura usando la misma variable que para portadas tagonómicas: TAGPORT_ARTXPAG.
