@@ -233,7 +233,7 @@ sub get_cmd_ffmpeg {
         }
 
         # si el video es h264 y el bitrate original es menor que el maximo indicado para el formato se usa el mismo
-        if ($VBITRATE < $max_vrate && $VCODEC =~ /h264/i) {
+        if ($VBITRATE > 0 && $VBITRATE < $max_vrate && $VCODEC =~ /h264/i) {
             $videoFlags .= ':vbv-maxrate='.ceil(1.05*$VBITRATE).':vbv-bufsize='.(3*$VBITRATE).'" -b:v '.$VBITRATE.'000';
         } else {
             # sino usamos el bitrate indicado en el formato
