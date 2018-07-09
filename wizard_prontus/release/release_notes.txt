@@ -10132,3 +10132,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - /cgi-cpn/prontus_admin_main.cgi
         - /cgi-cpn/prontus_cfg_save.cgi
         - /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Wizard Prontus
+    [mejoras]
+        Se aumenta a 64 caracteres el largo maximo de las claves para BD
+    [files]
+        - /cgi-cpn/wizard_paso1.cgi
+        - /wizard_prontus/core/js/Wizard.class.js
+        - /wizard_prontus/core/paso1.html
