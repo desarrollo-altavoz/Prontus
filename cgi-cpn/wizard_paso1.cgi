@@ -185,11 +185,11 @@ sub validar_datos {
     return 'Password de BD no válido.';
   };
 
-  if ($FORM{'SUPERUSER_BD'} !~ /^[\w\-]{1,16}$/) {
+  if ($FORM{'SUPERUSER_BD'} !~ /^[\w\-]{0,16}$/) {
     return 'User para creación de BD no válido.';
   };
 
-  if ($FORM{'SUPERPWD_BD'} !~ /^[\w\-\.\@\:\$%!]{1,64}$/) {
+  if ($FORM{'SUPERPWD_BD'} !~ /^[\w\-\.\@\:\$%!]{0,64}$/) {
     return 'Password para creación de BD no válido.';
   };
 
