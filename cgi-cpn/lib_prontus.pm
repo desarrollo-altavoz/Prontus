@@ -5072,8 +5072,6 @@ sub parse_filef {
                     my $prontus_proto = '';
                     if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
                         $prontus_proto = "/$prontus_id";
-                    } else {
-                        $prontus_proto = "";
                     }
                     if ($tax =~ /\/$titular$/) {
                         $fileurl = "$prontus_proto$vista$tax";
