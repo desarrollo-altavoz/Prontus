@@ -130,7 +130,7 @@ var Fid = {
                 done: Fid.uploadDone,
                 progressall: Fid.uploadProgressAll,
                 stop: Fid.uploadStop,
-                change: Fid.uploadChange
+                add: Fid.uploadChange
             });
 
         }
@@ -172,7 +172,6 @@ var Fid = {
             $('#uploadUploadify').remove();
             if (Fid.showDragDrop) {
                 $('.browser-noflash').remove();
-            } else {
                 // gestionamos el input via dialogo
                 $('#uploadNormal').show();
                 $('#fileInputSelect').fileupload({
