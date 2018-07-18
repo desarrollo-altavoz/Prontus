@@ -172,19 +172,20 @@ var Fid = {
             $('#uploadUploadify').remove();
             if (Fid.showDragDrop) {
                 $('.browser-noflash').remove();
-            } 
-            // gestionamos el input via dialogo
-            $('#uploadNormal').show();
-            $('#fileInputSelect').fileupload({
-                dataType: 'text',
-                url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
-                fileInput: $('#fileInputSelect'),
-                formData: { prontus_id: mainFidJs.PRONTUS_ID },
-                done: Fid.uploadDone,
-                progressall: Fid.uploadProgressAll,
-                stop: Fid.uploadStop,
-                change: Fid.uploadChange
-            });
+            } else {
+                // gestionamos el input via dialogo
+                $('#uploadNormal').show();
+                $('#fileInputSelect').fileupload({
+                    dataType: 'text',
+                    url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
+                    fileInput: $('#fileInputSelect'),
+                    formData: { prontus_id: mainFidJs.PRONTUS_ID },
+                    done: Fid.uploadDone,
+                    progressall: Fid.uploadProgressAll,
+                    stop: Fid.uploadStop,
+                    change: Fid.uploadChange
+                });
+            }
         } else {
 
             /* Uploadify */
@@ -274,28 +275,7 @@ var Fid = {
         $('#uploadProgressPercent').text(progress+'%');
     },
 
-    // callback para fileupload.drop
-    uploadDrop: function(e, data) {
-        /* Validar extensiones de archivo. */
-        var fail = false;
-        $.each(data.files, function (index, file) {
-            var ext = (file.name).split('.').pop().toLowerCase();
-            if ($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
-                alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, jpg o jpeg.");
-                fail = true;
-                return false; /* break. */
-            }
-        });
-
-        if (fail) {
-            return false; /* al retornar false, se detiene la ejecución del plugin. */
-        }
-
-        $('#uploadProgress').show();
-        $('#uploadUploadify').hide();
-    },
-
-    // callback para fileupload.change
+    // callback para fileupload.change y .drop
     uploadChange: function(e, data) {
         /* Validar extensiones de archivo. */
         var fail = false;
