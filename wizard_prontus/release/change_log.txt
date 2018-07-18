@@ -13,6 +13,7 @@
 - improvement: (fid) Agrega estilos especiales para mejorar la usabilidad del editor vtxt, en visualizacion de tablas
 y para el ancho de las imagenes en sitios responsivos
 - improvement: (fid) Mejora compatibilidad de fid al usar estilos desde servidores externos
+- improvement: (fid) Implementa opcion para examinar y cargar fotos en caso de que no haya flash disponible.
 - improvement: (multitag)La cantidad de items por página ahora se configura usando la misma variable que para portadas tagonómicas: TAGPORT_ARTXPAG.
 - improvement: (prontus form) Ahora usa CPAN_SERVER_NAME para generar los enlaces de descarga de archivos recibidos en el csv de datos
 - improvement: (general) Fuerza la regeneración de cache de prontus_art_listpub.html si detecta que la

@@ -10094,9 +10094,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Agrega estilos especiales para mejorar la usabilidad del editor vtxt, en visualizacion de tablas
           y para el ancho de las imagenes en sitios responsivos
         - Mejora compatibilidad de fid al usar estilos desde servidores externos
+        - Implementa opcion para examinar y cargar fotos en caso de que no haya flash disponible.
     [files]
+        /cgi-bin/prontus_art_upfoto_dd.cgi
         /cgi-cpn/prontus_art_ficha.cgi
         /wizard_prontus/prontus_dir/cpan/core/vtxt/css/vtxt_extras.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_fotos_extra.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
 
 - Multitag
     [mejoras]
