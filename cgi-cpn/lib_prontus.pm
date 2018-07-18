@@ -5026,7 +5026,7 @@ sub parse_filef {
             my $tax = '';
             if ($nom_seccion1 ne '') {
                 $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
-                $tax .= "$nom_seccion1";
+                $tax = "/$nom_seccion1";
             }
 
             if ($nom_tema1 ne '') {
@@ -5037,10 +5037,6 @@ sub parse_filef {
             if ($nom_subtema1 ne '') {
                 $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
                 $tax .= "/$nom_subtema1";
-            }
-
-            if ($tax ne '') {
-                $tax = '/' . $tax;
             }
 
             if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
@@ -5101,16 +5097,21 @@ sub parse_filef {
         if ($fileurl_proto ne '' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
             if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
                 $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links friendly con vista
+                $buffer =~ s/%%_FILEURL_CANON%%/\/$prontus_id$fileurl_proto/isg;    # link de url canonica, vista principal
             } else {
                 $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$1$fileurl_proto/isg; # Links friendly con vista sin prontus
+                $buffer =~ s/%%_FILEURL_CANON%%/$fileurl_proto/isg;    # link de url canonica, vista principal
             }
         } else {
             $buffer =~ s/%%_FILEURL\(\w+\)%%/$fileurl/isg; # Links friendly
+            $buffer =~ s/%%_FILEURL_CANON%%/$fileurl/isg;  # link de url canonica, esta es igual
         }
     } else {
+        # Links normal, no friendly
         my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
-        $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
-        $buffer =~ s/%%_FILEURL\(\w+\)%%/$file/isg; # Links normal, no friendly
+        $buffer =~ s/%%_FILEURL%%/$file/isg;
+        $buffer =~ s/%%_FILEURL\(\w+\)%%/$file/isg;
+        $buffer =~ s/%%_FILEURL_CANON%%/$file/isg;
     }
 
     return $buffer;
