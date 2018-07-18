@@ -113,8 +113,8 @@ var Fid = {
             }
         }
 
-        /* Mostrar drag & drop siempre y cuando este soportado. */
-        if (Fid.showDragDrop) {
+        /* Mostrar drag & drop siempre y cuando este soportado y flash esté desactivado. */
+        if (Fid.showDragDrop && !jQuery.browser.flash) {
             // Iniciar upload Drag & Drop
             //$('#uploadNormal').show();
             $('#uploadDragDrop').show();
@@ -294,7 +294,7 @@ var Fid = {
         $('#uploadProgress').show();
         $('#uploadUploadify').hide();
     },
-
+    
     // callback para fileupload.stop
     uploadStop: function (e) {
         $('#uploadProgressBar').css('width', '100%');
