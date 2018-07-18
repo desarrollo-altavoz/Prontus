@@ -10,6 +10,7 @@
 - bugfixes: (prontus form) Despliega los archivos correctamente en el listado de datos almacenados del form.
 - bugfixes: (prontus form) Corrige duplicación de items en encabezado del archivo CSV a descargar.
 - bugfixes: (prontus form) Agrega un valor aleatorio a la página de respuesta para asegurar que cada usuario recibe una página única.
+- bugfixes: (prontus form) Quita codificacion de form y subject de correos ya que genera errores en envios de correos en servidores debian 9+.
 - improvement: (fid) Agrega estilos especiales para mejorar la usabilidad del editor vtxt, en visualizacion de tablas
 y para el ancho de las imagenes en sitios responsivos
 - improvement: (fid) Mejora compatibilidad de fid al usar estilos desde servidores externos
