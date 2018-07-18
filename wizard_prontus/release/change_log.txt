@@ -1,7 +1,43 @@
 ====================================================================================================
+11.2.100 - 18/07/2018 - AVP/EAG
+====================================================================================================
+- bugfixes: (general) Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
+- bugfixes: (general) Agrega primera keys faltantes a tablas de multitag, solo afecta a creacion de nuevas tablas.
+- bugfixes: (general) Usa el valor de PUBLIC_SERVER_NAME para ver archivos y portadas desde los listados
+ si está habilitada USAR_PUBLIC_SERVER_NAME_VER_ARTIC
+- bugfixes: (general) Evita la generacion de symlinks para friendly 4 si se está haciendo preview de un artículo
+- bugfixes: (general) Hace mas estricta la carga de configuracion para no dejar variables vacías sin su valor por defecto
+- bugfixes: (prontus form) Despliega los archivos correctamente en el listado de datos almacenados del form.
+- bugfixes: (prontus form) Corrige duplicación de items en encabezado del archivo CSV a descargar.
+- bugfixes: (prontus form) Agrega un valor aleatorio a la página de respuesta para asegurar que cada usuario recibe una página única.
+- improvement: (fid) Agrega estilos especiales para mejorar la usabilidad del editor vtxt, en visualizacion de tablas
+y para el ancho de las imagenes en sitios responsivos
+- improvement: (fid) Mejora compatibilidad de fid al usar estilos desde servidores externos
+- improvement: (fid) Implementa opcion para examinar y cargar fotos en caso de que no haya flash disponible.
+- improvement: (multitag)La cantidad de items por página ahora se configura usando la misma variable que para portadas tagonómicas: TAGPORT_ARTXPAG.
+- improvement: (prontus form) Ahora usa CPAN_SERVER_NAME para generar los enlaces de descarga de archivos recibidos en el csv de datos
+- improvement: (general) Fuerza la regeneración de cache de prontus_art_listpub.html si detecta que la
+ plantilla de la portada correspondiente fue modificada luego de la creación del cache.
+- improvement: (general) Agrega información para saber que articulo tiene demasiados includes
+- improvement: (general) Mueve la opción de config USAR_PUBLIC_SERVER_NAME_VER_ARTIC junto a PUBLIC_SERVER_NAME.
+- improvement: (general) Implementa nivel de optimización configurable para JPEGs. Altera la calidad de imagen al hacer
+upload y al redimensionar, si está habilitada la opción. Agrega opciones relevantes en la
+configuración de Prontus.
+- improvement: (taxport, tagport, list) Implementa múltiples loops en taxports y tagports
+- improvement: (taxport) Cambia forma de actualizar de paginas únicas, ahora se procesan usando cola que
+valida cuandos procesos simultáneos estan corriendo antes de lanzar más
+- improvement: (prontus form) Sustituye el único archivo adjunto en emails al admin por enlaces para descargar cada archivo desde el servidor.
+- improvement: (prontus form) Muestra el timestamp del form en la URL de la página de éxito o error luego de enviar el formulario
+- improvement: (wizard) Se aumenta a 64 caracteres el largo maximo de las claves para BD
+- improvement: (friendly url) Agrega marca %%_FILEURL_CANON%%, siempre parsea la url a la vista principal,
+ en el caso de usar multivistas con la vista en la url.
+- improvement: (cloudflare) Implementa purge_everything según API v4 de Cloudflare.
+
+====================================================================================================
 11.2.99.3 - 27/03/2018 - EAG
 ====================================================================================================
 - bugfixes: (buscador) Corrige problema al armar url de resultados de busqueda, si era friendly v4 no estaba incluyendo el prontus id
+
 ====================================================================================================
 11.2.99.2 - 20/03/2018 - EAG
 ====================================================================================================
@@ -10,11 +46,13 @@
 - bugfixes: (prontus_form) Agrega captura de error al decodificar json's invalidos al reconstruir csv de datos recibidos,
 de esta forma la generacion del csv no falla.
 - bugfixes: (general) Corrige descripción de variable FRIENDLY_V4_INCLUDE_PRONTUS_ID
+
 ====================================================================================================
 11.2.99.1 - 19/03/2018 - EAG
 ====================================================================================================
 - bugfixes: (general) Corrige problema en ejecución de generación de taxports
 - bugfixes: (general) Corrige maximo de articulos en listas, no se respetaba el valor de LIST_MAXARTICS.
+
 ====================================================================================================
 11.2.99 - 08/03/2018 - JOR/EAG/MTC
 ====================================================================================================

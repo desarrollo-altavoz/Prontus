@@ -13,7 +13,7 @@
 # ---------------------------------------------------------------
 # SCRIPT.
 # -----------
-# prontus_cron_lista.cgi
+# prontus_cron_list.cgi
 #
 # ---------------------------------------------------------------
 # UBICACION.
@@ -23,7 +23,7 @@
 # ---------------------------------------------------------------
 # PROPOSITO.
 # -----------
-# Generar listados de artículos bajo cierto criterios en modo batch
+# Generar listados de artículos bajo ciertos criterios en modo batch
 #
 # ---------------------------------------------------------------
 # LLAMADAS A SCRIPTS.
@@ -33,9 +33,9 @@
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-# como cron, con lo sgtes. params:
+# como cron, con los sgtes. params:
 # $ARGV[0] : Nombre del prontus (ej. prontus_noticias)
-# $ARGV[1] : s/t/st a procesar, optativo
+# $ARGV[1] : fid/s/t/st para generar solo para esa taxonomia y fid, optativo
 #
 # ---------------------------------------------------------------
 # ARCHIVOS DE ENTRADA.
@@ -69,18 +69,20 @@
 # DIRECTIVAS DE COMPILACION.
 # ---------------------------
 
+
 BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-};
+}
 
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
 use strict;
-use prontus_varglb; &prontus_varglb::init();
+use prontus_varglb;
+&prontus_varglb::init();
 use lib_prontus;
 use glib_dbi_02;
 use glib_fildir_02;
@@ -88,6 +90,7 @@ use Artic;
 use lib_tax;
 
 close STDOUT;
+
 # ---------------------------------------------------------------
 # MAIN.
 # ---------------------------------------------------------------
@@ -97,14 +100,14 @@ my %NOMBASE_PLTS;
 my %CONTENT_PLTS;
 my %CONFIG_PLTS;
 
-if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
-  print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
-  exit;
-};
+if ( (!-d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
+    print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
+    exit;
+}
 $FORM{'prontus'} = $ARGV[0];
 $FORM{'params_especif'} = $ARGV[1]; # optativo: fid/s/t/st para generar solo para esa taxonomia y fid
 
-($FORM{'fid_especif'}, $FORM{'seccion_especif'}, $FORM{'tema_especif'}, $FORM{'subtema_especif'}) = split (/\//, $FORM{'params_especif'});
+($FORM{'fid_especif'}, $FORM{'seccion_especif'}, $FORM{'tema_especif'}, $FORM{'subtema_especif'}) = split(/\//, $FORM{'params_especif'});
 
 &valida_param();
 
@@ -130,17 +133,19 @@ main: {
     &generar_lists();
 
     my $delta_t = time - $ini_t;
+
     #~ print STDERR "exec_time[$delta_t]\n"; # debug
-};
+}
+
 # ---------------------------------------------------------------
 sub generar_lists {
 
     # Conectar a BD
     my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
-    if (! ref($base)) {
+    if (!ref($base)) {
         print STDERR "ERROR: $msg_err_bd\n";
         exit;
-    };
+    }
     $base->{mysql_auto_reconnect} = 1;
     $base->{InactiveDestroy} = 1;
 
@@ -160,6 +165,7 @@ sub generar_lists {
             my %config = %$hash_ref;
 
             my $maxartics   = $config{'LIST_MAXARTICS'};
+
             #~ my $artxpags = $config{'LIST_ARTXPAG'};
             my $orden       = $config{'LIST_ORDEN'};
             my $seccion     = $config{'LIST_SECCION'};
@@ -194,33 +200,30 @@ sub generar_lists {
     }
 
     $base->disconnect;
-};
+}
 
 # ---------------------------------------------------------------
 sub procesar_plantilla {
+
     # Genera todas las portadas tax (de la 1..n) correspondientes
     # a este nivel taxonomico, para todas las vistas declaradas y fids.
     my ($secc_id, $temas_id, $subtemas_id, $fids, $tags, $nombase_plt, $maxartics, $orden, $base, $nom_tabla_exclude) = @_;
     my %filas = ();
     my $filtros = &crear_filtros_list($secc_id, $temas_id, $subtemas_id, $fids, $CURR_DTIME);
+
     # print STDERR "[$$] PROCESANDO LEVEL [$secc_id, $temas_id, $subtemas_id, $fid] - tot[$tot_artics]\n"; # - filtro[$filtros]\n";
-    my ($secc_nom, $filler) = split (/\t\t/, $TABLA_SECC{$secc_id});
+    my ($secc_nom, $filler) = split(/\t\t/, $TABLA_SECC{$secc_id});
     my $sql;
 
     if ($nom_tabla_exclude) {
         $filtros .= " AND ART_ID NOT IN (SELECT EXCLUDE_ART_ID FROM $nom_tabla_exclude)";
-    };
+    }
 
     # Agregar filtros por tag.
     if ($tags) {
-        $sql = "SELECT ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
-            . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA "
-            . "FROM TAGSART LEFT JOIN ART ON (TAGSART_IDART=ART_ID) WHERE TAGSART_IDTAGS IN ($tags) "
-            . "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
+        $sql = "SELECT ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, ". "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA ". "FROM TAGSART LEFT JOIN ART ON (TAGSART_IDART=ART_ID) WHERE TAGSART_IDTAGS IN ($tags) ". "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
     } else {
-        $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, "
-            . "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART "
-            . "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
+        $sql = "select ART_ID, ART_FECHAP, ART_HORAP, ART_TITU, ". "ART_DIRFECHA, ART_EXTENSION, ART_TIPOFICHA, ART_IDTEMAS1, ART_BAJA from ART ". "%%FILTRO%% order by $orden LIMIT 0, $maxartics";
     }
 
     if ($filtros ne '') {
@@ -229,14 +232,12 @@ sub procesar_plantilla {
 
     } else {
         $sql =~ s/%%FILTRO%%//;
-    };
+    }
 
-    my ($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension,
-        $art_tipoficha, $art_idtemas1, $art_baja);
+    my ($art_id, $art_fecha, $art_horap, $art_titu, $art_dirfecha, $art_extension,$art_tipoficha, $art_idtemas1, $art_baja);
+
     #~ print STDERR "sql[$sql]\n";
-    my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($art_id, $art_fecha, $art_horap, $art_titu,
-                                                                $art_dirfecha, $art_extension,
-                                                                $art_tipoficha, $art_idtemas1, $art_baja));
+    my $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($art_id, $art_fecha, $art_horap, $art_titu,$art_dirfecha, $art_extension,$art_tipoficha, $art_idtemas1, $art_baja));
 
     my $tot_artics = &get_tot_artics($filtros, $base);
     if ($tot_artics > $maxartics) {
@@ -260,14 +261,15 @@ sub procesar_plantilla {
         print STDERR "Plantilla sin LOOP: $nombase_plt\n";
         &write_pag($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, \%filas, \%LOOPS);
         return;
-    };
+    }
 
     while ($salida->fetch) {
         $nro_filas++;
+
         # print STDERR "nombase_plt[$nombase_plt] art_id[$art_id]\n";
 
         # parsea esta fila en todas las multivistas
-        my ($tem, $filler1, $filler2) = split (/\t\t/, $TABLA_TEM{$art_idtemas1});
+        my ($tem, $filler1, $filler2) = split(/\t\t/, $TABLA_TEM{$art_idtemas1});
 
         foreach my $loopname (keys %LOOPS) {
             $loop_plt = $LOOPS{$loopname};
@@ -278,16 +280,17 @@ sub procesar_plantilla {
             # print STDERR "art[$art_id][$art_xml_fields{$art_id}]\n";
             ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, $art_extension, $loop_plt, $nro_filas, $tot_artics, $ART_XML_FIELDS{$art_id}, $ART_XDATA_FIELDS{$art_id});
 
-            $ART_XML_FIELDS{$art_id} = $auxref if (! exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
-            $ART_XDATA_FIELDS{$art_id} = $auxref2 if (! exists $ART_XDATA_FIELDS{$art_id}); # para no leer 2 veces un xml
+            $ART_XML_FIELDS{$art_id} = $auxref if (!exists $ART_XML_FIELDS{$art_id}); # para no leer 2 veces un xml
+            $ART_XDATA_FIELDS{$art_id} = $auxref2 if (!exists $ART_XDATA_FIELDS{$art_id}); # para no leer 2 veces un xml
 
             $filas{"$nombase_plt|$loopname"} .= $fila_content;
-        };
-    };
+        }
+    }
+
     #~ print STDERR "nombase_plt[$nombase_plt]\n";
     &write_pag($nombase_plt, $secc_id, $temas_id, $subtemas_id, $tot_artics, \%filas, \%LOOPS);
     $salida->finish;
-};
+}
 
 # ---------------------------------------------------------------
 sub write_pag {
@@ -308,6 +311,7 @@ sub write_pag {
     $extension = '.' . $extension;
 
     foreach my $loopname (keys %loops) {
+
         #print STDERR "loopname[$loopname]\n";
         $pagina =~ s/$loopname/$filas{"$nombase_plt|$loopname"}/isg;
     }
@@ -321,13 +325,13 @@ sub write_pag {
     $pagina =~ s/%%_TEMA[1-3]%%/$temas_id/isg;
     $pagina =~ s/%%_SUBTEMA[1-3]%%/$subtemas_id/isg;
 
-    my ($secc_nom, $filler1, $filler2) = split (/\t\t/, $TABLA_SECC{$secc_id});
+    my ($secc_nom, $filler1, $filler2) = split(/\t\t/, $TABLA_SECC{$secc_id});
     $pagina =~ s/%%_NOM_SECCION[1-3]%%/$secc_nom/isg;
 
-    my ($temas_nom, $filler5, $filler6) = split (/\t\t/, $TABLA_TEM{$temas_id});
+    my ($temas_nom, $filler5, $filler6) = split(/\t\t/, $TABLA_TEM{$temas_id});
     $pagina =~ s/%%_NOM_TEMA[1-3]%%/$temas_nom/isg;
 
-    my ($subtemas_nom, $filler3, $filler4) = split (/\t\t/, $TABLA_STEM{$subtemas_id});
+    my ($subtemas_nom, $filler3, $filler4) = split(/\t\t/, $TABLA_STEM{$subtemas_id});
     $pagina =~ s/%%_NOM_SUBTEMA[1-3]%%/$subtemas_nom/isg;
 
     my $path_include = &lib_prontus::get_path_croncgi();
@@ -340,14 +344,15 @@ sub write_pag {
     # Escribe pagina
     my $fullpath_dir = "$prontus_varglb::DIR_SERVER$RELDIR_LIST_DST";
 
-    &glib_fildir_02::check_dir($fullpath_dir) if (! -d $fullpath_dir);
+    &glib_fildir_02::check_dir($fullpath_dir) if (!-d $fullpath_dir);
     my $nomfile = "$fullpath_dir/" . $nombase_plt;
+
     #~ print STDERR "writing [$nomfile]\n";
 
     &glib_fildir_02::write_file($nomfile, $pagina);
     &lib_prontus::purge_cache($nomfile);
 
-};
+}
 
 # ---------------------------------------------------------------
 sub get_tot_artics {
@@ -360,10 +365,10 @@ sub get_tot_artics {
     if ($filtros ne '') {
         $sql =~ s/%%FILTRO%%/ where $filtros /;
         $sql =~ s/group by ART_ID//i;
-    }
-    else {
+    }else {
         $sql =~ s/%%FILTRO%%//;
-    };
+    }
+
     # print STDERR "$sql contar[$sql]";
     # &glib_fildir_02::write_file('tipotema.sql', $sql); # debug
     $salida = &glib_dbi_02::ejecutar_sql_bind($base, $sql, \($count_art));
@@ -371,7 +376,7 @@ sub get_tot_artics {
     $salida->finish;
     $count_art = 0 if $count_art eq '';
     return $count_art;
-};
+}
 
 # ---------------------------------------------------------------
 sub carga_plantillas {
@@ -390,19 +395,20 @@ sub carga_plantillas {
         } else {
             print STDERR "Plantilla vacía: $ruta_dir/$k\n";
             $CONTENT_PLTS{$k} = '';
-        };
-    };
+        }
+    }
     &carga_config();
-};
+}
 
 # ---------------------------------------------------------------
 sub carga_nombase_plts {
-# Obtiene nombres de las multiples plantillas, las lee siempre del /all
+
+    # Obtiene nombres de las multiples plantillas, las lee siempre del /all
 
     my ($ruta_dir) = "$prontus_varglb::DIR_SERVER$RELDIR_LIST_TMP";
 
     #~ print STDERR "ruta_dir: $ruta_dir\n";
-    if(! -d $ruta_dir) {
+    if(!-d $ruta_dir) {
         print STDERR "\nEl directorio de plantillas no existe [$ruta_dir]\n";
         exit;
     }
@@ -410,39 +416,46 @@ sub carga_nombase_plts {
     @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y .. y lo que empiece con punto
 
     foreach my $k (@lisdir) {
+
         #~ print STDERR "NOMBASE_PLTS: $k\n";
         if ((-f "$ruta_dir/$k") && ($k =~ /^(\w+\.\w+)$/)) {
             $NOMBASE_PLTS{$1} = 1;
         }
-    };
-};
+    }
+}
 
 # -------------------------------------------------------------------------#
 sub carga_mensajes {
-# Busca, inicializa y elimina mensajes dentro de la plantilla.
-# Carga hash de mensajes
-#     <!-- MSG xxx = xxx -->
+
+    # Busca, inicializa y elimina mensajes dentro de la plantilla.
+    # Carga hash de mensajes
+    #     <!-- MSG xxx = xxx -->
 
     my($plantilla) = $_[0];
     my %msgs;
+
     # Mensajes por defecto.
     $msgs{'no_results'} = 'No se encontraron resultados.';
 
     while ($plantilla =~ /<!--\s*MSG\s*(\w+)\s*=\s*(.+?)\s*-->/sg) {
         $msgs{$1} = $2;
-    };
+    }
+
     # Elimina mensajes de la plantilla.
     $plantilla =~ s/<!--\s*MSG\s*(\w+)\s*=\s*(.+?)\s*-->//sg;
 
     return ($plantilla, \%msgs);
-};
+}
+
 # -------------------------------------------------------------------------#
 sub carga_config {
-# Busca, inicializa y elimina mensajes dentro de la plantilla.
-# Carga hash de configuraciones: MAXARTICS,SECCION,TEMA,SUBTEMA,FIDS,ORDEN
-#     <!-- CONFIG xxx = xxx -->
+
+    # Busca, inicializa y elimina mensajes dentro de la plantilla.
+    # Carga hash de configuraciones: MAXARTICS,SECCION,TEMA,SUBTEMA,FIDS,ORDEN
+    #     <!-- CONFIG xxx = xxx -->
     my %config_default;
     $config_default{'LIST_MAXARTICS'} = $prontus_varglb::LIST_MAXARTICS;
+
     #~ $config_default{'LIST_ARTXPAG'} = $prontus_varglb::LIST_ARTXPAG;
     $config_default{'LIST_SECCION'} = '';
     $config_default{'LIST_TEMA'} = '';
@@ -474,11 +487,7 @@ sub carga_config {
                 $value =~ s/^,+//g;
                 $value =~ s/,+$//g;
             } elsif ($name eq 'LIST_EXCLUDE_PORT') {
-                my $path_xml = $prontus_varglb::DIR_SERVER
-                             . $prontus_varglb::DIR_CONTENIDO
-                             . $prontus_varglb::DIR_EDIC
-                             . $prontus_varglb::DIR_UNICAEDIC
-                             . "/xml/$value";
+                my $path_xml = $prontus_varglb::DIR_SERVER. $prontus_varglb::DIR_CONTENIDO. $prontus_varglb::DIR_EDIC. $prontus_varglb::DIR_UNICAEDIC. "/xml/$value";
 
                 if ($value !~ /\.xml$/) {
                     $value = '';
@@ -486,7 +495,7 @@ sub carga_config {
                     $value = '';
                 } else {
                     $value = $path_xml;
-                };
+                }
             }
 
             $config{$name} = $value;
@@ -499,16 +508,17 @@ sub carga_config {
     }
 
     #~ foreach my $plt (keys %CONFIG_PLTS) {
-        #~ my %config = %{$CONFIG_PLTS{$plt}};
-        #~ print "$plt\n";
-        #~ foreach my $cfg (keys %config) {
-            #~ print "\t$cfg -> ".$config{$cfg}."\n";
-        #~ }
+    #~ my %config = %{$CONFIG_PLTS{$plt}};
+    #~ print "$plt\n";
+    #~ foreach my $cfg (keys %config) {
+    #~ print "\t$cfg -> ".$config{$cfg}."\n";
     #~ }
-};
+    #~ }
+}
 
 # ---------------------------------------------------------------
 sub crear_filtros_list {
+
     # Genera segmento variable del sql para encontrar los articulos.
     # Aplica a portadas tax normales y a portadillas de calendarios taxonomicos
     my ($id_secc1, $id_tema1, $id_subtema1, $fid, $curr_dtime) = @_;
@@ -524,6 +534,7 @@ sub crear_filtros_list {
     my ($filtros);
 
     if ($id_secc1) {
+
         # $filtros = "(ART_IDSECC1 = \"$id_secc1\" or ART_IDSECC2 = \"$id_secc1\" or ART_IDSECC3 = \"$id_secc1\")";
         $filtros = "(";
         $filtros .= "ART_IDSECC1 IN ($id_secc1)";
@@ -533,36 +544,38 @@ sub crear_filtros_list {
 
         if ($id_tema1) { # Distinto de todos.
             if ($filtros ne '') {
+
                 # $filtros .= " and (ART_IDTEMAS1 = \"$id_tema1\" or ART_IDTEMAS2 = \"$id_tema1\" or ART_IDTEMAS3 = \"$id_tema1\")";
                 $filtros .= "and (";
                 $filtros .= "ART_IDTEMAS1 IN ($id_tema1)";
                 $filtros .= " or ART_IDTEMAS2 IN ($id_tema1)" if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^(2|3)$/);
                 $filtros .= " or ART_IDTEMAS3 IN ($id_tema1)" if ($prontus_varglb::TAXONOMIA_NIVELES eq '3');
                 $filtros .= ")";
-            };
+            }
             if ($id_subtema1) { # Distinto de todos.
                 if ($filtros ne '') {
+
                     # $filtros .= " and (ART_IDSUBTEMAS1 = \"$id_subtema1\" or ART_IDSUBTEMAS2 = \"$id_subtema1\" or ART_IDSUBTEMAS3 = \"$id_subtema1\")";
                     $filtros .= "and (";
                     $filtros .= "ART_IDSUBTEMAS1 IN ($id_subtema1)";
                     $filtros .= " or ART_IDSUBTEMAS2 IN ($id_subtema1)" if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^(2|3)$/);
                     $filtros .= " or ART_IDSUBTEMAS3 IN ($id_subtema1)" if ($prontus_varglb::TAXONOMIA_NIVELES eq '3');
                     $filtros .= ")";
-                };
-            };
-        };
-    };
+                }
+            }
+        }
+    }
 
     if ($fid) {
         my @arrfids = split /,/, $fid;
         my $str;
         foreach my $f (@arrfids) {
-           $str = $str . "ART_TIPOFICHA = \"$f\" or ";
+            $str = $str . "ART_TIPOFICHA = \"$f\" or ";
         }
         $str =~ s/ or $//;
         $filtros .= " and " if ($filtros);
         $filtros .= " ($str) ";
-    };
+    }
 
     $filtros .= " and " if ($filtros);
 
@@ -571,11 +584,12 @@ sub crear_filtros_list {
 
     if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
         $filtros .= " and ( (ART_FECHAEHORAE >= \"$dt_system$hhmm_system\") OR ( (ART_FECHAEHORAE < \"$dt_system$hhmm_system\") AND (ART_SOLOPORTADAS = \"1\") ) )";
-    };
+    }
 
     return $filtros;
 
-};
+}
+
 # ---------------------------------------------------------------
 sub get_taxport_orden {
 
@@ -594,21 +608,22 @@ sub get_taxport_orden {
             $taxport_orden_new = "ART_AUTOINC $2";
         } else {
             $taxport_orden_err = 1;
-        };
+        }
     } else {
         $taxport_orden_err = 1;
-    };
+    }
 
     if ($taxport_orden_err) {
         print STDERR "Error en CFG: seteo de variable TAXPORT_ORDEN contiene un valor no v&aacute;lido.<br>Valores posibles: 'PUBLICACION(ASC|DESC)', 'TITULAR(ASC|DESC)', 'CREACION(ASC|DESC)', Por omisi&oacute;n es: 'PUBLICACION(DESC)'\n";
         return $orden_default;
-    };
-    if(! $taxport_orden_new) {
+    }
+    if(!$taxport_orden_new) {
         $taxport_orden_new = $orden_default;
     }
 
     return $taxport_orden_new;
 }
+
 # ---------------------------------------------------------------
 sub valida_param {
 
@@ -620,6 +635,7 @@ sub valida_param {
 
     $FORM{'fid_especif'}  =~ s/[^\w]//g;
 }
+
 # ---------------------------------------------------------------
 sub test_taxo {
     my ($secc, $strseccs) = @_;
@@ -634,6 +650,6 @@ sub test_taxo {
     }
 
     return 0;
-};
+}
 
 # -------------------------END SCRIPT----------------------
