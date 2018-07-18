@@ -62,6 +62,9 @@ main: {
     &glib_cgi_04::new();
 
     $FORM{'files'} = &glib_cgi_04::param('fileInputDD');
+    if (!$FORM{'files'}) {
+        $FORM{'files'} = &glib_cgi_04::param('fileInputSelect');
+    }
     $FORM{'prontus_id'} = &glib_cgi_04::param('prontus_id');
     # $FORM{'prontus_id'} =~ s/[^\w\-]//sg; No es necesario se valida dentro de valida_invocacion()
 
@@ -105,15 +108,24 @@ main: {
         print 0;
         exit;
     }
-    # Redimencionar imagen si es que supera los limites configurados.
-    if ($prontus_varglb::FOTO_MAX_PIXEL ne '') { # si está vacio no se hace nada.
+    # Redimensionar imagen si es que supera los limites configurados.
+    if ($prontus_varglb::FOTO_MAX_PIXEL ne '') { # si está vacio se reduce calidad del jpg, si corresponde.
         my ($wmax, $hmax) = split("x", $prontus_varglb::FOTO_MAX_PIXEL);
         if ($wfoto > $wmax || $hfoto > $hmax) {
             my ($wnew, $hnew) = &lib_thumb::calcular_proporcion_img($wfoto, $hfoto, $wmax, $hmax);
             my ($binfoto, $wfoto, $hfoto) = &lib_thumb::make_resize($wnew, $hnew, $dst_path);
             $dst_path =~ s/\.gif$/\.png/i if($dst_path =~ /\.gif$/i);
-            &glib_fildir_02::write_file($dst_path, $binfoto) if ($binfoto);
+            &lib_thumb::write_image($dst_path, $binfoto) if ($binfoto);
         };
+    } else {
+        my $tipo = &lib_thumb::get_imag_extension($dst_path);
+        # Si es un JPEG, y está habilitada la reducción de calidad de las imágenes, lo guardamos con la calidad especificada en prontus_varglb::NIVEL_OPTIMIZACION_JPG.
+        if ($tipo eq 'jpg' && $prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'SI') {
+            #print STDERR "Reduciendo calidad a $prontus_varglb::NIVEL_OPTIMIZACION_JPG\n";
+            my ($ancho, $alto, $ratio) = &lib_thumb::get_propiedades($dst_path);
+            my ($binfoto, $wfoto, $hfoto) = &lib_thumb::make_resize($ancho, $alto, $dst_path);
+            &lib_thumb::write_image($dst_path, $binfoto) if ($binfoto);
+        }
     };
 
     print "Content-Type: text/html\n\n";

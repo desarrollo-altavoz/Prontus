@@ -269,7 +269,6 @@ sub make_lista {
     my ($sentencia) = shift;
     my ($loop) = shift;
 
-
     my ($id, $nom, $mostrar, $port, $orden, $num_subniveles, $nom4vistas);
     my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sentencia, \($id, $nom, $mostrar, $port, $orden, $nom4vistas));
     my ($filas);

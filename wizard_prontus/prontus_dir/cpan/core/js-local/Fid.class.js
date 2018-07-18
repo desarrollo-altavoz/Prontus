@@ -113,84 +113,26 @@ var Fid = {
             }
         }
 
-        /* Mostrar drag & drop siempre y cuando este soportado. */
-        if (Fid.showDragDrop) {
+        /* Mostrar drag & drop siempre y cuando este soportado y flash esté desactivado. */
+        if (Fid.showDragDrop && !jQuery.browser.flash) {
             // Iniciar upload Drag & Drop
-            $('#uploadNormal').hide();
+            //$('#uploadNormal').show();
             $('#uploadDragDrop').show();
             $('#uploadUploadify').show();
             $('#DragDropAndTradicional').show();
 
+            // gestionamos el input via drag & drop
             $('#fileInputDD').fileupload({
                 dataType: 'text',
                 url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
                 dropZone: $('#dropZone'),
                 formData: { prontus_id: mainFidJs.PRONTUS_ID },
-                done: function (e, data) {
-                    var arrResp = [];
-                    var response = data.result
-                    if (response == '0') {
-                        $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
-                                '<div class="img-error">Imagen con errores</div>' +
-                                '</div>');
-
-                    } else if (response != '') {
-                        arrResp = response.split(",");
-                        var idFoto = arrResp[0];
-                        var wFoto = arrResp[1];
-                        var hFoto = arrResp[2];
-                        var relPath = arrResp[3];
-                        var nomFile = arrResp[4];
-                        var realNomFile = arrResp[5];
-                        var labelSize = '<br/><span class="ST">(' + wFoto + ' x ' + hFoto + ')</span>';
-                        if (wFoto > 100) {
-                            wFoto = 100;
-                        }
-
-                        $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
-                                '<div>' + realNomFile + labelSize + '</div>' +
-                                '<img src="' + relPath + '" id="' + idFoto  + '">' +
-                                '</div>' +
-                                '<input type="hidden" name="_fotoreal" value="' + realNomFile + '">' +
-                                '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">');
-                    }
-                },
-                progressall: function (e, data) {
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#uploadProgressBar').css('width', progress + '%');
-                    $('#uploadProgressPercent').text(progress+'%');
-                },
-                stop: function (e) {
-                    $('#uploadProgressBar').css('width', '100%');
-                    $('#uploadProgressPercent').text('100%');
-                    $('#fileInputDD').fileupload('disable');
-                    $('#dropZone').css('cursor', 'not-allowed');
-                    setTimeout(function () {
-                        $('#uploadProgressContainer').hide();
-                        $('#uploadcomplete').show();
-                        Fid.submitir('Guardar', '_self');
-                    }, 1000);
-                },
-                drop: function (e, data) {
-                    /* Validar extensiones de archivo. */
-                    var fail = false;
-                    $.each(data.files, function (index, file) {
-                        var ext = (file.name).split('.').pop().toLowerCase();
-                        if ($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
-                            alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, jpg o jpeg.");
-                            fail = true;
-                            return false; /* break. */
-                        }
-                    });
-
-                    if (fail) {
-                        return false; /* al retornar false, se detiene la ejecución del plugin. */
-                    }
-
-                    $('#uploadProgress').show();
-                    $('#uploadUploadify').hide();
-                }
+                done: Fid.uploadDone,
+                progressall: Fid.uploadProgressAll,
+                stop: Fid.uploadStop,
+                add: Fid.uploadChange
             });
+
         }
 
         Fid.setGUIProcesando(false);
@@ -227,13 +169,23 @@ var Fid = {
 
         // Codigo para soporte de flash general
         if(!jQuery.browser.flash) {
-            $('.browser-comun').not('.browser-noflash').remove();
             $('#uploadUploadify').remove();
             if (Fid.showDragDrop) {
                 $('.browser-noflash').remove();
+                // gestionamos el input via dialogo
+                $('#uploadNormal').show();
+                $('#fileInputSelect').fileupload({
+                    dataType: 'text',
+                    url: '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto_dd.cgi',
+                    fileInput: $('#fileInputSelect'),
+                    formData: { prontus_id: mainFidJs.PRONTUS_ID },
+                    done: Fid.uploadDone,
+                    progressall: Fid.uploadProgressAll,
+                    stop: Fid.uploadStop,
+                    change: Fid.uploadChange
+                });
             }
         } else {
-            $('.browser-comun').not('.browser-normal').remove();
 
             /* Uploadify */
             var cgiuploadify = '/' + mainFidJs.DIR_CGI_PUBLIC + '/prontus_art_upfoto.cgi';
@@ -313,6 +265,78 @@ var Fid = {
 
         // Para la edicion de friendly v4
         Fid.iniciaSlug();
+    },
+
+    // callback para fileupload.progressall
+    uploadProgressAll: function(e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#uploadProgressBar').css('width', progress + '%');
+        $('#uploadProgressPercent').text(progress+'%');
+    },
+
+    // callback para fileupload.change y .drop
+    uploadChange: function(e, data) {
+        /* Validar extensiones de archivo. */
+        var fail = false;
+        $.each(data.files, function (index, file) {
+            var ext = (file.name).split('.').pop().toLowerCase();
+            if ($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+                alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, jpg o jpeg.");
+                fail = true;
+                return false; /* break. */
+            }
+        });
+
+        if (fail) {
+            return false; /* al retornar false, se detiene la ejecución del plugin. */
+        }
+
+        $('#uploadProgress').show();
+        $('#uploadUploadify').hide();
+    },
+    
+    // callback para fileupload.stop
+    uploadStop: function (e) {
+        $('#uploadProgressBar').css('width', '100%');
+        $('#uploadProgressPercent').text('100%');
+        $('#fileInputSelect').attr('disabled', true);
+        $('#dropZone').css('cursor', 'not-allowed');
+        setTimeout(function () {
+            $('#uploadProgressContainer').hide();
+            $('#uploadcomplete').show();
+            Fid.submitir('Guardar', '_self');
+        }, 1000);
+    },
+
+    // callback para fileupload.done
+    uploadDone: function(e, data) {
+        var arrResp = [];
+        var response = data.result
+        if (response == '0') {
+            $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
+                '<div class="img-error">Imagen con errores</div>' +
+                '</div>');
+
+        } else if (response != '') {
+            arrResp = response.split(",");
+            var idFoto = arrResp[0];
+            var wFoto = arrResp[1];
+            var hFoto = arrResp[2];
+            var relPath = arrResp[3];
+            var nomFile = arrResp[4];
+            var realNomFile = arrResp[5];
+            var labelSize = '<br/><span class="ST">(' + wFoto + ' x ' + hFoto + ')</span>';
+            if (wFoto > 100) {
+                wFoto = 100;
+            }
+
+            $('#imagenescargadas').append('<div class="prontus-imagenescargadas">' +
+                '<div>' + realNomFile + labelSize + '</div>' +
+                '<img src="' + relPath + '" id="' + idFoto  + '">' +
+                '</div>' +
+                '<input type="hidden" name="_fotoreal" value="' + realNomFile + '">' +
+                '<input type="hidden" name="_fotobatch' + nomFile + '" value="' + relPath + '">');
+        }
     },
 
     instalaClipboardHtml5: function() {

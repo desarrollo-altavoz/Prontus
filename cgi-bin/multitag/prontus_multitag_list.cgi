@@ -108,6 +108,9 @@ main: {
         exit;
     };
 
+    # usa la misma configuracion de las portadas tagonomicas
+    $ITEM_X_PAG = $prontus_varglb::TAGPORT_ARTXPAG;
+
     $PLT_DIR = $prontus_varglb::DIR_SERVER. $prontus_varglb::DIR_TEMP."/extra/multitag";
     $CACHE_DIR = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_MULTITAG;
     $PLT_DEFAULT = "$PLT_DIR/default.html";

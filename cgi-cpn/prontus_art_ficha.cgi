@@ -1547,13 +1547,17 @@ sub add_vtxt {
   $buffer =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg; # a pedido del publico
 
   #~ Carga los css desde la plantilla del artículo
-  my $include_css = $prontus_varglb::DIR_CORE . "/vtxt/editor/plugins/insert/css/content.css";
+  my $include_css = "$prontus_varglb::DIR_CORE/vtxt/editor/plugins/insert/css/content.css";
   my $path_css_artic = &get_css_artic($path_tpl, $buffer);
   if($path_css_artic) {
     $path_css_artic = "$include_css,$path_css_artic";
   } else {
     $path_css_artic = "$include_css";
   }
+
+  # estilos para mejorar usabilidad de editor vtxt
+  $path_css_artic = "$path_css_artic,$prontus_varglb::DIR_CORE/vtxt/css/vtxt_extras.css";
+
   $include4vtxt =~ s/%%_PATH_CSS_ARTIC%%/$path_css_artic/isg;
 
   my $data_include_type = &get_include_artic($path_tpl, $buffer);
@@ -1663,6 +1667,7 @@ sub get_custom_estilos {
   foreach $k (@css) {
     $k =~ s/\,//g;
     next if (!$k); # 100.2
+    next if ($k =~ /^http/);
     # print STDERR "k[$prontus_varglb::DIR_SERVER$k]\n";
     my $buf = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$k");
 
@@ -1712,6 +1717,7 @@ sub get_css_artic {
     next unless($ellink =~ /type="text\/css"/i);
     # print STDERR "css[$elcss]\n";
     $elcss = &relative2abs($path_tpl, $elcss);
+    $elcss =~ s/,/%2C/g; # para tomar en cuenta googlefonts
     $paths .= "$elcss,";
   };
   $paths =~ s/\,$//;
@@ -1739,11 +1745,10 @@ sub relative2abs {
   my ($link2convert) = $_[1];
 
   return $link2convert if ($link2convert =~ /^\//);
+  return $link2convert if ($link2convert =~ /^http/);
 
   # Elimina el nombre del archivo para dejar solo el dir hasta el /
-  # $ubic_artic =~ s/\/[^\/\\]+$/\//;
   $ubic_artic =~ s/\/\w+.*$/\//;
-
 
   my $abs_ubic = $ubic_artic;
   while ($link2convert =~ /(\.\.\/)(\w.*)/g) {

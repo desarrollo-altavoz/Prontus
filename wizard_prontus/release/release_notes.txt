@@ -9886,9 +9886,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             # /vista/seccion/titular
             # /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html
             location ~ "^\/([\w\-]+)\/([\w\-]+)\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
-                add_header X-debug-message "1 args: /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
-                # echo "1 args: try_files /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;";
                 try_files /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links-$2/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;
+                # configuracion de php si es necesaria, no lleva try
                 include     global/php2.conf;
             }
 
@@ -9902,9 +9901,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
             # /vista/titular
             # /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html
             location ~ "^\/([\w\-]+)\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
-                add_header X-debug-message "2 args: /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
-                #echo "2 args: /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html";
                 try_files /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html =404;
+                # configuracion de php si es necesaria, no lleva try
                 include     global/php2.conf;
             }
 
@@ -10087,3 +10085,110 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige problema al armar url de resultados de busqueda, si era friendly v4 no estaba incluyendo el prontus id
     [files]
         /cgi-bin/prontus_search.cgi
+
+====================================================================================================
+11.2.100 - 18/07/2018 - AVP/EAG
+====================================================================================================
+- Fid
+    [mejoras]
+        - Agrega estilos especiales para mejorar la usabilidad del editor vtxt, en visualizacion de tablas
+          y para el ancho de las imagenes en sitios responsivos
+        - Mejora compatibilidad de fid al usar estilos desde servidores externos
+        - Implementa opcion para examinar y cargar fotos en caso de que no haya flash disponible.
+    [files]
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/css/vtxt_extras.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_fotos_extra.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+
+- Multitag
+    [mejoras]
+        - La cantidad de items por página ahora se configura usando la misma variable que para portadas tagonómicas: TAGPORT_ARTXPAG.
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+
+- General
+    [bugfixes]
+        - Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
+        - Agrega primera keys faltantes a tablas de multitag, solo afecta a creacion de nuevas tablas.
+        - Usa el valor de PUBLIC_SERVER_NAME para ver archivos y portadas desde los listados si está habilitada USAR_PUBLIC_SERVER_NAME_VER_ARTIC
+        - Evita la generacion de symlinks para friendly 4 si se está haciendo preview de un artículo
+        - Hace mas estricta la carga de configuracion para no dejar variables vacías sin su valor por defecto
+    [mejoras]
+        - Fuerza la regeneración de cache de prontus_art_listpub.html si detecta que la plantilla de la portada correspondiente fue modificada luego de la creación del cache.
+        - Agrega información para saber que articulo tiene demasiados includes
+        - Mueve la opción de config USAR_PUBLIC_SERVER_NAME_VER_ARTIC junto a PUBLIC_SERVER_NAME.
+        - Implementa nivel de optimización configurable para JPEGs. Altera la calidad de imagen al hacer
+          upload y al redimensionar, si está habilitada la opción. Agrega opciones relevantes en la
+          configuración de Prontus.
+        - Implementa purge_everything según API v4 de Cloudflare.
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/lib_setbd.pm
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-bin/prontus_art_upfoto.cgi
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cloudflare_purge.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Taxports, Tagports y Listados
+    [mejoras]
+        - Implementa múltiples loops en taxports y tagports
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_cron_list.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_tags_ports.cgi
+        /cgi-cpn/prontus_regenera_tagport.cgi
+
+- Portadas Taxonómicas
+    [mejoras]
+        - Cambia forma de actualizar de paginas únicas, ahora se procesan usando cola que
+        valida cuandos procesos simultáneos estan corriendo antes de lanzar más
+    [files]
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+
+- Prontus Form
+    [mejoras]
+        - Sustituye el único archivo adjunto en emails al admin por enlaces para descargar cada archivo desde el servidor.
+        - Muestra el timestamp del form en la URL de la página de éxito o error luego de enviar el formulario
+        - Ahora usa CPAN_SERVER_NAME para generar los enlaces de descarga de archivos recibidos en el csv de datos
+    [bugfixes]
+        - Despliega los archivos correctamente en el listado de datos almacenados del form.
+        - Corrige duplicación de items en encabezado del archivo CSV a descargar.
+        - Agrega un valor aleatorio a la página de respuesta para asegurar que cada usuario recibe una página única.
+        - Quita codificacion de form y subject de correos ya que genera errores en envios de correos en servidores debian 9+. El cambio no tiene efectos en debian mas antiguo.
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/prontus_form_list.cgi
+        /cgi-cpn/prontus_form_download_real.cgi
+        /cgi-cpn/lib_mail.pm
+
+- Wizard Prontus
+    [mejoras]
+        - Se aumenta a 64 caracteres el largo maximo de las claves para BD
+    [files]
+        /cgi-cpn/wizard_paso1.cgi
+        /wizard_prontus/core/js/Wizard.class.js
+        /wizard_prontus/core/paso1.html
+
+- Friendly URL
+    [mejoras]
+        - Agrega marca %%_FILEURL_CANON%%, siempre parsea la url a la vista principal, en el caso de usar multivistas con la vista en la url.
+    [files]
+        /cgi-cpn/lib_prontus.pm

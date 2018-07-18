@@ -123,6 +123,8 @@ main: {
     $hash_defaultvars{'var'}{'USAR_PUBLIC_SERVER_NAME_VER_ARTIC'} = 'USAR_PUBLIC_SERVER_NAME_VER_ARTIC;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'SCRIPT_QUOTA'} = 'SCRIPT_QUOTA;(\w+);;U';
     $hash_defaultvars{'var'}{'FOTO_MAX_PIXEL'} = 'FOTO_MAX_PIXEL;(.*?);;U';
+    $hash_defaultvars{'var'}{'REDUCIR_CALIDAD_JPEGS'} = 'REDUCIR_CALIDAD_JPEGS;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'NIVEL_OPTIMIZACION_JPG'} = 'NIVEL_OPTIMIZACION_JPG;(\d{1,3});85;U';
     $hash_defaultvars{'var'}{'FFMPEG_PARAMS'} = 'FFMPEG_PARAMS;(.*?);;U';
     $hash_defaultvars{'var'}{'BLOQUEO_EDICION'} = 'BLOQUEO_EDICION;(\d+);;U';
     $hash_defaultvars{'var'}{'MAX_XCODING'} = 'MAX_XCODING;(\d+);100;U';

@@ -200,11 +200,11 @@ sub gatillar_procesos {
         foreach my $levels (sort keys %LEVELS2TRIGGER) {
             next unless($LEVELS2TRIGGER{$levels});
 
-            while (&check_taxport_running() >= $prontus_varglb::TAXPORT_MAX_MASTERS) {
-                sleep(1);
+            while (&lib_tax::check_taxport_running() >= $prontus_varglb::TAXPORT_MAX_MASTERS) {
+                sleep(5);
             }
-            while (&check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
-                sleep(1);
+            while (&lib_tax::check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
+                sleep(5);
             }
 
             my $param_especif_taxport = "$fid_name/$levels";
@@ -222,10 +222,10 @@ sub gatillar_procesos {
         next unless($LEVELS2TRIGGER{$levels});
 
         while (&check_taxport_running() >= $prontus_varglb::TAXPORT_MAX_MASTERS) {
-            sleep(1);
+            sleep(5);
         }
         while (&check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
-            sleep(1);
+            sleep(5);
         }
 
         my $cmd = "$pathnice $rutaScript/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID /$levels >/dev/null 2>&1 &";
@@ -236,22 +236,6 @@ sub gatillar_procesos {
         usleep(100000);
     }
 }
-# ---------------------------------------------------------------
-sub check_taxport_running {
-    my($res) = qx/ps axww | grep 'prontus_cron_taxport.cgi' | grep -v ' grep ' | grep -v 'sh -c' | wc -l/;
-
-    $res =~ s/\D//gs;
-    $res += 0; # para forzar el casteo a numero
-    return $res;
-};
-# ---------------------------------------------------------------
-sub check_worker_running {
-    my($res) = qx/ps axww | grep 'prontus_cron_taxport_worker.cgi' | grep -v ' grep ' | grep -v 'sh -c' | wc -l/;
-
-    $res =~ s/\D//gs;
-    $res += 0; # para forzar el casteo a numero
-    return $res;
-};
 # ---------------------------------------------------------------
 sub get_fids2process {
     # Obtiene fids para los cuales se generaran portadas taxonomicas.

@@ -947,6 +947,17 @@ sub get_artic_parsed {
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
       $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $nom_seccion_orig, $nom_tema, $nom_subtema);
     }
+
+    # agregamos el public_server_name si está configurada a SI la varglb USAR_PUBLIC_SERVER_NAME_VER_ARTIC.
+    my $public_server_name = '';
+    if ($prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC eq 'SI') {
+        if ($prontus_varglb::PUBLIC_SERVER_NAME !~/^http/i ) {
+            $public_server_name = 'http://'.$prontus_varglb::PUBLIC_SERVER_NAME;
+        } else {
+            $public_server_name = $prontus_varglb::PUBLIC_SERVER_NAME;
+        }
+        $marca_file = $public_server_name . $marca_file;
+    }
     $loop_art_tpl =~ s/%%_file%%/$marca_file/g;
     $loop_art_tpl =~ s/%%_autoinc%%/$art_autoinc/g;
 

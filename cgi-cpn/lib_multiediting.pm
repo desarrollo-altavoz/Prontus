@@ -45,7 +45,7 @@ sub send_ping {
     my ($document_root, $prontus_id, $recurso, $tipo_recurso, $current_user, $id_session) = @_;
     my $dir = "$document_root/$prontus_id$lib_multiediting::RELDIR_CONCURRENCY/$tipo_recurso";
     &glib_fildir_02::check_dir($dir);
-    # print STDERR "ping[$dir/$recurso.$current_user.$id_session]\n";
+    # print STDERR "send_ping[$dir/$recurso.$current_user.$id_session]\n";
 
     &glib_fildir_02::write_file("$dir/$recurso.$current_user.$id_session", '');
 
@@ -58,6 +58,7 @@ sub lock_recurso {
     my $dir = "$document_root/$prontus_id$lib_multiediting::RELDIR_CONCURRENCY/$tipo_recurso/lock";
     &glib_fildir_02::check_dir($dir);
     my $file = "$dir/$recurso.lck";
+    # print STDERR "lock_recurso[$file]\n";
 
     if (!-f $file) {
         # es el primero en editar el recurso.

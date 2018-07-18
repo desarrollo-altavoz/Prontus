@@ -280,7 +280,7 @@ sub check_portadas {
 
                         my $filtro_fid = '';
                         if (-e $dir_plt_tax . $campos_xml{'_fid'}) {
-                                $filtro_fid = $campos_xml{'_fid'};
+                            $filtro_fid = $campos_xml{'_fid'};
                         }
 
                         # chequeamos la taxonomia a regenerar
