@@ -10118,6 +10118,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Implementa nivel de optimización configurable para JPEGs. Altera la calidad de imagen al hacer
           upload y al redimensionar, si está habilitada la opción. Agrega opciones relevantes en la
           configuración de Prontus.
+        - Implementa purge_everything según API v4 de Cloudflare.
     [files]
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_tax.pm
@@ -10131,6 +10132,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_thumb.pm
         /cgi-cpn/prontus_admin_main.cgi
         /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cloudflare_purge.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
         /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
         /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html

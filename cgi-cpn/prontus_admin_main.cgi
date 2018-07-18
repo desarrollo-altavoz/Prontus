@@ -1179,8 +1179,8 @@ sub parseaVars {
         $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%/ selected="selected"/ig;
         $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%//ig;
     } else {
-        $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%/ selected="selected"/ig;
-        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%//ig;
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%/ selected="selected"/ig;
     }
 
     $pagina =~ s/%%CLOUDFLARE_GLOBAL_PURGE%%/$prontus_varglb::CLOUDFLARE_GLOBAL_PURGE/ig;
