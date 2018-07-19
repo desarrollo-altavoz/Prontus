@@ -1518,7 +1518,7 @@ sub getHTML {
   my ($buffer) = '';
   my ($titular,$descripcion,$fechap,$texto,$robots) = ('','','','','');
   my ($ua) = new LWP::UserAgent;
-  $ua->agent('Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; .NET CLR 3.0.04506; InfoPath.2)'); # El browser de los ineptos.
+  $ua->agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
   $ua->max_size(100000); # Pone este limite para no eternizar la cosa.
   my ($request) = new HTTP::Request('GET', $url);
   my ($response) = $ua->request($request);
