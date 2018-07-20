@@ -221,10 +221,10 @@ sub gatillar_procesos {
     foreach my $levels (sort keys %LEVELS2TRIGGER) {
         next unless($LEVELS2TRIGGER{$levels});
 
-        while (&check_taxport_running() >= $prontus_varglb::TAXPORT_MAX_MASTERS) {
+        while (&lib_tax::check_taxport_running() >= $prontus_varglb::TAXPORT_MAX_MASTERS) {
             sleep(5);
         }
-        while (&check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
+        while (&lib_tax::check_worker_running() >= ($prontus_varglb::TAXPORT_MAX_WORKERS + 1)) {
             sleep(5);
         }
 
