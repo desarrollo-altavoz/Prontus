@@ -681,6 +681,9 @@ sub incluir_navbar {
         # warn "stlink[$secc_tema_stema_nom]";
     }
     $pagina =~ s/%%_SECC_TEMA_STEMA_NOM.*?%%/$secc_tema_stema_nom/isg;
+    $pagina =~ s/%%_NOM_SECCION.*?%%/$secc_nom/isg;
+    $pagina =~ s/%%_NOM_TEMA.*?%%/$tem_nom/isg;
+    $pagina =~ s/%%_NOM_SUBTEMA.*?%%/$stem_nom/isg;
     return $pagina;
 }
 
