@@ -1,4 +1,9 @@
 ====================================================================================================
+11.2.100.1 - 26/07/2018 - AVP/EAG
+====================================================================================================
+- bugfixes: (multivistas) Corrige generación de taxports para generar migas de pan con nombres de taxonomia correctos para cada multivista.
+- bugfixes: (artículos) No se parseaban los datos de ancho y alto de las fotos al usar urls friendly de imagenes
+====================================================================================================
 11.2.100 - 18/07/2018 - AVP/EAG
 ====================================================================================================
 - bugfixes: (general) Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
