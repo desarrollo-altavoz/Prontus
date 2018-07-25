@@ -10201,3 +10201,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige generación de taxports para generar migas de pan con nombres de taxonomia correctos para cada multivista.
     [files]
         /cgi-cpn/prontus_cron_taxport_worker.cgi
+
+- Artículos
+    [bugfixes]
+        - No se parseaban los datos de ancho y alto de las fotos, corrige la regexp asociada
+    [files]
+        /cgi-cpn/Artic.pm
