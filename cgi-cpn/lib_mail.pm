@@ -30,6 +30,7 @@ package lib_mail;
 
 use LWP::UserAgent;
 use HTTP::Response;
+use Encode qw(decode encode);
 
 use strict;
 
@@ -257,8 +258,8 @@ sub mail_multipart {   # FROM MAILCENTER
                 smtp => $smtp,
                 to => $to,
                 subject => $subject,
-                reply => $replyto,
-                debug => \*STDERR
+                reply => $replyto
+                #~ debug => \*STDERR
         })) or return &err_mail("Error al enviar mail via Mail::Sender [$!] [$Mail::Sender::Error] [From=$from][To=$to][SMTP=$smtp]");
 
         if ($encode_html) {

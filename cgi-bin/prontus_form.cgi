@@ -391,7 +391,11 @@ sub data_management {
     $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
     foreach my $email (@ADMIN_MAILS) {
         $to = $email;
-        $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
+            if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
+                $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
+            } else {
+                $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$filedata);
+            }
 
     };
     # Forma cuerpo para el remitente (autorrespuesta).
@@ -642,7 +646,7 @@ sub valida_data {
 
                 if (defined $hashtemp->{'success'}) {
                     if(!$hashtemp->{'success'}){
-                        print STDERR "Error al validar recapcha google: [$hashtemp->{'error-codes'}]\n";
+                        print STDERR "Error al validar recaptcha google: [$hashtemp->{'error-codes'}]\n";
                         &salida($MSGS{'wrong_google_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
                         exit;
                     };
