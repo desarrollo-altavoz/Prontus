@@ -30,7 +30,6 @@ package lib_mail;
 
 use LWP::UserAgent;
 use HTTP::Response;
-use Encode qw(decode encode);
 
 use strict;
 
@@ -273,7 +272,6 @@ sub mail_multipart {   # FROM MAILCENTER
             $sender->Close;
 
         } else {
-            $body = decode("utf8", $body);
             # Envio de email sin html con attachs
             (ref ($sender->MailFile({
                     msg => $body,
