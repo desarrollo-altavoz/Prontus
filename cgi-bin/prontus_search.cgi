@@ -1227,27 +1227,27 @@ sub carga_variables_prontus {
 
     # Cargar variables de configuración necesarias para friendly url desde archivo -var
     $prontus_varglb::FRIENDLY_URLS = 'NO';
-    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*["'](.*?)["']/) {
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS\s*=\s*["'](SI|NO)["']/) {
         $prontus_varglb::FRIENDLY_URLS = $1;
     };
 
     $prontus_varglb::FRIENDLY_URLS_VERSION = '1';
-    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*["'](.*?)["']/) {
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*["'](\d)["']/) {
         $prontus_varglb::FRIENDLY_URLS_VERSION = $1;
     };
 
     $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = 75;
-    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*["'](.*?)["']/) {
+    if ($buffervarcfg =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*["'](\d+)["']/) {
         $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $1;
     }
 
     $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO';
-    if ($buffervarcfg =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*["'](.*?)["']/) {
+    if ($buffervarcfg =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*["'](SI|NO)["']/) {
         $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $1;
     }
 
     $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = 'SI';
-    if ($buffervarcfg =~ m/\s*FRIENDLY_V4_INCLUDE_PRONTUS_ID\s*=\s*["'](.*?)["']/) {
+    if ($buffervarcfg =~ m/\s*FRIENDLY_V4_INCLUDE_PRONTUS_ID\s*=\s*["'](SI|NO)["']/) {
         $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = $1;
     }
 

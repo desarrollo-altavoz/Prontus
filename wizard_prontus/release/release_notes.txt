@@ -10207,3 +10207,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - No se parseaban los datos de ancho y alto de las fotos, corrige la regexp asociada
     [files]
         /cgi-cpn/Artic.pm
+
+Repone encodes para subjects
+/var/www/prontus_release/cgi-cpn/lib_mail.pm
+
+Hace mas estricta la carga de configuracion en el buscador
+/var/www/prontus_release/cgi-bin/prontus_search.cgi
