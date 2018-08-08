@@ -10208,20 +10208,37 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/Artic.pm
 
-Repone encodes para subjects
-/var/www/prontus_release/cgi-cpn/lib_mail.pm
+====================================================================================================
+11.2.101 - 08/08/2018 - AVP/EAG
+====================================================================================================
 
-Hace mas estricta la carga de configuracion en el buscador
-/var/www/prontus_release/cgi-bin/prontus_search.cgi
-
+- Buscador
+    [mejoras]
+        - Hace mas estricta la carga de configuración en el buscador
+    [files]
+        /cgi-bin/prontus_search.cgi
 
 - Prontus Form
+    [bugfixes]
+        - Correcciones para la generacion del csv por problemas de codificación
     [mejoras]
         - Agrega configuración para permitir adjuntar archivos a los emails enviados a las cuentas de administración desde Prontus Form.
     [files]
+        /cgi-cpn/prontus_form_download_real.cgi
         /cgi-bin/prontus_form.cgi
-	    /cgi-cpn/lib_mail.pm
-    	/cgi-cpn/lib_prontus.pm
-	    /cgi-cpn/prontus_admin_main.cgi
-    	/cgi-cpn/prontus_cfg_save.cgi
-	    /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /cgi-cpn/lib_mail.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Transcodificacion
+    [mejoras]
+        - Escribe y lee los archivos de status a cpan/procs/xcoding, no a cpan/procs
+        - Cambia lógica de lectura de archivos de status.
+    [files]
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodehls.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi

@@ -372,7 +372,7 @@ sub write_status {
     my $dir_xcoding_status = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/xcoding";
     # chequeamos que el dir xcoding exista, y si no, lo creamos.
     return 0 if !glib_fildir_02::check_dir($dir_xcoding_status);
-    
+
     my $file = "$dir_xcoding_status/xcoding_status_$ARTIC_ts_articulo.txt";
 
     &glib_fildir_02::write_file($file, $msg);
