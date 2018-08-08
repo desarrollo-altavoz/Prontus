@@ -263,8 +263,8 @@ sub mail_multipart {   # FROM MAILCENTER
                 smtp => $smtp,
                 to => $to,
                 subject => $subject,
-                reply => $replyto,
-                debug => \*STDERR
+                reply => $replyto
+                #~ debug => \*STDERR
         })) or return &err_mail("Error al enviar mail via Mail::Sender [$!] [$Mail::Sender::Error] [From=$from][To=$to][SMTP=$smtp]");
 
         if ($encode_html) {
@@ -278,7 +278,6 @@ sub mail_multipart {   # FROM MAILCENTER
             $sender->Close;
 
         } else {
-            $body = decode("utf8", $body);
             # Envio de email sin html con attachs
             (ref ($sender->MailFile({
                     msg => $body,

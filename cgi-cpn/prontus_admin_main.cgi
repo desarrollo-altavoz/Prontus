@@ -1319,6 +1319,14 @@ sub parseaVars {
         $pagina =~ s/%%FORM_CSV_CHARSET_2%%//ig;
     };
 
+    if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_SI%%//ig;
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_NO%%/ checked="checked"/ig;
+    } else {
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_NO%%//ig;
+    };
+
 
     my $post_proceso = $prontus_varglb::POST_PROCESO{'ART-BORRAR'};
     $post_proceso =~ s/^\((.*?)\)$//ig;
