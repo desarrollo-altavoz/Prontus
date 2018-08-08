@@ -45,7 +45,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
-};
+}
 # ---------------------------------------------
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -69,16 +69,16 @@ my $MARCA; # nombre de la marca prontus del video
 
 # ---------------------------------------------------------------
 main: {
-    &die_stderr("El parámetro 'origen' no es válido.", "", 1) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
+    &lib_xcoding::die_stderr("El parámetro 'origen' no es válido.", "", 0) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
+    &lib_xcoding::die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
+    &lib_xcoding::die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
 
     my ($start, $total, $segundos);
     $start = time; # tiempo inicial para medir la duracion del proceso
 
     if (!&load_artic_info()) {
-        &die_stderr("No se obtener la información del artículo asociado al video.", "", 1);
-    };
+        &lib_xcoding::die_stderr("No se obtener la información del artículo asociado al video.", "", 0);
+    }
 
     $ORIGEN =~ /\/mmedia\/(multimedia_video\d+)\d{14}\.(\w+)$/i;
     $MARCA = $1;
@@ -116,7 +116,7 @@ main: {
 
     # Dropbox.
     &call_dropbox_backup($ARTIC_ts_articulo);
-};
+}
 
 # ---------------------------------------------------------------
 sub call_dropbox_backup {
@@ -124,8 +124,8 @@ sub call_dropbox_backup {
 
     if ($prontus_varglb::DROPBOX eq 'SI') {
         &lib_prontus::dropbox_backup("art;$ts");
-    };
-};
+    }
+}
 # ---------------------------------------------------------------
 sub load_artic_info {
     # Deduce ubicacion del xml del articulo.
@@ -139,22 +139,5 @@ sub load_artic_info {
         return 1;
     } else {
         return 0;
-    };
-};
-# ---------------------------------------------------------------
-sub die_stderr {
-    my $msg = $_[0];
-    my $detalle = $_[1];
-    my $write = $_[2];
-    &write_status($msg) if ($write);
-    print STDERR "[ERROR] $msg - $detalle";
-    exit 1;
-};
-# ---------------------------------------------------------------
-sub write_status {
-    my $msg = $_[0];
-    $msg =~ s/\n//sg;
-    my $file = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/xcoding_status_$ARTIC_ts_articulo.txt";
-
-    &glib_fildir_02::write_file($file, $msg);
-};
+    }
+}

@@ -87,12 +87,12 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
-};
+}
 # ---------------------------------------------
 END {
     &garbageTempFiles();
     &tareas_salida();
-};
+}
 
 use sigtrap 'handler' => \&signal_catch, 'INT';
 use sigtrap 'handler' => \&signal_catch, 'TERM';
@@ -132,9 +132,9 @@ my $SLEEP = 5; # tiempo de espera entre peticiones remotas
 
 # ---------------------------------------------------------------
 main: {
-    &die_stderr("El parámetro 'origen' no es válido.", "", 1) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
+    &lib_xcoding::die_stderr("El parámetro 'origen' no es válido.", "", 0) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
+    &lib_xcoding::die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
+    &lib_xcoding::die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
 
     $GENERAR_VERSIONES = 0 if (!$GENERAR_VERSIONES);
     my ($cmd, $res);
@@ -142,8 +142,10 @@ main: {
     $start = time; # tiempo inicial para medir la duracion del proceso
 
     if (!&load_artic_info()) {
-        &die_stderr("No se obtener la información del artículo asociado al video.", "", 1);
-    };
+        &lib_xcoding::die_stderr("No se pudo obtener la información del artículo asociado al video.", "", 0);
+    }
+    $lib_xcoding::ARTIC_filename = $ARTIC_filename;
+    $lib_xcoding::ARTIC_ts_articulo = $ARTIC_ts_articulo;
 
     $ORIGEN =~ /\/mmedia\/(multimedia_video\d+)\d{14}\.(\w+)$/i;
     $MARCA = $1;
@@ -158,7 +160,7 @@ main: {
         print STDERR "Usando transcodificador externo\n";
         my ($content, $archivo, $result, $respuesta);
 
-        &die_stderr("El parámetro 'XCODER_HOST' no es válido.", "", 0) if ( $prontus_varglb::XCODER_HOST eq '');
+        &lib_xcoding::die_stderr("El parámetro 'XCODER_HOST' no es válido.", "", 0) if ( $prontus_varglb::XCODER_HOST eq '');
 
         # inicializamos el user agent
         &initUA();
@@ -171,8 +173,8 @@ main: {
         }
 
         if ($ORIGEN !~ s/.*?(\/[^\/]+\/site\/\w+\/\d+\/mmedia\/multimedia_video\d+\d{14}\.\w+)$/$1/) {
-            &die_stderr("Error al adaptar path de origen [$ORIGEN].", "", 0)
-        };
+            &lib_xcoding::die_stderr("Error al adaptar path de origen [$ORIGEN].", "", 0)
+        }
 
         my $hls = 0;
         if ($prontus_varglb::GEN_HLS eq 'SI') {
@@ -249,7 +251,7 @@ main: {
                             last;
                         }
                     } else {
-                        &die_stderr("Error al llamar al servidor remoto al verificar: [$respuesta].\n", "", 0);
+                        &lib_xcoding::die_stderr("Error al llamar al servidor remoto al verificar: [$respuesta].\n", "", 0);
                     }
                     sleep($SLEEP);
                 }
@@ -260,7 +262,7 @@ main: {
                 print STDERR "Trabajo Terminado\n";
             }
         } else {
-            &die_stderr("Error al llamar al servidor remoto al agregar: [$respuesta].\n", "", 0);
+            &lib_xcoding::die_stderr("Error al llamar al servidor remoto al agregar: [$respuesta].\n", "", 0);
         }
         # terminamos la cgi
         exit;
@@ -275,7 +277,7 @@ main: {
         if ($GENERAR_VERSIONES) {
             &crear_versiones_video_v1($MARCA, $ORIGEN);
             exit;
-        };
+        }
 
         # No transcodifica peliculas que ya son mp4.
         # Sin embargo, se aplica la correccion de los headers y offset, moviendolo al comienzo
@@ -286,16 +288,16 @@ main: {
             $cmd = "$Bin/qtfaststart.cgi $ORIGEN";
             $res = qx/$cmd 2>&1/;
 
-            &die_stderr("Falló Ajuste de Mp4.", "[$!][$res]", 1) if ($? != 0);
-            &die_stderr("El video no necesita conversión.\n", "", 0);
-        };
+            &lib_xcoding::die_stderr("Falló Ajuste de Mp4.", "[$!][$res]", 1) if ($? != 0);
+            &lib_xcoding::die_stderr("El video no necesita conversión.\n", "", 0);
+        }
 
         # Forma el nombre de la pelicula destino sustituyendo la extension... lo borra si existe.
         my $destino = $ORIGEN;
         $destino =~ s/\.\w+$/\.mp4/;
         if (-f $destino) {
             unlink $destino;
-        };
+        }
 
         &do_xcode_v1($ORIGEN, $destino);
 
@@ -330,8 +332,7 @@ main: {
         $lib_xcoding::MAX_ARATE = $prontus_varglb::MAX_AUDIO_BITRATE;
         $lib_xcoding::RUTA_TEMPORAL = $prontus_varglb::RUTA_TEMPORAL_XCODING;
         $lib_xcoding::RUTA_PRONTUS = $RUTA_PRONTUS;
-        $lib_xcoding::ARTIC_filename = $ARTIC_filename;
-        $lib_xcoding::ARTIC_ts_articulo = $ARTIC_ts_articulo;
+
         # se resta 1 para descontar el proceso actual
         $lib_xcoding::MAX_PARALELO = $prontus_varglb::XCODE_MAX_PARALELO - 1;
 
@@ -360,7 +361,7 @@ main: {
             $segundos = $segundos < 10? '0'.$segundos : $segundos;
             print STDERR "[$ARTIC_filename] Tiempo Total Transcodificacion [".int($total/60) .":". $segundos ."]\n";
             exit;
-        };
+        }
 
         # Se transcodifican mp4s si el bitrate de video es muy alto
         # Sin embargo, se aplica la correccion de los headers y offset, moviendolo al comienzo
@@ -372,10 +373,10 @@ main: {
                 $cmd = "$Bin/qtfaststart.cgi $ORIGEN";
                 $res = qx/$cmd 2>&1/;
 
-                &die_stderr("Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
-                &die_stderr("El video no necesita conversión.\n", "", 0);
+                &lib_xcoding::die_stderr("Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
+                &lib_xcoding::die_stderr("El video no necesita conversión.\n", "", 0);
             }
-        };
+        }
 
         # si hay formatos > 0 copiamos el archivo original para usarlo al generar las versiones
         # para no tener que realizar un nuevo analisis para transcodificar
@@ -391,7 +392,7 @@ main: {
             if (-e $VERSIONS_FILE) {
                 unlink $VERSIONS_FILE;
             }
-            copy($ORIGEN, $VERSIONS_FILE) or &die_stderr("Fallo la copia del original a $VERSIONS_FILE", "[$!][$res].", 1) ;
+            copy($ORIGEN, $VERSIONS_FILE) or &lib_xcoding::die_stderr("Fallo la copia del original a $VERSIONS_FILE", "[$!][$res].", 1) ;
         }
 
         # cargamos los formatos por defecto si estan redefinidos
@@ -408,7 +409,7 @@ main: {
             &lib_prontus::purge_cache($1);
         } else {
             # sino terminamos
-            &die_stderr("Ha ocurrido un error al generar [$destino].\n", "", 1);
+            &lib_xcoding::die_stderr("Ha ocurrido un error al generar [$destino].\n", "", 1);
         }
 
         # segmentamos el video para generar HLS
@@ -436,7 +437,7 @@ main: {
         }
     } else {
         # salimos sin hacer nada
-        &die_stderr("Ha ocurrido un error al transcodificar, el valor de ADVANCED_XCODING es incorrecto [$prontus_varglb::ADVANCED_XCODING].\n", "", 1);
+        &lib_xcoding::die_stderr("Ha ocurrido un error al transcodificar, el valor de ADVANCED_XCODING es incorrecto [$prontus_varglb::ADVANCED_XCODING].\n", "", 1);
     }
 
     # Actualizar articulo.
@@ -446,7 +447,7 @@ main: {
     $segundos = $total % 60;
     $segundos = $segundos < 10? '0'.$segundos : $segundos;
     print STDERR "[$ARTIC_filename] Tiempo Total Transcodificacion [".int($total/60) .":". $segundos ."]\n";
-};
+}
 # ---------------------------------------------------------------
 # determina cuantos procesos en paralelo estan corriendo para este video
 sub cuenta_procesos {
@@ -514,8 +515,8 @@ sub crear_versiones_video {
                 &lib_xcoding::generar_HLS($new_destino);
             }
         }
-    };
-};
+    }
+}
 # ---------------------------------------------------------------
 sub do_xcode {
     my $origen = $_[0];
@@ -591,7 +592,7 @@ sub do_xcode {
         $segundos = $total % 60;
         $segundos = $segundos < 10? '0'.$segundos : $segundos;
         print STDERR "[$ARTIC_filename] Tiempo FFMPEG [".int($total/60) .":". $segundos ."]\n";
-        &die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
+        &lib_xcoding::die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
     }
 
     # si no hay que borrar el origen, se esta haciendo el video principal
@@ -616,13 +617,13 @@ sub do_xcode {
         $segundos = $total % 60;
         $segundos = $segundos < 10? '0'.$segundos : $segundos;
         print STDERR "[$ARTIC_filename] Tiempo FFMPEG [".int($total/60) .":". $segundos ."]\n";
-        &die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
+        &lib_xcoding::die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
     }
 
     #si el archivo de destino existe, lo borramos
     if (-f $destino) {
         unlink $destino;
-    };
+    }
 
     #si existe ruta temporal de trabajo se mueve el archivo a su destino final
     if ($lib_xcoding::RUTA_TEMPORAL ne '')  {
@@ -630,7 +631,7 @@ sub do_xcode {
         $cmd = "$Bin/qtfaststart.cgi $lib_xcoding::RUTA_TEMPORAL$archivo_destino";
         $res = `$cmd 2>&1`;
 
-        &die_stderr("1 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
+        &lib_xcoding::die_stderr("1 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
 
         # se mueve el mp4 a su destino final
         move("$lib_xcoding::RUTA_TEMPORAL$archivo_destino",$destino);
@@ -639,7 +640,7 @@ sub do_xcode {
         $cmd = "$Bin/qtfaststart.cgi $RUTA_PRONTUS$archivo_destino";
         $res = `$cmd 2>&1`;
 
-        &die_stderr("2 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
+        &lib_xcoding::die_stderr("2 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
 
         #sino se renombra de tmp a mp4
         rename("$RUTA_PRONTUS$archivo_destino",$destino);
@@ -649,9 +650,9 @@ sub do_xcode {
         #se borra el original si no es mp4, si es mp4 en esta etapa ya es el destino
         unlink $ORIGEN if (!$no_borr_origen && $ORIGEN !~ /\.mp4$/i );
     } else {
-        &die_stderr("El archivo de destino no se genero correctamente.", "", 1);
-    };
-};
+        &lib_xcoding::die_stderr("El archivo de destino no se genero correctamente.", "", 1);
+    }
+}
 # ---------------------------------------------------------------
 # genera la playlist que contiene las listas de las variantes del video
 sub generar_lista_HLS {
@@ -777,12 +778,12 @@ sub actualizar_articulo {
         my @plt_paralelas_list = split(/;/, $prontus_varglb::FORM_PLTS_PARALELAS{$fid});
         foreach my $plt_paralela (@plt_paralelas_list)  {
             $artic_obj->generar_vista_art('', '', $prontus_varglb::PRONTUS_KEY, $plt_paralela, 1) || return $Artic::ERR;
-        };
+        }
 
         # Generar vistas secundarias
         foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
             $artic_obj->generar_vista_art($mv, '', $prontus_varglb::PRONTUS_KEY) || return $Artic::ERR;
-        };
+        }
 
         # Actualizar el DAM
         my $ext = &lib_prontus::get_file_extension($plt);
@@ -821,25 +822,8 @@ sub load_artic_info {
         return 1;
     } else {
         return 0;
-    };
-};
-# ---------------------------------------------------------------
-sub die_stderr {
-    my $msg = $_[0];
-    my $detalle = $_[1];
-    my $write = $_[2];
-    &write_status($msg) if ($write);
-    print STDERR "[ERROR] $msg - $detalle";
-    exit 1;
-};
-# ---------------------------------------------------------------
-sub write_status {
-    my $msg = $_[0];
-    $msg =~ s/\n//sg;
-    my $file = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/xcoding_status_$ARTIC_ts_articulo.txt";
-
-    &glib_fildir_02::write_file($file, $msg);
-};
+    }
+}
 # ---------------------------------------------------------------
 # Funciones Legacy para mantener compatibilidad transcodificacion basica
 # ---------------------------------------------------------------
@@ -860,11 +844,11 @@ sub crear_versiones_video_v1 {
 
         if (-f $new_destino) {
             unlink $new_destino;
-        };
+        }
 
         &do_xcode_v1($origen, $new_destino, $flags, 1);
-    };
-};
+    }
+}
 # ---------------------------------------------------------------
 sub do_xcode_v1 {
     my $origen = $_[0];
@@ -881,20 +865,20 @@ sub do_xcode_v1 {
     # Por ahora no se analiza la salida del ffmpeg. La redireccion del stderr al stdout es porque ffmpeg imprime su salida al stderr en vez de al stdout
     $res = qx/$cmd 2>&1/;
 
-    &die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
+    &lib_xcoding::die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
 
     $cmd = "$Bin/qtfaststart.cgi $destino";
     $res = qx/$cmd 2>&1/;
 
-    &die_stderr("Falló Ajuste de Mp4", "[$!][$res].", 1) if ($? != 0);
+    &lib_xcoding::die_stderr("Falló Ajuste de Mp4", "[$!][$res].", 1) if ($? != 0);
 
     if (-f $destino) {
         unlink $ORIGEN if (!$no_borr_origen);
     } else {
-        &die_stderr("El archivo de destino no se genero correctamente.", "", 1);
-    };
+        &lib_xcoding::die_stderr("El archivo de destino no se genero correctamente.", "", 1);
+    }
 
-};
+}
 # ---------------------------------------------------------------
 # Funciones para usar transcodificador externo
 # ---------------------------------------------------------------
@@ -925,9 +909,9 @@ sub postUrl {
             }
             print STDERR "Error en la ejecución $!\n";
             return 'ERROR';
-        };
-    };
-}; # getUrl.
+        }
+    }
+} # getUrl.
 # ---------------------------------------------------------------
 # Inicializa el user-agent.
 sub initUA {
@@ -936,7 +920,7 @@ sub initUA {
     $CLIENT->agent('Prontus CMS');
     my $conn_cache = LWP::ConnCache->new;
     $CLIENT->conn_cache($conn_cache);
-}; # initUA
+} # initUA
 # ---------------------------------------------------------------
 # purgea el cache de los archivos generados por el transcodificador externo
 sub purgeExterno {
@@ -974,4 +958,4 @@ sub purgeExterno {
             }
         }
     }
-};
+}
