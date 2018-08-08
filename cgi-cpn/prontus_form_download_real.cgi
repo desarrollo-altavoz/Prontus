@@ -34,7 +34,6 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
 };
 
-#~ use utf8;
 use strict;
 
 # Captura STDERR
@@ -50,7 +49,7 @@ use glib_cgi_04;
 use lib_prontus;
 use lib_form;
 
-use Encode;
+use Encode qw(decode encode);
 use JSON;
 use Data::Dumper;
 
@@ -117,7 +116,7 @@ main: {
         push(@orderreal, '_ip');
         foreach my $index (sort { $a <=> $b} keys %orderhash) {
             push(@orderreal, $orderhash{$index});
-        };
+        }
 
         my %newheader;
         my $newheaderorder = 0;
@@ -129,6 +128,10 @@ main: {
             next unless($file =~ /\d{14}\.json$/);
             my $json = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$DIRFORM/$file");
             next if ($json !~ /^\{.*\}$/);
+
+            # quita caracteres encodeados como codigo unicode ya que no son visibles y causan problemas de compatibilidad
+            $json =~ s/\\u[0-9a-fA-F]{4}//g;
+
             my $jsonhashref;
             if($JSON::VERSION =~ /^1\./) {
                 my $jsonobj = new JSON;
@@ -177,18 +180,35 @@ main: {
 
         foreach my $name (sort { $newheader{$a} <=> $newheader{$b} } keys %newheader) {
             push(@orderreal, $name) if (!$orderreal_values{$name});
-        };
+        }
 
         splice(@orderreal,0,3,'Fecha','Hora','IP');
         my $headers = &lib_form::array_to_csv(@orderreal);
         $CSV = $headers . "\n". $CSV;
     }
 
-    # Se hace esto para que no se caiga la funcion con strings muy largos
+    # reconvertimos a utf8 para eliminar caracteres invalidos
+    my $characters = decode('UTF-8', $CSV, Encode::FB_DEFAULT);
+    $CSV     = encode('UTF-8', $characters, Encode::FB_DEFAULT);
+
+    # el texto no es utf8, al aplicar las operaciones previas se pierde la decodificacion
+    utf8::decode($CSV);
+    #~ $CSV =~ s/\x{2028}//g;
+    # elimina caracteres especiales unicode
+    $CSV =~ s/[\x{fff0}-\x{ffff}]//g;
+    utf8::encode($CSV);
+
+    # Encodeamos a latin1 si está configurado asi.
     if($prontus_varglb::FORM_CSV_CHARSET eq 'iso-8859-1') {
-        my $oct = decode("utf8", $CSV);
-        $CSV = encode("iso-8859-1", $oct);
-    };
+        # el texto no es utf8, al aplicar las operaciones previas se pierde la decodificacion
+        utf8::decode($CSV);
+        # eliminamos caracters no iso-8859-1, > U+00FF
+        $CSV =~ s/[\x{00ff}-\x{ffff}]//g;
+        utf8::encode($CSV);
+
+        my $oct = decode("UTF-8", $CSV);
+        $CSV = encode("iso-8859-1", $oct, Encode::FB_DEFAULT);
+    }
 
     my $filename = "prontus_form$TS.csv";
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$DIRFORM/$filename", $CSV);

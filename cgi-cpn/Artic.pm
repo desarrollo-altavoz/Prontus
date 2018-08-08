@@ -2645,7 +2645,7 @@ sub _parsing_fotos {
     if ($val_campo =~ /$este_prontus/i) { # val_campo es del tipo: /prontus_dev/site/artic/20060410/imag/FOTO_0120060410165548.jpg
         my $ts = $this->{ts};
         # parseo ademas las dimensiones de la foto en el articulo
-        if ($val_campo =~ /(foto_\d+)$ts(\_*?)?\.\w+$/i) {
+        if ($val_campo =~ /(foto_\d+)$ts(.+?)?\.\w+$/i) {
             my $nom_foto_original = lc $1;
             $foto_dimx = $campos{"_w$nom_foto_original"};
             $foto_dimy = $campos{"_h$nom_foto_original"};
