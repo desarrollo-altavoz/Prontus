@@ -278,6 +278,7 @@ sub mail_multipart {   # FROM MAILCENTER
             $sender->Close;
 
         } else {
+            $body = decode("utf8", $body);
             # Envio de email sin html con attachs
             (ref ($sender->MailFile({
                     msg => $body,
