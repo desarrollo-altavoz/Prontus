@@ -97,7 +97,7 @@
 #
 # Servidor SMTP
 # -------------
-# El Formulario Prontus utiliza el servidor SMTP de prontus_nn-var.cfg
+# El Formulario Prontus utiliza el servidor SMTP definido en la configuración global
 #
 # Archivos temporales
 # -------------------
@@ -505,7 +505,7 @@ sub ordenar_campos {
 # ------------------------------------------------------------------------- #
 # Valida las variables Prontus y las del formulario.
 sub valida_data {
-    my($email,$file,$key,$nombre,$buffer,$dato,$form_admin,$plantilla); # 1.1
+    my($email,$file,$key,$nombre,$dato,$form_admin,$plantilla); # 1.1
     my(@mails); # 1.6
 
     @DATOS = &glib_cgi_04::param();
@@ -584,22 +584,13 @@ sub valida_data {
     &inicializaMensajes(\$TMP_ERROR);
 
     # Lee el servidor SMTP definido para Prontus.
-    # SERVER_SMTP= 'localhost'
-    $buffer = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/cpan/$PRONTUS_ID-var.cfg");
-    my $server_smtp = '';
-    if ($buffer =~ /SERVER_SMTP\s*=\s*\'(.+?)\'/s) {
-        $server_smtp = $1;
-    };
-    if ($server_smtp eq '') {
+    $lib_form::SERVER_SMTP = $prontus_varglb::SERVER_SMTP;
+    if ($lib_form::SERVER_SMTP eq '') {
         &salida($MSGS{'out_of_service'},$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
     };
-    $lib_form::SERVER_SMTP = $server_smtp;
 
     # Se aprovecha de leer las vistas
-    while ($buffer =~ m/\s*MULTIVISTA\s*=\s*("|')(.+?)("|')/g) {
-        my $clave = $2;
-        $lib_form::MULTIVISTAS{$clave} = 1;
-    };
+    %lib_form::MULTIVISTAS = %prontus_varglb::MULTIVISTAS;
 
     # Se valida el campo: _form_vista
     my $FORM_VISTA = &glib_cgi_04::param('_form_vista');
