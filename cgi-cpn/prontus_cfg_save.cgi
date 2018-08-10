@@ -111,6 +111,7 @@ main: {
     $hash_defaultvars{'var'}{'VTXT_ENCODE_CHARS'} = 'VTXT_ENCODE_CHARS;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'VTXT_MEDIA_SCRIPT'} = 'VTXT_MEDIA_SCRIPT;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'FORM_CSV_CHARSET'} = 'FORM_CSV_CHARSET;(utf-8|iso-8859-1);utf-8;U';
+    $hash_defaultvars{'var'}{'FORM_INCLUIR_ADJUNTO'} = 'FORM_INCLUIR_ADJUNTO;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'SERVER_PROTOCOLO_HTTPS'} = 'SERVER_PROTOCOLO_HTTPS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'VARNISH_SERVER_NAME'} = 'VARNISH_SERVER_NAME;(\w+);;M';
     $hash_defaultvars{'var'}{'VARNISH_GLOBAL_PURGE'} = 'VARNISH_GLOBAL_PURGE;(.*?);;U';

@@ -21,7 +21,7 @@
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-# Desde el web, pasando por parametro el path al archivo de 
+# Desde el web, pasando por parametro el path al archivo de
 # configuración del Prontus a modificar.
 # ---------------------------------------------------------------
 # PLANTILLAS HTML UTILIZADAS.
@@ -1319,6 +1319,14 @@ sub parseaVars {
         $pagina =~ s/%%FORM_CSV_CHARSET_2%%//ig;
     };
 
+    if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_SI%%//ig;
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_NO%%/ checked="checked"/ig;
+    } else {
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_NO%%//ig;
+    };
+
 
     my $post_proceso = $prontus_varglb::POST_PROCESO{'ART-BORRAR'};
     $post_proceso =~ s/^\((.*?)\)$//ig;
@@ -1332,12 +1340,11 @@ sub parseaVars {
     if ($prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'SI') {
         $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%//ig;
-        $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/$prontus_varglb::NIVEL_OPTIMIZACION_JPG/ig;
     } else {
         $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%//ig;
         $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%/ checked="checked"/ig;
-        $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/100/ig;
     }
+    $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/$prontus_varglb::NIVEL_OPTIMIZACION_JPG/ig;
 
     $buffer = '';
     $pagina =~ /<!--loop_multivista-->(.*?)<!--\/loop_multivista-->/s;

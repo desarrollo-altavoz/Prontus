@@ -1,4 +1,18 @@
 ====================================================================================================
+11.2.101 - 08/08/2018 - AVP/EAG
+====================================================================================================
+- improvement: (buscador) Hace mas estricta la carga de configuración en el buscador para evitar errores
+- improvement: (form) Agrega configuración para permitir adjuntar archivos a los emails enviados a las cuentas de administración desde Prontus Form.
+- improvement: (xcoding) Escribe y lee los archivos de status a cpan/procs/xcoding, no a cpan/procs
+- improvement: (xcoding) Cambia lógica de lectura de archivos de status de transcodificación
+- bugfixes: (form) Correcciones para la generacion del csv por problemas de codificación
+- bugfixes: (xcoding) Corrige path para determinar si un video ya esta en el xml del articulo
+====================================================================================================
+11.2.100.1 - 26/07/2018 - AVP/EAG
+====================================================================================================
+- bugfixes: (multivistas) Corrige generación de taxports para generar migas de pan con nombres de taxonomia correctos para cada multivista.
+- bugfixes: (artículos) No se parseaban los datos de ancho y alto de las fotos al usar urls friendly de imagenes
+====================================================================================================
 11.2.100 - 18/07/2018 - AVP/EAG
 ====================================================================================================
 - bugfixes: (general) Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.

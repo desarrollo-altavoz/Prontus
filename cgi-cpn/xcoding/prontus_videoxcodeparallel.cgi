@@ -49,7 +49,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
-};
+}
 # ---------------------------------------------
 
 
@@ -81,15 +81,15 @@ my $ARTIC_extension;
 
 # ---------------------------------------------------------------
 main: {
-    &die_stderr("El parámetro 'origen' no es válido.", "", 1) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
-    &die_stderr("El parámetro 'prontus_id' no es válido.", "", 1) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
+    &lib_xcoding::die_stderr("El parámetro 'origen' no es válido.", "", 0) if ((!-f "$ORIGEN") || (!-s "$ORIGEN"));
+    &lib_xcoding::die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (! &lib_prontus::valida_prontus($PRONTUS_ID));
+    &lib_xcoding::die_stderr("El parámetro 'prontus_id' no es válido.", "", 0) if (!-d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID");
     # ejemplo de formato MULTIMEDIA_VIDEO1.B
-    &die_stderr("El parámetro 'formato' no es válido.", "", 1) if ($FORMATO !~ /(multimedia_video\d+)\.(\w+)/i);
+    &lib_xcoding::die_stderr("El parámetro 'formato' no es válido.", "", 0) if ($FORMATO !~ /(multimedia_video\d+)\.(\w+)/i);
 
     if (!&load_artic_info()) {
-        &die_stderr("No se obtener la información del artículo asociado al video.", "", 1);
-    };
+        &lib_xcoding::die_stderr("No se obtener la información del artículo asociado al video.", "", 0);
+    }
 
     # obtenemos el nombre de la marca
     $ORIGEN =~ /.*?\/((multimedia_video\d+)\d{14})\.(\w+)$/i;
@@ -146,7 +146,7 @@ main: {
     $segundos = $segundos < 10? '0'.$segundos : $segundos;
     print STDERR "[$ARTIC_filename][$FORMATO] Tiempo Total Version [".int($total/60) .":". $segundos ."]\n";
     exit;
-};
+}
 
 # ---------------------------------------------------------------
 sub crear_version_video {
@@ -165,7 +165,7 @@ sub crear_version_video {
 
     if (-f $destino) {
         unlink $destino;
-    };
+    }
 
     &do_xcode($origen, $destino, 1, $formatos{$key}, $marca, $key);
     # para obtener la carpeta prontus relativa del video
@@ -176,7 +176,7 @@ sub crear_version_video {
     if ($lib_xcoding::HLS) {
         &lib_xcoding::generar_HLS($destino);
     }
-};
+}
 
 # ---------------------------------------------------------------
 sub do_xcode {
@@ -255,7 +255,7 @@ sub do_xcode {
         $segundos = $total % 60;
         $segundos = $segundos < 10? '0'.$segundos : $segundos;
         print STDERR "[$ARTIC_filename] Tiempo FFMPEG [".int($total/60) .":". $segundos ."]\n";
-        &die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
+        &lib_xcoding::die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
     }
 
     # se hace el segundo paso si es necesario
@@ -274,13 +274,13 @@ sub do_xcode {
         $segundos = $total % 60;
         $segundos = $segundos < 10? '0'.$segundos : $segundos;
         print STDERR "[$ARTIC_filename] Tiempo FFMPEG [".int($total/60) .":". $segundos ."]\n";
-        &die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
+        &lib_xcoding::die_stderr("Falló transcodificación", "[$!][$res].", 1) if ($? != 0);
     }
 
     #si el archivo de destino existe, lo borramos
     if (-f $destino) {
         unlink $destino;
-    };
+    }
 
     #si existe ruta temporal de trabajo se mueve el archivo a su destino final
     if ($lib_xcoding::RUTA_TEMPORAL ne '')  {
@@ -288,7 +288,7 @@ sub do_xcode {
         $cmd = "$Bin/qtfaststart.cgi $lib_xcoding::RUTA_TEMPORAL$archivo_destino";
         $res = `$cmd 2>&1`;
 
-        &die_stderr("1 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
+        &lib_xcoding::die_stderr("1 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
 
         # se mueve el mp4 a su destino final
         move("$lib_xcoding::RUTA_TEMPORAL$archivo_destino",$destino);
@@ -297,7 +297,7 @@ sub do_xcode {
         $cmd = "$Bin/qtfaststart.cgi $RUTA_PRONTUS$archivo_destino";
         $res = `$cmd 2>&1`;
 
-        &die_stderr("2 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
+        &lib_xcoding::die_stderr("2 Falló Ajuste de Mp4.", "[$!][$res][$cmd]", 1) if ($? != 0);
 
         #sino se renombra de tmp a mp4
         rename("$RUTA_PRONTUS$archivo_destino",$destino);
@@ -307,9 +307,9 @@ sub do_xcode {
         #se borra el original si no es mp4, si es mp4 en esta etapa ya es el destino
         unlink $ORIGEN if (!$no_borr_origen && $ORIGEN !~ /\.mp4$/i );
     } else {
-        &die_stderr("El archivo de destino no se genero correctamente.", "", 1);
-    };
-};
+        &lib_xcoding::die_stderr("El archivo de destino no se genero correctamente.", "", 1);
+    }
+}
 
 # ---------------------------------------------------------------
 sub load_artic_info {
@@ -321,24 +321,5 @@ sub load_artic_info {
         return 1;
     } else {
         return 0;
-    };
-};
-
-# ---------------------------------------------------------------
-sub die_stderr {
-    my $msg = $_[0];
-    my $detalle = $_[1];
-    my $write = $_[2];
-    &write_status($msg) if ($write);
-    print STDERR "[ERROR] $msg - $detalle";
-    exit 1;
-};
-
-# ---------------------------------------------------------------
-sub write_status {
-    my $msg = $_[0];
-    $msg =~ s/\n//sg;
-    my $file = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/xcoding_status_$ARTIC_ts_articulo.txt";
-
-    &glib_fildir_02::write_file($file, $msg);
-};
+    }
+}

@@ -2161,6 +2161,14 @@ sub load_config {
   };
   $prontus_varglb::FORM_CSV_CHARSET = $form_csv_charset;
 
+
+  # Para indicar si incluir adjunto en el mail para admin
+  my $incluir_adjunto = 'SI'; # Valor por defecto = SI
+  if ($buffer =~ m/\s*FORM_INCLUIR_ADJUNTO\s*=\s*["'](SI|NO)["']/) {
+    $incluir_adjunto = $1;
+  };
+  $prontus_varglb::FORM_INCLUIR_ADJUNTO = $incluir_adjunto;
+
   my $pp;
   my $pp_tipo;
   while ($buffer =~ m/\s*POST_PROCESO\s*=\s*("|')(.*?)(\(.*?)("|')/g) {
