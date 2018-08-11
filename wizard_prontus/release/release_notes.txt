@@ -10256,3 +10256,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Guarda datos recibidos antes de enviar correos, para evitar no guardar datos en caso de errores al enviar correos.
     [files]
         /cgi-bin/prontus_form.cgi
+
+- Articulos
+    [bugfixes]
+        - Corrige doble captura de log
+    [files]
+        /cgi-cpn/prontus_art_regen_real.cgi
