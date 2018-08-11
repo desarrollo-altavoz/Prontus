@@ -280,7 +280,7 @@ main: {
 # Envia mails y guarda datos si es pertinente.
 sub data_management {
     my($body,$data,$backupdir,$backupdata,$backupheaders);
-    my ($to,$from,$subj,$filename,$filedata,$fecha,$hora,$ip);
+    my ($to,$from,$subj,$filename,$filedata,$file_final_path,$fecha,$hora,$ip);
     # my (@datos) = &glib_cgi_04::param();
     my ($result);
     my (%files);
@@ -299,7 +299,6 @@ sub data_management {
     }
     my $filejson = "$backupdir/$TSENVIO.json";
     &glib_fildir_02::check_dir($backupdir);
-    &glib_fildir_02::write_file($filejson, '{}');
 
     my $data_json;
     $data_json->{'_fecha'} = $fecha;
@@ -337,6 +336,7 @@ sub data_management {
             $files{$key}{'_name'} = 'file_' . $random.'--'.$filename;
             $files{$key}{'_temp'} = $filedata;
             $body .= sprintf('%-15s',$key) . " = $prontus_varglb::CPAN_SERVER_NAME/$prontus_varglb::PRONTUS_ID/$DATA_DIR/$TS/$files{$key}{'_name'}\n";
+            $file_final_path = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/$DATA_DIR/$TS/$files{$key}{'_name'}";
             $backupdata .= "\"file_$random--$filename\"$SEPARADOR"; # Pega el random para que el nombre sea unico.
         } else {
             $order_data->{$counter} = $key;
@@ -355,6 +355,47 @@ sub data_management {
         &glib_fildir_02::write_file("$backupdir/order.json", $json->objToJson($order_data));
     } else {
         &glib_fildir_02::write_file("$backupdir/order.json", &JSON::to_json($order_data));
+    }
+
+    # Sólo se incluyen los archivos en el JSON, si hay respaldo
+    my $files_json;
+
+    # Genera el backup, si es pertinente.
+    # Solamente guarda archivos adjuntos si está activa esta opción!
+    if ($PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
+        if (-e "$backupdir/backup.csv") { # Si existe ya el archivo, no inserta la linea de encabezados.
+            &glib_fildir_02::append_file("$backupdir/backup.csv","$backupdata\r\n");
+        } else {
+            &glib_fildir_02::append_file("$backupdir/backup.csv","$backupheaders\r\n$backupdata\r\n");
+        };
+        #if (keys %files) {
+            # Mueve todos los archivos adjuntos.
+            foreach my $file (keys %files) {
+                my $name = $files{$file}{'_name'};
+                my $temp = $files{$file}{'_temp'};
+                File::Copy::move($temp,"$backupdir/$name");
+                my $newfile = "$backupdir/$name";
+                $newfile =~ s/^$prontus_varglb::DIR_SERVER//;
+                $files_json->{$file} = $newfile;
+            };
+        #};
+    };
+    # Se escribe la respuesta json
+    if($data_json) {
+        my $resp;
+        foreach my $llave (keys %{$data_json}) {
+            $resp->{$llave} = $data_json->{$llave};
+        };
+        if (keys %{$files_json}) {
+            $resp->{'_files'} = $files_json;;
+        }
+
+        if($JSON::VERSION =~ /^1\./) {
+            my $json = new JSON;
+            &glib_fildir_02::write_file($filejson, $json->objToJson($resp));
+        } else {
+            &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
+        }
     }
 
     # 1.8 - firma configurable CVI
@@ -391,11 +432,11 @@ sub data_management {
     $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
     foreach my $email (@ADMIN_MAILS) {
         $to = $email;
-            if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
-                $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
-            } else {
-                $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$filedata);
-            }
+        if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
+            $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
+        } else {
+            $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$file_final_path);
+        }
 
     };
     # Forma cuerpo para el remitente (autorrespuesta).
@@ -442,49 +483,7 @@ sub data_management {
             $result .= ' 5 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
         };
     };
-    # Sólo se incluyen los archivos en el JSON, si hay respaldo
-    my $files_json;
 
-    # Genera el backup, si es pertinente.
-    # Solamente guarda archivos adjuntos si está activa esta opción!
-    if ($PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
-        if (-e "$backupdir/backup.csv") { # Si existe ya el archivo, no inserta la linea de encabezados.
-            &glib_fildir_02::append_file("$backupdir/backup.csv","$backupdata\r\n");
-        } else {
-            &glib_fildir_02::append_file("$backupdir/backup.csv","$backupheaders\r\n$backupdata\r\n");
-        };
-        #if (keys %files) {
-            # Mueve todos los archivos adjuntos.
-            foreach my $file (keys %files) {
-                my $name = $files{$file}{'_name'};
-                my $temp = $files{$file}{'_temp'};
-                File::Copy::move($temp,"$backupdir/$name");
-                my $newfile = "$backupdir/$name";
-                $newfile =~ s/^$prontus_varglb::DIR_SERVER//;
-                $files_json->{$file} = $newfile;
-            };
-        #};
-    };
-    # Se escribe la respuesta json
-    if($data_json) {
-        my $resp;
-        foreach my $llave (keys %{$data_json}) {
-            $resp->{$llave} = $data_json->{$llave};
-        };
-        if (keys %{$files_json}) {
-            $resp->{'_files'} = $files_json;;
-        }
-
-        if($JSON::VERSION =~ /^1\./) {
-            my $json = new JSON;
-            &glib_fildir_02::write_file($filejson, $json->objToJson($resp));
-        } else {
-            &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
-        }
-
-    } else {
-        unlink($filejson);
-    };
     return $result; # $result es solo para debug.
 }; # dataManagement
 
