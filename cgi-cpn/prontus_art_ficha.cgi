@@ -1800,11 +1800,12 @@ sub carga_buffer_fid {
     $buffer = &add_macros_fid($buffer, '');
     $buffer =~ s/%25%25/%%/sg;
 
+    # procesamos marca loop_artic
+    $buffer = &lib_prontus::procesa_loop_artic($buffer, '##');
 
     $buffer = &lib_prontus::set_coreplt_ppal($buffer);
 
     return $buffer;
-
 };
 
 
