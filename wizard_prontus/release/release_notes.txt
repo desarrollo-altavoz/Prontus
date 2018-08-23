@@ -10270,3 +10270,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 Agrega procesamiento de _loop_artic en el fid
 
 /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
+
+Desactiva TLS para mail multipart
+/var/www/prontus_release/cgi-cpn/lib_mail.pm
