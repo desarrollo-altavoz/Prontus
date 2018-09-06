@@ -10268,8 +10268,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 11.2.102 - XX/08/2018 - AVP/EAG
 ====================================================================================================
 Agrega procesamiento de _loop_artic en el fid
-
-/var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
+    [files]
+        /var/www/prontus_release/cgi-cpn/prontus_art_ficha.cgi
 
 Desactiva TLS para mail multipart
-/var/www/prontus_release/cgi-cpn/lib_mail.pm
+    [files]
+        /var/www/prontus_release/cgi-cpn/lib_mail.pm
+
+- Prontus Form
+    [bugfixes]
+        Corrige mensaje de error en STDERR al recibir un error de google captcha
+    [files]
+        /cgi-bin/prontus_form.cgi
