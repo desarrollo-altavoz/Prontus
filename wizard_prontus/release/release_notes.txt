@@ -10280,3 +10280,9 @@ Desactiva TLS para mail multipart
         Corrige mensaje de error en STDERR al recibir un error de google captcha
     [files]
         /cgi-bin/prontus_form.cgi
+
+- Logging
+    [bugfixes]
+        Elimina despliegue de passwords erróneas del log de errores de login. Sólo se guarda el username.
+    [files]
+        /cgi-cpn/prontus_login.cgi
