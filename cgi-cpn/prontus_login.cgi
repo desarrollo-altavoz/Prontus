@@ -265,7 +265,7 @@ main: {
         } else {  # user no valido normal
             my $referer = $ENV{'HTTP_REFERER'};
             $referer = "Referer[$referer]" if ($referer);
-            &lib_prontus::write_log('FailLogin', "$FORM{'_usr'}/$FORM{'_psw'}", $referer);
+            &lib_prontus::write_log('FailLogin', "$FORM{'_usr'}", $referer);
             if ( &user_existente() ) {
                 &capture_user($file_userlock); # incrementa el contador de intentos fallidos al interior del archivo <user>.txt, si no existia lo crea.
             };
