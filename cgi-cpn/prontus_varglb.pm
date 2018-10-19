@@ -283,7 +283,7 @@ sub init { # Prontus 6.0
 
 
   # Mostrar en la adm. de articulos y ediciones las xx ultimas ediciones, ordenadas por tmstamp
-  $NRO_EDICS_WORK = 10000;
+  $NRO_EDICS_WORK = 15;
   $DIR_LOG = ''; # Dir. absoluto al dir donde se deja el log del publicador.
   $PRONTUS_LOG = ''; # SI | NO.
 

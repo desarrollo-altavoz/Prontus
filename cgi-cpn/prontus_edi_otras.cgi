@@ -187,16 +187,17 @@ sub make_lista {
     # Ordena numericamente de mayor a menor.
     @entries = sort { $aux_sort{$b} <=> $aux_sort{$a} } @entries;
     my ($ed_visible);
-    my $nro_filas;
-    foreach my $entry (@entries) {
-        if (($entry !~ /^\./g) and ($entry =~ /^\d\d\d\d\_\d\d\_\d\d\_/)) {
+    my $nro_filas = scalar @entries;
+    my $i = $prontus_varglb::NRO_EDICS_WORK +1;
+    for ($i;$i < $nro_filas; $i++) {
+        my $entry = $entries[$i];
+        if ($entry =~ /^\d\d\d\d\_\d\d\_\d\d\_/) {
             &parse_dirs_edic($entry);
             my $homepage = $prontus_varglb::DIR_SERVER . $RELDIR_CONT_HPAGE . "/$prontus_varglb::INDEX_EDIC";
 
-            if ((-f $homepage) and ($nro_filas + 1 > $prontus_varglb::NRO_EDICS_WORK)) {
+            if (-f $homepage) {
                 # Imprimir la fila de datos contenida en el hash.
                 $filas .= &generar_fila($entry, $loop);
-                $nro_filas++;
             };
         };
     };
