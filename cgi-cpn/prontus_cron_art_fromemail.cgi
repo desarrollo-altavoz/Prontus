@@ -36,14 +36,13 @@
 # ---------------------------------------------------------------
 # EJEMPLO DEL CORREO
 # ---------------------------------------------------------------
-# [key]aaabbbccc[/key]
-# [titular]Este es el titular[/titular]
-# [bajada]Bajada del articulo[/bajada]
-# [autor]Autor[/autor]
-# [cuerpo]
-# Cuerpo del mensaje
+# [key ACCESSTOKEN]
+# [titular Este es el titular]
+# [bajada Bajada del articulo]
+# [autor Autor]
+# [cuerpo Cuerpo del mensaje
 # Este es el cuerpo
-# [/cuerpo]
+# ]
 # ---------------------------------------------------------------
 
 # ---------------------------------------------------------------
@@ -80,6 +79,7 @@ use lib_stdlog;
 use prontus_varglb; &prontus_varglb::init();
 
 use glib_fildir_02;
+use glib_hrfec_02;
 use lib_prontus;
 use File::Copy;
 use DBI;
@@ -311,6 +311,12 @@ sub crear_objeto_artic {
     $hash_datos{'_alta'} = '0';
     $hash_datos{'_users_id'} = '1';
 
+    # Asignar fecha de publicación.
+    my $fecha = &glib_hrfec_02::get_dtime_pack4();
+    $fecha =~ /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})/;
+    $hash_datos{'_fechap'} = "$1$2$3";
+    $hash_datos{'_horap'} = "$4:$5";
+
     my $artic_obj = Artic->new(
                     'prontus_id'        =>$prontus_varglb::PRONTUS_ID,
                     'document_root'     =>$prontus_varglb::DIR_SERVER,
@@ -425,31 +431,31 @@ sub getDataFromBody {
     my $ruta_dir = $_[1];
     my %data;
 
-    if ($body =~ /\[key\](.*?)\[\/key\]/is) {
+    if ($body =~ /\[key ([^\]]+)/is) {
         $data{'key'} = $1;
         $data{'key'} =~ s/ //sg;
         $data{'key'} =~ s/(\n|\r\n|\r|\t)//sg;
     }
 
-    if ($body =~ /\[titular\](.*?)\[\/titular\]/is) {
+    if ($body =~ /\[titular ([^\]]+)/is) {
         $data{'titular'} = $1;
         $data{'titular'} =~ s/^(\n|\r\n|\r|\t)//sg;
         $data{'titular'} =~ s/(\n|\r\n|\r|\t)+$//sg;
     }
 
-    if ($body =~ /\[bajada\](.*?)\[\/bajada\]/is) {
+    if ($body =~ /\[bajada ([^\]]+)/is) {
         $data{'bajada'} = $1;
         $data{'bajada'} =~ s/^(\n|\r\n|\r|\t)//sg;
         $data{'bajada'} =~ s/^(\n|\r\n|\r|\t)+$//sg;
     }
 
-    if ($body =~ /\[autor\](.*?)\[\/autor\]/is) {
+    if ($body =~ /\[autor ([^\]]+)/is) {
         $data{'autor'} = $1;
         $data{'autor'} =~ s/^(\n|\r\n|\r|\t)//sg;
         $data{'autor'} =~ s/(\n|\r\n|\r|\t)+$//sg;
     }
 
-    if ($body =~ /\[cuerpo\](.*?)\[\/cuerpo\]/is) {
+    if ($body =~ /\[cuerpo ([^\]]+)/is) {
         $data{'cuerpo'} = $1;
         $data{'cuerpo'} =~ s/^(\n|\r\n|\r|\t)//sg;
         $data{'cuerpo'} =~ s/(\n|\r\n|\r|\t)+$//sg;
@@ -470,7 +476,7 @@ sub getDataFromBody {
         next if (! -f "$ruta_dir/$file");
         next if ($file !~ /\.(jpg|jpeg|png|gif)$/i);
 
-        print "foto: $file\n";
+        # print "foto: $file\n";
 
         push @fotos, "$ruta_dir/$file";
     }
@@ -487,7 +493,7 @@ sub getDataFromBody {
 sub hasAccessToken {
     my $body = $_[0];
 
-    if ($body =~ /\[key\](.*?)\[\/key\]/is) {
+    if ($body =~ /\[key ([^\]]+)/is) {
         return 1;
     }
 
@@ -527,7 +533,7 @@ sub logError {
     my $msg = $_[0];
     my $exit = $_[1];
 
-    # print STDERR "$msg\n";
+    print STDERR "$msg\n";
     print "$msg\n" if ($DEBUG);
 
     exit if ($exit);
