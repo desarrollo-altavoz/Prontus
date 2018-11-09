@@ -118,12 +118,6 @@ sub calcula_unix {
     return '<b>Espacio en disco:</b> Informaci&oacute;n no disponible.';
   };
 
-  # 1.2 - CVI - Por que no puede ser mayor de 8 ???? Lo saco para que funcione
-  # Valida que la quota asignada no tenga mas de 99999999Kb.
-  #      if(length($quota_asig) > 8){
-  #        $quota_asig = substr($quota_asig,0,8);
-  #      };
-
   # Caso de cuota sobrepasada.
   if ($usado > $quota_asig ) {
     return '<b>Espacio en disco:</b> Cuota sobrepasada.';
@@ -217,9 +211,11 @@ sub procesa_quota_vps {
     my @lineas_df = split(/\n/, $df); shift @lineas_df; # quitar cabecera.
     return ('', '') if (scalar @lineas_df == 0);
 
-    while ($document_root =~ /^.+(\/.*?)$/sg) {
+    while ($document_root =~ /^.*(\/.*?)$/sg) {
         my $part = $1;
-        $document_root =~ s/$part//sg;
+        if ($document_root ne $part) {
+            $document_root =~ s/$part//sg;
+        }
 
         # Tratar de buscar el punto de montaje en base al document root.
         # por ejemplo comienza con:
