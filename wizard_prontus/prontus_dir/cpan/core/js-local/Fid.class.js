@@ -16,6 +16,7 @@ var Fid = {
     tooltipTime: 800,
 
     init: function() {
+        //~ Fid.ishttps = true;
         // Muestra los elementos con class hide-new-artic, cuando el artículo no es nuevo
         if(mainFidJs.TS !== '') {
             $('.hide-new-artic').show();
@@ -114,7 +115,7 @@ var Fid = {
         }
 
         /* Mostrar drag & drop siempre y cuando este soportado y flash esté desactivado. */
-        if (Fid.showDragDrop && !jQuery.browser.flash) {
+        if (Fid.showDragDrop && !jQuery.browser.msie) {
             // Iniciar upload Drag & Drop
             //$('#uploadNormal').show();
             $('#uploadDragDrop').show();
@@ -157,8 +158,8 @@ var Fid = {
             } else if (Admin.clipboardHtml5) { // navegador soporta api html5
                 Fid.instalaClipboardHtml5();
             } else { // no se puede habilitar funcionalidad de clipboard
-            $('#copy-artic-url, #copy-artic-ext').remove();
-        }
+                $('#copy-artic-url, #copy-artic-ext').remove();
+            }
         } else if (Admin.clipboardHtml5) { // navegador soporta api html5
             Fid.instalaClipboardHtml5();
         } else if (jQuery.browser.flash) { // navegador tiene flash
@@ -168,7 +169,7 @@ var Fid = {
         }
 
         // Codigo para soporte de flash general
-        if(!jQuery.browser.flash) {
+        if(!jQuery.browser.msie) {
             $('#uploadUploadify').remove();
             if (Fid.showDragDrop) {
                 $('.browser-noflash').remove();
@@ -294,7 +295,7 @@ var Fid = {
         $('#uploadProgress').show();
         $('#uploadUploadify').hide();
     },
-    
+
     // callback para fileupload.stop
     uploadStop: function (e) {
         $('#uploadProgressBar').css('width', '100%');

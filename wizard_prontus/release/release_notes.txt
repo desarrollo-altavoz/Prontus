@@ -10301,3 +10301,6 @@ administrador
 
 Deteccion de quota no funcionaba si document root estaba en directorio raiz, por ej /web
 /var/www/prontus_release/cgi-cpn/lib_quota.pm
+
+En firefox no aparecia metodo para subir fotos si el sitio usa https y habia flash disponible pero no activado.
+/var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
