@@ -10304,3 +10304,7 @@ Deteccion de quota no funcionaba si document root estaba en directorio raiz, por
 
 En firefox no aparecia metodo para subir fotos si el sitio usa https y habia flash disponible pero no activado.
 /var/www/prontus_release/wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+
+
+Corrige comando para generar HLS para compatibilidad con ffmpeg 3.x+
+/var/www/prontus_release/cgi-cpn/xcoding/lib_xcoding.pm

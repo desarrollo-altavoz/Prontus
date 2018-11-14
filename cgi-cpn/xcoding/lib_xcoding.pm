@@ -333,7 +333,7 @@ sub generar_HLS {
     }
     &glib_fildir_02::check_dir($path_hls);
 
-    my $cmd = "$lib_xcoding::PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg  -i $origen -y -codec copy -map 0 -bsf h264_mp4toannexb -f segment -segment_list $path_hls/playlist.m3u8 -segment_list_type m3u8 -segment_time 10 -segment_time_delta 0.05 $path_hls/%03d.ts";
+    my $cmd = "$lib_xcoding::PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg  -i $origen -y -codec copy -map 0 -bsf:v h264_mp4toannexb -f segment -segment_list $path_hls/playlist.m3u8 -segment_list_type m3u8 -segment_time 10 -segment_time_delta 0.05 $path_hls/%03d.ts";
 
     #~ print STDERR "generar HLS origen [$origen][$cmd]\n";
     print STDERR "generar HLS origen [$origen]\n";
