@@ -10272,7 +10272,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Agrega procesamiento de _loop_artic en el fid
         - Registra cambio de alta de artículos en log de operación
     [bugfixes]
-        - En firefox no aparecia metodo para subir fotos si el sitio usa https y habia flash disponible pero no activado.
+        - En firefox no aparecía método para subir fotos si el sitio usa https y había flash disponible pero no activado.
     [files]
         /cgi-cpn/prontus_art_ficha.cgi
         /cgi-cpn/lib_artic.pm
@@ -10310,7 +10310,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - General
     [bugfixes]
-        - Detección de quota no funcionaba si document root estaba en directorio raiz, por ej /web
+        - Detección de quota no funcionaba si document root estaba en directorio raíz, por ej /web
     [files]
         /cgi-cpn/lib_quota.pm
 

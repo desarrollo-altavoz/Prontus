@@ -1,10 +1,10 @@
 ====================================================================================================
 11.2.102 - 15/11/2018 - AVP/EAG
 ====================================================================================================
-- bugfixes: (fid) En firefox no aparecia metodo para subir fotos si el sitio usa https y habia flash disponible pero no activado.
+- bugfixes: (fid) En firefox no aparecía método para subir fotos si el sitio usa https y había flash disponible pero no activado.
 - bugfixes: (form) Corrige mensaje de error en STDERR al recibir un error de google captcha
 - bugfixes: (log) Elimina despliegue de passwords erróneas del log de errores de login. Sólo se guarda el username.
-- bugfixes: (general) Detección de quota no funcionaba si document root estaba en directorio raiz, por ej /web
+- bugfixes: (general) Detección de quota no funcionaba si document root estaba en directorio raíz, por ej /web
 - improvement: (portadas) Se listan 15 ediciones más recientes y el resto en ediciones anteriores
 - improvement: (xcoding) Corrige comando para generar HLS para compatibilidad con ffmpeg 3.x+
 - improvement: (fid) Agrega procesamiento de _loop_artic en el fid
