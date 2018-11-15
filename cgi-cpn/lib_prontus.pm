@@ -4231,9 +4231,7 @@ sub replace_in_artic {
         my $nom_urlenctext = $nom_minitext . '.urlencode';
         my $urlenctext = &urlencode_text($valor_campo);
         $buffer =~ s/%%$nom_urlenctext%%/$urlenctext/isg;
-
-
-    };
+    }
 
     return $buffer;
 };

@@ -10214,7 +10214,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Buscador
     [mejoras]
-        - Hace mas estricta la carga de configuración en el buscador para evitar errores de funcionamiento
+        - Hace más estricta la carga de configuración en el buscador para evitar errores de funcionamiento
     [files]
         /cgi-bin/prontus_search.cgi
 
@@ -10232,9 +10232,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_cfg_save.cgi
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
 
-- Transcodificacion
+- Transcodificación
     [bugfixes]
-        - Corrige path para determinar si un video ya esta en el xml del articulo
+        - Corrige path para determinar si un video ya esta en el xml del artículo
     [mejoras]
         - Escribe y lee los archivos de status a cpan/procs/xcoding, no a cpan/procs
         - Cambia lógica de lectura de archivos de status.
@@ -10244,3 +10244,78 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videoxcodehls.cgi
         /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+
+====================================================================================================
+11.2.101.1 - 10/08/2018 - AVP/EAG
+====================================================================================================
+- Prontus Form
+    [bugfixes]
+        - Elimina lectura superflua del archivo de configuración -var.cfg. Se lee directamente de
+            $prontus_varglb.
+    [mejora]
+        - Guarda datos recibidos antes de enviar correos, para evitar no guardar datos en caso de errores al enviar correos.
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Articulos
+    [bugfixes]
+        - Corrige doble captura de log
+    [files]
+        /cgi-cpn/prontus_art_regen_real.cgi
+
+
+====================================================================================================
+11.2.102 - 15/11/2018 - AVP/EAG
+====================================================================================================
+- Fid
+    [mejora]
+        - Agrega procesamiento de _loop_artic en el fid
+        - Registra cambio de alta de artículos en log de operación
+    [bugfixes]
+        - En firefox no aparecía método para subir fotos si el sitio usa https y había flash disponible pero no activado.
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+
+- Envio de Mails
+    [mejora]
+        - Desactiva TLS para mail multipart
+    [files]
+        /cgi-cpn/lib_mail.pm
+
+- Prontus Form
+    [bugfixes]
+        - Corrige mensaje de error en STDERR al recibir un error de google captcha
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Logging
+    [bugfixes]
+        Elimina despliegue de passwords erróneas del log de errores de login. Sólo se guarda el username.
+    [files]
+        /cgi-cpn/prontus_login.cgi
+
+- Administración de Ediciones
+    [mejora]
+        - Se listaban hasta 10000 ediciones en el listado de las más recientes y ninguna en el de ediciones
+        anteriores, ahora se listan 15 en las más recientes y el resto en anteriores
+        - Cambia el titulo de la pagina a últimas ediciones, en vez de administrador
+    [files]
+        /cgi-cpn/prontus_edi_admin.cgi
+        /cgi-cpn/prontus_edi_otras.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_admin.html
+
+- General
+    [bugfixes]
+        - Detección de quota no funcionaba si document root estaba en directorio raíz, por ej /web
+    [files]
+        /cgi-cpn/lib_quota.pm
+
+- Transcodificación
+    [mejora]
+        - Corrige comando para generar HLS para compatibilidad con ffmpeg 3.x+
+    [files]
+        /cgi-cpn/xcoding/lib_xcoding.pm

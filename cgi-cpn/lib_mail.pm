@@ -263,7 +263,8 @@ sub mail_multipart {   # FROM MAILCENTER
                 smtp => $smtp,
                 to => $to,
                 subject => $subject,
-                reply => $replyto
+                reply => $replyto,
+                tls_allowed => 0 # deshabilita encriptacion SSL
                 #~ debug => \*STDERR
         })) or return &err_mail("Error al enviar mail via Mail::Sender [$!] [$Mail::Sender::Error] [From=$from][To=$to][SMTP=$smtp]");
 

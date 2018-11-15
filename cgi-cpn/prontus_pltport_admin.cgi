@@ -112,7 +112,7 @@ main: {
                                                  '%%Lst_PORT4%%', $lst_port4,'','',
                                                  '%%_path_conf%%', $FORM{'_path_conf'},'','',
                                                  $plantilla);
-    
+
     $pagina = &lib_prontus::set_coreplt_ppal($pagina);
         # En primer lugar, agrega macros
     my ($dir_macros_cpan) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/macros";

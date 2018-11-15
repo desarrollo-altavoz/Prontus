@@ -28,7 +28,7 @@
 # 4.Se construye la pagina de respuesta unica para el visitante y se envian los correos electronicos de datos y autorrespuesta.
 # 5.Si es pertinente, se respaldan los datos.
 # 6.Se redirige el browser hacia la pagina de respuesta a traves de un header Location.
-# 7.Se limpia el directorio de paginas de respuesta eliminando las que tienen mas de 10 minutos de antigüedad.
+# 7.Se limpia el directorio de paginas de respuesta eliminando las que tienen mas de 10 minutos de antigï¿½edad.
 #
 # Configuracion
 # -------------
@@ -68,7 +68,7 @@
 # form_msg_error<_vista> Mensaje de error del sistema, en formato html.
 #
 # CHK_form_required_<nombre>   Indica que el dato <nombre> es obligatorio en el formulario.
-# CHK_form_captcha_enable      Indica si se validará el captcha o no
+# CHK_form_captcha_enable      Indica si se validarï¿½ el captcha o no
 # CHK_form_backup_datos        Si existe, realiza una copia de los datos recibidos en
 #                                el directorio de respaldo, incluyendo los archivos adjuntos.
 # Validacion de datos
@@ -97,7 +97,7 @@
 #
 # Servidor SMTP
 # -------------
-# El Formulario Prontus utiliza el servidor SMTP de prontus_nn-var.cfg
+# El Formulario Prontus utiliza el servidor SMTP definido en la configuraciï¿½n global
 #
 # Archivos temporales
 # -------------------
@@ -125,16 +125,16 @@
 # 1.6   03/01/2008 - ALD - Permite dato _admin numerico para indicar uno de los mails de administracion.
 #                        - Permite que el mail del remitente sea vacio. En ese caso no se envia mail de autorrespuesta.
 # 1.7   25/01/2008 - ALD - Hace que los datos CHK_form_required y CHK_form_backup_datos no sean enviados ni respaldados.
-# 1.8   21/11/2008 - CVI - Se agrega variable form_signature<vista> para la firma de los mails. Por omisión va la antigua.
-# 1.9   29/05/2009 - CVI - Se agrega validación de captcha
+# 1.8   21/11/2008 - CVI - Se agrega variable form_signature<vista> para la firma de los mails. Por omisiï¿½n va la antigua.
+# 1.9   29/05/2009 - CVI - Se agrega validaciï¿½n de captcha
 # 1.10  05/11/2009 - YCC - Elimina vulnerabilidades XSS
 #                        - Elimina la cabecera HTML repetida en algunas invocaciones a &lib_form::aborta()
 #                        - Valida extensiones de archivos a subir, usando lista blanca.
 # 1.11  31/11/2009 - YCC - Cambia a minusculas refrencias a campos prontus, para 10.14.
 # 1.12  15/07/2015 - EAG - Se escribe json valido al guardar el archivo de datos recibidos por primera vez
 # 1.12  18/03/2016 - NAR - Se agrega campo de correo fijo de remitente
-# 2.0.0 04/11/2016 - SCT - Se agrega validación contra reCaptcha de google.
-# 2.0.1 13/01/2017 - EAG - Se agrega función custom para el ordenamiento de campos
+# 2.0.0 04/11/2016 - SCT - Se agrega validaciï¿½n contra reCaptcha de google.
+# 2.0.1 13/01/2017 - EAG - Se agrega funciï¿½n custom para el ordenamiento de campos
 # To-Do:
 # - Revisar sensibilidad a las mayusculas.
 
@@ -280,7 +280,7 @@ main: {
 # Envia mails y guarda datos si es pertinente.
 sub data_management {
     my($body,$data,$backupdir,$backupdata,$backupheaders);
-    my ($to,$from,$subj,$filename,$filedata,$fecha,$hora,$ip);
+    my ($to,$from,$subj,$filename,$filedata,$file_final_path,$fecha,$hora,$ip);
     # my (@datos) = &glib_cgi_04::param();
     my ($result);
     my (%files);
@@ -292,14 +292,13 @@ sub data_management {
 
     $backupdir = "$ROOTDIR/$PRONTUS_ID/$DATA_DIR/$TS";
     &glib_fildir_02::check_dir($backupdir);
-    # Se obtiene el TS del envío
+    # Se obtiene el TS del envï¿½o
     my $TSENVIO = &glib_hrfec_02::get_dtime_pack4();
     while(-f $backupdir.'/'.$TSENVIO.'.json') {
         $TSENVIO = &glib_hrfec_02::suma_segs($TSENVIO, 1);
     }
     my $filejson = "$backupdir/$TSENVIO.json";
     &glib_fildir_02::check_dir($backupdir);
-    &glib_fildir_02::write_file($filejson, '{}');
 
     my $data_json;
     $data_json->{'_fecha'} = $fecha;
@@ -337,6 +336,7 @@ sub data_management {
             $files{$key}{'_name'} = 'file_' . $random.'--'.$filename;
             $files{$key}{'_temp'} = $filedata;
             $body .= sprintf('%-15s',$key) . " = $prontus_varglb::CPAN_SERVER_NAME/$prontus_varglb::PRONTUS_ID/$DATA_DIR/$TS/$files{$key}{'_name'}\n";
+            $file_final_path = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/$DATA_DIR/$TS/$files{$key}{'_name'}";
             $backupdata .= "\"file_$random--$filename\"$SEPARADOR"; # Pega el random para que el nombre sea unico.
         } else {
             $order_data->{$counter} = $key;
@@ -355,6 +355,47 @@ sub data_management {
         &glib_fildir_02::write_file("$backupdir/order.json", $json->objToJson($order_data));
     } else {
         &glib_fildir_02::write_file("$backupdir/order.json", &JSON::to_json($order_data));
+    }
+
+    # Sï¿½lo se incluyen los archivos en el JSON, si hay respaldo
+    my $files_json;
+
+    # Genera el backup, si es pertinente.
+    # Solamente guarda archivos adjuntos si estï¿½ activa esta opciï¿½n!
+    if ($PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
+        if (-e "$backupdir/backup.csv") { # Si existe ya el archivo, no inserta la linea de encabezados.
+            &glib_fildir_02::append_file("$backupdir/backup.csv","$backupdata\r\n");
+        } else {
+            &glib_fildir_02::append_file("$backupdir/backup.csv","$backupheaders\r\n$backupdata\r\n");
+        };
+        #if (keys %files) {
+            # Mueve todos los archivos adjuntos.
+            foreach my $file (keys %files) {
+                my $name = $files{$file}{'_name'};
+                my $temp = $files{$file}{'_temp'};
+                File::Copy::move($temp,"$backupdir/$name");
+                my $newfile = "$backupdir/$name";
+                $newfile =~ s/^$prontus_varglb::DIR_SERVER//;
+                $files_json->{$file} = $newfile;
+            };
+        #};
+    };
+    # Se escribe la respuesta json
+    if($data_json) {
+        my $resp;
+        foreach my $llave (keys %{$data_json}) {
+            $resp->{$llave} = $data_json->{$llave};
+        };
+        if (keys %{$files_json}) {
+            $resp->{'_files'} = $files_json;;
+        }
+
+        if($JSON::VERSION =~ /^1\./) {
+            my $json = new JSON;
+            &glib_fildir_02::write_file($filejson, $json->objToJson($resp));
+        } else {
+            &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
+        }
     }
 
     # 1.8 - firma configurable CVI
@@ -384,18 +425,18 @@ sub data_management {
         $data = &glib_str_02::trim(&glib_cgi_04::param($key));
         # 1.1 Reemplaza datos en subject.
         utf8::decode($data);
-        $data =~ s/[^\w\-áéíóúüñÁÉÍÓÚÜÑ\, ]//g; # Elimina todo caracter extrano.
+        $data =~ s/[^\w\-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\, ]//g; # Elimina todo caracter extrano.
         utf8::encode($data);
         $subj =~ s/\%$key\%/$data/sg;
     };
     $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
     foreach my $email (@ADMIN_MAILS) {
         $to = $email;
-            if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
-                $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
-            } else {
-                $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$filedata);
-            }
+        if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
+            $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
+        } else {
+            $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$file_final_path);
+        }
 
     };
     # Forma cuerpo para el remitente (autorrespuesta).
@@ -442,49 +483,7 @@ sub data_management {
             $result .= ' 5 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
         };
     };
-    # Sólo se incluyen los archivos en el JSON, si hay respaldo
-    my $files_json;
 
-    # Genera el backup, si es pertinente.
-    # Solamente guarda archivos adjuntos si está activa esta opción!
-    if ($PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
-        if (-e "$backupdir/backup.csv") { # Si existe ya el archivo, no inserta la linea de encabezados.
-            &glib_fildir_02::append_file("$backupdir/backup.csv","$backupdata\r\n");
-        } else {
-            &glib_fildir_02::append_file("$backupdir/backup.csv","$backupheaders\r\n$backupdata\r\n");
-        };
-        #if (keys %files) {
-            # Mueve todos los archivos adjuntos.
-            foreach my $file (keys %files) {
-                my $name = $files{$file}{'_name'};
-                my $temp = $files{$file}{'_temp'};
-                File::Copy::move($temp,"$backupdir/$name");
-                my $newfile = "$backupdir/$name";
-                $newfile =~ s/^$prontus_varglb::DIR_SERVER//;
-                $files_json->{$file} = $newfile;
-            };
-        #};
-    };
-    # Se escribe la respuesta json
-    if($data_json) {
-        my $resp;
-        foreach my $llave (keys %{$data_json}) {
-            $resp->{$llave} = $data_json->{$llave};
-        };
-        if (keys %{$files_json}) {
-            $resp->{'_files'} = $files_json;;
-        }
-
-        if($JSON::VERSION =~ /^1\./) {
-            my $json = new JSON;
-            &glib_fildir_02::write_file($filejson, $json->objToJson($resp));
-        } else {
-            &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
-        }
-
-    } else {
-        unlink($filejson);
-    };
     return $result; # $result es solo para debug.
 }; # dataManagement
 
@@ -505,7 +504,7 @@ sub ordenar_campos {
 # ------------------------------------------------------------------------- #
 # Valida las variables Prontus y las del formulario.
 sub valida_data {
-    my($email,$file,$key,$nombre,$buffer,$dato,$form_admin,$plantilla); # 1.1
+    my($email,$file,$key,$nombre,$dato,$form_admin,$plantilla); # 1.1
     my(@mails); # 1.6
 
     @DATOS = &glib_cgi_04::param();
@@ -584,22 +583,13 @@ sub valida_data {
     &inicializaMensajes(\$TMP_ERROR);
 
     # Lee el servidor SMTP definido para Prontus.
-    # SERVER_SMTP= 'localhost'
-    $buffer = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/cpan/$PRONTUS_ID-var.cfg");
-    my $server_smtp = '';
-    if ($buffer =~ /SERVER_SMTP\s*=\s*\'(.+?)\'/s) {
-        $server_smtp = $1;
-    };
-    if ($server_smtp eq '') {
+    $lib_form::SERVER_SMTP = $prontus_varglb::SERVER_SMTP;
+    if ($lib_form::SERVER_SMTP eq '') {
         &salida($MSGS{'out_of_service'},$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
     };
-    $lib_form::SERVER_SMTP = $server_smtp;
 
     # Se aprovecha de leer las vistas
-    while ($buffer =~ m/\s*MULTIVISTA\s*=\s*("|')(.+?)("|')/g) {
-        my $clave = $2;
-        $lib_form::MULTIVISTAS{$clave} = 1;
-    };
+    %lib_form::MULTIVISTAS = %prontus_varglb::MULTIVISTAS;
 
     # Se valida el campo: _form_vista
     my $FORM_VISTA = &glib_cgi_04::param('_form_vista');
@@ -645,12 +635,18 @@ sub valida_data {
                 }
 
                 if (defined $hashtemp->{'success'}) {
+                    my $message = '';
                     if(!$hashtemp->{'success'}){
-                        print STDERR "Error al validar recaptcha google: [$hashtemp->{'error-codes'}]\n";
+                        if (ref($hashtemp->{'error-codes'}) eq 'ARRAY') {
+                            $message = join(', ', @{$hashtemp->{'error-codes'}});
+                        } else {
+                            print STDERR "error-codes no era array ni scalar: ".ref($hashtemp->{'error-codes'}).".\n";
+                        }
+                        print STDERR "Error al validar recaptcha google: [$message]\n";
                         &salida($MSGS{'wrong_google_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
                         exit;
-                    };
-                };
+                    }
+                }
             };
         }
     };
@@ -672,7 +668,7 @@ sub valida_data {
          #   print STDERR "vistavar: [$VISTAVAR]\n";
          #   print STDERR "nombre: [$nombre]\n";
 
-            # Estamos en una vista, por lo tanto se valida sólo si el nombre termina en esa vista
+            # Estamos en una vista, por lo tanto se valida sï¿½lo si el nombre termina en esa vista
             if($VISTAVAR) {
 
                 if($nombre =~ /${VISTAVAR}$/) {

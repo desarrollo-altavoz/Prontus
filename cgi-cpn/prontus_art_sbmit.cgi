@@ -184,18 +184,16 @@ main: {
 
     # Se comprueba si el articulo debe ser guardado
     my $buff_xml_data = &lib_prontus::get_xml_data($lib_artic::ARTIC_OBJ->{fullpath_xml});
+    my %campos_old = &lib_prontus::getCamposXml($buff_xml_data, '_alta,_seccion1,_tema1,_subtema1,_seccion2,_tema2,_subtema2,_seccion3,_tema3,_subtema3');
+
     my $regenerar_procesos = 1;
-    my %campos_xml = &lib_prontus::getCamposXml($buff_xml_data, '_alta');
-    my $alta = $campos_xml{'_alta'};
-    if($FORM{'_alta'} eq '' && ($alta eq '' || $is_new)) {
+    if($FORM{'_alta'} eq '' && ($campos_old{'_alta'} eq '' || $is_new)) {
         $regenerar_procesos = 0;
     };
 
-    my %campos_stst_old = &lib_prontus::getCamposXml($buff_xml_data, '_seccion1,_tema1,_subtema1,_seccion2,_tema2,_subtema2,_seccion3,_tema3,_subtema3');
-
     # Se revisa si se deben regenerar todas las taxport o solo una página
     my %ts_list;
-    ($ts_list{'1'}, $ts_list{'2'}, $ts_list{'3'}) = &check_taxport2process($buff_xml_data, \%campos_stst_old, $is_new);
+    ($ts_list{'1'}, $ts_list{'2'}, $ts_list{'3'}) = &check_taxport2process($buff_xml_data, \%campos_old, $is_new);
 
     my $msg_err_save = &lib_artic::save_artic_with_object($is_new);
     &glib_html_02::print_pag_result("Error", $msg_err_save, 0, 'exit=1,ctype=1') if ($msg_err_save);
@@ -247,11 +245,11 @@ main: {
 
     for (my $i = 1; $i < 4; $i++) {
         # Tripleta 1
-        print STDERR "Tripleta $i\n";
+        # print STDERR "Tripleta $i\n";
         if ($regenerar_procesos && $lib_artic::ARTIC_OBJ->{campos}->{'_seccion'.$i}) {
-            my $xml_id_seccion = $campos_stst_old{'_seccion'.$i};
-            my $xml_id_tema = $campos_stst_old{'_tema'.$i};
-            my $xml_id_subtema = $campos_stst_old{'_subtema'.$i};
+            my $xml_id_seccion = $campos_old{'_seccion'.$i};
+            my $xml_id_tema = $campos_old{'_tema'.$i};
+            my $xml_id_subtema = $campos_old{'_subtema'.$i};
 
             my $id_seccion = $lib_artic::ARTIC_OBJ->{campos}->{'_seccion'.$i};
             my $id_tema = $lib_artic::ARTIC_OBJ->{campos}->{'_tema'.$i};
@@ -314,9 +312,9 @@ main: {
             };
 
         } else {
-            my $xml_id_seccion = $campos_stst_old{'_seccion'.$i};
-            my $xml_id_tema = $campos_stst_old{'_tema'.$i};
-            my $xml_id_subtema = $campos_stst_old{'_subtema'.$i};
+            my $xml_id_seccion = $campos_old{'_seccion'.$i};
+            my $xml_id_tema = $campos_old{'_tema'.$i};
+            my $xml_id_subtema = $campos_old{'_subtema'.$i};
             # No viene la sección por POST
             if ($xml_id_seccion ne '') {
                 # Se actualiza la seccion, tema, subtema antiguos.
@@ -406,7 +404,6 @@ sub call_gallery_save {
 };
 # ---------------------------------------------------------------
 sub call_xcoding {
-    print STDERR "call_xcoding\n";
     my $rutaScript = shift;
     my $fid = shift;
     my $marcas_video = shift;
@@ -550,7 +547,7 @@ sub check_taxport2process {
     my ($ts1, $ts2, $ts3) = ('', '', '', '');
 
     my ($ts, $ext) = &lib_prontus::split_nom_y_extension($FORM{'_file'});
-    my %campos_old = lib_prontus::getCamposXml($buff_xml_data, '_alta,_fechap,_horap,_fechae,_horae');
+    my %campos_old = &lib_prontus::getCamposXml($buff_xml_data, '_alta,_fechap,_horap,_fechae,_horae');
 
     # En este caso no hacemos nada, porque no se regenerarán las taxport
     return ('', '', '') if($is_new && $FORM{'_alta'} eq '');

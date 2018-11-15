@@ -170,7 +170,7 @@ sub make_lista {
     # Ordena numericamente de mayor a menor.
     @entries = sort { $aux_sort{$b} <=> $aux_sort{$a} } @entries;
     my ($ed_visible);
-    my $nro_filas;
+    my $nro_filas = 0;
     foreach my $entry (@entries) {
         if (($entry !~ /^\./g) and ($entry =~ /^\d\d\d\d\_\d\d\_\d\d\_/)) {
             &parse_dirs_edic($entry);
@@ -180,9 +180,11 @@ sub make_lista {
                 # Imprimir la fila de datos contenida en el hash.
                 $filas .= &generar_fila($entry, $loop);
                 $nro_filas++;
-            };
-        };
-    };
+            } else {
+                last;
+            }
+        }
+    }
 
     return $filas;
 

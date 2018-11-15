@@ -87,13 +87,26 @@ sub save_artic_with_object {
     # Full path del artic (de la vista default)
     my $fullpath_artic = $ARTIC_OBJ->get_fullpath_artic('', $ARTIC_OBJ->{campos}->{'_plt'});
 
+    # Lee de vuelta del XML
+    my %campos_xml = $ARTIC_OBJ->get_xml_content();
+
     # Loguear modificacion
     my $label_action = 'Actualizar';
     $label_action = 'Ingresar' if ($is_new);
-    &lib_prontus::write_log($label_action, 'Articulo', $fullpath_artic);
 
-    # Lee de vuelta del XML
-    my %campos_xml = $ARTIC_OBJ->get_xml_content();
+    # chequeamos cambio de alta para log.
+    my $cambio_estado = '';
+    print STDERR "$label_action is_new[$is_new]\n";
+    my $estado_articulo = $ARTIC_OBJ->{campos}->{'_alta'} ? 'SI' : 'NO';
+    if (! $is_new) {
+        my $estado_previo = $campos_xml_old{'_alta'} ? 'SI' : 'NO';
+        if ($estado_articulo ne $estado_previo) {
+            $cambio_estado = " (Cambia Alta: $estado_previo -> $estado_articulo)";
+        }
+    } else {
+        $cambio_estado = " (Alta: $estado_articulo)";
+    }
+    &lib_prontus::write_log($label_action, 'Articulo'. $cambio_estado, $fullpath_artic);
 
     # Regen ports que correspondan
     &regen_ports($fullpath_artic);
