@@ -10319,3 +10319,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige comando para generar HLS para compatibilidad con ffmpeg 3.x+
     [files]
         /cgi-cpn/xcoding/lib_xcoding.pm
+
+====================================================================================================
+11.2.102.1 - XX/XX/2018 - EAG
+====================================================================================================
+- Fid
+    [mejora]
+        - Agrega rel="stylesheet" para identificar archivos css en la plantilla de artículo
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
