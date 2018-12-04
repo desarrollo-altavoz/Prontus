@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Administrar Categor&iacute;as &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <title>%%_msg_prontus(_manage_categories)%% &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/tax.css" />
@@ -23,36 +23,36 @@
         <div class="content col960b">
 
           <div class="boton-gris1">
-            <a class="button selected" href="javascript:void(0);"><span>Administrar Categorías</span></a>
-            <a class="button" href="prontus_tags_admin.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>Administrar Tags</span></a>
+            <a class="button selected" href="javascript:void(0);"><span>%%_msg_prontus(_manage_categories)%%</span></a>
+            <a class="button" href="prontus_tags_admin.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>%%_msg_prontus(_manage_tags)%%</span></a>
           </div>
 
           <div class="auxi">
             <div class="botones-imp-exp">
                 <a class="export colorbox" href="prontus_tax_export.cgi?path_conf=%%_path_conf%%&amp;Sbm_ACCION=Exportar">
-                    <img src="/%%_prontus_id%%/cpan/core/imag/boto/exp_of.png" class="cambia-boton" width="114" height="36" alt="exportar"/></a>
+                    <img src="/%%_prontus_id%%/cpan/core/imag/boto/exp_of.png" class="cambia-boton" width="114" height="36" alt="%%_msg_prontus(_export)%%"/></a>
                 <a class="import colorbox" href="/%%_prontus_id%%/cpan/core/mant_seccs/prontus_tax_import.html">
-                    <img src="/%%_prontus_id%%/cpan/core/imag/boto/imp_of.png" class="cambia-boton"  width="114" height="36" alt="importar"/></a>
+                    <img src="/%%_prontus_id%%/cpan/core/imag/boto/imp_of.png" class="cambia-boton"  width="114" height="36" alt="%%_msg_prontus(_import)%%"/></a>
             </div>
 
             <div class="separa"></div>
 
             <div class="links-utiles">
-                <a href="#" onclick="Tax.ocultarTodo(); return false;">Contraer todo</a>&nbsp;|&nbsp;<a href="#" onclick="Tax.ocultarDeshabilitadas(); return false;" >Ocultar categor&iacute;as deshabilitadas</a>
+                <a href="#" onclick="Tax.ocultarTodo(); return false;">%%_msg_prontus(_contract_All)%%</a>&nbsp;|&nbsp;<a href="#" onclick="Tax.ocultarDeshabilitadas(); return false;" >%%_msg_prontus(_hide_disabled_categories)%%</a>
             </div>
 
             <div class="col960 aleft">
               <div class="rotulo">
-                <div class="col0 aleft">ID</div>
-                <div class="col1 aleft">Nombre</div>
+                <div class="col0 aleft">%%_msg_prontus(_id_capital)%%</div>
+                <div class="col1 aleft">%%_msg_prontus(_name)%%</div>
                 <!--vista_loop_edit-->
                 <div class="col-anex aleft vista-%%_nom_vista%%"%%_vista_style%%>
                     <!--vista_flechas-->
-                    <a href="#" onclick="Tax.navVista('%%_nom_vista%%', 'left'); return false;" title="Izquierda">
+                    <a href="#" onclick="Tax.navVista('%%_nom_vista%%', 'left'); return false;" title="%%_msg_prontus(_left)%%">
                         <img class="arrow-left" src="/%%_prontus_id%%/cpan/core/imag/boto/arrow_left.png"/>
                     </a>
                     <!--/vista_flechas-->
-                    Nombre vista &quot;%%_nom_vista%%&quot;
+                    %%_msg_prontus(_view_name)%% &quot;%%_nom_vista%%&quot;
                     <!--vista_flechas-->
                     <a href="#" onclick="Tax.navVista('%%_nom_vista%%', 'right'); return false;" title="Derecha">
                         <img class="arrow-right" src="/%%_prontus_id%%/cpan/core/imag/boto/arrow_right.png"/>
@@ -60,8 +60,8 @@
                     <!--/vista_flechas-->
                 </div>
                 <!--/vista_loop_edit-->
-                <div class="col2 aleft">URL</div>
-                <div class="col4 aleft">Subniveles</div>
+                <div class="col2 aleft">%%_msg_prontus(_url_capitlal)%%</div>
+                <div class="col4 aleft">%%_msg_prontus(_sublevels)%%</div>
               </div>
               <!-- agregar nueva seccion -->
              <ul>
@@ -69,8 +69,8 @@
                 <div class="fila1">
                   <div class="contenido">
                     <div class="boton-gris3 aleft">
-                        <a class="button" href="#" onclick="Tax.mostrarOculto('nuevo-seccion-0'); return false;"><span>+ Agregar Secci&oacute;n</span></a>
-                        <a class="button" href="#" onclick="window.location.reload(); return false;"><span>Refrescar</span></a>
+                        <a class="button" href="#" onclick="Tax.mostrarOculto('nuevo-seccion-0'); return false;"><span>+ %%_msg_prontus(_add_section)%%</span></a>
+                        <a class="button" href="#" onclick="window.location.reload(); return false;"><span>%%_msg_prontus(_refresh)%%</span></a>
                         </div>
                   </div>
                   <div class="contenido oculto" id="nuevo-seccion-0">
@@ -83,8 +83,8 @@
                     <div class="col4-aux aleft">
                       <div class="fila_loading"><img src="/%%_prontus_id%%/cpan/core/imag/loading_button.gif" alt="loading" width="18" height="18" /></div>
                       <a href="#" onclick="Tax.guardarItemNuevo(this, 'seccion', 0, 0); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" width="18" height="18" alt="Guardar" title="Guardar" /></a>
-                      <a href="#" onclick="Tax.guardarItemNuevo(this, 'seccion', 0, 1); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/gu3_of.png"class="cambia-boton" width="18" height="18" alt="Guardar y nuevo" title="Guardar y nuevo" /></a>
-                      <a href="#" onclick="Tax.mostrarOculto('nuevo-seccion-0'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" width="18" height="18" alt="Cancelar" title="Cancelar" /></a>
+                      <a href="#" onclick="Tax.guardarItemNuevo(this, 'seccion', 0, 1); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/gu3_of.png"class="cambia-boton" width="18" height="18" alt="%%_msg_prontus(_save_and_new)%%" title="%%_msg_prontus(_save_and_new)%%" /></a>
+                      <a href="#" onclick="Tax.mostrarOculto('nuevo-seccion-0'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" width="18" height="18" alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" /></a>
                     </div>
                   </div>
                 </div>
@@ -114,9 +114,9 @@
                         <img src="/%%_prontus_id%%/cpan/core/imag/loading_button.gif" alt="loading" width="18" height="18" />
                       </div>
                       <a href="#" onclick="Tax.actualizarMostrar(this, 'seccion',%%_id%%);return false;"><img class="mostrar" src="/%%_prontus_id%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" alt="%%_mostrar%%" title="" /></a>
-                      <a href="#" onclick="Tax.editarItem('seccion', %%_id%%);return false;" class="btn_editar"><img src="/%%_prontus_id%%/cpan/core/imag/boto/editar_of.png" width="18" height="18" alt="Editar" title="Editar" class="cambia-boton" /></a>
-                      <a href="#" onclick="Tax.borrarItem(this, 'seccion',%%_id%%);return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="Borrar" title="Borrar" class="cambia-boton"/></a>
-                      <a id="showtema-%%_id%%" href="#" onclick="Tax.mostrarTemas(this, %%_id%%); return false;" class="showtemas"><img src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" width="18" height="18" alt="Mostrar Temas" title="Mostrar Temas" /></a>
+                      <a href="#" onclick="Tax.editarItem('seccion', %%_id%%);return false;" class="btn_editar"><img src="/%%_prontus_id%%/cpan/core/imag/boto/editar_of.png" width="18" height="18" alt="%%_msg_prontus(_edit)%%" title="%%_msg_prontus(_edit)%%" class="cambia-boton" /></a>
+                      <a href="#" onclick="Tax.borrarItem(this, 'seccion',%%_id%%);return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="%%_msg_prontus(_delete)%%" title="%%_msg_prontus(_delete)%%" class="cambia-boton"/></a>
+                      <a id="showtema-%%_id%%" href="#" onclick="Tax.mostrarTemas(this, %%_id%%); return false;" class="showtemas"><img src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" width="18" height="18" alt="%%_msg_prontus(_show_topyc)%%" title="%%_msg_prontus(_show_topyc)%%" /></a>
                     </div>
                   </div>
                 </div>
@@ -140,8 +140,8 @@
                     <div class="col4-aux aleft"></div>
                     <div class="col4 aright">
                       <div class="fila_loading"><img src="/%%_prontus_id%%/cpan/core/imag/loading_button.gif" alt="loading" width="18" height="18"/></div>
-                      <a href="#" onclick="Tax.guardarItem(this, 'seccion', '%%_id%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/gu2_of.png" width="18" height="18"  class="cambia-boton" alt="Guardar" title="Guardar" /></a>
-                      <a href="#" onclick="Tax.cancelarEditar(this, 'seccion', '%%_id%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/can_of.png" width="18" height="18"  class="cambia-boton" alt="Cancelar" title="Cancelar" /></a>
+                      <a href="#" onclick="Tax.guardarItem(this, 'seccion', '%%_id%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/gu2_of.png" width="18" height="18"  class="cambia-boton" alt="%%_msg_prontus(_save)%%" title="%%_msg_prontus(_save)%%" /></a>
+                      <a href="#" onclick="Tax.cancelarEditar(this, 'seccion', '%%_id%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/can_of.png" width="18" height="18"  class="cambia-boton" alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" /></a>
                     </div>
                   </div>
                 </div>

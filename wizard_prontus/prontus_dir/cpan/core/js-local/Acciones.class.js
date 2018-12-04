@@ -4,7 +4,7 @@ var Acciones = {
     // -------------------------------------------------------------------------
     borrarArtic: function(obj, ts, btnover) {
 
-        if(!confirm('¿Está seguro que desea eliminar este artículo?')) {
+        if(!confirm(ProntusLangController.getString('_action_art_delete_confirm'))) {
             return false;
         }
 
@@ -38,7 +38,7 @@ var Acciones = {
                 },
                 success: function(resp, textStatus) {
                     if(typeof resp === 'undefined' || resp === null) {
-                        Admin.displayMessage('Se produjo un error al borrar el artículo', 'error');
+                        Admin.displayMessage(ProntusLangController.getString('_action_art_delete_error'), 'error');
                     }
                     if(resp.status == 1) {
                         //Admin.displayMessage('Artículo eliminado');
@@ -86,12 +86,12 @@ var Acciones = {
         }
         // Si se está en modo carga, no se guarda
         if(Listartic.cargandoPub === true) {
-            alert('Por favor, antes de guardar, espere hasta que la carga termine');
+            alert(ProntusLangController.getString('_action_port_save_wait_for_load'));
             return;
         }
         // La carga de la portada no se realizó como la gente
         if($('#_load_ok').size() < 1) {
-            alert('La portada no cargó correctamente. Por favor, refresque el listado antes de guardar');
+            alert(ProntusLangController.getString('_action_port_save_wrong_load'));
             return;
         }
 
@@ -116,7 +116,7 @@ var Acciones = {
                     Admin.displayMessage(json.msg, 'error');
                     return;
                 }
-                Admin.displayMessage('La portada ha sido guardada', 'info');
+                Admin.displayMessage(ProntusLangController.getString('_action_port_save_success'), 'info');
                 Listartic.instalaPortModProtector(false);
 
                 if(Listartic.cargandoPub === false) {
@@ -213,7 +213,7 @@ var Acciones = {
         if (st_vb == 1) {
             // nopub
             var img_src = $(img1_obj).attr("src");
-            var title = 'Publicar en esta portada';
+            var title = ProntusLangController.getString('_action_port_vobo_do_publish');
             img_src = img_src.replace("vobo_pub", "vobo_nopub");
             img1_obj.attr("src", img_src).attr("title", title).attr("alt", title);
             img2_obj.attr("src", img_src).attr("title", title).attr("alt", title);
@@ -221,7 +221,7 @@ var Acciones = {
         } else {
             // pub
             var img_src = $(img1_obj).attr("src");
-            var title = 'No publicar en esta portada';
+            var title = ProntusLangController.getString('_action_port_vobo_dont_publish');
             img_src = img_src.replace("vobo_nopub", "vobo_pub");
             img1_obj.attr("src", img_src).attr("title", title).attr("alt", title);
             img2_obj.attr("src", img_src).attr("title", title).attr("alt", title);

@@ -162,7 +162,7 @@ var Editor = {
             Editor.cambiaArchivoActual(dirlink, dirlink + '/' + filelink);
 
         } else {
-            Admin.displayMessage('El tipo de Elemento no es válido', 'error');
+            Admin.displayMessage(ProntusLangController.getString('_element_type_not_valid'), ProntusLangController.getString('_msg_generic_error'));
         }
     },
 
@@ -192,7 +192,7 @@ var Editor = {
                 thePathReal = thePathReal + '/' + arr[k];
                 var lnk = 'prontus_edit_main.cgi?_path_conf='+Admin.path_conf+'&amp;_dir='+thePathReal;
                 var onclk = 'Editor.procesaArbol(this, \'dir\');';
-                theNewPath = theNewPath + ' <a href="'+lnk+'" onclick="'+onclk+' return false;" title="Ir al directorio '+thePathReal+'">/'+arr[k]+'</a>';
+                theNewPath = theNewPath + ' <a href="'+lnk+'" onclick="'+onclk+' return false;" title="'+ ProntusLangController.getString('_go_to_the_directory') +' '+thePathReal+'">/'+arr[k]+'</a>';
             }
         }
 
@@ -234,7 +234,7 @@ var Editor = {
                     Editor.cambiaArchivoActual(thePath, file);
                 }
             } else {
-                alert("Server error procesando request ajax:\nURL invocada:" +
+                alert(ProntusLangController.getString('_server_error_processing_request_ajax') + "\n"+ ProntusLangController.getString('_url_invoked') +
                         thePath + "\ntextStatus=" +
                         textStatus + "\nresponseText=" +
                         responseText + "\nXMLHttpRequest.status=" +
@@ -285,7 +285,7 @@ var Editor = {
                     Editor.editorLoaded = false;
                 }
             } else {
-                alert("Server error procesando request ajax:\nURL invocada:" +
+                alert(ProntusLangController.getString('_server_error_processing_request_ajax') + "\n" ProntusLangController.getString('_url_invoked') +
                         thePath + "\ntextStatus=" +
                         textStatus + "\nresponseText=" +
                         responseText + "\nXMLHttpRequest.status=" +
@@ -370,16 +370,15 @@ var Editor = {
     showHelp: function(nomItem, relPathProntus) {
         var msg;
         if (nomItem == 'snippet') {
-            msg = 'Los Snippets son trozos de código útiles personalizables que pueden ser incrustados en cualquier tipo ' +
-                    'de archivo a través de este Editor.\n\nLos Snippets disponibles se cargan automáticamente ' +
-                    'desde los archivos del directorio ' + relPathProntus + '/plantillas/snippets/';
+            msg = ProntusLangController.getString('_editor_showhelp_msg1') +
+                    '\n\n' + ProntusLangController.getString('_editor_showhelp_msg2') + relPathProntus + '/plantillas/snippets/';
         }
         alert(msg);
     },
 
     // -------------------------------------------------------------------------
     accionGuardar: function() {
-        if(!confirm('¿Está seguro de guardar el archivo?')) {
+        if(!confirm(ProntusLangController.getString('_editor_save_confirmation'))) {
             return;
         }
         if(Editor.loading) {
@@ -402,7 +401,7 @@ var Editor = {
             },
             success: function(resp) {
                 if(resp.status == 1) {
-                    Admin.displayMessage('El archivo ha sido guardado de manera exitosa', 'info');
+                    Admin.displayMessage(ProntusLangController.getString('_file_saved_successfully'), 'info');
                 } else {
                     Admin.displayMessage(resp.msg, 'error');
                 }
@@ -415,12 +414,12 @@ var Editor = {
     // -------------------------------------------------------------------------
     accionNuevo: function() {
         //document.forms[0].curr_dir.value = parent.frames[0].document.forms[0].curr_dir.value;
-        var param = prompt("Ingrese el nombre del archivo a crear:\n(El archivo se guardará en el directorio actual)", "");
+        var param = prompt(ProntusLangController.getString('_editor_enter_name_file_to_create') + "\n" + ProntusLangController.getString('_file_is_saved_in_current_directory'), "");
         if ((param === null) || !Editor.validFileName(param)) {
             return false;
         }
         if(param.indexOf('.') < 0) {
-            if(!confirm("El nombre del archivo no posee extensión. ¿Está completamente seguro?\n(Nota: Los archivos sin extensión no se pueden editar)")) {
+            if(!confirm(ProntusLangController.getString('_editor_file_no_extensión_msg') + "\n" + ProntusLangController.getString('_editor_file_no_extensión_msg2'))) {
                 return false;
             }
         }
@@ -451,7 +450,7 @@ var Editor = {
                 if(resp.status == 1) {
                     Editor.loading = false;
                     Editor.cambiaPathActual(dir, file);
-                    Admin.displayMessage('El archivo ha sido creado de manera exitosa', 'info');
+                    Admin.displayMessage(ProntusLangController.getString('_file_created_successfully'), 'info');
                 } else {
                     Admin.displayMessage(resp.msg, 'error');
                 }
@@ -471,16 +470,16 @@ var Editor = {
         var actual_file = actual.substr(actual.lastIndexOf('/')+1, actual.length - actual.lastIndexOf('/')+1);
         var actual_dir = actual.substr(0, actual.lastIndexOf('/')+1);
 
-        var param = prompt("Ingrese el nuevo nombre del archivo a copiar:\n(El archivo se copiará en el directorio actual)", "");
+        var param = prompt(ProntusLangController.getString('_editor_accioncopiar_param_msg') + "\n" + ProntusLangController.getString('_editor_accioncopiar_param_msg2'), "");
         if ((param === null) || !Editor.validFileName(param)) {
             return false;
         }
         if(param == actual_file) {
-            alert("Debe ingresar un nombre distinto del actual");
+            alert(ProntusLangController.getString('_enter_name_different_from_the current'));
             return false;
         }
         if(param.indexOf('.') < 0) {
-            if(!confirm("El nombre del archivo no posee extensión. ¿Está completamente seguro?\n(Nota: Los archivos sin extensión no se pueden editar)")) {
+            if(!confirm(ProntusLangController.getString('_editor_accioncopiar_confirm') + "\n" + ProntusLangController.getString('_editor_accioncopiar_confirm2'))) {
                 return false;
             }
         }
@@ -506,7 +505,7 @@ var Editor = {
                 if(resp.status == 1) {
                     Editor.loading = false;
                     Editor.cambiaPathActual(dir, actual_dir+param);
-                    Admin.displayMessage('El archivo ha sido copiado', 'info');
+                    Admin.displayMessage(ProntusLangController.getString('_the_file_has_been_copied'), 'info');
                 } else {
                     Admin.displayMessage(resp.msg, 'error');
                 }
@@ -528,12 +527,12 @@ var Editor = {
     accionUpload: function() {
 
         if ($('#file_upload').val() === '') {
-            alert('Debe indicar un archivo para subir');
+            alert(ProntusLangController.getString('_specify_file_to_upload'));
             return false;
         }
         var nombre = $('#name_upload').val();
         if(nombre.indexOf('.') >= 0) {
-            alert('El nombre del archivo no pude llevar puntos');
+            alert(ProntusLangController.getString('_restriction_for_name'));
             return false;
         }
 
@@ -582,7 +581,7 @@ var Editor = {
     // -------------------------------------------------------------------------
     accionCerrar: function(tipo) {
         if(tipo === 'text') {
-            if(!confirm("¿Está seguro que desea cerrar el archivo.?\n(Nota: Se perderán los cambios no guardados)")) {
+            if(!confirm(ProntusLangController.getString('_accioncerrar_confirm') + "\n" + ProntusLangController.getString('_accioncerrar_confirm2'))) {
                 return false;
             }
         }
@@ -593,7 +592,7 @@ var Editor = {
     // -------------------------------------------------------------------------
     accionMkdir: function() {
         //document.forms[0].curr_dir.value = parent.frames[0].document.forms[0].curr_dir.value;
-        var param = prompt("Ingrese el nombre del directorio a crear:\n(El nuevo directorio se creará en la ruta actual)", "");
+        var param = prompt(ProntusLangController.getString('_accionmkdir_param') + "\n" + ProntusLangController.getString('_accionmkdir_param2'), "");
         if ((param === null) || !Editor.validFileName(param)) {
             return false;
         }
@@ -624,7 +623,7 @@ var Editor = {
                 if(resp.status == 1) {
                     Editor.loading = false;
                     Editor.cambiaPathActual(dir, '');
-                    Admin.displayMessage('El directorio ha sido creado de manera exitosa', 'info');
+                    Admin.displayMessage(ProntusLangController.getString('_directory_created_successfully'), 'info');
                 } else {
                     Admin.displayMessage(resp.msg, 'error');
                 }
@@ -637,7 +636,7 @@ var Editor = {
     // -------------------------------------------------------------------------
     accionRmdir: function() {
 
-        if(!confirm("¿Está seguro que desea borrar este directorio.?\n(Nota: Esta operación no se puede deshacer)")) {
+        if(!confirm(ProntusLangController.getString('_editor_accionrmdir_delete_confirmation') + "\n" + ProntusLangController.getString('_editor_accionrmdir_delete_confirmation2'))) {
             return false;
         }
 
@@ -676,7 +675,7 @@ var Editor = {
     // -------------------------------------------------------------------------
     accionBorrar: function() {
 
-        if(!confirm('¿Está seguro de eliminar definitivamente este archivo?')) {
+        if(!confirm(ProntusLangController.getString('_editor_accionborrar_confirm'))) {
             return;
         }
 
@@ -702,7 +701,7 @@ var Editor = {
                 if(resp.status == 1) {
                     Editor.loading = false;
                     Editor.cambiaPathActual(dir, '');
-                    Admin.displayMessage('El archivo ha sido eliminado', 'info');
+                    Admin.displayMessage(ProntusLangController.getString('_the_file_has_been_deleted'), 'info');
                 } else {
                     Admin.displayMessage(resp.msg, 'error');
                 }
@@ -742,7 +741,7 @@ var Editor = {
             var marca_close = '';
 
             if (nomMarca == 'IF') {
-                param = prompt("Ingrese parámetros para el IF, opciones:\n- Nombre variable (ej: _TXT_BAJADA) ó Variable=valor (ej: NOMBRE=juanito)", "");
+                param = prompt(ProntusLangController.getString('_editor_insertmarca_param') + "\n- " + ProntusLangController.getString('_editor_insertmarca_param2'), "");
                 if ((param === null) || !Editor.validMarcaParam(nomMarca, param)) {
                     Editor.selItemCero(selectObject);
                     return;
@@ -751,7 +750,7 @@ var Editor = {
                 marca_close = '\n%%/IF%%\n';
 
             } else if (nomMarca == 'NIF') {
-                param = prompt("Ingrese nombre de la variable para el NIF (ej: _TXT_BAJADA)", "");
+                param = prompt(ProntusLangController.getString('_editor_insertmarca_nommarca_nif'), "");
                 if ((param === null) || !Editor.validMarcaParam(nomMarca, param)) {
                     Editor.selItemCero(selectObject);
                     return;
@@ -760,7 +759,7 @@ var Editor = {
                 marca_close = '\n%%/NIF%%\n';
 
             } else if ((nomMarca.substr(0,3) == 'IFV') || (nomMarca == 'NIFV')) { // IFV, IFVC y NIFV
-                param = prompt("Ingrese parámetros para " + nomMarca + ": div,res (ej: 2,1)", "");
+                param = prompt(ProntusLangController.getString('_editor_insertmarca_nommarca_ifv') + " " + nomMarca + ProntusLangController.getString('_editor_insertmarca_nommarca_ifv2'), "");
                 if ((param === null) || !Editor.validMarcaParam(nomMarca, param)) {
                     Editor.selItemCero(selectObject);
                     return;
@@ -769,7 +768,7 @@ var Editor = {
                 marca_close = '\n%%/' + nomMarca + '%%\n';
 
             } else if (nomMarca == 'LOOP') {
-                param = prompt("Ingrese número del LOOP (ej: 1)", "");
+                param = prompt(ProntusLangController.getString('_editor_insertmarca_nommarca_loop'), "");
                 if ((param === null) || !Editor.validMarcaParam(nomMarca, param)) {
                     Editor.selItemCero(selectObject);
                     return;
@@ -784,7 +783,7 @@ var Editor = {
             var marca = '';
 
             if (nomMarca == 'MACRO') {
-                param = prompt("Ingrese nombre de archivo de macro (ej: mimacro.html)", "");
+                param = prompt(ProntusLangController.getString('_editor_insertmarca_nommarca_macro'), "");
                 if ((param === null) || !Editor.validMarcaParam(nomMarca, param)) {
                     Editor.selItemCero(selectObject);
                     return;
@@ -827,7 +826,7 @@ var Editor = {
 
         var found = expr.exec(param);
         if (! found) {
-          alert('Parámetros no válidos para ' + nomMarca);
+          alert(ProntusLangController.getString('_invalid_parameter_for') + nomMarca);
           return false;
         }
         return true;
@@ -838,7 +837,7 @@ var Editor = {
         var expr = /^([^\\\/:\*\?"><\|\s]+)$/;
         var found = expr.exec(param);
         if (! found) {
-            alert('Nombre de archivo no es válido');
+            alert(ProntusLangController.getString('_invalid_file_name'));
             return false;
         }
         return true;

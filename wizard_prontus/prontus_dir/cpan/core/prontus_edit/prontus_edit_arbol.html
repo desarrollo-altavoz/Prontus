@@ -2,8 +2,8 @@
 
     <div class="volver">
       <a onclick="Editor.cambiaTabShortcut(this); return false;" href="prontus_edit_main.cgi?_path_conf=%%path_conf%%&amp;_dir=%%dir_sup%%">
-        <img src="/%%_prontus_id%%/cpan/core/imag/boto/vol_of.png" width="18" height="18" border="0" alt="Directorio superior" title="Directorio superior" class="cambia-boton" />
-        Directorio superior</a></div>
+        <img src="/%%_prontus_id%%/cpan/core/imag/boto/vol_of.png" width="18" height="18" border="0" alt="%%_msg_prontus(_top_directory)%%" title="%%_msg_prontus(_top_directory)%%" class="cambia-boton" />
+        %%_msg_prontus(_top_directory)%%</a></div>
 
     <div class="linea"></div>
 
@@ -15,7 +15,7 @@
 
     <!--borrar-->
     <div class="boton-gris3 botones-accion">
-      <span class="acciones"><a class="button" href="#" onclick="Editor.accionRmdir(); return false;" title="Borrar directorio actual"><span>Borrar Directorio</span></a></span>
+      <span class="acciones"><a class="button" href="#" onclick="Editor.accionRmdir(); return false;" title="Borrar directorio actual"><span>%%_msg_prontus(_delete_directory)%%</span></a></span>
       <!-- div class="loading-action"><img src="/%%_prontus_id%%/cpan/core/imag/loading_bar.gif" width="128" height="15" alt="loading" /></div -->
     </div>
     <!--/borrar-->

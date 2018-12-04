@@ -184,7 +184,7 @@ var ImgEdit = {
         var imagen_w = $('#imagenContenedor').width();
         var imagen_h = $('#imagenContenedor').height();
         if (w > imagen_w) {
-            alert("No puedes superar el ancho de la imagen ("+ imagen_w +"px).");
+            alert(ProntusLangController.getString('_img_width_exceeded', {'max_width': imagen_w}));
             $('#w').val($('input[name="crop_w"]').val());
         } else {
             var selector_pos = $('#imagenSelector').position();
@@ -218,7 +218,7 @@ var ImgEdit = {
         var imagen_h = $('#imagenContenedor').height();
         var imagen_w = $('#imagenContenedor').width();
         if (h > imagen_h) {
-            alert("No puedes superar el alto de la imagen ("+ imagen_h + "px).");
+            alert(ProntusLangController.getString('_img_height_exceeded', {'max_height': imagen_h}));
             $('#h').val($('input[name="crop_h"]').val());
         } else {
             var selector_pos = $('#imagenSelector').position();
@@ -547,7 +547,7 @@ var ImgEdit = {
         var cw = $('#imagenContenedor').width();
 
         if (w > ImgEdit.max_width) {
-            alert("La imagen no puede soprepasar las dimesiones " + ImgEdit.max_width + "x" + ImgEdit.max_height + "px.");
+            alert(ProntusLangController.getString('_img_dimensions_exceeded', {'max_width': ImgEdit.max_width, 'max_height': ImgEdit.max_height}));
             w = ImgEdit.max_width;
             $('#w').val(ImgEdit.max_width);
         };
@@ -580,7 +580,7 @@ var ImgEdit = {
         var cw = $('#imagenContenedor').width();
 
         if (h > ImgEdit.max_height) {
-            alert("La imagen no puede soprepasar las dimesiones " + ImgEdit.max_width + "x" + ImgEdit.max_height + "px.");
+            alert(ProntusLangController.getString('_img_dimensions_exceeded', {'max_width': ImgEdit.max_width, 'max_height': ImgEdit.max_height}));
             h = ImgEdit.max_height;
             $('#h').val(ImgEdit.max_height);
         };
@@ -687,7 +687,7 @@ var ImgEdit = {
     // ---------------------------------------------------------------
     guardar: function() {
         if ($('#image_path_orig').val() == $('#image_path').val()) {
-            alert('No has aplicado ninguna modificación.');
+            alert(ProntusLangController.getString('_img_no_changes'));
         } else {
             ImgEdit._toggleCargando();
             if (window.opener != null) {
@@ -697,10 +697,10 @@ var ImgEdit = {
                     window.opener.Fid.submitir('Guardar', '_self');
                     window.close();
                 } else {
-                    alert('No es posible guardar la imagen, el artículo ya no se encuentra en edición.');
+                    alert(ProntusLangController.getString('_img_cant_save_img_not_editing'));
                 };
             } else {
-                alert('No es posible guardar la imagen, el artículo ya no se encuentra en edición.');
+                alert(ProntusLangController.getString('_img_cant_save_img_not_editing'));
             };
             ImgEdit._toggleCargando();
         };
@@ -765,7 +765,7 @@ var ImgEdit = {
                 };
             },
             error: function() {
-                alert('Ocurrió un error al procesar la imagen, inténtalo nuevamente.');
+                alert(ProntusLangController.getString('_img_processing_error'));
                 ImgEdit.init(ImgEdit.img_w, ImgEdit.img_h);
                 ImgEdit._toggleCargando();
             }

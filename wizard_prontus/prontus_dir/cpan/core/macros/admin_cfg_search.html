@@ -2,16 +2,16 @@
                         <div class="listado">
 
                             <div style="height:37px;">
-                                <p style="float: left;"><b>Configuración del Buscador</b>: buscador_prontus.cfg</p>
+                                <p style="float: left;"><b>%%_msg_prontus(_searcher_settings)%%</b>: buscador_prontus.cfg</p>
                                 <div class="botones">
                                     <div class="boton-gris3 aright">
-                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                            <span>Cancelar</span>
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                            <span>%%_msg_prontus(_cancel)%%</span>
                                         </a>
                                     </div>
                                     <div class="boton-gris3 aright">
-                                        <a onclick="Cfgedit.guardaCfg('buscador'); return false;" href="#" class="button" title="Guardar">
-                                            <span>Guardar</span>
+                                        <a onclick="Cfgedit.guardaCfg('buscador'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                            <span>%%_msg_prontus(_save)%%</span>
                                         </a>
                                     </div>
                                 </div>
@@ -33,19 +33,19 @@
                                     <input type="hidden" name="FIDS" value="%%FIDS%%" />
                                     <input type="hidden" name="TEXTVARS" value="%%TEXTVARS%%" />
                                     <tr class="head">
-                                        <td>Variable</td>
-                                        <td>Valor</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
+                                        <td>%%_msg_prontus(_value)%%</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             PRONTUS_DIR_i<br>
-                                            <span class="ayuda">Directorios de otros Prontus a Indexar (i = 1, 2, 3,...), aparte del directorio de la instancia de Prontus donde el buscador ha sido activado.</span>
+                                            <span class="ayuda">%%_msg_prontus(_prontus_dir_i_hint)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%" id="prontusdir_listado">
                                                 <tr class="head">
-                                                    <td>Directorio</td>
-                                                    <td align="center">Quitar</td>
+                                                    <td>%%_msg_prontus(_directory)%%</td>
+                                                    <td align="center">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_prontus_dir-->
                                                 <tr>
@@ -60,7 +60,7 @@
                                             </table>
                                             <div class="boton-gris3 aleft">
                                                 <a onclick="Cfgedit.agregarProntusDir(); return false;" href="#" class="button">
-                                                    <span>+ Agregar</span>
+                                                    <span>+ %%_msg_prontus(_add)%%</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -68,13 +68,13 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             RAW_DIR_i<br>
-                                            <span class="ayuda">Directorios arbitrarios a indexar (i = 1, 2, 3,...). Estos directorios serán indexados dentro de un mismo índice, denominado "RAW".</span>
+                                            <span class="ayuda">%%_msg_prontus(_raw_dir_i_hint)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%" id="rawdir_listado">
                                                 <tr class="head">
-                                                    <td>Directorio</td>
-                                                    <td align="center">Quitar</td>
+                                                    <td>%%_msg_prontus(_directory)%%</td>
+                                                    <td align="center">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_rawdir-->
                                                 <tr>
@@ -89,7 +89,7 @@
                                             </table>
                                             <div class="boton-gris3 aleft">
                                                 <a onclick="Cfgedit.agregarRawDir(); return false;" href="#" class="button">
-                                                    <span>+ Agregar</span>
+                                                    <span>+ %%_msg_prontus(_add)%%</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -97,13 +97,13 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             RAW_FILETYPES<br>
-                                            <span class="ayuda">Tipos de Archivos Arbitrarios a Indexar.</span>
+                                            <span class="ayuda">%%_msg_prontus(_raw_filetypes_hint)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%" id="rawftype_listado">
                                                 <tr class="head">
-                                                    <td>Extensión</td>
-                                                    <td align="center">Quitar</td>
+                                                    <td>%%_msg_prontus(_extension)%%</td>
+                                                    <td align="center">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_rawfiletypes-->
                                                 <tr>
@@ -118,7 +118,7 @@
                                             </table>
                                             <div class="boton-gris3 aleft">
                                                 <a onclick="Cfgedit.agregarRawftype(); return false;" href="#" class="button">
-                                                    <span>+ Agregar</span>
+                                                    <span>+ %%_msg_prontus(_add)%%</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -126,13 +126,13 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             URL_FILETYPES<br>
-                                            <span class="ayuda">Tipos de URLs a Indexar en modalidad spider. Ademas de estos, se indexan los directorios (/) y urls que terminan en un string sin puntos.</span>
+                                            <span class="ayuda">%%_msg_prontus(_url_filetypes_hint)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%" id="urlftype_listado">
                                                 <tr class="head">
-                                                    <td>Extensión</td>
-                                                    <td align="center">Quitar</td>
+                                                    <td>%%_msg_prontus(_extension)%%</td>
+                                                    <td align="center">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_urlfiletypes-->
                                                 <tr>
@@ -147,7 +147,7 @@
                                             </table>
                                             <div class="boton-gris3 aleft">
                                                 <a onclick="Cfgedit.agregarUrlftype(); return false;" href="#" class="button">
-                                                    <span>+ Agregar</span>
+                                                    <span>+ %%_msg_prontus(_add)%%</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -155,7 +155,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             URL_MAXPAGS<br>
-                                            <span class="ayuda"> Máximo de páginas a indexar en modalidad spider.</span>
+                                            <span class="ayuda"> %%_msg_prontus(_url_maxpags)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="URL_MAXPAGS" value="%%URL_MAXPAGS%%" class="fieldform" maxlength="4" style="width: 30px;"/>
@@ -164,13 +164,13 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             FIDS<br>
-                                            <span class="ayuda">Tipos de FID que seran consideradas validos para ser indexados.</span>
+                                            <span class="ayuda">%%_msg_prontus(_fids_hint)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%">
                                                 <tr class="head">
-                                                    <td>FID</td>
-                                                    <td align="center">Válido</td>
+                                                    <td>%%_msg_prontus(_msg_generic_fid_capital)%%</td>
+                                                    <td align="center">%%_msg_prontus(_valid)%%</td>
                                                 </tr>
                                                 %%buscador_fids%%
                                             </table>
@@ -179,7 +179,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             RESUMEN<br>
-                                            <span class="ayuda">Numero de caracteres a almacenar como resumen.</span>
+                                            <span class="ayuda">%%_msg_prontus(_resumen_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="RESUMEN" value="%%RESUMEN%%" class="fieldform" maxlength="4" style="width: 30px;"/>
@@ -188,7 +188,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             MAXCARS<br>
-                                            <span class="ayuda">Tamaño máximo de la data a indexar.</span>
+                                            <span class="ayuda">%%_msg_prontus(_maxcars)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="MAXCARS" value="%%MAXCARS%%" class="fieldform" maxlength="6" style="width: 43px;"/>
@@ -197,7 +197,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             RATIO<br>
-                                            <span class="ayuda">Límite para palabras irrelevantes (%).</span>
+                                            <span class="ayuda">%%_msg_prontus(_ratio_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="RATIO" value="%%RATIO%%" class="fieldform" maxlength="2" style="width: 20px;"/>
@@ -206,7 +206,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             MINTEXT<br>
-                                            <span class="ayuda">Límite de caracteres para considerar que el texto es significativo.</span>
+                                            <span class="ayuda">%%_msg_prontus(_mintext_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="MINTEXT" value="%%MINTEXT%%" class="fieldform" maxlength="2" style="width: 20px;"/>
@@ -215,7 +215,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TITLEVAR<br>
-                                            <span class="ayuda">Variable Prontus que sera considerada el titular.</span>
+                                            <span class="ayuda">%%_msg_prontus(_titlevar_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="TITLEVAR" value="%%TITLEVAR%%" class="fieldform" />
@@ -224,13 +224,13 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TEXTVARS<br>
-                                            <span class="ayuda">Variables Prontus sobre las que se buscara.</span>
+                                            <span class="ayuda">%%_msg_prontus(_text_vars)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%" id="textvars_listado">
                                                 <tr class="head">
-                                                    <td>Variable</td>
-                                                    <td align="center">Quitar</td>
+                                                    <td>%%_msg_prontus(_variable)%%</td>
+                                                    <td align="center">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_textvars-->
                                                 <tr>
@@ -245,7 +245,7 @@
                                             </table>
                                             <div class="boton-gris3 aleft">
                                                 <a onclick="Cfgedit.agregarTextvar(); return false;" href="#" class="button">
-                                                    <span>+ Agregar</span>
+                                                    <span>+ %%_msg_prontus(_add)%%</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -253,7 +253,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             RESPERPAG<br>
-                                            <span class="ayuda">Resultados por pagina.</span>
+                                            <span class="ayuda">%%_msg_prontus(_resperpag_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="RESPERPAG" value="%%RESPERPAG%%" class="fieldform" maxlength="2" style="width: 20px;"/>
@@ -262,7 +262,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             MAXPAGS<br>
-                                            <span class="ayuda">Maximo de paginas a mostrar.</span>
+                                            <span class="ayuda">%%_msg_prontus(_maxpags)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="MAXPAGS" value="%%MAXPAGS%%" class="fieldform" maxlength="2" style="width: 20px;"/>
@@ -271,24 +271,24 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SEARCH_TIPO_PAGINACION<br>
-                                            <span class="ayuda">Especifica el tipo de paginación para los resultados del buscador.</span>
+                                            <span class="ayuda">%%_msg_prontus(_search_tipo_paginacion_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="SEARCH_TIPO_PAGINACION" id="SEARCH_TIPO_PAGINACION_V0" value="0"%%SEARCH_TIPO_PAGINACION_V0%%> <label for="SEARCH_TIPO_PAGINACION_V0">Paginación tradicional</label>
+                                            <input type="radio" name="SEARCH_TIPO_PAGINACION" id="SEARCH_TIPO_PAGINACION_V0" value="0"%%SEARCH_TIPO_PAGINACION_V0%%> <label for="SEARCH_TIPO_PAGINACION_V0">%%_msg_prontus(_classic_pagination)%%</label>
                                             <br>
-                                            <span class="help">La misma que se usa desde el inicio de Prontus. El total de páginas es desplegado en pantalla.</span>
+                                            <span class="help">%%_msg_prontus(_search_tipo_pagination_classic_pagination_hint)%%</span>
                                             <br>
                                             <br>
-                                            <input type="radio" name="SEARCH_TIPO_PAGINACION" id="SEARCH_TIPO_PAGINACION_V1" value="1"%%SEARCH_TIPO_PAGINACION_V1%%> <label for="SEARCH_TIPO_PAGINACION_V1">Paginación corta</label>
+                                            <input type="radio" name="SEARCH_TIPO_PAGINACION" id="SEARCH_TIPO_PAGINACION_V1" value="1"%%SEARCH_TIPO_PAGINACION_V1%%> <label for="SEARCH_TIPO_PAGINACION_V1">%%_msg_prontus(_short_pagination)%%</label>
                                             <br>
-                                            <span class="help">También conocida como estilo Google, ya que fue popularizada por este buscador. Se muestran sólo X páginas hacia adelante y atrás. Habrá siempre un link a la primera y última página</span>
+                                            <span class="help">%%_msg_prontus(_search_tipo_pagination_short_pagination_hint)%%</span>
                                             <br>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SEARCH_PAGCORTA_MAXPAGS<br>
-                                            <span class="ayuda">Sólo válido si se especifica la paginación corta. Indica la cantidad de páginas máximas que se mostrarán hacia adelante y hacia atrás. Este valor incluye la primera y última páginas</span>
+                                            <span class="ayuda">%%_msg_prontus(_search_pagcorta_maxpags)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="SEARCH_PAGCORTA_MAXPAGS" value="%%SEARCH_PAGCORTA_MAXPAGS%%" class="fieldform" maxlength="4" style="width: 30px"/>
@@ -297,7 +297,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SEARCH_MAXEXEC<br>
-                                            <span class="ayuda">Máximo de instancias permitidas (Unix).</span>
+                                            <span class="ayuda">%%_msg_prontus(_search_maxexec_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="SEARCH_MAXEXEC" value="%%SEARCH_MAXEXEC%%" class="fieldform" maxlength="2" style="width: 20px;"/>
@@ -306,18 +306,18 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             USEFRIENDLYURLS<br>
-                                            <span class="ayuda">Los resultados adoptarán la estructura de Friendly URLs.</span>
+                                            <span class="ayuda">%%_msg_prontus(_userfriendlyurl_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="USEFRIENDLYURLS" id="USEFRIENDLYURLS_SI" value="1" %%USEFRIENDLYURLS_SI%%/> <label for="USEFRIENDLYURLS_SI">SI</label>
+                                            <input type="radio" name="USEFRIENDLYURLS" id="USEFRIENDLYURLS_SI" value="1" %%USEFRIENDLYURLS_SI%%/> <label for="USEFRIENDLYURLS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="USEFRIENDLYURLS" id="USEFRIENDLYURLS_NO" value="0" %%USEFRIENDLYURLS_NO%%/> <label for="USEFRIENDLYURLS_NO">NO</label>
+                                            <input type="radio" name="USEFRIENDLYURLS" id="USEFRIENDLYURLS_NO" value="0" %%USEFRIENDLYURLS_NO%%/> <label for="USEFRIENDLYURLS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             META<br>
-                                            <span class="ayuda">Variables "META", usadas para perfilación de contenidos u otra clasificación (pueden ser usadas en los queries).</span>
+                                            <span class="ayuda">%%_msg_prontus(_meta_hint)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%">
@@ -336,7 +336,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             METADATA<br>
-                                            <span class="ayuda">Variables "METADATA" usadas para almacenar información a desplegar dentro de los resultados (no pueden ser usadas en los queries).</span>
+                                            <span class="ayuda">%%_msg_prontus(_metadata_hint)%%</span>
                                         </td>
                                         <td>
                                             <table>
@@ -376,7 +376,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SEARCHTIPS_MAXRESULT<br>
-                                            <span class="ayuda">Máximo de resultados que entregará la cgi de búsqueda de tips.</span>
+                                            <span class="ayuda">%%_msg_prontus(_searchtips_maxresult_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="SEARCHTIPS_MAXRESULT" value="%%SEARCHTIPS_MAXRESULT%%" class="fieldform" maxlength="2" style="width: 30px;"/>
@@ -385,8 +385,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SEARCHTIPS_MINLEN<br>
-                                            <span class="ayuda">Largo mínimo que debe tener la palabra para que la cgi
-                                             de búsqueda de tips entregue resultados.</span>
+                                            <span class="ayuda">%%_msg_prontus(_searchtips_minlen_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="SEARCHTIPS_MINLEN" value="%%SEARCHTIPS_MINLEN%%" class="fieldform" maxlength="2" style="width: 30px;"/>
@@ -395,7 +394,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SEARCHTIPS_DURACION_CACHE<br>
-                                            <span class="ayuda">Número de segundos que durará el cache de búsquedas de tips. (máx. 999)</span>
+                                            <span class="ayuda">%%_msg_prontus(_searchtips_duracion_cache_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="SEARCHTIPS_DURACION_CACHE" value="%%SEARCHTIPS_DURACION_CACHE%%" class="fieldform" maxlength="3" style="width: 30px;"/>
@@ -404,7 +403,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SEARCHTIPS_MAXREQUESTXIP<br>
-                                            <span class="ayuda">Máximo de peticiones por IP a la cgi de búsqueda de tips. (máx. 99)</span>
+                                            <span class="ayuda">%%_msg_prontus(_searchtips_maxrequestxip_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="SEARCHTIPS_MAXREQUESTXIP" value="%%SEARCHTIPS_MAXREQUESTXIP%%" class="fieldform" maxlength="2" style="width: 30px;"/>
@@ -414,13 +413,13 @@
                             </form>
                             <div class="botones">
                                 <div class="boton-gris3 aright">
-                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                        <span>Cancelar</span>
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                        <span>%%_msg_prontus(_cancel)%%</span>
                                     </a>
                                 </div>
                                 <div class="boton-gris3 aright">
-                                    <a onclick="Cfgedit.guardaCfg('buscador'); return false;" href="#" class="button" title="Guardar">
-                                        <span>Guardar</span>
+                                    <a onclick="Cfgedit.guardaCfg('buscador'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                        <span>%%_msg_prontus(_save)%%</span>
                                     </a>
                                 </div>
                             </div>

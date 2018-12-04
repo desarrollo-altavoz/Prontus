@@ -15,7 +15,7 @@ var Coment = {
 
     // -------------------------------------------------------------------------
     borrar: function(obj, id) {
-        var msg = 'Está seguro de borrar este comentario?';
+        var msg = ProntusLangController.getString('_comment_delete_confirm');
         if (confirm(msg)) {
             $(obj).parent().find('.fila_loading').show();
             $(obj).parent().find('a').hide();
@@ -70,11 +70,11 @@ var Coment = {
                     if (new_st == 1) {
                         $(obj).find('img').attr('src', ($(obj).find('img').attr('src')).replace('btn_ticket_red', 'btn_ticket_green'));
                         $(obj).find('img').attr('alt', 'btn_ticket_green');
-                        $(obj).find('img').attr('title', 'Aprobar comentario');
+                        $(obj).find('img').attr('title', ProntusLangController.getString('_comment_approve'));
                     } else {
                         $(obj).find('img').attr('src', ($(obj).find('img').attr('src')).replace('btn_ticket_green', 'btn_ticket_red'));
                         $(obj).find('img').attr('alt', 'btn_ticket_red');
-                        $(obj).find('img').attr('title', 'Desaprobar comentario');
+                        $(obj).find('img').attr('title', ProntusLangController.getString('_comment_disapprove'));
                     }
                 }
           },
@@ -83,7 +83,7 @@ var Coment = {
                 $(obj).parent().find('a').show();
           },
           error: function (data) {
-                alert("Ocurrio un error, intentelo nuevamente.");
+                alert(ProntusLangController.getString('_comment_generic_error'));
                 $(obj).parent().find('.fila_loading').hide();
                 $(obj).parent().find('a').show();
             }

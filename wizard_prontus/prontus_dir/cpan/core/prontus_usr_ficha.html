@@ -1,7 +1,7 @@
 
 <div class="usr_ficha">
   <div class="rotulo">
-      <div class="titulo">Ficha de Usuario</div>
+      <div class="titulo">%%_msg_prontus(_user_profile)%%</div>
   </div>
   <div style="clear: both;"></div>
   <div class="box-gris">
@@ -10,34 +10,34 @@
       <input type="hidden" name="_path_conf" value="%%_path_conf%%">
       <table width="100%" class="table_top">
         <tr>
-          <td class="name-field">* Nombre completo</td>
+          <td class="name-field">* %%_msg_prontus(_full_name)%%</td>
           <td><input type="text" name="NOM" size="45" value="%%NOM%%"></td>
         </tr>
         <tr>
-          <td class="name-field">* Email</td>
+          <td class="name-field">* %%_msg_prontus(_msg_generic_email)%%</td>
           <td><input type="text" name="EMAIL" size="45" value="%%EMAIL%%"></td>
         </tr>
         <tr>
-          <td class="name-field">* Perfil</td>
+          <td class="name-field">* %%_msg_prontus(_profile)%%</td>
           <td><!--PERFIL-->%%Cmb_PERFIL%%<!--/PERFIL--></td>
         </tr>
         <tr>
-          <td class="name-field">* Usuario</td>
+          <td class="name-field">* %%_msg_prontus(_user)%%</td>
           <td><input type="text" name="USR" size="30" value="%%USR%%"></td>
         </tr>
         <!--SOLOEDIT-->
         <tr>
           <td colspan="2" class="ayuda">
-            Si necesita cambiar la contraseña, ingrese una nueva a continuaci&oacute;n:
+            %%_msg_prontus(_order_to_change_password_enter_a_new_coming_up_next)%%:
           </td>
         </tr>
         <!--/SOLOEDIT-->
         <tr>
-          <td><!--SOLONEW-->*<!--/SOLONEW--> <!--SOLOEDIT-->Nueva contraseña<!--/SOLOEDIT--><!--SOLONEW-->Contraseña<!--/SOLONEW--></td>
+          <td><!--SOLONEW-->*<!--/SOLONEW--> <!--SOLOEDIT-->%%_msg_prontus(_new_password)%%<!--/SOLOEDIT--><!--SOLONEW-->%%_msg_prontus(_password)%%<!--/SOLONEW--></td>
           <td><input type="password" name="PSW1" size="30" value="" ></td>
         </tr>
         <tr>
-          <td><!--SOLONEW-->*<!--/SOLONEW--> Confirmar contraseña</td>
+          <td><!--SOLONEW-->*<!--/SOLONEW--> %%_msg_prontus(_confirm_password)%%</td>
           <td><input type="password" name="PSW2" size="30" value="" ></td>
         </tr>
         <tr>
@@ -48,7 +48,7 @@
         <table width="100%">
           <tr>
             <td colspan="4" class="ayuda">
-              Seleccione las portadas y artículos asociados a este usuario:
+              %%_msg_prontus(_select_front_page_artic_associated_with_this_user)%%:
             </td>
           </tr>
           <tr>
@@ -56,7 +56,7 @@
               * Tipos de art&iacute;culos
             </td>
             <td colspan="2" class="seleccion" align="right">
-              <a href="#" onclick="UsrAdmin.checkboxToggleChecked('arts[]', true); return false;">Seleccionar todo</a> | <a href="#" onclick="UsrAdmin.checkboxToggleChecked('arts[]', false); return false;">Seleccionar ninguno</a>
+              <a href="#" onclick="UsrAdmin.checkboxToggleChecked('arts[]', true); return false;">%%_msg_prontus(_select_all)%%</a> | <a href="#" onclick="UsrAdmin.checkboxToggleChecked('arts[]', false); return false;">%%_msg_prontus(_select_none)%%</a>
             </td>
           </tr>
           <tr>
@@ -73,7 +73,7 @@
               * Portadas
             </td>
             <td colspan="2" class="seleccion">
-              <a href="#" onclick="UsrAdmin.checkboxToggleChecked('ports[]', true); return false;">Seleccionar todo</a> | <a href="#" onclick="UsrAdmin.checkboxToggleChecked('ports[]', false); return false;">Seleccionar ninguno</a>
+              <a href="#" onclick="UsrAdmin.checkboxToggleChecked('ports[]', true); return false;">%%_msg_prontus(_select_all)%%</a> | <a href="#" onclick="UsrAdmin.checkboxToggleChecked('ports[]', false); return false;">%%_msg_prontus(_select_none)%%</a>
             </td>
           </tr>
           <tr>
@@ -92,8 +92,8 @@
         <tr>
           <td>
             <div class="botones">
-            <a onclick="UsrAdmin.guardarFicha(%%USERS_ID%%); return false;" href="#" class="button"><span>Guardar</span></a>
-            <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+            <a onclick="UsrAdmin.guardarFicha(%%USERS_ID%%); return false;" href="#" class="button"><span>%%_msg_prontus(_save)%%</span></a>
+            <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>%%_msg_prontus(_cancel)%%</span></a>
             </div>
           </td>
           <td>&nbsp;</td>

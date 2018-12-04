@@ -11,12 +11,12 @@ var Tags  = {
     cgiGuardar: 'prontus_tags_guardar.cgi',
     cgiCambiaSt: 'prontus_tags_cambia_st.cgi',
 
-    defaultTagText: 'Escoja un tag',
+    defaultTagText: ProntusLangController.getString('_tags_default_tag_text'),
     idTagInput: '#_tags4fid',
 
-    textoBuscador: 'Buscar Tags',
-    textoBuscadorRapido: 'Búsqueda rápida',
-    textoNombreTag: '[Nombre del Tag]',
+    textoBuscador: ProntusLangController.getString('_tags_search_text'),
+    textoBuscadorRapido: ProntusLangController.getString('_tags_quick_search'),
+    textoNombreTag: ProntusLangController.getString('_tags_tag_name'),
 
     // -------------------------------------------------------------------------
     init: function () {
@@ -139,7 +139,7 @@ var Tags  = {
     initQuickSearch: function () {
 
         if (typeof parent.Tags === 'undefined') {
-            alert('No se pudo detectar la ventana Padre.');
+            alert(ProntusLangController.getString('_tags_no_parent_window'));
             return;
         }
         TagsParent = parent.Tags;
@@ -338,7 +338,7 @@ var Tags  = {
                     if (data.msg) {
                         alert(data.msg);
                     } else {
-                        alert('Error, no se pudo eliminar');
+                        alert(ProntusLangController.getString('_tags_deleting_error'));
                     }
                     return;
 
@@ -424,7 +424,7 @@ var Tags  = {
                     if (data.msg) {
                         alert(data.msg);
                     } else {
-                        alert('Error, no se pudo eliminar');
+                        alert(ProntusLangController.getString('_tags_deleting_error'));
                     }
                     return;
 
@@ -457,7 +457,7 @@ var Tags  = {
             return;
         }
         var id_tag = Tags.findId(obj);
-        var msg = '¿Está seguro que quiere borrar este Tag?';
+        var msg = ProntusLangController.getString('_tags_delete_confirm');
 
         if (confirm(msg)) {
             var theUrl = '/' + Tags.dir_cgi_cpan + '/' + Tags.cgiEliminar;
@@ -478,7 +478,7 @@ var Tags  = {
                         if (data.msg) {
                             alert(data.msg);
                         } else {
-                            alert('Error, no se pudo eliminar');
+                            alert(ProntusLangController.getString('_tags_deleting_error'));
                         }
                         return;
                     }
@@ -622,13 +622,12 @@ var Tags  = {
     // ?????
     handleLoading: function () {
         // TODO Colocar un loading y ocultarlo en este punto
-        alert('Espere unos segundos antes de realizar esta acción');
+        alert(ProntusLangController.getString('_tags_wait_before_delete'));
     },
 
     // -------------------------------------------------------------------------
     abrirAdminTags: function() {
-        var msg = "Se perderán los cambios que haya realizado en el artículo.\n¿Desea continuar?\n\n";
-        msg = msg + "Ayuda: Puede usar botón derecho y \nabrir en otra pestaña o en ventana nueva.";
+        var msg = ProntusLangController.getString('_tags_open_admin_tags_confirm');
         if(confirm(msg)) {
             return true;
         } else {
@@ -642,7 +641,7 @@ var Tags  = {
         var theUrl =  '/' + Tags.dir_cgi_cpan + '/prontus_tags_admin.cgi';
         $('#frmBuscadorTags').attr("action", theUrl);
         if ($('#search_texto').val() === '' || $('#search_texto').val() == Tags.textoBuscador) {
-            alert("Debes ingresar la palabra clave.");
+            alert(ProntusLangController.getString('_tags_keyword_required'));
         } else {
             $('#frmBuscadorTags').submit();
         }
@@ -653,7 +652,7 @@ var Tags  = {
     realizarBusquedaRapida: function () {
         var filter = $('#search_texto').val();
         if (filter === '' || filter === Tags.textoBuscadorRapido) {
-            alert('Ingrese un texto para filtrar los tags');
+            alert(ProntusLangController.getString('_tags_filter_required'));
             return;
         }
         $('#search_texto').change();

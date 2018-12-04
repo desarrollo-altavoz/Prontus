@@ -21,6 +21,8 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/form/jquery.form.js"></script>
 
     <!-- js prontus -->
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/lang/ProntusLangController.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/lang/es/Lang.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Opciones.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
@@ -55,7 +57,7 @@
 
           <!--TITULO PRINCIPAL-->
           <div class="top-titulo960">
-            <h1 class="titular">Administración</h1>
+            <h1 class="titular">%%_msg_prontus(_management)%%</h1>
           </div>
           <!-- / TITULO PRINCIPAL-->
 
@@ -67,13 +69,13 @@
           <div class="col960 aleft">
 
             <div class="boton-gris1" id="tabs-admin">
-              <a class="button" href="#tab7"><span>Configuración</span></a>
-              <a class="button" href="#tab1"><span>Base de Datos</span></a>
-              <a class="button" href="#tab2"><span>Regeneración</span></a>
-              <a class="button" href="#tab3"><span>Buscador</span></a>
-              <a class="button" href="#tab4"><span>Logs de operación</span></a>
-              <a class="button" href="#tab5"><span>Crons</span></a>
-              <a class="button" href="#tab6"><span>Verificar Plataforma</span></a>
+              <a class="button" href="#tab7"><span>%%_msg_prontus(_config)%%</span></a>
+              <a class="button" href="#tab1"><span>%%_msg_prontus(_data_base)%%</span></a>
+              <a class="button" href="#tab2"><span>%%_msg_prontus(_refeneration)%%</span></a>
+              <a class="button" href="#tab3"><span>%%_msg_prontus(_searcher)%%</span></a>
+              <a class="button" href="#tab4"><span>%%_msg_prontus(_operation_logs)%%</span></a>
+              <a class="button" href="#tab5"><span>%%_msg_prontus(_crons)%%</span></a>
+              <a class="button" href="#tab6"><span>%%_msg_prontus(_check_platform)%%</span></a>
               <!--custom--><a class="button tab-custom" href="#tab8"><span>%%custom_tab_name%%</span></a><!--/custom-->
             </div>
 
@@ -103,23 +105,23 @@
             <!--configuracion-->
             <div class="auxi" id="tab7">
               <div class="logs">
-                <div class="titulo">Archivos de configuración:</div>
-                <div class="desc">Acá puede modificar la configuración de Prontus</div>
+                <div class="titulo">%%_msg_prontus(_setting_files)%%:</div>
+                <div class="desc">%%_msg_prontus(_here_you_can_modify_prontus_setting)%%</div>
                 <div style="border-bottom: 1px solid #DDDDDD; margin-bottom: 5px;"></div>
                 <div class="boton-gris1" id="tabs-config" style="float: left; background: none;">
-                    <a class="button2" href="#cfg-tab1"><span>Artículos</span></a>
-                    <a class="button2" href="#cfg-tab2"><span>Base de datos</span></a>
-                    <a class="button2" href="#cfg-tab5"><span>Buscador</span></a>
-                    <a class="button2" href="#cfg-tab3"><span>Categorías</span></a>
-                    <a class="button2" href="#cfg-tab10"><span>Tags</span></a>
-                    <a class="button2" href="#cfg-tab11"><span>Listados</span></a>
-                    <!--comentarios--><a class="button2" href="#cfg-tab9"><span>Comentarios</span></a><!--/comentarios-->
-                    <a class="button2" href="#cfg-tab6"><span>Portadas</span></a>
-                    <a class="button2" href="#cfg-tab7"><span>Usuarios</span></a>
-                    <a class="button2" href="#cfg-tab8"><span>Variables generales</span></a>
-                    <!--xcoding--><a class="button2" href="#cfg-tab14"><span>Transcodificaci&oacute;n +</span></a><!--/xcoding-->
-                    <!--dropbox--><a class="button2" href="#cfg-tab12"><span>Dropbox</span></a><!--/dropbox-->
-                    <!--cloudflare--><a class="button2" href="#cfg-tab13"><span>CloudFlare</span></a><!--/cloudflare-->
+                    <a class="button2" href="#cfg-tab1"><span>%%_msg_prontus(_articles)%%</span></a>
+                    <a class="button2" href="#cfg-tab2"><span>%%_msg_prontus(_data_base)%%</span></a>
+                    <a class="button2" href="#cfg-tab5"><span>%%_msg_prontus(_searcher)%%</span></a>
+                    <a class="button2" href="#cfg-tab3"><span>%%_msg_prontus(_categories)%%</span></a>
+                    <a class="button2" href="#cfg-tab10"><span>%%_msg_prontus(_tags)%%</span></a>
+                    <a class="button2" href="#cfg-tab11"><span>%%_msg_prontus(_listings)%%</span></a>
+                    <!--comentarios--><a class="button2" href="#cfg-tab9"><span>%%_msg_prontus(_comments)%%</span></a><!--/comentarios-->
+                    <a class="button2" href="#cfg-tab6"><span>%%_msg_prontus(_front_pages)%%</span></a>
+                    <a class="button2" href="#cfg-tab7"><span>%%_msg_prontus(_users)%%</span></a>
+                    <a class="button2" href="#cfg-tab8"><span>%%_msg_prontus(_general_variables)%%</span></a>
+                    <!--xcoding--><a class="button2" href="#cfg-tab14"><span>%%_msg_prontus(_transcoding)%% +</span></a><!--/xcoding-->
+                    <!--dropbox--><a class="button2" href="#cfg-tab12"><span>%%_msg_prontus(_dropbox)%%</span></a><!--/dropbox-->
+                    <!--cloudflare--><a class="button2" href="#cfg-tab13"><span>%%_msg_prontus(_cloudflare)%%</span></a><!--/cloudflare-->
                 </div>
 
                 <div class="contenido-config">

@@ -119,7 +119,7 @@ var Dam = {
         if(search_texto !== '' && search_texto != Dam.textoBuscador) {
             $('#formDAM').submit();
         } else {
-            alert("Debes ingresar la palabra clave.");
+            alert(ProntusLangController.getString('_enter_keyword'));
             return;
         }
     },

@@ -63,7 +63,7 @@ var EdiAdmin = {
 
     // -------------------------------------------------------------------------
     borrar: function(id) {
-        var msg = '¿Estás seguro de borrar esta edición?';
+        var msg = ProntusLangController.getString('_edition_admin_delete_confirm');
         if (confirm(msg)) {
             var form_data = '_edic='+id+'&_path_conf='+EdiAdmin.path_conf;
             $.ajax({

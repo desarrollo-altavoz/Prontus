@@ -6,8 +6,8 @@ Fechas = {
 
     objFormFid: '', // se setea en el doc. ready
 
-    meses: ['enero','febrero','marzo','abril','mayo','junio', 'julio','agosto','septiembre','octubre','noviembre','diciembre'],
-    dias: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+//    meses: ['enero','febrero','marzo','abril','mayo','junio', 'julio','agosto','septiembre','octubre','noviembre','diciembre'],
+//    dias: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
 
     w2: function(num,n) {
         var a = num + '';
@@ -95,8 +95,8 @@ Fechas = {
             mes = date.getMonth();
             dia = date.getYear();
         }
-        var diasem = Fechas.dias[date.getDay()];
-        var mes2 = Fechas.meses[mes - 1];
+        var diasem = ProntusLang.strings.dates_days[date.getDay()];
+        var mes2 = ProntusLang.strings.dates_months[mes - 1];
         return diasem + ', ' + dia + ' de ' + mes2 + ' de ' + ano;
     },
 

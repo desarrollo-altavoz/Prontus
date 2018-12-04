@@ -1,16 +1,16 @@
 
                         <div class="listado">
                             <div style="height:37px;">
-                                <p style="float: left;"><b>Configuración de Portadas</b>: %%_prontus_id%%-port.cfg</p>
+                                <p style="float: left;"><b>%%_msg_prontus(_front_page_setting)%%</b>: %%_prontus_id%%-port.cfg</p>
                                 <div class="botones">
                                     <div class="boton-gris3 aright">
-                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                            <span>Cancelar</span>
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                            <span>%%_msg_prontus(_cancel)%%</span>
                                         </a>
                                     </div>
                                     <div class="boton-gris3 aright">
-                                        <a onclick="Cfgedit.guardaCfg('port'); return false;" href="#" class="button" title="Guardar">
-                                            <span>Guardar</span>
+                                        <a onclick="Cfgedit.guardaCfg('port'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                            <span>%%_msg_prontus(_save)%%</span>
                                         </a>
                                     </div>
                                 </div>
@@ -29,28 +29,28 @@
                                     <input type="hidden" name="BASE_PORTS" value="" />
                                     <input type="hidden" name="PORT_DRAGANDROP" value="" />
                                     <tr class="head">
-                                        <td>Variable</td>
-                                        <td>Valor</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
+                                        <td>%%_msg_prontus(_value)%%</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;">
                                             ADMIN_PORT<br>
-                                            <span class="ayuda">Habilita o deshabilita el administrador de portadas.</span>
+                                            <span class="ayuda">%%_msg_prontus(_admin_port)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="ADMIN_PORT" id="ADMIN_PORT_SI" value="SI"%%ADMIN_PORT_SI%%/> <label for="ADMIN_PORT_SI">SI</label>
+                                            <input type="radio" name="ADMIN_PORT" id="ADMIN_PORT_SI" value="SI"%%ADMIN_PORT_SI%%/> <label for="ADMIN_PORT_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="ADMIN_PORT" id="ADMIN_PORT_NO" value="NO"%%ADMIN_PORT_NO%%/> <label for="ADMIN_PORT_NO">NO</label>
+                                            <input type="radio" name="ADMIN_PORT" id="ADMIN_PORT_NO" value="NO"%%ADMIN_PORT_NO%%/> <label for="ADMIN_PORT_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;">
                                             PORT_INI_SELECTED<br>
-                                            <span class="ayuda">Portada que aparecerá seleccionada al abrir el administrador de artículos.</span>
+                                            <span class="ayuda">%%_msg_prontus(_port_ini_selected_hint)%%</span>
                                         </td>
                                         <td>
                                             <select name="PORT_INI_SELECTED">
-                                                <option value="">- Seleccione -</option>
+                                                <option value="">- %%_msg_prontus(_select)%% -</option>
                                                 <!--loop_portadas-->
                                                 <option value="%%value%%"%%selected%%>%%name%%</option>
                                                 <!--/loop_portadas-->
@@ -60,11 +60,11 @@
                                     <tr>
                                         <td style="width: 300px;">
                                             PORT_HOME<br>
-                                            <span class="ayuda">Portada que se utilizará como página de inicio, quedando disponible un link simbólico en la ruta: /%%_prontus_id%%/site/edic/base/home/index.html</span>
+                                            <span class="ayuda">%%_msg_prontus(_port_home_hint)%%: /%%_prontus_id%%/site/edic/base/home/index.html</span>
                                         </td>
                                         <td>
                                             <select name="PORT_HOME">
-                                                <option value="">- Seleccione -</option>
+                                                <option value="">- %%_msg_prontus(_select)%% -</option>
                                                 <!--loop_portadas_port_home-->
                                                 <option value="%%value%%"%%selected%%>%%name%%</option>
                                                 <!--/loop_portadas_port_home-->
@@ -74,36 +74,36 @@
                                     <tr>
                                         <td style="width: 300px;">
                                             EDICBASE_INI_SELECTED<br>
-                                            <span class="ayuda">Habilita o deshabilita la selección por defecto de la edición base.</span>
+                                            <span class="ayuda">%%_msg_prontus(_edicbase_ini_selected)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="EDICBASE_INI_SELECTED" id="EDICBASE_INI_SELECTED_SI" value="SI"%%EDICBASE_INI_SELECTED_SI%%/> <label for="EDICBASE_INI_SELECTED_SI">SI</label>
+                                            <input type="radio" name="EDICBASE_INI_SELECTED" id="EDICBASE_INI_SELECTED_SI" value="SI"%%EDICBASE_INI_SELECTED_SI%%/> <label for="EDICBASE_INI_SELECTED_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="EDICBASE_INI_SELECTED" id="EDICBASE_INI_SELECTED_NO" value="NO"%%EDICBASE_INI_SELECTED_NO%%/> <label for="EDICBASE_INI_SELECTED_NO">NO</label>
+                                            <input type="radio" name="EDICBASE_INI_SELECTED" id="EDICBASE_INI_SELECTED_NO" value="NO"%%EDICBASE_INI_SELECTED_NO%%/> <label for="EDICBASE_INI_SELECTED_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;">
                                             MULTI_EDICION<br>
-                                            <span class="ayuda">Indica si Prontus administrará ediciones, debe tener el valor SI para activar esta opción.</span>
+                                            <span class="ayuda">%%_msg_prontus(_multi_edition_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="MULTI_EDICION" id="MULTIEDICION_SI" value="SI"%%MULTIEDICION_SI%% onclick="Cfgedit.toggleMultiedicion();"/> <label for="MULTIEDICION_SI">SI</label>
+                                            <input type="radio" name="MULTI_EDICION" id="MULTIEDICION_SI" value="SI"%%MULTIEDICION_SI%% onclick="Cfgedit.toggleMultiedicion();"/> <label for="MULTIEDICION_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="MULTI_EDICION" id="MULTIEDICION_NO" value="NO"%%MULTIEDICION_NO%% onclick="Cfgedit.toggleMultiedicion();"/> <label for="MULTIEDICION_NO">NO</label>
+                                            <input type="radio" name="MULTI_EDICION" id="MULTIEDICION_NO" value="NO"%%MULTIEDICION_NO%% onclick="Cfgedit.toggleMultiedicion();"/> <label for="MULTIEDICION_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <!--multiedicion-->
                                     <tr id="tr_multiedicion">
                                         <td style="width: 300px;" valign="top">
                                             BASE_PORTS<br>
-                                            <span class="ayuda">En Prontus multiedición, nombre de las portadas (PORT_PLTS) que deben ir en la edición base.</span>
+                                            <span class="ayuda">%%_msg_prontus(_base_ports_hint)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%">
                                                 <tr class="head">
-                                                    <td>Portada</td>
-                                                    <td align="center">Quitar</td>
+                                                    <td>%%_msg_prontus(_front_page)%%</td>
+                                                    <td align="center">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_base_ports-->
                                                 <tr>
@@ -119,7 +119,7 @@
                                                 <tr>
                                                     <td>
                                                         <select name="INPUT_BASE_PORTS[]" >
-                                                            <option value="">- Seleccione -</option>
+                                                            <option value="">- %%_msg_prontus(_select)%% -</option>
                                                             %%listado_baseports%%
                                                         </select>
                                                     </td>
@@ -133,50 +133,50 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top" colspan="2" class="table-list-striped">
                                             PORT_PLTS<br>
-                                            <span class="ayuda">Nombre de las portadas disponibles.</span>
+                                            <span class="ayuda">%%_msg_prontus(_port_plts_hint)%%</span>
                                             <div style="clear: both; height: 5px;"></div>
                                             <table class="tableform table-list-striped">
                                                 <tr class="head">
-                                                    <td width="300">Portada</td>
-                                                    <td width="250">Plantillas</td>
-                                                    <td width="45">Quitar</td>
+                                                    <td width="300">%%_msg_prontus(_front_page)%%</td>
+                                                    <td width="250">%%_msg_prontus(_templates)%%</td>
+                                                    <td width="45">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!-- agregar_nueva -->
                                                 <tr id="plt_new_port">
                                                     <td valign="top">
-                                                        <b>Nueva portada:</b>
+                                                        <b>%%_msg_prontus(_new_front_page)%%:</b>
                                                         <br/>
                                                         <select name="portada_%%num_last_port%%" style="width: 280px;" onchange="Cfgedit.setPortNom(this.value, '%%num_last_port%%');">
-                                                            <option value="">- Seleccione -</option>
+                                                            <option value="">- %%_msg_prontus(_select)%% -</option>
                                                             %%listado_portadas%%
                                                         </select>
                                                         <br/>
                                                         <br/>
-                                                        Nombre: <input type="text" name="nom_portada_%%num_last_port%%" value="" class="fieldform" maxlength="25"/>
+                                                        %%_msg_prontus(_name)%%: <input type="text" name="nom_portada_%%num_last_port%%" value="" class="fieldform" maxlength="25"/>
                                                         <div style="float: right; margin-top: 35px;" class="botones">
                                                             <div class="boton-gris3 aright">
                                                                 <a title="Agregar" class="button" href="#" onclick="Cfgedit.agregarPortada(); return false;">
-                                                                    <span>Agregar otra</span>
+                                                                    <span>%%_msg_prontus(_add_another)%%</span>
                                                                 </a>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td valign="top">
-                                                       <b>Paralelas:</b>
+                                                       <b>%%_msg_prontus(_paralllels)%%:</b>
                                                         <br/>
                                                         <select name="plt_paralelas_%%num_last_port%%" id="plt_paralelas_%%num_last_port%%" style="width: 195px;">
-                                                            <option value="" selected="selected">- Ninguna -</option>
+                                                            <option value="" selected="selected">- %%_msg_prontus(_none)%% -</option>
                                                             %%listado_paralelas%%
                                                         </select>
                                                         <div style="float: right; margin-top: 4px; margin-right: 15px;">
-                                                            <img class="selmultiple" src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plt_paralelas_%%num_last_port%%');"/>
+                                                            <img class="selmultiple" src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" title="%%_msg_prontus(_select_multiple_templates)%%" alt="%%_msg_prontus(_select_multiple_templates)%%" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plt_paralelas_%%num_last_port%%');"/>
                                                         </div>
                                                         <br/>
                                                         <br/>
-                                                        <b>Preview:</b>
+                                                        <b>%%_msg_prontus(_preview)%%:</b>
                                                         <br/>
                                                         <select name="plt_preview_%%num_last_port%%" name="plt_preview_%%num_last_port%%" style="width: 195px;">
-                                                            <option value="" selected="selected">- Ninguna -</option>
+                                                            <option value="" selected="selected">- %%_msg_prontus(_none)%% -</option>
                                                             %%listado_previews%%
                                                         </select>
                                                     </td>
@@ -188,28 +188,28 @@
                                                 <tr>
                                                     <td valign="top">
                                                         <div>
-                                                            Archivo: <div style="overflow-x: auto; overflow-y: hidden; width: 285px; color: #AAAAAA;">%%portada%%</div>
+                                                            %%_msg_prontus(_file)%%: <div style="overflow-x: auto; overflow-y: hidden; width: 285px; color: #AAAAAA;">%%portada%%</div>
                                                             <br/>
-                                                            Nombre: <input type="text" name="nom_portada_%%num%%" value="%%portada_nom%%" class="fieldform" maxlength="25" />
+                                                            %%_msg_prontus(_name)%%: <input type="text" name="nom_portada_%%num%%" value="%%portada_nom%%" class="fieldform" maxlength="25" />
                                                         </div>
                                                         <input type="hidden" name="portada_%%num%%" value="%%portada%%"/>
                                                     </td>
                                                     <td valign="top">
-                                                        <label for="plt_paralelas_%%num%%">Paralelas:</label>
+                                                        <label for="plt_paralelas_%%num%%">%%_msg_prontus(_paralllels)%%:</label>
                                                         <br/>
                                                         <select name="plt_paralelas_%%num%%"%%multiple%% id="plt_paralelas_%%num%%"%%multiple%% style="width: 195px;">
-                                                            <option value=""%%ninguna_paralela%%>- Ninguna -</option>
+                                                            <option value=""%%ninguna_paralela%%>- %%_msg_prontus(_none)%% -</option>
                                                             %%paralelas%%
                                                         </select>
                                                         <div style="float: right; margin-top: 4px; margin-right: 15px;">
-                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plt_paralelas_%%num%%');" style="cursor: pointer;"/>
+                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" title="%%_msg_prontus(_select_multiple_templates)%%" alt="%%_msg_prontus(_select_multiple_templates)%%" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plt_paralelas_%%num%%');" style="cursor: pointer;"/>
                                                         </div>
                                                         <br/>
                                                         <br/>
-                                                        <label for="plt_preview_%%num%%">Preview:</label>
+                                                        <label for="plt_preview_%%num%%">%%_msg_prontus(_preview)%%:</label>
                                                         <br/>
                                                         <select name="plt_preview_%%num%%" id="plt_preview_%%num%%" style="width: 195px;">
-                                                            <option value=""%%ninguna_preview%%>- Ninguna -</option>
+                                                            <option value=""%%ninguna_preview%%>- %%_msg_prontus(_none)%% -</option>
                                                             %%plt_preview%%
                                                         </select>
                                                     </td>
@@ -226,22 +226,22 @@
                                         <td style="width: 300px;" valign="top">
                                             PORT_DRAGANDROP<br>
                                             <span class="ayuda">
-                                                Indica cuales son las portadas que tendrán habilitada la interfaz de edición drag & drop.
+                                                %%_msg_prontus(_port_draganddrop_hint1)%%
                                                 <br/>
                                                 <br/>
-                                                Esta función se habilitará siempre y cuando la portada sea compatible y no esté deshabilitada de manera forzada en la plantilla con el flag &lt;!--cfg_dd=no--&gt;
+                                                %%_msg_prontus(_port_draganddrop_hint2)%% &lt;!--cfg_dd=no--&gt;
                                                 <br/>
-                                                Para ver las condiciones de compatibilidad, haga click <a href="#" onclick="Cfgedit.showHelpCompatibilidad(); return false;" class="">aquí</a>
+                                                %%_msg_prontus(_port_draganddrop_hint3)%% <a href="#" onclick="Cfgedit.showHelpCompatibilidad(); return false;" class="">%%_msg_prontus(_here)%%</a>
                                                 <br/>
                                                 <br/>
-                                                Si la portada no es compatible, no aparecerá el icono que abre la interfaz.
+                                                %%_msg_prontus(_port_draganddrop_hint4)%%
                                             </span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%">
                                                 <tr class="head">
-                                                    <td>Portada</td>
-                                                    <td align="center">Quitar</td>
+                                                    <td>%%_msg_prontus(_front_page)%%</td>
+                                                    <td align="center">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_ports_dragnadndrop-->
                                                 <tr>
@@ -257,7 +257,7 @@
                                                 <tr>
                                                     <td>
                                                         <select name="INPUT_PORT_DRAGANDROP[]" >
-                                                            <option value="">- Seleccione -</option>
+                                                            <option value="">- %%_msg_prontus(_select)%% -</option>
                                                             <!--loop_portadas_dd-->
                                                             <option value="%%value%%">%%name%%</option>
                                                             <!--/loop_portadas_dd-->
@@ -274,13 +274,13 @@
                             </form>
                             <div class="botones">
                                 <div class="boton-gris3 aright">
-                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                        <span>Cancelar</span>
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                        <span>%%_msg_prontus(_cancel)%%</span>
                                     </a>
                                 </div>
                                 <div class="boton-gris3 aright">
-                                    <a onclick="Cfgedit.guardaCfg('port'); return false;" href="#" class="button" title="Guardar">
-                                        <span>Guardar</span>
+                                    <a onclick="Cfgedit.guardaCfg('port'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                        <span>%%_msg_prontus(_save)%%</span>
                                     </a>
                                 </div>
                             </div>

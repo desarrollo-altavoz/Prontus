@@ -20,13 +20,13 @@
                             <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"  width="18" height="18"/>
                         </div>
                        <a href="#" onclick="Tax.guardarItemNuevo(this, 'subtema', %%_tema_id%%, 0); return false;">
-                           <img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" alt="Cancelar" title="Cancelar" width="18" height="18" />
+                           <img alt="%%_msg_prontus(_save)%%" title="%%_msg_prontus(_save)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" width="18" height="18" />
                        </a>
                        <a href="#" onclick="Tax.guardarItemNuevo(this, 'subtema', %%_tema_id%%, 1); return false;">
-                           <img alt="Guardar y nuevo" title="Guardar y nuevo" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_of.png" alt="Cancelar" title="Cancelar" width="18" height="18" />
+                           <img alt="%%_msg_prontus(_save_and_new)%%" title="%%_msg_prontus(_save_and_new)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_of.png" alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" width="18" height="18" />
                        </a>
                        <a href="#" onclick="Tax.mostrarOculto('nuevo-subtema-%%_tema_id%%'); return false;">
-                           <img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png"  alt="Cancelar" title="Cancelar" width="18" height="18" />
+                           <img alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png"  alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" width="18" height="18" />
                        </a>
                     </div>
               </div>
@@ -40,7 +40,7 @@
     <div class="tema">
         <div class="subtema">
              <div class="fila1 gris2" id="mostrar-subtema-%%_id%%">
-               <div class="mover"><a href="#"><img class="handler" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/mover2.png" alt="Mover" title="Mover" /></a></div>
+               <div class="mover"><a href="#"><img class="handler" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/mover2.png" alt="%%_msg_prontus(_move)%%" title="%%_msg_prontus(_move)%%" /></a></div>
                <div class="contenido">
                      <div class="col0 aleft"><strong>%%_id%%</strong></div>
                      <div class="col1 aleft"><strong class="txt_nom">%%_nombre%%</strong></div>
@@ -57,8 +57,8 @@
                          <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"  width="18" height="18"/>
                        </div>
                        <a href="#" onclick="Tax.actualizarMostrar(this, 'subtema',%%_id%%);return false;"><img class="mostrar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" alt="%%_mostrar%%" title="" /></a>
-                       <a href="#" onclick="Tax.editarItem('subtema', %%_id%%);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_of.png" width="18" height="18" alt="Editar" title="Editar" class="cambia-boton"/></a>
-                       <a href="#" onclick="Tax.borrarItem(this, 'subtema',%%_id%%);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="Borrar" title="Borrar" class="cambia-boton"/></a>
+                       <a href="#" onclick="Tax.editarItem('subtema', %%_id%%);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_of.png" width="18" height="18" alt="%%_msg_prontus(_edit)%%" title="%%_msg_prontus(_edit)%%" class="cambia-boton"/></a>
+                       <a href="#" onclick="Tax.borrarItem(this, 'subtema',%%_id%%);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="%%_msg_prontus(_delete)%%" title="%%_msg_prontus(_delete)%%" class="cambia-boton"/></a>
                      </div>
                </div>
              </div>
@@ -86,10 +86,10 @@
                          <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading"  width="18" height="18"/>
                        </div>
                          <a href="#" onclick="Tax.guardarItem(this, 'subtema', '%%_id%%'); return false;">
-                             <img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" width="18" height="18"/>
+                             <img alt="%%_msg_prontus(_save)%%" title="%%_msg_prontus(_save)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" width="18" height="18"/>
                          </a>
                          <a href="#" onclick="Tax.cancelarEditar(this, 'subtema', '%%_id%%'); return false;">
-                             <img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" width="18" height="18"/>
+                             <img alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" width="18" height="18"/>
                          </a>
                      </div>
                </div>

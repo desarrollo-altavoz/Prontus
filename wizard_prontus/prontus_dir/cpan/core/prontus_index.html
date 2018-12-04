@@ -43,10 +43,10 @@
             <img src="imag/auxi/logo_login.jpg" width="225" height="60" border="0" alt="Prontus" title="Prontus" />
           </div>
           <div class="auxi" id="loginbox" style="display: none;">
-            <p>Usuario:<br/>
+            <p>%%_msg_prontus(_user)%%:<br/>
               <input type="text" name="_usr" class="fieldform" maxlength="30" value=""/>
             </p>
-            <p>Contraseña:<br/>
+            <p>%%_msg_prontus(_password)%%:<br/>
               <input type="password" name="_psw" class="fieldform" maxlength="30" value=""/>
             </p>
             <div class="loading-action"><img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
@@ -59,14 +59,14 @@
           </div>
           <div class="auxi" id="checkSession">
             <div class="checkSession">
-                Verificando si existe una sesión activa.<br/>
-                Espere un momento...
+                %%_msg_prontus(_checking_active_session)%%<br/>
+                %%_msg_prontus(_wait_a_moment)%%...
                 <br/>
                 <img src="imag/loading_bar.gif" width="128" height="15" alt="loading" />
             </div>
           </div>
           <div class="celeste">
-            <a href="#" id="olvide_clave">Olvidé mi contraseña</a>
+            <a href="#" id="olvide_clave">%%_msg_prontus(_i_forgot_my_password)%%</a>
           </div>
         </div> <!-- box-login -->
       </form>

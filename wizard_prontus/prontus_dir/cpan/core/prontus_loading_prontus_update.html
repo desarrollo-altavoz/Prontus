@@ -45,25 +45,23 @@
             <div class="status-loading status-hidden-block">
               <br/>
               <img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /><br/><br/>
-              Por favor espere hasta que el proceso termine<br/>
-              Porcentaje de avance: <span class="status-percentage"></span>
+              %%_msg_prontus(_wait_until_the_process_is_finished)%%<br/>
+              %%_msg_prontus(_progress_porcentage)%%: <span class="status-percentage"></span>
             </div>
 
             <div class="status-error status-hidden-block">
               <br/><br/>
               <img src="imag/boto/msg-error.png" width="24" height="24" alt="error" title="error" class="icono" />
               <span class="status-msg"></span>
-              <div class="ayuda">Se recomienda revisar el log de errores. De ser posible, utilice el formulario de contacto
-              para contactar al equipo de desarrollo.<br/><br/>
-              <a href="../procs/prontus_update_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_prontus_update">&raquo; Revise el Log con los detalles de la operación</a>
+              <div class="ayuda">%%_msg_prontus(_check_the_error_log_contact_development_team)%%<br/><br/>
+              <a href="../procs/prontus_update_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_prontus_update">&raquo; %%_msg_prontus(_check_log_with_details)%%</a>
               </div><br/>
             </div>
 
             <div class="status-result status-hidden-block">
               <br/><br/>
-              El proceso de actualización ha finalizado.
-              <div class="ayuda"><b>Importante:</b> Cierre su navegador y limpie su caché antes de abrir Prontus nuevamente.
-              Se han actualizado componentes críticos que deben ser renovados en su navegador.</div><br/>
+              %%_msg_prontus(_update_process_complete)%%
+              <div class="ayuda"><b>%%_msg_prontus(_important)%%:</b> %%_msg_prontus(_important_update_msg)%%</div><br/>
             </div>
 
             <div id="msg-log" class="msg-result status-hidden-block">

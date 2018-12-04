@@ -1,7 +1,7 @@
 <div class="edi_ficha">
     <div class="rotulo">
         <div class="flecha"><span class="opened">&nbsp;</span></div>
-        <div class="titulo">Ficha Edici&oacute;n</div>
+        <div class="titulo">%%_msg_prontus(_edit_profile)%%</div>
     </div>
     <div style="clear: both;"></div>
     <form id="frmEdiFicha" method="POST">
@@ -9,11 +9,11 @@
         <input type="hidden" name="ED_NOM" value="%%ED_NOM%%">
         <table>
           <tr id="nombreEdicion">
-              <td>Nombre edici&oacute;n</td>
+              <td>%%_msg_prontus(_edit_name)%%</td>
               <td class="texto-td">%%ED_NOM%% <i>(aaaa_mm_dd_nro)</i></td>
           </tr>
           <tr>
-            <td>Fecha publicaci&oacute;n</td>
+            <td>%%_msg_prontus(_publishing_date)%%</td>
             <td class="texto-td">
                 <!--ED_FECCORTA-->
                 <input type="text" name="ED_FECCORTA" size="15" maxlength="10">
@@ -21,7 +21,7 @@
           </td>
           </tr>
           <tr>
-            <td>Vigente</td>
+            <td>%%_msg_prontus(_active)%%</td>
             <td><INPUT TYPE="checkbox" NAME="ED_VIGENTE" VALUE="SI" %%ED_VIGENTE%%></td>
           </tr>
         </table>
@@ -32,8 +32,8 @@
                 <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" />
               </div>
               <div class="botones">
-              <a onclick="EdiAdmin.guardarFicha('%%ED_NOM%%'); return false;" href="#" class="button"><span>Guardar</span></a>
-              <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+              <a onclick="EdiAdmin.guardarFicha('%%ED_NOM%%'); return false;" href="#" class="button"><span>%%_msg_prontus(_save)%%</span></a>
+              <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>%%_msg_prontus(_cancel)%%</span></a>
               </div>
             </td>
             <td>&nbsp;</td>

@@ -48,9 +48,9 @@ var Tax  = {
 
         $('.mostrar').each(function () {
             if ($(this).attr('alt') == 'btn_ticket_green') {
-                $(this).attr('title', 'Click para ocultar en el FID');
+                $(this).attr('title', ProntusLangController.getString('_tax_hide_from_fid'));
             } else {
-                $(this).attr('title', 'Click para visibilizar en el FID');
+                $(this).attr('title', ProntusLangController.getString('_tax_show_in_fid'));
             }
         });
 
@@ -103,7 +103,7 @@ var Tax  = {
                 }
             },
             error: function() {
-                alert('Ocurrio un error, intentelo nuevamente.');
+                alert(ProntusLangController.getString('_tax_generic_error'));
                 img_obj.addClass('handler');
                 img_obj.attr('src', (img_obj.attr('src')).replace('loading_button.gif', 'boto/mover2_on.png'));
             }
@@ -204,7 +204,7 @@ var Tax  = {
                 }
             },
             error: function() {
-                alert("Ocurrio un error, intentelo nuevamente.");
+                alert(ProntusLangController.getString('_tax_generic_error'));
                 /* esconder cargando y mostrar botones. */
                 $(obj).parent().find('.fila_loading').hide();
                 $(obj).parent().find('a').show();
@@ -298,7 +298,7 @@ var Tax  = {
                 $(obj).parent().find('a').show();
             },
             error: function() {
-                alert("Ocurrio un error, intentelo nuevamente.");
+                alert(ProntusLangController.getString('_tax_generic_error'));
                 $(obj).parent().find('.fila_loading').hide();
                 $(obj).parent().find('a').show();
             }
@@ -371,9 +371,9 @@ var Tax  = {
 
                 $('#lista-temas-'+id).find('.mostrar').each(function () {
                     if ($(this).attr('alt') == 'btn_ticket_green') {
-                        $(this).attr('title', 'Click para ocultar en el FID');
+                        $(this).attr('title', ProntusLangController.getString('_tax_hide_from_fid'));
                     } else {
-                        $(this).attr('title', 'Click para visibilizar en el FID');
+                        $(this).attr('title', ProntusLangController.getString('_tax_show_in_fid'));
                     };
                 });
              });
@@ -463,9 +463,9 @@ var Tax  = {
 
                 $('#lista-subtemas-'+id).find('.mostrar').each(function () {
                     if ($(this).attr('alt') == 'btn_ticket_green') {
-                        $(this).attr('title', 'Click para ocultar en el FID');
+                        $(this).attr('title', ProntusLangController.getString('_tax_hide_from_fid'));
                     } else {
-                        $(this).attr('title', 'Click para visibilizar en el FID');
+                        $(this).attr('title', ProntusLangController.getString('_tax_show_in_fid'));
                     };
                 });
 
@@ -489,16 +489,16 @@ var Tax  = {
     },
     // -------------------------------------------------------------------------
     borrarItem: function(obj, entidad, id) {
-        var msg = '¿Estás seguro que quieres borrar est';
+        var msg = '';
         switch (entidad) {
             case 'seccion':
-                 msg += 'a sección?';
+                 msg += ProntusLangController.getString('_tax_section_confirm_delete');
                  break;
             case 'tema':
-                msg += 'e tema?';
+                msg += ProntusLangController.getString('_tax_topic_confirm_delete');
                 break;
             case 'subtema':
-                msg += 'e subtema?';
+                msg += ProntusLangController.getString('_tax_subtopic_confirm_delete');
                 break;
         };
         if (confirm(msg)) {
@@ -548,10 +548,10 @@ var Tax  = {
         if ($(obj).find('img').attr("alt") == 'btn_ticket_green') {
             value = 0;
             $(obj).find('img').attr("src", img_src.replace('btn_ticket_green.png', 'btn_ticket_red.png'));
-            $(obj).find('img').attr("title", "Click para visibilizar en el FID").attr("alt", "btn_ticket_red");
+            $(obj).find('img').attr("title", ProntusLangController.getString('_tax_show_in_fid')).attr("alt", "btn_ticket_red");
         } else {
             $(obj).find('img').attr("src", img_src.replace('btn_ticket_red.png', 'btn_ticket_green.png'));
-            $(obj).find('img').attr("title", "Click para ocultar en el FID").attr("alt", "btn_ticket_green");
+            $(obj).find('img').attr("title", ProntusLangController.getString('_tax_hide_from_fid')).attr("alt", "btn_ticket_green");
         }
 
         var form_data = '_id='+id+'&_entidad='+entidad+'&_path_conf='+Tax.path_conf+'&_mostrar='+value;

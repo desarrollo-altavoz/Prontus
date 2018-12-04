@@ -45,15 +45,15 @@ var Megalupa = {
         var formSel = $(Megalupa.formMegalupa + ' select');
         var formInp = $(Megalupa.formMegalupa + ' input');
 
-        if (! Megalupa.validaFecha(formInp.filter('[name="DIA"]').val(), "de creación")) {
+        if (! Megalupa.validaFecha(formInp.filter('[name="DIA"]').val(), ProntusLangController.getString('_megalupa_date_creation'))) {
             return false;
         }
 
-        if (! Megalupa.validaFecha(formInp.filter('[name="DIAPUB"]').val(), "de publicación")) {
+        if (! Megalupa.validaFecha(formInp.filter('[name="DIAPUB"]').val(), ProntusLangController.getString('_megalupa_date_publication'))) {
             return false;
         }
 
-        if (! Megalupa.validaFecha(formInp.filter('[name="DIAEXP"]').val(), "de expiración")) {
+        if (! Megalupa.validaFecha(formInp.filter('[name="DIAEXP"]').val(), ProntusLangController.getString('_megalupa_date_expiration'))) {
               return false;
         }
 
@@ -83,7 +83,7 @@ var Megalupa = {
 
         autoinc = formInp.filter('[name="AUTOINC"]').val();
         if (autoinc !== '' && isNaN(autoinc)) {
-            alert("Código de artículo no es válido.");
+            alert(ProntusLangController.getString('_megalupa_art_invalid_code'));
             return false;
         }
 
@@ -170,7 +170,7 @@ var Megalupa = {
         var datePat = /^(\d{1,2})(\/|-)(\d{1,2})(\/|-)(\d{4})$/;
         var matchArray = dateStr.match(datePat); // chequea formato.
         if (matchArray === null) {
-              alert("La fecha " + tipo + " no tiene un formato válido. (dd/mm/aaaa)");
+              alert(ProntusLangController.getString('_megalupa_invalid_date_format', {'type': tipo}));
               return false;
         }
 
@@ -179,24 +179,24 @@ var Megalupa = {
         var year = matchArray[5];
 
         if (month < 1 || month > 12) { // chequea mes.
-              alert("El Mes (fecha " + tipo + ") debe estar entre 1 y 12.");
+              alert(ProntusLangController.getString('_megalupa_wrong_month', {'type': tipo}));
               return false;
         }
 
         if (day < 1 || day > 31) {
-              alert("El dia (fecha " + tipo + ") debe estar entre 1 y 31.");
+              alert(ProntusLangController.getString('_megalupa_wrong_day', {'type': tipo}));
               return false;
         }
 
         if ((month==4 || month==6 || month==9 || month==11) && day==31) {
-              alert("El Mes " + month + " (fecha " + tipo + ") no tiene 31 días!");
+              alert(ProntusLangController.getString('_megalupa_month_wrong_days', {'month': month, 'type': tipo}));
               return false;
         }
 
         if (month == 2) { // chequea 29 febrero.
             var isleap = (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
             if ( (day > 29) || (day==29 && !isleap) ) {
-                  alert("Febrero " + year + " (fecha " + tipo + ") no tiene " + day + " días!");
+                  alert(ProntusLangController.getString('_megalupa_feb_wrong_days', {'year': year, 'day': day, 'type': tipo}));
                   return false;
             }
         }

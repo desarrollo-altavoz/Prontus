@@ -12,6 +12,7 @@
     <script type="text/javascript" src="../js-local/ProntusDetect.class.js"></script>
     <script type="text/javascript" src="../js-local/Opciones.class.js"></script>
     <script type="text/javascript" src="../js-local/Utiles.class.js"></script>
+    <script type="text/javascript" src="../js-local/lang/ProntusLangController.class.js"></script>
 
     <script type="text/javascript">
       $(document).ready(function() {
@@ -30,7 +31,7 @@
       });
       function enviarFormulario() {
         if($('#FILE1').val() === '') {
-          alert('Debe ingresar un archivo para Importar.');
+          alert(ProntusLangController.getString('_enter_import_file'));
           return;
         }
         $('#form1').submit();
@@ -41,13 +42,13 @@
   <body class="bodysite loading-page">
       <div class="col470">
         <div class="rotulo">
-          <div class="titulo">&nbsp; &nbsp;Importar Taxonomía</div>
+          <div class="titulo">&nbsp; &nbsp;%%_msg_prontus(_import_taxonomy)%%</div>
         </div>
         <div class="box-gris">
           <div class="box-auxi">
             <form name="form1" id="form1" method="post"  enctype="multipart/form-data">
             <div class="msg-loading">
-              Seleccione el archivo que contiene los datos a importar:<br>
+              %%_msg_prontus(_select_file_containing_data_import)%%:<br>
               <div class="upload">
                 <input type="file" name="FILE1" id="FILE1" size="30" maxlength="120">
               </div>
@@ -55,29 +56,29 @@
 
 
               <div style="text-align:left; padding-left:20px;">
-              <b>El formato del archivo es el sgte:</b>
+              <b>%%_msg_prontus(_file_format_is_as_follow)%%:</b>
               <ul style="margin-left: 14px;">
-                <li>Archivo xml con información de secciones, temas y subtemas.</li>
-                <li>Si se especifica id, el sistema lo utilizará. Si no, el sistema lo asignará automáticamente.</li>
-                <li>El formato de importación es el mismo de exportación.</li>
+                <li>%%_msg_prontus(_tax_import_file_format_item1)%%</li>
+                <li>%%_msg_prontus(_tax_import_file_format_item2)%%</li>
+                <li>%%_msg_prontus(_tax_import_file_format_item3)%%</li>
               </ul>
               </div>
 
               <br/>
-              <span class="importante"><b>IMPORTANTE:</b>
-                Al importar, las secciones, temas y subtemas que existan serán eliminados y reemplazados por lo que venga en el archivo a importar.
+              <span class="importante"><b>%%_msg_prontus(_important_capital)%%:</b>
+                %%_msg_prontus(_tax_import_important_hint)%%
               </span>
 
                 <input type="hidden" name="path_conf" id="path_conf" value="" />
                 <input type="hidden" name="Sbm_ACCION" id="Sbm_ACCION" value="Importar" />
                 <br/><br/>
                 <div class="boton-generico">
-                  <a class="button" href="#" onclick="enviarFormulario(); return false;"><span>Importar</span></a>
-                  <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>Cerrar</span></a>
+                  <a class="button" href="#" onclick="enviarFormulario(); return false;"><span>%%_msg_prontus(_import)%%</span></a>
+                  <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>%%_msg_prontus(_close)%%</span></a>
                 </div>
                 <br/>
                 <br/>
-                <a href="../../procs/prontus_tax_import_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_import_tax">[Ver Log &uacute;ltima importaci&oacute;n]</a>
+                <a href="../../procs/prontus_tax_import_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_import_tax">[%%_msg_prontus(_view_log_last_import)%%]</a>
             </div>
             </form>
           </div>

@@ -14,18 +14,18 @@ var Intercambio = {
     cambiar: function () {
         if ($('select[name="Lst_PORT1"] option:selected').length && $('select[name="Lst_PORT2"] option:selected').length) {
             if ($('select[name="Lst_PORT1"]').val() == $('select[name="Lst_PORT2"]').val()) {
-                alert("No es posible intercambiar una portada consigo misma.");
+                alert(ProntusLangController.getString('_exchange_cant_exchange_self'));
             } else {
                 var configAjax = {
                     formSelector: '#frmIntercambio',
                     actionURL: '/' + Intercambio.dir_cgi_cpan + '/prontus_pltport_saveintercambio.cgi',
                     redirURL: '_self',
-                    okMsg: 'Las portadas seleccionadas fueron intercambiadas correctamente.'
+                    okMsg: ProntusLangController.getString('_exchange_success')
                 };
                 SubmitForm.submitGenericAjax(configAjax);
             };
         } else {
-            alert("Por favor, seleccione portadas a intercambiar.");
+            alert(ProntusLangController.getString('_exchange_incomplete_selection'));
         }
     }
 };

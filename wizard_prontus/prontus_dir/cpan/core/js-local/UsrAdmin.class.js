@@ -63,7 +63,7 @@ var UsrAdmin = {
     },
     // -------------------------------------------------------------------------
     borrar: function(id) {
-        var msg = '¿Está seguro de borrar a este usuario?';
+        var msg = ProntusLangController.getString('_usradmin_confirm_usr_delete');
         if (confirm(msg)) {
             $.ajax({
                 url:        '/' + UsrAdmin.dir_cgi_cpan + '/prontus_usr_borrar.cgi',
@@ -80,7 +80,7 @@ var UsrAdmin = {
                     }
                 },
                 error: function() {
-                    alert('Ocurrio un error, inténtelo nuevamente.');
+                    alert(ProntusLangController.getString('_usradmin_generic_error'));
                 }
             });
         }
@@ -89,7 +89,7 @@ var UsrAdmin = {
     // -------------------------------------------------------------------------
     guardarFicha: function(id) {
 
-        var msg = '¿Está seguro que desea guardar sus datos?';
+        var msg = ProntusLangController.getString('_usradmin_confirm_save');
         if (id == UsrAdmin.idAdmin && ! confirm(msg)) {
             return false;
         };

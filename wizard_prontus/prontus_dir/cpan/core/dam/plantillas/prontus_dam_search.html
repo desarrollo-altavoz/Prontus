@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Biblioteca Multimedia &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <title>%%_msg_prontus(_multimedia_library)%% &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/dam/css/dam.css" />
@@ -27,7 +27,7 @@
 
                 <!--TITULO PRINCIPAL-->
                 <div class="top-titulo960">
-                  <h1 class="titular">Biblioteca Multimedia</h1>
+                  <h1 class="titular">%%_msg_prontus(_multimedia_library)%%</h1>
 
                   <div class="buscador">
                     <form name="formDAM" id="formDAM" action="" method="get">
@@ -41,22 +41,22 @@
                           <td width="185" align="left" valign="middle" class="bg-campo">
                             <input type="text" name="asset_search_wordkey" id="asset_search_wordkey" value="%%asset_search_wordkey%%" class="campo" size="30" /></td>
                           <td width="33" align="left" valign="middle" class="bg-boto">
-                            <a href="#" onclick="Dam.buscarAsset();"><img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="Buscar por Titular" title="Buscar por Titular" /></a></td>
+                            <a href="#" onclick="Dam.buscarAsset();"><img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="%%_msg_prontus(_search_by_headline)%%" title="%%_msg_prontus(_search_by_headline)%%" /></a></td>
                         </tr>
                       </table>
                     </form>
                     <!--search_mode-->
                     <div class="filtros">
                       <a href="#" onclick="Dam.limpiaFiltros(); return false;" class="elim-filtros">
-                        [<img src="/%%_prontus_id%%/cpan/core/imag/boto/delete10x10px.png" alt="Eliminar Filtros" height="10" width="10"> Eliminar filtros]
+                        [<img src="/%%_prontus_id%%/cpan/core/imag/boto/delete10x10px.png" alt="Eliminar Filtros" height="10" width="10"> %%_msg_prontus(_delete_filters)%%]
                       </a>
                     </div>
                     <!--/search_mode-->
                   </div>
 
                   <div class="orderby">
-                    Ordenar por: <a href="#creac" class="cambia-orden">Creación</a> |
-                    <a href="#text" class="cambia-orden">Texto</a>
+                    Ordenar por: <a href="#creac" class="cambia-orden">%%_msg_prontus(_creation)%%</a> |
+                    <a href="#text" class="cambia-orden">%%_msg_prontus(_text)%%</a>
                   </div>
                 </div>
                 <!-- / TITULO PRINCIPAL-->
@@ -68,9 +68,9 @@
                 <div class="col960 aleft">
 
                   <div class="boton-gris1">
-                    <a class="button %%sel_foto%%" href="./prontus_dam_search.cgi?asset_search_type=foto&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>Im&aacute;genes</span></a>
-                    <a class="button %%sel_audio%%" href="./prontus_dam_search.cgi?asset_search_type=audio&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>Audios</span></a>
-                    <a class="button %%sel_video%%" href="./prontus_dam_search.cgi?asset_search_type=video&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>Videos</span></a>
+                    <a class="button %%sel_foto%%" href="./prontus_dam_search.cgi?asset_search_type=foto&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>%%_msg_prontus(_images)%%</span></a>
+                    <a class="button %%sel_audio%%" href="./prontus_dam_search.cgi?asset_search_type=audio&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>%%_msg_prontus(_msg_generic_audios)%%</span></a>
+                    <a class="button %%sel_video%%" href="./prontus_dam_search.cgi?asset_search_type=video&amp;path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&amp;asset_search_wordkey=%%asset_search_wordkey%%&amp;asset_search_popup=%%asset_search_popup%%"><span>%%_msg_prontus(_msg_generic_videos)%%</span></a>
                   </div>
 
                   <div class="auxi dam">
@@ -89,7 +89,7 @@
                       <div class="aright icons">
                         <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%" target="_blank"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar Artículo" title="Editar Artículo" class="cambia-boton" /></a>
                         <!--ver_todas-->
-                        <a href="prontus_dam_asset_list.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&ts=%%_TS%%&type=foto" class="aright ver_todas colorbox_asset" ><img src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png" width="18" height="18" alt="Mostrar todas" title="Mostrar todas" class="cambia-boton" /></a>
+                        <a href="prontus_dam_asset_list.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg&ts=%%_TS%%&type=foto" class="aright ver_todas colorbox_asset" ><img src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png" width="18" height="18" alt="%%_msg_prontus(_show_all)%%" title="%%_msg_prontus(_show_all)%%" class="cambia-boton" /></a>
                         <!--/ver_todas-->
                         <!--link_copiar-->
                         <div class="copiar" id="asset_ext%%LOOP_COUNTER%%">
@@ -105,7 +105,7 @@
                       <div class="player-preview"><a href="%%PATH_ASSET%%" target="_blank" class="media-audio"></a></div>
                       <div class="aleft titu"><a href="%%LINK_ARTIC%%" target="_blank" alt="%%ASSET_TITULAR%%" title="%%ASSET_TITULAR%%">%%ASSET_TITULAR_SHORT%%</a></div>
                       <div class="aright icons">
-                        <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%" target="_blank"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar Artículo" title="Editar Artículo" class="cambia-boton" /></a>
+                        <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%" target="_blank"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="%%_msg_prontus(_edit_artic)%%" title="%%_msg_prontus(_edit_artic)%%" class="cambia-boton" /></a>
                         <div class="copiar" id="asset_ext%%LOOP_COUNTER%%">
                           <div id="asset_int%%LOOP_COUNTER%%" class="copiar-url"></div>
                         </div>
@@ -116,10 +116,10 @@
                     <!--video-->
                     <div class="item-multimedia aleft">
                       <div class="foto-preview"><a href="prontus_dam_view.cgi?view_prontus=%%_PRONTUS_ID%%&amp;view_tmpl=prontus_dam_view_video.html&amp;view_file=%%PATH_ASSET%%&amp;width=650&amp;height=390"
-                          class="colorbox"><!--if_image--><img src="%%PATH_IMG%%" %%IMG_SIZE%% alt="Foto 220" title="Foto 220" /><!--/if_image--><span class="play-video"></span></a></div>
+                          class="colorbox"><!--if_image--><img src="%%PATH_IMG%%" %%IMG_SIZE%% alt="%%_msg_prontus(_photo_220)%%" title="%%_msg_prontus(_photo_220)%%" /><!--/if_image--><span class="play-video"></span></a></div>
                       <div class="aleft titu"><a href="%%LINK_ARTIC%%" target="_blank" alt="%%ASSET_TITULAR%%" title="%%ASSET_TITULAR%%">%%ASSET_TITULAR_SHORT%%</a></div>
                       <div class="aright icons">
-                        <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%" target="_blank"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar Artículo" title="Editar Artículo" class="cambia-boton" /></a>
+                        <a href="%%LINK_FID%%" class="aright %%_class_open_fid%%" target="_blank"><img src="/%%_prontus_id%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="%%_msg_prontus(_edit_artic)%%" title="%%_msg_prontus(_edit_artic)%%" class="cambia-boton" /></a>
                         <div class="copiar" id="asset_ext%%LOOP_COUNTER%%">
                           <div id="asset_int%%LOOP_COUNTER%%" class="copiar-url"></div>
                         </div>

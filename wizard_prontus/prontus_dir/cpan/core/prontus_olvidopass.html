@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Prontus CMS - Recordar contraseña</title>
+    <title>Prontus CMS - %%_msg_prontus(_remind_password)%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css">
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/olvidopass.css">
@@ -36,25 +36,25 @@
                 <img src="/%%_PRONTUS_ID%%/cpan/core/imag/auxi/logo_login.jpg" width="225" height="60" border="0" alt="Prontus" title="Prontus" />
             </div>
             <div class="info">
-                <p><b>Por favor, introduce tu información aquí.</b></p>
-                <p>Se te enviará un mail de confirmación con las instrucciones necesarias para que realices el cambio de contraseña</p>
+                <p><b>%%_msg_prontus(_enter_your_information_here)%%</b></p>
+                <p>%%_msg_prontus(_indications_password_change)%%</p>
             </div>
             <div class="auxi">
                 <form method="POST" action="" enctype="multipart/form-data" name="FrmRecordar" id="FrmRecordar">
                 <input type="hidden" name="_path_conf" value="%%_PATH_CONF%%">
                 <p>
-                    Usuario:<br/>
+                    %%_msg_prontus(_user)%%:<br/>
                     <input name="_usr" type="text" size="15" maxlength="30" class="fieldform">
                 </p>
                 <p>
-                    Ingresa los caracteres que ves en la imagen:<br/>
+                    %%_msg_prontus(_type_the_characters_you_see_in_the_image)%%:<br/>
                     <input name="_code" type="text" size="15" maxlength="30" class="fieldform2">
                     <span id="prontus_captcha_content"></span>
                 </p>
                     <div class="loading-action"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
                     <div class="botonIngresar">
-                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="Recordarpass.recordar('%%_PRONTUS_ID%%', DIR_CGI_CPAN); return false;"><span>Enviar mail de confirmación</span></a></div>
-                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="history.back();"><span>Cancelar</span></a></div>
+                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="Recordarpass.recordar('%%_PRONTUS_ID%%', DIR_CGI_CPAN); return false;"><span>%%_msg_prontus(_send_confirmation_email)%%</span></a></div>
+                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="history.back();"><span>%%_msg_prontus(_cancel)%%</span></a></div>
                     </div>
                 </form>
             </div>
@@ -69,9 +69,9 @@
                 <img src="/%%_PRONTUS_ID%%/cpan/core/imag/auxi/logo_login.jpg" width="225" height="60" border="0" alt="Prontus" title="Prontus" />
             </div>
             <div class="info">
-                <p><b>Estimado usuario:</b></p>
-                <p>Si has llegado aquí por equivocación o no has solicitado restablecer tu contraseña, ignora este procedimiento.</p>
-                <p>En caso contrario, ingresa a continuación una nueva contraseña.</p>
+                <p><b>%%_msg_prontus(_dear_user)%%:</b></p>
+                <p>%%_msg_prontus(_olvidopass_msg)%%</p>
+                <p>%%_msg_prontus(_olvidopass_msg2)%%</p>
                 <p></p>
             </div>
             <div class="auxi">
@@ -80,17 +80,17 @@
                 <input type="hidden" name="_token" value="%%_token%%"/>
                 <input type="hidden" name="_usr" value="%%_usr%%"/>
                 <p>
-                    Nueva contraseña:<br/>
+                    %%_msg_prontus(_new_password)%%:<br/>
                     <input name="_new_psw" type="password" size="15" maxlength="30" class="fieldform">
                 </p>
                 <p>
-                    Confirmar nueva contraseña:<br/>
+                    %%_msg_prontus(_confirm_new_password)%%:<br/>
                     <input name="_new_psw_confirm" type="password" size="15" maxlength="30" class="fieldform">
                 </p>
                     <div class="loading-action"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
                     <div class="botonIngresar">
-                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="ChangePass.enviar(DIR_CGI_CPAN);"><span>Cambiar contraseña</span></a></div>
-                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="history.back();"><span>Cancelar</span></a></div>
+                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="ChangePass.enviar(DIR_CGI_CPAN);"><span>%%_msg_prontus(_change_password)%%</span></a></div>
+                        <div class="boton-gris3 aleft"><a class="button" href="#" onclick="history.back();"><span>%%_msg_prontus(_cancel)%%</span></a></div>
                     </div>
                 </form>
             </div>

@@ -15,16 +15,16 @@
 <input type="hidden" name="_MAXWFOTOFIJA_##name##" value="##w##" />
 <input type="hidden" name="_MAXHFOTOFIJA_##name##" value="##h##" />
 <input type="hidden" name="_UPDFOTOFIJA_##name##" value="" />
-<div class="check_cuadrar" title="Cuadra las dimensiones para que la foto resultante tenga exactamente las mismas dimensiones indicadas en el control de Fotofija.">
+<div class="check_cuadrar" title="%%_msg_prontus(_still_photo_dimension_hint)%%">
   <input type="checkbox" name="CHK_cuadrar_FOTOFIJA_##name##" id="CHK_cuadrar_FOTOFIJA_##name##" value="si" />
-  <label for="CHK_cuadrar_FOTOFIJA_##name##">Tamaño exacto</label>
+  <label for="CHK_cuadrar_FOTOFIJA_##name##">%%_msg_prontus(_exact_size)%%</label>
 </div>
 <a href="#" target="_blank" onclick="Fid.showFotoFija('%%FOTOFIJA_##name##%%'); return false;">
   <img name="lupaFOTOFIJA_##name##" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/lu2_of.png"
-  class="classfotofija cambia-boton" alt="Ver imagen" title="Ver imagen" width="18" height="17" />
+  class="classfotofija cambia-boton" alt="%%_msg_prontus(_view_image)%%" title="%%_msg_prontus(_view_image)%%" width="18" height="17" />
 </a>
 
 <a href="#" onclick="Fid.borraFotoFija('FOTOFIJA_##name##');return false;"  >
   <img name="borrarFOTOFIJA_##name##"   src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/bo2_of.gif"
-  class="classfotofija cambia-boton" alt="Borrar" title="Borrar" width="18" height="17"  />
+  class="classfotofija cambia-boton" alt="%%_msg_prontus(_delete)%%" title="%%_msg_prontus(_delete)%%" width="18" height="17"  />
 </a>

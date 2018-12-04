@@ -249,7 +249,7 @@ var PortDD = {
                 PortDD.cargarArticulosNoPub();
             });
         } else {
-            alert("Espere a que el proceso termine.");
+            alert(ProntusLangController.getString('_portdd_wait_for_process'));
         }
     },
 
@@ -399,7 +399,7 @@ var PortDD = {
     refrescar: function () {
         PortDD.mostrarBotones(false);
         if ($('#port-modified').val() == 1) {
-            if (confirm("La portada ha sido modificada. ¿Está seguro que desea refrescar?. Se perderán los cambios.")) {
+            if (confirm(ProntusLangController.getString('_portdd_unsaved_changes_confirm_refresh'))) {
                 window.location.href = window.location.href;
             } else {
                 PortDD.mostrarBotones(true);
@@ -491,7 +491,7 @@ var PortDD = {
             $('.item-area > .tools-subitem').hide();
             $('#prontusportdd-listnopub').hide();
             $('#prontusportdd-botones').hide();
-            PortDD.setGlobalMsg("Error: Existen articulos duplicados. Para continuar debe corregir esto." + strdups, 'error');
+            PortDD.setGlobalMsg(ProntusLangController.getString('_portdd_duplicated_art_error') + strdups, 'error');
             return;
         }
     },
@@ -501,7 +501,7 @@ var PortDD = {
         var st = $('#prontusportddportada .area .item-area .tools').toggle().css('display');
         
         if (st == 'block') {
-            var txt = 'Ocultar áreas drag & drop';
+            var txt = ProntusLangController.getString('_portdd_hide_areas');
             var src = imgObj.attr("src");
             src = src.replace('grid_of.png', 'grid_on.png');
             imgObj.attr("src", src);
@@ -509,7 +509,7 @@ var PortDD = {
             imgObj.attr("title", txt);
             PortDD.grid_status = 'on';
         } else {
-            var txt = 'Visualizar áreas drag & drop';
+            var txt = ProntusLangController.getString('_portdd_visualize_areas');
             var src = imgObj.attr("src");
             src = src.replace('grid_on.png', 'grid_of.png');
             imgObj.attr("src", src);

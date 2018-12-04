@@ -89,7 +89,7 @@ var Opciones = {
     // -------------------------------------------------------------------------
     accionRegenerarTablas: function() {
 
-        if (confirm('¿Está seguro de regenerar la tabla de artículos?')) {
+        if (confirm(ProntusLangController.getString('_options_confirm_art_regen'))) {
             var obj = Opciones.optsDefault;
             obj.href = Opciones.urlRegenBD + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg';
             obj.height = '360';
@@ -103,7 +103,7 @@ var Opciones = {
     // -------------------------------------------------------------------------
     accionRegenerarTablasDam: function() {
 
-        if (confirm('¿Está seguro de regenerar la tabla de multimedia?')) {
+        if (confirm(ProntusLangController.getString('_options_confirm_mult_regen'))) {
             var obj = Opciones.optsDefault;
             obj.href = Opciones.urlRegenDamBD + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg';
             obj.height = '360';
@@ -119,7 +119,7 @@ var Opciones = {
         // Validaciones.
         var fids_checked = $('input[name="INPUT_FIDS_REGEN[]"]:checked').size();
         if (fids_checked == 0) {
-            alert("Debe seleccionar al menos 1 FID.");
+            alert(ProntusLangController.getString('_options_fid_required'));
         } else {
              var href = '/' + Admin.dir_cgi_cpn + '/' +Opciones.urlRegenART + '?_path_conf=%2F' + Admin.prontus_id + '%2Fcpan%2F' + Admin.prontus_id + '.cfg';
             // Fids.
@@ -147,7 +147,7 @@ var Opciones = {
 
                 var arr = fecha.split('-');
                 if(arr.length !== 3) {
-                    alert("El formato de la fecha no es válido, intente dd-mm-yyyy  ");
+                    alert(ProntusLangController.getString('_options_invalid_date_format'));
                     return;
                 }
                 fecha = '' + arr[2] + arr[1] + arr[0];
@@ -179,7 +179,7 @@ var Opciones = {
                 href += '&_subtema1=0';
             }
 
-            if (confirm('¿Está seguro de ejecutar la actualización masiva de artículos?')) {
+            if (confirm(ProntusLangController.getString('_options_confirm_art_massive_regen'))) {
                 var obj = Opciones.optsDefault;
                 obj.href = href;
                 obj.height = '360';
@@ -205,7 +205,7 @@ var Opciones = {
         cmb_edic = (typeof cmb_edic === 'undefined') ? '' : cmb_edic;
         href = href + '&cmb_edic='+cmb_edic;
 
-        if (confirm('¿Está seguro de ejecutar la actualización masiva de portadas?')) {
+        if (confirm(ProntusLangController.getString('_options_confirm_port_massive_regen'))) {
             var obj = Opciones.optsDefault;
             obj.href = href;
             obj.height = '360';
@@ -226,7 +226,7 @@ var Opciones = {
         var obj = Opciones.optsDefault;
         var accion = $('.check-install input:checked:first').val();
         if(typeof accion === 'undefined' || accion === null || accion <= 0) {
-            alert('Debe elegir una de las opciones anteriores');
+            alert(ProntusLangController.getString('_options_selection_required'));
             return;
         }
         obj.width = '900px';
@@ -272,7 +272,7 @@ var Opciones = {
                 if(resp === null) {
                     if(Opciones.statusCounter > 10) {
                         $('#msg-loading').hide();
-                        $('#msg-error').html("Error al procesar el script, recargue la página para continuar");
+                        $('#msg-error').html(ProntusLangController.getString('_options_error_processing_script'));
                         $('#msg-log').fadeIn();
                         return;
                     } else {
@@ -352,7 +352,7 @@ var Opciones = {
                     if(typeof resp.actual === 'undefined') {
                         resp.actual = '';
                     }
-                    var percentage = 'No disponible';
+                    var percentage = ProntusLangController.getString('_options_unavailable');
                     if(resp.total !== '' && resp.actual !== '' && resp.total > 0) {
                         percentage = Math.floor((100 * resp.actual) / resp.total) + '%';
                     }

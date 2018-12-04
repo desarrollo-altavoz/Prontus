@@ -5,7 +5,7 @@ var Recordarpass = {
             formSelector: '#FrmRecordar',
             actionURL:  '/' + dir_cgi_cpan + '/prontus_recordarpass.cgi',
             redirURL:   '/'+prontus_id+'/cpan/core/prontus_index.html',
-            okMsg:      'La nueva contraseña ha sido enviada a tu email registrado en Prontus.'
+            okMsg:      ProntusLangController.getString('_remember_pass_new_pass_sent')
         };
 
         

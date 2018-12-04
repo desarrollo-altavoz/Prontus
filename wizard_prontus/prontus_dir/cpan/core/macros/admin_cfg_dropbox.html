@@ -1,16 +1,16 @@
 <div class="listado">
 
     <div style="height:37px;">
-        <p style="float: left;"><b>Configuración de Dropbox</b>: %%_prontus_id%%-dropbox.cfg</p>
+        <p style="float: left;"><b>%%_msg_prontus(_dropbox_setting)%%</b>: %%_prontus_id%%-dropbox.cfg</p>
         <div class="botones">
             <div class="boton-gris3 aright">
-                <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                    <span>Cancelar</span>
+                <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                    <span>%%_msg_prontus(_cancel)%%</span>
                 </a>
             </div>
             <div class="boton-gris3 aright">
-                <a onclick="Cfgedit.guardaCfg('dropbox'); return false;" href="#" class="button" title="Guardar">
-                    <span>Guardar</span>
+                <a onclick="Cfgedit.guardaCfg('dropbox'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                    <span>%%_msg_prontus(_save)%%</span>
                 </a>
             </div>
         </div>
@@ -27,13 +27,13 @@
             <input type="hidden" name="_tab" value="cfg-tab12" />
             <input type="hidden" name="DROPBOX_CUSTOM_DIR" value="">
             <tr class="head">
-                <td>Variable</td>
-                <td>Valor</td>
+                <td>%%_msg_prontus(_variable)%%</td>
+                <td>%%_msg_prontus(_value)%%</td>
             </tr>
             <tr>
                 <td style="width: 300px;" valign="top">
                     DROPBOX_ACCESS_TOKEN<br>
-                    <span class="ayuda">Access Token de la <a href="https://www.dropbox.com/developers/apps" target="_blank">aplicación</a> para poder interactuar con la API de DropBox.</span>
+                    <span class="ayuda">%%_msg_prontus(_access_token_of)%% <a href="https://www.dropbox.com/developers/apps" target="_blank">%%_msg_prontus(_application)%%</a> %%_msg_prontus(_to_interact_dropbox_api)%%</span>
                 </td>
                 <td>
                     <input type="text" name="DROPBOX_ACCESS_TOKEN" value="%%DROPBOX_ACCESS_TOKEN%%" class="fieldform"/>
@@ -42,7 +42,7 @@
             <tr>
                 <td style="width: 300px;" valign="top">
                     DROPBOX_FILEXT_EXCLUDE<br>
-                    <span class="ayuda">Listado de extensiones de archivos que serán excluidos del proceso de respaldo (separadas por coma, sin punto).</span>
+                    <span class="ayuda">%%_msg_prontus(_dropbox_filext_exclude_hint)%%</span>
                 </td>
                 <td>
                     <input type="text" name="DROPBOX_FILEXT_EXCLUDE" value="%%DROPBOX_FILEXT_EXCLUDE%%" class="fieldform"/>
@@ -51,7 +51,7 @@
             <tr>
                 <td style="width: 300px;" valign="top">
                     DROPBOX_CUSTOM_DIR<br>
-                    <span class="ayuda">Directorios adicionales del artículo que se respaldarán. Estos se buscarán en el directorio /artic/&lt;fecha_dir&gt;/<br/>Por defecto, solo se consideran los archivos que tengan en el nombre el TS del artículo.</span>
+                    <span class="ayuda">%%_msg_prontus(_dropbox_custom_dir_hint)%%</span>
                 </td>
                 <td>
                     <div id="dropbox_customdir">
@@ -62,7 +62,7 @@
                     </div>
                     <div class="boton-gris3 aleft">
                         <a onclick="Cfgedit.agregarDropboxCustomdir(); return false;" href="#" class="button">
-                            <span>+ Agregar</span>
+                            <span>+ %%_msg_prontus(_add)%%</span>
                         </a>
                     </div>
                 </td>
@@ -75,13 +75,13 @@
     <br/>
     <div class="botones">
         <div class="boton-gris3 aright">
-            <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                <span>Cancelar</span>
+            <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                <span>%%_msg_prontus(_cancel)%%</span>
             </a>
         </div>
         <div class="boton-gris3 aright">
-            <a onclick="Cfgedit.guardaCfg('dropbox'); return false;" href="#" class="button" title="Guardar">
-                <span>Guardar</span>
+            <a onclick="Cfgedit.guardaCfg('dropbox'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                <span>%%_msg_prontus(_save)%%</span>
             </a>
         </div>
     </div>

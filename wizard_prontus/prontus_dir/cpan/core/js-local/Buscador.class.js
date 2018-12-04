@@ -36,7 +36,7 @@ var Buscador = {
     urlMegaLupa: './prontus_art_megalupa.cgi',
     urlCargaMisBusquedas: './prontus_art_megalupa_cargar.cgi',
     urlBorraMisBusquedas: './prontus_art_megalupa_borrar.cgi',
-    textoBuscador: 'Buscar por Titular',
+    textoBuscador: ProntusLangController.getString('_search_by_title'),
 
     refreshMisBusquedas: true,
     arrMisBusquedas: null,

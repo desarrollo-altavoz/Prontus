@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Administrar Portadas &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <title>%%_msg_prontus(_manage_front)%% &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css"/>
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/intercambiar.css" />
@@ -33,7 +33,7 @@
 
                 <!--TITULO PRINCIPAL-->
                 <div class="top-titulo960">
-                  <h1 class="titular">Administrar Portadas</h1>
+                  <h1 class="titular">%%_msg_prontus(_manage_front)%%</h1>
                   <div class="boton-gris3 aright"><a href="prontus_art_newadmin.cgi?_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg" class="button"><span>&laquo; Volver</span></a></div>
                 </div>
                 <!-- / TITULO PRINCIPAL-->
@@ -44,9 +44,9 @@
                 <div class="col960 div_intercambiar">
 
                     <div id="tabs-admin" class="boton-gris1">
-                      <a href="#tab1" class="button selected"><span>Duplicar</span></a>
-                      <a href="#tab2" class="button"><span>Intercambiar</span></a>
-                      <a href="#tab3" class="button"><span>Eliminar</span></a>
+                      <a href="#tab1" class="button selected"><span>%%_msg_prontus(_duplicate)%%</span></a>
+                      <a href="#tab2" class="button"><span>%%_msg_prontus(_exchange)%%</span></a>
+                      <a href="#tab3" class="button"><span>%%_msg_prontus(_delete)%%</span></a>
                     </div>
 
                     <div id="tab1" class="auxi">
@@ -57,7 +57,7 @@
                             <table width="100%">
                               <tr>
                                 <td colspan="2" align="left" class="titulo">
-                                <b>Plantillas Actuales</b>
+                                <b>%%_msg_prontus(_current_template)%%</b>
                                 <p>(de acuerdo a %%_prontus_id%%.cfg)</p>
                                 </td>
                               </tr>
@@ -72,19 +72,19 @@
                               </tr>
                               <!--multied-->
                               <tr>
-                                <td align="left" colspan="2"><label for="portada_base">Configurar como base: </label>
+                                <td align="left" colspan="2"><label for="portada_base">%%_msg_prontus(_set_base)%%: </label>
                                   <input type="checkbox" name="portada_base" id="portada_base" value="1"/></td>
                               </tr>
                               <!--/multied-->
                               <tr>
                                 <td colspan="2" align="center">
                                     <div class="botones">
-                                      <a onclick="PortAdmin.duplicar(); return false;" href="#" class="button"><span>Duplicar</span></a>
-                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+                                      <a onclick="PortAdmin.duplicar(); return false;" href="#" class="button"><span>%%_msg_prontus(_duplicate)%%</span></a>
+                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>%%_msg_prontus(_cancel)%%</span></a>
                                     </div>
                                     <!--multied-->
                                     <div class="cuadro-texto">
-                                        <p><b>*</b> La plantilla corresponde a una portada base.</p>
+                                        <p><b>*</b> %%_msg_prontus(_template_is_a_front_page_base)%%</p>
                                     </div>
                                     <!--/multied-->
                                 </td>
@@ -101,7 +101,7 @@
                             <table width="100%">
                               <tr>
                                 <td colspan="2" align="left" class="titulo">
-                                <b>Seleccione portadas a Intercambiar</b>
+                                <b>%%_msg_prontus(_select_front_page_exchange)%%</b>
                                 </td>
                               </tr>
                               <tr>
@@ -117,13 +117,13 @@
                               <tr>
                                 <td colspan="2" align="center">
                                     <div class="botones">
-                                      <a onclick="Intercambio.cambiar(); return false;" href="#" class="button"><span>Intercambiar portadas seleccionadas</span></a>
-                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+                                      <a onclick="Intercambio.cambiar(); return false;" href="#" class="button"><span>%%_msg_prontus(_exchange_front_pages_selected)%%</span></a>
+                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>%%_msg_prontus(_cancel)%%</span></a>
                                     </div>
                                     <div class="cuadro-texto">
-                                      <p>Este proceso dejará la portada del lado izquierdo con las <b>plantillas y contenido</b> de la portada de la derecha y viceversa. </p>
-                                      <p><b>Tip:</b> Para deshacer el último intercambio realizado, puede proceder a intercambiar las mismas portadas nuevamente.</p>
-                                      <!--multied--><p><b>*</b> La plantilla corresponde a una portada base.</p><!--/multied-->
+                                      <p>%%_msg_prontus(_front_page_exchange_msg)%% </p>
+                                      <p><b>%%_msg_prontus(_hint)%%:</b> %%_msg_prontus(_front_page_exchange_hint)%%</p>
+                                      <!--multied--><p><b>*</b> %%_msg_prontus(_template_is_a_front_page_base)%%</p><!--/multied-->
                                     </div>
                                 </td>
                               </tr>
@@ -137,8 +137,8 @@
                             <table width="100%">
                               <tr>
                                 <td colspan="2" align="left" class="titulo">
-                                <b>Plantillas Actuales</b>
-                                <p>(de acuerdo a %%_prontus_id%%.cfg)</p>
+                                <b>%%_msg_prontus(_current_templates)%%</b>
+                                <p>(%%_msg_prontus(_according_to)%% %%_prontus_id%%.cfg)</p>
                                 </td>
                               </tr>
                               <tr>
@@ -153,12 +153,12 @@
                               <tr>
                                 <td colspan="2" align="center">
                                     <div class="botones">
-                                      <a onclick="PortAdmin.borrar(); return false;" href="#" class="button"><span>Eliminar portada</span></a>
-                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+                                      <a onclick="PortAdmin.borrar(); return false;" href="#" class="button"><span>%%_msg_prontus(_delete_front_page)%%</span></a>
+                                      <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>%%_msg_prontus(_cancel)%%</span></a>
                                     </div>
                                     <!--multied-->
                                     <div class="cuadro-texto">
-                                        <p><b>*</b> La plantilla corresponde a una portada base.</p>
+                                        <p><b>*</b> %%_msg_prontus(_template_is_a_front_page_base)%%</p>
                                     </div>
                                     <!--/multied-->
                                 </td>

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Administrar comentarios &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <title>%%_msg_prontus(_manage_comment)%% &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/coment.css?v3" />
@@ -17,6 +17,8 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Coment.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Utiles.class.js"></script>
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/lang/ProntusLangController.class.js"></script>
+
     <script type="text/javascript">
         $(function() {
             Coment.init();
@@ -35,7 +37,7 @@
 
                 <!--TITULO PRINCIPAL-->
                 <div class="top-titulo">
-                  <h1 class="titular">Comentarios</h1>
+                  <h1 class="titular">%%_msg_prontus(_coments)%%</h1>
                 </div>
                 <!-- / TITULO PRINCIPAL-->
 
@@ -48,28 +50,28 @@
                             <input type="hidden" name="_prontus_id" value="%%_prontus_id%%"/>
                             <table class="tableform">
                                 <tr>
-                                    <td width="215">Ver por Titular art&iacute;culo:</td>
+                                    <td width="215">%%_msg_prontus(_view_by_headline)%%:</td>
                                     <td width="150"><input class="fieldform filtroinput" type="text" name="OBJTIT_SEARCH"/></td>
                                     <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png" alt="lu2"/></a></td>
                                 </tr>
                                 <tr>
-                                    <td width="215">Ver por Timestamp de art&iacute;culo:</td>
+                                    <td width="215">%%_msg_prontus(_view_by_artic_timestamp)%%:</td>
                                     <td width="150"><input class="fieldform filtroinput" type="text" name="OBJID"/></td>
                                     <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png" alt="lu2"/></a></td>
                                 </tr>
                                 <tr>
-                                   <td>Ver por Status:</td>
+                                   <td>%%_msg_prontus(_view_by_status)%%:</td>
                                    <td>
                                        <select name="STATUS" class="fieldform"> <!-- onchange="document.coment.submit();" -->
-                                           <option value="">Todos</option>
-                                           <option value="1">Con Alta</option>
-                                           <option value="0">Sin Alta </option>
+                                           <option value="">%%_msg_prontus(_all)%%</option>
+                                           <option value="1">%%_msg_prontus(_approved)%%</option>
+                                           <option value="0">%%_msg_prontus(_no_approved)%% </option>
                                        </select>
                                    </td>
                                    <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png" alt="lu2"/></a></td>
                                 </tr>
                                 <tr>
-                                   <td>Ver por Nick:</td>
+                                   <td>%%_msg_prontus(_view_by_nickname)%%:</td>
                                    <td><input type="text" name="NICK" class="fieldform filtroinput"/></td>
                                    <td><a href="#" onclick="document.coment.submit(); return false;"><img onmouseover="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_on.gif')" onmouseout="Coment.chgImgSrc(this, '/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png')" src="/%%_prontus_id%%/cpan/core/imag/boto/lu2_of.png" alt="lu2"/></a></td>
                                 </tr>
@@ -78,7 +80,7 @@
                     </div>
                     <div class="aright">
                         <div class="coment_reload">
-                            <div class="boton-gris3 aleft"><a class="button" href="#" onclick="window.location.reload();"><span>Refresh</span></a></div>
+                            <div class="boton-gris3 aleft"><a class="button" href="#" onclick="window.location.reload();"><span>%%_msg_prontus(_msg_generic_refresh)%%</span></a></div>
                         </div>
                     </div>
                 </div> <!-- filtros  -->
@@ -87,10 +89,10 @@
                 <div class="col960">
 
                   <div class="rotulo">
-                    <div class="col0 aleft">Fecha/Hora</div>
-                    <div class="col1 aleft">Titular</div>
-                    <div class="col2 aleft">Comentario</div>
-                    <div class="col3 aleft">Nick / Email</div>
+                    <div class="col0 aleft">%%_msg_prontus(_date_time)%%</div>
+                    <div class="col1 aleft">%%_msg_prontus(_headline)%%</div>
+                    <div class="col2 aleft">%%_msg_prontus(_comment)%%</div>
+                    <div class="col3 aleft">%%_msg_prontus(_nick_email)%%</div>
                     <div class="col4 aleft"></div>
                   </div>
 
@@ -117,11 +119,11 @@
                           </div>
                           <!--coment_link_editar-->
                           <a href="../prontus_art_ficha.cgi?_file=%%_ts_ext%%&_fid=%%_fid%%&_path_conf=%%_path_conf%%&fotosvtxt=/1/2/3/4" class="editar_item %%_class_open_fid%%">
-                              <img src="/%%_prontus_id%%/cpan/core/imag/boto/editar.png" width="18" height="18" alt="Editar artículo" title="Editar artículo" /></a>
+                              <img src="/%%_prontus_id%%/cpan/core/imag/boto/editar.png" width="18" height="18" alt="%%_msg_prontus(_edit_artic)%%" title="%%_msg_prontus(_edit_artic)%%" /></a>
                           <!--/coment_link_editar-->
                           %%LNK_VERMAS%%
-                          <a href="#" onclick="Coment.toggleSt(this, '%%COMENT_ID%%'); return false;"><img class="status" src="/%%_prontus_id%%/cpan/core/imag/boto/%%status%%.png" width="18" height="18" alt="%%status%%" title="Aprobar comentario" /></a>
-                          <a href="#" onclick="Coment.borrar(this, '%%COMENT_ID%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/borrar.png" width="18" height="18" alt="borrar" title="Borrar comentario" /></a>
+                          <a href="#" onclick="Coment.toggleSt(this, '%%COMENT_ID%%'); return false;"><img class="status" src="/%%_prontus_id%%/cpan/core/imag/boto/%%status%%.png" width="18" height="18" alt="%%status%%" title="%%_msg_prontus(_approve_comment)%%" /></a>
+                          <a href="#" onclick="Coment.borrar(this, '%%COMENT_ID%%'); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/borrar.png" width="18" height="18" alt="%%_msg_prontus(_delete)%%" title="%%_msg_prontus(_delete_comment)%%" /></a>
 
                         </div>
                     </div>
@@ -131,7 +133,7 @@
                 </div>
                 <!-- / COLUMNA IZQUIERDA-->
                 <div class="paginas">%%PAGINACION%%</div>
-                <a href="#top" class="subir">Subir</a>
+                <a href="#top" class="subir">%%_msg_prontus(_go_up)%%</a>
               </div>
            </div>
         </div>
@@ -144,9 +146,9 @@
 
        $('.status').each(function () {
            if ($(this).attr('alt') == 'btn_ticket_green') {
-               $(this).attr('title', 'Desaprobar comentario');
+               $(this).attr('title', ProntusLangController.getString('_disapprove_comment'));
            } else {
-               $(this).attr('title', 'Aprobar comentario');
+               $(this).attr('title', ProntusLangController.getString('_approve_comment'));
            }
        });
        $('.fila1:odd').removeClass('gris');

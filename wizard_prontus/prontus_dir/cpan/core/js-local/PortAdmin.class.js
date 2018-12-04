@@ -4,12 +4,13 @@ var PortAdmin = {
     duplicar: function () {
     
         if ($('select[name="Lst_PORT3"] option:selected').length) {
-            var newport = prompt('Plantilla Origen: ' + $('select[name="Lst_PORT3"] option:selected').val() + '\nIngrese el nombre de la nueva plantilla, ejemplo: politica.html', '');
+            var plantillaSel = $('select[name="Lst_PORT3"] option:selected').val();
+            var newport = prompt(ProntusLangController.getString('_portadmin_prompt_new_template', {'template': plantillaSel}), '');
             if (newport) {
                 var expr = /^[a-z\_0-9][a-z\_\-0-9]*\.[a-z\_0-9\-]+$/;
                 var found = expr.exec(newport);
                 if (!found) {
-                    alert('Nombre de plantilla no válido.\nDebe comenzar con letra, número o underscore.\nCaracteres permitidos:letras minúsculas, dígitos, guión y underscore más el punto para la extensión, la cual es obligatoria.');
+                    alert(ProntusLangController.getString('_portadmin_invalid_template_name'));
                 } else {
                     $('input[name="NEW_PORT"]').val(newport);
                     var configAjax = {
@@ -29,13 +30,13 @@ var PortAdmin = {
                 }
             };
         } else {
-            alert("Por favor, seleccione una portada para duplicar.");
+            alert(ProntusLangController.getString('_portadmin_duplicate_port_required'));
         }
     },
     borrar: function () {
     
         if ($('select[name="Lst_PORT4"] option:selected').length) {
-            if (confirm("¿Está seguro de eliminar esta Portada?")) {
+            if (confirm(ProntusLangController.getString('_portadmin_delete_port_confirm'))) {
                 var configAjax = {
                     formSelector: '#frmBorrar',
                     actionURL: '/' + Intercambio.dir_cgi_cpan + '/prontus_pltport_borrar.cgi',
@@ -53,7 +54,7 @@ var PortAdmin = {
                 SubmitForm.submitGenericAjax(configAjax, opts);
             };
         } else {
-            alert("Por favor, seleccione una portada para borrar.");
+            alert(ProntusLangController.getString('_portadmin_delete_port_required'));
         }
     }
 };

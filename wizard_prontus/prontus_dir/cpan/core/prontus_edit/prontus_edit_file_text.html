@@ -18,29 +18,29 @@
         <input type="hidden" name="text_file" id="text_file" value="" />
         <input type="hidden" name="formato_retcarro" id="formato_retcarro" value="%%formato_retcarro%%" />
 
-        <div class="ruta aleft">Archivo: <span class="red">%%path_file_label%%</span><!--editor--> <span class="gris">(%%formato_retcarro%%)</span><!--/editor--></div>
+        <div class="ruta aleft">%%_msg_prontus(_file)%%: <span class="red">%%path_file_label%%</span><!--editor--> <span class="gris">(%%formato_retcarro%%)</span><!--/editor--></div>
 
         <div class="botones aright botones-accion" id="acciones">
           <div class="acciones boton-gris3">
             <!--guardar-->
-            <a class="button" href="#" onclick="Editor.accionGuardar(); return false;" title="Guardar archivo actual"><span>Guardar</span></a>
+            <a class="button" href="#" onclick="Editor.accionGuardar(); return false;" title="%%_msg_prontus(_save_current_file)%%"><span>%%_msg_prontus(_save)%%</span></a>
             <!-- input type="submit" name="guardar" value=""  class="input"/-->
             <select name="charset_encoding">
-              <option value="ansi" %%selected_ansi%%>Codificación: ansi &nbsp;</option>
-              <option value="utf8" %%selected_utf8%%>Codificación: utf8 &nbsp;</option>
+              <option value="ansi" %%selected_ansi%%>%%_msg_prontus(_coding)%% ansi &nbsp;</option>
+              <option value="utf8" %%selected_utf8%%>%%_msg_prontus(_coding)%% utf8 &nbsp;</option>
             </select>
             <!--/guardar-->
 
             <!--borrar-->
-            <a class="button" href="#" onclick="Editor.accionBorrar(); return false;" title="Borrar archivo actual"><span>Borrar</span></a>
+            <a class="button" href="#" onclick="Editor.accionBorrar(); return false;" title="%%_msg_prontus(_delete_current_file)%%"><span>%%_msg_prontus(_delete)%%</span></a>
             <!--/borrar-->
 
             <!--copiar-->
-            <a class="button" href="#" onclick="Editor.accionCopiar(); return false;" title="Copiar archivo actual con otro nombre"><span>Copiar</span></a>
+            <a class="button" href="#" onclick="Editor.accionCopiar(); return false;" title="%%_msg_prontus(_copy_current_file_with_another_name)%%"><span>%%_msg_prontus(_copy)%%</span></a>
             <!--/copiar-->
 
             <!--cerrar-->
-            <a class="button" href="#" onclick="Editor.accionCerrar('text'); return false;" title="Cierra el archivo actual"><span>Cerrar</span></a>
+            <a class="button" href="#" onclick="Editor.accionCerrar('text'); return false;" title="%%_msg_prontus(_close_current_file)%%"><span>%%_msg_prontus(_close)%%</span></a>
             <!--/cerrar-->
 
           </div>
@@ -51,16 +51,16 @@
         <div class="opciones">
           <!--combos_marcas-->
           <div class="aleft">
-            Marcas en FIDs:<br>
+            %%_msg_prontus(_fid_marks)%%:<br>
             <select name="sel_marca_usr" class="neg" onchange="Editor.insertMarca(this)">
-              <option value="" selected="selected">- seleccione -</option>
+              <option value="" selected="selected">- %%_msg_prontus(_select)%% -</option>
               %%marcas_usr_options%%
             </select>
           </div>
           <div class="aleft">
-            Marcas Reservadas:<br>
+            %%_msg_prontus(_reserved_marks)%%:<br>
             <select name="sel_marca_gral" class="neg" onchange="Editor.insertMarca(this)">
-              <option value="" selected="selected">- seleccione -</option>
+              <option value="" selected="selected">- %%_msg_prontus(_select)%% -</option>
               <option value="_SERVER_NAME">_SERVER_NAME</option>
               <option value="_PRONTUS_ID">_PRONTUS_ID</option>
               <option value="_FILE">_FILE</option>
@@ -85,9 +85,9 @@
             </select>
           </div>
           <div class="aleft">
-            Marcas de Control:<br>
+            %%_msg_prontus(_control_marks)%%:<br>
             <select name="sel_marca_ctrl" class="neg" onchange="Editor.insertMarca(this)">
-              <option value="" selected="selected">- seleccione -</option>
+              <option value="" selected="selected">- %%_msg_prontus(_select)%% -</option>
               <option value="IF,istag">IF(param)</option>
               <option value="NIF,istag">NIF(param)</option>
               <option value="MACRO">MACRO(file)</option>
@@ -101,12 +101,12 @@
           </div>
           <!--/combos_marcas-->
           <div class="aleft">
-            Insertar Snippet:<br>
+            %%_msg_prontus(_insert_snippet)%%:<br>
             <select name="sel_snippet" class="neg" onchange="insertSnippet(this)">
-              <option value="" selected="selected">- seleccione -</option>
+              <option value="" selected="selected">- %%_msg_prontus(_select)%% -</option>
               %%snippets_options%%
             </select>
-            <a href="#" onclick="Editor.showHelp('snippet', '/%%_PRONTUS_ID%%'); return false;" title="Click para ver que son los Snippets">[¿Qué es esto?]</a>
+            <a href="#" onclick="Editor.showHelp('snippet', '/%%_PRONTUS_ID%%'); return false;" title="%%_msg_prontus(_click_to_see_what_are_the_snippets)%%">[%%_msg_prontus(_what_is_this)%%]</a>
           </div>
         </div>
       </div>

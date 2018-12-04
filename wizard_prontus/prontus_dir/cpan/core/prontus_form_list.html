@@ -47,7 +47,7 @@
   <input type="hidden" name="_format" id="_format" value="csv" />
 </form>
 <div class="col960 formbackup">
-  <div class="rotulo"><div class="titulo">Administrar Archivo de Datos</div></div>
+  <div class="rotulo"><div class="titulo">%%_msg_prontus(_managing_data_file)%%</div></div>
   <div class="box-gris">
     <div class="box-auxi">
       <table cellspacing="0" class="tableback">
@@ -60,23 +60,21 @@
           <td align="left" valign="middle" class="hint" colspan="%%_colspan%%">
             <div class="form_icon">
               <a href="javascript:Fid.descargarArchivo()">
-                <img src="/%%_prontus_id%%/cpan/core/imag/form_save.png" alt="Guardar" />
-                <span>Descargar Archivo</span></a>
-              Aquí podrá descargar el archivo completo con los datos de los formularios que se han enviado enviado.
+                <img src="/%%_prontus_id%%/cpan/core/imag/form_save.png" alt="%%_msg_prontus(_save)%%" />
+                <span>%%_msg_prontus(_download_file)%%</span></a>
+              %%_msg_prontus(_form_list_download_msg)%%
             </div>
             <div class="form_icon">
               <a href="javascript:Fid.eliminarArchivo()">
-                <img src="/%%_prontus_id%%/cpan/core/imag/form_trash.png" alt="Eliminar" />
-                <span>Eliminar Archivo</span></a>
-              <b>Importante:</b> Si ud. borra el archivo de datos, también se borrarán los archivos adjuntos que aquí e muestran.
+                <img src="/%%_prontus_id%%/cpan/core/imag/form_trash.png" alt="%%_msg_prontus(_erase)%%" />
+                <span>%%_msg_prontus(_delete_file)%%</span></a>
+              <b>%%_msg_prontus(_important)%%:</b> %%_msg_prontus(_form_list_delete_msg)%%
             </div>
           </td>
         </tr>
         <tr valign="top">
           <td align="left" valign="middle" class="separador hint" colspan="%%_colspan%%">
-          Se presentan las <u>primeras %%_max_cols%% columnas</u> del archivo de datos, más los links a los archivos adjuntos,
-          incluyendo aquellos que no fueron enviados por correo. En este listado se presentan sólo las <u>%%_rows_order%% %%_max_rows%% filas</u>.
-          Para ver el listado completo, debe descargar el archivo.<br/><br/>
+          %%_msg_prontus(_form_list_columns_msg1)%% %%_max_cols%% %%_msg_prontus(_form_list_columns_msg2)%% <u>%%_rows_order%% %%_max_rows%% %%_msg_prontus(_form_list_columns_msg3)%%<br/><br/>
           </td>
         </tr>
 

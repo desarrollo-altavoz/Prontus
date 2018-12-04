@@ -1,17 +1,16 @@
 
               <div class="crons">
-                <div class="titulo">Crons de Prontus:</div>
-                <div class="desc">Los crons son scripts que se ejecutan regularmente y que realizan labores de administración y mantención.<br/>
-                  Por ejemplo, actualizar los índices del buscador del sitio, actualizar calendarios, etc.</div>
+                <div class="titulo">%%_msg_prontus(_prontus_crons)%%:</div>
+                <div class="desc">%%_msg_prontus(_prontus_crons_hint)%%</div>
                 <div class="listado">
                   <table width="100%" class="tableform">
                     <tr class="head">
-                      <td>Minutos</td>
-                      <td>Horas</td>
-                      <td>Días</td>
-                      <td>Mes</td>
-                      <td>Día de la semana</td>
-                      <td>Script a ejecutar</td>
+                      <td>%%_msg_prontus(_minutes)%%</td>
+                      <td>%%_msg_prontus(_hours)%%</td>
+                      <td>%%_msg_prontus(_days)%%</td>
+                      <td>%%_msg_prontus(_month)%%</td>
+                      <td>%%_msg_prontus(_weekday)%%</td>
+                      <td>%%_msg_prontus(_script_to_execute)%%</td>
                     </tr>
                   <!--loop_crons-->
                     <tr>
@@ -24,25 +23,25 @@
                     </tr><!--/loop_crons-->
                   <!--no_crons-->
                     <tr>
-                      <td colspan="6">No hay scripts Prontus ingresados en Crontab</td>
+                      <td colspan="6">%%_msg_prontus(_no_scripts_entered_in_crontab)%%</td>
                     </tr><!--/no_crons-->
                   </table>
                 </div>
                 <div class="desc">
-                  <b>Ayuda:</b><br/>
+                  <b>%%_msg_prontus(_help)%%:</b><br/>
                   <div class="help aleft">
-                  - Minutos: (0-59)<br/>
-                  - Horas: (0-23)<br/>
-                  - Días: (1-31)<br/>
-                  - Mes: (1-12)<br/>
-                  - Día de la semana: (0-6), siendo 1=lunes, 2=martes,... 6=sábado y 0=domingo (a veces también 7=domingo)
+                  - %%_msg_prontus(_minutes)%%: (0-59)<br/>
+                  - %%_msg_prontus(_hours)%%: (0-23)<br/>
+                  - %%_msg_prontus(_days)%%: (1-31)<br/>
+                  - %%_msg_prontus(_month)%%: (1-12)<br/>
+                  - %%_msg_prontus(_crons_weekday_hint)%%
                   </div>
                   <div class="help aright">
-                  Algunos indicadores:<br/>
-                  - El Asterisco, indica "todos los valores"<br/>
-                  - Los guiones indican rangos<br/>
-                  - Las comas separan distintos valores<br/>
-                  - Los slashs (/) indican división por el dígito. Por ejemplo: */2, en la columna Horas, indica Horas pares o "cada 2 Horas".
+                  %%_msg_prontus(_some_indicators)%%:<br/>
+                  - %%_msg_prontus(_asterick_indicate_all_values)%%<br/>
+                  - %%_msg_prontus(_dashes_indicate_ranges)%%<br/>
+                  - %%_msg_prontus(_commas_separate_different_values)%%<br/>
+                  - %%_msg_prontus(_slash_hint)%%
                   </div>
                 </div>
               </div>

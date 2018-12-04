@@ -82,7 +82,7 @@ var SubmitForm = {
 
     // -------------------------------------------------------------------
     handleError:   function(url, XMLHttpRequest, textStatus, errorThrown) {
-        alert('Server error procesando request ajax:\nURL invocada:' +
+        alert(ProntusLangController.getString('_submitform_ajax_error') +
                 url + '\ntextStatus=' +
                 textStatus + '\nXMLHttpRequest.status=' +
                 XMLHttpRequest.status + '-' + XMLHttpRequest.statusText +

@@ -43,7 +43,7 @@ var Fid = {
             dateFormat: 'dd/mm/yy',
             buttonImage: '/'+mainFidJs.PRONTUS_ID+'/cpan/core/imag/boto/calendar-s.gif',
             buttonImageOnly: true,
-            buttonText: 'Mostrar calendario',
+            buttonText: ProntusLangController.getString('_fid_show_calendar'),
             showOn: 'both'
         });
 
@@ -147,7 +147,7 @@ var Fid = {
                     var response = data.result
                     if (response == '0') {
                         $('#imagenescargadas').append('<div style="margin-left:10px;margin-top:16px;width:120px;height:135px;overflow:auto;display:inline;float:left">' +
-                                '<div style="color:#FFA500;">Imagen con errores</div>' +
+                                '<div style="color:#FFA500;">'+ProntusLangController.getString('_fid_image_with_errors')+'</div>' +
                                 '</div>');
 
                     } else if (response != '') {
@@ -192,7 +192,7 @@ var Fid = {
                     $.each(data.files, function (index, file) {
                         var ext = (file.name).split('.').pop().toLowerCase();
                         if ($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
-                            alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, jpg o jpeg.");
+                            alert(ProntusLangController.getString('_fid_invalid_file_extension', {'filename': file.name}));
                             fail = true;
                             return false; /* break. */
                         }
@@ -216,7 +216,7 @@ var Fid = {
         $('#fileInput').uploadify({
             //debug:          true,
             removeCompleted: false,
-            buttonText:     'Examinar...',
+            buttonText:     ProntusLangController.getString('_fid_upload_examine'),
             swf:            '/' + mainFidJs.PRONTUS_ID + '/cpan/core/js-local/uploadify/uploadify.swf',
             auto:           true,
             multi:          true,
@@ -239,7 +239,7 @@ var Fid = {
             'onUploadSuccess': function(fileObj, data, response) {
 
                 if (response === false) {
-                    alert( 'No fue posible subir correctamente la imagen [' + fileObj.name + ']');
+                    alert(ProntusLangController.getString('_fid_upload_response_error', {'filename': fileObj.name}));
                     return true;
                 } else {
                     var arrResp = [];
@@ -263,7 +263,7 @@ var Fid = {
                 }
             },
             'onUploadError': function(fileObj, errorCode, errorMsg, errorString) {
-                alert( '[' + errorMsg + '] No fue posible subir la imagen [' + fileObj.name + ']');
+                alert( '[' + errorMsg + '] '+ProntusLangController.getString('_fid_upload_error')+' [' + fileObj.name + ']');
                 return true;
             },
             'onDialogOpen': function() {
@@ -614,14 +614,23 @@ var Fid = {
         var objInput = Fid.objFormFid['_BORR_'+idThumb];
         if (objInput.checked) {
             objInput.checked = false;
-            $('#' + idButtonDel).attr({alt: 'Click para borrar', title: 'Click para borrar'});
-            $('#' + idThumb).attr({src: $('#' + idThumb).attr('realsrc'), width: $('#' + idThumb).attr('realwidth')});
+            $('#' + idButtonDel).attr({
+                alt: ProntusLangController.getString('_fid_click_to_delete'),
+                title: ProntusLangController.getString('_fid_click_to_delete')
+            });
+            $('#' + idThumb).attr({
+                src: $('#' + idThumb).attr('realsrc'),
+                width: $('#' + idThumb).attr('realwidth')
+            });
             $('#' + idThumb).removeAttr('realsrc');
             $('#' + idThumb).removeAttr('realwidth');
 
         } else {
             objInput.checked = true;
-            $('#' + idButtonDel).attr({alt: 'Click para cancelar eliminación', title: 'Click para cancelar eliminación'});
+            $('#' + idButtonDel).attr({
+                alt: ProntusLangController.getString('_fid_click_to_cancel_delete'),
+                title: ProntusLangController.getString('_fid_click_to_cancel_delete')
+            });
 
             // guarda ruta y ancho original
             $('#' + idThumb).attr('realsrc', $('#' + idThumb).attr('src'));
@@ -658,7 +667,7 @@ var Fid = {
     // -------------------------------------------------------------------------
     copyArtic: function(ts) {
 
-        if(! confirm("Este artículo será copiado.\nSe perderán los datos que no hayas guardado.\n¿Deseas continuar?")) {
+        if(! confirm(ProntusLangController.getString('_fid_duplicate_article_confirm'))) {
             return;
         }
 
@@ -797,7 +806,7 @@ var Fid = {
     descargarArchivo: function() {
 
         var url = "prontus_form_download.cgi?" + $('#backupDatos').serialize();
-        open(url, 'Descargar respaldo');
+        open(url, ProntusLangController.getString('_fid_download_backup'));
     },
 
     // -------------------------------------------------------------------------
@@ -843,7 +852,7 @@ var Fid = {
             fecha = $('input[name="_FECHAESHRT"]');
             hora  = $('input[name="_HORAE"]');
         } else {
-            alert('tipo desconocido: ' + tipo);
+            alert(ProntusLangController.getString('_fid_unknown_type') + tipo);
             return;
         }
 

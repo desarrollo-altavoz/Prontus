@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Regenerar Tabla de Artículos</title>
+    <title>%%_msg_prontus(_regenerate_artic_table)%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/tax.css" />
@@ -24,7 +24,7 @@
     <div class="col685">
       <!--error-->
       <div class="rotulo">
-        <div class="titulo">&nbsp; &nbsp;Error</div>
+        <div class="titulo">&nbsp; &nbsp;%%_msg_prontus(_msg_generic_error)%%</div>
       </div>
       <div class="box-gris">
         <div class="box-auxi">
@@ -33,7 +33,7 @@
           </div>
           <br/><br/>
           <div class="boton-generico boton-loading">
-            <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>Cerrar</span></a>
+            <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>%%_msg_prontus(_close)%%</span></a>
           </div>
         </div>
       </div>
@@ -41,22 +41,22 @@
       <!--content-->
       <div class="rotulo">
         <div class="titulo aright"># %%_tags_id%% &nbsp;</div>
-        <div class="titulo">&nbsp; &nbsp;Últimos %%_max_artics%% Artículos</div>
+        <div class="titulo">&nbsp; &nbsp;%%_msg_prontus(_last)%% %%_max_artics%% %%_msg_prontus(_articles)%%</div>
 
       </div>
       <div class="box-gris">
         <div class="box-auxi box-resumen">
-          <div class="titulo">Nombre del Tag: <b>%%_tags_tag%%</b></div>
+          <div class="titulo">%%_msg_prontus(_tag_name)%%: <b>%%_tags_tag%%</b></div>
           <div class="msg-loading">
-            <div class="description">Total de Artículos: <b>%%_tags_total%%</b></div>
+            <div class="description">%%_msg_prontus(_total_artic)%%: <b>%%_tags_total%%</b></div>
             <!--msg-->
             <table class="main-table">
               <tr>
-                <th style="width:90px;">Fecha Pub.</th>
-                <th style="width:80px;">Hora Pub.</th>
-                <th>Artículo</th>
-                <th style="width:55px;">Editar</th>
-                <th style="width:95px;">¿Disponible?</th>
+                <th style="width:90px;">%%_msg_prontus(_publishing_dale)%%</th>
+                <th style="width:80px;">%%_msg_prontus(_publishing_time)%%</th>
+                <th>%%_msg_prontus(_artic)%%</th>
+                <th style="width:55px;">%%_msg_prontus(_edit)%%</th>
+                <th style="width:95px;">%%_msg_prontus(_available_question)%%</th>
               </tr>
               <!--loop-->
               <tr>
@@ -64,16 +64,16 @@
                 <td>%%_tag_horap%%</td>
                 <td><a href="%%_tag_link%%" target="_blank">%%_tag_titu%%</a></td>
                 <td><a href="%%_tag_edit_link%%" target="_blank" class="%%_class_open_fid%%">
-                  <img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="Editar" title="Editar" class="cambia-boton" /></a></td>
-                <td><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" class="mostrar" alt="%%_mostrar%%" title="Artículo no Publicable" /></td>
+                  <img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/edit_of.png" width="18" height="18" alt="%%_msg_prontus(_edit)%%" title="%%_msg_prontus(_edit)%%" class="cambia-boton" /></a></td>
+                <td><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" class="mostrar" alt="%%_mostrar%%" title="%%_msg_prontus(_no_publishable)%%" /></td>
               </tr>
               <!--/loop-->
             </table>
-            <span><b>Nota:</b> Los artículos sin ticket verde, no estarán disponibles en el Web. Puede que no tengan Alta, o su fecha de publicación/expiración, no lo permitan.</span>
+            <span><b>%%_msg_prontus(_note)%%:</b> %%_msg_prontus(_tag_resumen_msg)%%</span>
             <!--/msg-->
             <br/><br/>
             <div class="boton-generico boton-loading">
-              <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>Cerrar</span></a>
+              <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>%%_msg_prontus(_close)%%</span></a>
             </div>
             <br/>
           </div>

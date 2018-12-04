@@ -10,9 +10,9 @@ var Captcha = {
         type: '',
         pathCGI: 'cgi-cpn',
         idContent: '#prontus_captcha_content',
-        msgSystem: 'Error en la implementación',
-        msgCGI: 'Error al leer el captcha, intente de nuevo',
-        msgType: 'Debe indicar el tipo de Captcha'
+        msgSystem: ProntusLangController.getString('_captcha_imp_error'),
+        msgCGI: ProntusLangController.getString('_captcha_load_error'),
+        msgType: ProntusLangController.getString('_captcha_missing_type')
     },
     
     generate: function(prop) {

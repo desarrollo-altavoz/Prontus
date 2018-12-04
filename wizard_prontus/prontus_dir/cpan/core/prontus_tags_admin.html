@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Administrar Tags &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <title>%%_msg_prontus(_manage_tags)%% &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/tax.css" />
@@ -31,8 +31,8 @@
             <div class="content col960b">
               <!--TITULO PRINCIPAL-->
               <div class="boton-gris1">
-                <a class="button" href="prontus_tax_admin.cgi?_entidad=seccion&amp;_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>Administrar Categorías</span></a>
-                <a class="button selected" href="javascript:void(0);"><span>Administrar Tags</span></a>
+                <a class="button" href="prontus_tax_admin.cgi?_entidad=seccion&amp;_path_conf=/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg"><span>%%_msg_prontus(_manage_categories)%%</span></a>
+                <a class="button selected" href="javascript:void(0);"><span>%%_msg_prontus(_manage_tags)%%</span></a>
               </div>
               <!-- / TITULO PRINCIPAL-->
               <div class="auxi">
@@ -41,8 +41,8 @@
 
                 <!--COLUMNA IZQUIERDA-->
                 <div class="botones-imp-exp">
-                  <a class="export colorbox" href="prontus_tags_export.cgi?path_conf=%%_path_conf%%&amp;Sbm_ACCION=Exportar" title="Exportar los tags en un XML"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/exp_of.png" class="cambia-boton" width="114" height="36" alt="exportar"/></a>
-                  <a class="import colorbox" href="/%%_PRONTUS_ID%%/cpan/core/prontus_tags_import.html" title="Importar los tags desde un XML"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/imp_of.png" class="cambia-boton" width="114" height="36" alt="importar"/></a>
+                  <a class="export colorbox" href="prontus_tags_export.cgi?path_conf=%%_path_conf%%&amp;Sbm_ACCION=Exportar" title="%%_msg_prontus(_export_tags_in_xml)%%"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/exp_of.png" class="cambia-boton" width="114" height="36" alt="exportar"/></a>
+                  <a class="import colorbox" href="/%%_PRONTUS_ID%%/cpan/core/prontus_tags_import.html" title="%%_msg_prontus(_import_tags_from_xml)%%"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/imp_of.png" class="cambia-boton" width="114" height="36" alt="importar"/></a>
                 </div>
 
                 <div id="buscador-tags">
@@ -54,11 +54,11 @@
                         <td width="185" align="left" valign="middle" class="bg-campo"><input type="text" name="search" id="search_texto" class="campo" value="%%input_search%%"/></td>
                         <td width="33" align="left" valign="middle" class="bg-boto">
                           <a href="#" onclick="Tags.realizarBusqueda(); return false;">
-                            <img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="Buscar Tags" title="Buscar Tags" /></a>
+                            <img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="%%_msg_prontus(_search_tags)%%" title="%%_msg_prontus(_search_tags)%%" /></a>
                         </td>
                         <td class="multi">
                           <!--multivista-->
-                          <input type="checkbox" name="vistas" id="buscar-vistas" value="1"%%vistas%% /> <label for="buscar-vistas">Buscar en vistas</label>
+                          <input type="checkbox" name="vistas" id="buscar-vistas" value="1"%%vistas%% /> <label for="buscar-vistas">%%_msg_prontus(_search_on_views)%%</label>
                           <!--/multivista-->
                         </td>
                       </tr>
@@ -66,7 +66,7 @@
                     <!--search_mode-->
                     <div class="filtros">
                       <a href="#" onclick="Tags.limpiaFiltros(); return false;" class="elim-filtros">
-                        [<img src="/%%_prontus_id%%/cpan/core/imag/boto/delete10x10px.png" alt="Eliminar Filtros" height="10" width="10"> Eliminar filtros]
+                        [<img src="/%%_prontus_id%%/cpan/core/imag/boto/delete10x10px.png" alt="%%_msg_prontus(_delete_filters)%%" height="10" width="10"> %%_msg_prontus(_delete_filters)%%]
                       </a>
                     </div>
                     <!--/search_mode-->
@@ -78,30 +78,30 @@
                      %%links_paginacion%%
                   </div>
                   <div class="links-utiles">
-                    <a href="#" onclick="Tags.ocultarDeshabilitadas(this); return false;" class="link-ocultar">Ocultar deshabilitadas</a>
-                    <a href="#" onclick="Tags.ocultarDeshabilitadas(this); return false;" class="link-mostrar oculto">Mostar deshabilitadas</a>
+                    <a href="#" onclick="Tags.ocultarDeshabilitadas(this); return false;" class="link-ocultar">%%_msg_prontus(_hide_disabled)%%</a>
+                    <a href="#" onclick="Tags.ocultarDeshabilitadas(this); return false;" class="link-mostrar oculto">%%_msg_prontus(_show_disabled)%%</a>
                   </div>
                   <div class="rotulo2 columna">
-                    <div class="col0 aleft">ID</div>
-                    <div class="col1-tags aleft">Nombre</div>
+                    <div class="col0 aleft">%%_msg_prontus(_msg_generic_id)%%</div>
+                    <div class="col1-tags aleft">%%_msg_prontus(_name)%%</div>
                     <!--vista_loop_nav-->
                     <div class="col1-tags col-anex aleft vista-%%_nom_vista%%"%%_vista_style%%>
                         <!--vista_flechas-->
-                        <a href="#" onclick="Tags.navVista('%%_nom_vista%%', 'left'); return false;" title="Vista Anterior">
+                        <a href="#" onclick="Tags.navVista('%%_nom_vista%%', 'left'); return false;" title="%%_msg_prontus(_previos_view)%%">
                             <img class="arrow-left" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/arrow_left.png" alt="Vista Anterior"/>
                         </a>
                         <!--/vista_flechas-->
-                        Nombre vista &quot;%%_nom_vista%%&quot;
+                        %%_msg_prontus(_view_name)%% &quot;%%_nom_vista%%&quot;
                         <!--vista_flechas-->
-                        <a href="#" onclick="Tags.navVista('%%_nom_vista%%', 'right'); return false;" title="Siguiente Vista">
-                            <img class="arrow-right" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/arrow_right.png" alt="Siguiente Vista"/>
+                        <a href="#" onclick="Tags.navVista('%%_nom_vista%%', 'right'); return false;" title="%%_msg_prontus(_next_view)%%">
+                            <img class="arrow-right" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/arrow_right.png" alt="%%_msg_prontus(_next_view)%%"/>
                         </a>
                         <!--/vista_flechas-->
                     </div>
                     <!--/vista_loop_nav-->
-                    <div class="col3 aleft algleft">URL</div>
-                    <div class="col5 aleft">Nº Artics</div>
-                    <div class="col5 aleft">Ult. Artics</div>
+                    <div class="col3 aleft algleft">%%_msg_prontus(_msg_generic_url)%%</div>
+                    <div class="col5 aleft">%%_msg_prontus(_n_articles)%%</div>
+                    <div class="col5 aleft">%%_msg_prontus(_last_articles)%%</div>
                     <div class="col5 aleft">&nbsp;</div>
                   </div>
 
@@ -111,8 +111,8 @@
                       <div class="fila1">
                         <div class="contenido">
                           <div class="boton-gris3 aleft">
-                            <a class="button" href="#" onclick="Tags.mostrarNuevo(); return false;"><span>+ Agregar Nuevo Tag</span></a>
-                            <a class="button" href="#" onclick="window.location.reload(); return false;"><span>Refrescar</span></a>
+                            <a class="button" href="#" onclick="Tags.mostrarNuevo(); return false;"><span>+ %%_msg_prontus(_add_new_tag)%%</span></a>
+                            <a class="button" href="#" onclick="window.location.reload(); return false;"><span>%%_msg_prontus(_refresh)%%</span></a>
                           </div>
                         </div>
                         <div class="contenido2 columna oculto" id="nuevo-tags-0">
@@ -126,13 +126,13 @@
                           <div class="col2 aleft" style="width: 380px;">
                             <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading" class="loading_save oculto" height="18" width="18" />
                             <a href="#" onclick="Tags.guardarItemNuevo(this, 0); return false;">
-                              <img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" />
+                              <img alt="%%_msg_prontus(_save)%%" title="%%_msg_prontus(_save)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" />
                             </a>
                             <a href="#" onclick="Tags.guardarItemNuevo(this, 1); return false;">
-                              <img alt="Guardar y nuevo" title="Guardar y nuevo" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_of.png" class="cambia-boton" />
+                              <img alt="%%_msg_prontus(_save_and_new)%%" title="%%_msg_prontus(_save_and_new)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu3_of.png" class="cambia-boton" />
                             </a>
                             <a href="#" onclick="Tags.mostrarNuevo(); return false;">
-                              <img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" />
+                              <img alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" />
                             </a>
                           </div>
                           <div class="col3 aleft algleft">&nbsp;</div>
@@ -156,19 +156,19 @@
                         <div class="col1-tags aleft txt_nom-%%_nom_vista%%"%%_vista_style%%>%%_nom_item_vista%%&nbsp;</div>
                         <!--/vista_loop_row-->
                         <div class="col3 aleft algleft">
-                            <a href="#" onclick="$('#tagports_%%_tags_id%%').slideToggle(); return false;">URLs tagonómicas</a>
+                            <a href="#" onclick="$('#tagports_%%_tags_id%%').slideToggle(); return false;">%%_msg_prontus(_tag_urls)%%</a>
                             <div id="tagports_%%_tags_id%%" style="display: none;">
                                 %%_tagports%%
                             </div>
                             &nbsp;
                         </div>
                         <div class="col5 aleft">%%_tags_tot%%</div>
-                        <div class="col5 aleft"><a href="#" onclick="Tags.resumenItem(this); return false;">Ver</a></div>
+                        <div class="col5 aleft"><a href="#" onclick="Tags.resumenItem(this); return false;">%%_msg_prontus(_see)%%</a></div>
                         <div class="col6 aleft">
-                          <a href="#" onclick="Tags.cambiaEstado(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" class="mostrar" alt="%%_mostrar%%" title="Click para cambiar estado" /></a>
+                          <a href="#" onclick="Tags.cambiaEstado(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/%%_mostrar%%.png" width="18" height="18" class="mostrar" alt="%%_mostrar%%" title="%%_msg_prontus(_click_to_change_status)%%" /></a>
                           <a href="#" onclick="Tags.mostrarEditar(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_of.png" width="18" height="18" alt="Editar" title="Editar"  class="cambia-boton"/></a>
-                          <a href="#" onclick="Tags.eliminarTags(this);return false;" class="link-borrar"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="Borrar" title="Borrar"  class="cambia-boton" /></a>
-                          <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="Borrando..." title="Borrando..." class="loading-borrar" height="18" width="18" />
+                          <a href="#" onclick="Tags.eliminarTags(this);return false;" class="link-borrar"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="%%_msg_prontus(_delete)%%" title="%%_msg_prontus(_delete)%%"  class="cambia-boton" /></a>
+                          <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="%%_msg_prontus(_deleting)%%..." title="%%_msg_prontus(_deleting)%%..." class="loading-borrar" height="18" width="18" />
                         </div>
                       </div>
                       <div class="contenido2 oculto columna modo-edicion">
@@ -185,8 +185,8 @@
                         <div class="col5 aleft">%%_tags_tot%%</div>
                         <div class="col5 aleft">&nbsp;</div>
                         <div class="col6 aleft">
-                          <a href="#" onclick="Tags.guardarItem(this); return false;"><img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" /></a>
-                          <a href="#" onclick="Tags.mostrarEditar(this); return false;"><img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" /></a>
+                          <a href="#" onclick="Tags.guardarItem(this); return false;"><img alt="%%_msg_prontus(_save)%%" title="%%_msg_prontus(_save)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" /></a>
+                          <a href="#" onclick="Tags.mostrarEditar(this); return false;"><img alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" /></a>
                           <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading" class="loading_save oculto" height="18" width="18" />
                         </div>
                       </div>
@@ -205,15 +205,15 @@
                         </div>
                         <!--/vista_loop_hidden1-->
                         <div class="col3 aleft algleft">
-                            <a href="#" onclick="return false;">URLs tagonómicas</a>
+                            <a href="#" onclick="return false;">%%_msg_prontus(_tag_urls)%%</a>
                         </div>
                         <div class="col5 aleft">0</div>
-                        <div class="col5 aleft"><a href="#" onclick="Tags.resumenItem(this); return false;">Ver</a></div>
+                        <div class="col5 aleft"><a href="#" onclick="Tags.resumenItem(this); return false;">%%_msg_prontus(_see)%%</a></div>
                         <div class="col6 aleft">
-                          <a href="#" onclick="Tags.cambiaEstado(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/btn_ticket_green.png" width="18" height="18" class="mostrar" alt="btn_ticket_green" title="Click para cambiar estado" /></a>
+                          <a href="#" onclick="Tags.cambiaEstado(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/btn_ticket_green.png" width="18" height="18" class="mostrar" alt="btn_ticket_green" title="%%_msg_prontus(_click_to_change_status)%%" /></a>
                           <a href="#" onclick="Tags.mostrarEditar(this);return false;"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/editar_of.png" width="18" height="18" alt="Editar" title="Editar" class="cambia-boton"/></a>
-                          <a href="#" onclick="Tags.eliminarTags(this);return false;" class="link-borrar"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="Borrar" title="Borrar" class="cambia-boton" /></a>
-                          <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="Borrando..." title="Borrando..." class="loading-borrar" height="18" width="18" />
+                          <a href="#" onclick="Tags.eliminarTags(this);return false;" class="link-borrar"><img src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/borrar_of.png" width="18" height="18" alt="%%_msg_prontus(_delete)%%" title="%%_msg_prontus(_delete)%%" class="cambia-boton" /></a>
+                          <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="%%_msg_prontus(_deleting)%%..." title="%%_msg_prontus(_deleting)%%..." class="loading-borrar" height="18" width="18" />
                         </div>
                       </div>
                       <div class="contenido2 oculto columna modo-edicion">
@@ -228,8 +228,8 @@
                         <div class="col5 aleft">0</div>
                         <div class="col5 aleft">&nbsp;</div>
                         <div class="col6 aleft">
-                          <a href="#" onclick="Tags.guardarItem(this); return false;"><img alt="Guardar" title="Guardar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" /></a>
-                          <a href="#" onclick="Tags.mostrarEditar(this); return false;"><img alt="Cancelar" title="Cancelar" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" /></a>
+                          <a href="#" onclick="Tags.guardarItem(this); return false;"><img alt="%%_msg_prontus(_save)%%" title="%%_msg_prontus(_save)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/gu2_of.png" class="cambia-boton" /></a>
+                          <a href="#" onclick="Tags.mostrarEditar(this); return false;"><img alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" src="/%%_PRONTUS_ID%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" /></a>
                           <img src="/%%_PRONTUS_ID%%/cpan/core/imag/loading_button.gif" alt="loading" class="loading_save oculto" height="18" width="18" />
                         </div>
                       </div>

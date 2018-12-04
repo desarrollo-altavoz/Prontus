@@ -2,16 +2,16 @@
                         <div class="listado">
 
                             <div style="height:37px;">
-                                <p style="float: left;"><b>Configuración global</b>: %%_prontus_id%%-var.cfg</p>
+                                <p style="float: left;"><b>%%_msg_prontus(_global_settings)%%</b>: %%_prontus_id%%-var.cfg</p>
                                 <div class="botones">
                                     <div class="boton-gris3 aright">
-                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                            <span>Cancelar</span>
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                            <span>%%_msg_prontus(_cancel)%%</span>
                                         </a>
                                     </div>
                                     <div class="boton-gris3 aright">
-                                        <a onclick="Cfgedit.guardaCfg('var'); return false;" href="#" class="button" title="Guardar">
-                                            <span>Guardar</span>
+                                        <a onclick="Cfgedit.guardaCfg('var'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                            <span>%%_msg_prontus(_save)%%</span>
                                         </a>
                                     </div>
                                 </div>
@@ -30,123 +30,123 @@
                                     <input type="hidden" name="UPDATE_SERVER" value="%%UPDATE_SERVER%%" />
 
                                     <tr class="head">
-                                        <td>Variable</td>
-                                        <td>Valor</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
+                                        <td>%%_msg_prontus(_value)%%</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             ARTIC_ACTUALIZA_PORTS<br>
-                                            <span class="ayuda">Habilita o deshabilita la actualización de todas las portadas donde está publicado un artículo, al guardarlo.</span>
+                                            <span class="ayuda">%%_msg_prontus(_artic_actualiza_ports_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="ARTIC_ACTUALIZA_PORTS" id="ARTIC_ACTUALIZA_PORTS_SI" value="SI"%%ARTIC_ACTUALIZA_PORTS_SI%%/> <label for="ARTIC_ACTUALIZA_PORTS_SI">SI</label>
+                                            <input type="radio" name="ARTIC_ACTUALIZA_PORTS" id="ARTIC_ACTUALIZA_PORTS_SI" value="SI"%%ARTIC_ACTUALIZA_PORTS_SI%%/> <label for="ARTIC_ACTUALIZA_PORTS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="ARTIC_ACTUALIZA_PORTS" id="ARTIC_ACTUALIZA_PORTS_NO" value="NO"%%ARTIC_ACTUALIZA_PORTS_NO%%/> <label for="ARTIC_ACTUALIZA_PORTS_NO">NO</label>
+                                            <input type="radio" name="ARTIC_ACTUALIZA_PORTS" id="ARTIC_ACTUALIZA_PORTS_NO" value="NO"%%ARTIC_ACTUALIZA_PORTS_NO%%/> <label for="ARTIC_ACTUALIZA_PORTS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             ACTUALIZACIONES<br>
-                                            <span class="ayuda">Permite habilitar o deshabilitar las actualizaciones automáticas.</span>
+                                            <span class="ayuda">%%_msg_prontus(_actualizaciones_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="ACTUALIZACIONES" id="ACTUALIZACIONES_SI" value="SI"%%ACTUALIZACIONES_SI%%/> <label for="ACTUALIZACIONES_SI">SI</label>
+                                            <input type="radio" name="ACTUALIZACIONES" id="ACTUALIZACIONES_SI" value="SI"%%ACTUALIZACIONES_SI%%/> <label for="ACTUALIZACIONES_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="ACTUALIZACIONES" id="ACTUALIZACIONES_NO" value="NO"%%ACTUALIZACIONES_NO%%/> <label for="ACTUALIZACIONES_NO">NO</label>
+                                            <input type="radio" name="ACTUALIZACIONES" id="ACTUALIZACIONES_NO" value="NO"%%ACTUALIZACIONES_NO%%/> <label for="ACTUALIZACIONES_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             PUBLIC_SERVER_NAME<br>
-                                            <span class="ayuda">Se debe indicar el nombre del servidor, necesario para la ejecución de los crons.</span>
+                                            <span class="ayuda">%%_msg_prontus(_public_server_name_hint)%%</span>
                                         </td>
                                         <td><input type="text" name="PUBLIC_SERVER_NAME" class="fieldform" value="%%PUBLIC_SERVER_NAME%%"/></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SERVER_SMTP<br>
-                                            <span class="ayuda">Indica el servidor SMTP a utilizar en el sitio Prontus.</span>
+                                            <span class="ayuda">%%_msg_prontus(_server_smtp_hint)%%</span>
                                         </td>
                                         <td><input type="text" name="SERVER_SMTP" class="fieldform" value="%%SERVER_SMTP%%"/></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             CONTROL_FECHA<br>
-                                            <span class="ayuda">Activa o desactiva la opción para controlar la fecha y hora de publicación y de expiración de artículos, lo cual permite que las portadas se actualicen según estos valores al ser guardadas manualmente o mediante un proceso cron.</span>
+                                            <span class="ayuda">%%_msg_prontus(_control_fecha_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="CONTROL_FECHA" id="CONTROL_FECHA_SI" value="SI"%%CONTROL_FECHA_SI%%/> <label for="CONTROL_FECHA_SI">SI</label>
+                                            <input type="radio" name="CONTROL_FECHA" id="CONTROL_FECHA_SI" value="SI"%%CONTROL_FECHA_SI%%/> <label for="CONTROL_FECHA_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="CONTROL_FECHA" id="CONTROL_FECHA_NO" value="NO"%%CONTROL_FECHA_NO%%/> <label for="CONTROL_FECHA_NO">NO</label>
+                                            <input type="radio" name="CONTROL_FECHA" id="CONTROL_FECHA_NO" value="NO"%%CONTROL_FECHA_NO%%/> <label for="CONTROL_FECHA_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             CONTROLAR_ALTA_ARTICULOS<br>
-                                            <span class="ayuda">Activa o desactiva el control de la disponibilidad de un artículo para ser incluido en portadas, artículos relacionados, portadas taxonómicas y buscador.</span>
+                                            <span class="ayuda">%%_msg_prontus(_controlar_alta_articulos_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="CONTROLAR_ALTA_ARTICULOS" id="CONTROLAR_ALTA_ARTICULOS_SI" value="SI"%%CONTROLAR_ALTA_ARTICULOS_SI%%/> <label for="CONTROLAR_ALTA_ARTICULOS_SI">SI</label>
+                                            <input type="radio" name="CONTROLAR_ALTA_ARTICULOS" id="CONTROLAR_ALTA_ARTICULOS_SI" value="SI"%%CONTROLAR_ALTA_ARTICULOS_SI%%/> <label for="CONTROLAR_ALTA_ARTICULOS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="CONTROLAR_ALTA_ARTICULOS" id="CONTROLAR_ALTA_ARTICULOS_NO" value="NO"%%CONTROLAR_ALTA_ARTICULOS_NO%%/> <label for="CONTROLAR_ALTA_ARTICULOS_NO">NO</label>
+                                            <input type="radio" name="CONTROLAR_ALTA_ARTICULOS" id="CONTROLAR_ALTA_ARTICULOS_NO" value="NO"%%CONTROLAR_ALTA_ARTICULOS_NO%%/> <label for="CONTROLAR_ALTA_ARTICULOS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             ABRIR_FIDS_EN_POP<br>
-                                            <span class="ayuda">Define si los artículos se abrirán en una popup como en el sistema antiguo.</span>
+                                            <span class="ayuda">%%_msg_prontus(_abrir_fids_en_pop_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="ABRIR_FIDS_EN_POP" id="ABRIR_FIDS_EN_POP_SI" value="SI"%%ABRIR_FIDS_EN_POP_SI%%/> <label for="ABRIR_FIDS_EN_POP_SI">SI</label>
+                                            <input type="radio" name="ABRIR_FIDS_EN_POP" id="ABRIR_FIDS_EN_POP_SI" value="SI"%%ABRIR_FIDS_EN_POP_SI%%/> <label for="ABRIR_FIDS_EN_POP_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="ABRIR_FIDS_EN_POP" id="ABRIR_FIDS_EN_POP_NO" value="NO"%%ABRIR_FIDS_EN_POP_NO%%/> <label for="ABRIR_FIDS_EN_POP_NO">NO</label>
+                                            <input type="radio" name="ABRIR_FIDS_EN_POP" id="ABRIR_FIDS_EN_POP_NO" value="NO"%%ABRIR_FIDS_EN_POP_NO%%/> <label for="ABRIR_FIDS_EN_POP_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
 
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             USAR_PUBLIC_SERVER_NAME_VER_ARTIC<br>
-                                            <span class="ayuda">Define si al hacer click en "Ver Artículo" desde el FID se usará la ruta absoluta del artículo usando el nombre del servidor (PUBLIC_SERVER_NAME).<br/>Por ejemplo:<br/> http://%%PUBLIC_SERVER_NAME%%/%%_PRONTUS_ID%%/site/artic/...<br/>
-                                            Por defecto se utiliza la ruta relativa.
+                                            <span class="ayuda">%%_msg_prontus(_usar_public_server_name_ver_artic_hint)%%:<br/> http://%%PUBLIC_SERVER_NAME%%/%%_PRONTUS_ID%%/site/artic/...<br/>
+                                            %%_msg_prontus(_usar_public_server_name_ver_artic_hint2)%%
                                             </span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI" value="SI"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI">SI</label>
+                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI" value="SI"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO" value="NO"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO">NO</label>
+                                            <input type="radio" name="USAR_PUBLIC_SERVER_NAME_VER_ARTIC" id="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO" value="NO"%%USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO%%/> <label for="USAR_PUBLIC_SERVER_NAME_VER_ARTIC_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
 
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             COMENTARIOS<br>
-                                            <span class="ayuda">Habilita o deshabilita el sistema de comentarios.</span>
+                                            <span class="ayuda">%%_msg_prontus(_comentarios_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="COMENTARIOS" id="COMENTARIOS_SI" value="SI"%%COMENTARIOS_SI%%/> <label for="COMENTARIOS_SI">SI</label>
+                                            <input type="radio" name="COMENTARIOS" id="COMENTARIOS_SI" value="SI"%%COMENTARIOS_SI%%/> <label for="COMENTARIOS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="COMENTARIOS" id="COMENTARIOS_NO" value="NO"%%COMENTARIOS_NO%%/> <label for="COMENTARIOS_NO">NO</label>
+                                            <input type="radio" name="COMENTARIOS" id="COMENTARIOS_NO" value="NO"%%COMENTARIOS_NO%%/> <label for="COMENTARIOS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             VTXT_PASTE_NEWLINES_AS_P<br>
-                                            <span class="ayuda">Habilita o deshabilita la transformación de saltos de linea a &lt;p&gt;.</span>
+                                            <span class="ayuda">%%_msg_prontus(_vtxt_paste_newlines_as_p_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="VTXT_PASTE_NEWLINES_AS_P" id="VTXT_PASTE_NEWLINES_AS_P_SI" value="SI"%%VTXT_PASTE_NEWLINES_AS_P_SI%%/> <label for="VTXT_PASTE_NEWLINES_AS_P_SI">SI</label>
+                                            <input type="radio" name="VTXT_PASTE_NEWLINES_AS_P" id="VTXT_PASTE_NEWLINES_AS_P_SI" value="SI"%%VTXT_PASTE_NEWLINES_AS_P_SI%%/> <label for="VTXT_PASTE_NEWLINES_AS_P_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="VTXT_PASTE_NEWLINES_AS_P" id="VTXT_PASTE_NEWLINES_AS_P_NO" value="NO"%%VTXT_PASTE_NEWLINES_AS_P_NO%%/> <label for="VTXT_PASTE_NEWLINES_AS_P_NO">NO</label>
+                                            <input type="radio" name="VTXT_PASTE_NEWLINES_AS_P" id="VTXT_PASTE_NEWLINES_AS_P_NO" value="NO"%%VTXT_PASTE_NEWLINES_AS_P_NO%%/> <label for="VTXT_PASTE_NEWLINES_AS_P_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             VTXT_DTD<br>
-                                            <span class="ayuda">Permite definir el uso de xhtml 1.0 strict o transitional para el código generado en el VTXT.</span>
+                                            <span class="ayuda">%%_msg_prontus(_vtxt_dtd_hint)%%</span>
                                         </td>
                                         <td>
                                             <select name="VTXT_DTD">
-                                                <option value="">- Seleccione -</option>
+                                                <option value="">- %%_msg_prontus(_select)%% -</option>
                                                 <option value="STRICT"%%VTXT_DTD_S%%>STRICT</option>
                                                 <option value="TRANSITIONAL"%%VTXT_DTD_T%%>TRANSITIONAL</option>
                                             </select>
@@ -155,62 +155,61 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             VTXT_ENCODE_CHARS<br>
-                                            <span class="ayuda">Hace un encode de los caracteres sensibles. Es el responsable de escapear los tags HTML colocando espacios entre los signos &lt; y &gt;.<br>Ayuda: Configurar en NO, si se requiere que el VTXT parsee código (por ejemplo en manuales o ejemplos)</span>
+                                            <span class="ayuda">%%_msg_prontus(_vtxt_encode_chars_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="VTXT_ENCODE_CHARS" id="VTXT_ENCODE_CHARS_SI" value="SI"%%VTXT_ENCODE_CHARS_SI%%/> <label for="VTXT_ENCODE_CHARS_SI">SI</label>
+                                            <input type="radio" name="VTXT_ENCODE_CHARS" id="VTXT_ENCODE_CHARS_SI" value="SI"%%VTXT_ENCODE_CHARS_SI%%/> <label for="VTXT_ENCODE_CHARS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="VTXT_ENCODE_CHARS" id="VTXT_ENCODE_CHARS_NO" value="NO"%%VTXT_ENCODE_CHARS_NO%%/> <label for="VTXT_ENCODE_CHARS_NO">NO</label>
+                                            <input type="radio" name="VTXT_ENCODE_CHARS" id="VTXT_ENCODE_CHARS_NO" value="NO"%%VTXT_ENCODE_CHARS_NO%%/> <label for="VTXT_ENCODE_CHARS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             VTXT_MEDIA_SCRIPT<br>
-                                            <span class="ayuda">Indica si se usará el embed tradicional o JavaScript.<br/>
-                                            Al habilitarlo, las etiquetas &lt;object&gt; se convierten a código JavaScript, por ejemplo: writeFlash(...)
+                                            <span class="ayuda">%%_msg_prontus(_vtxt_media_script_hint)%%
                                             </span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="VTXT_MEDIA_SCRIPT" id="VTXT_MEDIA_SCRIPT_SI" value="SI"%%VTXT_MEDIA_SCRIPT_SI%%/> <label for="VTXT_MEDIA_SCRIPT_SI">SI</label>
+                                            <input type="radio" name="VTXT_MEDIA_SCRIPT" id="VTXT_MEDIA_SCRIPT_SI" value="SI"%%VTXT_MEDIA_SCRIPT_SI%%/> <label for="VTXT_MEDIA_SCRIPT_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="VTXT_MEDIA_SCRIPT" id="VTXT_MEDIA_SCRIPT_NO" value="NO"%%VTXT_MEDIA_SCRIPT_NO%%/> <label for="VTXT_MEDIA_SCRIPT_NO">NO</label>
+                                            <input type="radio" name="VTXT_MEDIA_SCRIPT" id="VTXT_MEDIA_SCRIPT_NO" value="NO"%%VTXT_MEDIA_SCRIPT_NO%%/> <label for="VTXT_MEDIA_SCRIPT_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             FRIENDLY_URLS<br>
-                                            <span class="ayuda">Habilita o deshabilita las url amigables.</span>
+                                            <span class="ayuda">%%_msg_prontus(_friendly_urls_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_SI" value="SI"%%FRIENDLY_URLS_SI%%/> <label for="FRIENDLY_URLS_SI">SI</label>
+                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_SI" value="SI"%%FRIENDLY_URLS_SI%%/> <label for="FRIENDLY_URLS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_NO" value="NO"%%FRIENDLY_URLS_NO%%/> <label for="FRIENDLY_URLS_NO">NO</label>
+                                            <input type="radio" name="FRIENDLY_URLS" id="FRIENDLY_URLS_NO" value="NO"%%FRIENDLY_URLS_NO%%/> <label for="FRIENDLY_URLS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             FRIENDLY_URLS_VERSION<br>
-                                            <span class="ayuda">Especifica la versión de las url amigables que se utilizará.</span>
+                                            <span class="ayuda">%%_msg_prontus(_friendly_url_version_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V1" value="1"%%FRIENDLY_URLS_V1%%/> <label for="FRIENDLY_URLS_V1">Versión 1</label>
+                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V1" value="1"%%FRIENDLY_URLS_V1%%/> <label for="FRIENDLY_URLS_V1">%%_msg_prontus(_version1)%%</label>
                                             <br/>
-                                            <span class="help">De la forma: /titular/prontus_id/aaaa-mm-dd/hhnnss.ext</span>
-                                            <br/>
-                                            <br/>
-                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V2" value="2"%%FRIENDLY_URLS_V2%%/> <label for="FRIENDLY_URLS_V2">Versión 2</label>
-                                            <br/>
-                                            <span class="help">De la forma: /prontus_id/seccion/tema/subtema/titular//aaaa-mm-dd/hhnnss.ext. En caso de que el artículo no tenga sección, tema o subtema, se omiten y no se colocan en la url.</span>
+                                            <span class="help">%%_msg_prontus(_version1_hint)%%</span>
                                             <br/>
                                             <br/>
-                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V3" value="3"%%FRIENDLY_URLS_V3%%/> <label for="FRIENDLY_URLS_V3">Versión 3</label>
+                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V2" value="2"%%FRIENDLY_URLS_V2%%/> <label for="FRIENDLY_URLS_V2">%%_msg_prontus(_version2)%%</label>
+                                            <br/>
+                                            <span class="help">%%_msg_prontus(_version2_hint)%%</span>
+                                            <br/>
+                                            <br/>
+                                            <input type="radio" name="FRIENDLY_URLS_VERSION" id="FRIENDLY_URLS_V3" value="3"%%FRIENDLY_URLS_V3%%/> <label for="FRIENDLY_URLS_V3">%%_msg_prontus(_version3)%%</label>
                                             <br/>
                                             <span class="help">
-                                                Utiliza el nombre de dominio o subdominio para identificar la instancia de Prontus. Por ejemplo:<br/><br/>
-                                                - http://www.<strong>&lt;prontus_id&gt;</strong>.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.ext<br/>
-                                                - http://www.<strong>&lt;prontus_id&gt;</strong>.dominio.cl/seccion/tema/subtema/titular/aaaa-mm-dd/hhnnss.ext
+                                                %%_msg_prontus(_version3_hint1)%%<br/><br/>
+                                                %%_msg_prontus(_version3_hint2)%%<br/>
+                                                %%_msg_prontus(_version3_hint3)%%
                                                 <br/><br/>
-                                                Nota: El prontus_id no puede tener guión bajo (_).
+                                                %%_msg_prontus(_version3_hint4)%%
                                             </span>
                                             <br/>
                                         </td>
@@ -218,7 +217,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             FRIENDLY_URLS_LARGO_TITULAR<br>
-                                            <span class="ayuda">Define el largo máximo que tendrá el titular en las Friendly URL. Se recomienda no exceder los 75 caracteres.</span>
+                                            <span class="ayuda">%%_msg_prontus(_friendly_url_largo_titular_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="FRIENDLY_URLS_LARGO_TITULAR" class="fieldform" value="%%FRIENDLY_URLS_LARGO_TITULAR%%" style="width: 125px;" maxlength="3" />
@@ -227,13 +226,13 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             MULTIVISTAS<br>
-                                            <span class="ayuda">Define las vistas que tendrá Prontus, además de la vista por defecto (vista principal).</span>
+                                            <span class="ayuda">%%_msg_prontus(_multivistas_hint)%%</span>
                                         </td>
                                         <td>
                                             <table class="tableform" width="100%" id="multivista_listado">
                                                 <tr class="head">
-                                                    <td>Nombre</td>
-                                                    <td align="center">Quitar</td>
+                                                    <td>%%_msg_prontus(_name)%%</td>
+                                                    <td align="center">%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_multivista-->
                                                 <tr>
@@ -248,7 +247,7 @@
                                             </table>
                                             <div class="boton-gris3 aleft">
                                                 <a onclick="Cfgedit.agregarMv(); return false;" href="#" class="button">
-                                                    <span>+ Agregar</span>
+                                                    <span>+ %%_msg_prontus(_add)%%</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -256,14 +255,14 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             UPLOADS_PERMITIDOS<br>
-                                            <span class="ayuda">Especifica que tipo de documentos (extensiones) estarán permitidas al momento de subir archivos en los fids.</span>
+                                            <span class="ayuda">%%_msg_prontus(_uploads_permitidos_hint)%%</span>
                                         </td>
                                         <td>
                                             %%UPLOADS_PERMITIDOS%%
                                             <div style="clear: both; height: 2px;"></div>
                                             <div class="boton-gris3 aleft">
                                                 <a onclick="Cfgedit.mostrarPermitidos(); return false;" href="#" class="button">
-                                                    <span>Cambiar</span>
+                                                    <span>%%_msg_prontus(_change)%%</span>
                                                 </a>
                                             </div>
                                             <div style="clear: both; height: 2px;"></div>
@@ -273,19 +272,19 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             SERVER_PROTOCOLO_HTTPS<br>
-                                            <span class="ayuda">Indica si se usará un servidor https tanto en el Frontend, como en el Backend.</span>
+                                            <span class="ayuda">%%_msg_prontus(_server_protocolo_https_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="SERVER_PROTOCOLO_HTTPS" id="SERVER_PROTOCOLO_HTTPS_SI" value="SI"%%SERVER_PROTOCOLO_HTTPS_SI%%/> <label for="SERVER_PROTOCOLO_HTTPS_SI">SI</label>
+                                            <input type="radio" name="SERVER_PROTOCOLO_HTTPS" id="SERVER_PROTOCOLO_HTTPS_SI" value="SI"%%SERVER_PROTOCOLO_HTTPS_SI%%/> <label for="SERVER_PROTOCOLO_HTTPS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="SERVER_PROTOCOLO_HTTPS" id="SERVER_PROTOCOLO_HTTPS_NO" value="NO"%%SERVER_PROTOCOLO_HTTPS_NO%%/> <label for="SERVER_PROTOCOLO_HTTPS_NO">NO</label>
+                                            <input type="radio" name="SERVER_PROTOCOLO_HTTPS" id="SERVER_PROTOCOLO_HTTPS_NO" value="NO"%%SERVER_PROTOCOLO_HTTPS_NO%%/> <label for="SERVER_PROTOCOLO_HTTPS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
 
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             VARNISH_SERVER_NAME<br>
-                                            <span class="ayuda">Define los servidores de <a target="_blank" href="http://en.wikipedia.org/wiki/Varnish_%28software%29">Varnish Cache</a>.</span>
+                                            <span class="ayuda">%%_msg_prontus(_varnish_server_name_hint)%% <a target="_blank" href="http://en.wikipedia.org/wiki/Varnish_%28software%29">Varnish Cache</a>.</span>
                                         </td>
                                         <td>
                                             <div id="varnish_list">
@@ -296,7 +295,7 @@
                                             </div>
                                             <div class="boton-gris3 aleft">
                                                 <a onclick="Cfgedit.agregarVarnish(); return false;" href="#" class="button">
-                                                    <span>+ Agregar</span>
+                                                    <span>+ %%_msg_prontus(_add)%%</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -304,8 +303,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             VARNISH_GLOBAL_PURGE<br>
-                                            <span class="ayuda">Indicar las rutas serán expiradas cada vez que se haga purge. Se recomienda indicar sólo lo necesario para no sobrecargar el sistema.
-                                                Una ruta por línea (no debe incluír el dominio).<br/><br/>Ejemplos:<br/>
+                                            <span class="ayuda">%%_msg_prontus(_varnish_global_purge_hint)%%<br/><br/>%%_msg_prontus(_examples)%%<br/>
                                                 /prontus/site/edic/base/port/portada.html<br/>
                                                 /noticias/<br/>
                                                 /<br/>
@@ -319,8 +317,7 @@
                                         <td style="width: 300px;" valign="top">
                                             FORM_CSV_CHARSET<br>
                                             <span class="ayuda">
-                                                Define el charset del archivo de Respaldo del Prontus Form.<br/>
-                                                Si al importar dicho archivo, aparecen caracteres extraños, se recomienda probar otro valor.</span>
+                                                %%_msg_prontus(_form_csv_charset_hint)%%</span>
                                         </td>
                                         <td>
                                             <select name="FORM_CSV_CHARSET">
@@ -331,10 +328,9 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            POST_PROCESO de borrado de artículos<br>
+                                            POST_PROCESO %%_msg_prontus(_erasing_articles)%%<br>
                                             <span class="ayuda">
-                                                El proceso o script que indique, se ejecutará cada vez que se borre un artículo.<br/>
-                                                Para que sea un script válido, debe ubicarse en el mismo dir. de CGIs de Prontus, o a lo más, un nivel hacia arriba.</span>
+                                                %%_msg_prontus(_post_proceso_hint)%%</span>
 
                                                 </span>
                                         </td>
@@ -347,8 +343,7 @@
                                         <td style="width: 300px;" valign="top">
                                             SCRIPT_QUOTA<br>
                                             <span class="ayuda">
-                                                Script para el cálculo de quota. Puede ser PHP o Perl y será invocado desde la raíz de sitio. <br/>
-                                                Ejemplo: /cgi-cpn/mi_script_quota.pl</span>
+                                                %%_msg_prontus(_script_quota_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="SCRIPT_QUOTA" value="%%SCRIPT_QUOTA%%" style="margin-bottom: 1px; width: 89%;" class="fieldform"/>
@@ -358,9 +353,7 @@
                                         <td style="width: 300px;" valign="top">
                                             FOTO_MAX_PIXEL<br>
                                             <span class="ayuda">
-                                                Se indica el tamaño máximo en pixels que tendrán las fotos al ser subidas al banco de imágenes. De tal forma que si una foto supera el máximo,
-                                                esta será redimensionada para estar por debajo del limite establecido, por ejemplo: 1920x1080<br/><br/>
-                                                Si se deja en blanco, no habrá límite.
+                                                %%_msg_prontus(_foto_max_pixel_hint)%%
                                             </span>
                                         </td>
                                         <td>
@@ -370,70 +363,70 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             BLOQUEO_EDICION<br>
-                                            <span class="ayuda">Especifica la modalidad de bloqueo de edición de artículos y portadas.</span>
+                                            <span class="ayuda">%%_msg_prontus(_bloqueo_edicion_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V0" value="0"%%BLOQUEO_EDICION_V0%%/> <label for="BLOQUEO_EDICION_V0">Modalidad 1</label>
+                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V0" value="0"%%BLOQUEO_EDICION_V0%%/> <label for="BLOQUEO_EDICION_V0">%%_msg_prontus(_mode1)%%</label>
                                             <br/>
-                                            <span class="help">Solo advertencia.</span>
-                                            <br/>
-                                            <br/>
-                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V1" value="1"%%BLOQUEO_EDICION_V1%%/> <label for="BLOQUEO_EDICION_V1">Modalidad 2</label>
-                                            <br/>
-                                            <span class="help">Advertencia con prompt e ingreso de número aleatorio de 4 dígitos.</span>
+                                            <span class="help">%%_msg_prontus(_mode1_hint)%%</span>
                                             <br/>
                                             <br/>
-                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V2" value="2"%%BLOQUEO_EDICION_V2%%/> <label for="BLOQUEO_EDICION_V2">Modalidad 3</label>
+                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V1" value="1"%%BLOQUEO_EDICION_V1%%/> <label for="BLOQUEO_EDICION_V1">%%_msg_prontus(_mode2)%%</label>
                                             <br/>
-                                            <span class="help">Bloqueo total. El artículo solo será editable por la primera persona que lo abrió.</span>
+                                            <span class="help">%%_msg_prontus(_mode2_hint)%%</span>
+                                            <br/>
+                                            <br/>
+                                            <input type="radio" name="BLOQUEO_EDICION" id="BLOQUEO_EDICION_V2" value="2"%%BLOQUEO_EDICION_V2%%/> <label for="BLOQUEO_EDICION_V2">%%_msg_prontus(_mode3)%%</label>
+                                            <br/>
+                                            <span class="help">%%_msg_prontus(_mode3_hint)%%</span>
                                             <br/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             DROPBOX<br>
-                                            <span class="ayuda">Activa o desactiva el respaldo de archivos en <a href="https://www.dropbox.com">Dropbox</a>.</span>
+                                            <span class="ayuda">%%_msg_prontus(_dropbox_hint)%% <a href="https://www.dropbox.com">Dropbox</a>.</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="DROPBOX" id="DROPBOX_SI" value="SI"%%DROPBOX_SI%%/> <label for="DROPBOX_SI">SI</label>
+                                            <input type="radio" name="DROPBOX" id="DROPBOX_SI" value="SI"%%DROPBOX_SI%%/> <label for="DROPBOX_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="DROPBOX" id="DROPBOX_NO" value="NO"%%DROPBOX_NO%%/> <label for="DROPBOX_NO">NO</label>
+                                            <input type="radio" name="DROPBOX" id="DROPBOX_NO" value="NO"%%DROPBOX_NO%%/> <label for="DROPBOX_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             CLOUDFLARE<br>
-                                            <span class="ayuda">Activa o desactiva la opción de hacer purge de contenido prontus en <a href="https://www.cloudflare.com/">CloudFlare</a>.</span>
+                                            <span class="ayuda">%%_msg_prontus(_cloudflare_hint)%% <a href="https://www.cloudflare.com/">CloudFlare</a>.</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="CLOUDFLARE" id="CLOUDFLARE_SI" value="SI"%%CLOUDFLARE_SI%%/> <label for="CLOUDFLARE_SI">SI</label>
+                                            <input type="radio" name="CLOUDFLARE" id="CLOUDFLARE_SI" value="SI"%%CLOUDFLARE_SI%%/> <label for="CLOUDFLARE_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="CLOUDFLARE" id="CLOUDFLARE_NO" value="NO"%%CLOUDFLARE_NO%%/> <label for="CLOUDFLARE_NO">NO</label>
+                                            <input type="radio" name="CLOUDFLARE" id="CLOUDFLARE_NO" value="NO"%%CLOUDFLARE_NO%%/> <label for="CLOUDFLARE_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr class="head">
-                                        <td colspan="2">TRANSCODIFICACI&Oacute;N</td>
+                                        <td colspan="2">%%_msg_prontus(_transcoding)%%</td>
                                     </tr>
                                     <tr class="head">
-                                        <td>Variable</td>
-                                        <td>Valor</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
+                                        <td>%%_msg_prontus(_value)%%</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             MAX_XCODING<br>
-                                            <span class="ayuda">Tamaño máximo (en MB) para la transcodificación de videos.</span>
+                                            <span class="ayuda">%%_msg_prontus(_max_xcoding_hint)%%</span>
                                         </td>
                                         <td><input type="text" name="MAX_XCODING" class="fieldform" value="%%MAX_XCODING%%" /></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             DIR_FFMPEG<br>
-                                            <span class="ayuda">Indica la ruta a la carpeta donde se encuentra el ejecutable de ffmpeg.</span>
+                                            <span class="ayuda">%%_msg_prontus(_dir_ffmpeg_hint)%%</span>
                                         </td>
                                         <td><input type="text" name="DIR_FFMPEG" id="DIR_FFMPEG" class="fieldform" value="%%DIR_FFMPEG%%" /><br /><br />
                                             <div class="boton-gris3">
-                                                <a onclick="CfgXcoding.testFFmpeg(); return false;" href="#" class="button" title="Verificar Directorio">
-                                                    <span>Verificar Directorio</span>
+                                                <a onclick="CfgXcoding.testFFmpeg(); return false;" href="#" class="button" title="%%_msg_prontus(_check_directory)%%">
+                                                    <span>%%_msg_prontus(_check_directory)%%</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -442,7 +435,7 @@
                                         <td style="width: 300px;" valign="top">
                                             FFMPEG_PARAMS<br>
                                             <span class="ayuda">
-                                                Parámetros que se utilizarán con el comando ffmpeg en la transcodificación de videos.
+                                                %%_msg_prontus(_ffmpeg_params_hint)%%
                                             </span>
                                         </td>
                                         <td>
@@ -452,41 +445,39 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             USAR_LIB_FDK<br>
-                                            <span class="ayuda">Activa el uso de la librer&iacute;a libfdk_aac.
-                                                <br /><br />Requiere FFMPEG con libfdk_aac instalada. Si no se encuentra disponible, la transcodificaci&oacute;n fallar&aacute;<br />
+                                            <span class="ayuda">%%_msg_prontus(_usar_lib_fdk_hint1)%%
+                                                <br /><br />%%_msg_prontus(_usar_lib_fdk_hint2)%%<br />
                                             </span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="USAR_LIB_FDK" id="USAR_LIB_FDK_SI" value="SI"%%USAR_LIB_FDK_SI%%/> <label for="USAR_LIB_FDK_SI">SI</label>
+                                            <input type="radio" name="USAR_LIB_FDK" id="USAR_LIB_FDK_SI" value="SI"%%USAR_LIB_FDK_SI%%/> <label for="USAR_LIB_FDK_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="USAR_LIB_FDK" id="USAR_LIB_FDK_NO" value="NO"%%USAR_LIB_FDK_NO%%/> <label for="USAR_LIB_FDK_NO">NO</label>
+                                            <input type="radio" name="USAR_LIB_FDK" id="USAR_LIB_FDK_NO" value="NO"%%USAR_LIB_FDK_NO%%/> <label for="USAR_LIB_FDK_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             ADVANCED_XCODING<br>
-                                            <span class="ayuda">Activa las opciones avanzadas de transcodificaci&oacute;n.<br />
-                                                Las opciones de configuración avanzada aparecerán bajo el ítem del menú "Transcodificación +"
-                                                <br /><br />Requiere FFMPEG version 1 o mayor<br />
+                                            <span class="ayuda">%%_msg_prontus(_advanced_xcoding)%%
                                             </span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="ADVANCED_XCODING" id="ADVANCED_XCODING_SI" value="SI"%%ADVANCED_XCODING_SI%%/> <label for="ADVANCED_XCODING_SI">SI</label>
+                                            <input type="radio" name="ADVANCED_XCODING" id="ADVANCED_XCODING_SI" value="SI"%%ADVANCED_XCODING_SI%%/> <label for="ADVANCED_XCODING_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="ADVANCED_XCODING" id="ADVANCED_XCODING_NO" value="NO"%%ADVANCED_XCODING_NO%%/> <label for="ADVANCED_XCODING_NO">NO</label>
+                                            <input type="radio" name="ADVANCED_XCODING" id="ADVANCED_XCODING_NO" value="NO"%%ADVANCED_XCODING_NO%%/> <label for="ADVANCED_XCODING_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                 </table>
                             </form>
                             <div class="botones">
                                 <div class="boton-gris3 aright">
-                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                        <span>Cancelar</span>
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                        <span>%%_msg_prontus(_cancel)%%</span>
                                     </a>
                                 </div>
                                 <div class="boton-gris3 aright">
-                                    <a onclick="Cfgedit.guardaCfg('var'); return false;" href="#" class="button" title="Guardar">
-                                        <span>Guardar</span>
+                                    <a onclick="Cfgedit.guardaCfg('var'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                        <span>%%_msg_prontus(_save)%%</span>
                                     </a>
                                 </div>
                             </div>

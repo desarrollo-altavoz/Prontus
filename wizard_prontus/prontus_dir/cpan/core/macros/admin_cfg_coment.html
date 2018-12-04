@@ -1,16 +1,16 @@
 
                         <div class="listado">
                             <div style="height:37px;">
-                                <p style="float: left";><b>Configuración de Comentarios</b>: %%_prontus_id%%-coment.cfg</p>
+                                <p style="float: left";><b>%%_msg_prontus(_comments_settings)%%</b>: %%_prontus_id%%-coment.cfg</p>
                                 <div class="botones">
                                     <div class="boton-gris3 aright">
-                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                            <span>Cancelar</span>
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                            <span>%%_msg_prontus(_cancel)%%</span>
                                         </a>
                                     </div>
                                     <div class="boton-gris3 aright">
-                                        <a onclick="Cfgedit.guardaCfg('coment'); return false;" href="#" class="button" title="Guardar">
-                                            <span>Guardar</span>
+                                        <a onclick="Cfgedit.guardaCfg('coment'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                            <span>%%_msg_prontus(_save)%%</span>
                                         </a>
                                     </div>
                                 </div>
@@ -25,13 +25,13 @@
                                     <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
                                     <input type="hidden" name="_tab" value="cfg-tab9" />
                                     <tr class="head">
-                                        <td>Variable</td>
-                                        <td>Valor</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
+                                        <td>%%_msg_prontus(_value)%%</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            NOM<br>
-                                            <span class="ayuda">Nombre del objeto</span>
+                                            %%_msg_prontus(_short_name)%%<br>
+                                            <span class="ayuda">%%_msg_prontus(_object_name)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="NOM" class="fieldform" value="%%NOM%%"/>
@@ -40,7 +40,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             ARTIC_EXTENSION<br>
-                                            <span class="ayuda">Extensión de los artículos.</span>
+                                            <span class="ayuda">%%_msg_prontus(_artic_extension_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="ARTIC_EXTENSION" class="fieldform" value="%%ARTIC_EXTENSION%%" style="width: 30px;" maxlength="5"/>
@@ -49,7 +49,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             MSG_MODER<br>
-                                            <span class="ayuda">Mensaje enviado al autor del comentario, cuando envía el comentario (Submit en el formulario).</span>
+                                            <span class="ayuda">%%_msg_prontus(_msg_moder_hint)%%</span>
                                         </td>
                                         <td>
                                             <textarea name="MSG_MODER" class="fieldform">%%MSG_MODER%%</textarea>
@@ -58,7 +58,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             MSG_NOMODER<br>
-                                            <span class="ayuda">Mensaje enviado en la no moderación de comentarios.</span>
+                                            <span class="ayuda">%%_msg_prontus(_mdg_nomoder_hint)%%</span>
                                         </td>
                                         <td>
                                             <textarea name="MSG_NOMODER" class="fieldform">%%MSG_NOMODER%%</textarea>
@@ -67,7 +67,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             LIMIT_CHARS<br>
-                                            <span class="ayuda">Límite de caracteres permitidos para el ingreso del comentario.</span>
+                                            <span class="ayuda">%%_msg_prontus(_limit_chars_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="LIMIT_CHARS" class="fieldform" value="%%LIMIT_CHARS%%" maxlength="4" style="width: 30px"/>
@@ -76,7 +76,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             FILASXPAG_PUBLIC<br>
-                                            <span class="ayuda">Numero de filas de comentarios por página.</span>
+                                            <span class="ayuda">%%_msg_prontus(_filasxpaf_public_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="FILASXPAG_PUBLIC" class="fieldform" value="%%FILASXPAG_PUBLIC%%" maxlength="2" style="width: 20px"/>
@@ -85,29 +85,29 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             CAPTCHA<br>
-                                            <span class="ayuda">Código de seguridad</span>
+                                            <span class="ayuda">%%_msg_prontus(_captcha_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="CAPTCHA" id="CAPTCHA_SI" value="SI"%%CAPTCHA_SI%%/> <label for="CAPTCHA_SI">SI</label>
+                                            <input type="radio" name="CAPTCHA" id="CAPTCHA_SI" value="SI"%%CAPTCHA_SI%%/> <label for="CAPTCHA_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="CAPTCHA" id="CAPTCHA_NO" value="NO"%%CAPTCHA_NO%%/> <label for="CAPTCHA_NO">NO</label>
+                                            <input type="radio" name="CAPTCHA" id="CAPTCHA_NO" value="NO"%%CAPTCHA_NO%%/> <label for="CAPTCHA_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            MODERACION<br>
-                                            <span class="ayuda">Activa o desactiva la moderación de los comentarios</span>
+                                            %%_msg_prontus(_moderation_capital)%%<br>
+                                            <span class="ayuda">%%_msg_prontus(_moderation_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="MODERACION" id="MODERACION_SI" value="SI"%%MODERACION_SI%%/> <label for="MODERACION_SI">SI</label>
+                                            <input type="radio" name="MODERACION" id="MODERACION_SI" value="SI"%%MODERACION_SI%%/> <label for="MODERACION_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="MODERACION" id="MODERACION_NO" value="NO"%%MODERACION_NO%%/> <label for="MODERACION_NO">NO</label>
+                                            <input type="radio" name="MODERACION" id="MODERACION_NO" value="NO"%%MODERACION_NO%%/> <label for="MODERACION_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             PHP_SESSION_NAME<br>
-                                            <span class="ayuda">Nombre de sesión PHP. Valor por defecto 'PHPSESSID'.</span>
+                                            <span class="ayuda">%%_msg_prontus(_php_session_name_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="PHP_SESSION_NAME" class="fieldform" value="%%PHP_SESSION_NAME%%"/>
@@ -116,7 +116,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             PHP_SESSION_PATH<br>
-                                            <span class="ayuda">Path donde se almacenan las sesiones.</span>
+                                            <span class="ayuda">%%_msg_prontus(_php_session_path_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="PHP_SESSION_PATH" class="fieldform" value="%%PHP_SESSION_PATH%%"/>
@@ -125,18 +125,18 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             ENVIAR_MAIL_PUBLICACION<br>
-                                            <span class="ayuda">Indica si se envía email por comentario realizado.</span>
+                                            <span class="ayuda">%%_msg_prontus(_enviar_mail_publicacion_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="ENVIAR_MAIL_PUBLICACION" id="ENVIAR_MAIL_PUBLICACION_SI" value="SI"%%ENVIAR_MAIL_PUBLICACION_SI%% onclick="Cfgedit.comentEnviarPub();"/> <label for="ENVIAR_MAIL_PUBLICACION_SI">SI</label>
+                                            <input type="radio" name="ENVIAR_MAIL_PUBLICACION" id="ENVIAR_MAIL_PUBLICACION_SI" value="SI"%%ENVIAR_MAIL_PUBLICACION_SI%% onclick="Cfgedit.comentEnviarPub();"/> <label for="ENVIAR_MAIL_PUBLICACION_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="ENVIAR_MAIL_PUBLICACION" id="ENVIAR_MAIL_PUBLICACION_NO" value="NO"%%ENVIAR_MAIL_PUBLICACION_NO%% onclick="Cfgedit.comentEnviarPub();"/> <label for="ENVIAR_MAIL_PUBLICACION_NO">NO</label>
+                                            <input type="radio" name="ENVIAR_MAIL_PUBLICACION" id="ENVIAR_MAIL_PUBLICACION_NO" value="NO"%%ENVIAR_MAIL_PUBLICACION_NO%% onclick="Cfgedit.comentEnviarPub();"/> <label for="ENVIAR_MAIL_PUBLICACION_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr class="enviar_publicacion" style="%%ENVIAR_MAIL_PUBLICACION_style%%">
                                         <td style="width: 300px;" valign="top">
                                             MAIL_PUBLICACION_ASUNTO<br>
-                                            <span class="ayuda">Asunto para el email.</span>
+                                            <span class="ayuda">%%_msg_prontus(_mail_publicacion_asunto_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="MAIL_PUBLICACION_ASUNTO" class="fieldform" value="%%MAIL_PUBLICACION_ASUNTO%%"/>
@@ -144,8 +144,8 @@
                                     </tr>
                                     <tr class="enviar_publicacion" style="%%ENVIAR_MAIL_PUBLICACION_style%%">
                                         <td style="width: 300px;" valign="top">
-                                            MAIL_PUBLICACION_FROM<br>
-                                            <span class="ayuda">Dirección email donde se enviaran los antecedentes de una publicación.</span>
+                                            %%_msg_prontus(_email_publication_from)%%<br>
+                                            <span class="ayuda">%%_msg_prontus(_mail_publicacion_from_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="MAIL_PUBLICACION_FROM" class="fieldform" value="%%MAIL_PUBLICACION_FROM%%"/>
@@ -154,7 +154,7 @@
                                     <tr class="enviar_publicacion" style="%%ENVIAR_MAIL_PUBLICACION_style%%">
                                         <td style="width: 300px;" valign="top">
                                             MAIL_PUBLICACION_SMTP<br>
-                                            <span class="ayuda">SMTP para el envío (si es local usar 'localhost')</span>
+                                            <span class="ayuda">%%_msg_prontus(_mail_publicacion_smtp_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="MAIL_PUBLICACION_SMTP" class="fieldform" value="%%MAIL_PUBLICACION_SMTP%%"/>
@@ -164,13 +164,13 @@
                             </form>
                             <div class="botones">
                                 <div class="boton-gris3 aright">
-                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                        <span>Cancelar</span>
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                        <span>%%_msg_prontus(_cancel)%%</span>
                                     </a>
                                 </div>
                                 <div class="boton-gris3 aright">
-                                    <a onclick="Cfgedit.guardaCfg('coment'); return false;" href="#" class="button" title="Guardar">
-                                        <span>Guardar</span>
+                                    <a onclick="Cfgedit.guardaCfg('coment'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                        <span>%%_msg_prontus(_save)%%</span>
                                     </a>
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Administrar Tags &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <title>%%_msg_prontus(_manage_tags)%% &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_PRONTUS_ID%%/cpan/core/css/tax.css" />
@@ -20,16 +20,16 @@
   <body>
     <div class="maintags">
       <div class="col685">
-        <div class="rotulo"><div class="titulo">Todos los Tags</div></div>
+        <div class="rotulo"><div class="titulo">%%_msg_prontus(_all_tags)%%</div></div>
         <div class="auxi">
           <div class="separa"></div>
 
           <div id="buscador-tags">
             <div class="boton-gris3 aright">
               <!--admin_tags-->
-              <a href="./prontus_tags_admin.cgi?_path_conf=%%_path_conf%%" onclick="return Tags.abrirAdminTags();" target="_top" class="button"><span>Administrar Tags</span></a>
+              <a href="./prontus_tags_admin.cgi?_path_conf=%%_path_conf%%" onclick="return Tags.abrirAdminTags();" target="_top" class="button"><span>%%_msg_prontus(_manage_tags)%%</span></a>
               <!--/admin_tags-->
-              <a onclick="parent.Admin.cerrarColorbox(); return false;" href="#" class="button"><span>Cerrar</span></a>
+              <a onclick="parent.Admin.cerrarColorbox(); return false;" href="#" class="button"><span>%%_msg_prontus(_close)%%</span></a>
             </div>
 
             <form name="frmBuscadorTags" id="frmBuscadorTags" method="get" action="#">
@@ -39,10 +39,10 @@
                   <td width="185" align="left" valign="middle" class="bg-campo"><input type="text" name="search" id="search_texto" class="campo"/></td>
                   <td width="33" align="left" valign="middle" class="bg-boto">
                     <a href="#" onclick="Tags.realizarBusquedaRapida(); return false;">
-                      <img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="Buscar Tags" title="Buscar Tags" /></a>
+                      <img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="%%_msg_prontus(_search_tags)%%" title="%%_msg_prontus(_search_tags)%%" /></a>
                   </td>
                   <td class="multi">
-                    <input type="checkbox" name="ocultarusados" id="ocultarusados" value="1" /> <label for="ocultarusados">Ocultar tags usados</label>
+                    <input type="checkbox" name="ocultarusados" id="ocultarusados" value="1" /> <label for="ocultarusados">%%_msg_prontus(_hide_tags_usados)%%</label>
                   </td>
                 </tr>
               </table>
@@ -50,10 +50,10 @@
           </div>
 
           <div class="separa"></div>
-          <div class="ayuda"><b>Ayuda:</b> Haga click sobre los tags para agregarlos al Fid.</div>
+          <div class="ayuda"><b>%%_msg_prontus(_help)%%:</b> %%_msg_prontus(_click_on_tags_to_add_to_fid)%%</div>
           <div id="alltags">
           %%LOOP_TAGS%%
-            <div class="item unused"><a href="#tag%%_tags_id%%" rel="item%%_tags_id%%" title="Agregar Tag: %%_tags_tag%%" rev="%%_tags_tag%%">%%_tags_shrttag%%</a></div>
+            <div class="item unused"><a href="#tag%%_tags_id%%" rel="item%%_tags_id%%" title="%%_msg_prontus(_add_tag)%%: %%_tags_tag%%" rev="%%_tags_tag%%">%%_tags_shrttag%%</a></div>
           %%/LOOP_TAGS%%
             <div class="separa"></div>
           </div>

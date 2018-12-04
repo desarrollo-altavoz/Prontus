@@ -40,7 +40,7 @@ var Ayuda = {
                 $('#loadingcom').hide();
             },
             error: function () {
-                alert('Ocurrio un error, intentelo nuevamente.');
+                alert(ProntusLangController.getString('_help_generic_error'));
                 $('.boton-gris3').show();
                 $('#loadingcom').hide();
             }
@@ -61,11 +61,7 @@ var Ayuda = {
 
     guiaReporte: function () {
         var str;
-        str  = "** Guía de reporte de errores **\n\n";
-        str += "Para reportar un error, completar el mensaje con la siguiente información:\n\n";
-        str += "* Asunto: Resumen del problema, por ejemplo, 'No se pueden subir fotos'.\n";
-        str += "* Texto: Descripción del problema lo más detallado posible, incluir idealmente los pasos para reproducir el problema y los datos utilizados.\n";
-
+        str  = ProntusLangController.getString('_help_reporting_guidelines');
         alert(str);
     }
 };

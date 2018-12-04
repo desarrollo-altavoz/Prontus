@@ -75,7 +75,7 @@ var CfgXcoding = {
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert('Ha ocurrido un error al cargar los formatos: ' + errorThrown);
+                alert(ProntusLangController.getString('_xcoding_format_load_error') + errorThrown);
             }
         });
     },
@@ -101,7 +101,7 @@ var CfgXcoding = {
         marcas.sort();
 
         combo_formatos.options.length = 0;
-        combo_formatos.options[0] = new Option('Por defecto', '');
+        combo_formatos.options[0] = new Option(ProntusLangController.getString('_xcoding_default_format_label'), '');
         combo_formatos.options[0].selected = true;
         for (var j = 0; j < i; j++) {
             nombre = marcas[j].split('.');
@@ -178,7 +178,7 @@ var CfgXcoding = {
                 var combo_formato = document.getElementById('FORMAT');
                 var combo_marca = document.getElementById('MARCA_PRONTUS');
                 if (typeof CfgXcoding.formatos[combo_marca.value + '.' + nuevo_formato] !== 'undefined') {
-                    alert('Este formato ya existe ');
+                    alert(ProntusLangController.getString('_xcoding_existing_format_error'));
                     return false;
                 }
 
@@ -188,10 +188,10 @@ var CfgXcoding = {
                 document.getElementById('nuevo_formato_xcoding').value = '';
                 CfgXcoding.limpiaParametros();
             } else {
-                alert('Sólo se pueden ingresar letras. No se permite Ñ, espacios, números, letras con tilde o símbolos');
+                alert(ProntusLangController.getString('_xcoding_character_restriction_error'));
             }
         } else {
-            alert('Debe ingresar un identificador para el formato');
+            alert(ProntusLangController.getString('_xcoding_format_identifier_required'));
         }
     },
 
@@ -208,7 +208,7 @@ var CfgXcoding = {
                 for (var marca in CfgXcoding.formatos) {
                     nombre = marca.split('.');
                     if (nueva_marca == nombre[0] && nombre.length > 1) {
-                        alert('Esta marca ya existe');
+                        alert(ProntusLangController.getString('_xcoding_existing_mark'));
                         return false;
                     }
                 }
@@ -219,10 +219,10 @@ var CfgXcoding = {
                 document.getElementById('nueva_marca_xcoding').value = '';
                 CfgXcoding.limpiaParametros();
             } else {
-                alert('Sólo se pueden ingresar números.');
+                alert(ProntusLangController.getString('_xcoding_only_numbers_allowed'));
             }
         } else {
-            alert('Debe ingresar un id');
+            alert(ProntusLangController.getString('_xcoding_id_required'));
         }
     },
 
@@ -230,7 +230,7 @@ var CfgXcoding = {
      * Ejecuta una verificacion de la configuracion del directorio y de ffmpeg si lo encuentra
      */
     borrarMarca: function() {
-        var msg = "¿Estás seguro de eliminar la marca de transcodificación?\nSe eliminarán todos los formatos asociados. Esta acción no se puede deshacer.";
+        var msg = ProntusLangController.getString('_xcoding_mark_deletion_confirm');
         if (confirm(msg)) {
             var marca_seleccionada = document.getElementById('MARCA_PRONTUS').value;
             var nombre;
@@ -250,9 +250,9 @@ var CfgXcoding = {
     borrarFormato: function() {
         var formato_seleccionado = document.getElementById('FORMAT').value;
         var marca_seleccionada = document.getElementById('MARCA_PRONTUS').value;
-        var msg = "¿Estás seguro de eliminar el formato de transcodificación?. Esta acción no se puede deshacer.";
+        var msg = ProntusLangController.getString('_xcoding_format_deletion_confirm');
         if (formato_seleccionado == '') {
-            alert('Este formato no se puede eliminar');
+            alert(ProntusLangController.getString('_xcoding_format_cant_be_deleted'));
             return false;
         }
         if (confirm(msg)) {
@@ -272,12 +272,12 @@ var CfgXcoding = {
             if (typeof CfgXcoding.formatos[marca]['VIDEOSIZE'] !== undefined) {
                 if (CfgXcoding.formatos[marca]['VIDEOSIZE'] % 2 == 1) {
                     var nombre = marca.split('.');
-                    alert('El parametro VIDEOSIZE no puede ser impar, formato incorrecto:\n' + marca);
+                    alert(ProntusLangController.getString('_xcoding_odd_videosize_error') + marca);
                     return false;
                 }
             }
         }
-        var msg = "¿Estás seguro de modificar los formatos de transcodificación?";
+        var msg = ProntusLangController.getString('_xcoding_format_modification_confirm');
         if (confirm(msg)) {
             CfgXcoding.guardarServidor();
         }
@@ -299,7 +299,7 @@ var CfgXcoding = {
             success: function (json) {
                 if (typeof json.status !== 'undefined') {
                     if (json.status === 1) {
-                        alert('Se han guardado correctamente los formatos');
+                        alert(ProntusLangController.getString('_xcoding_format_save_success'));
                     } else {
                         alert(json.msg);
                     }
@@ -307,7 +307,7 @@ var CfgXcoding = {
                 CfgXcoding.cargaCfg();
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert('Ha ocurrido un error al guardar los formatos: ' + errorThrown);
+                alert(ProntusLangController.getString('_xcoding_format_save_error') + errorThrown);
             }
         });
     },

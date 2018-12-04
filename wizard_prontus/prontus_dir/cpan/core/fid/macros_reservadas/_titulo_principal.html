@@ -3,8 +3,8 @@
                     <div class="numero-id">#%%_ART_AUTOINC%%</div>
                     <div class="aleft"><input type="text" name="_txt_titular"  id="_txt_titular" class="fieldform-top" value="%%_txt_titular%%" onclick="if($(this).val()=='Sin t&iacute;tulo') {$(this).val('');}" /></div>
                     <div class="numero-id hide-new-artic">
-                      <a href="#" id="link_info_artic" title="Información del Artículo">
-                        <img src="/%%_prontus_id%%/cpan/core/imag/boto/inf_of.png" width="21" height="21" alt="Ver más información" title="Ver más información" class="cambia-boton" />
+                      <a href="#" id="link_info_artic" title="%%_msg_prontus(_artic_information)%%">
+                        <img src="/%%_prontus_id%%/cpan/core/imag/boto/inf_of.png" width="21" height="21" alt="%%_msg_prontus(_view_more_information)%%" title="%%_msg_prontus(_view_more_information)%%" class="cambia-boton" />
                       </a>
                     </div>
                     <div class="numero-id hide-new-artic">
@@ -20,39 +20,39 @@
   <div id="info_artic">
     <div class="col685">
       <div class="rotulo">
-        <div class="titulo">Información del Artículo</div>
+        <div class="titulo">%%_msg_prontus(_artic_information)%%</div>
       </div>
       <div class="box-gris">
         <div class="box-auxi">
           <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform">
 
             <tr>
-              <td class="nombre">Timestamp:</td><td class="campo">%%_TS%%</td>
+              <td class="nombre">%%_msg_prontus(_msg_generic_timestamp)%%:</td><td class="campo">%%_TS%%</td>
             </tr>
             <tr>
-              <td class="nombre">Creación del Art&iacute;culo:</td><td class="campo">%%_FECHACLONG%% - %%_horac%%</td>
+              <td class="nombre">%%_msg_prontus(_artic_creation)%%:</td><td class="campo">%%_FECHACLONG%% - %%_horac%%</td>
             </tr>
             <tr>
-              <td class="nombre">Última Modificación:</td><td class="campo">%%_fechamlong%% - %%_horam%%</td>
+              <td class="nombre">%%_msg_prontus(_last_modified)%%:</td><td class="campo">%%_fechamlong%% - %%_horam%%</td>
             </tr>
             <tr>
-              <td class="nombre">Peso del HTML del Art&iacute;culo:</td><td class="campo">%%_size_html%%</td>
+              <td class="nombre">%%_msg_prontus(_weighht_html_artic)%%:</td><td class="campo">%%_size_html%%</td>
             </tr>
             <tr>
-              <td class="nombre">Peso Total del Art&iacute;culo:</td><td class="campo">%%_size_total%%</td>
+              <td class="nombre">%%_msg_prontus(_total_artic_weight)%%:</td><td class="campo">%%_size_total%%</td>
             </tr>
             <tr>
-              <td class="nombre">Path del Art&iacute;culo:</td><td class="campo">%%_file%%</td>
+              <td class="nombre">%%_msg_prontus(_artic_path)%%:</td><td class="campo">%%_file%%</td>
             </tr>
             <tr>
-              <td class="nombre">Friendly URL:</td><td class="campo">%%_fileurlinfo%%</td>
+              <td class="nombre">%%_msg_prontus(_msg_generic_friendly_url)%%:</td><td class="campo">%%_fileurlinfo%%</td>
             </tr>
             <tr>
-              <td class="nombre">Datos Guardados:</td><td class="campo"><a href="#" onclick="Fid.verXML('%%_prontus_id%%', '%%_ts%%');">Ver XML</a></td>
+              <td class="nombre">%%_msg_prontus(_saved_data)%%:</td><td class="campo"><a href="#" onclick="Fid.verXML('%%_prontus_id%%', '%%_ts%%');">%%_msg_prontus(_view_xml)%%</a></td>
             </tr>
             <!--list_pagspar-->
             <tr>
-              <td class="nombre">Salidas paralelas:</td>
+              <td class="nombre">%%_msg_prontus(_parallel_outputs)%%:</td>
               <td class="campo">%%_pagspar%%</td>
             </tr>
             <!--/list_pagspar-->

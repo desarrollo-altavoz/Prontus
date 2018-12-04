@@ -3,18 +3,18 @@
 <input type="hidden" value="1" name="xcodeInput" id="xcodeInput" />
 <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tableform tablexcode">
   <tr>
-    <td class="nombre" style="width:150px;">Archivo de Video:</td>
+    <td class="nombre" style="width:150px;">%%_msg_prontus(_video_file)%%:</td>
     <td class="campo upload" colspan="2">
       <div id="panelVideo">
         <input name="MULTIMEDIA_VIDEO1" type="file" id="MULTIMEDIA_VIDEO1" />
         <div class="P-COMENT" id="linkVideo">&nbsp; %%MULTIMEDIA_VIDEO1%%</div><br/>
-        <span class="ayuda">Archivos soportados: avi, flv, mp4, wmv, mpg, mpeg, 3gp , mov.</span>
+        <span class="ayuda">%%_msg_prontus(_supported_files)%%: avi, flv, mp4, wmv, mpg, mpeg, 3gp , mov.</span>
 
       </div>
     </td>
   </tr>
   <tr>
-    <td class="nombre">Estado del proceso:</td>
+    <td class="nombre">%%_msg_prontus(_process_status)%%:</td>
     <td class="campo status-xcode" id="panelStatus"></td>
   </tr>
   <tr>
@@ -22,23 +22,23 @@
       <div class="panel-xcode">
         <div class="panel-player"><span id="player-content"></span></div>
         <div class="panel-buttons browser-comun browser-normal">
-          <div class="item"><a href="#" onclick="Transcoding.generaScreenshot(); return false;" class="cambia-boton" title="Tomar Captura">
-            <img src="/%%_prontus_id%%/cpan/core/imag/xcode/camara_of.png" width="32" height="32" alt="screenshot" /> Screenshot</a></div>
+          <div class="item"><a href="#" onclick="Transcoding.generaScreenshot(); return false;" class="cambia-boton" title="%%_msg_prontus(_take_screenshot)%%">
+            <img src="/%%_prontus_id%%/cpan/core/imag/xcode/camara_of.png" width="32" height="32" alt="%%_msg_prontus(_msg_generic_screenshot)%%" /> %%_msg_prontus(_msg_generic_screenshot)%%</a></div>
 
-          <div class="item"><a href="#" onclick="Flash.setMarkerA(); return false;" class="cambia-boton" title="Colocar Marca A">
-            <img src="/%%_prontus_id%%/cpan/core/imag/xcode/mark1_of.png" width="32" height="32" alt="marca_a" /> Marca A</a></div>
+          <div class="item"><a href="#" onclick="Flash.setMarkerA(); return false;" class="cambia-boton" title="%%_msg_prontus(_put_mark_a)%%">
+            <img src="/%%_prontus_id%%/cpan/core/imag/xcode/mark1_of.png" width="32" height="32" alt="%%_msg_prontus(_mark_a)%%" /> %%_msg_prontus(_mark_a)%%</a></div>
 
-          <div class="item"><a href="#" onclick="Flash.setMarkerB(); return false;" class="cambia-boton" title="Colocar Marca B">
-            <img src="/%%_prontus_id%%/cpan/core/imag/xcode/mark2_of.png" width="32" height="32" alt="marca_b" /> Marca B</a></div>
+          <div class="item"><a href="#" onclick="Flash.setMarkerB(); return false;" class="cambia-boton" title="%%_msg_prontus(_put_mark_b)%%">
+            <img src="/%%_prontus_id%%/cpan/core/imag/xcode/mark2_of.png" width="32" height="32" alt="%%_msg_prontus(_mark_b)%%" /> %%_msg_prontus(_mark_b)%%</a></div>
 
-          <div class="item"><a href="#" onclick="Transcoding.cortarVideo(); return false;" class="cambia-boton" title="Cortar Selección">
-            <img src="/%%_prontus_id%%/cpan/core/imag/xcode/cortar_of.png" width="32" height="32" alt="cortar" /> Cortar</a></div>
+          <div class="item"><a href="#" onclick="Transcoding.cortarVideo(); return false;" class="cambia-boton" title="%%_msg_prontus(_cut_selection)%%">
+            <img src="/%%_prontus_id%%/cpan/core/imag/xcode/cortar_of.png" width="32" height="32" alt="%%_msg_prontus(_cut)%%" /> %%_msg_prontus(_cut)%%</a></div>
 
-          <div><br /><a href="http://develop.prontus.cl/%%_prontus_manual_oper%%/site/artic/20110414/pags/20110414104153.html" target="_blank" title="Ayuda">Ayuda</a>
+          <div><br /><a href="http://develop.prontus.cl/%%_prontus_manual_oper%%/site/artic/20110414/pags/20110414104153.html" target="_blank" title="Ayuda">%%_msg_prontus(_help)%%</a>
           </div>
         </div>
         <div class="panel-embed">
-          <a href="javascript:Embed.showCodeV();" class="cambia-boton" title="Código para Insertar">Ver código para insertar el Video</a>
+          <a href="javascript:Embed.showCodeV();" class="cambia-boton" title="%%_msg_prontus(_code_to_insert)%%">%%_msg_prontus(_view_code_to_insert_video)%%</a>
           <div id="embed-code"></div>
         </div>
       </div>

@@ -2,16 +2,16 @@
                         <div class="listado">
 
                             <div style="height:37px;">
-                                <p style="float: left;"><b>Configuración de Categorías</b>: %%_prontus_id%%-tax.cfg</p>
+                                <p style="float: left;"><b>%%_msg_prontus(_categories_settings)%%</b>: %%_prontus_id%%-tax.cfg</p>
                                 <div class="botones">
                                     <div class="boton-gris3 aright">
-                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                            <span>Cancelar</span>
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                            <span>%%_msg_prontus(_cancel)%%</span>
                                         </a>
                                     </div>
                                     <div class="boton-gris3 aright">
-                                        <a onclick="Cfgedit.guardaCfg('tax'); return false;" href="#" class="button" title="Guardar">
-                                            <span>Guardar</span>
+                                        <a onclick="Cfgedit.guardaCfg('tax'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                            <span>%%_msg_prontus(_save)%%</span>
                                         </a>
                                     </div>
                                 </div>
@@ -28,13 +28,13 @@
                                     <input type="hidden" name="_tab" value="cfg-tab3" />
                                     <input type="hidden" name="TAXPORT_ORDEN" value="" />
                                     <tr class="head">
-                                        <td>Variable</td>
-                                        <td>Valor</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
+                                        <td>%%_msg_prontus(_value)%%</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
-                                            TAXONOMIA_NIVELES<br>
-                                            <span class="ayuda">Indica el número de niveles de sección, tema y subtema a utilizar en el FID.</span>
+                                            %%_msg_prontus(_tax_levels)%%<br>
+                                            <span class="ayuda">%%_msg_prontus(_tax_levels_hint)%%</span>
                                         </td>
                                         <td>
                                             <select name="TAXONOMIA_NIVELES" class="fieldform" style="width: 60px;">
@@ -44,15 +44,14 @@
                                                 <option value="3"%%TAXONOMIA_NIVELES_3%%>3</option>
                                             </select>
                                             <div id="msg-taxniv-cero" class="msg-alert">
-                                                <b>Atención:</b> Dejando la variable TAXONOMIA_NIVELES en 0, se ha deshabilitado el uso de categorías en el sitio web,
-                                                y por lo tanto, el resto de las variables de esta página no tendrán efecto.
+                                                <b>%%_msg_prontus(_attention)%%:</b> %%_msg_prontus(_tax_levels_attencion_msg)%%
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             NUM_RELAC_DEFAULT<br>
-                                            <span class="ayuda">Número de links hacia artículos relacionados que aparecerán junto a cada articulo.</span>
+                                            <span class="ayuda">%%_msg_prontus(_num_relac_default_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="NUM_RELAC_DEFAULT" value="%%NUM_RELAC_DEFAULT%%" class="fieldform" maxlength="3" style="width: 24px;"/>
@@ -61,7 +60,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TAXPORT_ARTXPAG<br>
-                                            <span class="ayuda">Número de artículos por página que aparecerán en las Portadas taxonómicas.</span>
+                                            <span class="ayuda">%%_msg_prontus(_taxpot_artpag_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="TAXPORT_ARTXPAG" value="%%TAXPORT_ARTXPAG%%" class="fieldform" maxlength="4" style="width: 30px"/>
@@ -70,13 +69,12 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TAXPORT_MAXARTICS<br>
-                                            <span class="ayuda">Número máximo de artículos a considerar para construir las portadas taxonómicas. De esta manera se puede limitar su número por razones estéticas o de rendimiento del servidor.</span>
+                                            <span class="ayuda">%%_msg_prontus(_taxport_maxartics_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="TAXPORT_MAXARTICS" value="%%TAXPORT_MAXARTICS%%" class="fieldform" maxlength="4" style="width: 30px;"/>
                                             <div id="msg-maxartics" class="msg-alert">
-                                                <b>Atención:</b> La variable TAXPORT_MAXARTICS, ha superado el límite de seguridad. Este número se recomienda que sea
-                                                menor a <span>1000</span>, para no afectar el rendimiento de Prontus.
+                                                <b>%%_msg_prontus(_attention)%%:</b> %%_msg_prontus(_taxport_maxartics_attention)%%
 
                                             </div>
                                         </td>
@@ -85,43 +83,43 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TAXPORT_ORDEN<br>
-                                            <span class="ayuda">Permitir definir el orden del listado de artículos en las portadas taxonómicas.</span>
+                                            <span class="ayuda">%%_msg_prontus(_taxport_order_hint)%%</span>
                                         </td>
                                         <td>
                                             <select name="TAXPORT_ORDEN_TIPO" style="width: 110px;">
-                                                <option value="">- Seleccione -</option>
-                                                <option value="PUBLICACION"%%TAXPORT_ORDEN_PUB%%>Publicación</option>
-                                                <option value="TITULAR"%%TAXPORT_ORDEN_TIT%%>Titular</option>
-                                                <option value="CREACION"%%TAXPORT_ORDEN_CRE%%>Creación</option>
+                                                <option value="">- %%_msg_prontus(_select)%% -</option>
+                                                <option value="PUBLICACION"%%TAXPORT_ORDEN_PUB%%>%%_msg_prontus(_publishing)%%</option>
+                                                <option value="TITULAR"%%TAXPORT_ORDEN_TIT%%>%%_msg_prontus(_headline)%%</option>
+                                                <option value="CREACION"%%TAXPORT_ORDEN_CRE%%>%%_msg_prontus(_creation)%%</option>
                                             </select>
                                             <select name="TAXPORT_ORDEN_ORD" style="width: 110px;">
                                                 <option value="">- Seleccione -</option>
-                                                <option value="DESC"%%TAXPORT_ORDEN_DESC%%>Descendente</option>
-                                                <option value="ASC"%%TAXPORT_ORDEN_ASC%%>Ascendente</option>
+                                                <option value="DESC"%%TAXPORT_ORDEN_DESC%%>%%_msg_prontus(_descending)%%</option>
+                                                <option value="ASC"%%TAXPORT_ORDEN_ASC%%>%%_msg_prontus(_ascending)%%</option>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TAXPORT_TIPO_PAGINACION<br>
-                                            <span class="ayuda">Especifica el tipo de paginación para las portadas taxonómicas.</span>
+                                            <span class="ayuda">%%_msg_prontus(_taxport_tipo_paginacion_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="TAXPORT_TIPO_PAGINACION" id="TAXPORT_TIPO_PAGINACION_V0" value="0"%%TAXPORT_TIPO_PAGINACION_V0%%> <label for="TAXPORT_TIPO_PAGINACION_V0">Paginación tradicional</label>
+                                            <input type="radio" name="TAXPORT_TIPO_PAGINACION" id="TAXPORT_TIPO_PAGINACION_V0" value="0"%%TAXPORT_TIPO_PAGINACION_V0%%> <label for="TAXPORT_TIPO_PAGINACION_V0">%%_msg_prontus(_classic_pagination)%%</label>
                                             <br>
-                                            <span class="help">La misma que se usa desde el inicio de Prontus. El total de páginas es desplegado en pantalla.</span>
+                                            <span class="help">%%_msg_prontus(_classic_pagination_hint)%%</span>
                                             <br>
                                             <br>
-                                            <input type="radio" name="TAXPORT_TIPO_PAGINACION" id="TAXPORT_TIPO_PAGINACION_V1" value="1"%%TAXPORT_TIPO_PAGINACION_V1%%> <label for="TAXPORT_TIPO_PAGINACION_V1">Paginación corta</label>
+                                            <input type="radio" name="TAXPORT_TIPO_PAGINACION" id="TAXPORT_TIPO_PAGINACION_V1" value="1"%%TAXPORT_TIPO_PAGINACION_V1%%> <label for="TAXPORT_TIPO_PAGINACION_V1">%%_msg_prontus(_short_pagination)%%</label>
                                             <br>
-                                            <span class="help">También conocida como estilo Google, ya que fue popularizada por este buscador. Se muestran sólo X páginas hacia adelante y atrás. Habrá siempre un link a la primera y última página</span>
+                                            <span class="help">%%_msg_prontus(_short_pagination_hint)%%</span>
                                             <br>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TAXPORT_PAGCORTA_MAXPAGS<br>
-                                            <span class="ayuda">Sólo válido si se especifica la paginación corta. Indica la cantidad de páginas máximas que se mostrarán hacia adelante y hacia atrás. Este valor incluye la primera y última páginas</span>
+                                            <span class="ayuda">%%_msg_prontus(_taxpot_pagcorta_maxpags_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="TAXPORT_PAGCORTA_MAXPAGS" value="%%TAXPORT_PAGCORTA_MAXPAGS%%" class="fieldform" maxlength="4" style="width: 30px"/>
@@ -131,13 +129,13 @@
                             </form>
                             <div class="botones">
                                 <div class="boton-gris3 aright">
-                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                        <span>Cancelar</span>
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                        <span>%%_msg_prontus(_cancel)%%</span>
                                     </a>
                                 </div>
                                 <div class="boton-gris3 aright">
-                                    <a onclick="Cfgedit.guardaCfg('tax'); return false;" href="#" class="button" title="Guardar">
-                                        <span>Guardar</span>
+                                    <a onclick="Cfgedit.guardaCfg('tax'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                        <span>%%_msg_prontus(_save)%%</span>
                                     </a>
                                 </div>
                             </div>

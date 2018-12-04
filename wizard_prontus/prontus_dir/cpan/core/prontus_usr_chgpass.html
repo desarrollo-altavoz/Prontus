@@ -7,7 +7,7 @@
 </script>
 <div class="usr_chgpass">
   <div class="rotulo">
-      <div class="titulo">Cambio de contraseña</div>
+      <div class="titulo">%%_msg_prontus(_password_change)%%</div>
   </div>
   <div style="clear: both;"></div>
   <div class="box-gris">
@@ -15,18 +15,18 @@
       <input type="hidden" name="_path_conf" value="%%_path_conf%%">
       <table width="100%">
         <tr>
-            <td colspan="2">Si necesita cambiar su contraseña, complete el siguiente formulario:</td>
+            <td colspan="2">%%_msg_prontus(_password_change_msg)%%:</td>
         </tr>
         <tr>
-            <td class="bg-campo">* Contraseña acual</td>
+            <td class="bg-campo">* %%_msg_prontus(_current_password)%%</td>
             <td width="250"><input class="fieldform" type="password" name="pwd_actual" size="35" value=""></td>
         </tr>
         <tr>
-            <td>* Nueva contraseña</td>
+            <td>* %%_msg_prontus(_new_password)%%</td>
             <td width="250"><input class="fieldform" type="password" name="pwd_nuevo" size="35" value=""></td>
         </tr>
         <tr>
-            <td>* Confirmar contraseña</td>
+            <td>* %%_msg_prontus(_confirm_password)%%</td>
             <td width="250"><input class="fieldform" type="password" name="pwd_confirm" size="35" value=""/></td>
         </tr>
       </table>
@@ -35,8 +35,8 @@
         <tr>
           <td>
             <div class="botones">
-            <a onclick="UsrAdmin.guardarChgPass(); return false;" href="#" class="button"><span>Guardar</span></a>
-            <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>Cancelar</span></a>
+            <a onclick="UsrAdmin.guardarChgPass(); return false;" href="#" class="button"><span>%%_msg_prontus(_save)%%</span></a>
+            <a onclick="parent.Opciones.cerrarColorbox(); return false;" href="#" class="button"><span>%%_msg_prontus(_cancel)%%</span></a>
             </div>
           </td>
           <td>&nbsp;</td>

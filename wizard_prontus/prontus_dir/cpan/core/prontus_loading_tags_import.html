@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Importar Tags</title>
+    <title>%%_msg_prontus(_import_tags)%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link type="text/css" rel="stylesheet" href="css/estilos.css" />
     <script type="text/javascript" src="js-local/jquery/jquery.js"></script>
@@ -19,7 +19,7 @@
 
     <div class="col470">
       <div class="rotulo">
-        <div class="titulo">&nbsp; &nbsp;Importar Tags</div>
+        <div class="titulo">&nbsp; &nbsp;%%_msg_prontus(_import_tags)%%</div>
       </div>
       <div class="box-gris">
         <div class="box-auxi">
@@ -28,19 +28,19 @@
             <div id="msg-loading" class="msg-result">
               <br/>
               <img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /><br/><br/>
-              En Proceso...<br/>
-              Por favor espere hasta que el proceso termine.
+              %%_msg_prontus(_in_process)%%...<br/>
+              %%_msg_prontus(_wait_until_the_process_is_finished)%%
             </div>
             <div id="msg-result" class="msg-result">
               <br/><br/>
-              El proceso de importación ha finalizado de manera exitosa.<br/><br/><br/>
+              %%_msg_prontus(_import_process_completed_successfully)%%<br/><br/><br/>
             </div>
             <div id="msg-log" class="msg-result">
-              <a href="../procs/prontus_tags_import_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_import_tags">&raquo; Revisar el Log con el resumen de la operación</a>
+              <a href="../procs/prontus_tags_import_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_import_tags">&raquo; %%_msg_prontus(_check_log_summary_operation)%%</a>
             </div>
             <br/><br/>
             <div class="boton-generico boton-loading">
-              <a class="button" href="#" onclick="parent.location.reload();parent.Opciones.cerrarColorbox();"><span>Cerrar</span></a>
+              <a class="button" href="#" onclick="parent.location.reload();parent.Opciones.cerrarColorbox();"><span>%%_msg_prontus(_close)%%</span></a>
             </div>
             <br/>
           </div>

@@ -85,7 +85,7 @@ var Preview = {
             return;
         }
         if(Preview.isBussy) {
-            Admin.displayMessage('Por favor, espere a que termine de generar el Preview', 'alert');
+            Admin.displayMessage(ProntusLangController.getString('_preview_wait_for_load'), 'alert');
             return;
         }
         Preview.isOpen = false;
@@ -201,12 +201,12 @@ var Preview = {
         var fecha = $('#fecha_preview').val();
         var hora = $('#hora_preview').val();
         if(!Admin.validaFecha(fecha)) {
-            Admin.displayMessage('La fecha no es válida, no se puede calcular el Preview', 'alert');
+            Admin.displayMessage(ProntusLangController.getString('_preview_invalid_date'), 'alert');
             //alert('La fecha no es válida, no se puede calcular el Preview');
             return;
         }
         if(!Admin.validaHora(hora)) {
-            Admin.displayMessage('La hora no es válida, no se puede calcular el Preview', 'alert');
+            Admin.displayMessage(ProntusLangController.getString('_preview_invalid_hour'), 'alert');
             //alert('La hora no es válida, no se puede calcular el Preview');
             return;
         }
@@ -247,7 +247,7 @@ var Preview = {
                         Admin.displayMessage(resp.msg, 'error');
                     }
                 } else {
-                    Admin.displayMessage('Se produjo un error al intentar recargar el preview', 'error');
+                    Admin.displayMessage(ProntusLangController.getString('_preview_error_reloading'), 'error');
                 }
             }
         };
@@ -273,12 +273,12 @@ var Preview = {
         var fecha = $('#fecha_preview').val();
         var hora = $('#hora_preview').val();
         if(!Admin.validaFecha(fecha)) {
-            Admin.displayMessage('La fecha no es válida, no se puede calcular el Preview', 'alert');
+            Admin.displayMessage(ProntusLangController.getString('_preview_invalid_date'), 'alert');
             //alert('La fecha no es válida, no se puede calcular el Preview');
             return;
         }
         if(!Admin.validaHora(hora)) {
-            Admin.displayMessage('La hora no es válida, no se puede calcular el Preview', 'alert');
+            Admin.displayMessage(ProntusLangController.getString('_preview_invalid_hour'), 'alert');
             //alert('La hora no es válida, no se puede calcular el Preview');
             return;
         }
@@ -306,7 +306,7 @@ var Preview = {
                         Admin.displayMessage(resp.msg, 'error');
                     }
                 } else {
-                    Admin.displayMessage('Se produjo un error al intentar recargar el preview', 'error');
+                    Admin.displayMessage(ProntusLangController.getString('_preview_error_reloading'), 'error');
                 }
             }
         };

@@ -59,31 +59,31 @@ $(document).ready(function () {
 <div class="separa2"></div>
 <div class="opciones">
     <div class="rotulo">
-        <div class="titulo">Comentarios</div>
+        <div class="titulo">%%_msg_prontus(_comments)%%</div>
         <div class="flecha"><span class="opened">&nbsp;</span></div>
     </div>
     <div class="box-gris">
         <div class="box-auxi">
-            <div class="check-item"><label for="_incluir_comentarios">Incluir comentarios:</label> <input id="_incluir_comentarios" type="checkbox" name="CHK_comentarios" value="si"/></div>
+            <div class="check-item"><label for="_incluir_comentarios">%%_msg_prontus(_include_comments)%%:</label> <input id="_incluir_comentarios" type="checkbox" name="CHK_comentarios" value="si"/></div>
             <div class="linea"></div>
             <table class="fechahora">
                 <tr>
-                    <td colspan="3">Permitir comentarios:</td>
+                    <td colspan="3">%%_msg_prontus(_allow_commnets)%%:</td>
                 </tr>
                 <tr>
-                    <td><span class="titulo">Desde:&nbsp;&nbsp;</span></td>
+                    <td><span class="titulo">%%_msg_prontus(_since)%%:&nbsp;&nbsp;</span></td>
                     <td><input class="fieldform fecha" name="apert_fecha" type="text" value="%%apert_fecha%%" size="6" maxlength="10" />&nbsp;&nbsp;</td>
                     <td><input class="fieldform hora" name="apert_hora" type="text" value="%%apert_hora%%" size="6" maxlength="5" /> hrs</td>
                 </tr>
                 <tr>
-                    <td><span class="titulo">Hasta:&nbsp;&nbsp;</span></td>
+                    <td><span class="titulo">%%_msg_prontus(_until)%%:&nbsp;&nbsp;</span></td>
                     <td><input class="fieldform fecha" name="cierre_fecha" type="text" value="%%cierre_fecha%%" size="6" maxlength="10"/>&nbsp;&nbsp;</td>
                     <td><input class="fieldform hora" name="cierre_hora" type="text" value="%%cierre_hora%%" size="6" maxlength="5"/> hrs</td>
                 </tr>
             </table>
             <div class="linea"></div>
-            <div class="check-item"><label for="_forocerrado">Cerrar comentarios:</label> <input id="_forocerrado" type="checkbox" name="CHK_forocerrado" value="1" /></div>
-            <p>(Permite cerrar el formulario para no ingresar nuevos comentarios en este artículo, desplegando solo los ya emitidos.)</p>
+            <div class="check-item"><label for="_forocerrado">%%_msg_prontus(_close_comments)%%:</label> <input id="_forocerrado" type="checkbox" name="CHK_forocerrado" value="1" /></div>
+            <p>(%%_msg_prontus(_close_comments_hint)%%)</p>
         </div>
     </div>
 </div>

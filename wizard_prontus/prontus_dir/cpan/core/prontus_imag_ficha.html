@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Editor de Im&aacute;genes</title>
+    <title>%%_msg_prontus(_image_editor)%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/imagficha.css?v2.0" />
@@ -17,8 +17,8 @@
             <div class="colpict-right">
                 <div class="colpict-left">
                     <div class="logo aleft"><a href="#"><img src="/%%_prontus_id%%/cpan/core/imag/head/logo_prontus.jpg" width="139" height="52" border="0" alt="Prontus" title="Prontus" /></a></div>
-                    <div class="titulo aleft">Editor de Im&aacute;genes</div>
-                    <div id="msgbox"><img src="/%%_prontus_id%%/cpan/core/imag/boto/msg-alert.png"/><span>La imagen ha sido modificada, debes guardarla sino perderás los cambios.</span><a href="#" onclick="ImgEdit._hidemsgbox(); return false;"><img width="16" height="16" class="cambia-boton" title="Cerrar Mensaje" alt="Cerrar Mensaje" src="/%%_prontus_id%%/cpan/core/imag/boto/close-msg_of.png"></a></div>
+                    <div class="titulo aleft">%%_msg_prontus(_image_editor)%%</div>
+                    <div id="msgbox"><img src="/%%_prontus_id%%/cpan/core/imag/boto/msg-alert.png"/><span>%%_msg_prontus(_save_modified_image)%%</span><a href="#" onclick="ImgEdit._hidemsgbox(); return false;"><img width="16" height="16" class="cambia-boton" title="%%_msg_prontus(_close_message)%%" alt="%%_msg_prontus(_close_message)%%" src="/%%_prontus_id%%/cpan/core/imag/boto/close-msg_of.png"></a></div>
                 </div>
             </div>
         </div>
@@ -53,9 +53,9 @@
                     <div style="float: left; width: 300px;">
                         <table>
                             <tr>
-                              <th align="left" valign="middle">Tamaño original</th>
-                              <td align="left" valign="middle">Ancho: <span class="texto-normal">%%wimage_orig%% px</span></td>
-                              <td align="left" valign="middle">Alto: <span class="texto-normal">%%himage_orig%% px</span></td>
+                              <th align="left" valign="middle">%%_msg_prontus(_image_size)%%</th>
+                              <td align="left" valign="middle">%%_msg_prontus(_width)%%: <span class="texto-normal">%%wimage_orig%% px</span></td>
+                              <td align="left" valign="middle">%%_msg_prontus(_height)%%: <span class="texto-normal">%%himage_orig%% px</span></td>
                               <td width="3%" align="left" valign="middle">&nbsp;</td>
                               <td width="3%" align="left" valign="middle" class="separa"></td>
                               <td width="3%" align="left" valign="middle">&nbsp;</td>
@@ -65,11 +65,11 @@
                     <div style="float: left; width: 585px;">
                         <table>
                             <tr>
-                              <th align="left" valign="middle">Area Seleccionada</th>
-                              <td align="left" valign="middle">Ancho: <input type="text" name="w" id="w" class="fieldform-short" value="%%wimage_orig%%"/> <span class="texto-normal">px</span></td>
-                              <td align="left" valign="middle">Alto: <input type="text" name="h" id="h" class="fieldform-short" value="%%himage_orig%%"/> <span class="texto-normal">px</span></td>
+                              <th align="left" valign="middle">%%_msg_prontus(_selected_area)%%</th>
+                              <td align="left" valign="middle">%%_msg_prontus(_width)%%: <input type="text" name="w" id="w" class="fieldform-short" value="%%wimage_orig%%"/> <span class="texto-normal">px</span></td>
+                              <td align="left" valign="middle">%%_msg_prontus(_height)%%: <input type="text" name="h" id="h" class="fieldform-short" value="%%himage_orig%%"/> <span class="texto-normal">px</span></td>
                               <td width="50">
-                              <a href="#" onclick="ImgEdit.resize_aspect(); return false;" id="btn_resize_aspect" style="display: none;" title="Liberar proporciones"><img class="cadena" src="/%%_prontus_id%%/cpan/core/imag/edi/chain_of.gif"/></a>
+                              <a href="#" onclick="ImgEdit.resize_aspect(); return false;" id="btn_resize_aspect" style="display: none;" title="%%_msg_prontus(_releasing_proportions)%%"><img class="cadena" src="/%%_prontus_id%%/cpan/core/imag/edi/chain_of.gif"/></a>
                                 <a href="#" onclick="ImgEdit.crop_aspect_free(); return false;" id="btn_crop_aspect" style="display: none;"><img class="cadena" id="btn_crop_aspec" src="/%%_prontus_id%%/cpan/core/imag/edi/chain_of.gif"/></a>
                               </td>
                               <td width="3%" align="left" valign="middle" class="separa"></td>
@@ -94,16 +94,16 @@
             <div id="cargando_tools"><img src="/%%_prontus_id%%/cpan/core/imag/loading.gif"/></div>
             <ul>
                 <li>&nbsp;</li>
-                <li><a href="#" onclick="window.close(); return false;" id="btn_volver"><img src="/%%_prontus_id%%/cpan/core/imag/boto/cer_of.png" width="32" height="32" alt="Cerrar" title="Cerrar"/></a></li>
+                <li><a href="#" onclick="window.close(); return false;" id="btn_volver"><img src="/%%_prontus_id%%/cpan/core/imag/boto/cer_of.png" width="32" height="32" alt="%%_msg_prontus(_close)%%" title="%%_msg_prontus(_close)%%"/></a></li>
                 <li>&nbsp;</li>
-                <li><a href="#" onclick="ImgEdit.guardar(); return false;" id="btn_guardar"><img src="/%%_prontus_id%%/cpan/core/imag/edi/gua_of.png" width="32" height="32" alt="Guardar" title="Guardar"/></a></li>
-                <li><a href="#" onclick="ImgEdit.undo(); return false;" id="btn_undo"><img src="/%%_prontus_id%%/cpan/core/imag/edi/rev_of.png" width="32" height="32" alt="Revertir" title="Revertir"/></a></li>
-                <li><a href="#" onclick="ImgEdit.crop_init(); return false;" id="btn_crop"><img src="/%%_prontus_id%%/cpan/core/imag/edi/rec_of.png" width="32" height="32" alt="Recortar" title="Recortar"/></a></li>
-                <li><a href="#" onclick="ImgEdit.resize_init(); return false;" id="btn_resize"><img src="/%%_prontus_id%%/cpan/core/imag/edi/red_of.png" width="32" height="32" alt="Redimensionar" title="Redimensionar"/></a></li>
-                <li><a href="#" onclick="ImgEdit.flip_h(); return false;" id="btn_fliph"><img src="/%%_prontus_id%%/cpan/core/imag/edi/esv_of.png" width="32" height="32" alt="Invertir Horizontal" title="Invertir Horizontal"/></a></li>
-                <li><a href="#" onclick="ImgEdit.flip_v(); return false;" id="btn_flipv"><img src="/%%_prontus_id%%/cpan/core/imag/edi/esh_of.png" width="32" height="32" alt="Invertir Vertical" title="Invertir Vertical"/></a></li>
-                <li><a href="#" onclick="ImgEdit.rotard(); return false;" id="btn_rotard"><img src="/%%_prontus_id%%/cpan/core/imag/edi/rod_of.png" width="32" height="32" alt="Rotar Derecha" title="Rotar Derecha"/></a></li>
-                <li><a href="#" onclick="ImgEdit.rotari(); return false;" id="btn_rotari"><img src="/%%_prontus_id%%/cpan/core/imag/edi/roi_of.png" width="32" height="32" alt="Rotar Izquierda" title="Rotar Izquierda"/></a></li>
+                <li><a href="#" onclick="ImgEdit.guardar(); return false;" id="btn_guardar"><img src="/%%_prontus_id%%/cpan/core/imag/edi/gua_of.png" width="32" height="32" alt="%%_msg_prontus(_save)%%" title="%%_msg_prontus(_save)%%"/></a></li>
+                <li><a href="#" onclick="ImgEdit.undo(); return false;" id="btn_undo"><img src="/%%_prontus_id%%/cpan/core/imag/edi/rev_of.png" width="32" height="32" alt="%%_msg_prontus(_revert)%%" title="%%_msg_prontus(_revert)%%"/></a></li>
+                <li><a href="#" onclick="ImgEdit.crop_init(); return false;" id="btn_crop"><img src="/%%_prontus_id%%/cpan/core/imag/edi/rec_of.png" width="32" height="32" alt="%%_msg_prontus(_trim)%%" title="%%_msg_prontus(_trim)%%"/></a></li>
+                <li><a href="#" onclick="ImgEdit.resize_init(); return false;" id="btn_resize"><img src="/%%_prontus_id%%/cpan/core/imag/edi/red_of.png" width="32" height="32" alt="%%_msg_prontus(_resize)%%" title="%%_msg_prontus(_resize)%%"/></a></li>
+                <li><a href="#" onclick="ImgEdit.flip_h(); return false;" id="btn_fliph"><img src="/%%_prontus_id%%/cpan/core/imag/edi/esv_of.png" width="32" height="32" alt="%%_msg_prontus(_invert_horizontal)%%" title="%%_msg_prontus(_invert_horizontal)%%"/></a></li>
+                <li><a href="#" onclick="ImgEdit.flip_v(); return false;" id="btn_flipv"><img src="/%%_prontus_id%%/cpan/core/imag/edi/esh_of.png" width="32" height="32" alt="%%_msg_prontus(_invert_vertical)%%" title="%%_msg_prontus(_invert_vertical)%%"/></a></li>
+                <li><a href="#" onclick="ImgEdit.rotard(); return false;" id="btn_rotard"><img src="/%%_prontus_id%%/cpan/core/imag/edi/rod_of.png" width="32" height="32" alt="%%_msg_prontus(_rotate_right)%%" title="%%_msg_prontus(_rotate_right)%%"/></a></li>
+                <li><a href="#" onclick="ImgEdit.rotari(); return false;" id="btn_rotari"><img src="/%%_prontus_id%%/cpan/core/imag/edi/roi_of.png" width="32" height="32" alt="%%_msg_prontus(_rotate_left)%%" title="%%_msg_prontus(_rotate_left)%%"/></a></li>
             </ul>
         </div>
         <div class="col-right">

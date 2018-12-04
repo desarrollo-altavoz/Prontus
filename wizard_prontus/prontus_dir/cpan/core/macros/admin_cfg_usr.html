@@ -1,16 +1,16 @@
 
                         <div class="listado">
                             <div style="height:37px;">
-                                <p style="float: left;"><b>Configuración de Usuarios</b>: %%_prontus_id%%-usr.cfg</p>
+                                <p style="float: left;"><b>%%_msg_prontus(_user_settings)%%</b>: %%_prontus_id%%-usr.cfg</p>
                                 <div class="botones">
                                     <div class="boton-gris3 aright">
-                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                            <span>Cancelar</span>
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                            <span>%%_msg_prontus(_cancel)%%</span>
                                         </a>
                                     </div>
                                     <div class="boton-gris3 aright">
-                                        <a onclick="Cfgedit.guardaCfg('usr'); return false;" href="#" class="button" title="Guardar">
-                                            <span>Guardar</span>
+                                        <a onclick="Cfgedit.guardaCfg('usr'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                            <span>%%_msg_prontus(_save)%%</span>
                                         </a>
                                     </div>
                                 </div>
@@ -25,75 +25,75 @@
                                     <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
                                     <input type="hidden" name="_tab" value="cfg-tab7" />
                                     <tr class="head">
-                                        <td>Variable</td>
-                                        <td>Valor</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
+                                        <td>%%_msg_prontus(_value)%%</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             REDACTOR_VER_ARTICULOS_AJENOS<br>
-                                            <span class="ayuda">Permite listar o no los artículos creados por otros operadores.</span>
+                                            <span class="ayuda">%%_msg_prontus(_redactor_ver_articulos_ajenos_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="REDACTOR_VER_ARTICULOS_AJENOS" id="REDACTOR_VER_ARTICULOS_AJENOS_SI" value="SI"%%REDACTOR_VER_ARTICULOS_AJENOS_SI%%/> <label for="REDACTOR_VER_ARTICULOS_AJENOS_SI">SI</label>
+                                            <input type="radio" name="REDACTOR_VER_ARTICULOS_AJENOS" id="REDACTOR_VER_ARTICULOS_AJENOS_SI" value="SI"%%REDACTOR_VER_ARTICULOS_AJENOS_SI%%/> <label for="REDACTOR_VER_ARTICULOS_AJENOS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="REDACTOR_VER_ARTICULOS_AJENOS" id="REDACTOR_VER_ARTICULOS_AJENOS_NO" value="NO"%%REDACTOR_VER_ARTICULOS_AJENOS_NO%%/> <label for="REDACTOR_VER_ARTICULOS_AJENOS_NO">NO</label>
+                                            <input type="radio" name="REDACTOR_VER_ARTICULOS_AJENOS" id="REDACTOR_VER_ARTICULOS_AJENOS_NO" value="NO"%%REDACTOR_VER_ARTICULOS_AJENOS_NO%%/> <label for="REDACTOR_VER_ARTICULOS_AJENOS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             REDACTOR_EDITAR_ARTICULOS_AJENOS<br>
-                                            <span class="ayuda">Permite que los operadores con el perfil Redactor, puedan o no tener acceso a modificar o eliminar artículos creados por otros operadores.</span>
+                                            <span class="ayuda">%%_msg_prontus(_redactor_editar_articulos_ajenos_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="REDACTOR_EDITAR_ARTICULOS_AJENOS" id="REDACTOR_EDITAR_ARTICULOS_AJENOS_SI" value="SI"%%REDACTOR_EDITAR_ARTICULOS_AJENOS_SI%%/> <label for="REDACTOR_EDITAR_ARTICULOS_AJENOS_SI">SI</label>
+                                            <input type="radio" name="REDACTOR_EDITAR_ARTICULOS_AJENOS" id="REDACTOR_EDITAR_ARTICULOS_AJENOS_SI" value="SI"%%REDACTOR_EDITAR_ARTICULOS_AJENOS_SI%%/> <label for="REDACTOR_EDITAR_ARTICULOS_AJENOS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="REDACTOR_EDITAR_ARTICULOS_AJENOS" id="REDACTOR_EDITAR_ARTICULOS_AJENOS_NO" value="NO"%%REDACTOR_EDITAR_ARTICULOS_AJENOS_NO%%/> <label for="REDACTOR_EDITAR_ARTICULOS_AJENOS_NO">NO</label>
+                                            <input type="radio" name="REDACTOR_EDITAR_ARTICULOS_AJENOS" id="REDACTOR_EDITAR_ARTICULOS_AJENOS_NO" value="NO"%%REDACTOR_EDITAR_ARTICULOS_AJENOS_NO%%/> <label for="REDACTOR_EDITAR_ARTICULOS_AJENOS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             EDITOR_VER_ARTICULOS_AJENOS<br>
-                                            <span class="ayuda">Permite listar o no los artículos creados por otros operadores.</span>
+                                            <span class="ayuda">%%_msg_prontus(_editor_ver_articulos_ajenos_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="EDITOR_VER_ARTICULOS_AJENOS" id="EDITOR_VER_ARTICULOS_AJENOS_SI" value="SI"%%EDITOR_VER_ARTICULOS_AJENOS_SI%%/> <label for="EDITOR_VER_ARTICULOS_AJENOS_SI">SI</label>
+                                            <input type="radio" name="EDITOR_VER_ARTICULOS_AJENOS" id="EDITOR_VER_ARTICULOS_AJENOS_SI" value="SI"%%EDITOR_VER_ARTICULOS_AJENOS_SI%%/> <label for="EDITOR_VER_ARTICULOS_AJENOS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="EDITOR_VER_ARTICULOS_AJENOS" id="EDITOR_VER_ARTICULOS_AJENOS_NO" value="NO"%%EDITOR_VER_ARTICULOS_AJENOS_NO%%/> <label for="EDITOR_VER_ARTICULOS_AJENOS_NO">NO</label>
+                                            <input type="radio" name="EDITOR_VER_ARTICULOS_AJENOS" id="EDITOR_VER_ARTICULOS_AJENOS_NO" value="NO"%%EDITOR_VER_ARTICULOS_AJENOS_NO%%/> <label for="EDITOR_VER_ARTICULOS_AJENOS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             EDITOR_EDITAR_ARTICULOS_AJENOS<br>
-                                            <span class="ayuda">Permite que los operadores con el perfil Editor, puedan o no tener acceso a modificar o eliminar artículos creados por otros operadores.</span>
+                                            <span class="ayuda">%%_msg_prontus(_editor_editar_articulos_ajenos_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="EDITOR_EDITAR_ARTICULOS_AJENOS" id="EDITOR_EDITAR_ARTICULOS_AJENOS_SI" value="SI"%%EDITOR_EDITAR_ARTICULOS_AJENOS_SI%%/> <label for="EDITOR_EDITAR_ARTICULOS_AJENOS_SI">SI</label>
+                                            <input type="radio" name="EDITOR_EDITAR_ARTICULOS_AJENOS" id="EDITOR_EDITAR_ARTICULOS_AJENOS_SI" value="SI"%%EDITOR_EDITAR_ARTICULOS_AJENOS_SI%%/> <label for="EDITOR_EDITAR_ARTICULOS_AJENOS_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="EDITOR_EDITAR_ARTICULOS_AJENOS" id="EDITOR_EDITAR_ARTICULOS_AJENOS_NO" value="NO"%%EDITOR_EDITAR_ARTICULOS_AJENOS_NO%%/> <label for="EDITOR_EDITAR_ARTICULOS_AJENOS_NO">NO</label>
+                                            <input type="radio" name="EDITOR_EDITAR_ARTICULOS_AJENOS" id="EDITOR_EDITAR_ARTICULOS_AJENOS_NO" value="NO"%%EDITOR_EDITAR_ARTICULOS_AJENOS_NO%%/> <label for="EDITOR_EDITAR_ARTICULOS_AJENOS_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             EDITOR_ADMINISTRAR_EDICIONES<br>
-                                            <span class="ayuda">Permite que los operadores con el perfil Editor, puedan administrar las ediciones.</span>
+                                            <span class="ayuda">%%_msg_prontus(_editpr_administrar_ediciones_hint)%%</span>
                                         </td>
                                         <td>
-                                            <input type="radio" name="EDITOR_ADMINISTRAR_EDICIONES" id="EDITOR_ADMINISTRAR_EDICIONES_SI" value="SI"%%EDITOR_ADMINISTRAR_EDICIONES_SI%%/> <label for="EDITOR_ADMINISTRAR_EDICIONES_SI">SI</label>
+                                            <input type="radio" name="EDITOR_ADMINISTRAR_EDICIONES" id="EDITOR_ADMINISTRAR_EDICIONES_SI" value="SI"%%EDITOR_ADMINISTRAR_EDICIONES_SI%%/> <label for="EDITOR_ADMINISTRAR_EDICIONES_SI">%%_msg_prontus(_yes_capital)%%</label>
                                             &nbsp;&nbsp;&nbsp;
-                                            <input type="radio" name="EDITOR_ADMINISTRAR_EDICIONES" id="EDITOR_ADMINISTRAR_EDICIONES_NO" value="NO"%%EDITOR_ADMINISTRAR_EDICIONES_NO%%/> <label for="EDITOR_ADMINISTRAR_EDICIONES_NO">NO</label>
+                                            <input type="radio" name="EDITOR_ADMINISTRAR_EDICIONES" id="EDITOR_ADMINISTRAR_EDICIONES_NO" value="NO"%%EDITOR_ADMINISTRAR_EDICIONES_NO%%/> <label for="EDITOR_ADMINISTRAR_EDICIONES_NO">%%_msg_prontus(_no_capital)%%</label>
                                         </td>
                                     </tr>
                                 </table>
                             </form>
                             <div class="botones">
                                 <div class="boton-gris3 aright">
-                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                        <span>Cancelar</span>
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                        <span>%%_msg_prontus(_cancel)%%</span>
                                     </a>
                                 </div>
                                 <div class="boton-gris3 aright">
-                                    <a onclick="Cfgedit.guardaCfg('usr'); return false;" href="#" class="button" title="Guardar">
-                                        <span>Guardar</span>
+                                    <a onclick="Cfgedit.guardaCfg('usr'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                        <span>%%_msg_prontus(_save)%%</span>
                                     </a>
                                 </div>
                             </div>

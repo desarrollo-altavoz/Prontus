@@ -1,6 +1,6 @@
 <div id="tooltip-public">
     <div class="resumen-pub">
-    <div class="top"><h2>El artículo está publicado en las siguientes portadas:</h2></div>
+    <div class="top"><h2>%%_msg_prontus(_article_published_in_following_front_page)%%:</h2></div>
     <div class="middle"></div>
     <div class="bottom"></div>
     </div>
@@ -8,20 +8,20 @@
           
 <div class="col470">
     <div class="rotulo-gris" id="listarticnopub">
-        <div class="titulo">Artículos no publicados en esta Portada</div>
+        <div class="titulo">%%_msg_prontus(_unpublished_artic_in_this_front_page)%%</div>
     </div>
     <div class="separa"></div>
     <div class="separa"></div>
     <div class="fila1 content-buscador">
           <div class="mostrar">
-            <span>Mostrar
+            <span>%%_msg_prontus(_show)%%
               <a class="selected" rel="10" onclick="Listartic.cambiarArticPerPage(this); return false;" href="#">10</a> |
               <a rel="25" onclick="Listartic.cambiarArticPerPage(this); return false;" href="#">25</a> |
               <a rel="50" onclick="Listartic.cambiarArticPerPage(this); return false;" href="#">50</a></span><br>
-            <span>Ordenar por
-              <a class="selected" rel="C" onclick="Listartic.cambiarOrdenTipo(this, 'C'); return false;" href="#">Creación</a> |
-              <a rel="F" onclick="Listartic.cambiarOrdenTipo(this, 'F'); return false;" href="#">Publicación</a> |
-              <a rel="T" onclick="Listartic.cambiarOrdenTipo(this, 'T'); return false;" href="#">Titular</a></span>
+            <span>%%_msg_prontus(_sorter_by)%%
+              <a class="selected" rel="C" onclick="Listartic.cambiarOrdenTipo(this, 'C'); return false;" href="#">%%_msg_prontus(_creation)%%</a> |
+              <a rel="F" onclick="Listartic.cambiarOrdenTipo(this, 'F'); return false;" href="#">%%_msg_prontus(_publishing)%%</a> |
+              <a rel="T" onclick="Listartic.cambiarOrdenTipo(this, 'T'); return false;" href="#">%%_msg_prontus(_headline)%%</a></span>
             <!-- span>Orden <a href="#" onclick="Listartic.cambiarOrden(this); return false;" class="selected desc">Descendente</a> |
               <a href="#" onclick="Listartic.cambiarOrden(this); return false;" class="asc">Ascendente</a><span><br /-->
           </div>
@@ -30,11 +30,11 @@
             <table width="218" cellspacing="0" cellpadding="0" border="0">
               <tbody><tr>
                 <td width="185" valign="middle" align="left" class="bg-campo"><input type="text" class="campo texto-ayuda" id="search_texto" name="search_texto" size="30"></td>
-                <td width="33" valign="middle" align="left" class="bg-boto"><a onclick="Buscador.buscarTit(); return false;" href="#"><img width="33" height="32" border="0" title="Buscar por Titular o Timestamp" alt="Buscar por Titular o Timestamp" src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif"></a></td>
+                <td width="33" valign="middle" align="left" class="bg-boto"><a onclick="Buscador.buscarTit(); return false;" href="#"><img width="33" height="32" border="0" title="%%_msg_prontus(_search_by_headline_or_timestamp)%%" alt="%%_msg_prontus(_search_by_headline_or_timestamp)%%" src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif"></a></td>
               </tr>
             </tbody></table>
             </form>
-            <div class="avanzado"><a onclick="Buscador.showMegalupa('/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg');return false;" href="#">Búsqueda avanzada</a></div>
+            <div class="avanzado"><a onclick="Buscador.showMegalupa('/%%_prontus_id%%/cpan/%%_prontus_id%%.cfg');return false;" href="#">%%_msg_prontus(_advanced_search)%%</a></div>
           </div>
     </div>
     <div class="separa"></div>

@@ -3,7 +3,7 @@
     <tr>
       <td align="left" valign="top" class="foto-icon">
         <!--FOTO_ICONIZADA-->
-          <img class="fotodrag" name="%%nom_campo%%" id="%%nom_campo%%" alt="Imagen %%nom_campo%%" src="%%relpath_foto%%" style="%%size_img%%" border="0" />
+          <img class="fotodrag" name="%%nom_campo%%" id="%%nom_campo%%" alt="%%_msg_prontus(_image)%% %%nom_campo%%" src="%%relpath_foto%%" style="%%size_img%%" border="0" />
         <!--/FOTO_ICONIZADA-->
       </td>
       <td align="left" valign="top" class="datos-foto">&nbsp;
@@ -11,16 +11,16 @@
         <span>%%tamano%%</span>&nbsp;&nbsp;<span class="sin-usar">%%fotoSinUsar%%</span>
         <div class="botonera">
           <a href="%%relpath_foto%%" class="publicar" style="display:none;" onclick="Fid.asignarFotoFija('%%nom_campo%%'); return false;">
-            <img src="%%reldir_icons%%/pub2_of.png" class="butBancoImg cambia-boton" alt="Asignar imagen a todos los controles" title="Asignar imagen a todos los controles" width="18" height="17" />
+            <img src="%%reldir_icons%%/pub2_of.png" class="butBancoImg cambia-boton" alt="%%_msg_prontus(_assign_image_to_all_controls)%%" title="%%_msg_prontus(_assign_image_to_all_controls)%%" width="18" height="17" />
           </a>
           <a href="%%relpath_foto%%" onclick="Fid.showFotoFija('%%relpath_foto%%'); return false;">
-            <img src="%%reldir_icons%%/lu2_of.png" class="butBancoImg cambia-boton" alt="Ver imagen" title="Ver imagen" height="17" width="18" />
+            <img src="%%reldir_icons%%/lu2_of.png" class="butBancoImg cambia-boton" alt="%%_msg_prontus(_view_image)%%" title="%%_msg_prontus(_view_image)%%" height="17" width="18" />
           </a>
           <a href="#" onclick="Fid.editFotoBanco('%%nom_foto%%'); return false;">
             <img id="editimg%%nom_campo%%" src="%%reldir_icons%%/ed2_of.gif" height="17" width="18" class="butBancoImg cambia-boton" name="imgedit%%nom_campo%%" alt="Editar imagen" title="Editar imagen" />
           </a>
           <a href="#" onclick="Fid.deleteFotoBanco('%%nom_campo%%'); return false;">
-            <img id="borrar%%nom_campo%%" src="%%reldir_icons%%/bo2_of.gif" class="butBancoImg cambia-boton" alt="Click para borrar" title="Click para borrar" height="17" width="18" />
+            <img id="borrar%%nom_campo%%" src="%%reldir_icons%%/bo2_of.gif" class="butBancoImg cambia-boton" alt="%%_msg_prontus(_click_to_delete)%%" title="%%_msg_prontus(_click_to_delete)%%" height="17" width="18" />
           </a>
           <input style="display:none; position:absolute;" value="S" name="_BORR_%%nom_campo%%" type="checkbox" />
         </div>

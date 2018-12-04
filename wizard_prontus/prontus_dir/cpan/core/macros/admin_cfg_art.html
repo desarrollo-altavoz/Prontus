@@ -1,15 +1,15 @@
                         <div class="listado">
                             <div style="height:37px;">
-                                <p style="float: left;"><b>Configuración de Artículos</b>: %%_prontus_id%%-art.cfg</p>
+                                <p style="float: left;"><b>%%_msg_prontus(_artic_setting)%%</b>: %%_prontus_id%%-art.cfg</p>
                                 <div class="botones">
                                     <div class="boton-gris3 aright">
-                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                            <span>Cancelar</span>
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                            <span>%%_msg_prontus(_cancel)%%</span>
                                         </a>
                                     </div>
                                     <div class="boton-gris3 aright">
-                                        <a onclick="Cfgedit.guardaCfg('art'); return false;" href="#" class="button" title="Guardar">
-                                            <span>Guardar</span>
+                                        <a onclick="Cfgedit.guardaCfg('art'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                            <span>%%_msg_prontus(_save)%%</span>
                                         </a>
                                     </div>
                                 </div>
@@ -26,20 +26,20 @@
                                     <input type="hidden" name="FORM_PLTS" value="" />
                                     <input type="hidden" name="_tab" value="cfg-tab1" />
                                     <tr class="head">
-                                        <td>Variable</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
                                     </tr>
                                     <tr>
                                         <td valign="top">
                                             FORM_PLTS<br>
-                                            <span class="ayuda">Define la relación entre FIDs y plantillas de artículo.</span>
+                                            <span class="ayuda">%%_msg_prontus(_define_relationship_between_fids_artic_template)%%</span>
                                             <div style="clear: both; height: 5px;"></div>
                                             <table class="tableform table-list-striped">
                                                 <tr class="head">
-                                                    <td>Ini.</td>
-                                                    <td>Nombre</td>
-                                                    <td>FID</td>
-                                                    <td width="205">Plantillas</td>
-                                                    <td>Quitar</td>
+                                                    <td>%%_msg_prontus(_short_home)%%</td>
+                                                    <td>%%_msg_prontus(_name)%%</td>
+                                                    <td>%%_msg_prontus(_msg_generic_fid_capital)%%</td>
+                                                    <td width="205">%%_msg_prontus(_template)%%</td>
+                                                    <td>%%_msg_prontus(_remove)%%</td>
                                                 </tr>
                                                 <!--loop_fid_item-->
                                                 <tr>
@@ -50,24 +50,24 @@
                                                         %%archivofid%%
                                                     </td>
                                                     <td valign="top">
-                                                        <strong>Artículo:</strong>
+                                                        <strong>%%_msg_prontus(_article)%%:</strong>
                                                         <br/>
                                                         <select name="plantillasfid_%%num%%" style="width: 150px;"%%multiple%%>
                                                             %%plantillasfid%%
                                                         </select>
                                                         <div style="float: right; margin-top: 5px;">
-                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/%%multiple_img%%.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_%%num%%');"/>
+                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/%%multiple_img%%.png" title="%%_msg_prontus(_select_mult_template)%%" alt="%%_msg_prontus(_select_mult_template)%%" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_%%num%%');"/>
                                                         </div>
                                                         <br/>
                                                         <br/>
-                                                        <strong>Paralelas:</strong>
+                                                        <strong>%%_msg_prontus(_parallels)%%:</strong>
                                                         <br/>
                                                         <select name="plantillasfid_pla_%%num%%" style="width: 150px;"%%multiple_pla%%>
-                                                            <option value="">- Ninguna -</option>
+                                                            <option value="">- %%_msg_prontus(_none)%% -</option>
                                                             %%plantillasfid_pla%%
                                                         </select>
                                                         <div style="float: right; margin-top: 5px;">
-                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/%%multiple_img%%.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_pla_%%num%%');"/>
+                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/%%multiple_img%%.png" title="%%_msg_prontus(_select_mult_template)%%" alt="%%_msg_prontus(_select_mult_template)%%" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_pla_%%num%%');"/>
                                                         </div>
                                                     </td>
                                                     <td align="center" valign="top">
@@ -80,7 +80,7 @@
                                                     <td><input name="nombrefid_%%num_ultimo_fid%%" class="fieldform" style="width: 120px;" value=""/></td>
                                                     <td>
                                                         <select name="archivofid_%%num_ultimo_fid%%" style="width: 150px;">
-                                                            <option value="">- Seleccione -</option>
+                                                            <option value="">- %%_msg_prontus(_select)%% -</option>
                                                             <!--loop_fids-->
                                                             <option value="%%valor%%">%%nombre%%</option>
                                                             <!--/loop_fids-->
@@ -93,7 +93,7 @@
                                                             <!--/loop_plts-->
                                                         </select>
                                                         <div style="float: right;">
-                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" title="Seleccionar multiples plantillas" alt="Seleccionar multiples plantillas" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_%%num_ultimo_fid%%');"/>
+                                                            <img src="/%%_prontus_id%%/cpan/core/imag/boto/mas_of.png" title="%%_msg_prontus(_select_mult_template)%%" alt="%%_msg_prontus(_select_mult_template)%%" width="18" height="18" onclick="Cfgedit.toggleCombo(this, 'plantillasfid_%%num_ultimo_fid%%');"/>
                                                         </div>
                                                     </td>
                                                     <td align="center"></td>
@@ -105,13 +105,13 @@
                             </form>
                             <div class="botones">
                                 <div class="boton-gris3 aright">
-                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                        <span>Cancelar</span>
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                        <span>%%_msg_prontus(_cancel)%%</span>
                                     </a>
                                 </div>
                                 <div class="boton-gris3 aright">
-                                    <a onclick="Cfgedit.guardaCfg('art'); return false;" href="#" class="button" title="Guardar">
-                                        <span>Guardar</span>
+                                    <a onclick="Cfgedit.guardaCfg('art'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                        <span>%%_msg_prontus(_save)%%</span>
                                     </a>
                                 </div>
                             </div>

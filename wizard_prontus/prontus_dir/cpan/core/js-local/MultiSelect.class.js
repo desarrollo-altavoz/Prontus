@@ -62,7 +62,7 @@ function MultiSelect(iddest, idsrc) {
         this.destList.children('option').attr('selected', 'selected');
     };
 
-    // Realiza tareas de limipieza y seleccion al momento de submitir
+    // Realiza tareas de limpieza y seleccion al momento de submitir
     this.procesarGuardado = function() {
         this.destList.children('option[value=""]').remove();
         this.selectDestAll();

@@ -1,16 +1,16 @@
 <div class="listado">
 
     <div style="height:37px;">
-        <p style="float: left;"><b>Configuración de CloudFlare</b>: %%_prontus_id%%-cloudflare.cfg</p>
+        <p style="float: left;"><b>%%_msg_prontus(_cloudflare_setting)%%</b>: %%_prontus_id%%-cloudflare.cfg</p>
         <div class="botones">
             <div class="boton-gris3 aright">
-                <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                    <span>Cancelar</span>
+                <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                    <span>%%_msg_prontus(_cancel)%%</span>
                 </a>
             </div>
             <div class="boton-gris3 aright">
-                <a onclick="Cfgedit.guardaCfg('cloudflare'); return false;" href="#" class="button" title="Guardar">
-                    <span>Guardar</span>
+                <a onclick="Cfgedit.guardaCfg('cloudflare'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                    <span>%%_msg_prontus(_save)%%</span>
                 </a>
             </div>
         </div>
@@ -26,13 +26,13 @@
             <input type="hidden" name="_path_conf" value="%%_path_conf%%" />
             <input type="hidden" name="_tab" value="cfg-tab13" />
             <tr class="head">
-                <td>Variable</td>
-                <td>Valor</td>
+                <td>%%_msg_prontus(_variable)%%</td>
+                <td>%%_msg_prontus(_value)%%</td>
             </tr>
             <tr>
                 <td style="width: 300px;" valign="top">
                     CLOUDFLARE_API_URL<br>
-                    <span class="ayuda">URL de la API de CloudFlare. Por lo general es <a href="https://www.cloudflare.com/api_json.html">https://www.cloudflare.com/api_json.html</a></span>
+                    <span class="ayuda">%%_msg_prontus(_cloudflare_api_url_hint)%% <a href="https://www.cloudflare.com/api_json.html">https://www.cloudflare.com/api_json.html</a></span>
                 </td>
                 <td>
                     <input type="text" name="CLOUDFLARE_API_URL" value="%%CLOUDFLARE_API_URL%%" class="fieldform"/>
@@ -41,7 +41,7 @@
             <tr>
                 <td style="width: 300px;" valign="top">
                     CLOUDFLARE_API_KEY<br>
-                    <span class="ayuda">Llave única para poder interactuar con la API de CloudFlare.</span>
+                    <span class="ayuda">%%_msg_prontus(_cloudflare_api_key_hint)%%</span>
                 </td>
                 <td>
                     <input type="text" name="CLOUDFLARE_API_KEY" value="%%CLOUDFLARE_API_KEY%%" class="fieldform"/>
@@ -50,7 +50,7 @@
             <tr>
                 <td style="width: 300px;" valign="top">
                     CLOUDFLARE_EMAIL<br>
-                    <span class="ayuda">Casilla de correo asociada a la API Key de CloudFlare.</span>
+                    <span class="ayuda">%%_msg_prontus(_cloudflare_email_hint)%%</span>
                 </td>
                 <td>
                     <input type="text" name="CLOUDFLARE_EMAIL" value="%%CLOUDFLARE_EMAIL%%" class="fieldform"/>
@@ -59,8 +59,7 @@
             <tr>
                 <td style="width: 300px;" valign="top">
                     CLOUDFLARE_ZONE<br>
-                    <span class="ayuda">Listado de zonas que utilizan esta instancia de Prontus. Una por línea.<br/>
-                    Tener en cuenta que se hará purge de un mismo archivo en cada zona.
+                    <span class="ayuda">%%_msg_prontus(_cloudflare_zone_hint)%%
                     </span>
                 </td>
                 <td>
@@ -70,12 +69,7 @@
             <tr>
                 <td style="width: 300px;" valign="top">
                     CLOUDFLARE_GLOBAL_PURGE<br>
-                    <span class="ayuda">Indicar las rutas serán expiradas cada vez que se haga purge. Se recomienda indicar sólo lo necesario para no sobrecargar el sistema.
-                        Una ruta por línea (no debe incluír el dominio).<br/><br/>Ejemplos:<br/>
-                        /prontus/site/edic/base/port/portada.html<br/>
-                        /noticias/<br/>
-                        /<br/>
-                        </span>
+                    <span class="ayuda">%%_msg_prontus(_cloudflare_blobal_pruge_hint)%%</span>
                 </td>
                 <td>
                     <textarea name="CLOUDFLARE_GLOBAL_PURGE" cols="80" rows="8" class="fieldform">%%CLOUDFLARE_GLOBAL_PURGE%%</textarea>
@@ -87,13 +81,13 @@
     <br/>
     <div class="botones">
         <div class="boton-gris3 aright">
-            <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                <span>Cancelar</span>
+            <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                <span>%%_msg_prontus(_cancel)%%</span>
             </a>
         </div>
         <div class="boton-gris3 aright">
-            <a onclick="Cfgedit.guardaCfg('cloudflare'); return false;" href="#" class="button" title="Guardar">
-                <span>Guardar</span>
+            <a onclick="Cfgedit.guardaCfg('cloudflare'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                <span>%%_msg_prontus(_save)%%</span>
             </a>
         </div>
     </div>
@@ -106,35 +100,35 @@
 
     <table class="tableform" width="100%">
         <tr class="head">
-            <td colspan="2">Utilidades</td>
+            <td colspan="2">%%_msg_prontus(_utilities)%%</td>
         </tr>
         <tr>
             <td style="width: 300px;" valign="top">
-            Limpieza total de caché de CloudFlare<br/>
-            <span class="ayuda">Se hará purge a todos los archivos cacheados en CloudFlare. Puede tomar hasta 48 horas para que el cache se reconstruya. Usar con precaución.
+            %%_msg_prontus(_full_cleaning_cloudflare_cache)%%<br/>
+            <span class="ayuda">%%_msg_prontus(_full_cleaning_cloudflare_cache_hint)%%
             </span>
             </td>
             <td>
                 <div class="boton-gris3 ">
-                    <a onclick="Cfgedit.cloudFlarePurgeAll(); return false;" href="#" class="button" title="Limpiar caché de CloudFlare">
-                        <span>Limpiar caché de CloudFlare</span>
+                    <a onclick="Cfgedit.cloudFlarePurgeAll(); return false;" href="#" class="button" title="%%_msg_prontus(_clean_cloudflare_cache)%%">
+                        <span>%%_msg_prontus(_clean_cloudflare_cache)%%</span>
                     </a>
                 </div>
                 <br/>
-                <span class="ayuda">Esta función se puede ejecutar solo 5 veces por minuto.</span>
+                <span class="ayuda">%%_msg_prontus(_clean_cloudflare_cache_hint)%%</span>
             </td>
         </tr>
         <tr>
             <td style="width: 300px;" valign="top">
-            Limpiar caché de CloudFlare de uno o más archivos<br/>
-            <span class="ayuda">Se hará purge a cada uno de los archivos indicados. Uno por linea, solo rutas relativas, sin http, con un máximo de 100.</span>
+            %%_msg_prontus(_clean_cloudflare_cache_multiple_files)%%<br/>
+            <span class="ayuda">%%_msg_prontus(_clean_cloudflare_cache_multiple_files_hint)%%</span>
             </td>
             <td>
                 <textarea cols="80" rows="8" class="fieldform" id="purge_files"></textarea>
                 <br/>
                 <div class="boton-gris3 ">
-                    <a onclick="Cfgedit.cloudFlarePurgeFiles(); return false;" href="#" class="button" title="Limpiar caché de archivos">
-                        <span>Limpiar caché de archivos</span>
+                    <a onclick="Cfgedit.cloudFlarePurgeFiles(); return false;" href="#" class="button" title="%%_msg_prontus(_clean_file_cache)%%">
+                        <span>%%_msg_prontus(_clean_file_cache)%%</span>
                     </a>
                 </div>
                 <br/>

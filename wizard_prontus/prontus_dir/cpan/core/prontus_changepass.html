@@ -10,18 +10,18 @@
             </div>
             <div class="info">
                 <p><strong>Estimado %%_PRONTUS_USER_NAME%%:</strong></p>
-                <p>Esta es la primera vez que usted ingresa a Prontus CMS, o bien, su contraseña fue reseteada recientemente.</p>
-                <p>Antes de comenzar a operar, por favor proceda a cambiar su contraseña.</p>
+                <p>%%_msg_prontus(_changepass_welcome)%%</p>
+                <p>%%_msg_prontus(_changepass_change_password)%%</p>
             </div>
             <div class="auxi2">
-                <p>Nueva Contraseña:<br/>
+                <p>%%_msg_prontus(_new_password)%%:<br/>
                 <input type="password" name="_new_psw" size="30" value="" class="fieldform"></p>
-                <p>Confirme Contraseña:<br/>
+                <p>%%_msg_prontus(_password_confirmation)%%:<br/>
                 <input type="password" name="_new_psw_confirm" size="30" value="" class="fieldform"></p>
-                <p>Email:<br/>
+                <p>%%_msg_prontus(_msg_generic_email)%%:<br/>
                 <input type="text" name="_email" size="50" value="%%_PRONTUS_USER_EMAIL%%" class="fieldform"></p>
                 <div class="loading-action" style="margin: 0 auto;"><img src="imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
-                <div class="boton-gris3 aleft"><a class="button" href="#" onclick="ChangePass.enviar(DIR_CGI_CPAN); return false;"><span>Actualizar contraseña</span></a></div>
+                <div class="boton-gris3 aleft"><a class="button" href="#" onclick="ChangePass.enviar(DIR_CGI_CPAN); return false;"><span>%%_msg_prontus(_update_password)%%</span></a></div>
             </div>
         </div> <!-- box-login -->
     </form>

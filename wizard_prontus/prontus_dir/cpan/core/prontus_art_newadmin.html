@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Administrar art&iacute;culos &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
+    <title>%%_msg_prontus(_manage_articles)%% &laquo; %%_prontus_id%% &laquo; %%_SERVER_NAME%%</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/css/estilos.css" />
     <link type="text/css" rel="stylesheet" href="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/colorbox.css" />
@@ -14,6 +14,7 @@
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/form/jquery.form.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/jquery/plugins/colorbox/jquery.colorbox.js"></script>
 
+    <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/lang/ProntusLangController.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Listartic.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Admin.class.js"></script>
     <script type="text/javascript" src="/%%_prontus_id%%/cpan/core/js-local/Buscador.class.js"></script>
@@ -42,38 +43,38 @@
           </div>
           <div class="titulo-port aright col470 botonera">
             <div class="top-titulo botones grupo1">
-              <a href="#" onclick="Acciones.refrescarListados(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/ref_of.png" width="32" height="32" alt="Refrescar Listados" title="Refrescar Listados" class="cambia-boton" /></a>
-              <a href="#" onclick="Acciones.guardarPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/gua_of.png" width="32" height="32" alt="Guardar Portada" title="Guardar Portada" class="cambia-boton" /></a>
-              <a href="#" id="link-port" onclick="Acciones.showPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/ver_of.png" width="32" height="32" alt="Previsualizar" title="Ver Portada" class="cambia-boton" /></a>
+              <a href="#" onclick="Acciones.refrescarListados(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/ref_of.png" width="32" height="32" alt="%%_msg_prontus(_refresh_listings)%%" title="%%_msg_prontus(_refresh_listings)%%" class="cambia-boton" /></a>
+              <a href="#" onclick="Acciones.guardarPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/gua_of.png" width="32" height="32" alt="%%_msg_prontus(_save_front_page)%%" title="%%_msg_prontus(_save_front_page)%%" class="cambia-boton" /></a>
+              <a href="#" id="link-port" onclick="Acciones.showPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/ver_of.png" width="32" height="32" alt="%%_msg_prontus(_preview)%%" title="%%_msg_prontus(_view_front_page)%%" class="cambia-boton" /></a>
           <!--rayo-->
-              <a href="#" onclick="Acciones.clusteringPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/tra_of.png" width="32" height="32" alt="Transmitir a Cluster" title="Transmitir a Cluster" class="cambia-boton" /></a>
+              <a href="#" onclick="Acciones.clusteringPort(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/tra_of.png" width="32" height="32" alt="%%_msg_prontus(_transmit_to_cluster)%%" title="%%_msg_prontus(_transmit_to_cluster)%%" class="cambia-boton" /></a>
           <!--/rayo-->
-              <a href="#" onclick="Preview.previewNewWin(); return false;"><img class="cambia-boton" width="32" height="32" title="Previsualizar Portada en una ventana nueva" alt="Previsualizar Portada" src="/%%_prontus_id%%/cpan/core/imag/boto/pre_of.png"></a>
+              <a href="#" onclick="Preview.previewNewWin(); return false;"><img class="cambia-boton" width="32" height="32" title="%%_msg_prontus(_front_page_preview_in_new_page)%%" alt="%%_msg_prontus(_front_page_preview_in_new_page)%%" src="/%%_prontus_id%%/cpan/core/imag/boto/pre_of.png"></a>
           <!--admin_only-->
           <!--ADMIN_PORT-->
-              <a href="prontus_pltport_admin.cgi?_path_conf=%%_path_conf%%" ><img src="/%%_prontus_id%%/cpan/core/imag/boto/int_of.png" width="32" height="32" alt="Administrar Portadas" title="Administrar Portadas" class="cambia-boton" /></a>
+              <a href="prontus_pltport_admin.cgi?_path_conf=%%_path_conf%%" ><img src="/%%_prontus_id%%/cpan/core/imag/boto/int_of.png" width="32" height="32" alt="%%_msg_prontus(_mahage_front_page)%%" title="%%_msg_prontus(_mahage_front_page)%%" class="cambia-boton" /></a>
           <!--/ADMIN_PORT-->
           <!--/admin_only-->
-              <a id="port_dd_btn" href="#" onclick="Acciones.openDragAndDrop(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/dd_of.png" width="32" height="32" alt="Interfaz drag & drop" title="Interfaz con drag & drop" class="cambia-boton" /></a>
+              <a id="port_dd_btn" href="#" onclick="Acciones.openDragAndDrop(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/boto/dd_of.png" width="32" height="32" alt="%%_msg_prontus(_interface_drag_drop)%%" title="%%_msg_prontus(_interface_drag_drop)%%" class="cambia-boton" /></a>
               <div class="loading-action"><img src="/%%_prontus_id%%/cpan/core/imag/loading_bar.gif" width="128" height="15" alt="loading" /></div>
             </div>
             <div class="botones">
-                <a href="prontus_art_ficha.cgi?_path_conf=%%_path_conf%%" class="%%_class_open_fid%%"><img src="/%%_prontus_id%%/cpan/core/imag/boto/new_of.png" width="32" height="32" alt="Crear nuevo Artículo" title="Crear nuevo Artículo" class="cambia-boton" /></a>
+                <a href="prontus_art_ficha.cgi?_path_conf=%%_path_conf%%" class="%%_class_open_fid%%"><img src="/%%_prontus_id%%/cpan/core/imag/boto/new_of.png" width="32" height="32" alt="%%_msg_prontus(_create_new_artic)%%" title="%%_msg_prontus(_create_new_artic)%%" class="cambia-boton" /></a>
             </div>
 
             <div class="separa"></div>
 
             <div class="fila1">
               <div class="mostrar">
-                <span>Mostrar
+                <span>%%_msg_prontus(_show)%%
                   <a href="#" onclick="Listartic.cambiarArticPerPage(this); return false;" rel="10" class="selected">10</a> |
                   <a href="#" onclick="Listartic.cambiarArticPerPage(this); return false;" rel="25">25</a> |
                   <a href="#" onclick="Listartic.cambiarArticPerPage(this); return false;" rel="50">50</a>
                 </span><br />
-                <span>Ordenar por
-                  <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'C'); return false;" rel="C" class="selected">Creación</a> |
-                  <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'F'); return false;" rel="F">Publicación</a> |
-                  <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'T'); return false;" rel="T">Titular</a>
+                <span>%%_msg_prontus(_sort_by)%%
+                  <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'C'); return false;" rel="C" class="selected">%%_msg_prontus(_creation)%%</a> |
+                  <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'F'); return false;" rel="F">%%_msg_prontus(_publishing)%%</a> |
+                  <a href="#" onclick="Listartic.cambiarOrdenTipo(this, 'T'); return false;" rel="T">%%_msg_prontus(_headline)%%</a>
                 </span>
               </div>
               <div class="buscador">
@@ -81,24 +82,24 @@
                 <table width="218" border="0" cellspacing="0" cellpadding="0">
                   <tr>
                     <td width="185" align="left" valign="middle" class="bg-campo"><input size="30" type="text" name="search_texto" id="search_texto" class="campo" /></td>
-                    <td width="33" align="left" valign="middle" class="bg-boto"><a href="#" onclick="Buscador.buscarTit(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="Buscar por Titular o Timestamp" title="Buscar por Titular o Timestamp" /></a></td>
+                    <td width="33" align="left" valign="middle" class="bg-boto"><a href="#" onclick="Buscador.buscarTit(); return false;"><img src="/%%_prontus_id%%/cpan/core/imag/auxi/b.gif" width="33" height="32" border="0" alt="%%_msg_prontus(_search_by_headline_or_timestamp)%%" title="%%_msg_prontus(_search_by_headline_or_timestamp)%%" /></a></td>
                   </tr>
                 </table>
                 </form>
                 <div class="avanzado">
-                  <a href="#" onclick="Buscador.showMisBusquedas('%%_path_conf%%', true);return false;">Mis b&uacute;squedas</a> |
-                  <a href="#" onclick="Buscador.showMegalupa('%%_path_conf%%');return false;">B&uacute;squeda avanzada</a></div>
+                  <a href="#" onclick="Buscador.showMisBusquedas('%%_path_conf%%', true);return false;">%%_msg_prontus(_my_searches)%%</a> |
+                  <a href="#" onclick="Buscador.showMegalupa('%%_path_conf%%');return false;">%%_msg_prontus(_advanced_search)%%</a></div>
               </div>
             </div>
 
             <div id="layer_mis_busquedas">
               <!--content_mis_busquedas-->
               <div class="content">
-                <a href="#" onclick="Buscador.showMisBusquedas('%%_path_conf%%', false);return false;" class="aright"><img alt="Cancelar" title="Cancelar" src="/%%_prontus_id%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" width="18" height="18"></a>
-                <h3>Mis búsquedas</h3>
+                <a href="#" onclick="Buscador.showMisBusquedas('%%_path_conf%%', false);return false;" class="aright"><img alt="%%_msg_prontus(_cancel)%%" title="%%_msg_prontus(_cancel)%%" src="/%%_prontus_id%%/cpan/core/imag/boto/can_of.png" class="cambia-boton" width="18" height="18"></a>
+                <h3>%%_msg_prontus(_my_searches)%%</h3>
                 <ul>
                 <!--loop_mis_busquedas-->
-                  <li><a href="#" id="search%%ts%%" class="search" onclick="Buscador.aplicarBusqueda(this);">%%nombre%%</a> | <a href="#" id="borrar%%ts%%" class="borrar" onclick="Buscador.borrarBusqueda(this);">borrar</a>
+                  <li><a href="#" id="search%%ts%%" class="search" onclick="Buscador.aplicarBusqueda(this);">%%nombre%%</a> | <a href="#" id="borrar%%ts%%" class="borrar" onclick="Buscador.borrarBusqueda(this);">%%_msg_prontus(_delete)%%</a>
                     <script type="text/javascript">Buscador.addBusqueda('%%ts%%', %%json%%);</script></li>
                 <!--/loop_mis_busquedas-->
                 </ul>
@@ -132,14 +133,14 @@
           <div class="col470 aleft">
             <div class="links-utiles">
               <div id="colapsar-todo" class="agranda-area-all">
-                Áreas: todas
-                <img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_right_of.png" width="16" height="16" alt="Ocultar todas las áreas" title="Ocultar todas las áreas" class="right cambia-boton" /> |
-                <img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_down_of.png" width="16" height="16" alt="Mostrar todas las áreas" title="Mostrar todas las áreas" class="down cambia-boton"/>
+                %%_msg_prontus(_all_areas)%%
+                <img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_right_of.png" width="16" height="16" alt="%%_msg_prontus(_hide_all_areas)%%" title="%%_msg_prontus(_hide_all_areas)%%" class="right cambia-boton" /> |
+                <img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_down_of.png" width="16" height="16" alt="%%_msg_prontus(_show_all_areas)%%" title="%%_msg_prontus(_show_all_areas)%%" class="down cambia-boton"/>
               </div>
               <div class="agranda-fila-all" id="agranda-left">
-                Artículos: todos
-                <img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_right_of.png" width="16" height="16" alt="Ocultar el detalle artículo" title="Ocultar el detalle artículo" class="right cambia-boton" /> |
-                <img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_down_of.png" width="16" height="16" alt="Mostrar el detalle artículo" title="Mostrar el detalle artículo" class="down cambia-boton"/>
+                %%_msg_prontus(_all_articles)%%
+                <img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_right_of.png" width="16" height="16" alt="%%_msg_prontus(_hide_all_areas)%%" title="%%_msg_prontus(_hide_all_areas)%%" class="right cambia-boton" /> |
+                <img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_down_of.png" width="16" height="16" alt="%%_msg_prontus(_show_all_areas)%%" title="%%_msg_prontus(_show_all_areas)%%" class="down cambia-boton"/>
               </div>
             </div>
             <div id="cont-pub">
@@ -153,13 +154,13 @@
           <div class="col470 aright">
             <div class="links-utiles">
               <div class="agranda-fila-all">
-              Todos: <span><img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_right_of.png" width="16" height="16" alt="Ocultar el detalle artículo" title="Ocultar el detalle artículo" class="right cambia-boton" /></span> |
-              <span><img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_down_of.png" width="16" height="16" alt="Mostrar el detalle artículo" title="Mostrar el detalle artículo" class="down cambia-boton"/></span>
+              %%_msg_prontus(_all)%%: <span><img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_right_of.png" width="16" height="16" alt="%%_msg_prontus(_hide_artic_detail)%%" title="%%_msg_prontus(_hide_artic_detail)%%" class="right cambia-boton" /></span> |
+              <span><img src="/%%_prontus_id%%/cpan/core/imag/boto/list_agranda_down_of.png" width="16" height="16" alt="%%_msg_prontus(_show_artic_detail)%%" title="%%_msg_prontus(_show_artic_detail)%%" class="down cambia-boton"/></span>
               </div>
             </div>
 
             <div class="rotulo-gris">
-              <div class="titulo">Art&iacute;culos no publicados en esta Portada</div>
+              <div class="titulo">%%_msg_prontus(_unpublished_articles_front_page)%%</div>
             </div>
             <div class="separa"></div>
             <div id="cont-nopub">
@@ -174,8 +175,8 @@
             <table class="table-preview" cellspacing="0" cellpadding="0">
               <tr>
                 <td class="tab">
-                  <a href="#" class="abrir"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview.png" width="19" height="536" alt="Previsualizar Portada" title="Previsualizar Portada" /></a>
-                  <a href="#" class="cerrar"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview_ocultar.png" width="19" height="536" alt="Ocultar Previsualizar" title="Ocultar Previsualizar" /></a>
+                  <a href="#" class="abrir"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview.png" width="19" height="536" alt="%%_msg_prontus(_preview_front_page)%%" title="%%_msg_prontus(_preview_front_page)%%" /></a>
+                  <a href="#" class="cerrar"><img src="/%%_prontus_id%%/cpan/core/imag/boto/preview_ocultar.png" width="19" height="536" alt="%%_msg_prontus(_hide_preview)%%" title="%%_msg_prontus(_hide_preview)%%" /></a>
                 </td>
                 <td>
                   <div class="preview-box">
@@ -189,17 +190,17 @@
                         <table width="100%" class="tableform">
                           <tr>
                             <td valign="middle" align="left">
-                              <div class="titulo">Fecha</div>
+                              <div class="titulo">%%_msg_prontus(_date)%%</div>
                               <input type="text" name="fecha_preview" id="fecha_preview" class="fieldform" maxlength="10" onchange="Preview.startPreview();" />
                             </td>
                             <td valign="middle" align="left">
-                              <div class="titulo">Hora</div>
+                              <div class="titulo">%%_msg_prontus(_time)%%</div>
                               <input type="text" name="hora_preview" id="hora_preview" class="fieldform" maxlength="5" onchange="Preview.startPreview();" />
                             </td>
                             <td valign="middle" align="left">
-                              <div class="titulo">Vista</div>
+                              <div class="titulo">%%_msg_prontus(_view)%%</div>
                               <select name="seccion" id="cmb_vista" onchange="Preview.fastPreview();">
-                                <option value="">-- Default --</option>
+                                <option value="">-- %%_msg_prontus(_msg_generic_default)%% --</option>
                               </select>
                             </td>
                           </tr>
@@ -209,7 +210,7 @@
                       <div class="datos">
                         <table width="180" class="tableform timeleft">
                           <tr>
-                            <td width="90" align="right"><div class="titulo">Refrescando: &nbsp;</div></td>
+                            <td width="90" align="right"><div class="titulo">%%_msg_prontus(_refreshing)%%: &nbsp;</div></td>
                             <td class="timeleft"><div id="inner-timeleft">&nbsp;</div></td>
                           </tr>
                         </table>
@@ -218,7 +219,7 @@
                         <table width="100%" class="tableform">
                           <tr>
                             <td valign="middle" align="right">
-                              <div class=""><a href="#" onclick="Preview.fastPreview(); return false;">&raquo; Actualizar Preview Ahora</a></div>
+                              <div class=""><a href="#" onclick="Preview.fastPreview(); return false;">&raquo; %%_msg_prontus(_update_preview_now)%%</a></div>
                             </td>
                           </tr>
                         </table>
@@ -228,7 +229,7 @@
                           <div class="list-loading loading-preview"></div>
                           <iframe src="/%%_prontus_id%%/cpan/core/prontus_preview_blank.html" id="theIframe" name="theIframe" width="440" height="419" frameborder="0"></iframe>
                         </div>
-                        <div>Nota: El preview se Actualizará sólo cuando ud. haga cambios en el listado.</div>
+                        <div>%%_msg_prontus(_note_preview_is_updated_only_with changes_in_the_listing)%%</div>
                       </div>
                     </div>
                   </div>

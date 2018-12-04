@@ -40,9 +40,9 @@ var Listartic = {
 
     areaActiva: '', //
 
-    msgChangePort: 'La portada ha sido modificada, debe guardar para conservar los cambios',
-    msgChangePortBeforeUnload: 'La portada ha sido modificada. ¿Está seguro que desea abandonar esta página?',
-    msgChangePortConfirm: 'La portada ha sido modificada. ¿Está seguro que desea refrescar el listado de artículos publicados?',
+    msgChangePort: ProntusLangController.getString('_listartic_change_port'),
+    msgChangePortBeforeUnload: ProntusLangController.getString('_listartic_unsaved_changes_confirm_exit'),
+    msgChangePortConfirm: ProntusLangController.getString('_listartic_unsaved_changes_confirm_refresh'),
     modPort: false,
 
     init: function () {
@@ -106,7 +106,7 @@ var Listartic = {
                 $('.rotulo').removeClass('selected');
                 $('#artics').removeClass('disable-flecha');
                 $(this).parent().addClass('selected');
-                Admin.displayMessage('El área ' + area + ' ha sido activada. Ahora puede usar el botón "Publicar en Área Activa".', 'info');
+                Admin.displayMessage(ProntusLangController.getString('_listartic_activate_area', {'area': area}),'info');
             }
         });
     },
@@ -367,12 +367,12 @@ var Listartic = {
                 $(this).find('.datos').html('');
                 // Se muestran los datos del artículo eliminado
                 var ts = $(this).find('.titulo-left .ocultar').html();
-                var tit_artic_sin_file = 'Artículo Eliminado o Corrupto';
+                var tit_artic_sin_file = ProntusLangController.getString('_listartic_corrupted_deleted_file');
                 $(this).find('.titulo-left span:first').css('color', '#800000').html('('+ts+')');
                 $(this).find('.titulo-left a').replaceWith(tit_artic_sin_file);
                 $(this).find('.datos').html('');
-                $(this).find('.datos').append('<span class="msg-pub">Para eliminar de la portada, debe guardar ésta</span>');
-                $(this).find('.datos').append('<span class="msg-nopub">Para eliminar del listado, se debe "Regenerar tabla de Artículos"</span>');
+                $(this).find('.datos').append('<span class="msg-pub">'+ProntusLangController.getString('_listartic_save_before_delete')+'</span>');
+                $(this).find('.datos').append('<span class="msg-nopub">'+ProntusLangController.getString('_listartic_article_regen_required')+'</span>');
                 // Se agrega campo oculto para que el Prontus lo borre
                 $(this).find('.controles').html('<input type="hidden" name="_corrupt_'+ts+'" value="1" class="area" />');
             });
@@ -426,7 +426,7 @@ var Listartic = {
     cargaComboPortadas: function () {
 
         if($('#_multi_edicion').val() != 'SI') {
-            $('#total_ports').html('Nº de Portadas: ' + $('#cmb_port option').size());
+            $('#total_ports').html(ProntusLangController.getString('_listartic_port_number') + $('#cmb_port option').size());
             return;
         }
 
@@ -470,7 +470,7 @@ var Listartic = {
             }
         });
         $('#cmb_port option[value="'+value_ini_selected+'"]').attr('selected', 'selected');
-        $('#total_ports').html('Nº de Portadas: ' + $('#cmb_port option').size());
+        $('#total_ports').html(ProntusLangController.getString('_listartic_port_number') + $('#cmb_port option').size());
 
     },
 
@@ -790,13 +790,13 @@ var Listartic = {
                 var diff = now - mod; // En milisegundos
                 diff = diff / 1000; // En segundos
                 if(diff < 60) {
-                    thestring = "Modificada hace unos segundos";
+                    thestring = ProntusLangController.getString('_listartic_modified_seconds');
                 } else if(diff < 3600) {
                     diff = Math.round(diff/60);
                     if(diff == 1) {
-                        thestring = "Modificada hace un minuto";
+                        thestring = ProntusLangController.getString('_listartic_modified_one_minute');
                     } else {
-                        thestring = "Modificada hace "+diff+" minutos";
+                        thestring = ProntusLangController.getString('_listartic_modified_minutes', {'diff': diff});
                     }
                 } else {
                     var dnow2 = dnow;
@@ -807,15 +807,15 @@ var Listartic = {
 
                     if(fechamod == fechahoy) {
                         var hora = Utiles.getHora(mod, true);
-                        thestring = "Modificada hoy a las "+hora+" hrs";
+                        thestring = ProntusLangController.getString('_listartic_modified_today_time', {'hora': hora});
 
                     } else if(fechamod == fechaayer) {
                         var hora = Utiles.getHora(mod, true);
-                        thestring = "Modificada ayer a las "+hora+" hrs";
+                        thestring = ProntusLangController.getString('_listartic_modified_yesterday_time', {'hora': hora});
                     } else {
                         var hora = Utiles.getHora(mod, true);
                         var fecha = Utiles.getFecha(mod, true);
-                        thestring = "Modificada el "+fecha;
+                        thestring = ProntusLangController.getString('_listartic_modified_date', {'fecha': fecha});
                     }
                 }
                 $('#lastmodPortada').html(thestring);

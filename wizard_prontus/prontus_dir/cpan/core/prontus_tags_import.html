@@ -41,13 +41,13 @@
   <body class="bodysite loading-page">
       <div class="col470">
         <div class="rotulo">
-          <div class="titulo">&nbsp; &nbsp;Importar Tags</div>
+          <div class="titulo">&nbsp; &nbsp;%%_msg_prontus(_import_tags)%%</div>
         </div>
         <div class="box-gris">
           <div class="box-auxi">
             <form name="form1" id="form1" method="post"  enctype="multipart/form-data">
             <div class="msg-loading">
-              Seleccione el archivo XML que contiene los datos a importar:<br>
+              %%_msg_prontus(_select_xml_file_containing_data_import)%%:<br>
               <div class="upload">
                 <input type="file" name="FILE1" id="FILE1" size="30" maxlength="120">
               </div>
@@ -55,31 +55,31 @@
 
 
               <div style="text-align:left; padding-left:20px;">
-              <b>El formato del archivo es el sgte:</b>
+              <b>%%_msg_prontus(_file_format_is_as_follows)%%:</b>
               <ul style="margin-left: 14px;">
-                <li>Archivo xml con información de los tags.</li>
-                <li>Si se especifica id, el sistema lo utilizará. Si no, el sistema lo asignará automáticamente.</li>
-                <li>El formato de importación es el mismo de exportación.</li>
-                <li>Si no se incluyen los nombres de las vistas, se usará el nombre de la vista principal.</li>
+                <li>%%_msg_prontus(_xml_file_with_tag_info)%%</li>
+                <li>%%_msg_prontus(_tags_import_id_msg)%%</li>
+                <li>%%_msg_prontus(_import_format_is_the_same_for_export.)%%</li>
+                <li>%%_msg_prontus(_tags_import_name_msg)%%</li>
               </ul>
               </div>
 
               <br/>
-              <span class="importante"><b>IMPORTANTE:</b>
-                Al importar, los tags que existan serán eliminados y reemplazados por lo que venga en el archivo a importar.
-                Salvo que el archivo a importar venga vacío, o traiga errores, en cuyo caso no se borrará, lo existente.
+              <span class="importante"><b>%%_msg_prontus(_importan_capital_letter)%%:</b>
+                %%_msg_prontus(_tags_import_import_msg)%%
+                %%_msg_prontus(_tags_import_import_msg2)%%
               </span>
 
                 <input type="hidden" name="path_conf" id="path_conf" value="" />
                 <input type="hidden" name="Sbm_ACCION" id="Sbm_ACCION" value="Importar" />
                 <br/><br/>
                 <div class="boton-generico">
-                  <a class="button" href="#" onclick="enviarFormulario(); return false;"><span>Importar</span></a>
-                  <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>Cerrar</span></a>
+                  <a class="button" href="#" onclick="enviarFormulario(); return false;"><span>%%_msg_prontus(_import)%%</span></a>
+                  <a class="button" href="#" onclick="parent.Opciones.cerrarColorbox();"><span>%%_msg_prontus(_close)%%</span></a>
                 </div>
                 <br/>
                 <br/>
-                <a href="../../procs/prontus_tags_import_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_import_tags">[Ver Log &uacute;ltima importaci&oacute;n]</a>
+                <a href="../../procs/prontus_tags_import_log.html" onclick="Opciones.openPopupLog(this); return false;" rel="log_import_tags">[%%_msg_prontus(_see_log_last_import)%%]</a>
             </div>
             </form>
           </div>

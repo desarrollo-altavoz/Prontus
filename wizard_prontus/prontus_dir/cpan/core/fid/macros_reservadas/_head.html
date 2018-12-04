@@ -53,6 +53,7 @@
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/CombosTax.class.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/SubmitForm.class.js"></script>
   <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/validator.js"></script>
+  <script type="text/javascript" src="/%%_PRONTUS_ID%%/cpan/core/js-local/lang/ProtusLangController.class.js"></script>
   %%_tax4fids%%
   <script type="text/javascript">
     var mainFidJs = {
@@ -90,7 +91,7 @@
       if (window.opener) {
           window.opener.PortDD.refrescar();
       } else {
-          alert("Advertencia: No se pudo actualizar la ventana de interfaz Drag & Drop.");
+          alert(ProntusLangController.getString('_warning_unable_update_windows_drag_and_drop'));
       }
   </script>
   %%/_upd_port_dd%%

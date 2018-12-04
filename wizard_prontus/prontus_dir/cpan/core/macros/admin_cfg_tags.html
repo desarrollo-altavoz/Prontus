@@ -2,16 +2,16 @@
                         <div class="listado">
 
                             <div style="height:37px;">
-                                <p style="float: left;"><b>Configuración de Tags</b>: %%_prontus_id%%-tag.cfg</p>
+                                <p style="float: left;"><b>%%_msg_prontus(_tags_settings)%%</b>: %%_prontus_id%%-tag.cfg</p>
                                 <div class="botones">
                                     <div class="boton-gris3 aright">
-                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                            <span>Cancelar</span>
+                                        <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                            <span>%%_msg_prontus(_cancel)%%</span>
                                         </a>
                                     </div>
                                     <div class="boton-gris3 aright">
-                                        <a onclick="Cfgedit.guardaCfg('tag'); return false;" href="#" class="button" title="Guardar">
-                                            <span>Guardar</span>
+                                        <a onclick="Cfgedit.guardaCfg('tag'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                            <span>%%_msg_prontus(_save)%%</span>
                                         </a>
                                     </div>
                                 </div>
@@ -28,13 +28,15 @@
                                     <input type="hidden" name="_tab" value="cfg-tab10" />
                                     <input type="hidden" name="TAGPORT_ORDEN" value="" />
                                     <tr class="head">
-                                        <td>Variable</td>
-                                        <td>Valor</td>
+                                        <td>%%_msg_prontus(_variable)%%</td>
+                                        <td>%%_msg_prontus(_value)%%</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             MAX_LAST_TAGS_4FID<br>
-                                            <span class="ayuda">Número de últimos tags que se mostrará en el FID.</span>
+                                            <span class="ayuda">
+                                                %%_msg_prontus(_max_last_tags_4fid_hint)%%
+                                            </span>
                                         </td>
                                         <td>
                                             <input type="text" name="MAX_LAST_TAGS_4FID" value="%%MAX_LAST_TAGS_4FID%%" class="fieldform" maxlength="3" style="width: 30px"/>
@@ -43,7 +45,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TAGPORT_ARTXPAG<br>
-                                            <span class="ayuda">Número de artículos por página que aparecerán en las Portadas tagonómicas.</span>
+                                            <span class="ayuda">%%_msg_prontus(_tagport_artxpag)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="TAGPORT_ARTXPAG" value="%%TAGPORT_ARTXPAG%%" class="fieldform" maxlength="4" style="width: 30px"/>
@@ -52,7 +54,7 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TAGPORT_MAXARTICS<br>
-                                            <span class="ayuda">Número máximo de artículos a considerar para construir las portadas tagonómicas. De esta manera se puede limitar su número por razones estéticas o de rendimiento del servidor.</span>
+                                            <span class="ayuda">%%_msg_prontus(_tagport_maxartics_hint)%%</span>
                                         </td>
                                         <td>
                                             <input type="text" name="TAGPORT_MAXARTICS" value="%%TAGPORT_MAXARTICS%%" class="fieldform" maxlength="4" style="width: 30px;"/>
@@ -62,19 +64,19 @@
                                     <tr>
                                         <td style="width: 300px;" valign="top">
                                             TAGPORT_ORDEN<br>
-                                            <span class="ayuda">Permitir definir el orden del listado de artículos en las portadas tagonómicas.</span>
+                                            <span class="ayuda">%%_msg_prontus(_tagport_orden_hint)%%</span>
                                         </td>
                                         <td>
                                             <select name="TAGPORT_ORDEN_TIPO" style="width: 110px;">
-                                                <option value="">- Seleccione -</option>
-                                                <option value="PUBLICACION"%%TAGPORT_ORDEN_PUB%%>Publicación</option>
-                                                <option value="TITULAR"%%TAGPORT_ORDEN_TIT%%>Titular</option>
-                                                <option value="CREACION"%%TAGPORT_ORDEN_CRE%%>Creación</option>
+                                                <option value="">- %%_msg_prontus(_select)%% -</option>
+                                                <option value="PUBLICACION"%%TAGPORT_ORDEN_PUB%%>%%_msg_prontus(_publishing)%%</option>
+                                                <option value="TITULAR"%%TAGPORT_ORDEN_TIT%%>%%_msg_prontus(_headline)%%</option>
+                                                <option value="CREACION"%%TAGPORT_ORDEN_CRE%%>%%_msg_prontus(_creation)%%</option>
                                             </select>
                                             <select name="TAGPORT_ORDEN_ORD" style="width: 110px;">
-                                                <option value="">- Seleccione -</option>
-                                                <option value="DESC"%%TAGPORT_ORDEN_DESC%%>Descendente</option>
-                                                <option value="ASC"%%TAGPORT_ORDEN_ASC%%>Ascendente</option>
+                                                <option value="">- %%_msg_prontus(_select)%% -</option>
+                                                <option value="DESC"%%TAGPORT_ORDEN_DESC%%>%%_msg_prontus(_descending)%%</option>
+                                                <option value="ASC"%%TAGPORT_ORDEN_ASC%%>%%_msg_prontus(_ascending)%%</option>
                                             </select>
                                         </td>
                                     </tr>
@@ -82,13 +84,13 @@
                             </form>
                             <div class="botones">
                                 <div class="boton-gris3 aright">
-                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="Cancelar">
-                                        <span>Cancelar</span>
+                                    <a onclick="window.location.reload(); return false;" href="#" class="button" title="%%_msg_prontus(_cancel)%%">
+                                        <span>%%_msg_prontus(_cancel)%%</span>
                                     </a>
                                 </div>
                                 <div class="boton-gris3 aright">
-                                    <a onclick="Cfgedit.guardaCfg('tag'); return false;" href="#" class="button" title="Guardar">
-                                        <span>Guardar</span>
+                                    <a onclick="Cfgedit.guardaCfg('tag'); return false;" href="#" class="button" title="%%_msg_prontus(_save)%%">
+                                        <span>%%_msg_prontus(_save)%%</span>
                                     </a>
                                 </div>
                             </div>

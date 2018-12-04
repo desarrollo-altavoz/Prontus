@@ -2,7 +2,7 @@
 var Cfgedit = {
     newPortLastId: 0,
     guardaCfg: function (cfg) {
-        var msg = "¿Estás seguro de modificar la configuración?";
+        var msg = ProntusLangController.getString('_cfg_modify_confirm');
         if (confirm(msg)) {
             var configAjax = {
                 formSelector: '#frmCFG-' + (cfg.toUpperCase()),
@@ -443,7 +443,7 @@ var Cfgedit = {
     },
 
     cloudFlarePurgeAll: function () {
-        var msg = '¿Estás seguro? Esta operación no se puede revertir ni detener.';
+        var msg = ProntusLangController.getString('_cfg_cloudflare_purge_all_confirm');
 
         if (confirm(msg)) {
             $.ajax({
@@ -457,7 +457,7 @@ var Cfgedit = {
                 success: function (json) {
                     if (typeof json.status !== 'undefined') {
                         if (json.status === 1) {
-                            alert('Se inició el proceso de limpieza. Esto puede tardar varios minutos en completarse.');
+                            alert(ProntusLangController.getString('_cfg_cloudflare_purge_all_started'));
                         } else {
                             alert(json.msg);
                         }
@@ -472,11 +472,11 @@ var Cfgedit = {
     },
 
     cloudFlarePurgeFiles: function () {
-        var msg = '¿Estás seguro? Esta operación no se puede revertir ni detener.';
+        var msg = ProntusLangController.getString('_cfg_cloudflare_purge_file_confirm');
         var purge_files = $('#purge_files').val();
 
         if (!purge_files) {
-            alert("La lista de archivos está vacia.");
+            alert(ProntusLangController.getString('_cfg_cloudflare_purge_empty_list'));
             return;
         }
 
@@ -492,7 +492,7 @@ var Cfgedit = {
                 success: function (json) {
                     if (typeof json.status !== 'undefined') {
                         if (json.status === 1) {
-                            alert('Se inició el proceso de limpieza. Esto puede tardar unos minutos en completarse.');
+                            alert(ProntusLangController.getString('_cfg_cloudflare_purge_file_started'));
                         } else {
                             alert(json.msg);
                         }

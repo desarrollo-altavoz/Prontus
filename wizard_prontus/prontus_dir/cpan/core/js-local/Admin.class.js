@@ -98,7 +98,7 @@ var Admin = {
                 SubmitForm.handleError(LoadDiv.urlPub, XMLHttpRequest, textStatus, errorThrown);
             },
             success: function(resp, textStatus) {
-                alert('Vuelve prontus...');
+                alert(ProntusLangController.getString('_admin_logout'));
                 window.location.href = resp.url;
             }
         });
@@ -118,7 +118,7 @@ var Admin = {
         if(tipo == 'info' || tipo == 'alert' || tipo == 'error') {
             str = '<img src="/'+Admin.prontus_id+'/cpan/core/imag/boto/msg-'+tipo+'.png" width="24" height="24" alt="'+tipo+'" title="'+tipo+'" /> <span>' + str + '</span>' +
                     '<div class="cerrar"><a href="#" onclick="Admin.closeMessage(); return false;"><img src="/'+Admin.prontus_id+'/cpan/core/imag/boto/close-msg_of.png" ' +
-                    'width="16" height="16" alt="Cerrar Mensaje" title="Cerrar Mensaje" class="cambia-boton"/></a></div>';
+                    'width="16" height="16" alt="'+ ProntusLangController.getString('_admin_alt_display_message_close')+'" title="'+ ProntusLangController.getString('_admin_alt_display_message_close')+'" class="cambia-boton"/></a></div>';
             $('#msg-global').html(str).fadeIn('slow');
         }
     },
@@ -127,7 +127,7 @@ var Admin = {
     setPublicacionDirecta: function(str) {
         $('#pub-direct').hide();
         if(str !== '') {
-            str = '<img src="/'+Admin.prontus_id+'/cpan/core/imag/boto/msg-alert.png" width="24" height="24" alt="Publicación Directa" title="Publicación Directa" /> <span>' + str + '</span>';
+            str = '<img src="/'+Admin.prontus_id+'/cpan/core/imag/boto/msg-alert.png" width="24" height="24" alt="'+ ProntusLangController.getString('_admin_alt_publicacion_directa')+'" title="'+ ProntusLangController.getString('_admin_alt_publicacion_directa')+'" /> <span>' + str + '</span>';
             $('#pub-direct').html(str).fadeIn();
         }
     },
@@ -136,13 +136,13 @@ var Admin = {
     updateConcurrency: function(msg, tipo) {
         if(msg !== '') {
             if(tipo == 'port') {
-                msg = 'Otros usuarios editando esta Portada: ' + msg;
+                msg = ProntusLangController.getString('_admin_port_concurrency') + msg;
             } else if(tipo == 'art') {
-                msg = 'Otros usuarios editando este Artículo: ' + msg;
+                msg = ProntusLangController.getString('_admin_art_concurrency') + msg;
             } else {
                 return;
             }
-            var str = '<img src="/'+Admin.prontus_id+'/cpan/core/imag/boto/msg-alert.png" width="24" height="24" alt="Concurrecia" title="Concurrecia" /> <span>' + msg + '</span>';
+            var str = '<img src="/'+Admin.prontus_id+'/cpan/core/imag/boto/msg-alert.png" width="24" height="24" alt="'+ProntusLangController.getString('_admin_concurrency')+'" title="'+ProntusLangController.getString('_admin_concurrency')+'" /> <span>' + msg + '</span>';
             $('#concurrency').html(str).fadeIn();
         } else {
             $('#concurrency').hide();
@@ -156,14 +156,14 @@ var Admin = {
             $('body').append('<input type="hidden" id="lock_recurso" value="' + value + '" />');
             if (value == 1) {
                 // Solo advertencia.
-                if (tipo_rec == 'art') var msg = "Este Artículo está siendo utilizado por otro usuario.\nIngrese el siguiente código para poder utilizarlo.";
-                if (tipo_rec == 'port') var msg = "Esta Portada está siendo utilizada por otro usuario.\nIngrese el siguiente código para poder utilizarla.";
-                msg = "Advertencia:\n\n" + msg + "\n\nCódigo: " +  Admin.randcode;
+                if (tipo_rec == 'art') var msg = ProntusLangController.getString('_admin_locked_art_warning');
+                if (tipo_rec == 'port') var msg = ProntusLangController.getString('_admin_locked_port_warning');
+                msg = ProntusLangController.getString('_admin_locked_warning')+":\n\n" + msg + "\n\n"+ProntusLangController.getString('_admin_locked_code')+": " +  Admin.randcode;
                 Admin._lockRecursoPrompt(msg);
             } else if (value == 2) {
                 // Bloqueo total.
-                if (tipo_rec == 'art') var msg = "El artículo está siendo utilizado por otro usuario y ha sido bloqueado para su edición.";
-                if (tipo_rec == 'port') var msg = "La portada está siendo utilizada por otro usuario y ha sido bloqueada para su edición.";
+                if (tipo_rec == 'art') var msg = ProntusLangController.getString('_admin_locked_art_error');
+                if (tipo_rec == 'port') var msg = ProntusLangController.getString('_admin_locked_port_error');
                 Admin._lockRecursoTotal(tipo_rec, msg);
             }
         }
@@ -172,11 +172,11 @@ var Admin = {
     _lockRecursoPrompt: function (msg) {
         var code = prompt(msg);
         if (code == null || code == '') {
-            var msg = "Debe ingresar el código " + Admin.randcode + " para desbloquear el recurso.";
+            var msg = ProntusLangController.getString('_admin_unlock_get_code', {'code': Admin.randcode});
             Admin._lockRecursoPrompt(msg);
         } else {
             if (code != Admin.randcode) {
-                var msg = "El código ingresado es inválido.\nPorfavor ingrese el siguiente código para desbloquear el recurso: " + Admin.randcode;
+                var msg = ProntusLangController.getString('_admin_unlock_invalid_code', {'code': Admin.randcode});
                 Admin._lockRecursoPrompt(msg);
             } else {
             }
@@ -275,16 +275,17 @@ var Admin = {
             $("body").append('<div class="dialogping-outter"></div>');
             $(".dialogping-outter:last").append('<div></div>');
             $(".dialogping-outter div:last").attr('id', 'dialogping');
-            var strerror = "Se ha producido un error de conexión.<br/>El status entregado por el servidor:<br/><br/><span class=\"error\"></span><br/><br/>"
-                    + "Espere unos minutos, si el problema persiste, consulte con el administrador de su servidor web. "
-                    + "Para ver el detalle técnico del error presione <a href=\"#\">aquí</a>"
+            var strerror = ProntusLangController.getString('_admin_install_conn_error')
+                    + "<br/>"+ ProntusLangController.getString('_admin_install_status') + ":<br/><br/><span class=\"error\"></span><br/><br/>"
+                    + ProntusLangController.getString('_admin_install_wait')
+                    + ProntusLangController.getString('_admin_install_technical') + "<a href=\"#\">"+ProntusLangController.getString('_admin_install_button')+"</a>"
                     + "<textarea class=\"detalle\"></textarea>";
             $("#dialogping").html(strerror);
             $("#dialogping a").bind('click', function() {
                 $("#dialogping .detalle").toggle();
             });
             $("#dialogping").dialog({
-                title: "Error de Conexión",
+                title: ProntusLangController.getString('_admin_install_conn_error_dialog'),
                 draggable: false,
                 width: 600,
                 height: 400,
@@ -350,12 +351,12 @@ var Admin = {
         var patt = /\d+\.\d+\.\d+/g;
         if(patt.test(status_upd)) {
             // Para el caso normal en que si hay un update
-            texto = 'Actualizar a la release \''+status_upd+'\'';
+            texto = ProntusLangController.getString('_admin_update_to_release', {'release': status_upd});
             content = "<a href=\"#\" onclick=\"Admin.prontusUpdate('" + status_upd + "'); return false;\">";
             content = content + '<img src="'+imag+'/upd_update.png"'+dim+' alt="'+texto+'" title="'+texto+'" /></a>';
         } else if(status_upd == 'no_updates') {
             // Para cuando no hay updates
-            texto = 'No hay actualizaciones disponibles';
+            texto = ProntusLangController.getString('_admin_update_none_available');
             content = '<img src="'+imag+'/upd_noupdates.png"'+dim+' alt="'+texto+'" title="'+texto+'" />';
 
         } else if(status_upd == 'no_user') {
@@ -365,11 +366,11 @@ var Admin = {
 
         } else if(status_upd == 'disabled') {
             // Cuando estan deshabilitadas desde el CFG
-            texto = 'Las actualizaciones están deshabilitadas';
+            texto = ProntusLangController.getString('_admin_update_disabled');
             content = '<img src="'+imag+'/upd_disabled.png"'+dim+'  alt="'+texto+'" title="'+texto+'" />';
 
         } else {
-            texto = 'No se pudo obtener información sobre las actualizaciones';
+            texto = ProntusLangController.getString('_admin_update_cant_get_info');
             content = '<img src="'+imag+'/upd_alert.png"'+dim+' alt="'+texto+'" title="'+texto+'" />';
         }
         $('#update-content').html(content);
@@ -377,7 +378,7 @@ var Admin = {
 
     // -------------------------------------------------------------------------
     prontusUpdate: function(last_version_disponible) {
-        if (confirm('¿Está seguro de actualizar a Prontus ' + last_version_disponible + '?' + '\nEsta operación actualizará las CGIs y los \'core\' de todas las instancias Prontus instaladas en su sitio web.')) {
+        if (confirm(ProntusLangController.getString('_admin_update_confirm', {'version': last_version_disponible}))) {
             // window.location.href="prontus_update.cgi?_path_conf="
             $.fn.colorbox({
                 open: true,
