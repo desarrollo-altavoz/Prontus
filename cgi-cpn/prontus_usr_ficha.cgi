@@ -93,19 +93,19 @@ main: {
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_pag_result('Error','La funcionalidad requerida está disponible sólo para el administrador del sistema.', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_functionality_available_administrator'), 1, 'exit=1,ctype=1');
     };
 
     $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . '/prontus_usr_ficha.html';
 
     if (&lib_prontus::open_dbm_files() ne 'ok') {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error","No fue posible abrir archivos dbm.");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_open_dbm_file'));
         exit;
     };
 
@@ -145,7 +145,7 @@ main: {
         
     } else {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error","Error en la plantilla. No se encuentra el Loop de Artículos");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_template_error_artic_loop_not_found'));
         exit;
     }
     
@@ -160,7 +160,7 @@ main: {
         
     } else {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error","Error en la plantilla. No se encuentra el Loop de Portadas");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),);
         exit;
     }
     
@@ -196,8 +196,8 @@ main: {
 sub get_cmb_perfil {
   my $cmb =
           '<select name="Cmb_PERFIL">
-            <option value="P">Redactor</option>
-            <option value="E">Editor</option>
+            <option value="P">'.&lib_language::_msg_prontus('_writer').'</option>
+            <option value="E">'.&lib_language::_msg_prontus('_editor').'</option>
           </select>';
 
   if ($USERS_PERFIL eq 'P') {
@@ -281,7 +281,7 @@ sub get_lst_port {
             $label_class = "class=\"checked\"";
         };
         my $val_display_short = &procesar_nombre($nombre);
-        my $val_display = "<div style=\'white-space:nowrap;text-align:left;width:auto;\''><b>Nombre:</b> $nombre<br><b>Archivo:</b> $clave</div>";
+        my $val_display = "<div style=\'white-space:nowrap;text-align:left;width:auto;\''><b>".&lib_language::_msg_prontus('_name').":</b> $nombre<br><b>".&lib_language::_msg_prontus('_file').":</b> $clave</div>";
 
         $looptmp = $loop;
         $looptmp =~ s/%%clave%%/$clave/isg;

@@ -61,7 +61,7 @@ main: {
     # Validar datos.
     if ($prontus_varglb::CLOUDFLARE eq 'NO' || $prontus_varglb::CLOUDFLARE_API_URL eq '' || $prontus_varglb::CLOUDFLARE_API_KEY eq ''
         || $prontus_varglb::CLOUDFLARE_EMAIL eq '' || $prontus_varglb::CLOUDFLARE_ZONE eq '') {
-        &glib_html_02::print_json_result(0, 'Error: CloudFlare no está habilitado o los datos ingresados son insuficientes.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_cloudflare_no_available_or_entered_data_insufficient'), 'exit=1,ctype=1');
     };
 
     $FORM{'purge_all'} = &glib_cgi_04::param('purge_all');
@@ -93,7 +93,7 @@ main: {
                 if ($resp =~ /"result": "success"/) {
                     $zoneStatus .= "[$zone] OK\n";
                 } else {
-                    $zoneStatus .= "[$zone] ERROR: Respuesta de CloudFlare inválida.\n";
+                    $zoneStatus .= "[$zone] ".&lib_language::_msg_prontus('_error_invalid_response_cloudflare')."\n";
                 };
             };
         };
@@ -103,7 +103,7 @@ main: {
         my @files = split(/\n/, $FORM{'purge_files'});
 
         if ((scalar @files) > 100) {
-            &glib_html_02::print_json_result(0, 'Se permite un máximo de 100 archivos.', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_file_max_number'), 'exit=1,ctype=1');
         };
 
         foreach my $file (@files) {

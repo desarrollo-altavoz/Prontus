@@ -78,9 +78,9 @@ main: {
 
     # Valida datos de entrada
     my $msg_err;
-    $msg_err = "Parámetro [video] no es válido [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_video')." [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
     &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
     # Path conf y load config de prontus
@@ -155,7 +155,7 @@ sub make_snapshot {
   print STDERR "Snapshot cmd[$cmd]\n";
   $res = `$cmd 2>&1`;
 
-  my $msg_err_usr = 'Error al generar Snapshot, no se pudo generar la imagen. Los detalles fueron agregados al error log interno de Prontus.';
+  my $msg_err_usr = &lib_language::_msg_prontus('_error_generating_snapshot');
 
   if (-f $destino) {
     my $nom_img;
@@ -167,11 +167,11 @@ sub make_snapshot {
         };
         return 'OK';
     } else {
-        print STDERR "$msg_err_usr\nError: la imagen resultante de ffmpeg [$destino] no es .jpg\n";
+        print STDERR "$msg_err_usr\n".&lib_language::_msg_prontus('_error_resulting_image_ffmpeg')." [$destino] ".&lib_language::_msg_prontus('_no_jpg')."\n";
         return $msg_err_usr;
     };
   } else {
-      print STDERR "$msg_err_usr\nError: la imagen resultante [$destino] no pudo ser generada por ffmpeg\n";
+      print STDERR "$msg_err_usr\n".&lib_language::_msg_prontus('_error_resulting_image')." [$destino] ".&lib_language::_msg_prontus('_activate_advanced_transcoding')."\n";
       return $msg_err_usr;
   };
 };

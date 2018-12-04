@@ -676,7 +676,7 @@ sub precarga_plantillas_calend {
         my $reldir_port_tmp = $RELDIR_PORT_TMP_CALEND . '-' . $mv;
 
         if (! -d "$prontus_varglb::DIR_SERVER$reldir_port_tmp") {
-            print "Error: directorio de plantillas de calendario no es válido\n";
+            print &lib_language::_msg_prontus('_error_invalid_calendar_template_directory')."\n";
             next;
         };
 
@@ -684,7 +684,7 @@ sub precarga_plantillas_calend {
         my $relpathfile_port_tmp = $reldir_port_tmp . '/' . 'mescalendar' . $EXT_PORT_TMP_CALEND{$mv};
 
         if (! -f "$prontus_varglb::DIR_SERVER$relpathfile_port_tmp") {
-            print "Error: Plantilla de calend no válida para vista [$mv]\n";
+            print &lib_language::_msg_prontus('_error_invalid_calendar_template_view')." [$mv]\n";
             next;
         };
 
@@ -699,7 +699,7 @@ sub precarga_plantillas_calend {
     # Para vista normal.
     my $reldir_port_tmp = $RELDIR_PORT_TMP_CALEND;
     if (! -d "$prontus_varglb::DIR_SERVER$reldir_port_tmp") {
-        print "Error: directorio de plantillas calend no es válido [$prontus_varglb::DIR_SERVER$reldir_port_tmp]\n";
+        print &lib_language::_msg_prontus('_error_invalid_calendar_template_directory')." [$prontus_varglb::DIR_SERVER$reldir_port_tmp]\n";
         next;
     };
 
@@ -707,7 +707,7 @@ sub precarga_plantillas_calend {
     my $relpathfile_port_tmp = $reldir_port_tmp . '/' . 'mescalendar' . $EXT_PORT_TMP_CALEND{'<vista_normal>'};
 
     if (! -f "$prontus_varglb::DIR_SERVER$relpathfile_port_tmp") {
-        print "Error: Plantilla de taxport no válida para vista normal[$prontus_varglb::DIR_SERVER$relpathfile_port_tmp]\n";
+        print &lib_language::_msg_prontus('_error_invalid_tac_template_normal_view')." [$prontus_varglb::DIR_SERVER$relpathfile_port_tmp]\n";
         next;
     };
 
@@ -725,15 +725,15 @@ sub valida_param {
   $PRONTUS_ID =~ s/\\/\//g;
   $PRONTUS_ID =~ s/\/$//g;
   if ( (! -d "$prontus_varglb::DIR_SERVER/$PRONTUS_ID") || ($PRONTUS_ID eq '') || ($PRONTUS_ID eq '/') )  {
-    print "\nError: Directorio del publicador no es válido.";
-    print "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como primer parametro de esta CGI\n";
+    print "\n".&lib_language::_msg_prontus('_error_invalid_publisher_directory');
+    print "\n".&lib_language::_msg_prontus('_enter_prontus_name_processing_as_first_parameter')."\n";
     exit;
   };
 
   $AAAAMM =~ s/[^0-9]//g;
   if ( ($AAAAMM !~ /^\d{6}$/) && ($AAAAMM) )  {
-    print "\nError: Mes a generar no es valido.";
-    print "\nIndique <aaaamm> o bien deje en blanco para procesar con el mes en curso.\n";
+    print "\n".&lib_language::_msg_prontus('_error_invalid_month_to_generate');
+    print "\n".&lib_language::_msg_prontus('_indicate_yyyymm_or_leave_blanck_to_process_current_month')."\n";
     exit;
   };
 
@@ -786,15 +786,16 @@ sub precarga_plantillas_portadillas {
 
         my $reldir_port_tmp = $RELDIR_PORT_TMP . '-' . $mv;
         if (! -d "$prontus_varglb::DIR_SERVER$reldir_port_tmp") {
-            print "Error: directorio de plantillas portadilla para calendarios no es válido\n";
+            print &lib_language::_msg_prontus('_error_invalid_title_page_template_directory_for_calendar')."\n";
             next;
         };
+
 
         # Plantilla de portadilla por seccion
         $EXT_PORT_TMP{$mv} = &get_ext($reldir_port_tmp, 'portcalendar'); # extension con punto
         my $relpathfile_port_tmp = $reldir_port_tmp . '/' . 'portcalendar' . $EXT_PORT_TMP{$mv};
         if (! -f "$prontus_varglb::DIR_SERVER$relpathfile_port_tmp") {
-            print "Error: Plantilla portadilla para calendarios portcalendar no válida para vista [$mv]\n";
+            print &lib_language::_msg_prontus('_error_title_page_template_portcalendar_invalid_for_view')." [$mv]\n";
             next;
         };
 
@@ -805,14 +806,14 @@ sub precarga_plantillas_portadillas {
         };
 
         if ($pagina =~ /%%_TAXPORT_ARTXPAG=\d+%%/i) {
-            print "Error: Marca %%_TAXPORT_ARTXPAG=n%% no se considera en modalidad cron.\n";
+            print &lib_language::_msg_prontus('_error_mark')." %%_TAXPORT_ARTXPAG=n%% ".&lib_language::_msg_prontus('_no_considerate_mode_cron')."\n";
         };
 
         # Plantilla de portadilla comun
         $EXT_PORT_TMP_PORTALL{$mv} = &get_ext($reldir_port_tmp, 'portallcalendar'); # extension con punto
         $relpathfile_port_tmp = $reldir_port_tmp . '/' . 'portallcalendar' . $EXT_PORT_TMP_PORTALL{$mv};
         if (! -f "$prontus_varglb::DIR_SERVER$relpathfile_port_tmp") {
-            print "Error: Plantilla portadilla para calendarios portallcalendar no válida para vista [$mv]\n";
+            print &lib_language::_msg_prontus('_error_title_page_template_portallcalendar_invalid_for_view')." [$mv]\n";
             next;
         };
 
@@ -823,7 +824,7 @@ sub precarga_plantillas_portadillas {
         };
 
         if ($pagina =~ /%%_TAXPORT_ARTXPAG=\d+%%/i) {
-            print "Error: Marca %%_TAXPORT_ARTXPAG=n%% no se considera en modalidad cron.\n";
+            print &lib_language::_msg_prontus('_error_mark')." %%_TAXPORT_ARTXPAG=n%% ".&lib_language::_msg_prontus('_no_considerate_mode_cron')."\n";
         };
 
     };
@@ -831,7 +832,7 @@ sub precarga_plantillas_portadillas {
     # Para vista normal.
     my $reldir_port_tmp = $RELDIR_PORT_TMP;
     if (! -d "$prontus_varglb::DIR_SERVER$reldir_port_tmp") {
-        print "Error: directorio de plantillas taxport no es válido [$prontus_varglb::DIR_SERVER$reldir_port_tmp]\n";
+        print &lib_language::_msg_prontus('_error_invalid_tax_template_directory')." [$prontus_varglb::DIR_SERVER$reldir_port_tmp]\n";
         next;
     };
 
@@ -840,7 +841,7 @@ sub precarga_plantillas_portadillas {
     my $relpathfile_port_tmp = $reldir_port_tmp . '/' . 'portcalendar' . $EXT_PORT_TMP{'<vista_normal>'};
 
     if (! -f "$prontus_varglb::DIR_SERVER$relpathfile_port_tmp") {
-        print "Error: Plantilla de taxport portcalendar no válida para vista normal\n";
+        print &lib_language::_msg_prontus('_error_tax_portcalendar_template_invalid_for_normal_view')."\n";
         next;
     };
 
@@ -855,7 +856,7 @@ sub precarga_plantillas_portadillas {
     $relpathfile_port_tmp = $reldir_port_tmp . '/' . 'portallcalendar' . $EXT_PORT_TMP_PORTALL{'<vista_normal>'};
 
     if (! -f "$prontus_varglb::DIR_SERVER$relpathfile_port_tmp") {
-        print "Error: Plantilla de taxport portallcalendar no válida para vista normal\n";
+        print &lib_language::_msg_prontus('_error_tax_portcalendar_template_invalid_for_normal_view')."\n";
         next;
     };
 

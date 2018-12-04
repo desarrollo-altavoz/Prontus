@@ -97,7 +97,7 @@ foreach $line (@cron_lines) {
     $line =~ s/ +/ /isg;
     $lines .= "$line\n";
 };
-$lines = "\nNo hay scripts Prontus ingresados en Crontab\n" if (!$lines);
+$lines = "\n".&lib_language::_msg_prontus('_no_scripts_prontus_entered_Crontab')."\n" if (!$lines);
 $pagina =~ s/%%_crontab%%/$lines/ig;
 
 print "Content-Type: text/html\n\n";

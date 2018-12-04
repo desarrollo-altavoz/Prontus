@@ -66,13 +66,12 @@ sub main {
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_pag_result('Acceso a Area Restringida',
-                                        'La funcionalidad requerida está disponible sólo para el '
-                                        . 'administrador del sistema', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),
+                                        &lib_language::_msg_prontus('_functionality_available_administrator'), 1, 'exit=1,ctype=1');
     };
     print STDERR "$prontus_varglb::DIR_CPAN\n";
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_CPAN/procs/prontus_dam_regen_log.html";
-    &lib_logproc::log_init('Log de Actualización Masiva de Artículos', 'Esta página muestra el avance del proceso de actualizar los artículos');
+    &lib_logproc::log_init(&lib_language::_msg_prontus('_article_massive_update_log'), &lib_language::_msg_prontus('_articles_updating_progress'));
 
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_dam_regen.js";
     my $msg = '{"status":0, "msg": "En proceso"}';

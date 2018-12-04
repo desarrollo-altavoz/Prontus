@@ -60,12 +60,12 @@ main: {
 
     # user no valido
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
   $FORM{'Sbm_ACCION'} = &glib_cgi_04::param('Sbm_ACCION');
@@ -76,7 +76,7 @@ main: {
 
     if ($FORM{'FILE1'} eq '') {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("ERROR","Debe especificar archivo a subir.");
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_specify_file_upload'));
       exit;
     };
 
@@ -86,15 +86,15 @@ main: {
 
     if ((! -f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/tags_import.xml") or (! -s "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/tags_import.xml")) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("ERROR","No fue posible subir el archivo especificado al servidor.");
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_upload_specify_file'));
       exit;
     };
 
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_CPAN/procs/prontus_tags_import_log.html";
-    &lib_logproc::log_init('Log de Importación', 'Esta página muestra el avance del proceso de Importación de Tags Prontus');
+    &lib_logproc::log_init(&lib_language::_msg_prontus('_import_log'), &lib_language::_msg_prontus('_page_shows_import_progress_prontus_tag'));
 
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_tags_import.js";
-    my $msg = '{"status":0, "msg": "En proceso"}';
+    my $msg = '{"status":0, "msg": "'.&lib_language::_msg_prontus('_page_shows_import_progress_prontus_tag').'"}';
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
     my $result_page = "..$prontus_varglb::DIR_CPAN/core/prontus_loading_tags_import.html";
 
@@ -104,7 +104,7 @@ main: {
   }
   else {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("ERROR","Solicitud de ejecución no válida.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_in_process'));
 
   };
 

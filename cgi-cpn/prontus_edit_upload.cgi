@@ -88,7 +88,7 @@ main:{
   ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
   # Acceso permitido solo para admin
   if (($prontus_varglb::PRONTUS_EDITOR ne 'SI') or $prontus_varglb::USERS_PERFIL ne 'A') {
-    &glib_html_02::print_json_result(0, "La funcionalidad requerida está disponible sólo para el administrador del sistema.", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
   };
 
   if ($prontus_varglb::IP_SERVER ne '') { # implica llamada desde ambiente web. # 1.23
@@ -103,14 +103,14 @@ main:{
   $FORM{'real_file_upload'} = &glib_cgi_04::real_paths('file_upload');
   $FORM{'name_upload'} = &glib_cgi_04::param('name_upload');
   if($FORM{'file_upload'} eq '' || $FORM{'real_file_upload'} eq '') {
-    &glib_html_02::print_json_result(0, 'No se pudo recibir el archivo', 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_recieved_file'), 'exit=1,ctype=1');
   }
 
   # Se valida contra el set básico de Prontus
   if(!&lib_edit::is_uploadable($FORM{'real_file_upload'})) {
     my $uploads_permitidos = $prontus_varglb::UPLOADS_PERMITIDOS_ORIG;
     $uploads_permitidos =~ s/,/, /g;
-    &glib_html_02::print_json_result(0, "Extensi&oacute;n no v&aacute;lida, revise las <a>extensiones permitidas</a>", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_extension_review')." <a>".&lib_language::_msg_prontus('_allowed_extensions')."</a>", 'exit=1,ctype=1');
   }
 
   # Validaciones generales
@@ -142,23 +142,23 @@ main:{
       $name_final = $FORM{'name_upload'};
 
     } else {
-        &glib_html_02::print_json_result(0, "No se puede cambiar la extensión del archivo, por favor ingrese otro nombre sin extensión", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_change_file_extension_enter_another_name'), 'exit=1,ctype=1');
     }
   }
 
   # Se chequea el nombre del archivo
   if(! &lib_edit::check_name($name_final)) {
-    &glib_html_02::print_json_result(0, 'El nombre indicado tiene caracteres inválidos', 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_name_entered_with_invalid_characters'), 'exit=1,ctype=1');
   }
 
   # Si comienza con punto, no se puede crear
   if($name_final =~ /^\./) {
-    &glib_html_02::print_json_result(0, "El nombre no puede comenzar con punto", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_start_restriction_name'), 'exit=1,ctype=1');
   }
 
   # Se chequea existencia de alguna carpeta
   if (-d $full_curr_dir.$name_final) {
-    &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un directorio existente, especifique uno distinto por favor", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_directory_name_already_exist_enter_another'), 'exit=1,ctype=1');
   };
 
 
@@ -166,10 +166,10 @@ main:{
   print STDERR "Moviendo $FORM{'file_upload'} a $full_curr_dir/$name_final";
   if(&File::Copy::move($FORM{'file_upload'}, "$full_curr_dir/$name_final")) {
     &lib_prontus::write_log('Upload', 'Editor', "$full_curr_dir/$name_final");
-    &glib_html_02::print_json_result(1, "El archivo fue subido exitosamente. Nombre Final: $name_final", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_file_uploaded_sussessfully_final_name').": $name_final", 'exit=1,ctype=1');
   } else {
     print STDERR "Error al renombrar el archivo: $FORM{'file_upload'}\nEn el destino: $full_curr_dir/$name_final\nDetalles: $!\n";
-    &glib_html_02::print_json_result(0, "Se produjo un error en el renombrado", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_failed_to_rename'), 'exit=1,ctype=1');
   }
 
 

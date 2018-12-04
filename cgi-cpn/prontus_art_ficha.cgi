@@ -198,7 +198,7 @@ if ($FORM{'_file'} eq '') {
 
     # Validar tipo de articulo.
     if (!-f $PATH_FICHA) {
-        &glib_html_02::print_pag_result('Error','Tipo de art&iacute;­culo no v&aacute;lido o indeterminado.',1,'exit=1,ctype=0');
+        &glib_html_02::print_pag_result('Error',&lib_language::_msg_prontus('_artic_type_invalid'),1,'exit=1,ctype=0');
     };
 
 
@@ -266,7 +266,7 @@ if ($FORM{'_file'} eq '') {
     # Alta control
     if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
 
-        my $alta_control = '<label for="_alta">Alta de art&iacute;culo:</label> <input type="checkbox" id="_alta" name="_ALTA" value="1" %%_ALTA%% />';
+        my $alta_control = '<label for="_alta">'. &lib_language::_msg_prontus('_artic_approval') . ':</label> <input type="checkbox" id="_alta" name="_ALTA" value="1" %%_ALTA%% />';
         if ($prontus_varglb::USERS_PERFIL eq 'P') { # para periodistas aparece disabled
             $alta_control =~ s/%%_ALTA%%/ disabled/ig;
             $pagina =~ s/%%_ALTA%%/ $alta_control/ig;
@@ -294,14 +294,14 @@ if ($FORM{'_file'} eq '') {
         my $hidden_port = '<input type="hidden" name="_port" value="' . $FORM{'_port'} . '" />';
         my $hidden_area = '<input type="hidden" name="_area" value="' . $FORM{'_area'} . '" />';
         $pagina =~ s/<form (.*?)>/<form \1>\n$hidden_edic\n$hidden_area\n$hidden_port/is;
-        my $label_pub_directa = 'Publicaci&oacute;n directa en ';
+        my $label_pub_directa = &lib_language::_msg_prontus('_direct_publication') . " ";
         if ($FORM{'_edic'} != 'base') {
             my $edic4fecha = $FORM{'_edic'};
             $edic4fecha =~ s/_//ig;
-            $label_pub_directa .= "Edici&oacute;n '" . &glib_hrfec_02::des_normaliza_fecha($edic4fecha) . "'" . ' - ';
+            $label_pub_directa .= &lib_language::_msg_prontus('_edition') . " '" . &glib_hrfec_02::des_normaliza_fecha($edic4fecha) . "'" . ' - ';
         };
         my ($port_nom, $ext_port) = &lib_prontus::split_nom_y_extension($FORM{'_port'});
-        $label_pub_directa .= "Portada '" . $port_nom . "'" . ' - &Aacute;rea ' . $FORM{'_area'};
+        $label_pub_directa .= &lib_language::_msg_prontus('_front_page') . " '" . $port_nom . "'" . ' - ' .&lib_language::_msg_prontus('_area') . ' ' . $FORM{'_area'};
 
         # Enmarca el label, para que se destaque.
 #        $label_pub_directa = '<div style="display:inline; background-color:white; color:#003d7a; font-weight:bold; border:1px solid red; margin-left:20%">&nbsp;'
@@ -319,7 +319,7 @@ if ($FORM{'_file'} eq '') {
 
     # Validar tipo de articulo.
     if (!-f $PATH_FICHA) {
-        &glib_html_02::print_pag_result('Error','Tipo de art&iacute;­culo no v&aacute;lido o indeterminado.',1,'exit=1,ctype=0');
+        &glib_html_02::print_pag_result('Error',&lib_language::_msg_prontus('_artic_type_invalid'),1,'exit=1,ctype=0');
     };
 
     $pagina = &cargar_campos($dir_tpl_pags);
@@ -350,7 +350,7 @@ $pagina =~ s/%%_ARR_TST%%/$str_tax4fids/;
 $pagina = &incluye_combostax($pagina);
 
 # if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
-$pagina = &lib_secc::parse_seccion($pagina, $BD, 'solo habilitadas');
+$pagina = &lib_secc::parse_seccion($pagina, $BD, &lib_language::_msg_prontus('_only_enabled'));
 
 $pagina = &posicionar_combo($pagina, '_SECCION1', $ID_SECCIONES{'_SECCION1'});
 $pagina = &posicionar_combo($pagina, '_SECCION2', $ID_SECCIONES{'_SECCION2'});
@@ -383,9 +383,11 @@ $pagina =~ s/%%_tags4fid%%/$tags_for_fid/ig;
 # Recupera los ultimos tags ingresados, los nombres ya vienen escapeados para html
 my $max_tags = $prontus_varglb::MAX_LAST_TAGS_4FID;
 if($max_tags eq '1') {
-  $pagina =~ s/%%_lasttags_text%%/&Uacute;ltimo Tag Ingresado/ig;
+  my $msg = &lib_language::_msg_prontus('_last_tag_entered');
+  $pagina =~ s/%%_lasttags_text%%/$msg/ig;
 } else {
-  $pagina =~ s/%%_lasttags_text%%/&Uacute;ltimos $max_tags Tags Ingresados/ig;
+  my $msg = &lib_language::_msg_prontus('_last_tag_entered') . " $max_tags " . &lib_language::_msg_prontus('_tags_entered');
+  $pagina =~ s/%%_lasttags_text%%/$msg/ig;
 }
 my $last_tags = &lib_tags::get_last_tags($BD, $max_tags);
 $pagina =~ s/%%_lasttags%%/$last_tags/ig;
@@ -411,7 +413,7 @@ $pagina = &lib_prontus::replace_tsdata($pagina, $ts_artic);
 
 # Borrar marcas sobrantes
 # Antes , si no se parseo el titular, parseo algo de relleno
-$pagina =~ s/%%_TXT_TITULAR%%/Sin t&iacute;tulo/isg;
+$pagina =~ s/%%_TXT_TITULAR%%/&lib_language::_msg_prontus('_no_title')/eisg;
 
 # parsear SERVER_NAME
 $pagina =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
@@ -489,7 +491,7 @@ sub parsea_id_session {
     my $sess_obj = Session->new(
                     'prontus_id'        => $prontus_varglb::PRONTUS_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
-                    || die("Error inicializando objeto Session: $Session::ERR\n");
+                    || die(&lib_language::_msg_prontus('_error_obj_session_init') . ": $Session::ERR\n");
     my $sdata = $sess_obj->{id_session};
     $pagina =~ s/%%_sdata%%/$sdata/ig;
     return $pagina;
@@ -973,7 +975,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     # alta control
     elsif ($nom_campo =~ /^_ALTA/i) {
       if ($prontus_varglb::CONTROLAR_ALTA_ARTICULOS eq 'SI') {
-        my $alta_control = '<label for="_alta">Alta de art&iacute;culo:</label> <input type="checkbox" id="_alta" name="_ALTA" value="1" %%_ALTA%% />';
+        my $alta_control = '<label for="_alta">'. &lib_language::_msg_prontus('_artic_approval') . ':</label> <input type="checkbox" id="_alta" name="_ALTA" value="1" %%_ALTA%% />';
 
         my $status;
         if ($prontus_varglb::USERS_PERFIL eq 'P') { # para periodistas aparece disabled
@@ -1262,7 +1264,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       my $bytes = -s $base_path_mm . $prontus_varglb::DIR_MMEDIA . "/$nom";
       $size_total += $bytes;
       my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
-      $valor_campo = '<a href="' . $relpath_mm . '" target="_blank" type="video/x-ms-wvx">Reproducir Archivo actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />';
+      $valor_campo = '<a href="' . $relpath_mm . '" target="_blank" type="video/x-ms-wvx">Reproducir Archivo actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;' . &lib_language::_msg_prontus('_erase') . '<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />';
       $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '" />';
       $marca ='%%' . $nom_campo . '%%';
       $pag =~ s/$marca/$valor_campo/ig;
@@ -1279,7 +1281,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
       $size_total += $bytes;
       my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
-      $valor_campo = '<a href="' . $relpath_af . '" target="_blank">' . $nom . '</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">Borrar</label> <input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />'; # 7.0
+      $valor_campo = '<a href="' . $relpath_af . '" target="_blank">' . $nom . '</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">' . &lib_language::_msg_prontus('_erase') . '</label> <input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />'; # 7.0
       $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '" />';
       $marca = '%%' . $nom_campo . '%%';
       $pag =~ s/$marca/$valor_campo/ig;
@@ -1293,7 +1295,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
       $size_total += $bytes;
 
-      $valor_campo = '<a href="' . $relpath_af . '" target="_blank">Ver HTMLFILE actual</a>&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />'; # 7.0
+      $valor_campo = '<a href="' . $relpath_af . '" target="_blank">' . &lib_language::_msg_prontus('_see_curr_html_file') . '</a>&nbsp;&nbsp;' . &lib_language::_msg_prontus('_erase') . '<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />'; # 7.0
       $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '"/>';
       $marca ='%%' . $nom_campo . '%%';
       $pag =~ s/$marca/$valor_campo/ig;
@@ -1308,7 +1310,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       my $bytes = -s $base_path . $prontus_varglb::DIR_SWF . "/$nom";
       $size_total += $bytes;
       my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
-      $valor_campo = '<a href="' . $relpath_swf . '" target="_blank">Swf actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '"/>';
+      $valor_campo = '<a href="' . $relpath_swf . '" target="_blank">Swf actual</a>' . " ($kbytes)" . '&nbsp;&nbsp;' . &lib_language::_msg_prontus('_erase') .'<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '"/>';
       $valor_campo .= '<input type="hidden" name="_HIDD_' . $nom_campo . '" value="' . $nom .  '"/>';
 
       # ---- Imprime advertencia en rojo en caso de que el peso de la swf exceda el limite establecido.
@@ -1318,7 +1320,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
         $maxbytes = $1;
         if ($bytes_swf > $maxbytes) {
-          $valor_campo .=   '<br/><span color="#CC0000">Â¡Advertencia! Peso de archivo swf excede lÃ­mite permitido</span>';
+          $valor_campo .=   '<br/><span color="#CC0000">' . &lib_language::_msg_prontus('_warning_size_swf_exceeds_limit') . '</span>';
         };
       };
       # ----------
@@ -1391,7 +1393,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 
   # Para el total de imagenes del banco de imagenes
   my $txt_total_fotos;
-  $txt_total_fotos = "Total de im&aacute;genes: $nro_fotos_banco" if ($nro_fotos_banco);
+  $txt_total_fotos = &lib_language::_msg_prontus('_total_images') . ": $nro_fotos_banco" if ($nro_fotos_banco);
   $pag =~ s/%%TOTAL_BANCO_IMAGENES%%/$txt_total_fotos/ig;
   $pag =~ s/%%NRO_TOTAL_BANCO_IMAGENES%%/$nro_fotos_banco/ig;
 
@@ -1399,8 +1401,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   if($nro_fotos_banco > $prontus_varglb::BANCO_IMG_MAX) {
     $pag =~ s/<!--vermas imagenes-->(.*?)<!--\/vermas imagenes-->/\1/isg;
     my $resto = $nro_fotos_banco - $prontus_varglb::BANCO_IMG_MAX;
-    my $texto = "Mostrar <b>$resto</b> im&aacute;genes restantes";
-    $texto = "Mostrar <b>1</b> imagen restante" if($resto == 1);
+    my $texto = &lib_language::_msg_prontus('_show') . " <b>$resto</b> " . &lib_language::_msg_prontus('_remaining_images');
+    $texto = &lib_language::_msg_prontus('_show') . " <b>1</b> " . &lib_language::_msg_prontus('_remaining_image') if($resto == 1);
     $pag =~ s/%%TEXTO_RESTANTES%%/$texto/isg;
 
   } else {
@@ -1439,7 +1441,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
     $pag =~ s/%%_fileurlinfo%%/$fileurl/ig;
   } else {
-    $pag =~ s/%%_fileurlinfo%%/Friendly URLs no se encuentran activadas/ig;
+    $pag =~ s/%%_fileurlinfo%%/&lib_language::_msg_prontus('_furl_not_activated')/eig;
   };
 
   if ($prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC eq 'SI') {
@@ -1458,7 +1460,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
 # ---------------------------------------------------------------
 sub incluye_fechahora {
   my $buffer = $_[0];
-  my $fechahora = '<table class="fechahora" cellpadding="0" cellspacing="0"><tr><td><span class="titulo">Publicaci&oacute;n:&nbsp;</span></td>
+  my $fechahora = '<table class="fechahora" cellpadding="0" cellspacing="0"><tr><td><span class="titulo">' . &lib_language::_msg_prontus('_publication') . ':&nbsp;</span></td>
           <td><input type="text" name="_FECHAPSHRT" size="12" value="%%_FECHAPSHRT%%" class="fieldform fecha" maxlength="10" />&nbsp;</td>
           <td><input type="text" name="_HORAP" size="6" value="%%_HORAP%%" class="fieldform hora" maxlength="5" /> hrs
           <input type="hidden" name="_FECHAP" value="%%_FECHAP%%" /></td>
@@ -1468,9 +1470,9 @@ sub incluye_fechahora {
            <td><input type="text" name="_FECHAESHRT" size="12" value="%%_FECHAESHRT%%"  class="fieldform fecha" maxlength="10" />&nbsp;</td>
            <td><input type="text" name="_HORAE" size="6" value="%%_HORAE%%" class="fieldform hora" maxlength="5" /> hrs
                <input type="hidden" name="_FECHAE" value="%%_FECHAE%%" /></td>
-           <td><div class="actualizar" title="Actualiza Fecha/Hora de Expiraci&oacute;n por la hora Fecha/Hora actual" onclick="Fid.actualizaFechaHora(\'exp\');">&nbsp;</div></td></tr>
+           <td><div class="actualizar" title="' . &lib_language::_msg_prontus('_update_publication_time_by_actual_time') . '" onclick="Fid.actualizaFechaHora(\'exp\');">&nbsp;</div></td></tr>
            <tr><td colspan="4">
-               <div class="check-item"><label for="_soloportadas">S&oacute;lo despublicar de portadas:</label> <input type="checkbox" id="_soloportadas" name="_SOLOPORTADAS" value="1" %%_SOLOPORTADAS%% /></div></td></tr>';
+               <div class="check-item"><label for="_soloportadas">' . &lib_language::_msg_prontus('_only_unpublish_from_frontpages') . ':</label> <input type="checkbox" id="_soloportadas" name="_SOLOPORTADAS" value="1" %%_SOLOPORTADAS%% /></div></td></tr>';
   };
   $fechahora .= '</table>';
   $buffer =~ s/%%_FECHAHORA%%/$fechahora/i;
@@ -1904,7 +1906,7 @@ sub add_macros_fid {
 
     my $buffer_macro = &glib_fildir_02::read_file("$dir_macros/$nomfile");
     if (! -f "$dir_macros/$nomfile") {        my $relpath_macro = &lib_prontus::remove_front_string("$dir_macros/$nomfile", $prontus_varglb::DIR_SERVER);
-        $buffer_macro = "Macro '$relpath_macro' no existe!";
+        $buffer_macro = "Macro '$relpath_macro' " . &lib_language::_msg_prontus('_not_found') . "!";
         $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
         next;
     };
@@ -1921,7 +1923,7 @@ sub add_macros_fid {
     $profundidad++;
 
     if ($profundidad > 10) {
-      $buffer_macro = '<b>[Error: Se alcanzo el nivel maximo de anidamiento de macros (max=10)]</b>';
+      $buffer_macro = '<b>[' . &lib_language::_msg_prontus('_error_max_level_nested_macros') . ']</b>';
       $textpag =~ s/%%MACRO\(\Q$arg_str\E\)%%/$buffer_macro/is;
       $profundidad = 0;
       next;

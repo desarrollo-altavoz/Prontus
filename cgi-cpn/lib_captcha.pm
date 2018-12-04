@@ -364,7 +364,7 @@ sub check_captcha_prontus {
         print STDERR "Captcha no es valido o bien no fue posible verificarlo ERRCODE[$lib_captcha::ERRCODE][$lib_captcha::ERRGLOSA{$lib_captcha::ERRCODE}]\n";
         # Si no se logra validar el captcha, solo se acepta code 6 q significa q no hay GD
         if ($lib_captcha::ERRCODE != 6) {
-            return 'El c&oacute;digo de verificaci&oacute;n ingresado no es v&aacute;lido.';
+            return &lib_language::_msg_prontus('__invalid_verification_code');
         };
     };
     return ''; # todo ok

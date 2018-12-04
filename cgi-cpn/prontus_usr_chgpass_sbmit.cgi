@@ -53,12 +53,12 @@ main: {
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL eq 'A') {
-        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para usuario editor y redactor.', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_editor_writer'), 1, 'exit=1,ctype=1');
         exit;
     };
     
     if (&lib_prontus::open_dbm_files() ne 'ok') {
-        &glib_html_02::print_json_result(0, "No fue posible abrir archivos dbm.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_open_dbm_file'), 'exit=1,ctype=1');
         exit;
     };
     
@@ -73,7 +73,7 @@ main: {
     # Realizar cambio de contraseña.
     &actualizar_password();
     &lib_prontus::close_dbm_files();
-    &glib_html_02::print_json_result(1, "La contraseña se cambió con éxito.", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_successful_password_change'), 'exit=1,ctype=1');
     exit;
 };
 # --------------------------------------------------------------------------------------------------
@@ -81,27 +81,27 @@ sub validar_datos {
     my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email) = split /\|/, $prontus_varglb::USERS{$prontus_varglb::USERS_ID};
     
     if (!$FORM{'pwd_actual'}) {
-        return 'Porfavor, ingrese su contraseña actual.';
+        return &lib_language::_msg_prontus('_enter_current_password');
     };
     
     if (!$FORM{'pwd_nuevo'}) {
-        return 'Por favor, ingrese su nueva contraseña.';
+        return &lib_language::_msg_prontus('_enter_new_password');
     };
     
     if (!$FORM{'pwd_confirm'}) {
-        return 'Por favor, ingrese su la confirmación de su nueva contraseña.';
+        return &lib_language::_msg_prontus('_enter_new_password_confirmation');
     };
     
     if ($FORM{'pwd_nuevo'} =~ /^\s+$/) {
-        return 'La contraseña no puede contener espacios.';
+        return &lib_language::_msg_prontus('_password_can_not_contain_spaces');
     };
     
     if ($FORM{'pwd_nuevo'} !~ /^.{6,32}$/) {
-        return 'La nueva contraseña debe estar compuesta por un mínimo de 6 caracteres y máximo 32 caracteres.';
+        return &lib_language::_msg_prontus('_passwrod_length');
     };
     
     if (lc $FORM{'pwd_nuevo'} eq 'prontus') {
-        return "La contraseña es inválida, ya que no puede ser \"$FORM{'pwd_nuevo'}\", por favor ingrese una distinta.";
+        return &lib_language::_msg_prontus('_invalid_password_can_not_be')." \"$FORM{'pwd_nuevo'}\", ".&lib_language::_msg_prontus('_enter_different_password');
     };
     
     # Validar contraseña actual.
@@ -113,11 +113,11 @@ sub validar_datos {
         $pwd_actual_cryp = crypt($FORM{'pwd_actual'}, 'Av');
     }
     if ($pwd_actual_cryp ne $users_psw) {
-        return 'La contraseña actual ingresada no corresponde.';
+        return &lib_language::_msg_prontus('_password_entered_not_match');
     };
     
     if ($FORM{'pwd_nuevo'} ne $FORM{'pwd_confirm'}) {
-        return 'La nueva contraseña y la confirmación no coinciden.';
+        return &lib_language::_msg_prontus('_new_password_confirmation_not_match');
     };
     
 };

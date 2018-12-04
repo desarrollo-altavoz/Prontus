@@ -61,7 +61,7 @@ main:{
     if (! &wizard_lib::backup_model($modelid)) {
         my $resp;
         $resp->{'error'} = 1;
-        $resp->{'msg'} = "No se pudo respaldar el modelo antes de eliminar. El modelo no ha sido eliminado";
+        $resp->{'msg'} = &lib_language::_msg_prontus('_unable_backup_model_deleted');
         &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=1');
     };
 

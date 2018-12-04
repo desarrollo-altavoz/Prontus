@@ -75,7 +75,7 @@ main: {
     my $TS      = $FORM{'_ts'};      # Nombre del publicador Prontus donde se aloja el formulario.
 
     if ($PRONTUS eq '') { # Muestra pagina en blanco.
-        &glib_html_02::print_json_result(0, 'Directorio Prontus no especificado', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_prontus_directory_not_especified'), 'exit=1,ctype=1');
     };
     my $PATH_CONF = "/$PRONTUS/cpan/$PRONTUS.cfg";
 
@@ -90,17 +90,17 @@ main: {
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
 
     if ($TS eq '') { # Muestra pagina en blanco.
-        &glib_html_02::print_json_result(0, 'Formulario no especificado', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_form_not_especified'), 'exit=1,ctype=1');
     };
 
     my $dirForm = "$ROOT/$PRONTUS/cpan/procs/form/$TS";
     if(-d $dirForm) {
         &glib_fildir_02::borra_dir($dirForm);
     } else {
-        &glib_html_02::print_json_result(0, 'No se pudo eliminar el directorio con los datos', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_delete_directory_data'), 'exit=1,ctype=1');
     };
 
-    &glib_html_02::print_json_result(1, 'El archivo de datos de respaldo ha sido eliminado', 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_backup_file_deleted'), 'exit=1,ctype=1');
 
 };
 # ###################################################

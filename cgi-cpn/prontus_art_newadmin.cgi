@@ -104,7 +104,7 @@ main: {
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Ha ocurrido un error', $prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_something_gone_wrong'), $prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
 
@@ -234,15 +234,15 @@ sub get_default_port {
                                $prontus_varglb::DIR_NROEDIC .
                                $prontus_varglb::DIR_SECC;
             print "Content-Type: text/html\n\n";
-            my $msg = "El archivo plantilla de portada <b>$dir_tpl_port/$entry</b> no existe."
-                    . " Debes crearlo o cambiar la configuraci&oacute;n manualmente"
+            my $msg = &lib_language::_msg_prontus('_front_page_template_file') . " <b>$dir_tpl_port/$entry</b> " . &lib_language::_msg_prontus('_not_exists') . "."
+                    . " " . &lib_language::_msg_prontus('_create_or_chancge_cfg_manually')
                     . " <a href=\"/$prontus_varglb::DIR_CGI_CPAN/prontus_edit_main.cgi"
                     . "?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg"
                     . "&_dir=/$prontus_varglb::PRONTUS_ID/cpan&_file=$prontus_varglb::PRONTUS_ID-port.cfg\">"
-                    . "editando</a>"
-                    . " el archivo <b>/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID-port.cfg</b>.";
+                    . &lib_language::_msg_prontus('_editing') . "</a>"
+                    . " " . &lib_language::_msg_prontus('_the_file') . " <b>/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID-port.cfg</b>.";
 
-            &glib_html_02::print_pag_result("Ha ocurrido un problema", $msg);
+            &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_problem_has_ocurred'), $msg);
             print STDERR "Error: Archivo plantilla de portada no existe: $dir_tpl_port/$entry\n";
             exit;
         };
@@ -315,7 +315,7 @@ sub get_html_port {
         if ($incluir_item eq 'S') {
             if (! -f "$dir_tpl_port/$value") {
                 print "Content-Type: text/html\n\n";
-                &glib_html_02::print_pag_result("","Error: Archivo plantilla de portada no existe: $dir_tpl_port/$clave");
+                &glib_html_02::print_pag_result("",&lib_language::_msg_prontus('_error_template_file_not_exists') . ": $dir_tpl_port/$clave");
                 print STDERR "Error: Archivo plantilla de portada no existe: $dir_tpl_port/$clave\n";
                 exit;
             };
@@ -459,7 +459,7 @@ sub generar_js_base_ports {
     foreach $bport (@prontus_varglb::BASE_PORTS) {
     if ((not exists $prontus_varglb::PORT_PLTS{$bport}) and ($bport)) {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Ha ocurrido un problema","Una o m&aacute;s portadas de la edici&oacute;n base no han sido declaradas como portadas v&aacute;lidas en el archivo de configuraci&oacute;n.");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_problem_has_ocurred'), &lib_language::_msg_prontus('_front_page_not_declared_at_config_file'));
         exit;
     };
     $portadas .= "'$bport',";
@@ -552,7 +552,7 @@ sub get_edic {
 
         if ($edic eq '') {
             print "Content-Type: text/html\n\n";
-            &glib_html_02::print_pag_result("Error en Prontus Multi-Edici&oacute;n","Para ingresar al Administrador de Art&iacute;culos debe existir a lo menos 1 Edici&oacute;n.");
+            &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_error_prontus_multi_edition'),&lib_language::_msg_prontus('_to_enter_must_exist_at_theast_one_edition'));
             exit;
         };
     }

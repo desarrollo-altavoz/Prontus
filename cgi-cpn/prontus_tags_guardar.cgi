@@ -121,28 +121,28 @@ main: {
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
 
     $FORM{'_id'}= &glib_cgi_04::param('_id');
     if ($FORM{'_id'} ne '') {
         if (($FORM{'_id'} !~ /^[0-9]+$/) || (!$FORM{'_id'})) {
-            &glib_html_02::print_json_result(0, 'Id no válido', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_id'), 'exit=1,ctype=1');
         };
     };
 
     $FORM{'_nom'} = &glib_str_02::trim(&glib_cgi_04::param('_nom'));
     if ($FORM{'_nom'} eq '') {
-        &glib_html_02::print_json_result(0, 'Por favor, ingresa el nombre del ítem', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_enter_item_name'), 'exit=1,ctype=1');
     };
     $FORM{'_nom'} = &lib_prontus::despulga_item_tag($FORM{'_nom'});
     if ($FORM{'_nom'} eq '') {
-        &glib_html_02::print_json_result(0, 'Debe ingresar por lo menos dos letras en el nombre del ítem', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_min_length_item_name'), 'exit=1,ctype=1');
     } else {
         my $strlen = length($FORM{'_nom'});
         if ($strlen < 2) {
-            &glib_html_02::print_json_result(0, 'Debe ingresar por lo menos dos letras en el nombre del ítem', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_min_length_item_name'), 'exit=1,ctype=1');
         };
     };
 
@@ -153,7 +153,7 @@ main: {
         $nom = $FORM{'_nom'} if (!$nom);
         my $strlen_mv = length($nom);
         if ($strlen_mv < 2) {
-            &glib_html_02::print_json_result(0, 'Debe ingresar por lo menos dos letras en el nombre del ítem de la vista ' . $mv, 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_min_length_view_item_name') . $mv, 'exit=1,ctype=1');
         };
     };
 
@@ -243,7 +243,7 @@ sub do_update {
     my $sql;
     $sql = "update TAGS set TAGS_TAG = $nom_quoted, TAGS_NOM4VISTAS = $nom4vistas where TAGS_ID = $FORM{'_id'}";
     # print STDERR "sql-u[$sql]\n";
-    $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, 'Error actualizando ítem en la base de datos', 'exit=0');
+    $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, &lib_language::_msg_prontus('_error_updating_item_database'), 'exit=0');
     return '';
 };
 # ---------------------------------------------------------------

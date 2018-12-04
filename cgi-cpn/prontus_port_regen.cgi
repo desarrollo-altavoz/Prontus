@@ -64,15 +64,14 @@ main: {
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_pag_result('Acceso a Area Restringida',
-                'La funcionalidad requerida está disponible sólo para el administrador del sistema', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_administrator'), 1, 'exit=1,ctype=1');
     };
 
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_CPAN/procs/prontus_port_regen_log.html";
-    &lib_logproc::log_init('Log de Actualización Masiva de Portadas', 'Esta página muestra el avance del proceso de actualizar las portadas');
+    &lib_logproc::log_init(&lib_language::_msg_prontus('_front_page_massive_update_log'), &lib_language::_msg_prontus('_page_shows_update_progress_front_page'));
 
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_port_regen.js";
-    my $msg = '{"status":0, "msg": "En proceso"}';
+    my $msg = '{"status":0, "msg": "'.&lib_language::_msg_prontus('_in_process').'"}';
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
     my $result_page = "..$prontus_varglb::DIR_CPAN/core/prontus_loading_port_regen.html";
 

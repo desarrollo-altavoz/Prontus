@@ -121,26 +121,26 @@ main: {
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
     $FORM{'_entidad'} = &glib_cgi_04::param('_entidad');
     $FORM{'_entidad'} = 'seccion' if ($FORM{'_entidad'} eq '');
     if ($FORM{'_entidad'} !~ /^(seccion|tema|subtema)$/) {
-        &glib_html_02::print_json_result(0, 'Tipo de entidad no es válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_entity_type'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'_entidad'} eq 'tema') {
         $FORM{'_secc_id'} = &glib_cgi_04::param('_secc_id');
         if ($FORM{'_secc_id'} !~ /^[0-9]+$/) {
-            &glib_html_02::print_json_result(0, 'Sección no es válida', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_section'), 'exit=1,ctype=1');
         };
     };
 
     if ($FORM{'_entidad'} eq 'subtema') {
         $FORM{'_tema_id'} = &glib_cgi_04::param('_tema_id');
         if ($FORM{'_tema_id'} !~ /^[0-9]+$/) {
-            &glib_html_02::print_json_result(0, 'Tema no es válido', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_topic'), 'exit=1,ctype=1');
         };
     };
 
@@ -148,14 +148,14 @@ main: {
     $FORM{'_id'}= &glib_cgi_04::param('_id');
     if ($FORM{'_id'} ne '') {
         if (($FORM{'_id'} !~ /^[0-9]+$/) || (!$FORM{'_id'})) {
-            &glib_html_02::print_json_result(0, 'Id no válido', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_id'), 'exit=1,ctype=1');
         };
     };
 
     $FORM{'_nom'} = &glib_str_02::trim(&glib_cgi_04::param('_nom'));
     $FORM{'_nom'} = &lib_prontus::despulga_item_tax($FORM{'_nom'});
     if ($FORM{'_nom'} eq '') {
-        &glib_html_02::print_json_result(0, 'Por favor, ingresa el nombre del ítem', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_enter_item_name'), 'exit=1,ctype=1');
     };
     $FORM{'_port'}= &glib_str_02::trim(&glib_cgi_04::param('_port'));
     $FORM{'_port'} = &lib_prontus::despulga_item_tax($FORM{'_port'});
@@ -346,7 +346,7 @@ sub tit_repetido {
   $salida->finish;
 
   if ($cant > 0){
-    return 'Nombre de ítem ya existe.';
+    return &lib_language::_msg_prontus('_item_name_already_exist');
   };
 
   return '';

@@ -53,7 +53,7 @@ sub init { # Prontus 6.0
   &set_info_version_prontus();
 
 
-  $MSG_BLOQUEOSYSADMIN = 'Este Administrador de Contenidos se encuentra actualmente en mantención, para mayor información comuníquese con el Webmaster.';
+  $MSG_BLOQUEOSYSADMIN = &lib_language::_msg_prontus('_CMS_maintenance');
 
   $MAX_NRO_ARTIC = '';
   $RTEXT_ENABLED = '';
@@ -112,7 +112,7 @@ sub init { # Prontus 6.0
   $EDITOR_VER_ARTICULOS_AJENOS = '';
   $EDITOR_EDITAR_ARTICULOS_AJENOS = '';
 
-  $DEFAULT_TITHTML = '<A NAME=%%_SUBTIT_ANAME%%>%%_SUBTIT%%</A><a href="#top" class="linkSubtit">&nbsp;|&nbsp;subir</a>';
+  $DEFAULT_TITHTML = '<A NAME=%%_SUBTIT_ANAME%%>%%_SUBTIT%%</A><a href="#top" class="linkSubtit">&nbsp;|&nbsp;'.&lib_language::_msg_prontus('_go_up').'</a>';
 
   $STAMP_DEMO = '';
   $STAMP_DEMO_RSS = '';
@@ -356,7 +356,7 @@ sub get_dir_server {
         if ($ENV{'SERVER_NAME'} ne '') { # ambiente web
             print "Content-Type: text/html\n\n";
         };
-        print 'Error, no se ha podido detectar DOCUMENT ROOT o éste no es válido';
+        print &lib_language::_msg_prontus('_error_DOCUMENT_ROOT');
         exit;
     };
 

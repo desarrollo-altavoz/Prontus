@@ -73,7 +73,7 @@ $FORM{'_path_conf'} = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'_prontu
 # Control de usuarios obligatorio chequeando la cookie contra el dbm.
 ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
 if ($prontus_varglb::USERS_ID eq '') {
-    &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
 };
 
 print "Cache-Control: no-cache\n";
@@ -82,7 +82,7 @@ print "Cache-Control: no-store\n";
 
 # Validaciones
 if ($FORM{'_ts'} !~ /^\d{14}$/) {
-    &glib_html_02::print_pag_result('Error','Articulo indicado no es v&aacute;lido', 1, 'exit=1,ctype=1');
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_artic_not_valid'), 1, 'exit=1,ctype=1');
 };
 
 my $fechac = substr($FORM{'_ts'}, 0, 8);
@@ -95,7 +95,7 @@ my $path_final_xml =   $prontus_varglb::DIR_SERVER .
                     '.xml';
 
 if (! -f $path_final_xml) {
-    &glib_html_02::print_pag_result('Error','Articulo indicado no existe ['.$path_final_xml.']', 1, 'exit=1,ctype=1');
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_artic_not_exist') . ' ['.$path_final_xml.']', 1, 'exit=1,ctype=1');
 };
 
 print "Content-Type: text/xml\n\n";

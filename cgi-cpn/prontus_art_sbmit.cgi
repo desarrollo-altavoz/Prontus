@@ -775,7 +775,7 @@ sub do_preview {
         print 'Location: ..' . $dst_location . "\n\n";
     }
     else {
-        &glib_html_02::print_pag_result("Error",'La vista requerida no existe, o bien, no pudo ser generada.',1,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result("Error",&lib_language::_msg_prontus('_required_view_not_exist'),1,'exit=1,ctype=1');
     };
 };
 

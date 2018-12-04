@@ -82,7 +82,7 @@ main: {
     $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
     if (&lib_prontus::open_dbm_files() ne 'ok') {
-        &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_open_user_files'), 'exit=1,ctype=1');
     };
     
     # Cambio de contraseña por recuperación.
@@ -98,13 +98,13 @@ main: {
                 $prontus_varglb::USERS{$USERID} = $users_nom . '|' .  $users_usr . '|' . md5_hex($FORM{'_new_psw'}) . '|' . $users_perfil . '|' . $users_mail;
                 &lib_prontus::close_dbm_files();
                 unlink "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass/$FORM{'_usr'}.txt";
-                &glib_html_02::print_json_result(1, 'La contraseña se cambió correctamente.', 'exit=1,ctype=1');
+                &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_pswd_change_success'), 'exit=1,ctype=1');
             } else {
-                &glib_html_02::print_json_result(0, 'El usuario es inválido.', 'exit=1,ctype=1');
+                &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_user_not_valid'), 'exit=1,ctype=1');
             };
             
         } else {
-            &glib_html_02::print_json_result(0, 'Token inválido o expirado.', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_token_not_valid'), 'exit=1,ctype=1');
         };
     };
 
@@ -128,7 +128,7 @@ main: {
 
     }
     else {
-        &glib_html_02::print_json_result(0, 'Usuario o contraseña anterior no corresponden', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_previous_user_pswd_missmatch'), 'exit=1,ctype=1');
     };
 
 
@@ -140,34 +140,34 @@ main: {
 sub valida_datos {
 
     if ($FORM{'_token'} eq '' && (($FORM{'_usr'} eq '') or ($FORM{'_psw'} eq ''))) {
-    return 'Solicitud de ejecución no válida.';
+    return &lib_language::_msg_prontus('_validation_not_valid');
     };
 
 
     if ( ($FORM{'_new_psw'} eq '') or ($FORM{'_new_psw_confirm'} eq '') ) {
-    return 'Por favor ingrese y confirme su contraseña.';
+    return &lib_language::_msg_prontus('_validation_enter_password');
     };
 
     if ($FORM{'_new_psw'} ne $FORM{'_new_psw_confirm'}) {
-    return 'La contraseña ingresada y su confirmación son distintas, éstas deben ser idénticas.';
+    return &lib_language::_msg_prontus('_validation_password_missmatch');
     };
 
 
     if ($FORM{'_new_psw'} =~ /^\s+$/) {
-    return 'Password no puede contener solamente espacios.';
+    return &lib_language::_msg_prontus('_validation_password_invalid_characters');
     };
 
     if ($FORM{'_new_psw'} !~ /^.{6,32}$/) {
-    return 'La nueva contraseña debe estar compuesta por un mínimo de 6 caracteres y máximo 32 caracteres.';
+    return &lib_language::_msg_prontus('_validation_min_max_password');
     # return 'Password debe estar compuesta por, al menos, 6 caracteres.';
     };
 
     if (lc $FORM{'_new_psw'} eq 'prontus') {
-    return "Contraseña no válida.<br>Su contraseña no puede ser \"$FORM{'_new_psw'}\", por favor ingrese una distinta";
+    return &lib_language::_msg_prontus('_validation_password_not_valid') . " \"$FORM{'_new_psw'}\", " . &lib_language::_msg_prontus('_validation_enter_other_password');
     };
 
     if ($FORM{'_token'} eq ''  && $FORM{'_email'} !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {
-    return 'Email no válido';
+    return &lib_language::_msg_prontus('_validation_email_not_valid');
     };
 
     return '';

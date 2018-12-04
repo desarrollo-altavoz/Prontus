@@ -93,7 +93,7 @@ main:{
   print "Content-Type: text/html\n\n";
   # Acceso permitido solo para admin
   if (($prontus_varglb::PRONTUS_EDITOR ne 'SI') or ($prontus_varglb::USERS_PERFIL ne 'A')) {
-    print "<span class=\"error\">La funcionalidad requerida está disponible sólo para el administrador del sistema.</span>";
+    print "<span class=\"error\">".&lib_language::_msg_prontus('_functionality_available_administrator')."</span>";
     exit;
   };
 

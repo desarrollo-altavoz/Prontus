@@ -97,19 +97,19 @@ main : {
 sub valida_param {
 
   if ( (! -d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} eq '') || ($FORM{'prontus'} =~ /^\//) )  {
-    print "\nError: Directorio del publicador no es válido.";
+    print "\n".&lib_language::_msg_prontus('_error_invalid_publisher_directory');
     if ($AMBIENTE_WEB) {
-      print "<br>Debe indicar el nombre del Prontus a procesar, ejemplo: prontus=prontus_noticias";
+      print "<br>".&lib_language::_msg_prontus('_enter_name_protus_processing');
     }
     else {
-      print "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como primer parametro de esta CGI\n";
+      print "\n".&lib_language::_msg_prontus('_enter_name_prontus_processing_first_parameter_cgi')."\n";
     };
     exit;
   };
 
   if (!$AMBIENTE_WEB) {
     if ($prontus_varglb::IP_SERVER eq '') {
-        print "\nDebe indicar el nombre del servidor (ej: www.altavoz.net), como segundo parametro de esta CGI\n";
+        print "\n".&lib_language::_msg_prontus('_enter_server_name_second_parameter_cgi')."\n";
         exit;
     };
   };
@@ -127,7 +127,7 @@ sub check_prontus {
   my ($filler, $entry);
 
   if ($prontus_varglb::CONTROL_FECHA ne 'SI') {
-    print "\n Error : El Prontus indicado no corresponde a uno con Control de Fechas. \n";
+    print "\n ".&lib_language::_msg_prontus('_error_indicated_prontus_no_correspond_date_control')." \n";
     exit;
   };
 
@@ -268,7 +268,7 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
 
         if ($entry) {
 
-          print "<br>Actualizando Portada [$entry]" if ($AMBIENTE_WEB);
+          print "<br>".&lib_language::_msg_prontus('_updating_front_page')." [$entry]" if ($AMBIENTE_WEB);
 
           # Primero para la vista por defecto (o sea, sin vista)
           my $mv = '';
@@ -293,7 +293,7 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
                                      $ts_preview, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS, $users_perfil);
           };
 
-          &lib_prontus::write_log('Actualizar', 'Portada', "$DST_SEC/$entry (Articulos: $totartics)", 'Control Fecha');
+          &lib_prontus::write_log(&lib_language::_msg_prontus('_update'), &lib_language::_msg_prontus('_front_page'), "$DST_SEC/$entry (Articulos: $totartics)", &lib_language::_msg_prontus('_date_control'));
         }
         else {
           if($arch_seccion =~ /^(.*?)\/([^\/]+)$/) {
@@ -301,10 +301,10 @@ my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $arch_seccion, $text_seccio
             my $namexml = $2;
             &glib_fildir_02::check_dir("$dirxml/bak/cron_fechas");
             File::Copy::move($arch_seccion, "$dirxml/bak/cron_fechas/$namexml");
-            print "\n Warning: se mueve xml sin portada [$arch_seccion] a bak/cron_fechas\n";
+            print "\n ".&lib_language::_msg_prontus('_warning_moving_xml_without_front_page')." [$arch_seccion] ".&lib_language::_msg_prontus('_to')." bak/cron_fechas\n";
             print "<br>" if ($AMBIENTE_WEB);
           } else {
-            print "\n Warning: no existe portada para [$arch_seccion]\n";
+            print "\n ".&lib_language::_msg_prontus('_warning_no_exist_front_page_for')." [$arch_seccion]\n";
             print "<br>" if ($AMBIENTE_WEB);
           };
         };

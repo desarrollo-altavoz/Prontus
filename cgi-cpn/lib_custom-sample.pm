@@ -23,9 +23,16 @@ sub fechapEngLong {
   return '' if ($aaaammdd =~ /^9999/);
   return '' if ($aaaammdd !~ /^\d{8}$/);
 
-   my (@dias) = ('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
-   my (@meses) = ('January','February','March','April','May','June','July',
-                    'August','September','October','November','December');
+   my (@dias) = (&lib_language::_msg_prontus('_sunday'),&lib_language::_msg_prontus('_monday')
+                ,&lib_language::_msg_prontus('_tuesday'),&lib_language::_msg_prontus('_wednesday')
+                ,&lib_language::_msg_prontus('_thursday'),&lib_language::_msg_prontus('_friday')
+                ,&lib_language::_msg_prontus('_saturday'));
+   my (@meses) = (&lib_language::_msg_prontus('_january'),&lib_language::_msg_prontus('_february')
+                ,&lib_language::_msg_prontus('_march'),&lib_language::_msg_prontus('_april')
+                ,&lib_language::_msg_prontus('_may'),&lib_language::_msg_prontus('_june')
+                ,&lib_language::_msg_prontus('_july'),&lib_language::_msg_prontus('_august')
+                ,&lib_language::_msg_prontus('_september'),&lib_language::_msg_prontus('_october')
+                ,&lib_language::_msg_prontus('_november'),&lib_language::_msg_prontus('_december'));
    $aaaammdd =~ /(\d\d\d\d)(\d\d)(\d\d)/;
    my ($dia,$mes,$ano) = ($3,$2,$1);
 

@@ -35,6 +35,7 @@ BEGIN {
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200, 'wizard_error_log');
 
+use Time::HiRes qw(usleep);
 use glib_fildir_02;
 use prontus_varglb; &prontus_varglb::init();
 use glib_html_02;
@@ -66,7 +67,14 @@ main:{
         $resp->{'msg'} = '';
 
         if (-s $STATUS_FILE) {
-            my $progress = &glib_fildir_02::read_file($STATUS_FILE);
+            my $progress = '';
+            for (my $i = 0; $i < 5; $i++) {
+                $progress = &glib_fildir_02::read_file($STATUS_FILE);
+                if ($progress ne ''){
+                    last;
+                }
+                usleep(50000);
+            }
             if ($progress eq '100') {
                 if ($type eq 'update') {
                     $resp->{'msg'} = "Actualizando";
@@ -86,7 +94,14 @@ main:{
         $resp->{'msg'} = '';
 
         if (-f $STATUS_FILE) {
-            my $progress = &glib_fildir_02::read_file($STATUS_FILE);
+            my $progress = '';
+            for (my $i = 0; $i < 5; $i++) {
+                $progress = &glib_fildir_02::read_file($STATUS_FILE);
+                if ($progress ne ''){
+                    last;
+                }
+                usleep(50000);
+            }
             if ($progress !~ /(\d+)/) {
                 $resp->{'status'} = 0; # error.
                 $resp->{'msg'} = $progress;

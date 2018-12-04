@@ -122,7 +122,7 @@ main:{
     &lib_prontus::load_config($PATH_CONF);
 
     if ($prontus_varglb::ACTUALIZACIONES ne 'SI') {
-        &lib_logproc::add_to_log_finish("Error: las actualizaciones automáticas se encuentran deshabilitadas por configuración del producto.", 1);
+        &lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_error_automatic_updates_disabled_product_configuration'), 1);
     };
 
     # Para el manejo del log de procesamiento
@@ -135,28 +135,28 @@ main:{
     # Detecta semaforo.
     my ($lock_obj) = &lib_lock::lock_file($LOCK_FILE);
     if (!ref $lock_obj) { # si ya tiene un bloqueo anterior, aborta.
-        &lib_loading::finish_loading(0, "Proceso en ejecución. Por favor espere hasta que la importación anterior termine.");
-        &lib_logproc::add_to_log_finish("Proceso en ejecución. Por favor espere hasta que la importación anterior termine.", 1);
+        &lib_loading::finish_loading(0, &lib_language::_msg_prontus('_running_process_wait_previous_import'));
+        &lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_running_process_wait_previous_import'), 1);
     };
     
     my $ret = &lib_loading::init('result_prontus_update.js');
     unless($ret) {
-        &lib_loading::finish_loading(0, 'No se pudo escribir el archivo de respuesta');
-        &lib_logproc::add_to_log_finish('No se pudo escribir el archivo de respuesta', 1);
+        &lib_loading::finish_loading(0, &lib_language::_msg_prontus('_unable_write_response_file'));
+        &lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_unable_write_response_file'), 1);
     }    
 
     # Se realiza el proceso y se escribe al Log
     &lib_logproc::flush_log();
     &lib_logproc::writeRule();
-    &lib_logproc::add_to_log_count("INICIANDO PROCESO DE ACTUALIZACION");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_starting_update_process'));
     my $error_msg = &actualizar_prontus($PATH_CONF);
     my ($respuesta, $mensaje);
     if ($error_msg eq '') {
         $respuesta = 1;
-        $mensaje = "Actualización Finalizada OK";
+        $mensaje = &lib_language::_msg_prontus(&lib_language::_msg_prontus('_update_completed_ok'));
     } else {
         $respuesta = 0;
-        $mensaje = "<b>Actualización finalizada con errores:</b><br/>$error_msg";
+        $mensaje = "<b>".&lib_language::_msg_prontus('_update_completed_errors').":</b><br/>$error_msg";
         &enviar_mail_error($EMAIL_SOPORTE_PRONTUS, $mensaje);
     };
     
@@ -186,7 +186,7 @@ sub enviar_mail_error {
     $dir_server_ofusc =~ s/\//-/g;
     $dir_server_ofusc =~ s/^[- ]+//g;
     $server .= " ($dir_server_ofusc)" if ($server =~ /^[0-9]+\.[0-9]+\./);
-    my ($asunto) = "[prontus-update] Error actualizando en $server - prontus_id: $prontus_varglb::PRONTUS_ID";
+    my ($asunto) = "[prontus-update] ".&lib_language::_msg_prontus('_error_updating')." $server - prontus_id: $prontus_varglb::PRONTUS_ID";
 
     my $buffer_completo_log = &glib_fildir_02::read_file($lib_logproc::LOG_FILE);
 
@@ -220,10 +220,10 @@ sub enviar_mail_notif {
     $dir_server_ofusc =~ s/^[- ]+//g;
     $server .= " ($dir_server_ofusc)" if ($server =~ /^[0-9]+\.[0-9]+\./);
 
-    my ($asunto) = "[prontus-update] Update OK en $server - prontus_id: $prontus_varglb::PRONTUS_ID";
+    my ($asunto) = "[prontus-update] ".&lib_language::_msg_prontus('_update_ok_in')." $server - prontus_id: $prontus_varglb::PRONTUS_ID";
     my ($texto) = '';
-    my ($htmldoc) = 'El update fue gatillado desde la IP: ' . $ENV{'REMOTE_ADDR'}
-                  . "<br>Release anterior: $old_version<br>Release actual: $new_version<br><br>"
+    my ($htmldoc) = &lib_language::_msg_prontus('_update_triggered_from_IP').': ' . $ENV{'REMOTE_ADDR'}
+                  . "<br>".&lib_language::_msg_prontus('_previous_release').": $old_version<br>".&lib_language::_msg_prontus('_current_release').": $new_version<br><br>"
                   . $str_ok;
     my ($attach) = '';
     my ($url) = '';
@@ -240,7 +240,7 @@ sub actualizar_prontus {
     my ($msg, $quota_usado, $quota_asignado, $usado_porc, $nousado_porc) = &lib_quota::calcula_unix();
     
     &lib_loading::update_loading(100, 5);    
-    my $msg_abort = 'No fue posible actualizar Prontus';
+    my $msg_abort = &lib_language::_msg_prontus('_unable_update_prontus');
 
     # Creacion del objeto Update (todas los params son obligatorios).
     my $upd_obj = Update->new(
@@ -248,60 +248,60 @@ sub actualizar_prontus {
                     'version_prontus'   => $prontus_varglb::VERSION_PRONTUS,
                     'path_conf'         => $path_conf,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
-                    || &lib_logproc::add_to_log_finish("$msg_abort\n\nError inicializando Update: [$Update::ERR]", 1);
+                    || &lib_logproc::add_to_log_finish("$msg_abort\n\n".&lib_language::_msg_prontus('_error_initializing_update').": [$Update::ERR]", 1);
     
     # Se chequea si es factible realizar la actualización
     &lib_loading::update_loading(100, 10);
     $upd_obj->descarga_upd_descriptor();
     if (!$upd_obj->update_disponible()) {
-        return "Error: No se han detectado actualizaciones disponibles.";
+        return &lib_language::_msg_prontus('_error_no_updates_available_detected');
     };
     
     # Detecta instancias de prontus compatibles con las cgis
     &lib_loading::update_loading(100, 20);
-    &lib_logproc::add_to_log_count("Detectando instancias Prontus ...");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_detecting_prontus_instances')." ...");
 
-    &lib_logproc::add_to_log_count("Calculando espacio disponible ...");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_calculating_space_available')." ...");
     my $ret = $upd_obj->check_before_download();
-    return "Error al calcular espacio libre en disco: [$Update::ERR]" if (!$ret);
+    return &lib_language::_msg_prontus('_error_calculate_free_disk_space').": [$Update::ERR]" if (!$ret);
     
     # Descarga release
     &lib_loading::update_loading(100, 30);
-    &lib_logproc::add_to_log_count("Descargando release: " . $upd_obj->{last_version_disponible} . ' desde ' . $upd_obj->{update_server} . '/release ...');
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_downloading_release').": " . $upd_obj->{last_version_disponible} . ' desde ' . $upd_obj->{update_server} . '/release ...');
     $ret = $upd_obj->descarga_release();
-    return "Error al descargar release: [$Update::ERR]" if (!$ret);
-    &lib_logproc::add_to_log_count("Release descargada ok en /_prontus_update/downloads/" . $upd_obj->{last_version_disponible});
+    return &lib_language::_msg_prontus('_error_downloading_release').": [$Update::ERR]" if (!$ret);
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_release_downloaded_ok')." /_prontus_update/downloads/" . $upd_obj->{last_version_disponible});
     
     # Se chequea factibilidad de instalacion
     &lib_loading::update_loading(100, 70);
     $ret = $upd_obj->check_before_update();
-    return "Error al hacer la validación: [$Update::ERR]" if (!$ret);
+    return &lib_language::_msg_prontus('_error_make_validation').": [$Update::ERR]" if (!$ret);
     
     # Se realizaon los respaldos de todos los elementos
     &lib_loading::update_loading(100, 75);
     $ret = $upd_obj->crea_respaldos();
-    return "Error al crear los respaldos: [$Update::ERR]" if (!$ret);
+    return &lib_language::_msg_prontus('_error_creating_backups').": [$Update::ERR]" if (!$ret);
     
     # Instala CGIs de prontus
     &lib_loading::update_loading(100, 80);
-    &lib_logproc::add_to_log_count("Instalando nuevas CGIs");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_instaling_new_CGIs'));
     $ret = $upd_obj->install_cgis();
-    return "Error al instalar CGIs: [$Update::ERR]" if (!$ret);
-    &lib_logproc::add_to_log_count("CGIs instaladas OK");
+    return &lib_language::_msg_prontus('_error_installing_CGIs').": [$Update::ERR]" if (!$ret);
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_CGI_installed_ok'));
     
     # Actualiza core de las instancias prontus detectadas y tb. del prontus_dir del wizard
     &lib_loading::update_loading(100, 85);
-    &lib_logproc::add_to_log_count("Actualizando carpeta 'core' de instancias Prontus detectadas [$upd_obj->{core_dirs}]");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_updating_folder_core_prontus_instances_detected')." [$upd_obj->{core_dirs}]");
     $ret = $upd_obj->install_core();
-    return "Error al instalar Core(s): [$Update::ERR]" if (!$ret);
-    &lib_logproc::add_to_log_count("Carpeta 'core' de instancias Prontus [$upd_obj->{core_dirs}] actualizadas OK");
+    return &lib_language::_msg_prontus('_error_installing_core').": [$Update::ERR]" if (!$ret);
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_folder_core_prontus_instances')." [$upd_obj->{core_dirs}] ".&lib_language::_msg_prontus('_undated_ok'));
 
     # Actualiza /wizard_prontus/core
     &lib_loading::update_loading(100, 90);
-    &lib_logproc::add_to_log_count("Actualizando carpeta '/wizard_prontus/core'");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_undating_folder')." '/wizard_prontus/core'");
     $ret = $upd_obj->install_core_wizard();
-    return "Error al instalar Core del Wizard: [$Update::ERR]" if (!$ret);
-    &lib_logproc::add_to_log_count("Carpeta '/wizard_prontus/core' actualizada OK");
+    return &lib_language::_msg_prontus('_error_installing_core_wizard').": [$Update::ERR]" if (!$ret);
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_folder')." '/wizard_prontus/core' ".&lib_language::_msg_prontus('_undated_ok'));
 
     # Borra files descargados
     &lib_loading::update_loading(100, 95);
@@ -315,11 +315,11 @@ sub actualizar_prontus {
     };
     $du_result =~ s/$prontus_varglb::DIR_SERVER//isg;
 
-    my $str_ok = "La actualizaci&oacute;n ha finalizado OK.<br>"
-               . "- Las carpetas y archivos actualizados, fueron respaldados en /_prontus_update/updated/.<br>"
-               . "- En caso de contingencia, tambi&eacute;n se preserva el update descargado, en /_prontus_update/downloads/.<br>"
-               . "- En ambos casos, se mantienen autom&aacute;ticamente los &uacute;ltimos 3 respaldos de cada tipo,<br>eliminando los m&aacute;s antiguos e impidiendo as&iacute; su acumulaci&oacute;n.<br>"
-               . "<br>El espacio utilizado actualmente por estos respaldos es el siguiente:<br><pre>$du_result</pre>";
+    my $str_ok = &lib_language::_msg_prontus('_update_finished_ok')."<br>"
+               . "- ".&lib_language::_msg_prontus('_folders_updated_files_backups')." /_prontus_update/updated/.<br>"
+               . "- ".&lib_language::_msg_prontus('_contingency_downloaded_update_preserved_in')." /_prontus_update/downloads/.<br>"
+               . "- ".&lib_language::_msg_prontus('_in_both_cases_3_backups_saved').",<br>".&lib_language::_msg_prontus('_olders_deleted_no_accumulation')."<br>"
+               . "<br>".&lib_language::_msg_prontus('_current_backups_size').":<br><pre>$du_result</pre>";
     &lib_logproc::add_to_log_count($str_ok);
     
     &enviar_mail_notif($EMAIL_SOPORTE_PRONTUS, $prontus_varglb::VERSION_PRONTUS, $upd_obj->{last_version_disponible}, $str_ok);

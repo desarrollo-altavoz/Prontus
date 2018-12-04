@@ -79,9 +79,9 @@ main: {
     $destfile = $FORM{'video'};
     $destfile =~ s/\.\w+$/\.mp4/;
 
-    $msg_err = "Parámetro [video] no es válido [$FORM{'video'}]" if ( ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"))&& ((!-f "$prontus_varglb::DIR_SERVER$destfile") || (!-s "$prontus_varglb::DIR_SERVER$destfile")));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_video')." [$FORM{'video'}]" if ( ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"))&& ((!-f "$prontus_varglb::DIR_SERVER$destfile") || (!-s "$prontus_varglb::DIR_SERVER$destfile")));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
     &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
     # Path conf y load config de prontus

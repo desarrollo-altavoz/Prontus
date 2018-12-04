@@ -102,7 +102,7 @@ main: {
 
     # Acceso permitido solo para admin
     if (($prontus_varglb::ADMIN_PORT ne 'SI') or ($prontus_varglb::USERS_PERFIL ne 'A')) {
-        &glib_html_02::print_pag_result("Acceso a Area Restringida","La funcionalidad requerida está disponible sólo para el administrador del sistema, siempre que ésta haya sido previamente configurada.");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_administrator_presetting'));
         exit;
     };
 
@@ -117,7 +117,7 @@ main: {
     $origen = "$dir_port/" . $FORM{'Lst_PORTACT'};
 
     if (!(-f $origen)) {
-        &glib_html_02::print_json_result(0, "Plantilla seleccionada no es válida", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_selected_template'), 'exit=1,ctype=1');
         exit;
     };
 
@@ -126,7 +126,7 @@ main: {
 
     unlink $origen;
     if (-s $origen) {
-        $msg = 'La Plantilla seleccionada no pudo ser eliminada.';
+        $msg = &lib_language::_msg_prontus('_unable_delete_selected_template');
         &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
 
     } else {
@@ -140,7 +140,7 @@ main: {
         # CVI - 10/01/2012 - Se Logea esta accion
         &lib_prontus::write_log('Borrar', 'Portada', $origen);
 
-        $msg = 'La Plantilla seleccionada fue eliminada correctamente.';
+        $msg = &lib_language::_msg_prontus('_selected_template_deleted_correctly');
         &glib_html_02::print_json_result(1, $msg, 'exit=1,ctype=1');
     };
 

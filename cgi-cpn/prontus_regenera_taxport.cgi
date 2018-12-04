@@ -66,7 +66,7 @@ use lib_maxrunning;
 
 # Soporta sólo 1 copia andando
 if (&lib_maxrunning::maxExcedido(1)) {
-    print "Error: Servidor ocupado. Intente otra vez mas tarde.\n";
+    print &lib_language::_msg_prontus('_server_busy_error_extended')."\n";
     exit;
 };
 
@@ -79,14 +79,14 @@ my %NOMBASE_PLTS;
 my ($FILASXPAG);
 
 if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
-    print "Error: Document root no valido.\n";
+    print &lib_language::_msg_prontus('_error_invalid_document_root')."\n";
     exit;
 };
 
 $FORM{'prontus'} = $ARGV[0];
 if ( (! -d "$prontus_varglb::DIR_SERVER/$FORM{'prontus'}") || ($FORM{'prontus'} eq '')  || ($FORM{'prontus'} =~ /^\//) )  {
-    print "\nError: Directorio del publicador no es valido.";
-    print "\nDebe indicar el nombre del Prontus a procesar (ej: prontus_noticias), como parametro de esta CGI\n";
+    print "\n".&lib_language::_msg_prontus('_error_invalid_publisher_directory');
+    print "\n".&lib_language::_msg_prontus('_enter_prontus_name_cgi_parameter')."\n";
     exit;
 };
 
@@ -215,7 +215,7 @@ sub gatillar_procesos {
             while (&check_taxport_running() >= 15) {
                 last if($safetycounter > 5);
 
-                print "Muchos procesos, durmiendo por 2 segundos, ciclo $safetycounter de 5... \n";
+                print "&lib_language::_msg_prontus('_too_many_processes_sleeping_2_per_sec_cycle') $safetycounter ".&lib_language::_msg_prontus('_of')." 5... \n";
                 $safetycounter++;
                 sleep(2);
             };
@@ -266,14 +266,14 @@ sub get_fids2process {
     if ($FORM{'fid2process'}) {
 
         if (!defined $fids{$FORM{'fid2process'}}) {
-            print "ERROR: El FID [$FORM{'fid2process'}] no existe en la configuracion de Prontus.\n";
+            print &lib_language::_msg_prontus('_error_the_fid')." [$FORM{'fid2process'}] ".&lib_language::_msg_prontus('_no_exist_in_prontus_config')."\n";
             exit;
         }
 
         if (defined $fidswithtax{$FORM{'fid2process'}}) {
             return ($FORM{'fid2process'} => 1);
         } else {
-            print "ERROR: No hay articulos con taxonomia con FID [$FORM{'fid2process'}].\n";
+            print &lib_language::_msg_prontus('_error_no_artic_tax_with_FID')." [$FORM{'fid2process'}].\n";
             exit;
         }
     }

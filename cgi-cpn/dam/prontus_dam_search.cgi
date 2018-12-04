@@ -96,7 +96,7 @@ main: {
     # Acceso permitido para admin, publicador, redactor CPN
     if (($prontus_varglb::USERS_PERFIL ne 'A') && ($prontus_varglb::USERS_PERFIL ne 'P') && ($prontus_varglb::USERS_PERFIL ne 'E')){
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Acceso a Area Restringida","La funcionalidad requerida está disponible sólo para usuarios registrados.");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_administrator'));
         exit;
     };
 
@@ -551,17 +551,17 @@ sub generate_pagination_links {
     # la anterior y la siguiente, si aplican
     if ($page > 1) {
       $links = "<a href=\"$lnk_base&amp;page=" .
-                ($page - 1) . "\"><strong>&laquo; Anterior</strong></a>&nbsp;&nbsp;" .
+                ($page - 1) . "\"><strong>&laquo;" . &lib_language::_msg_prontus('_previous') . "</strong></a>&nbsp;&nbsp;" .
                 $links;
     };
 
     if ($page < $maxPages) {
       $links = $links .
                "&nbsp;&nbsp;<a href=\"$lnk_base&amp;page=" .
-               ($page + 1) . "\"><strong>Siguiente &raquo;</strong></a>";
+               ($page + 1) . "\"><strong>".&lib_language::_msg_prontus('_next')." &raquo;</strong></a>";
     };
 
-    $links = "<strong>Resultados:</strong> $desde_nroreg a $hasta_nroreg de $totalRecords <br/><strong>P&aacute;ginas</strong>: $links";
+    $links = "<strong>".&lib_language::_msg_prontus('_results').":</strong> $desde_nroreg ".&lib_language::_msg_prontus('_to')." $hasta_nroreg ".&lib_language::_msg_prontus('_of')." $totalRecords <br/><strong>".&lib_language::_msg_prontus('_pages')."</strong>: $links";
 
     return $links;
 };

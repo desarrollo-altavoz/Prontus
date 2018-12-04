@@ -160,7 +160,7 @@ my ($RELDIR_TEMP_HPAGE);
 
   # Valida conf. multi-ed
   if ($prontus_varglb::MULTI_EDICION ne 'SI') {
-    &glib_html_02::print_json_result(0, 'Este Prontus no está configurado como multi edición', 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_prontus_not_configured_multi _edition'), 'exit=1,ctype=1');
   };
 
     # user check
@@ -171,12 +171,12 @@ my ($RELDIR_TEMP_HPAGE);
 
 
     if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
-        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
-        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema y editores', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator_editor'), 'exit=1,ctype=1');
     };
 
 # ---------BOTON GUARDAR--------------------------------------------------
@@ -316,7 +316,7 @@ sub make_nom_edic {
     return $nom_edic;
   }
   else {
-    &glib_html_02::print_json_result(0, 'Fecha Corta inválida. Debe ser del tipo dd/mm/aaaa', 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_short_date_enter_correct_type_format'), 'exit=1,ctype=1');
   };
 
 };
@@ -364,9 +364,9 @@ my ($path_homesitio, $tpl_index_sitio, $homesitio, $url_homepage, $path_antialon
     if (&lib_prontus::ed_vigente($FORM{'ED_NOM'}) eq 'SI') {
       $homesitio = '<HTML>
                     <HEAD>
-                      <TITLE>No hay edicion vigente</TITLE>
+                      <TITLE>'.&lib_language::_msg_prontus('_no_active_edition').'</TITLE>
                     </HEAD>
-                    <BODY>No hay edicion vigente
+                    <BODY>'.&lib_language::_msg_prontus('_no_active_edition').'
                     </BODY>
                   </HTML>';
 

@@ -113,14 +113,14 @@ main:{
     $FORM{'_entidad'} = &glib_cgi_04::param('_entidad');
     $FORM{'_entidad'} = 'seccion' if ($FORM{'_entidad'} eq '');
     if ($FORM{'_entidad'} !~ /^(seccion|tema|subtema)$/) {
-        &glib_html_02::print_json_result(0, 'Tipo de entidad no es válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_entity_type'), 'exit=1,ctype=1');
     };
 
 
     # Para "guardar y nuevo"
     $FORM{'_newitem'} = &glib_cgi_04::param('_newitem');
     if ($FORM{'_newitem'} !~ /^[01]?$/) {
-        &glib_html_02::print_json_result(0, 'Indicador para [guardar y nuevo] no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_guardar_nuevo_indicator'), 'exit=1,ctype=1');
     };
 
 
@@ -133,14 +133,14 @@ main:{
     if ($FORM{'_entidad'} eq 'tema') {
         $FORM{'_secc_id'} = &glib_cgi_04::param('_secc_id');
         if ($FORM{'_secc_id'} !~ /^[0-9]+$/) {
-            &glib_html_02::print_json_result(0, 'Sección no es válida', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_section'), 'exit=1,ctype=1');
         };
     };
 
     if ($FORM{'_entidad'} eq 'subtema') {
         $FORM{'_tema_id'} = &glib_cgi_04::param('_tema_id');
         if ($FORM{'_tema_id'} !~ /^[0-9]+$/) {
-            &glib_html_02::print_json_result(0, 'Tema no es válido', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_topic'), 'exit=1,ctype=1');
         };
     };
 
@@ -150,7 +150,7 @@ main:{
     if ($prontus_varglb::USERS_ID eq '') {
         if ($FORM{'_entidad'} eq 'tema' || $FORM{'_entidad'} eq 'subtema') {
             print "Content-Type: text/html\n\n";
-            print "No se detect&oacute; una sesi&oacute;n activa.\n\n";
+            print &lib_language::_msg_prontus('_active_session_not_found')."\n\n";
             exit;
         } else {
             print "Location: /$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html\n\n";
@@ -160,7 +160,7 @@ main:{
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
     print "Content-Type: text/html\n\n";
@@ -169,7 +169,7 @@ main:{
     my $msg_err_bd;
     ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($BD)) {
-        &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err_bd,1,'exit=1');
     };
 
     # Ver si existe col *_NOM4VISTAS y si no, crearla. (compatib 10.15 a 11.0)
@@ -231,7 +231,7 @@ main:{
 sub check_col {
     my ($tabla, $colname, $coldef) = @_;
     my $res_check_col = &glib_dbi_02::check_table_column($BD, $tabla, $colname, $coldef);
-    &glib_html_02::print_pag_result("Error","No se pudo crear la columna $colname",1,'exit=1') if (!$res_check_col);
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_create_comun')." $colname",1,'exit=1') if (!$res_check_col);
 };
 # ---------------------------------------------------------------
 # rotulos tax
@@ -327,7 +327,7 @@ sub get_url_taxports {
 
     $urls =~ s/<br\/>$//;
     if ($urls) {
-        $urls = "<a href=\"#\" class=\"showurls\" rel=\"show$entidad$id\">URLs taxon&oacute;micas</a>"
+        $urls = "<a href=\"#\" class=\"showurls\" rel=\"show$entidad$id\">".&lib_language::_msg_prontus('_tax_urls')."</a>"
               . "<div id=\"tp_div$entidad$id\" class=\"oculto\">$urls</div>";
     };
 

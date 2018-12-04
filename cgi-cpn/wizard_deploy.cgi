@@ -97,22 +97,22 @@ main:{
         $superuser_bd,
         $superpwd_bd) = &check_paso_anterior();
 
-  my $lnk_paso1 = '<br/><br/><a href="/wizard_prontus/core/paso1.html">Volver a Paso 1</a><br/><br/>';
+  my $lnk_paso1 = '<br/><br/><a href="/wizard_prontus/core/paso1.html">' . &lib_language::_msg_prontus('_return_step_!') . '</a><br/><br/>';
 
   if ($msg_err) {
     $prontus_varglb::DIR_CORE = '/wizard_prontus/core'; # solo para efectos de la plantilla de mensaje
-    &glib_html_02::print_pag_result('Error', $msg_err . $lnk_paso1, 0, "exit=1, ctype=1, link=nolink");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), $msg_err . $lnk_paso1, 0, "exit=1, ctype=1, link=nolink");
   };
 
   my ($err_basedatos, $err_postprocesos) = &deploy($prontus_id, $extension, $smtp, $model_nom, $title_site_name, $new_title_site_name, $server_bd, $nom_bd, $user_bd,$pwd_bd,$superuser_bd,$superpwd_bd);
   if ($err_basedatos ne '') {
     $prontus_varglb::DIR_CORE = '/wizard_prontus/core'; # solo para efectos de la plantilla de mensaje
-    &glib_html_02::print_pag_result('Error', $err_basedatos . "<br/><br/>El Asistente Prontus no pudo instalar correctamente la base de datos, no es posible continuar con el proceso.<br/><br/>Verifique los datos indicados para la base de datos.<br /><br />$lnk_paso1", 0, "exit=1, ctype=1, link=nolink");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), $err_basedatos . &lib_language::_msg_prontus('_db_install_error') . "$lnk_paso1", 0, "exit=1, ctype=1, link=nolink");
   };
 
   if ($err_postprocesos ne '') {
     $prontus_varglb::DIR_CORE = '/wizard_prontus/core'; # solo para efectos de la plantilla de mensaje
-    &glib_html_02::print_pag_result('¡Atención!', $err_postprocesos . "<br/><br/>No obstante este error, Wizard Prontus de igual manera instaló el publicador, intente gatillar nuevamente el proceso que falló, desde el Panel de Control del publicador instalado.<br/><br/>Haga click <a href=\"wizard_reporte.cgi?DIR=/$prontus_id&TOPE=/\">aquí</a> para continuar y ver el reporte de instalación.<br /><br />", 0, "exit=1, ctype=1, link=nolink");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_warning'), $err_postprocesos . &lib_language::_msg_prontus('_install_warning_1') . "$prontus_id" . &lib_language::_msg_prontus('_install_warning_2'), 0, "exit=1, ctype=1, link=nolink");
   };
 
 
@@ -412,7 +412,7 @@ sub check_paso_anterior {
 # Chequea que se haya pasado por el paso 1
 
   if (! -f $INF_FILE) {
-    return "[errInfFile] Solicitud de ejecución no válida.";
+    return &lib_language::_msg_prontus('_error_not_file');
   };
 
   # Leer y cargar y validar contenido del INF.
@@ -429,7 +429,7 @@ sub check_paso_anterior {
     # Validar id
     $prontus_id = &wizard_lib::get_prontus_id($buffer_prontus);
     if ($prontus_id eq '') {
-      return 'Información de paso 1 está corrupta.';
+      return &lib_language::_msg_prontus('_error_step_1_corrupt_info');
     }
 
     # extension
@@ -448,7 +448,7 @@ sub check_paso_anterior {
 
 
     if ($buffer_prontus !~ /NEW_TITLE_SITE_NAME=(.+?)\n/) {
-      return 'Información de paso 1 está corrupta.';
+      return &lib_language::_msg_prontus('_error_step_1_corrupt_info');
     }
     else {
       $new_title_site_name = $1;
@@ -465,7 +465,7 @@ sub check_paso_anterior {
 
   }
   else {
-    return 'Información de paso 1 está corrupta';
+    return &lib_language::_msg_prontus('_error_step_1_corrupt_info');
   };
 
   print STDERR "prontus_id[$prontus_id]\n";
@@ -475,7 +475,7 @@ sub check_paso_anterior {
   my $dir_prontus = "$prontus_varglb::DIR_SERVER/$prontus_id";
 
   if (-d $dir_prontus) {
-    return "El directorio " . "[/$prontus_id]" . " ya existe. Para concretar el proceso de instalación, Ud. debe cambiar el nombre especificado para el publicador, o bien, <br>eliminar manualmente el directorio existente que genera el conflicto.";
+    return &lib_language::_msg_prontus('_the_directory') . " [/$prontus_id] " . &lib_language::_msg_prontus('_already_exists_rename');
   }
   else {
     # Lo creo y luego lo borro para verificar que este ok.
@@ -483,7 +483,7 @@ sub check_paso_anterior {
       &glib_fildir_02::borra_dir($dir_prontus);
     }
     else {
-      return "No se puede crear el directorio destino del publicador " . "[/$prontus_id]" . " No es posible continuar con la instalación.";
+      return &lib_language::_msg_prontus('_unable_create_prontus_directory') . " [/$prontus_id] " . &lib_language::_msg_prontus('_unable_resume_install');
     };
   };
 
@@ -493,21 +493,21 @@ sub check_paso_anterior {
     my $buffer_model = $1;
     # Validar id
     if ($buffer_model !~ /MODEL_NOM=(\w+)\n/) {
-      return 'Información de paso 2 está corrupta.';
+      return &lib_language::_msg_prontus('_error_step_2_corrupt_info');
     }
     else {
       $model_nom = $1;
     };
     # p10.11
     if ($buffer_model !~ /MODEL_EXT=(\w+)\n/) {
-      return 'Error en cfg del modelo: extensión no declarada.';
+      return &lib_language::_msg_prontus('_error_cfg_ext');
     }
     else {
       $extension = $1;
     };
 
     if ($buffer_model !~ /TITLE_SITE_NAME=(.+?)\n/) {
-      return 'Error en cfg del modelo: falta TITLE_SITE_NAME';
+      return &lib_language::_msg_prontus('_error_cfg_title');
     }
     else {
       $title_site_name = $1;
@@ -515,7 +515,7 @@ sub check_paso_anterior {
 
   }
   else {
-    return 'Información de paso 2 está corrupta';
+    return &lib_language::_msg_prontus('_error_step_2_corrupt_info');
   };
 
 

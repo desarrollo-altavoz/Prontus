@@ -81,11 +81,11 @@ main: {
 
     # Valida datos de entrada
     my $msg_err;
-    $msg_err = "Parámetro [video] no es válido [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_video')." [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
 
-    &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_msg_generic_error').": $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
     # Path conf y load config de prontus
     my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
@@ -95,8 +95,8 @@ main: {
 
     # chequeo de tamaño de archivo
     # no se procesa si es mas grande de 50 MB 52428800 por defecto
-    $msg_err = "Tamaño de archivo es muy grande para ser transcodificado, límite: [$prontus_varglb::MAX_XCODING MB]" if ( (-s "$prontus_varglb::DIR_SERVER$FORM{'video'}") > ($prontus_varglb::MAX_XCODING*1048576));
-    &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
+    $msg_err = &lib_language::_msg_prontus('_unable_transcoding_excessive_file_size').": [$prontus_varglb::MAX_XCODING MB]" if ( (-s "$prontus_varglb::DIR_SERVER$FORM{'video'}") > ($prontus_varglb::MAX_XCODING*1048576));
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_msg_generic_error').": $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
     # User check
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
@@ -122,13 +122,13 @@ sub start_xcode {
     if ($FORM{'generar_versiones'} eq '1') {
         print STDERR "gatillando[$cmd 1] generar versiones.\n";
         system("$cmd 1 >/dev/null 2>&1 &");
-        return (1, 'Transcodificación en proceso...');
+        return (1, &lib_language::_msg_prontus('_trascoding_process').'...');
     };
 
     if ($prontus_varglb::ADVANCED_XCODING eq 'NO') {
         # No transcodifica peliculas que ya son mp4.
         if ($origen =~ /\.mp4$/i) {
-            return (0, "Error: El video ya es mp4, no es necesario transcodificarlo.");
+            return (0, &lib_language::_msg_prontus('_error_unnecessary_transcoding_mp4'));
         };
     }
 
@@ -138,12 +138,12 @@ sub start_xcode {
     # print STDERR "Execution test = [$res][ps auxww |grep 'prontus_videodoxcode.cgi $origen $prontus_id'|grep -v grep]\n";
 
     if ($res ne '') {
-        return (0, 'Error: Se detectó un proceso activo de transcodificación para el video indicado.');
+        return (0, &lib_language::_msg_prontus('_error_redundant_transcoding'));
     };
 
     # Gatilla la transcodificacion en background.
     print STDERR "gatillando[$cmd 0]\n";
     system("$cmd 0 >/dev/null 2>&1 &");
 
-    return (1, 'Transcodificación en proceso...');
+    return (1, &lib_language::_msg_prontus('_trascoding_process').'...');
 };

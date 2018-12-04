@@ -82,7 +82,7 @@ use lib_secc;
   ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
   if ($prontus_varglb::USERS_ID eq '') {
      print "Content-Type: text/html\n\n";
-     print "Ud no tiene permisos para ver esta página";
+     print &lib_language::_msg_prontus('_you_dont_have_permissions');
      exit;
   };
 
@@ -95,7 +95,7 @@ use lib_secc;
   my $msg_err_bd;
   ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
   if (! ref($BD)) {
-      &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err_bd,1,'exit=1,ctype=1');
   };
 
 
@@ -128,7 +128,7 @@ use lib_secc;
 
   my $total_mis_busquedas = &lib_search::get_total_mis_busquedas($prontus_varglb::USERS_ID);
   if($total_mis_busquedas >= $prontus_varglb::MAX_MY_SEARCH) {
-    my $msg = '<span>Se ha alcanzado el máximo de "Mis búsquedas", para crear más debe borrar las que no use</span>';
+    my $msg = '<span>' . &lib_language::_msg_prontus('_max_search_limit_reached') . '</span>';
     $pagina =~ s/<!--MIS_BUSQUEDAS-->.*?<!--\/MIS_BUSQUEDAS-->/$msg/isg;
   };
 

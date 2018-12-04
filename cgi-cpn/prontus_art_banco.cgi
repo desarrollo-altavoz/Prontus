@@ -75,7 +75,7 @@ print "Content-Type: text/html\n\n";
 # Control de usuarios obligatorio chequeando la cookie contra el dbm.
 ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
 if ($prontus_varglb::USERS_ID eq '') {
-    print 'Error de sesión. Ud no tiene permisos para revisar estas im&aacute;genes';
+    print &lib_language::_msg_prontus('_error_images_missing_permissions');
     exit;
 };
 
@@ -83,7 +83,7 @@ if ($prontus_varglb::USERS_ID eq '') {
 if ($FORM{'_ts'} =~ /^(\d{8})\d{6}$/) {
     $DIR_FECHA = $1;
 } else {
-    print 'El TS del articulo no es valido';
+    print &lib_language::_msg_prontus('_ts_invalid');
     exit;
 };
 
@@ -246,7 +246,7 @@ sub get_xml_data {
                     '/xml' .
                     "/$FORM{'_ts'}.xml";
     if(! (-f $path_final_xml)) {
-        print "El XML del artículo no existe";
+        print &lib_language::_msg_prontus('_xml_not_found');
         print STDERR "El XML del artículo no existe: $path_final_xml\n";
         exit;
     };

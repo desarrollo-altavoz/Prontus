@@ -100,17 +100,17 @@ main: {
                                 "Order Allow,Deny\nDeny from all");
 
     if ($ENV{'REQUEST_METHOD'} ne 'POST') {
-        &glib_html_02::print_json_result(0, 'Solicitud no válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_request'), 'exit=1,ctype=1');
     };
 
     # Dir de user lock
     my $dir_userlock = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/user_lock";
     if ( ! (&glib_fildir_02::check_dir($dir_userlock)) ) {
-        &glib_html_02::print_json_result(0, 'No se pudo crear dir userlock', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_create_dir_userlock'), 'exit=1,ctype=1');
     };
 
     if ( ($FORM{'_usr'} eq '') or ($FORM{'_psw'} eq '') ) {
-        &glib_html_02::print_json_result(0, 'Usuario o Contraseña no válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_user_pass'), 'exit=1,ctype=1');
     };
 
     my $file_userlock = lc "$dir_userlock/$FORM{'_usr'}.txt";
@@ -121,12 +121,11 @@ main: {
     # Si el user esta dentro de los bloqueados.
     # Se sabe porque el archivo <user>.txt tiene el contador interno >= 4
     if (&user_bloqueado($file_userlock)) {
-        &glib_html_02::print_json_result(0, "Se ha alcanzado el número máximo de intentos para ingresar, "
-        . "tu cuenta ha sido bloqueada.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_reached_maximum_number_attempts_account_blocked.'), 'exit=1,ctype=1');
     };
 
     if (&lib_prontus::open_dbm_files() ne 'ok') {
-        &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_open_user_files'), 'exit=1,ctype=1');
     };
 
     my $login_result = &user_valido();
@@ -148,7 +147,7 @@ main: {
             my $sess_obj = Session->new(
                             'prontus_id'        => $prontus_varglb::PRONTUS_ID,
                             'document_root'     => $prontus_varglb::DIR_SERVER)
-                            || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
+                            || &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_initializing_session_object').": $Session::ERR", 'exit=1,ctype=1');
             # libera recursos de sesion existente para info de concurrencia
             if ($sess_obj->{id_session} ne '') {
                 my %cookies = &lib_cookies::get_cookies();
@@ -190,7 +189,7 @@ main: {
             my $sess_obj = Session->new(
                             'prontus_id'        => $prontus_varglb::PRONTUS_ID,
                             'document_root'     => $prontus_varglb::DIR_SERVER)
-                            || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
+                            || &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_initializing_session_object').": $Session::ERR", 'exit=1,ctype=1');
 
             # libera recursos de sesion existente para info de concurrencia
             if ($sess_obj->{id_session} ne '') {
@@ -232,7 +231,7 @@ main: {
                             'path_conf'         => $FORM{'_path_conf'},
                             'document_root'     => $prontus_varglb::DIR_SERVER,
                             'just_status'       => '1')
-                            || &glib_html_02::print_json_result(0, "Error inicializando objeto Update: $Update::ERR", 'exit=1,ctype=1');
+                            || &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_initializing_session_object').": $Update::ERR", 'exit=1,ctype=1');
 
             $upd_obj->descarga_upd_descriptor();
 
@@ -244,11 +243,11 @@ main: {
         } else {  # user no valido normal
             my $referer = $ENV{'HTTP_REFERER'};
             $referer = "Referer[$referer]" if ($referer);
-            &lib_prontus::write_log('FailLogin', "$FORM{'_usr'}/$FORM{'_psw'}", $referer);
+            &lib_prontus::write_log(&lib_language::_msg_prontus('_failure_login'), "$FORM{'_usr'}/$FORM{'_psw'}", $referer);
             if ( &user_existente() ) {
                 &capture_user($file_userlock); # incrementa el contador de intentos fallidos al interior del archivo <user>.txt, si no existia lo crea.
             };
-            &glib_html_02::print_json_result(0, 'Usuario o Contraseña no válida', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_user_pass'), 'exit=1,ctype=1');
         };
     };
 
@@ -274,18 +273,19 @@ sub check_modules {
 
 
     if (($no_hay_sqlite) && ($no_hay_mysql)) {
-        return "No se detectó ningún módulo Perl válido para utilizar BD en el Servidor";
+        return &lib_language::_msg_prontus('_any_valid_perl_detected_to_use_BD_in_server');
     };
 
     if (($no_hay_sqlite) && ($prontus_varglb::MOTOR_BD eq 'PRONTUS') && (!$no_hay_mysql)) {
-        return "El módulo Perl requerido para utilizar el motor de BD 'PRONTUS', indicado en CFG, no se encuentra disponible en el Servidor.\nEspecifique 'MYSQL' como motor de BD.";
+        return &lib_language::_msg_prontus('_perl_module_required_DB_engine_prontus_indicated_CFG')."\n".&lib_language::_msg_prontus('_specify_mysql_as_DB_engine');
     };
 
     if (($no_hay_mysql) && ($prontus_varglb::MOTOR_BD eq 'MYSQL') && (!$no_hay_sqlite)) {
-        return "El módulo Perl requerido para utilizar el motor de BD 'MYSQL', indicado en CFG, no se encuentra disponible en el Servidor.<br>Especifique 'PRONTUS' como motor de BD.";
+        return &lib_language::_msg_prontus('_perl_module_required_DB_engine_mysql_indicated_cfg')."<br>".&lib_language::_msg_prontus('_specify_prontus_as_DB_engine');
     };
 
     return '';
+
 
 };
 # ---------------------------------------------------------------
@@ -293,20 +293,20 @@ sub ftp_connect {
     my ($ipServer, $userServer, $passServer) = @_;
     my $ftp_debug = 0;
     my $stamp = &glib_hrfec_02::get_dtime_pack4();
-    my $ftp = Net::FTP->new($ipServer,Timeout=>15,Debug=>$ftp_debug,Passive=>1) or return ("\t* $stamp - FTP a [$ipServer][$userServer]... No se puede conectar con el servidor, timeout[15]segs, modo[Pasivo] : $@\n");
+    my $ftp = Net::FTP->new($ipServer,Timeout=>15,Debug=>$ftp_debug,Passive=>1) or return ("\t* $stamp - FTP a [$ipServer][$userServer]... ".&lib_language::_msg_prontus('_unable_conect_with_server').", timeout[15]segs, modo[Pasivo] : $@\n");
     my $ret;
     $ret = $ftp->login($userServer,$passServer);
     if (!$ret) {
         my $errMsg = $ftp->message; # incluye un \n al final
         $ftp->quit();
-        return("\t* FTP a [$ipServer][$userServer]... Falla login : " . $errMsg);
+        return("\t* FTP a [$ipServer][$userServer]... ".&lib_language::_msg_prontus('_failure_login')." : " . $errMsg);
     };
 
     $ret = $ftp->cwd('/'); # release/
     if (!$ret) {
         my $errMsg = $ftp->message;
         $ftp->quit();
-        return("\t* FTP a [$ipServer][$userServer]... Falla cwd('/') : " . $errMsg);
+        return("\t* FTP a [$ipServer][$userServer]... ".&lib_language::_msg_prontus('_failure')." cwd('/') : " . $errMsg);
     };
 
     return $ftp;

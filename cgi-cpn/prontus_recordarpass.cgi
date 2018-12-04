@@ -85,7 +85,7 @@ main: {
 
 
     if (&lib_prontus::open_dbm_files() ne 'ok') { # Prontus 6.0
-        &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuarios.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_open_user_files'), 'exit=1,ctype=1');
     };
 
     my $user_valido = &is_user_valido();
@@ -93,17 +93,17 @@ main: {
     if ( ($user_valido) && ($captcha_valido) ) {
 
         if (!$USERS_EMAIL) {
-            &glib_html_02::print_json_result(1, 'Tu cuenta Prontus no registra email, no es posible enviar confirmación de cambio de contraseña.', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_your_prontus_account_not_register_email_enable_send_password_change_confirmation'), 'exit=1,ctype=1');
         };
 
         #~ my $new_pass = &set_new_pass();
         #~ &enviar_clave($USERS_EMAIL, $new_pass);
         &enviar_confirmacion($USERS_USR, $USERS_EMAIL);
         my ($casilla, $dominio) = split(/@/, $USERS_EMAIL);
-        &glib_html_02::print_json_result(1, "Se ha enviado un mensaje de confirmación a tu correo electrónico ($casilla@*****) registrado en Prontus.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('confirmation_emailed')." ($casilla@*****) ".&lib_language::_msg_prontus('_registered_in_prontus'), 'exit=1,ctype=1');
     }
     else {
-        &glib_html_02::print_json_result(0, "Usuario no existe o código no es válido.\nImportante: El Sistema distingue mayúsculas y minúsculas para el 'usuario' ingresado.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_user_no_exist_or_invalid_code')."\n".&lib_language::_msg_prontus('_important_the_system_is_case_sensitive_user_entered.'), 'exit=1,ctype=1');
     };
 
 };
@@ -211,11 +211,12 @@ sub enviar_confirmacion {
     }   
     $urltoken = "$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::DIR_CGI_CPAN/prontus_olvidopass.cgi?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg&_token=$token&_usr=$user";
 
-    $asunto = "[$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID] Confirmación de recuperación de contraseña";
-    $cuerpo = "Estimado usuario ($user):<br/><br/>";
-    $cuerpo .= "Alguien ha solicitado restablecer la contraseña de tu cuenta para acceder al Panel de Control Prontus en <a href=\"$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan\">$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan</a>.<br/><br/>Visita el siguiente enlace para iniciar el proceso de recuperación, de lo contrario puedes ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
+    $asunto = "[$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID] ".&lib_language::_msg_prontus('_password_recovery_confirmation');
+    $cuerpo = &lib_language::_msg_prontus('_dear_user')." ($user):<br/><br/>";
+    $cuerpo .= &lib_language::_msg_prontus('_reset_password_confirmation')." <a href=\"$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan\">$protocolo://$prontus_varglb::PUBLIC_SERVER_NAME/$prontus_varglb::PRONTUS_ID/cpan</a>.<br/><br/>Visita el siguiente enlace para iniciar el proceso de recuperación, de lo contrario puedes ignorar este correo.<br/><br/><a href=\"$urltoken\">$urltoken</a><br/><br/>Nota: Esta url tiene una validez de 1 hora.<br/>";
     utf8::encode($cuerpo);
     utf8::encode($asunto);
+
 
     my ($from) = 'prontus@altavoz.net';
     my ($replyto_name) = 'Prontus CMS';

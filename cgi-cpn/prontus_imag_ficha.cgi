@@ -87,13 +87,13 @@ main: {
   # Control de usuarios obligatorio chequeando la cookie contra el dbm.
   ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
   # Se revisa el dbm
   if (&lib_prontus::open_dbm_files() ne 'ok') {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","No fue posible abrir archivos dbm.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_open_dbm_files'));
     exit;
   };
 
@@ -108,14 +108,14 @@ main: {
   my $image_path = "/$prontus_varglb::PRONTUS_ID/site/$prontus_varglb::DIR_ARTIC/$dirfecha$prontus_varglb::DIR_IMAG/$FORM{'foto'}";
   if(!(-f $prontus_varglb::DIR_SERVER . $image_path)) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","La imagen no es válida");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_iamge'));
     exit;
   };
 
   my ($idfoto, $wimgOrig, $himgOrig) = &getImageSize($prontus_varglb::PRONTUS_ID, $FORM{'ts'}, $FORM{'foto'});
   if($idfoto eq '' || $wimgOrig == 0 || $himgOrig == 0) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","La imagen no pudo ser editada");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_edit_image'));
     exit;
   };
 

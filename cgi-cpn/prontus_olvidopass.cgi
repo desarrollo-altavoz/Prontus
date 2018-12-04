@@ -79,7 +79,7 @@ main: {
 
     if (&lib_prontus::open_dbm_files() ne 'ok') { # Prontus 6.0
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","No fue posible abrir archivos de usuarios.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_open_user_file'));
     exit;
     };
 
@@ -129,7 +129,7 @@ sub validacion_token {
     #~ print STDERR "dirprocuser[$dirprocuser]\n";
     if (!-f $dirprocuser) {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error", "Token invalido o expirado.");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_token_invalid_or_expired'));
         exit;
     } else {
         my $token = &glib_fildir_02::read_file($dirprocuser);
@@ -140,14 +140,14 @@ sub validacion_token {
         #~ print STDERR "token[$token]\n";
         if ($FORM{'token'} ne $token) {
             print "Content-Type: text/html\n\n";
-            &glib_html_02::print_pag_result("Error", "Token invalido o expirado.");
+            &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_token_invalid_or_expired'));
             exit;
         };
         my $mtime = (stat($dirprocuser))[9];
         my $diffsecs = time - $mtime;
         if ($diffsecs > 3600) { # expiro.
             print "Content-Type: text/html\n\n";
-            &glib_html_02::print_pag_result("Error", "Token invalido o expirado.");
+            &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_token_invalid_or_expired'));
             unlink $dirprocuser;
             exit;
         };

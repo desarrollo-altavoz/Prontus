@@ -48,10 +48,10 @@ sub check_paso1 {
         # Validar id
         $prontus_id = &get_prontus_id($buffer_prontus);
         if (! &lib_prontus::valida_prontus($prontus_id)) {
-            return 'Información de paso previo está corrupta. Para poder continuar debe volver al paso anterior.';
+            return &lib_language::_msg_prontus('_prev_step_corrupt_info_return');
         };
     } else {
-        return 'Información de paso previo está corrupta. Para poder continuar debe volver al paso anterior.';
+        return &lib_language::_msg_prontus('_prev_step_corrupt_info_return');
     };
 
     # Validar que no exista el dir destino del prontus.
@@ -59,13 +59,13 @@ sub check_paso1 {
     my $dir_prontus = "$prontus_varglb::DIR_SERVER/$prontus_id";
 
     if (-d $dir_prontus) {
-        return "El directorio prontus ya existe. Para continuar con el proceso de instalación Ud. debe cambiar el nombre especificado para el publicador, o bien, <br>eliminar manualmente el directorio existente que genera el conflicto.";
+        return &lib_language::_msg_prontus('_directory_already_exists_rename');
     } else {
         # Lo creo y luego lo borro para verificar que este ok.
         if (&glib_fildir_02::check_dir($dir_prontus)) {
             &glib_fildir_02::borra_dir($dir_prontus);
         } else {
-            return "No se puede crear el directorio destino del publicador. No es posible continuar con la instalación.";
+            return &lib_language::_msg_prontus('_create_directory_failed_cant_continue');
         };
     };
 
@@ -287,9 +287,9 @@ sub descarga_componente {
     my ($content, $msg_err) = &lib_prontus::get_url($url, 30);
     if ($msg_err) {
         if ($msg_err =~ /^404 /) {
-            return "Error al descargar [$nombre], 404 - no se encuentra el archivo[$url]";
+            return &lib_language::_msg_prontus('_error_download') . " [$nombre], " . &lib_language::_msg_prontus('_404_file') . "[$url]";
         } else {
-            return "Error al descargar [$url]: $msg_err";
+            return &lib_language::_msg_prontus('_error_download') . " [$url]: $msg_err";
         };
 
     }

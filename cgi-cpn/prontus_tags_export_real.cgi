@@ -120,8 +120,8 @@ main:{
   # Detecta semaforo.
   my ($lock_obj) = &lib_lock::lock_file($LOCK_FILE);
   if (!ref $lock_obj) { # si ya tiene un bloqueo anterior, aborta.
-    &finishLoading("Proceso en ejecución. Por favor espere hasta que la importación anterior termine.");
-    &lib_logproc::handle_error("Proceso en ejecución. Por favor espere hasta que la importación anterior termine.");
+    &finishLoading(&lib_language::_msg_prontus('_running_process_wait_previous_import'));
+    &lib_logproc::handle_error(&lib_language::_msg_prontus('_running_process_wait_previous_import'));
   };
 
   # Mysql
@@ -137,9 +137,9 @@ main:{
   # Se realiza el proceso y se escribe al Log
   &lib_logproc::flush_log();
   &lib_logproc::writeRule();
-  &lib_logproc::add_to_log_count("INICIANDO PROCESO DE EXPORTACION");
+  &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_starting_export_process'));
   my $registros = &tags_export();
-  &lib_logproc::add_to_log_count("PROCESO DE EXPORTACION FINALIZADO");
+  &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_export_process_completed'));
   &lib_logproc::writeRule();
 
   $TOT_REGS = '0' if ($TOT_REGS eq '');
@@ -147,8 +147,8 @@ main:{
   &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/prontus_tags_export.xml", $registros);
   # &add_to_log("saved"); # debug
   sleep 1;
-  &lib_logproc::add_to_log("Nro. de registros exportados: $TOT_REGS\nPara bajar el archivo haga click <a href=\"$prontus_varglb::DIR_CPAN/procs/prontus_tags_export.xml\">aqu&iacute;</a>");
-  &lib_logproc::add_to_log_finish("Operaci&oacute;n finalizada.");
+  &lib_logproc::add_to_log(&lib_language::_msg_prontus('_number_records_exported').": $TOT_REGS\n".&lib_language::_msg_prontus('_to_download_click')." <a href=\"$prontus_varglb::DIR_CPAN/procs/prontus_tags_export.xml\">".&lib_language::_msg_prontus('_here')."</a>");
+  &lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_operation_completed'));
 
   $BD->disconnect;
 
@@ -171,13 +171,13 @@ sub tags_export {
     my ($nom_envistas);
     my ($registros) = "<?xml version='1.0' encoding='utf-8'?>\n<tagsdata>\n";
 
-    &lib_logproc::add_to_log_count("Preparando datos a exportar.");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_preparing_export_data'));
 
 
     $sql = "select TAGS_ID, TAGS_TAG, TAGS_COUNT, TAGS_MOSTRAR, TAGS_NOM4VISTAS from TAGS order by TAGS_ID ASC";
     $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id, $nom, $count, $mostrar, $nom4vistas));
 
-    &lib_logproc::add_to_log_count("Exportaci&oacute;n iniciada");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_export_started'));
     &lib_logproc::writeRule();
     while ($salida->fetch) {
         # secciones
@@ -191,7 +191,7 @@ sub tags_export {
         . "  <mostrar>$mostrar</mostrar>\n"
         . "</tag>\n";
         $TOT_REGS++;
-        &lib_logproc::add_to_log_count("Nro. de registros exportados: $TOT_REGS.");
+        &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_number_records_exported').": $TOT_REGS.");
     };
     $salida->finish;
     $registros .= "</tagsdata>";

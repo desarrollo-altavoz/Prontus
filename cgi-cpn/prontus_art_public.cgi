@@ -111,7 +111,7 @@ main: {
     # nombre de la vista a previsualizar, o nada.
     $FORM{'_vista'} = &glib_cgi_04::param('_vista');
     if ($FORM{'_vista'} !~ /^\w+$/) {
-        &glib_html_02::print_json_result(0, 'Vista no válida.', 'exit=1,ctype=1') if ($FORM{'_vista'} ne '');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_view_not_valid'), 'exit=1,ctype=1') if ($FORM{'_vista'} ne '');
     };
 
     # fecha preview
@@ -132,19 +132,19 @@ main: {
         $FORM{'_edic'} =~ s/^\///;
     } else {
         if ($FORM{'_edic'} !~ /^\w+$/) {
-            &glib_html_02::print_json_result(0, 'Edición no válida.', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_edition_not_valid'), 'exit=1,ctype=1');
         };
     };
 
     # Arch. de tpl. de portada. , con extension y sin path. (El Nombre del archivo correspondiente a la portada publicada es el mismo)
     $FORM{'_port'} = &glib_cgi_04::param('_port');
     if ($FORM{'_port'} !~ /^[\w\-]+\.\w+$/) {
-        &glib_html_02::print_json_result(0, 'Portada no válida.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_front_page_not_valid'), 'exit=1,ctype=1');
     };
 
     # Arma dirs de trabajo
     if (! &set_dirs() ) {
-        &glib_html_02::print_json_result(0, '901-Error al componer directorios', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_901_making_directories'), 'exit=1,ctype=1');
     };
 
     # Area y orden
@@ -185,7 +185,7 @@ main: {
             &glib_html_02::print_json_result(1, $dst_location . "?filler=$random", 'exit=1,ctype=1');
         }
         else {
-            &glib_html_02::print_json_result(0, 'La vista de la portada requerida no existe, o bien, no pudo ser generada', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_required_front_page_view_not_exist'), 'exit=1,ctype=1');
         };
     } elsif ($FORM{'_accion'} eq 'update') {
 
@@ -221,7 +221,7 @@ main: {
         &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');
 
     } else {
-        &glib_html_02::print_json_result(0, 'Acción no válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_action_not_valid'), 'exit=1,ctype=1');
     };
 };
 # ---------------------------------------------------------------
@@ -262,7 +262,7 @@ sub get_ts_preview {
         my $ts_preview = "$fprev_iso$hhmm_prev";
         return $ts_preview;
     } else {
-        &glib_html_02::print_json_result(0, 'Fecha preview no es válida.', 'exit=1,ctype=1') if ($fecha_preview ne '');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_preview_date_not_valid'), 'exit=1,ctype=1') if ($fecha_preview ne '');
     };
 };
 

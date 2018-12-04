@@ -149,15 +149,15 @@ main:{
     # Detecta semaforo.
     my ($lock_obj) = &lib_lock::lock_file($LOCK_FILE);
     if (!ref $lock_obj) { # si ya tiene un bloqueo anterior, aborta.
-        &finishLoading("Proceso en ejecución.\nPor favor espere hasta que la importación anterior termine.");
-        &lib_logproc::handle_error("Proceso en ejecución.\nPor favor espere hasta que la importación anterior termine.");
+        &finishLoading(&lib_language::_msg_prontus('_running_process')."\n".&lib_language::_msg_prontus('_wait_previous_import'));
+        &lib_logproc::handle_error(&lib_language::_msg_prontus('_running_process')."\n".&lib_language::_msg_prontus('_wait_previous_import'));
     };
 
     # Mysql
     my ($msg_err_bd);
     ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($BD)) {
-        &finishLoading("ERROR: $msg_err_bd");
+        &finishLoading(&lib_language::_msg_prontus('_msg_generic_error').": $msg_err_bd");
         &lib_logproc::handle_error("ERROR: $msg_err_bd");
     };
 
@@ -165,30 +165,30 @@ main:{
 
     &lib_logproc::flush_log();
     &lib_logproc::writeRule();
-    &lib_logproc::add_to_log_count("INICIANDO PROCESO DE IMPORTACION");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_starting_import_process'));
 
     my ($data_file) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/tags_import.xml";
     my $archivo = &glib_fildir_02::read_file($data_file);
     my ($err) = &lib_prontus::valid_xml_import($archivo);
     if ($err) {
-        &finishLoading("El archivo ingresado no es un XML bien formado, no es posible cargarlo");
-        &lib_logproc::handle_error("El archivo ingresado no es un XML bien formado, no es posible cargarlo");
+        &finishLoading(&lib_language::_msg_prontus('_entered_xml_not_properly_formatted'));
+        &lib_logproc::handle_error(&lib_language::_msg_prontus('_entered_xml_not_properly_formatted'));
     };
 
-    &lib_logproc::add_to_log_count("Borrando datos actuales de la base de datos.\n");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_deleting_current_data_database')."\n");
     my ($sql) = "delete from TAGS";
-    $BD->do($sql) || (&finishLoading("No fue posible borrar los TAGS actuales") && &lib_logproc::handle_error("No fue posible borrar Tags") );
+    $BD->do($sql) || (&finishLoading(&lib_language::_msg_prontus('_unable_delete_current_tags')) && &lib_logproc::handle_error(&lib_language::_msg_prontus('_unable_delete_tags')) );
 
     &tags_import($archivo);
 
-    &lib_logproc::add_to_log_count("PROCESO DE IMPORTACION FINALIZADO");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_import_process_completed'));
     &lib_logproc::writeRule();
 
     $TOT_REGS = '0' if ($TOT_REGS eq '');
     $OK_REGS = '0' if ($OK_REGS eq '');
 
-    &lib_logproc::add_to_log("Nro. de registros procesados: $TOT_REGS\nRegistros ingresados OK: $OK_REGS");
-    &lib_logproc::add_to_log_finish("Operaci&oacute;n finalizada.");
+    &lib_logproc::add_to_log(&lib_language::_msg_prontus('_number_processed_records').": $TOT_REGS\n".&lib_language::_msg_prontus('_records_entered_ok').": $OK_REGS");
+    &lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_operation_completed'));
 
     # REGENERA EL MAPA
     # &lib_prontus::make_mapa('', $BD); # rotulos tags
@@ -238,7 +238,7 @@ sub tags_import {
   my ($buffer_xml) = $_[0];
   my ($sql, $ret, $linea);
 
-  &lib_logproc::add_to_log_count("Procesando archivo de datos.");
+  &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_processing_data_files'));
 
   $buffer_xml =~ s/(\r\n)/\n/g;
   $buffer_xml =~ s/\r//g;
@@ -276,7 +276,7 @@ sub procesar_xml {
     if ($id_level !~ /^[0-9]*$/) {
         $xml_segment=~s/>/&gt;/g;              # >
         $xml_segment=~s/</&lt;/g;              # <
-        &saltar_reg("Id no válido en registro [$TOT_REGS] id=$id_level" . $xml_segment);
+        &saltar_reg(&lib_language::_msg_prontus('_invalid_id_record')." [$TOT_REGS] id=$id_level" . $xml_segment);
         &saltar_reg($xml_segment);
         return 0;
     };
@@ -292,13 +292,13 @@ sub procesar_xml {
     if ($nom !~ /\w+/) {
         $xml_segment=~s/>/&gt;/g;              # >
         $xml_segment=~s/</&lt;/g;              # <
-        &saltar_reg("Nombre no válido en registro [$TOT_REGS] id=$id_level" . $xml_segment);
+        &saltar_reg(&lib_language::_msg_prontus('_invalid_name_record')." [$TOT_REGS] id=$id_level" . $xml_segment);
         return 0;
     };
     if (exists $NOMBRES{"$nom"}) {
         $xml_segment=~s/>/&gt;/g;              # >
         $xml_segment=~s/</&lt;/g;              # <
-        &saltar_reg("Nombre repetido en registro [$TOT_REGS] id=$id_level" . $xml_segment);
+        &saltar_reg(&lib_language::_msg_prontus('_repeated_name_record')." [$TOT_REGS] id=$id_level" . $xml_segment);
         return 0;
     } else {
         $NOMBRES{"$nom"} = 1;
@@ -343,7 +343,7 @@ sub procesar_xml {
     } else {
         $xml_segment=~s/>/&gt;/g;              # >
         $xml_segment=~s/</&lt;/g;              # <
-        &lib_logproc::add_to_log_count("INSERT error en registro [$TOT_REGS] id=$id_level ($DBI::errstr) $xml_segment");
+        &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_insert_error_record')." [$TOT_REGS] id=$id_level ($DBI::errstr) $xml_segment");
         return 0;
     };
     return 1;
@@ -381,7 +381,7 @@ sub insert_tag {
 # ---------------------------------------------------------------
 sub saltar_reg {
   my ($registro) = $_[0];
-  &lib_logproc::add_to_log_count("Registro con errores, se omite.\n$registro");
+  &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_record_with_errors_omitted')."\n$registro");
   # $CORRUPTOS++;
 };
 

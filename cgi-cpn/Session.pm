@@ -47,14 +47,14 @@ sub new {
 
     # Valida document_root
     if ( ($sess->{document_root} eq '') || (!-d $sess->{document_root}) ) {
-        $Session::ERR = "Session::new con params no validos:\n"
+        $Session::ERR = "Session::new ".&lib_language::_msg_prontus('_with_invalid_parameters').":\n"
                       . "document_root[$sess->{document_root}] \n";
         return 0;
     };
 
     # Valida prontus_id
     if ( (!-d "$sess->{document_root}/$sess->{prontus_id}") || ($sess->{prontus_id} eq '') || (! &lib_prontus::valida_prontus($sess->{prontus_id})) ) {
-        $Session::ERR = "Session::new con params no validos:\n"
+        $Session::ERR = "Session::new ".&lib_language::_msg_prontus('_with_invalid_parameters').":\n"
                       . "prontus_id[$sess->{prontus_id}] \n";
         return 0;
     };
@@ -65,7 +65,7 @@ sub new {
     # set dir de sesiones
     $sess->{dir_sessions} = "$sess->{document_root}/$sess->{prontus_id}/cpan/data/users/sessions";
     if (! &glib_fildir_02::check_dir($sess->{dir_sessions})) {
-        $Session::ERR = "Session::new --> no se pudo crear dir de sesiones o este no es valido\n";
+        $Session::ERR = "Session::new --> ".&lib_language::_msg_prontus('_unable_create_sessions_dir_or_is_invalid')."\n";
         return 0;
     };
 

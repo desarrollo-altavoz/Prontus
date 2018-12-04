@@ -78,47 +78,47 @@ main: {
     };
 
     if ($FORM{'nombre'} eq '') {
-        &glib_html_02::print_json_result(0, 'El campo "Nombre" es obligatorio.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_name_field_required'), 'exit=1,ctype=1');
     };
 
     if (length($FORM{'nombre'}) > 100 ) {
-        &glib_html_02::print_json_result(0, 'El campo "Nombre" debe tener como máximo 100 caracteres.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_name_field_max_length'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'email'} eq '') {
-        &glib_html_02::print_json_result(0, 'El campo "Email" es obligatorio.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_email_field_required'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'email'} !~ /^[_\.0-9a-zA-Z\-]+@([0-9a-zA-Z][0-9a-zA-Z\-]+\.)+[a-zA-Z]{2,6}$/) {
-        &glib_html_02::print_json_result(0, 'Email ingresado no es válido.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_email_field_required'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'empresa'} ne '' && length($FORM{'empresa'}) > 100) {
-        &glib_html_02::print_json_result(0, 'El campo "Empresa u Organización" debe tener como máximo 100 caracteres.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_field_company_organization_max_length'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'cargo'} ne '' && length($FORM{'cargo'}) > 64) {
-        &glib_html_02::print_json_result(0, 'El campo "Cargo" debe tener como máximo 64 caracteres.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_appointment_field_max_length'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'telefono'} ne '' && length($FORM{'telefono'}) > 20) {
-        &glib_html_02::print_json_result(0, 'El campo "Teléfono" debe tener como máximo 20 caracteres.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_phone_field_max_length'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'tipomsg'} eq '') {
-        &glib_html_02::print_json_result(0, 'El campo "Motivo de Contacto" es obligatorio.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_reason_contact_field_required.')1, 'exit=1,ctype=1');
     };
 
     if ($FORM{'asunto'} eq '') {
-        &glib_html_02::print_json_result(0, 'El campo "Asunto" es obligatorio.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_subject_field_required'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'asunto'} ne '' && $FORM{'asunto'} > 100) {
-        &glib_html_02::print_json_result(0, 'El campo "Asunto" debe tener como máximo 100 caracteres.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_subject_field_max_length'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'mensaje'} eq '') {
-        &glib_html_02::print_json_result(0, 'El campo "Texto" es obligatorio.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_text_field_required'), 'exit=1,ctype=1');
     };
 
     my ($str, $sub, $to, $from, $replyto);
@@ -132,10 +132,10 @@ main: {
     $from = 'prontus@altavoz.net';
     $replyto = 'prontus@altavoz.net';
 
-    $sub = "[prontus-contacto] $FORM{'tipomsg'} desde $prontus_varglb::IP_SERVER/$prontus_varglb::PRONTUS_ID";
+    $sub = "[prontus-contacto] $FORM{'tipomsg'} ".&lib_language::_msg_prontus('_from')." $prontus_varglb::IP_SERVER/$prontus_varglb::PRONTUS_ID";
 
     $str  = "**************************************************\n";
-    $str .= "*************** Datos del Prontus ****************\n";
+    $str .= "*************** ".&lib_language::_msg_prontus('_prontus_data')." ****************\n";
     $str .= "**************************************************\n\n";
     $str .= "Servidor        : $prontus_varglb::IP_SERVER\n";
     $str .= "Prontus ID      : $prontus_varglb::PRONTUS_ID\n";
@@ -144,7 +144,7 @@ main: {
     $str .= "Perfil          : $glosa_perfil\n";
     $str .= "Useragent       : $useragent\n\n";
     $str .= "**************************************************\n";
-    $str .= "**************** Datos del Mensaje ***************\n";
+    $str .= "**************** ".&lib_language::_msg_prontus('_message_data')." ***************\n";
     $str .= "**************************************************\n\n";
     $str .= "Nombre          : $FORM{'nombre'}\n";
     $str .= "Email           : $FORM{'email'}\n";
@@ -158,7 +158,7 @@ main: {
 
     #print STDERR $str;
     &lib_mail::mail_text($from, $to, $replyto, $sub, $str, 0, $prontus_varglb::SERVER_SMTP);
-    &glib_html_02::print_json_result(1, "Su mensaje ha sido enviado al Equipo Prontus.\n\nGracias.", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_message_sent_to_prontus_team')."\n\n".&lib_language::_msg_prontus('_thanks'), 'exit=1,ctype=1');
 
 };
 

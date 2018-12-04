@@ -69,8 +69,8 @@ main: {
 
     # Valida datos de entrada
     my $msg_err;
-    $msg_err = "Parámetro [prontus_id] no es válido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
 
     # imprimimos las cabeceras de la respuesta
     print "Cache-Control: no-cache, must-revalidate\r\n";
@@ -112,9 +112,9 @@ main: {
     # guardamos los formatos para ser usados posteriormente
     if (&glib_fildir_02::check_dir($dir_formatos)) {
         &glib_fildir_02::write_file($dir_formatos . $lib_xcoding::FORMATS_FILE, $formatos);
-        &glib_html_02::print_json_result(1, "Guardado correcto", 'exit=1,ctype=0');
+        &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_saved_correct'), 'exit=1,ctype=0');
     } else {
-        &glib_html_02::print_json_result(0, "Error: Ha ocurrido un error al guardar los formatos de video", 'exit=1,ctype=0');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_saving_video_formats'), 'exit=1,ctype=0');
     }
 }
 # -------------------------------------------------------------------#

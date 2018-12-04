@@ -67,18 +67,19 @@ sub test_htaccess {
   };
 
   # Request no autenticado, aborta.
-  &execAbort("951 - Error en los datos enviados");
+  &execAbort(&lib_language::_msg_prontus('_951_error_data_sent'));
 
 }; # testServers.
 #--------------------------------------------------------------------#
 sub execAbort {
   # Pagina de error en RAM.
   my($str) = $_[0];
+  my $title = &lib_language::_msg_prontus('_configuration_error');
   print "Content-Type: text/html\n\n";
-  print q{
+  print qq{
     <HTML>
     <HEAD>
-      <TITLE>Error de Configuraci&oacute;n</TITLE>
+      <TITLE>$title</TITLE>
     </HEAD>
     <BODY BGCOLOR="#ffffff">
 
@@ -87,7 +88,7 @@ sub execAbort {
     <P><CENTER><B><FONT COLOR="#FF0000" SIZE=+2>
   };
   if ($str eq '') {
-    print 'Error de Configuraci&oacute;n';
+    print &lib_language::_msg_prontus('_configuration_error');
   }
   else {
     print $str;

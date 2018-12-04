@@ -120,7 +120,7 @@ main: {
 
     # valida imag
     if(!(-f $prontus_varglb::DIR_SERVER . $FORM{'image_path'})) {
-        &glib_html_02::print_json_result(0, 'La imagen no es válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_image'), 'exit=1,ctype=1');
     };
 
 
@@ -150,7 +150,7 @@ main: {
         if ($FORM{'image_path'} =~ /^\/$prontus_id\/cpan\/procs\/imgedit\/foto_([0-9]+)_[a-zA-Z0-9]{12}\.(\w+)$/) {
             $relpath_img_dst = $FORM{'image_path'};
         } else {
-            &glib_html_02::print_json_result(0, "image_path[$FORM{'image_path'}] no es válido", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, "image_path[$FORM{'image_path'}] ".&lib_language::_msg_prontus('_invalid'), 'exit=1,ctype=1');
         };
     };
 
@@ -163,7 +163,7 @@ main: {
     my ($msg_size, $w_final, $h_final) = &lib_prontus::dev_tam_img("$prontus_varglb::DIR_SERVER$relpath_img_dst");
     if ($msg_size) {
         warn "Error: $msg_size foto[$prontus_varglb::DIR_SERVER$relpath_img_dst] - dim[$w_final, $h_final]\n";
-        &glib_html_02::print_json_result(0, 'No fue posible determinar las dimensiones de la imagen resultante', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_determine_dimensions_resulting_image'), 'exit=1,ctype=1');
     };
 
     &glib_html_02::print_json_result(1, "url:$relpath_img_dst,w:$w_final,h:$h_final", 'exit=1,ctype=1');
@@ -179,24 +179,24 @@ sub procesar_imagen {
     my $path_img_dst = shift;
     my $msg_err = '';
     if ($FORM{'crop'}) {
-        $msg_err = 'crop_x no es válido' if (!&glib_str_02::is_digit($FORM{'crop_x'}));
-        $msg_err = 'crop_y no es válido' if (!&glib_str_02::is_digit($FORM{'crop_y'}));
-        $msg_err = 'crop_w no es válido' if (!&glib_str_02::is_digit($FORM{'crop_w'}));
-        $msg_err = 'crop_h no es válido' if (!&glib_str_02::is_digit($FORM{'crop_h'}));
+        $msg_err = 'crop_x '.&lib_language::_msg_prontus('_invalid') if (!&glib_str_02::is_digit($FORM{'crop_x'}));
+        $msg_err = 'crop_y '.&lib_language::_msg_prontus('_invalid') if (!&glib_str_02::is_digit($FORM{'crop_y'}));
+        $msg_err = 'crop_w '.&lib_language::_msg_prontus('_invalid') if (!&glib_str_02::is_digit($FORM{'crop_w'}));
+        $msg_err = 'crop_h '.&lib_language::_msg_prontus('_invalid') if (!&glib_str_02::is_digit($FORM{'crop_h'}));
         &glib_html_02::print_json_result(0, $msg_err, 'exit=1,ctype=1') if ($msg_err);
 
         &do_crop($FORM{'crop_x'}, $FORM{'crop_y'}, $FORM{'crop_w'}, $FORM{'crop_h'}, $path_img_dst);
 
         if ($FORM{'resize'}) {
-            $msg_err = 'resize_w no es válido' if (!&glib_str_02::is_digit($FORM{'resize_w'}));
-            $msg_err = 'resize_h no es válido' if (!&glib_str_02::is_digit($FORM{'resize_h'}));
+            $msg_err = 'resize_w '.&lib_language::_msg_prontus('_invalid') if (!&glib_str_02::is_digit($FORM{'resize_w'}));
+            $msg_err = 'resize_h '.&lib_language::_msg_prontus('_invalid') if (!&glib_str_02::is_digit($FORM{'resize_h'}));
             &glib_html_02::print_json_result(0, $msg_err, 'exit=1,ctype=1') if ($msg_err);
 
             &do_resize($FORM{'resize_w'}, $FORM{'resize_h'}, $path_img_dst);
         };
     } elsif ($FORM{'resize'}) {
-        $msg_err = 'resize_w no es válido' if (!&glib_str_02::is_digit($FORM{'resize_w'}));
-        $msg_err = 'resize_h no es válido' if (!&glib_str_02::is_digit($FORM{'resize_h'}));
+        $msg_err = 'resize_w '.&lib_language::_msg_prontus('_invalid') if (!&glib_str_02::is_digit($FORM{'resize_w'}));
+        $msg_err = 'resize_h '.&lib_language::_msg_prontus('_invalid') if (!&glib_str_02::is_digit($FORM{'resize_h'}));
         &glib_html_02::print_json_result(0, $msg_err, 'exit=1,ctype=1') if ($msg_err);
 
         &do_resize($FORM{'resize_w'}, $FORM{'resize_h'}, $path_img_dst);
@@ -205,10 +205,10 @@ sub procesar_imagen {
     } elsif ($FORM{'flipv'}) {
         &do_flip('vertical', $path_img_dst);
     } elsif ($FORM{'rotar'}) {
-        &glib_html_02::print_json_result(0, 'rotar no es válido', 'exit=1,ctype=1') if ($FORM{'rotar'} !~ /^(90|180|270)$/);
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_rotate'), 'exit=1,ctype=1') if ($FORM{'rotar'} !~ /^(90|180|270)$/);
         &do_rotate($FORM{'rotar'}, $path_img_dst);
     } else {
-        &glib_html_02::print_json_result(0, 'Acción requerida no es válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_action_required'), 'exit=1,ctype=1');
     };
 };
 # ---------------------------------------------------------------

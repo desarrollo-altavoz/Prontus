@@ -73,7 +73,7 @@ main : {
 
     # Carga variables de configuracion.
     &lib_prontus::load_config($FORM{'path_conf'});
-    &lib_prontus::write_log('Actualiz. masiva', 'Portadas', '');
+    &lib_prontus::write_log(&lib_language::_msg_prontus('_massive_update'), &lib_language::_msg_prontus('_front_pages'), '');
 
     # Establece log file
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/prontus_port_regen_log.html";
@@ -83,7 +83,7 @@ main : {
     # Init
     &lib_logproc::flush_log();
     &lib_logproc::writeRule();
-    &lib_logproc::add_to_log_count("INICIANDO PROCESO DE ACTUALIZACION DE PORTADAS");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_starting_front_page_update_process'));
 
     $DIR_EDICS = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EDIC";
     $DIR_EDICS_TPL = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP$prontus_varglb::DIR_EDIC";
@@ -100,7 +100,7 @@ main : {
     # Borra cache de listas de articulos del cpan
     &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
 
-    &lib_logproc::add_to_log_count("PROCESO DE ACTUALIZACION DE PORTADAS FINALIZADO");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_front_page_update_process_completed'));
     &lib_logproc::writeRule();
 
     $TOT_REGS = '0' if ($TOT_REGS eq '');
@@ -109,8 +109,8 @@ main : {
     print STDERR "TOT_REGS[$TOT_REGS]\n";
     print STDERR "TOT_REGS_CON_ERR[$TOT_REGS_CON_ERR]\n";
 
-    &lib_logproc::add_to_log("Nro. de portadas procesadas: $TOT_REGS\nRegistros con Errores: $TOT_REGS_CON_ERR");
-    &lib_logproc::add_to_log_finish("Operaci&oacute;n finalizada.");
+    &lib_logproc::add_to_log(&lib_language::_msg_prontus('_number_front_page_processed').": $TOT_REGS\n".&lib_language::_msg_prontus('_record_with_error').": $TOT_REGS_CON_ERR");
+    &lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_operation_completed'));
 
     &lib_logproc::finishLoading('', $TOT_REGS);
     exit;
@@ -125,18 +125,18 @@ main : {
 sub valida_param {
 
     if($FORM{'cmb_edic'} ne '' && $FORM{'cmb_edic'} ne 'base' && $FORM{'cmb_edic'} !~ /\d+_\d+_\d+_\d+/) {
-        &lib_logproc::finishLoading("Error: Edición indicada no es válida");
-        &lib_logproc::handle_error("Error: Edición indicada no es válida");
+        &lib_logproc::finishLoading(&lib_language::_msg_prontus('_error_invalid_indicated_edition'));
+        &lib_logproc::handle_error(&lib_language::_msg_prontus('_error_invalid_indicated_edition'));
     };
 
     if(! -d "$DIR_EDICS/$FORM{'cmb_edic'}") {
-        &lib_logproc::finishLoading("Error: La edición indicada no existe");
-        &lib_logproc::handle_error("Error: La edición indicada no existe");
+        &lib_logproc::finishLoading(&lib_language::_msg_prontus('_error_indicated_edition_no_exist'));
+        &lib_logproc::handle_error(&lib_language::_msg_prontus('_error_indicated_edition_no_exist'));
     };
 
     if($FORM{'operador'} ne '' && $FORM{'operador'} !~ /igual|mayor|menor/) {
-        &lib_logproc::finishLoading("Error: El parámetro operador no es válido");
-        &lib_logproc::handle_error("Error: El parámetro operador no es válido");
+        &lib_logproc::finishLoading(&lib_language::_msg_prontus('_error_invalid_operator_parameter'));
+        &lib_logproc::handle_error(&lib_language::_msg_prontus('_error_invalid_operator_parameter'));
     };
 };
 
@@ -150,7 +150,7 @@ sub get_edics4update {
     #~ &lib_logproc::add_to_log_count("LEYENDO LAS EDICIONES A PROCESAR:");
 
     if($prontus_varglb::MULTI_EDICION ne 'SI') {
-        &lib_logproc::add_to_log_count("No hay multiedición, solo se procesa edición [base]");
+        &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_no_multiedition_only_base_edition_processed'));
         push @ediciones, 'base';
         return @ediciones;
     };
@@ -158,19 +158,19 @@ sub get_edics4update {
 
 
     if($cmb_edic eq '') {
-        &lib_logproc::add_to_log_count("Se toman ediciones base, vigente y ultima");
+        &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_base_effective_last_edition_taken'));
         @ediciones = &lib_prontus::get_edics4update();
 
     } else {
         if($operador ne 'mayor' && $operador ne 'menor') {
-            &lib_logproc::add_to_log_count("Se toma exactamente la edición indicada [$cmb_edic]");
+            &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_indicated_edition_taken')." [$cmb_edic]");
             push @ediciones, $cmb_edic;
             return @ediciones;
         } else {
             if($operador eq 'menor') {
-                &lib_logproc::add_to_log_count("Se toman ediciones MENOR o igual a [$cmb_edic]");
+                &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_take_edition_less_equal')." [$cmb_edic]");
             } else {
-                &lib_logproc::add_to_log_count("Se toman ediciones MAYOR o igual a [$cmb_edic]");
+                &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_take_edition_greater_equal')." [$cmb_edic]");
             }
         }
 
@@ -209,11 +209,11 @@ sub regenerar_portadas {
 
     my $edic = shift;
 
-    &lib_logproc::add_to_log_count("Procesando Edicion [$edic]");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_processing_edition')." [$edic]");
 
     if(!-d "$DIR_EDICS/$edic") {
         # Si no hay carpeta, no hay xmls... no se puede hacer nada
-        &lib_logproc::add_to_log_count("${TABULADOR}Error: No existe la carpeta de la edición [$edic]");
+        &lib_logproc::add_to_log_count("${TABULADOR}Error: ".&lib_language::_msg_prontus('_edition_folder_no_exist')." [$edic]");
         return;
     };
 
@@ -233,7 +233,7 @@ sub regenerar_portadas {
             $TOT_REGS_CON_ERR++;
             next;
         } else {
-            &lib_logproc::add_to_log_count("${TABULADOR}Regenerando portada [$portada]");
+            &lib_logproc::add_to_log_count("${TABULADOR}".&lib_language::_msg_prontus('_regenerating_front_page')." [$portada]");
             $TOT_REGS++;
         };
 
@@ -274,7 +274,7 @@ sub regenerar_portadas {
                                      $ts_preview, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS, $users_perfil);
         };
 
-        &lib_prontus::write_log('Actualizar', 'Portada (regen)', "$EDIC_SITE/$portada");
+        &lib_prontus::write_log(&lib_language::_msg_prontus('_update'), &lib_language::_msg_prontus('_front_page_regen'), "$EDIC_SITE/$portada");
 
         %lib_prontus::AREA = ();
         %lib_prontus::PRIO = ();
@@ -336,7 +336,7 @@ sub get_xml_buffer {
     $xml =~ s/\.\w+$/.xml/;
     my $rutaxml = "$DIR_EDICS/$edic/xml/$xml";
     if(!-f $rutaxml) {
-        &lib_logproc::add_to_log_count("${TABULADOR}Error: No existe xml de portada [$xml]");
+        &lib_logproc::add_to_log_count("${TABULADOR}".&lib_language::_msg_prontus('_error_front_page_xml_no_exist')." [$xml]");
         return '';
     };
     my $buffer = &glib_fildir_02::read_file($rutaxml);

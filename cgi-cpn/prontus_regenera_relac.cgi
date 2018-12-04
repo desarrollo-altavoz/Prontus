@@ -63,7 +63,7 @@ use lib_maxrunning;
 
 # Soporta sólo 1 copia andando
 if (&lib_maxrunning::maxExcedido(1)) {
-    print "Error: Servidor ocupado. Intente otra vez mas tarde.\n";
+    print &lib_language::_msg_prontus('_server_busy_error_extended')."\n";
     exit;
 };
 
@@ -123,8 +123,8 @@ main: {
     }
 
     &regen_taxonomia(\%TAXONOMIAS_TO_REGEN);
-    print "Los articulos relacionados fueron regenerados\n";
-    print "Total de niveles procesados: $counter\n";
+    print &lib_language::_msg_prontus('_related_artic_regenerated')."\n";
+    print &lib_language::_msg_prontus('_total_processed_levels').": $counter\n";
 
 };
 # --------------------------------------------------------------------
@@ -151,7 +151,7 @@ sub regen_taxonomia {
         $secc = '' if($secc eq '0');
         $tem = '' if($tem eq '0');
         $stem = '' if($stem eq '0');
-        print "Regenerando tripleta: $tripleta\n";
+        print &lib_language::_msg_prontus('_regenerating_triplet').": $tripleta\n";
         &lib_tax::generar_relacionados($secc, $tem, $stem, $base, '');
 
         # Ahora parsea art relacionados para MVs

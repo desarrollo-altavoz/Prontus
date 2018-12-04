@@ -49,7 +49,7 @@ main: {
 
     # Deduce path conf del referer, en caso de no ser suministrado.
     if($FORM{'path_conf'} eq '') {
-        &glib_html_02::print_pag_result('Error', 'No se pudo localizar el archivo de Configuraci&oacute;n', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_config_file_not_found'), 1, 'exit=1,ctype=1');
     };
 
     # Ajusta path_conf para completar path y/o cambiar \ por /
@@ -124,7 +124,7 @@ main: {
 
         # Verificar que exista plantilla de portada.
         if (!-f $path_port) {
-            &glib_html_02::print_pag_result('Error', 'La portada no existe.', 1, 'exit=1,ctype=1');
+            &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_front_page_no_exist'), 1, 'exit=1,ctype=1');
         };
 
         my $plt_port_buffer = &glib_fildir_02::read_file($path_port);
@@ -186,7 +186,7 @@ main: {
     my $http_host = $ENV{'HTTP_HOST'};
 
     if ($http_host eq '') {
-        &glib_html_02::print_pag_result('Error', "No se pudo determinar el HTTP_HOST del sitio.", 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_unable_determine_HTTP_HOST_site'), 1, 'exit=1,ctype=1');
     };
     my $protocolo = 'http';
     if($prontus_varglb::SERVER_PROTOCOLO_HTTPS eq 'SI') {
@@ -197,8 +197,8 @@ main: {
 
     if ($http_line ne '') {
         print STDERR "Error al obtener la url [$url_port_site]: $http_line\n";
-        my $msg = "Ocurri&oacute; un error al tratar de procesar la portada con interfaz drag & drop. <br/><br/>$http_line";
-        &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
+        my $msg = &lib_language::_msg_prontus('_error_trying_process_front_page_with_drag_drop_interface.')." <br/><br/>$http_line";
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), $msg, 1, 'exit=1,ctype=1');
     };
 
     if ($FORM{'accion'} eq 'update') {

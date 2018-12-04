@@ -102,7 +102,7 @@ main: {
 
   if (&lib_prontus::open_dbm_files() ne 'ok') {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","No fue posible abrir archivos dbm.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_open_dbm_file'));
     exit;
   };
 
@@ -122,14 +122,14 @@ main: {
 
   if (!(-f $origen)) {
     print "Content-type: text/html\n\n";
-    print "Error: Plantilla de origen no válida:[$origen]";
+    print &lib_language::_msg_prontus('_error_invalid_source_template').":[$origen]";
     exit;
   };
 
 
   if (!(-f $destino)) {
     print "Content-type: text/html\n\n";
-    print "Error: Plantilla destino no válida:[$destino]";
+    print &lib_language::_msg_prontus('_error_invalid_target_template').":[$destino]";
     exit;
   };
 

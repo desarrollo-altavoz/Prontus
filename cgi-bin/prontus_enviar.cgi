@@ -156,7 +156,7 @@ use lib_maxrunning;
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(5)) {
     print "Content-type: text/html\n";
-    print "\n<html><body><p>Error: Servidor ocupado. Intente otra vez m&aacute;s tarde.</p></body></html>.\n";
+    print "\n<html><body><p>".&lib_language::_msg_prontus('_server_busy_error_extended')."</p></body></html>.\n";
     exit;
 };
 
@@ -186,13 +186,13 @@ main: {
     $FORM{'_URL'} =~ s/\?.+$//ig;
 
     # 2.9
-    &aborta('Solicitud no v&aacute;lida') if ($FORM{'_URL'} =~ /[<>]/is);
+    &aborta(&lib_language::_msg_prontus('_invalid_request')) if ($FORM{'_URL'} =~ /[<>]/is);
 
     $FORM{'_TO'} =~ s/\s+//sig;
     $FORM{'_FROM'} =~ s/\s+//sig;
     # warn($FORM{'_SUB'});
     if (! $FORM{'_SUB'}) {
-      $FORM{'_SUB'} = "Artículo de $ENV{'SERVER_NAME'}";
+      $FORM{'_SUB'} = "$ENV{'SERVER_NAME'} ".&lib_language::_msg_prontus('_article_owner');
       utf8::encode($FORM{'_SUB'});
     } else {
       ##utf8::decode($FORM{'_SUB'});
@@ -209,10 +209,10 @@ main: {
     #$FORM{'_FILE'} =~ s/https?:\/\/$ENV{'HTTP_HOST'}//i;
     $FORM{'_FILE'} =~ s/https?:\/\/[^\/]+//i; # CVI
 
-    &aborta('Solicitud de ejecuci&oacute;n no v&aacute;lida.') if ($FORM{'_ACCI'} ne 'Enviar');
+    &aborta(&lib_language::_msg_prontus('_invalid_execution_request')) if ($FORM{'_ACCI'} ne 'Enviar');
     # 2.9
     print STDERR "file[$ROOTDIR$FORM{'_FILE'}]\n";
-    &aborta('Art&iacute;culo no v&aacute;lido') if ((! -f "$ROOTDIR$FORM{'_FILE'}") || (! -s "$ROOTDIR$FORM{'_FILE'}"));
+    &aborta(&lib_language::_msg_prontus('_invalid_article')) if ((! -f "$ROOTDIR$FORM{'_FILE'}") || (! -s "$ROOTDIR$FORM{'_FILE'}"));
 
     # Obtiene prontus dir.
     my $prontus_id;
@@ -221,11 +221,11 @@ main: {
         $prontus_id = $1;
         $ts = $3;
     } else {
-        &aborta('No se pudo localizar directorio Prontus');
+        &aborta(&lib_language::_msg_prontus('_Prontus_directory_not_located'));
     };
 
     if(! &lib_prontus::valida_prontus($prontus_id)) {
-        &aborta('El directorio Prontus indicado no es valido');
+        &aborta(&lib_language::_msg_prontus('_invalid_prontus_directory'));
     }
 
     # Dir de Plantillas usadas por la aplicacion.
@@ -235,7 +235,7 @@ main: {
         $TDIR = $TDIR . '-' . $FORM{'_MV'};
     };
 
-    &aborta('Dir de plantillas no v&aacute;lido.') if (! -d $TDIR);
+    &aborta(&lib_language::_msg_prontus('_invalid_template_directory')) if (! -d $TDIR);
 
     # Usando la nueva lib_captcha se manejan ambos formatos
     my $captcha_input = $FORM{'_CAPTCHA'};
@@ -248,14 +248,14 @@ main: {
     my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
     if ($msg_err_captcha ne '') {
         print "Content-Type: text/html\n\n";
-        &show_msg($msg_err_captcha . '<br/>Por favor, vuelva '
-                . '<a href="javascript:history.back()">atr&aacute;s</a> y corrija el error.', $FORM{'_URL'});
+        &show_msg($msg_err_captcha . '<br/>'.&lib_language::_msg_prontus('_please_come_back')
+                . '<a href="javascript:history.back()">atr&aacute;s</a>'.&lib_language::_msg_prontus('_error_correction'), $FORM{'_URL'});
         exit;
     };
 
     # Smtp extraido del cfg del prontus
     my $smtp = &rescata_smtp_servers_del_cfg($prontus_id);
-    &aborta('SMTP no especificado') if (! $smtp);
+    &aborta(&lib_language::_msg_prontus('_SMTP_not_specified')) if (! $smtp);
 
     # Path de cfg de prontus
     my $path_conf = "/$prontus_id/cpan/$prontus_id.cfg";
@@ -277,7 +277,7 @@ main: {
     # Carga plantilla para envio del correo
     my $buffer_enviar = &get_plt_enviar($xml_data);
     if ($buffer_enviar eq '') {
-        &show_msg('Error de configuraci&oacute;n: No hay plantilla para enviar correo', $FORM{'_URL'});
+        &show_msg(&lib_language::_msg_prontus('_configuration_error_no_template_email'), $FORM{'_URL'});
         exit;
     };
 
@@ -306,9 +306,9 @@ main: {
     my $envio_ok = &lib_mail::mail_text($from_con_nombre,$to_con_nombre,$from_con_nombre,$FORM{'_SUB'},$buffer_enviar,1,$smtp);
     if ($envio_ok) {
         # Entrega pagina de exito.
-        &show_msg("La p&aacute;gina fue enviada exitosamente.", $FORM{'_URL'}, $titular);
+        &show_msg(&lib_language::_msg_prontus('_page_sent'), $FORM{'_URL'}, $titular);
     } else {
-        &show_msg("No fue posible enviar el mensaje.", $FORM{'_URL'}, $titular);
+        &show_msg(&lib_language::_msg_prontus('_unsent_message'), $FORM{'_URL'}, $titular);
     };
 
 };
@@ -402,15 +402,13 @@ sub get_plt_enviar {
 sub valida_casillas {
 # Realiza validaciones.
   if ($FORM{'_TO'} !~ /^[A-Za-z0-9\.\-\_]+@[A-Za-z0-9\.\-\_]+\.[A-Za-z]{2,3}$/) {
-    &show_msg('La direcci&oacute;n de correo electr&oacute;nico de destino que Ud. '
-          . 'ha ingresado no es v&aacute;lida. Por favor, vuelva '
-          . '<a href="javascript:history.back()">atr&aacute;s</a> y corrija el error.', $FORM{'_URL'});
+    &show_msg(&lib_language::_msg_prontus('_invalid_email_destination')
+      . '<a href="javascript:history.back()">atr&aacute;s</a>'.&lib_language::_msg_prontus('_error_correction'), $FORM{'_URL'});
     exit;
   };
   if ($FORM{'_FROM'} !~ /^[A-Za-z0-9\.\-\_]+@[A-Za-z0-9\.\-\_]+\.[A-Za-z]{2,3}$/) {
-    &show_msg('La direcci&oacute;n de correo electr&oacute;nico del remitente que Ud. '
-          . 'ha ingresado no es v&aacute;lida. Por favor, vuelva '
-          . '<a href="javascript:history.back()">atr&aacute;s</a> y corrija el error.', $FORM{'_URL'});
+    &show_msg(&lib_language::_msg_prontus('_invalid_email_sender')
+          . '<a href="javascript:history.back()">atr&aacute;s</a>'.&lib_language::_msg_prontus('_error_correction'), $FORM{'_URL'});
     exit;
   };
 };
@@ -428,8 +426,7 @@ sub get_xml_data {
   $cont =~ s/.*?<_private>(.*?)<\/_private>.*?<_public>(.*?)<\/_public>.*?/$1\r\n$2/is;
 
   if ($cont eq '') {
-    &show_msg('El servicio no est&aacute; disponible en este momento. [noxmldata] '
-          . 'Intente nuevamente m&aacute;s tarde.', $FORM{'_URL'});
+    &show_msg(&lib_language('service_not_available'), $FORM{'_URL'});
     exit;
   };
 
@@ -526,15 +523,22 @@ sub aborta {
 
  sub expande_fecha {
    my($fecha) = $_[0];
-   my(@dias) = ('Domingo','Lunes','Martes','Mi&eacute;rcoles','Jueves','Viernes','S&aacute;bado');
-   my(@meses) = ('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio',
-                    'Agosto','Septiembre','Octubre','Noviembre','Diciembre');
+   my(@dias) = (&lib_language::_msg_prontus('_sunday'),&lib_language::_msg_prontus('_monday')
+                ,&lib_language::_msg_prontus('_tuesday'),&lib_language::_msg_prontus('_wednesday')
+                ,&lib_language::_msg_prontus('_thursday'),&lib_language::_msg_prontus('_friday')
+                ,&lib_language::_msg_prontus('_saturday'));
+   my(@meses) = (&lib_language::_msg_prontus('_january'),&lib_language::_msg_prontus('_february')
+                ,&lib_language::_msg_prontus('_march'),&lib_language::_msg_prontus('_april')
+                ,&lib_language::_msg_prontus('_may'),&lib_language::_msg_prontus('_june')
+                ,&lib_language::_msg_prontus('_july'),&lib_language::_msg_prontus('_august')
+                ,&lib_language::_msg_prontus('_september'),&lib_language::_msg_prontus('_october')
+                ,&lib_language::_msg_prontus('_november'),&lib_language::_msg_prontus('_december'));
    $fecha =~ /(\d\d\d\d)(\d\d)(\d\d)/g;
    my($dia,$mes,$ano) = ($3,$2,$1);
    my($tiempo) = &POSIX::mktime(0,0,12,$dia,($mes - 1),($ano - 1900));
    my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($tiempo);
    $dia = $dia + 0; # Para extraer los ceros de adelante.
-   return $dias[$wday] . " $dia de " . $meses[($mes - 1)] . " de $ano";
+   return $dias[$wday] . " $dia of " . $meses[($mes - 1)] . " of $ano";
 
  }; # expande_fecha
 

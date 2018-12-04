@@ -96,10 +96,10 @@ main: {
     $FORM{'_prontus_id'} = &glib_cgi_04::param('_prontus_id');
 
     if (! &lib_prontus::valida_prontus($FORM{'_prontus_id'})) {
-        &glib_html_02::print_json_result(0, 'Error en los datos enviados - 901', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_901_error_data_sent'), 'exit=1,ctype=1');
     };
     if (! -d "$coment_varglb::DIR_SERVER/$FORM{'_prontus_id'}") {
-        &glib_html_02::print_json_result(0, 'Error en los datos enviados - 902', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_902_error_data_sent'), 'exit=1,ctype=1');
     };
 
     # Carga variables de configuracion.
@@ -120,7 +120,7 @@ main: {
 
     if  (!$FORM{'COMENT_ID'}) {
         $BD->disconnect;
-        &glib_html_02::print_json_result(0, 'Registro no existe.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_record_no_exist.'), 'exit=1,ctype=1');
     } else {
 
         # Obtiene datos faltantes.

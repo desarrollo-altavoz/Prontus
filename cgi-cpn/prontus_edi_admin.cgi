@@ -100,22 +100,22 @@ main: {
 
 
     if ($prontus_varglb::MULTI_EDICION ne 'SI') {
-        &glib_html_02::print_pag_result('Error','Este Prontus no está configurado como multi edición', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_prontus_not_configured_multi _edition'), 1, 'exit=1,ctype=1');
     };
 
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
     if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
-        &glib_html_02::print_pag_result('Error', 'La funcionalidad requerida está disponible sólo para el administrador del sistema.', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_functionality_available_administrator'), 1, 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
-        &glib_html_02::print_pag_result('Error', 'La funcionalidad requerida está disponible sólo para el administrador del sistema y editores', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_functionality_available_administrator_editor'), 1, 'exit=1,ctype=1');
     };
 
     my $pagina = &glib_fildir_02::read_file($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . '/prontus_edi_admin.html');

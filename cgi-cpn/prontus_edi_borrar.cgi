@@ -105,13 +105,13 @@ main: {
     };
 
     if ($FORM{'_edic'} !~ /^[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]$/) {
-        &glib_html_02::print_json_result(0, 'Edición no válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_edition'), 'exit=1,ctype=1');
     };
 
 
     # Valida conf. multi-ed
     if ($prontus_varglb::MULTI_EDICION ne 'SI') {
-        &glib_html_02::print_json_result(0, 'Este Prontus no está configurado como multi edición', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_prontus_not_configured_multi _edition'), 'exit=1,ctype=1');
     };
 
     # user check
@@ -121,12 +121,12 @@ main: {
     };
 
     if ($prontus_varglb::EDITOR_ADMINISTRAR_EDICIONES eq 'NO' && $prontus_varglb::USERS_PERFIL eq 'E') {
-        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A' && $prontus_varglb::USERS_PERFIL ne 'E') {
-        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema y editores', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator_editor'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'_edic'} ne '') {
@@ -135,9 +135,9 @@ main: {
         if (&lib_prontus::ed_vigente($FORM{'_edic'}) eq 'SI') {
             my $homesitio = '<HTML>
             <HEAD>
-            <TITLE>no hay edicion vigente</TITLE>
+            <TITLE>'.&lib_language::_msg_prontus('_no_active_edition').'</TITLE>
             </HEAD>
-            <BODY>no hay edicion vigente
+            <BODY>'.&lib_language::_msg_prontus('_no_active_edition').'
             </BODY>
             </HTML>';
 
@@ -154,7 +154,7 @@ main: {
         my $dir_borrar = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_EDIC . "/$FORM{'_edic'}";
 
         &glib_fildir_02::borra_dir($dir_borrar) if (-d $dir_borrar);
-        &lib_prontus::write_log('Borrar', 'Edicion-Portadas', $dir_borrar);
+        &lib_prontus::write_log(&lib_language::_msg_prontus('_delete'), &lib_language::_msg_prontus('_edition_front_page'), $dir_borrar);
 
         # Borra cache listas de articulo
         &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");

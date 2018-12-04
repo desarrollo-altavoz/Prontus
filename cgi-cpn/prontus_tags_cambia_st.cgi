@@ -124,18 +124,18 @@ main: {
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
 
     $FORM{'_id_tag'} = &glib_cgi_04::param('_id_tag');
     if ($FORM{'_id_tag'} !~ /^(\d+)$/) {
-        &glib_html_02::print_json_result(0, 'ID del tag no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_tag_id'), 'exit=1,ctype=1');
     };
 
     $FORM{'_new_st'} = &glib_cgi_04::param('_new_st');
     if ($FORM{'_new_st'} !~ /^[1|0]$/) {
-        &glib_html_02::print_json_result(0, 'El nuevo estado no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_new_state'), 'exit=1,ctype=1');
     };
 
     # Conectar a BD
@@ -175,7 +175,7 @@ sub do_update {
     $sql = "update TAGS set TAGS_MOSTRAR = " . $FORM{'_new_st'} . ' where TAGS_ID = ' . $FORM{'_id_tag'};
     unless( $BD->do($sql) ) {
         print STDERR $BD->errstr;
-        return 'Error actualizando el Estado del Tag en la base de datos';
+        return &lib_language::_msg_prontus('_error_updating_tag_state_database');
     };
     return '';
 

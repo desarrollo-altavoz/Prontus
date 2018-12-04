@@ -108,7 +108,7 @@ main: {
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
     };
 
 
@@ -119,7 +119,7 @@ main: {
 
     # Abrir dbm files
     if (&lib_prontus::open_dbm_files() ne 'ok') {
-        &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuario', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_open_user_files'), 'exit=1,ctype=1');
     };
 
     $msg = &guardar_usr();
@@ -134,11 +134,11 @@ main: {
 
     # cambio de clave admin
     if (($FORM{'USERS_ID'} eq '1') && ($FORM{'PSW1'})) {
-        my $response = 'Sus datos han sido guardados correctamente.';
+        my $response = &lib_language::_msg_prontus('_your_data_saved_correctly');
         utf8::decode($response);
         &glib_html_02::print_json_result(1, $response, 'exit=1,ctype=1');
     } else {
-        my $response = 'Los datos han sido guardados correctamente.';
+        my $response = &lib_language::_msg_prontus('_data_saved_correctly');
         utf8::decode($response);
         &glib_html_02::print_json_result(1, $response, 'exit=1,ctype=1');
     };
@@ -156,7 +156,7 @@ sub guardar_usr {
     if ($FORM{'USERS_ID'} eq '') {
 
         if (&usr_repetido() eq 'S') {
-            return "Usuario repetido";
+            return &lib_language::_msg_prontus('_repeated_user');
         };
 
         $new_id = &get_new_id();
@@ -273,7 +273,7 @@ sub datos_validos {
     my ($elems2) =  @Lst_PORTASOC;
 
     if (($FORM{'NOM'} eq '') or ($FORM{'USR'} eq '') or ($FORM{'EMAIL'} eq '')) {
-        return 'Por favor ingrese todos los campos marcados con asterisco (*)';
+        return &lib_language::_msg_prontus('_enter_required _data_asterisk');
     };
 
     if ($FORM{'EMAIL'} !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {
@@ -281,43 +281,43 @@ sub datos_validos {
     };
 
     if ($FORM{'USR'} !~ /^[a-z\_\-\.0-9@]+$/) {
-        return 'Usuario no válido.<br>Caracteres permitidos: letras en minúsculas sin tildes, guión, guión bajo, punto, arroba y números';
+        return &lib_language::_msg_prontus('_invalid_user').'<br>'.&lib_language::_msg_prontus('_allowed_characters');
     };
 
     if ($FORM{'USERS_ID'} eq '') {
         if (!$FORM{'PSW1'}) {
-            return 'Por favor ingrese la contraseña para el usuario';
+            return &lib_language::_msg_prontus('_enter_user_password');
         };
 
         if (!$FORM{'PSW2'}) {
-            return 'Por favor ingrese confirmación de contraseña';
+            return &lib_language::_msg_prontus('_enter_password_confirmation');
         };
     };
 
 
     if ($FORM{'PSW1'}) {
         if ($FORM{'PSW1'} =~ /^\s+$/) {
-            return 'La contraseña no puede contener solamente espacios.';
+            return &lib_language::_msg_prontus('_password_only_spaces');
         };
 
         if ($FORM{'PSW1'} !~ /^.{6,32}$/) {
             #~ return 'La contraseña debe estar compuesta por, al menos, 6 caracteres y máximo 8 caracteres.';
-            return 'La nueva contraseña debe estar compuesta por un mínimo de 6 caracteres y un máximo de 32 caracteres.';
+            return &lib_language::_msg_prontus('_passwrod_length');
         };
 
         if (lc $FORM{'PSW1'} eq 'prontus') {
-            return "La contraseña es inválida, ya que no puede ser \"$FORM{'PSW1'}\", por favor ingrese una distinta.";
+            return &lib_language::_msg_prontus('_invalid_password_can_not_be')." \"$FORM{'PSW1'}\", ".&lib_language::_msg_prontus('_enter_different_password');
         };
 
         if ($FORM{'PSW1'} ne $FORM{'PSW2'}) {
-            return "La contraseña y su confirmación no coinciden.\nPor favor especifique el mismo valor para ambos campos.";
+            return &lib_language::_msg_prontus('_password_confirmation_not_match')."\n".&lib_language::_msg_prontus('_enter_same_password_both_fields');
         };
     };
 
 
     if ($FORM{'USERS_ID'} ne '1') {
         if (($elems1 eq '') or ($elems2 eq '')) {
-            return 'Usuario debe tener autorizados a lo menos un Artículo y una Portada.';
+            return &lib_language::_msg_prontus('_minimum_user_authorization');
         };
     };
 

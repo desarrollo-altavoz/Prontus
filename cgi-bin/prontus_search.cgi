@@ -292,7 +292,7 @@ my $TMP_DIR = "$PRONTUS_DIR/plantillas/extra/search/pags$VISTA"; # 1.10 Director
 # Lee archivo de configuracion y determina la cantidad de instancias que se aceptan.
 if (! -f "$PRONTUS_DIR/cpan/$CFG_FILENAME") { # 1.21
   # Si no hay archivo de cfg, aborta.
-  print "\nProntus Search cfg file not found. \nArchivo de configuraci&oacute;n Prontus no encontrado.";
+  print "\nProntus Search cfg file not found. \n".&lib_language::_msg_prontus('_prontus_config_file_not_found');
   exit;
 };
 if ($DEBUG) { print "\n<pre>PRONTUS_DIR = $PRONTUS_DIR \n"; };
@@ -401,11 +401,11 @@ $RESULTADO .= &muestra_resultados(); # 1.10
 sub inicializaMensajes {
   my($stopwords);
   # Mensajes por defecto.
-  $MSGS{'server_busy'} = 'Servidor ocupado. Intenta m&aacute;s tarde ...';
-  $MSGS{'no_results'} = 'No se encontraron resultados.';
-  $MSGS{'order_cron'} = 'en orden cronol&oacute;gico.';
-  $MSGS{'order_rel'} = 'en orden de importancia.';
-  $MSGS{'results'} = 'Resultados';
+  $MSGS{'server_busy'} = &lib_language::_msg_prontus('_server_busy');
+  $MSGS{'no_results'} = &lib_language::_msg_prontus('_results_not_found');
+  $MSGS{'order_cron'} = &lib_language::_msg_prontus('_chronological_order.');
+  $MSGS{'order_rel'} = &lib_language::_msg_prontus('_importance_order');
+  $MSGS{'results'} = &lib_language::_msg_prontus('_results');
   $MSGS{'to'} = 'al';
   $MSGS{'of'} = 'de';
   while ($PLANTILLA =~ /<!--\s*MSG\s*(\w+)\s*=\s*(.+?)\s*-->/sg) {
@@ -1328,7 +1328,7 @@ sub getFormData {
     $FILTROACTIVO = 0;
   };
   if (length($FORM{'search_texto'}) > 64) {
-    $MSG = 'B&uacute;squeda no v&aacute;lida.';
+    $MSG = &lib_language::_msg_prontus('_invalid_search');
     $FORM{'search_texto'} = '';
   };
   if ($FORM{'search_fechaini'} ne '') {

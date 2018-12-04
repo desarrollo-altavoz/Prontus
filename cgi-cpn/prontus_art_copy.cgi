@@ -101,7 +101,7 @@ main: {
     # Debe venir si o si el TS
     $FORM{'_ts'} = &glib_cgi_04::param('_ts');
     if ($FORM{'_ts'} !~ /^\d{14}$/) {
-        &glib_html_02::print_json_result(0, 'Artículo no válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_artic_invalid'), 'exit=1,ctype=1');
     };
 
     my $oldts = $FORM{'_ts'};
@@ -186,7 +186,7 @@ sub copia_archivos {
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base/$newfechac$prontus_varglb::DIR_ASOCFILE"));
     $res = 0 unless(&glib_fildir_02::check_dir("$dir_base_mm/$newfechac$prontus_varglb::DIR_MMEDIA"));
     if(! $res) {
-        &glib_html_02::print_json_result(0, "Error al crear los directorios", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_creating_directory'), 'exit=1,ctype=1');
     }
 
     # Se copia el XML
@@ -260,7 +260,7 @@ sub editar_nuevo_artic {
 
     my $buffer = &glib_fildir_02::read_file($filexml);
     if($buffer eq '') {
-        &glib_html_02::print_json_result(0, "El xml no se pudo leer [$filexml]", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_xml_read_fail') . " [$filexml]", 'exit=1,ctype=1');
     };
 
     # Se borra el autoinc
@@ -309,13 +309,13 @@ sub actualizar_bd {
                 'public_server_name' => $prontus_varglb::PUBLIC_SERVER_NAME,
                 'cpan_server_name' => $prontus_varglb::IP_SERVER,
                 'ts' => $newts, # si no va, asigna uno nuevo
-                'campos'=> $hash_datos) || &glib_html_02::print_json_result(0, "Error inicializando objeto articulo: $Artic::ERR\n", 'exit=1,ctype=1');
+                'campos'=> $hash_datos) || &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_obj_artic_init') . ": $Artic::ERR\n", 'exit=1,ctype=1');
 
     $autoinc = $artic_obj->art_insert_bd($base);
 
     if (!$autoinc) {
         unlink $artic_obj->{fullpath_xml};
-        &glib_html_02::print_json_result(0, "El ID unico no se pudo obtener", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_id_not_obtained'), 'exit=1,ctype=1');
     }
 
     # Agrega autoinc al XML del artic

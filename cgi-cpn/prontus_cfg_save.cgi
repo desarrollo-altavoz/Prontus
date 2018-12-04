@@ -248,7 +248,7 @@ main: {
     # Verificar tipo de CFG.
     $FORM{'_cfg'} = &glib_cgi_04::param('_cfg');
     if ($FORM{'_cfg'} !~ /^(id|art|port|var|bd|usr|tax|coment|buscador|tag|list|dropbox|cloudflare|xcoding)$/) {
-        &glib_html_02::print_json_result(0, 'Tipo de CFG inválido.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_cfg_type_not_valid'), 'exit=1,ctype=1');
     };
 
     my @campos = &glib_cgi_04::param();
@@ -271,7 +271,7 @@ main: {
                     if ((scalar @input_value_array) gt 0) {
                         foreach my $item (@input_value_array) {
                             if ($item !~ /$re/) {
-                                &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
+                                &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_variable') . ' ' . $var_valida . ' ' . &lib_language::_msg_prontus('_has_invalid_characters'), 'exit=1,ctype=1');
                             } else {
                                 &validarArt($item) if ($FORM{'_cfg'} eq 'art');
                                 &validarPort($var_valida, $item) if ($FORM{'_cfg'} eq 'port');
@@ -311,7 +311,7 @@ main: {
                     };
                 } elsif ($var_info[3] eq 'U') { # Es un solo valor.
                     if ($input_value !~ /$re/) {
-                        &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
+                        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_variable') . ' ' . $var_valida . ' ' . &lib_language::_msg_prontus('_has_invalid_characters'), 'exit=1,ctype=1');
                     } else {
                         &validarPort($var_valida, $input_value) if ($FORM{'_cfg'} eq 'port');
                         &validarTax($var_valida, $input_value) if ($FORM{'_cfg'} eq 'tax');
@@ -377,7 +377,7 @@ main: {
                 } else {
                     # Esto no puede quedar vacio y no hay que poner el valor por defecto.
                     if ($var_valida eq 'DIR_FFMPEG') {
-                        &glib_html_02::print_json_result(0, 'La variable DIR_FFMPEG debe tener una ruta válida.', 'exit=1,ctype=1');
+                        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_variable_dir_ffmpeg_valid_route'), 'exit=1,ctype=1');
                     }
 
                     # Si la variable es multivista, no guardar vacia.
@@ -401,7 +401,7 @@ main: {
 
                 # Esto no puede quedar vacio y no hay que poner el valor por defecto.
                 if ($var_valida eq 'DIR_FFMPEG') {
-                    &glib_html_02::print_json_result(0, 'La variable DIR_FFMPEG debe tener una ruta válida.', 'exit=1,ctype=1');
+                    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_variable_dir_ffmpeg_valid_route'), 'exit=1,ctype=1');
                 }
 
                 # $buffer = $buffer . "$var_valida = '$var_info[2]'\n";
@@ -456,7 +456,7 @@ main: {
     # Borra cache de no publicados
     &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
 
-    &glib_html_02::print_json_result(1, 'La configuración se guardó con éxito.', 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_cfg_save_success'), 'exit=1,ctype=1');
 
 };
 
@@ -510,33 +510,33 @@ sub validarXcoding {
     print STDERR "var[$var]\n";
 
     if ($var eq 'MAX_VIDEO_BITRATE' && $item !~ /^[0-9]+$/) {
-        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_value_of') . " $var " . &lib_language::_msg_prontus('_must_numeric'), 'exit=1,ctype=1');
     };
 
     if ($var eq 'MAX_AUDIO_BITRATE' && $item !~ /^[0-9]+$/) {
-        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_value_of') . " $var " . &lib_language::_msg_prontus('_must_numeric'), 'exit=1,ctype=1');
     };
 
     if ($var eq 'XCODE_MAX_PIXEL' && $item !~ /^[0-9]+$/) {
-        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_value_of') . " $var " . &lib_language::_msg_prontus('_must_numeric'), 'exit=1,ctype=1');
     };
 
     if ($var eq 'XCODE_MAX_PARALELO' && $item !~ /^[0-9]+$/) {
-        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico y mayor que 1.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_value_of') . " $var " . &lib_language::_msg_prontus('_must_numeric_gt_one'), 'exit=1,ctype=1');
     };
 
     if ($var eq 'XCODE_MAX_PARALELO' && $item < 1) {
-        &glib_html_02::print_json_result(0, "El valor de $var debe ser numérico y mayor que 1.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_value_of') . " $var " . &lib_language::_msg_prontus('_must_numeric_gt_one'), 'exit=1,ctype=1');
     };
 
     # Validar existencia directorio temporal de trabajo para transcodificar. (RUTA_TEMPORAL_XCODING)
     if ($var eq 'RUTA_TEMPORAL_XCODING') {
         if ($item =~ /[^\w\-\/_\.]/isg) {
-            my $msg = "El directorio [$item] configurado en la variable RUTA_TEMPORAL_XCODING tiene caracteres inválidos.\n"
-                    . "Solo se permite el uso de caracteres alfanuméricos, guión (-), guión bajo (_) y punto (.).";
+            my $msg = &lib_language::_msg_prontus('_the_directory') . " [$item] " . &lib_language::_msg_prontus('_configurated_ruta_temporal_not_valid_characters')
+                    . &lib_language::_msg_prontus('_only_alphanum_spell_marks');
             &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
         } elsif (!-d $item) {
-            &glib_html_02::print_json_result(0, "El directorio [$item] configurado en la variable RUTA_TEMPORAL_XCODING no existe.", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_directory') . " [$item] " . &lib_language::_msg_prontus('_configurated_ruta_temporal_not_exist'), 'exit=1,ctype=1');
         }
     };
 };
@@ -548,23 +548,23 @@ sub validarCloudFlare {
     print STDERR "var[$var]\n";
 
     if ($var eq 'CLOUDFLARE_API_KEY' && $item eq '') {
-        &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_field') . " $var " . &lib_language::_msg_prontus('_is_required'), 'exit=1,ctype=1');
     };
 
     if ($var eq 'CLOUDFLARE_EMAIL' && $item eq '') {
-        &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_field') . " $var " . &lib_language::_msg_prontus('_is_required'), 'exit=1,ctype=1');
     };
 
     if ($var eq 'CLOUDFLARE_ZONE' && $item eq '') {
-        &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_field') . " $var " . &lib_language::_msg_prontus('_is_required'), 'exit=1,ctype=1');
     };
 
     if ($var eq 'CLOUDFLARE_API_URL' && $item eq '') {
-        &glib_html_02::print_json_result(0, "El campo $var es obligatorio.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_field') . " $var " . &lib_language::_msg_prontus('_is_required'), 'exit=1,ctype=1');
     };
 
     if ($var eq 'CLOUDFLARE_EMAIL' && $item !~ /^[a-zA-Z\_\-\.0-9]+@[a-zA-Z\_\-0-9]+\.[0-9a-zA-Z\.\-\_]+$/) {
-        &glib_html_02::print_json_result(0, "La casilla de correo $var es inválida.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_email_box') . " $var " . &lib_language::_msg_prontus('_is_invalid'), 'exit=1,ctype=1');
     };
 
 };
@@ -575,7 +575,7 @@ sub validarTax {
 
     if ($var eq 'TAXPORT_MAXARTICS') {
         if ($item > $prontus_varglb::TAXPORT_MAXARTICS_SECURITY) {
-            &glib_html_02::print_json_result(0, "La variable $var no puede superar los $prontus_varglb::TAXPORT_MAXARTICS_SECURITY artículos.", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_variable_max_tax_artic'), 'exit=1,ctype=1');
         };
     };
 };
@@ -584,7 +584,7 @@ sub validarSearch { # solo vacios.
     my ($var) = shift;
     #~ print STDERR "var[$var]\n";
     if ($var eq 'FIDS') {
-        &glib_html_02::print_json_result(0, "La variable $var debe tener seleccionado al menos 1 FID.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_variable') . " $var ". &lib_language::_msg_prontus('_select_at_least_one_fid'), 'exit=1,ctype=1');
     }
 };
 
@@ -596,49 +596,49 @@ sub validarVar {
         if ( ($item =~ /^\w/) || ($item =~ /^\.\.(\/|\\)\w/) ) {
             # Verificar que exista archivo.
             if (! -f $Bin .'/'. $item) {
-                &glib_html_02::print_json_result(0, "El archivo [$Bin/$item] del Post Proceso no existe.", 'exit=1,ctype=1');
+                &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_file') . " [$Bin/$item] ". &lib_language::_msg_prontus('_of_post_proc_not_exist'), 'exit=1,ctype=1');
             };
         } else {
-            &glib_html_02::print_json_result(0, "El Post proceso debe ubicarse en el mismo directorio de cgis de prontus o como máximo un nivel hacia arriba.\nPor ejemplo: pproc/prontus_pdel_artic.cgi", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_post_proc_must_be_at_cgi_route'), 'exit=1,ctype=1');
         };
     };
 
     # Validar existencia directorio de FFMPEG. (DIR_FFMPEG)
     if ($var eq 'DIR_FFMPEG') {
         if ($item =~ /[^\w\-\/_\.]/isg) {
-            my $msg = "El directorio [$item] configurado en la variable DIR_FFMPEG tiene caracteres inválidos.\n"
-                    . "Solo se permite el uso de caracteres alfanuméricos, guión (-) y guión bajo (_).";
+            my $msg = &lib_language::_msg_prontus('_the_directory'). " [$item] " . &lib_language::_msg_prontus('_configurated_dir_ffmpeg_not_valid_characters')
+                    . &lib_language::_msg_prontus('_only_alphanum_spell_marks');
             &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
         } elsif (!-d $item) {
-            &glib_html_02::print_json_result(0, "El directorio [$item] configurado en la variable DIR_FFMPEG no existe.", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_the_directory') . " [$item] " . &lib_language::_msg_prontus('_configurated_dir_ffmpeg_not_exist'), 'exit=1,ctype=1');
         }
     };
 
     # Validar existencia de script para cuota
     if ($var eq 'SCRIPT_QUOTA') {
         if (!-e $prontus_varglb::DIR_SERVER . $item) {
-            &glib_html_02::print_json_result(0, "No existe el script [$item] definido en la variable SCRIPT_QUOTA.", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_script_not_exist') . " [$item] " .  &lib_language::_msg_prontus('_defined_at_script_quota'), 'exit=1,ctype=1');
         };
     };
 
     # El formato debe ser wXh
     if ($var eq 'FOTO_MAX_PIXEL') {
         if ($item !~ /^\d+x\d+$/) {
-            &glib_html_02::print_json_result(0, "La variable FOTO_MAX_PIXEL tiene datos inválidos. El valor debe ser, por ejemplo: 1920x1080", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_variable_foto_max_pixel_not_valid'), 'exit=1,ctype=1');
         };
     };
 
     # Los parámetros no pueden tener '
     if ($var eq 'FFMPEG_PARAMS') {
         if ($item =~ /'/) {
-            &glib_html_02::print_json_result(0, "La variable FFMPEG_PARAMS tiene datos inválidos. No puede contener el caracter '.", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_variable_ffmpeg_params_not_valid_data'), 'exit=1,ctype=1');
         };
     };
 
     # Si es la version 3 de friendly url se valida que el id de prontus no tenga underscore.
     if ($var eq 'FRIENDLY_URLS_VERSION' && $item eq '3') {
         if ($prontus_varglb::PRONTUS_ID =~ /_/sg) {
-            &glib_html_02::print_json_result(0, "No es posible habilitar Friendly URL versión 3 si el ID de Prontus tiene guiones bajos (_).", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_furl_v3_enable_fail'), 'exit=1,ctype=1');
         };
     };
 
@@ -660,26 +660,27 @@ sub validarArt {
 
     my $dir_fid = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/cpan/fid/';
     if (! -f $dir_fid . $fid . '.html') {
-        &glib_html_02::print_json_result(0, "No se pudo localizar el FID [$prontus_varglb::PRONTUS_ID/cpan/fid/$fid.html].", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_fid_not_found') . " [$prontus_varglb::PRONTUS_ID/cpan/fid/$fid.html].", 'exit=1,ctype=1');
     };
 
     # Validar que venga el nombre del FID.
     if ($nom eq '') {
-        &glib_html_02::print_json_result(0, "Debe ingresar el Nombre para el FID [$fid].", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_fid_name_required') . " [$fid].", 'exit=1,ctype=1');
     } elsif ($nom =~ /\(|\)/) {
-        &glib_html_02::print_json_result(0, "El nombre del artículo no puede contener paréntesis [$nom].", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, 
+ . " [$nom].", 'exit=1,ctype=1');
     }
 
     # Validar que vengan alguna plantilla.
     if ($plts eq '') {
-        &glib_html_02::print_json_result(0, "Debe seleccionar al menos una plantilla para el FID [$fid].", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_fid_select_template_required') . " [$fid].", 'exit=1,ctype=1');
     };
 
     my $dir_plantilla = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/plantillas/artic/fecha/pags/';
     my @plantillas = split(/;/, $plts);
     foreach my $plt (@plantillas) {
         if (! -f $dir_plantilla . $plt) {
-            &glib_html_02::print_json_result(0, "No se pudo localizar la Plantilla de Artículo [$prontus_varglb::PRONTUS_ID/plantillas/artic/fecha/pags/$plt]", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_artic_template_not_found') . " [$prontus_varglb::PRONTUS_ID/plantillas/artic/fecha/pags/$plt]", 'exit=1,ctype=1');
         };
     };
 
@@ -691,7 +692,7 @@ sub validarComent {
 
     if ($var eq 'PHP_SESSION_PATH') {
         if (!-d $item) {
-            &glib_html_02::print_json_result(0, "El directorio de sesiones especificado [$item] no existe. Debes crearlo antes de continuar.", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_specified_session_directory') ." [$item] " . &lib_language::_msg_prontus('_not_exist_creation_required'), 'exit=1,ctype=1');
         };
     };
 };
@@ -724,7 +725,7 @@ sub validarArtEliminacion {
             $salida->fetch;
             $salida->finish;
             if ($existe gt 0) {
-                $msgerr = $msgerr . "El FID [$fid] no se puede quitar, porque está siendo utilizado por $existe artículos.\n";
+                $msgerr = $msgerr . &lib_language::_msg_prontus('_the_fid') . " [$fid] ". &lib_language::_msg_prontus('_error_erase_fid') . " $existe " . &lib_language::_msg_prontus('_artics') . ".\n";
             };
         };
     };
@@ -748,7 +749,7 @@ sub probarConexionBD {
             || warn "DBI Error Code: [$DBI::err][$DBI::errstr] ";
 
     if ($DBI::err) {
-        $msg_ret = "No fue posible conectar con base de datos Prontus MySQL, utilizando los datos ingresados.\nOcurrió el siguiente error:\n\n";
+        $msg_ret = &lib_language::_msg_prontus('_error_db_conection');
         $msg_ret .= "Cod[$DBI::err][$DBI::errstr]\n";
         &glib_html_02::print_json_result(0, $msg_ret, 'exit=1,ctype=1');
     };
@@ -773,7 +774,7 @@ sub validarPort {
 
         if ($item1 ne '') {
             if (! -f $dir_portada . $item1) {
-                &glib_html_02::print_json_result(0, "No se pudo localizar la Plantilla de Portada [$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/$item1]", 'exit=1,ctype=1');
+                &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_front_page_template_not_found') . " [$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/$item1]", 'exit=1,ctype=1');
             };
         };
 
@@ -782,7 +783,7 @@ sub validarPort {
             my @paralelas = split(/;/, $item3);
             foreach my $var (@paralelas) {
                 if (! -f $dir_portada . $var) {
-                    &glib_html_02::print_json_result(0, "No se pudo localizar la Plantilla de Portada Paralela [$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/$item3]", 'exit=1,ctype=1');
+                    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_paralel_front_page_template_not_found') . " [$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/$item3]", 'exit=1,ctype=1');
                 };
             };
         };
@@ -791,20 +792,20 @@ sub validarPort {
         my $dir_preview = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/stat/preview_containers/';
         if ($item4 ne '') {
             if (! -f $dir_preview . $item4) {
-                &glib_html_02::print_json_result(0, "No se pudo localizar la Plantilla de Portada de Preview [$prontus_varglb::PRONTUS_ID/stat/preview_containers/$item4]", 'exit=1,ctype=1');
+                &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_preview_fp_template_not_found') . " [$prontus_varglb::PRONTUS_ID/stat/preview_containers/$item4]", 'exit=1,ctype=1');
             };
         };
     } elsif ($var eq 'PORT_INI_SELECTED') {
         if (! -f $dir_portada . $item) {
-            &glib_html_02::print_json_result(0, "No se pudo localizar la Plantilla de Portada que aparecerá seleccionada [$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/port/$item]", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_selected_front_page_template_not_found') . " [$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/port/$item]", 'exit=1,ctype=1');
         };
     } elsif ($var eq 'BASE_PORTS') {
         if (! -f $dir_portada . $item) {
-            &glib_html_02::print_json_result(0, "No se pudo localizar la Plantilla de Portada que se utilizará en edición base [$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/port/$item]", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_edic_base_fp_template_not_found') . " [$prontus_varglb::PRONTUS_ID/plantillas/edic/nroedic/port/$item]", 'exit=1,ctype=1');
         };
     } elsif ($var eq 'PORT_HOME') {
         if (! -f $dir_portada_site . $item) {
-            &glib_html_02::print_json_result(0, "No se pudo localizar la portada que se utilizará como página de inicio [$prontus_varglb::PRONTUS_ID/site/edic/base/port/$item]", 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_index_fp_not_found') . " [$prontus_varglb::PRONTUS_ID/site/edic/base/port/$item]", 'exit=1,ctype=1');
         } else {
             # Crear link simbólico hacia la portada.
             my $path_home_index = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/site/edic/base/home/index.html';

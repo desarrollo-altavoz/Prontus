@@ -112,7 +112,7 @@ main: {
     $FORM{'_entidad'} = &glib_cgi_04::param('_entidad');
     $FORM{'_entidad'} = 'seccion' if ($FORM{'_entidad'} eq '');
     if ($FORM{'_entidad'} !~ /^(seccion|tema|subtema)$/) {
-        &glib_html_02::print_json_result(0, 'Tipo de entidad no es válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_entity_type'), 'exit=1,ctype=1');
     };
 
     # Control de usuarios obligatorio
@@ -126,7 +126,7 @@ main: {
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
 

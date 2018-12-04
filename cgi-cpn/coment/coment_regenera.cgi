@@ -81,7 +81,7 @@ main: {
     &glib_html_02::print_json_result(0, $msg_err_bd, 'exit=1,ctype=1') if ($msg_err_bd ne '');
 
     print "Content-Type: text/html\n\n";
-    print "<h3>Comenzando a regenerar</h3>";
+    print "<h3>".&lib_language::_msg_prontus('_starting_regenerate')."</h3>";
     print "<pre>";
     print "dir_server[$coment_varglb::DIR_SERVER]\n";
     # Obtiene todos los comentarios

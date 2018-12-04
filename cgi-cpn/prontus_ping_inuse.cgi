@@ -88,13 +88,13 @@ main: {
 
     $FORM{'_tipo_recurso'} = &glib_cgi_04::param('_tipo_recurso'); # port | art
     if ($FORM{'_tipo_recurso'} !~ /^(art|port)$/) {
-        &glib_html_02::print_json_result(0, 'Tipo de recurso no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_resource_type'), 'exit=1,ctype=1');
     };
 
     $FORM{'_nom_recurso'} = &glib_cgi_04::param('_nom_recurso');
     $FORM{'_nom_recurso'} =~ s/\.\w+$//; # borra ext en caso de venir
     if ($FORM{'_nom_recurso'} !~ /^[\w\-]+$/) {
-        &glib_html_02::print_json_result(0, 'Nombre de recurso no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_resource_name'), 'exit=1,ctype=1');
     };
 
 

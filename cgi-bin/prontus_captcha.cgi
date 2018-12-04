@@ -91,7 +91,7 @@ main: {
     };
     if($maxExcedido == 1) {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error","908-Servidor ocupado.");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_server_busy_error'));
         exit;
     };
 

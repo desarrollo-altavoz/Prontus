@@ -92,12 +92,12 @@ main: {
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_pag_result('Error','La funcionalidad requerida está disponible sólo para el administrador del sistema.', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_functionality_available_administrator'), 1, 'exit=1,ctype=1');
     };
 
 
@@ -175,10 +175,10 @@ sub generar_fila {
     my ($nom_perfil);
 
     if ($USERS_PERFIL eq 'P') {
-        $nom_perfil = 'Redactor';
+        $nom_perfil = &lib_language::_msg_prontus('_writer');
     }
     elsif ($USERS_PERFIL eq 'E') {
-        $nom_perfil = 'Editor';
+        $nom_perfil = &lib_language::_msg_prontus('_editor');
     };
 
     $loop_row =~ s/%%_usr%%/$USERS_USR/g;

@@ -137,8 +137,8 @@ main:{
   # Detecta semaforo.
   my ($lock_obj) = &lib_lock::lock_file($LOCK_FILE);
   if (!ref $lock_obj) { # si ya tiene un bloqueo anterior, aborta.
-    &finishLoading("Proceso en ejecución. Por favor espere hasta que la importación anterior termine.");
-    &lib_logproc::handle_error("Proceso en ejecución. Por favor espere hasta que la importación anterior termine.");
+    &finishLoading(&lib_language::_msg_prontus('_running_process_wait_previous_import'));
+    &lib_logproc::handle_error(&lib_language::_msg_prontus('_running_process_wait_previous_import'));
   };
 
   # Mysql
@@ -152,9 +152,9 @@ main:{
   # Se realiza el proceso y se escribe al Log
   &lib_logproc::flush_log();
   &lib_logproc::writeRule();
-  &lib_logproc::add_to_log_count("INICIANDO PROCESO DE EXPORTACION");
+  &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_starting_export_process'));
   my $registros = &tax_export();
-  &lib_logproc::add_to_log_count("PROCESO DE EXPORTACION FINALIZADO");
+  &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_export_process_completed'));
   &lib_logproc::writeRule();
 
   $TOT_REGS = '0' if ($TOT_REGS eq '');
@@ -162,8 +162,8 @@ main:{
   &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/prontus_tax_export.xml", $registros);
   # &add_to_log("saved"); # debug
   sleep 1;
-  &lib_logproc::add_to_log("Nro. de registros exportados: $TOT_REGS\nPara bajar el archivo haga click <a href=\"$prontus_varglb::DIR_CPAN/procs/prontus_tax_export.xml\">aqu&iacute;</a>");
-  &lib_logproc::add_to_log_finish("Operaci&oacute;n finalizada.");
+  &lib_logproc::add_to_log(&lib_language::_msg_prontus('_number_records_exported').": $TOT_REGS\n".&lib_language::_msg_prontus('_to_download_click')." <a href=\"$prontus_varglb::DIR_CPAN/procs/prontus_tax_export.xml\">&lib_language::_msg_prontus('_here')</a>");
+  &lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_operation_completed'));
 
   $BD->disconnect;
 
@@ -187,14 +187,14 @@ sub tax_export {
     my ($nom_envistas);
     my ($registros) = "<?xml version='1.0' encoding='utf-8'?>\n<taxdata>\n";
 
-    &lib_logproc::add_to_log_count("Preparando datos a exportar.");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_preparing_export_data'));
 
 
     $sql = "select SECC_ID, SECC_NOM, SECC_MOSTRAR, SECC_PORT, SECC_ORDEN, SECC_NOM4VISTAS from SECC order by SECC_ORDEN ASC, SECC_ID ASC";
 
     $salida_s = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id_s, $nom_s, $mostrar, $port, $orden, $nom4vistas));
 
-    &lib_logproc::add_to_log_count("Exportaci&oacute;n iniciada");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_export_started'));
     &lib_logproc::writeRule();
     while ($salida_s->fetch) {
         # secciones
@@ -211,7 +211,7 @@ sub tax_export {
         . "<posmapa>$orden</posmapa>\n";
 
         $TOT_REGS++;
-        &lib_logproc::add_to_log_count("Nro. de registros exportados: $TOT_REGS.");
+        &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_number_records_exported').": $TOT_REGS.");
 
         # temas
         $sql = "select TEMAS_ID, TEMAS_NOM, TEMAS_MOSTRAR, TEMAS_PORT, TEMAS_ORDEN, TEMAS_NOM4VISTAS from TEMAS WHERE TEMAS_IDSECC = $id_s order by TEMAS_NOM ASC, TEMAS_ID ASC";
@@ -248,7 +248,7 @@ sub tax_export {
                 . "</subtema>\n";
 
                 $TOT_REGS++;
-                &lib_logproc::add_to_log_count("Nro. de registros exportados: $TOT_REGS.");
+                &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_number_records_exported').": $TOT_REGS.");
             };
             $salida_st->finish;
             $registros .= "</tema>\n";

@@ -113,32 +113,32 @@ main: {
     $FORM{'_entidad'} = &glib_cgi_04::param('_entidad');
     $FORM{'_entidad'} = 'seccion' if ($FORM{'_entidad'} eq '');
     if ($FORM{'_entidad'} !~ /^(seccion|tema|subtema)$/) {
-        &glib_html_02::print_json_result(0, 'Tipo de entidad no es válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_entity_type'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'_entidad'} eq 'tema') {
         $FORM{'_secc_id'} = &glib_cgi_04::param('_secc_id');
         if ($FORM{'_secc_id'} !~ /^[0-9]+$/) {
-            &glib_html_02::print_json_result(0, 'Sección no es válida', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_section'), 'exit=1,ctype=1');
         };
     };
 
     if ($FORM{'_entidad'} eq 'subtema') {
         $FORM{'_tema_id'} = &glib_cgi_04::param('_tema_id');
         if ($FORM{'_tema_id'} !~ /^[0-9]+$/) {
-            &glib_html_02::print_json_result(0, 'Tema no es válido', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_topic'), 'exit=1,ctype=1');
         };
     };
 
 
     $FORM{'_id'}= &glib_cgi_04::param('_id');
     if (($FORM{'_id'} !~ /^[0-9]+$/) || (!$FORM{'_id'})) {
-        &glib_html_02::print_json_result(0, 'Id no válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_id'), 'exit=1,ctype=1');
     };
 
     $FORM{'_mostrar'}= &glib_cgi_04::param('_mostrar');
     if ($FORM{'_mostrar'} !~ /^[01]$/) {
-        &glib_html_02::print_json_result(0, 'Campo mostrar no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_show_field'), 'exit=1,ctype=1');
     };
     $FORM{'_mostrar'} = '' if (!$FORM{'_mostrar'});
 

@@ -106,12 +106,12 @@ main: {
 
     $FORM{'_ts'} = &glib_cgi_04::param('_ts');
     if ($FORM{'_ts'} !~ /^\d{14}$/) {
-        &glib_html_02::print_json_result(0, 'Artículo no válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_artic_invalid'), 'exit=1,ctype=1');
     };
 
     my $ports_ref = &artic_in_ports($FORM{'_ts'});
     if ($ports_ref !~ /^\s*$/) {
-        &glib_html_02::print_json_result(0, "Artículo no puede ser borrado porque se encuentra publicado en las sgtes. portadas:\n\n${ports_ref}", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_artic_not_erased_publicated').":\n\n${ports_ref}", 'exit=1,ctype=1');
 
     } else {
 
@@ -120,7 +120,7 @@ main: {
         my $base;
         ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
         if (! ref($base)) {
-            &glib_html_02::print_pag_result("Error",$msg_err_bd . '<br>No es posible eliminar los artículos seleccionados.',1,'exit=1,ctype=1,link=nolink');
+            &glib_html_02::print_pag_result("Error",$msg_err_bd . '<br>' . &lib_language::_msg_prontus('_not_possible_erase_artics'),1,'exit=1,ctype=1,link=nolink');
         };
 
         my $artic_obj = Artic->new(
@@ -128,7 +128,7 @@ main: {
                 'public_server_name' => $prontus_varglb::PUBLIC_SERVER_NAME,
                 'cpan_server_name' => $prontus_varglb::IP_SERVER,
                 'ts' => $FORM{'_ts'}, # si no va, asigna uno nuevo
-                'campos'=> '') || &glib_html_02::print_json_result(0, "Error inicializando objeto articulo: $Artic::ERR\n", 'exit=1,ctype=1');
+                'campos'=> '') || &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_obj_artic_init') . ": $Artic::ERR\n", 'exit=1,ctype=1');
 
         my %campos_xml = $artic_obj->get_xml_content();
         &call_dropbox_backup($FORM{'_ts'}, $campos_xml{'_seccion1'}, $campos_xml{'_tema1'}, $campos_xml{'_subtema1'});

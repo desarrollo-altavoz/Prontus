@@ -129,7 +129,7 @@ main:{
 
     &lib_logproc::flush_log();
     &lib_logproc::writeRule();
-    &lib_logproc::add_to_log_count("INICIANDO PROCESO DE REGENERACION DE BD");
+    &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_starting_regeneration_process_BD'));
 
     # Antes de regenerar, borrar toda la tabla.
     my ($sql, $ret);
@@ -148,19 +148,19 @@ main:{
                 $sql = 'VACUUM';
                 $base->do($sql);
             };
-            &lib_logproc::add_to_log("- Tabla De Articulos Eliminada");
+            &lib_logproc::add_to_log("- ".&lib_language::_msg_prontus('_artic_table_deleted'));
 
             # Re-crear estructura de la tabla ART
             my ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_art($base, $prontus_varglb::MOTOR_BD);
             &lib_logproc::add_to_log($msg_ret);
             if ($hay_err) {
-                &finishLoading("Error creando la estructura de la tabla de artículos, proceso abortado.");
-                &lib_logproc::handle_error("Error creando la estructura de la tabla de artículos, proceso abortado.");
+                &finishLoading(&lib_language::_msg_prontus('_error_creating_artic_table_struc_process_aborted'));
+                &lib_logproc::handle_error(&lib_language::_msg_prontus('_error_creating_artic_table_struc_process_aborted'));
             };
         };
 
         # Repoblarla
-        &lib_logproc::add_to_log("- Repoblando la tabla");
+        &lib_logproc::add_to_log("- ".&lib_language::_msg_prontus('_repopulating_table'));
         &lib_logproc::writeRule();
 
         &regenera_base($base);
@@ -168,14 +168,14 @@ main:{
         &lib_logproc::writeRule();
         $TOT_REGS = '0' if ($TOT_REGS eq '');
         $OK_REGS = '0' if ($OK_REGS eq '');
-        &lib_logproc::add_to_log_count("PROCESO FINALIZADO");
+        &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_process_completed'));
         &lib_logproc::writeRule();
-        &lib_logproc::add_to_log("Total Archivos Procesados: $TOT_REGS\nIngresados OK: $OK_REGS");
-        &lib_logproc::add_to_log_finish("Operación finalizada");
+        &lib_logproc::add_to_log(&lib_language::_msg_prontus('_total_processed_files').": $TOT_REGS\n".&lib_language::_msg_prontus('_entered_ok').": $OK_REGS");
+        &lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_operation_completed'));
 
     } else {
-        &finishLoading('Error: No se pudo borrar la tabla de articulos por completo. Proceso abortado.');
-        &lib_logproc::handle_error('Error: No se pudo borrar la tabla de articulos por completo. Proceso abortado.');
+        &finishLoading(&lib_language::_msg_prontus('_enable_delete_artic_table_process_aborted'));
+        &lib_logproc::handle_error(&lib_language::_msg_prontus('_enable_delete_artic_table_process_aborted'));
     };
 
     &finishLoading('');
@@ -211,7 +211,7 @@ sub regenera_base {
         };
         print STDERR "Procesando artics de [$dirfecha/xml]\n";
         if (-d "$ruta_dir/$dirfecha") {
-            &lib_logproc::add_to_log_count("Procesando artics de [$dirfecha/xml]");
+            &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_processing_articles')." [$dirfecha/xml]");
             &procesa_files("$ruta_dir/$dirfecha/xml", $base);
         };
         # while (<STDIN> !~ /\n/) {}; # debug

@@ -64,12 +64,12 @@ main: {
 
     # user no valido
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
 
@@ -78,13 +78,13 @@ main: {
   if ($FORM{'Sbm_ACCION'} =~ /^Exportar/i) {
 
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_CPAN/procs/prontus_tax_export_log.html";
-    &lib_logproc::log_init('Log de Exportación', 'Esta página muestra el avance del proceso de exportación de Secciones, Temas y Subtemas Prontus');
+    &lib_logproc::log_init(&lib_language::_msg_prontus('_export_log'), &lib_language::_msg_prontus('_page_shows_import_progress_sections,_prontus_topics_subtopics'));
 
     my $params = "\"$prontus_varglb::DIR_SERVER\" \"$FORM{'path_conf'}\"";
 
     # Para el nuevo sistema de manejo de procesos batch
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_tax_export.js";
-    my $msg = '{"status":0, "msg": "En proceso"}';
+    my $msg = '{"status":0, "msg": "'.&lib_language::_msg_prontus('_in_process').'"}';
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
     my $result_page = "..$prontus_varglb::DIR_CPAN/core/prontus_loading_tax_export.html";
 
@@ -92,7 +92,7 @@ main: {
   }
   else {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("ERROR","Solicitud de ejecución no válida.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_application_execution'));
   };
 
   exit;

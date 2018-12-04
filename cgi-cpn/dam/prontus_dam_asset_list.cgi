@@ -89,15 +89,15 @@ main: {
         # Acceso permitido para admin, publicador, redactor CPN
         if (($prontus_varglb::USERS_PERFIL ne 'A') && ($prontus_varglb::USERS_PERFIL ne 'P') && ($prontus_varglb::USERS_PERFIL ne 'E')){
                 print "Content-Type: text/html\n\n";
-                &glib_html_02::print_pag_result("Acceso a Area Restringida","La funcionalidad requerida está disponible sólo para usuarios registrados.", 'exit=1,ctype=1');
+                &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
         };
 
         if($FORM{'ts'} !~ /\d{14}/) {
-                &glib_html_02::print_pag_result('Error', 'TS inválido.', 'exit=1,ctype=1');
+                &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_invalid_ts'), 'exit=1,ctype=1');
         };
 
         if($FORM{'type'} ne 'foto') {
-                &glib_html_02::print_pag_result('Error', 'Tipo inválido.', 'exit=1,ctype=1');
+                &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_invalid_type'), 'exit=1,ctype=1');
         };
 
         my $plantilla = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . $dam_varglb::DIR_TMPL . $dam_varglb::TMPL_ASSET_LIST;
@@ -107,7 +107,7 @@ main: {
         my $msg_err_bd;
         ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
         if (! ref($BD)) {
-                &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'ctype=1');
+                &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err_bd,1,'ctype=1');
         };
 
 

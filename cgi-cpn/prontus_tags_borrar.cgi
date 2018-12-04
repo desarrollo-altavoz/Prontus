@@ -122,13 +122,13 @@ main: {
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
 
     $FORM{'_id_tag'} = &glib_cgi_04::param('_id_tag');
     if ($FORM{'_id_tag'} !~ /^(\d+)$/) {
-        &glib_html_02::print_json_result(0, 'ID del tag no es válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_tag_id'), 'exit=1,ctype=1');
     };
 
     # Conectar a BD
@@ -164,7 +164,7 @@ main: {
 sub do_delete {
 
     if (! &no_referenciada($FORM{'_id_tag'})) {
-        return 'Item está siendo utilizado en algún artículo. No se puede borrar.';
+        return &lib_language::_msg_prontus('_item _in_use_for_artic_unable_erase.');
     };
 
     my ($sql, $salida);
@@ -173,7 +173,7 @@ sub do_delete {
     $sql = "delete from TAGS where TAGS_ID = " . $FORM{'_id_tag'};
     unless( $BD->do($sql) ) {
         print STDERR $BD->errstr;
-        return 'Error eliminando tags de la base de datos';
+        return &lib_language::_msg_prontus('_error_deleting_tag_database');
     };
     return '';
 

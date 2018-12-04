@@ -59,7 +59,7 @@ main: {
 
 
     if ($prontus_varglb::ACTUALIZACIONES ne 'SI') {
-        &glib_html_02::print_pag_result('Actualizaciones automáticas','La funcionalidad requerida se encuentra deshabilitada por configuración del producto.',1,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_automatic_updates'),&lib_language::_msg_prontus('_required_functionality_disabled_product_configuration'),1,'exit=1,ctype=1');
     };
 
 
@@ -68,7 +68,7 @@ main: {
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida está disponible sólo para el administrador del sistema',1,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_administrator'),1,'exit=1,ctype=1');
     };
 
 
@@ -79,21 +79,21 @@ main: {
                     'path_conf'         => $FORM{'_path_conf'},
                     'document_root'     => $prontus_varglb::DIR_SERVER,
                     'just_status'       => '1')
-                    || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
+                    || &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_error_initializing_object_Update').": $Update::ERR", 1, 'exit=1,ctype=1');
 
     if (!$upd_obj->{last_version_disponible}) {
-        &glib_html_02::print_pag_result('Error','No se han detectado actualizaciones disponibles',1,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_avalaible_updates_undetected'),1,'exit=1,ctype=1');
     };
 
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_CPAN/procs/prontus_update_log.html";
-    &lib_logproc::log_init('Prontus Update', "Avance del proceso de actualización a Prontus " . $upd_obj->{last_version_disponible});
+    &lib_logproc::log_init(&lib_language::_msg_prontus('_prontus_update'), &lib_language::_msg_prontus('_advancing_process_upgrading_prontus') . $upd_obj->{last_version_disponible});
 
     my $params = "\"$prontus_varglb::DIR_SERVER\" \"$FORM{'_path_conf'}\"";
 
     # Para el nuevo sistema de manejo de procesos batch
     my $ret = &lib_loading::init('result_prontus_update.js');
     unless($ret) {
-        &glib_html_02::print_pag_result('Error','No se pudo escribir el archivo de respuesta',1,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_write_response_file'),1,'exit=1,ctype=1');
     }
     &lib_loading::update_loading('100', '0');
 

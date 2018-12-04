@@ -79,11 +79,17 @@ sub get_date_time {
   # Done                                                                       #
   ##############################################################################
 
-  my @Week_Days = ('Domingo','Lunes','Martes','Miercoles',
-                'Jueves','Viernes','Sabado');
+  my @Week_Days = (&lib_language::_msg_prontus('_sunday'),&lib_language::_msg_prontus('_monday')
+                ,&lib_language::_msg_prontus('_tuesday'),&lib_language::_msg_prontus('_wednesday')
+                ,&lib_language::_msg_prontus('_thursday'),&lib_language::_msg_prontus('_friday')
+                ,&lib_language::_msg_prontus('_saturday'));
 
-  my @Months = ('enero','febrero','marzo','abril','mayo','junio','julio',
-             'agosto','septiembre','octubre','noviembre','diciembre');
+  my @Months = (&lib_language::_msg_prontus('_january'),&lib_language::_msg_prontus('_february')
+                ,&lib_language::_msg_prontus('_march'),&lib_language::_msg_prontus('_april')
+                ,&lib_language::_msg_prontus('_may'),&lib_language::_msg_prontus('_june')
+                ,&lib_language::_msg_prontus('_july'),&lib_language::_msg_prontus('_august')
+                ,&lib_language::_msg_prontus('_september'),&lib_language::_msg_prontus('_october')
+                ,&lib_language::_msg_prontus('_november'),&lib_language::_msg_prontus('_december'));
 
 
   ($Second,$Minute,$Hour,$Month_Day,
@@ -267,7 +273,7 @@ sub des_normaliza_fecha {
    my($tiempo) = &POSIX::mktime(0,0,12,$dia,($mes - 1),($ano - 1900));
    my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($tiempo);
    $dia = $dia + 0; # Para extraer los ceros de adelante.
-   return $dias[$wday] . " $dia de " . $meses[($mes - 1)] . " de $ano";
+   return $dias[$wday] . " $dia of " . $meses[($mes - 1)] . " of $ano";
 
  };
 # ---------------------------------------------------------------

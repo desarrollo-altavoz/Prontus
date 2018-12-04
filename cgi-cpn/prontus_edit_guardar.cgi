@@ -86,7 +86,7 @@ main:{
   ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
   # Acceso permitido solo para admin
   if (($prontus_varglb::PRONTUS_EDITOR ne 'SI') or $prontus_varglb::USERS_PERFIL ne 'A') {
-    &glib_html_02::print_json_result(0, "La funcionalidad requerida está disponible sólo para el administrador del sistema.", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
   };
 
   if ($prontus_varglb::IP_SERVER ne '') { # implica llamada desde ambiente web. # 1.23
@@ -118,7 +118,7 @@ main:{
   # Para el caso de guardar archivo existente
   if ($FORM{'Sbm_ACCION'} eq 'Guardar') {
     if ( (!(-f "$prontus_varglb::DIR_SERVER$FORM{'path_file'}")) || ($FORM{'path_file'} =~ /\.\./) )  {
-      &glib_html_02::print_json_result(0, "Archivo no válido.", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_file'), 'exit=1,ctype=1');
     };
 
     $FORM{'TEXT_FILE'} = &glib_cgi_04::param('text_file'); # viene siempre en formato dos
@@ -133,7 +133,7 @@ main:{
     &lib_prontus::write_log('Guardar', 'Editor', "$prontus_varglb::DIR_SERVER$FORM{'path_file'}");
     
     #my $loc = 'Location: prontus_edit_file.' . $prontus_varglb::EXTENSION_CGI . "?path_conf=$FORM{'path_conf'}&path_file=$FORM{'path_file'}&save_alert=1&curr_dir=$FORM{'curr_dir'}\n\n";
-    &glib_html_02::print_json_result(1, "El archivo ha sido guardado", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_file_saved'), 'exit=1,ctype=1');
 
   # Para el caso de crear un nuevo archivo
   } elsif ($FORM{'Sbm_ACCION'} eq 'Nuevo') {
@@ -144,61 +144,61 @@ main:{
 
     # Si comienza con punto, no se puede crear
     if($FORM{'NOM_NEW_FILE'} =~ /^\./) {
-      &glib_html_02::print_json_result(0, "El nombre no puede comenzar con punto", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_start_restriction_name'), 'exit=1,ctype=1');
     }
 
     # Se revisa que el nombre sea valido
     if(!&lib_edit::is_editable($FORM{'NOM_NEW_FILE'})) {
       my $edit_permitidos = $lib_edit::EDIT_PERMITIDOS;
       $edit_permitidos =~ s/,/, /g;
-      &glib_html_02::print_json_result(0, "Extensión no válida, sólo se permiten las siguientes extensiones:<br/>$edit_permitidos", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_extension').":<br/>$edit_permitidos", 'exit=1,ctype=1');
     }
 
     # Se chequea el nombre del nuevo archivo
     if (! &lib_edit::check_name($FORM{'NOM_NEW_FILE'})) {
-      &glib_html_02::print_json_result(0, "El nombre no es válido", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_name'), 'exit=1,ctype=1');
     }
 
     # Se chequea existencia del archivo
     $path_new_file = "$prontus_varglb::DIR_SERVER$FORM{'curr_dir'}/$FORM{'NOM_NEW_FILE'}";
     if (-f $path_new_file) {
-      &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un archivo existente, especifique uno distinto por favor.", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_file_name_already_exist_enter_another'), 'exit=1,ctype=1');
 
     } elsif (-d $path_new_file) {
-      &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un directorio existente, especifique uno distinto por favor.", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_directory_name_already_exist_enter_another'), 'exit=1,ctype=1');
     }
 
     $path_new_file = "$prontus_varglb::DIR_SERVER$FORM{'curr_dir'}/$FORM{'NOM_NEW_FILE'}";
-    &glib_fildir_02::write_file($path_new_file, 'Ingrese el texto del archivo.');
+    &glib_fildir_02::write_file($path_new_file, &lib_language::_msg_prontus('_enter_file_name'));
 
     #$path_new_file =~ s/$prontus_varglb::DIR_SERVER//;
     #my $loc = 'Location: prontus_edit_file.' . $prontus_varglb::EXTENSION_CGI . "?path_conf=$FORM{'path_conf'}&path_file=$path_new_file&refresh_arbol=1&curr_dir=$FORM{'curr_dir'}\n\n";
     &lib_prontus::write_log('Nuevo', 'Editor', $path_new_file);
-    &glib_html_02::print_json_result(1, "El archivo ha sido creado", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_file_has_been_created'), 'exit=1,ctype=1');
 
   # Para el caso de crear un nuevo directorio
   } elsif ($FORM{'Sbm_ACCION'} eq 'CrearDir') {
 
     # Se chequea el nombre del nuevo archivo
     if (! &lib_edit::check_name($FORM{'NOM_NEW_FILE'})) {
-      &glib_html_02::print_json_result(0, "El nombre no es válido", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_name'), 'exit=1,ctype=1');
     }
 
     # Se chequea existencia del archivo
     my $path_new_dir = "$prontus_varglb::DIR_SERVER$FORM{'curr_dir'}/$FORM{'NOM_NEW_FILE'}";
     if (-f $path_new_dir) {
-      &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un archivo existente, especifique uno distinto por favor.", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_file_name_already_exist_enter_another'), 'exit=1,ctype=1');
 
     } elsif (-d $path_new_dir) {
-      &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un directorio existente, especifique uno distinto por favor.", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_directory_name_already_exist_enter_another'), 'exit=1,ctype=1');
     }
 
     &glib_fildir_02::check_dir($path_new_dir);
     &lib_prontus::write_log('NewDir', 'Editor', $path_new_dir);
-    &glib_html_02::print_json_result(1, "El directorio ha sido creado", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_directory_has_been_created'), 'exit=1,ctype=1');
 
   } else {
-    &glib_html_02::print_json_result(0, "Acción no válida: [".$FORM{'Sbm_ACCION'}."]", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_action').": [".$FORM{'Sbm_ACCION'}."]", 'exit=1,ctype=1');
   };
 };
 

@@ -25,21 +25,21 @@ sub check_portada {
     if (-f $path_plt) {
         if ($path_plt =~ /\/port\/_(.*?)$/is) {
             print STDERR "Esta interfaz no está disponible para las portadas que comienzan con _ (underscore).\n";
-            return "Esta interfaz no est&aacute; disponible para las portadas que comienzan con _ (underscore).\n";
+            return &lib_language::_msg_prontus('_not_available_interface_front_page')."\n";
         };
 
         $path_plt =~ /\/port\/(.*?\..*?)$/;
         my $port = $1;
         if (!$prontus_varglb::PORT_DRAGANDROP{$port}) {
             print STDERR "La plantilla tiene deshabilitada la interfaz drag & drop via CFG.\n";
-            return "La plantilla no tiene habilitada la interfaz drag & drop en la configuraci&oacute;n.";
+            return &lib_language::_msg_prontus('_template_not_enabled_drag_and_drop');
         };
         
         my $buffer_plt = &glib_fildir_02::read_file($path_plt);
 
         if ($buffer_plt =~ /<!--cfg_dd=no-->/isg) {
             print STDERR "La plantilla tiene deshabilitada la interfaz drag & drop.\n";
-            return "La plantilla tiene deshabilitada la interfaz drag & drop.";
+            return &lib_language::_msg_prontus('_template_disabled_drag_and_drop');
         }
         
         my %loops = &_get_loops($buffer_plt);
@@ -52,28 +52,28 @@ sub check_portada {
                     my $html = $1;
                     if ($html !~ /<head>.*?<\/head>/isg) {
                         print STDERR "La plantilla esta incompleta, no contiene la etiqueta &lt;head&gt;&lt;/head&gt;.\n";
-                        return "La plantilla est&aacute; incompleta, no contiene la etiqueta &lt;head&gt;&lt;/head&gt;.\n";
+                        return &lib_language::_msg_prontus('_tempalte_incomplete_label')." &lt;head&gt;&lt;/head&gt;.\n";
                     };
                     if ($html !~ /<body.*?>.*?<\/body>/isg) {
                         print STDERR "La plantilla esta incompleto, no contiene la etiqueta &lt;body&gt;&lt;/body&gt;.\n";
-                        return "La plantilla est&aacute; incompleta, no contiene la etiqueta &lt;body&gt;&lt;/body&gt;.\n";
+                        return &lib_language::_msg_prontus('_tempalte_incomplete_label')." &lt;body&gt;&lt;/body&gt;.\n";
                     };
                 } else {
                     print STDERR "La plantilla esta incompleta, no contiene la etiqueta &lt;html&gt;&lt;/html&gt;.\n";
-                    return "La plantilla est&aacute; incompleta, no contiene la etiqueta &lt;html&gt;&lt;/html&gt;.\n";
+                    return &lib_language::_msg_prontus('_tempalte_incomplete_label')." &lt;html&gt;&lt;/html&gt;.\n";
                 };
                 return '';
             } else {
                 print STDERR "check_portada: la plantilla tiene loops repetidos.\n";
-                return "La plantilla tiene loops repetidos, por lo tanto no podr&aacute; ser usada la interfaz drag & drop.";
+                return &lib_language::_msg_prontus('_repeated_loops_no_drag_and_drop');
             };
         } else {
             print STDERR "check_portada: la plantilla debe tener al menos 1 loop.\n";
-            return "La plantilla debe tener al menos 1 loop para poder utilizarla en la interfaz drag & drop.";
+            return &lib_language::_msg_prontus('_template_min_loop_drag_and_drop');
         };
     } else {
         print STDERR "check_portada: la plantilla [$path_plt] no existe.\n";
-        return "La plantilla no existe.";
+        return &lib_language::_msg_prontus('_template_no_exist');
     };
 };
 

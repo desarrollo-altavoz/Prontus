@@ -124,7 +124,7 @@ $lib_logproc::MODO_WEB = $MODO_WEB;
 # Init
 &lib_logproc::flush_log();
 &lib_logproc::writeRule();
-&lib_logproc::add_to_log_count("INICIANDO PROCESO DE ACTUALIZACION DE ARTICULOS");
+&lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_update_artic_process_init'));
 
 # Valida las fechas
 &valida_y_ajusta_fechaini();
@@ -141,7 +141,7 @@ $lib_logproc::MODO_WEB = $MODO_WEB;
 # reparsea articulos en base a su tpl.
 &reparsea_artic();
 
-&lib_logproc::add_to_log_count("PROCESO DE ACTUALIZACION DE ARTICULOS FINALIZADO");
+&lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_update_artic_process_finished'));
 &lib_logproc::writeRule();
 
 $TOT_REGS = '0' if ($TOT_REGS eq '');
@@ -150,8 +150,8 @@ $TOT_REGS_CON_ERR = '0' if ($TOT_REGS_CON_ERR eq '');
 print STDERR "TOT_REGS[$TOT_REGS]\n";
 print STDERR "TOT_REGS_CON_ERR[$TOT_REGS_CON_ERR]\n";
 
-&lib_logproc::add_to_log("Nro. de registros procesados: $TOT_REGS\nRegistros con Errores: $TOT_REGS_CON_ERR");
-&lib_logproc::add_to_log_finish("Operaci&oacute;n finalizada.");
+&lib_logproc::add_to_log(&lib_language::_msg_prontus('_num_processed_records') . ": $TOT_REGS\n" . &lib_language::_msg_prontus('_error_records') . ": $TOT_REGS_CON_ERR");
+&lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('_finished_operation'));
 
 &lib_logproc::finishLoading('', $TOT_REGS);
 exit;
@@ -170,7 +170,7 @@ sub reparsea_artic {
     ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($base)) {
         &lib_logproc::finishLoading("Error: $msg_err_bd\nProceso abortado.");
-        &lib_logproc::handle_error("Error: $msg_err_bd\nProceso abortado.");
+        &lib_logproc::handle_error(&lib_language::_msg_prontus('_msg_generic_error') . ": $msg_err_bd\n". &lib_language::_msg_prontus('_process_aborted'));
     };
 
     my ($ruta_dir) = $prontus_varglb::DIR_SERVER
@@ -200,8 +200,8 @@ sub reparsea_artic {
         #~ print STDERR "$ruta_dir/$dirfecha/xml\n";
         if (-d "$ruta_dir/$dirfecha/xml") {
             $dircounter++;
-            &messageLoading('Directorios Procesados: <b>' . $dircounter . '</b>');
-            &lib_logproc::add_to_log_count("Procesando DIR [$dirfecha/xml]");
+            &messageLoading(&lib_language::_msg_prontus('_processed_directories')': <b>' . $dircounter . '</b>');
+            &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_processing_dir') . " [$dirfecha/xml]");
             # print STDERR "Procesando DIR [$dirfecha/xml]\n";
             &procesa_files("$ruta_dir/$dirfecha/xml", $dirfecha);
         };
@@ -210,9 +210,9 @@ sub reparsea_artic {
     # regenera taxonomia (artics relacionados)
     if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
         &lib_logproc::writeRule();
-        &lib_logproc::add_to_log_count("Regenerando art&iacute;culos relacionados...");
+        &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_regen_related_artics'));
         &regen_taxonomia(\%TAXONOMIAS_TO_REGEN, $base);
-        &lib_logproc::add_to_log_count("Art&iacute;culos relacionados...OK");
+        &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_rel_artics_ok'));
     };
 
     $base->disconnect;
@@ -243,7 +243,7 @@ sub procesa_files {
                             'cpan_server_name'  => $prontus_varglb::IP_SERVER,
                             'document_root'     => $prontus_varglb::DIR_SERVER,
                             'ts'                => $ts,
-                            'campos'=>{}) || &registra_artic_error("\t\t\t\tError inicializando objeto articulo: $Artic::ERR TS[$ts]");
+                            'campos'=>{}) || &registra_artic_error("\t\t\t\t" . &lib_language::_msg_prontus('_error_obj_artic_init') . ": $Artic::ERR TS[$ts]");
 
             next if (!ref($artic_obj));
 
@@ -265,14 +265,14 @@ sub procesa_files {
                     if($MULTIVISTAS_DEFAULT) {
                         # Generar vista (a partir del xml)
                         $artic_obj->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
-                                || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
+                                || &registra_artic_error("\t\t\t\t" . &lib_language::_msg_prontus('_msg_generic_error') . ": $Artic::ERR");
 
                     }
 
                     foreach my $mv (keys %MULTIVISTAS_REGEN) {
                         # Generar vista (a partir del xml)
                         $artic_obj->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
-                                || &registra_artic_error("\t\t\t\tError: $Artic::ERR");
+                                || &registra_artic_error("\t\t\t\t". &lib_language::_msg_prontus('_msg_generic_error') . ": $Artic::ERR");
                     }
 
                     my $secc4tax = $campos_xml{'_seccion1'};
@@ -290,7 +290,7 @@ sub procesa_files {
         };# if
 
     };# foreach
-    &lib_logproc::add_to_log("\t\t\t\t$count_files_in_dir archivos procesados en el DIR") if ($count_files_in_dir);
+    &lib_logproc::add_to_log("\t\t\t\t$count_files_in_dir ". &lib_language::_msg_prontus('_dir_processed_files')) if ($count_files_in_dir);
 };
 
 # --------------------------------------------------------------------

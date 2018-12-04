@@ -111,10 +111,10 @@ main: {
 
 
     if (! &lib_prontus::valida_prontus($FORM{'_prontus_id'})) {
-        &glib_html_02::print_pag_result("Error",'Error en los datos enviados - 901',0,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_901_error_data_sent'),0,'exit=1,ctype=1');
     };
     if (! -d "$coment_varglb::DIR_SERVER/$FORM{'_prontus_id'}") {
-        &glib_html_02::print_pag_result("Error",'Error en los datos enviados - 902',0,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_902_error_data_sent'),0,'exit=1,ctype=1');
     };
 
     # Carga variables de configuracion.
@@ -125,13 +125,13 @@ main: {
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
     # lee cfg especifico de coments
     my ($options_tipo, $msg_err, $hash_tipos_ref) = &lib_coment::get_objtipos($coment_varglb::DIR_SERVER, $FORM{'OBJTIPO'}, $FORM{'_prontus_id'}); # desde el cfg
     if ($msg_err) {
-        &glib_html_02::print_pag_result("Error",$msg_err,0,'exit=1,ctype=1,link=nolink');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err,0,'exit=1,ctype=1,link=nolink');
     };
     %HASH_TIPOS = %$hash_tipos_ref;
     my ($pagina) = &generar_listado();
@@ -191,7 +191,8 @@ sub generar_listado {
     $pagina =~ s/%%PAGINACION%%/$paginacion/g;
   }
   else {
-    $pagina =~ s/%%PAGINACION%%/<strong>Sin resultados.<\/strong>/;
+    my $str=&lib_language::_msg_prontus('_no_results');
+    $pagina =~ s/%%PAGINACION%%/<strong>$str<\/strong>/;
     $pagina =~ s/%%PAGINACION%%//g;
   };
 
@@ -207,7 +208,7 @@ sub make_lista {
     my $msg_err_bd;
     ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($BD)) {
-        &glib_html_02::print_pag_result("Error",$msg_err_bd,0,'exit=1,ctype=1,link=nolink');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err_bd,0,'exit=1,ctype=1,link=nolink');
     };
 
     &carga_tabla_secc();
@@ -391,7 +392,7 @@ sub generar_fila {
     # ver solo opin. de este item
     # my $lnk_vermas = "<a href=\"/cgi-cpn/coment/coment_admin.cgi?OBJID=$hash_data{'COMENT_OBJID'}\"><img src=\"/coment/cpan/imag/ver.gif\" width=\"23\" height=\"14\" border=\"0\" /></a>";
     # my $lnk_vermas = "<a href=\"/cgi-cpn/coment/coment_admin.cgi?OBJTIPO=$hash_data{'COMENT_OBJTIPO'}&OBJID=$hash_data{'COMENT_OBJID'}\"><div class=\"vermas\"></div></a>";
-    my $lnk_vermas = "<a title=\"Ver m&aacute;s comentarios de este art&iacute;culo\" href=\"coment_admin.cgi?OBJTIPO=$hash_data{'COMENT_OBJTIPO'}&amp;OBJID=$hash_data{'COMENT_OBJID'}&amp;_prontus_id=$FORM{'_prontus_id'}\"><span class=\"vermas\"></span></a>";
+    my $lnk_vermas = "<a title=\"".&lib_language::_msg_prontus('_see_more_artic_comments')."\" href=\"coment_admin.cgi?OBJTIPO=$hash_data{'COMENT_OBJTIPO'}&amp;OBJID=$hash_data{'COMENT_OBJID'}&amp;_prontus_id=$FORM{'_prontus_id'}\"><span class=\"vermas\"></span></a>";
     $fila =~ s/%%LNK_VERMAS%%/$lnk_vermas/ig;
 
     # status
@@ -523,17 +524,17 @@ sub generate_pagination_links {
   # la anterior y la siguiente, si aplican
   if ($page > 1) {
     $links = "<a href=\"$lnk_base&amp;page=" .
-              ($page - 1) . "\"><strong>&laquo; Anterior</strong></a>&nbsp;&nbsp;" .
+              ($page - 1) . "\"><strong>&laquo; ".&lib_language::_msg_prontus('_previous')."</strong></a>&nbsp;&nbsp;" .
               $links;
   };
 
   if ($page < $maxPages) {
     $links = $links .
              "&nbsp;&nbsp;<a href=\"$lnk_base&amp;page=" .
-             ($page + 1) . "\"><strong>Siguiente &raquo;</strong></a>";
+             ($page + 1) . "\"><strong>".&lib_language::_msg_prontus('_next')." &raquo;</strong></a>";
   };
 
-  $links = "<strong>Resultados:</strong> $desde_nroreg a $hasta_nroreg de $totalRecords (M&aacute;s recientes primero)<br/><strong>P&aacute;ginas</strong>: $links";
+  $links = "<strong>".&lib_language::_msg_prontus('_results').":</strong> $desde_nroreg to $hasta_nroreg of $totalRecords (".&lib_language::_msg_prontus('_newest_first').")<br/><strong>".&lib_language::_msg_prontus('_pages')."</strong>: $links";
 
   return $links;
 };

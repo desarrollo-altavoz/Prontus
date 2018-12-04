@@ -294,9 +294,9 @@ if ($PRONTUS_DIR =~ /^(.+)(\/[^\/]+)$/) {
   $PRONTUS_DIR[0] = $2; # (comentar para que no indexe de nuevo las noticias)
 }else{
   if($INVOCACION eq 'web') {
-    print "Directorio Prontus no valido.\n";
+    print &lib_language::_msg_prontus('_invalid_prontus_directory')."\n";
   } else {
-    print STDERR "Directorio Prontus no valido [$PRONTUS_DIR].\n";
+    print STDERR &lib_language::_msg_prontus('_invalid_prontus_directory')." [$PRONTUS_DIR].\n";
   }
   exit;
 };
@@ -314,9 +314,9 @@ if (-f "$SEARCH_DIR/$SEMAFORO_FILENAME") {
   # (0: $dev, 1: $ino, 2: $mode, 3: $nlink, 4: $uid, 5: $gid, 6: $rdev, 7: $size, 8: $atime, 9: $mtime, 10: $ctime, 11: $blksize, 12: $blocks).
   if ((stat("$SEARCH_DIR/$SEMAFORO_FILENAME"))[9] > (time - 43200)) {
     if ($INVOCACION eq 'web') {
-      print "<p>*** Semaforo activo. Hay otro proceso de indexaci&oacute;n corriendo. ***</p>\n";
+      print "<p>*** ".&lib_language::_msg_prontus('_active_semaphore')." ***</p>\n";
     }else{
-      print "Semaforo activo. Hay otro proceso de indexaci&oacute;n corriendo.\n";
+      print &lib_language::_msg_prontus('_active_semaphore')."\n";
     };
     exit;
   };
@@ -338,9 +338,9 @@ foreach my $prontus (@PRONTUS_DIR) {
   $PRONTUS = $prontus; # Esto es para visibilidad de esta variable dentro de las rutinas.
   %ANOS = ();
   # print "Indexando $PRONTUS "; # debug
-  if ($INVOCACION eq 'web') { print "<p><B>&raquo; Indexando $PRONTUS</B></p> \n"; };
+  if ($INVOCACION eq 'web') { print "<p><B>&raquo; ".&lib_language::_msg_prontus('_indexing')." $PRONTUS</B></p> \n"; };
   if (! -d "$ROOTDIR$PRONTUS") {
-    if ($INVOCACION eq 'web') { print "<p>Directorio $PRONTUS no existe en web server</p> \n"; };
+    if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_directory')." $PRONTUS ".&lib_language::_msg_prontus('_no exist_in_server')."</p> \n"; };
     next;
   };
   # print "$PRONTUS\n"; # debug
@@ -370,16 +370,16 @@ foreach my $prontus (@PRONTUS_DIR) {
     # Crea el directorio para este indice.
     &lib_search::crea_dir("$SEARCH_DIR$PRONTUS/$ANO");
     # Inicia el proceso de indexado global.
-    if ($INVOCACION eq 'web') { print "<p>Buscando art&iacute;culos...</p> \n"; };
+    if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_searching_artic')."...</p> \n"; };
     &busca_articulos("$ROOTDIR$PRONTUS/site/artic");
     # Escribe indices de palabras.
-    if ($INVOCACION eq 'web') { print "<p>Escribiendo &iacute;ndices de palabras...</p> \n"; };
+    if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_writing_words_index')."...</p> \n"; };
     &escribe_palabras("$SEARCH_DIR$PRONTUS/$ANO");
     # Genera cross-index de palabras.
-    if ($INVOCACION eq 'web') { print "<p>Escribiendo &iacute;ndices cruzados...</p> \n"; };
+    if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_writing_cross_index')."...</p> \n"; };
     &genera_wordsindex("$SEARCH_DIR$PRONTUS/$ANO");
     # Escribe los archivos definitivos.
-    if ($INVOCACION eq 'web') { print "<p>Sustituyendo archivos &iacute;ndice...</p> \n"; };
+    if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_replacing_index_files')."...</p> \n"; };
     move("$SEARCH_DIR$PRONTUS/$ANO/$WORDS_FILENAME.tmp","$SEARCH_DIR$PRONTUS/$ANO/$WORDS_FILENAME");
     move("$SEARCH_DIR$PRONTUS/$ANO/$CARS_FILENAME.tmp","$SEARCH_DIR$PRONTUS/$ANO/$CARS_FILENAME");
     move("$SEARCH_DIR$PRONTUS/$ANO/$FILES_FILENAME.tmp","$SEARCH_DIR$PRONTUS/$ANO/$FILES_FILENAME");
@@ -387,7 +387,7 @@ foreach my $prontus (@PRONTUS_DIR) {
     move("$SEARCH_DIR$PRONTUS/$ANO/$WORDSINDEX_FILENAME.tmp","$SEARCH_DIR$PRONTUS/$ANO/$WORDSINDEX_FILENAME");
     unlink "$SEARCH_DIR$PRONTUS/$ANO/$FILESINDEX_FILENAME.tmp";
     unlink "$SEARCH_DIR$PRONTUS/$ANO/$FILESINDEXF_FILENAME.tmp"; # 1.19
-    if ($INVOCACION eq 'web') { print "<p>&raquo; FIN de indexaci&oacute;n de $PRONTUS</p> \n"; };
+    if ($INVOCACION eq 'web') { print "<p>&raquo; ".&lib_language::_msg_prontus('_indexing_completed')." $PRONTUS</p> \n"; };
   };
   # print "\n"; # debug
 };
@@ -430,15 +430,15 @@ if ($#RAW_DIR >= 0) {
       # 1.10 Verifica si es necesario indexar.
       if ($MTIME < &maxtime("$ROOTDIR$DIR")) {
         # print "Indexando $DIR\n"; # debug
-        if ($INVOCACION eq 'web') { print "<p><b>&raquo; Indexando $DIR</b></p> \n"; };
+        if ($INVOCACION eq 'web') { print "<p><b>&raquo; ".&lib_language::_msg_prontus('_indexing')." $DIR</b></p> \n"; };
         if (! -d "$ROOTDIR$DIR") {
-          if ($INVOCACION eq 'web') { print "<p>Directorio $DIR no existe en web server</p> \n"; };
+          if ($INVOCACION eq 'web') { print "<p>"&lib_language::_msg_prontus('_directory')" $DIR ".&lib_language::_msg_prontus('_no exist_in_server')."</p> \n"; };
           next;
         };
         open FILES, ">>$SEARCH_DIR/$RAW_DIRNAME/0000/$FILES_FILENAME.tmp";   # Archivo de articulos.
         open FILESINDEX, ">>$SEARCH_DIR/$RAW_DIRNAME/0000/$FILESINDEX_FILENAME.tmp"; # Archivo indice de articulos.
         open FILESINDEXF, ">>$SEARCH_DIR/$RAW_DIRNAME/0000/$FILESINDEXF_FILENAME.tmp"; # 1.19 Archivo indice de articulos para busqueda por frases.
-        if ($INVOCACION eq 'web') { print "<p>Buscando art&iacute;culos...</p> \n"; };
+        if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_searching_artic')."...</p> \n"; };
         &busca_articulos_raw("$ROOTDIR$DIR");
         close FILES;
         close FILESINDEX;
@@ -448,19 +448,19 @@ if ($#RAW_DIR >= 0) {
     };
     if ($raws_indexados) {
       # Escribe indices de palabras.
-      if ($INVOCACION eq 'web') { print "<p>Escribiendo &iacute;ndices de palabras...</p> \n"; };
+      if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_writing_words_index')."...</p> \n"; };
       &escribe_palabras("$SEARCH_DIR/$RAW_DIRNAME/0000");
       # Genera cross-index de palabras.
-      if ($INVOCACION eq 'web') { print "<p>Escribiendo &iacute;ndices cruzados...</p> \n"; };
+      if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_writing_cross_index')."...</p> \n"; };
       &genera_wordsindex("$SEARCH_DIR/$RAW_DIRNAME/0000");
       # Escribe los archivos definitivos.
-      if ($INVOCACION eq 'web') { print "<p>Sustituyendo archivos &iacute;ndice...</p> \n"; };
+      if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_replacing_index_files')."...</p> \n"; };
       move("$SEARCH_DIR/$RAW_DIRNAME/0000/$WORDS_FILENAME.tmp","$SEARCH_DIR/$RAW_DIRNAME/0000/$WORDS_FILENAME");
       move("$SEARCH_DIR/$RAW_DIRNAME/0000/$CARS_FILENAME.tmp","$SEARCH_DIR/$RAW_DIRNAME/0000/$CARS_FILENAME");
       move("$SEARCH_DIR/$RAW_DIRNAME/0000/$FILES_FILENAME.tmp","$SEARCH_DIR/$RAW_DIRNAME/0000/$FILES_FILENAME");
       move("$SEARCH_DIR/$RAW_DIRNAME/0000/$WORDSINDEX_FILENAME.tmp","$SEARCH_DIR/$RAW_DIRNAME/0000/$WORDSINDEX_FILENAME");
       unlink "$SEARCH_DIR/$RAW_DIRNAME/0000/$FILESINDEX_FILENAME.tmp";
-      if ($INVOCACION eq 'web') { print "<p>&raquo; FIN de indexaci&oacute;n de raw dirs</p> \n"; };
+      if ($INVOCACION eq 'web') { print "<p>&raquo; ".&lib_language::_msg_prontus('_raw_index_completed')."</p> \n"; };
     };
   };
   # print "\n"; # debug
@@ -478,11 +478,11 @@ if ($#URL_DIR >= 0) {
   unlink "$SEARCH_DIR/$URL_DIRNAME/0000/$FILES_FILENAME.tmp";
   unlink "$SEARCH_DIR/$URL_DIRNAME/0000/$FILESINDEX_FILENAME.tmp";
   foreach my $i (@URL_DIR) {
-    if ($INVOCACION eq 'web') { print "<p><b>&raquo; Indexando $i: " .$CFG{"URL_DIR_$i"}. "</b></p> \n"; };
+    if ($INVOCACION eq 'web') { print "<p><b>&raquo; ".&lib_language::_msg_prontus('_indexing')." $i: " .$CFG{"URL_DIR_$i"}. "</b></p> \n"; };
     open FILES, ">>$SEARCH_DIR/$URL_DIRNAME/0000/$FILES_FILENAME.tmp";   # Archivo de articulos.
     open FILESINDEX, ">>$SEARCH_DIR/$URL_DIRNAME/0000/$FILESINDEX_FILENAME.tmp"; # Archivo indice de articulos.
     open FILESINDEXF, ">>$SEARCH_DIR/$URL_DIRNAME/0000/$FILESINDEXF_FILENAME.tmp"; # 1.19 Archivo indice de articulos para busqueda por frases.
-    if ($INVOCACION eq 'web') { print "<p>Leyendo p&aacute;ginas...</p> \n<pre>"; };
+    if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_reading_pages')."...</p> \n<pre>"; };
     $PROFUNDIDAD = 0; # 1.14
     &recursiveSpider($CFG{"URL_DIR_$i"},$CFG{"URL_SCOPE_$i"});
     if ($INVOCACION eq 'web') { print "<\/pre>\n"; };
@@ -491,13 +491,13 @@ if ($#URL_DIR >= 0) {
     close FILESINDEXF; # 1.19
   };
   # Escribe indices de palabras.
-  if ($INVOCACION eq 'web') { print "<p>Escribiendo &iacute;ndices de palabras...</p> \n"; };
+  if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_writing_words_index')."...</p> \n"; };
   &escribe_palabras("$SEARCH_DIR/$URL_DIRNAME/0000");
   # Genera cross-index de palabras.
-  if ($INVOCACION eq 'web') { print "<p>Escribiendo &iacute;ndices cruzados...</p> \n"; };
+  if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_writing_cross_index')."...</p> \n"; };
   &genera_wordsindex("$SEARCH_DIR/$URL_DIRNAME/0000");
   # Escribe los archivos definitivos.
-  if ($INVOCACION eq 'web') { print "<p>Sustituyendo archivos &iacute;ndice...</p> \n"; };
+  if ($INVOCACION eq 'web') { print "<p>".&lib_language::_msg_prontus('_replacing_index_files')."...</p> \n"; };
   move("$SEARCH_DIR/$URL_DIRNAME/0000/$WORDS_FILENAME.tmp","$SEARCH_DIR/$URL_DIRNAME/0000/$WORDS_FILENAME");
   move("$SEARCH_DIR/$URL_DIRNAME/0000/$CARS_FILENAME.tmp","$SEARCH_DIR/$URL_DIRNAME/0000/$CARS_FILENAME");
   move("$SEARCH_DIR/$URL_DIRNAME/0000/$FILES_FILENAME.tmp","$SEARCH_DIR/$URL_DIRNAME/0000/$FILES_FILENAME");
@@ -507,12 +507,12 @@ if ($#URL_DIR >= 0) {
   move("$SEARCH_DIR/$URL_DIRNAME/0000/$WORDSINDEX_FILENAME.tmp","$SEARCH_DIR/$URL_DIRNAME/0000/$WORDSINDEX_FILENAME");
   unlink "$SEARCH_DIR/$URL_DIRNAME/0000/$FILESINDEX_FILENAME.tmp";
   unlink "$SEARCH_DIR/$URL_DIRNAME/0000/$FILESINDEXF_FILENAME.tmp"; # 1.19
-  if ($INVOCACION eq 'web') { print "<p>&raquo; FIN de indexaci&oacute;n de urls</p> \n"; };
+  if ($INVOCACION eq 'web') { print "<p>&raquo; ".&lib_language::_msg_prontus('_end_indexing_urls')."</p> \n"; };
   # print "\n"; # debug
 };
 
 if ($INVOCACION eq 'web') {
-  print "<p>*** Fin ***</p>\n";
+  print "<p>*** ".&lib_language::_msg_prontus('_end')." ***</p>\n";
   #print "<a href='#' onclick='parent.Opciones.cerrarColorbox();' style='color:#0099ff;; font-weight:bold; text-decoration:none;'>[Cerrar]</a>\n";
 };
 # if ($INVOCACION eq 'web') { print "<p>*** Fin ***</p>\n"; };
@@ -1097,9 +1097,9 @@ sub get_contents_raw {
   }elsif ($buffer =~ /<title>(.+?)<\/title>/is) {
     $titular = $1;
   }else{
-    $titular = 'Sin T&iacute;tulo';
+    $titular = &lib_language::_msg_prontus('_no_title');
   };
-  if ($titular =~ /^\s*$/) { $titular = 'Sin T&iacute;tulo'; }; # 1.14
+  if ($titular =~ /^\s*$/) { $titular = &lib_language::_msg_prontus('_no_title'); }; # 1.14
   # Intenta descubrir una fechap.
   # Formato PX <_FECHAP>20050109</_FECHAP>
   if ($buffer =~ /<_FECHAP>(\d+)<\/_FECHAP>/s) {

@@ -88,7 +88,7 @@ main:{
   # Acceso permitido solo para admin
   if (($prontus_varglb::PRONTUS_EDITOR ne 'SI') or $prontus_varglb::USERS_PERFIL ne 'A') {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Acceso a Area Restringida","La funcionalidad requerida está disponible sólo para el administrador del sistema.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_administrator'));
     exit;
   };
 
@@ -97,7 +97,7 @@ main:{
   # Validaciones generales
   print "Content-Type: text/html\n\n";
   if ( (!(-f "$prontus_varglb::DIR_SERVER$FORM{'path_file'}")) && ($FORM{'path_file'} ne '') ) {
-    print "<span class=\"error\">Archivo a editar no es v&aacute;lido.</span>";
+    print "<span class=\"error\">".&lib_language::_msg_prontus('_invalid_edit_file')."</span>";
     exit;
   };
   $FORM{'full_edit'} = &lib_edit::check_full_edit("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/extra.txt");
@@ -123,7 +123,7 @@ main:{
 
   } else {
     print STDERR "No se pudo extraer el nombre del archivo: $FORM{'path_file'}\n";
-    print "<span class=\"error\">No se pudo extraer el nombre del archivo</span>";
+    print "<span class=\"error\">".&lib_language::_msg_prontus('_unable_extract_file_name')."</span>";
     exit;
   };
 
@@ -145,7 +145,7 @@ main:{
   # Se lee la plantilla a utilizar
   $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . $path_tmpl;
   if((! -f $plantilla) || (! -s $plantilla)) {
-    print "<span class=\"error\">La plantilla no existe o est&aacute; vac&iacute;a</span>";
+    print "<span class=\"error\">".&lib_language::_msg_prontus('_template_empty_or_no_exist')."</span>";
     exit;
   } else {
     $pagina = &glib_fildir_02::read_file($plantilla);
@@ -326,7 +326,7 @@ sub parsea_marcas_fid {
   };
 
   if ($nom_plantilla && !$marcas_usr_options) {
-    $marcas_usr_options = "<option value=\"\" style=\"color:red;\">Plantilla sin FID asociado!</option>\n";
+    $marcas_usr_options = "<option value=\"\" style=\"color:red;\">".&lib_language::_msg_prontus('_template_without_fid_associated')."!</option>\n";
   };
 
   $pagina =~ s/%%marcas_usr_options%%/$marcas_usr_options/i;

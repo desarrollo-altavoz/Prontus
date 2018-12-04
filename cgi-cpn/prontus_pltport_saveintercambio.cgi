@@ -101,7 +101,7 @@ main: {
 
     # Acceso permitido solo para admin
     if (($prontus_varglb::ADMIN_PORT ne 'SI') or ($prontus_varglb::USERS_PERFIL ne 'A')) {
-        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema, siempre que ésta haya sido previamente configurada.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator_presetting'), 'exit=1,ctype=1');
     };
 
 
@@ -115,7 +115,7 @@ main: {
     my $port2 = "$dir_port/" . $FORM{'Lst_PORT2'};
 
     if ((! -f $port1) || (! -f $port2))  {
-        &glib_html_02::print_json_result(0, 'Portadas no válidas', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_front_page'), 'exit=1,ctype=1');
     };
 
     # intercambiar plantillas
@@ -195,12 +195,12 @@ main: {
 
     $ret = &intercambiar_files($port1, $port2);
     # CVI - 10/01/2012 - Se Logea esta accion
-    &lib_prontus::write_log('Intercambiar', 'Portada', $FORM{'Lst_PORT1'} . ' <-> '. $FORM{'Lst_PORT2'});
+    &lib_prontus::write_log(&lib_language::_msg_prontus('_exchange'), &lib_language::_msg_prontus('_front_page'), $FORM{'Lst_PORT1'} . ' <-> '. $FORM{'Lst_PORT2'});
 
     # CVI - 17/03/2011 - Borra cache de no publicados
     &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
 
-    &glib_html_02::print_json_result(1, 'Las portadas seleccionadas fueron intercambiadas correctamente', 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_selected_front_page_exchanged_correctly'), 'exit=1,ctype=1');
 };
 
 

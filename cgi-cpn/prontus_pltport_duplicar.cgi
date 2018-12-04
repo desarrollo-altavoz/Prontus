@@ -104,7 +104,7 @@ main: {
 
     # Acceso permitido solo para admin
     if (($prontus_varglb::ADMIN_PORT ne 'SI') or ($prontus_varglb::USERS_PERFIL ne 'A')) {
-        &glib_html_02::print_pag_result("Acceso a Area Restringida","La funcionalidad requerida está disponible sólo para el administrador del sistema, siempre que ésta haya sido previamente configurada.");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_administrator_presetting'));
         exit;
     };
 
@@ -119,7 +119,7 @@ main: {
     $origen = "$dir_port/" . $FORM{'Lst_PORTACT'};
 
     if (!(-f $origen)) {
-        &glib_html_02::print_json_result(0, 'Plantilla seleccionada no es válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_selected_template'), 'exit=1,ctype=1');
         exit;
     };
 
@@ -135,7 +135,7 @@ main: {
 
     # Se usa la misma validación que la lib_prontus.pm, para no inutilizar el Prontus
     if ($FORM{'NEW_PORT'} !~ /^\w+\.\w+$/) {
-        &glib_html_02::print_json_result(0, 'Nombre de plantilla no válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_template_name'), 'exit=1,ctype=1');
     };
 
     # Copia template origen a destino
@@ -143,7 +143,7 @@ main: {
 
     # Valida q no exista una portada con el mismo nombre.
     if (-f $destino) {
-        $msg = "Ya existe otra plantilla de portada con el nombre: $FORM{'NEW_PORT'}. Por favor escoja uno distinto.";
+        $msg = &lib_language::_msg_prontus('_template_name_repeated').": $FORM{'NEW_PORT'}. ".&lib_language::_msg_prontus('_please_choose_another_one');
         &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
     } else { # duplicar
         my $portada = &glib_fildir_02::read_file($origen);
@@ -162,12 +162,12 @@ main: {
                 &glib_fildir_02::write_file($destino_mv, $portada_mv);
             };
             # CVI - 10/01/2012 - Se Logea esta accion
-            &lib_prontus::write_log('Duplicar', 'Portada', $FORM{'Lst_PORTACT'} . ' -> '. $destino);
+            &lib_prontus::write_log(&lib_language::_msg_prontus('_duplicate'), &lib_language::_msg_prontus('_front_page'), $FORM{'Lst_PORTACT'} . ' -> '. $destino);
 
-            $msg = "La Plantilla seleccionada ha sido duplicada correctamente con el nombre: $FORM{'NEW_PORT'}";
+            $msg = &lib_language::_msg_prontus('_template_duplicated_correctly_name').": $FORM{'NEW_PORT'}";
             &glib_html_02::print_json_result(1, $msg, 'exit=1,ctype=1');
         } else {
-            $msg = "No se pudo grabar la nueva portada: $FORM{'NEW_PORT'}";
+            $msg = &lib_language::_msg_prontus('_unable_save_new_front_page').": $FORM{'NEW_PORT'}";
             &glib_html_02::print_json_result(0, $msg, 'exit=1,ctype=1');
             unlink $destino; # borra por si quedo con largo cero.
         };

@@ -833,7 +833,7 @@ sub carga_mensajes {
     my($plantilla) = $_[0];
     my %msgs;
     # Mensajes por defecto.
-    $msgs{'no_results'} = 'No se encontraron resultados.';
+    $msgs{'no_results'} = &lib_language::_msg_prontus('_results_not_found');
 
     while ($plantilla =~ /<!--\s*MSG\s*(\w+)\s*=\s*(.+?)\s*-->/sg) {
         $msgs{$1} = $2;

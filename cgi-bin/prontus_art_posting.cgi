@@ -102,7 +102,7 @@ my $ANSWERS_DIR;
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(4)) {
     print "Content-Type: text/html\n\n";
-    print "Error: Servidor ocupado.";
+    print %%_msg_prontus(server_busy_error)%%;
     exit;
 };
 
@@ -113,7 +113,7 @@ sub main {
 
     # valida
     if ($ENV{'REQUEST_METHOD'} ne 'POST') {
-        &glib_html_02::print_pag_result("Error", 'Solicitud no válida', 0, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_invalid_request'), 0, 'exit=1,ctype=1');
     };
 
     # Validacion y gestion de ip bloqueada
@@ -123,7 +123,7 @@ sub main {
     my $bloqueoip_interval = 60;
     my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $user_ip, $maxrequest_por_ip, $bloqueoip_interval);
     if ($bloquear_ip) {
-        &glib_html_02::print_pag_result("Error","907-Request inhabilitado.", 0, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_907_request_disabled'), 0, 'exit=1,ctype=1');
     };
 
     # Validar size total de los datos submitidos
@@ -136,14 +136,14 @@ sub main {
     $FORM{'_NP'} = &glib_cgi_04::param('_NP');
     # $FORM{'_NP'} =~ s/[^0-9a-zA-Z\-\_]//sg;
     if (!&lib_prontus::valida_prontus($FORM{'_NP'})) {
-        &glib_html_02::print_pag_result("Error","901-Error en los datos enviados.", 0, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_901_error_data_sent'), 0, 'exit=1,ctype=1');
     };
 
     # Id del form de posting
     $FORM{'_IDF'} = &glib_cgi_04::param('_IDF');
     $FORM{'_IDF'} =~ s/[^0-9a-zA-Z\-\_]//sg;
     if (!$FORM{'_IDF'}) {
-        &glib_html_02::print_pag_result("Error","902-Error en los datos enviados.", 0, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_902_error_data_sent'), 0, 'exit=1,ctype=1');
     };
 
     # Path de cfg de prontus
@@ -157,7 +157,7 @@ sub main {
 
     # Cargar var de conf de posting
     if (!&load_config_posting()) {
-        &glib_html_02::print_pag_result("Error","903-Error en los datos enviados.", 0, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_903_error_data_sent'), 0, 'exit=1,ctype=1');
     };
 
     # Asigna valores por defecto a vars de cfg de posting.
@@ -168,7 +168,7 @@ sub main {
     #~ print STDERR "ANSWERS_DIR[$ANSWERS_DIR]\n";
     if (! (-d "$prontus_varglb::DIR_SERVER$ANSWERS_DIR") ) {
         if (&glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$ANSWERS_DIR") == 0) {
-            &make_resp_and_exit("No se puede crear directorio de respuestas [$ANSWERS_DIR].", 1);
+            &make_resp_and_exit(&lib_language::_msg_prontus('_enable_create_responses_directory')." [$ANSWERS_DIR].", 1);
         };
     };
 
@@ -260,7 +260,7 @@ sub crear_objeto_artic {
                     'cpan_server_name'  =>$prontus_varglb::IP_SERVER,
                     'ts'                =>'', # si no va, asigna uno nuevo
                     'campos'            =>\%hash_datos)
-                    || die "Error inicializando objeto articulo: $Artic::ERR\n";
+                    || die "Error al inicializando objeto articulo: $Artic::ERR\n";
 
 
     return $artic_obj;
@@ -274,12 +274,12 @@ sub validar_content_length {
     if (-s 'posting_limit.cfg') {
         $posting_limit_mb = &glib_fildir_02::read_file('posting_limit.cfg');
         if ($posting_limit_mb !~ /^\d+$/) {
-            &glib_html_02::print_pag_result("Error","908-Error de configuración en valor de posting limit."
+            &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_908_configuration_error_posting_limit_value')
                                             , 0, 'exit=1,ctype=1');
         };
     };
     if ($ENV{'CONTENT_LENGTH'} > (1048576 * $posting_limit_mb)) {
-        &glib_html_02::print_pag_result("Error","909-Datos enviados exceden límite permitido de $posting_limit_mb MB"
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_909_data_sent_exceeds_limit')." $posting_limit_mb MB"
                                         , 0, 'exit=1,ctype=1');
     };
 };
@@ -424,7 +424,7 @@ sub load_default_posting_params {
 
   $CONFIG_POSTING{'_msg_marca'} = '%%MSG%%' if (!&param('_msg_marca'));
 
-  $CONFIG_POSTING{'_msg_ok'} = 'Gracias, su información ha sido recibida' if (!&param('_msg_ok'));
+  $CONFIG_POSTING{'_msg_ok'} = &lib_language::_msg_prontus('_thansk_information_received') if (!&param('_msg_ok'));
 
   $CONFIG_POSTING{'_orden'} = '1' if (!&param('_orden'));
 

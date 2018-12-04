@@ -81,7 +81,7 @@ main: {
   # Acceso permitido solo para admin
   if (($prontus_varglb::ADMIN_PORT ne 'SI') or ($prontus_varglb::USERS_PERFIL ne 'A')) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Acceso a Area Restringida", "La funcionalidad requerida est&aacute; disponible s&oacute;lo para el administrador del sistema,<br>siempre que &eacute;sta haya sido previamente configurada.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'), &lib_language::_msg_prontus('_functionality_available_administrator_presetting'));
     exit;
   };
 

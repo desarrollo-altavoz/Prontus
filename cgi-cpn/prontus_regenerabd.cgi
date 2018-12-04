@@ -63,16 +63,14 @@ main: {
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_pag_result('Acceso a Area Restringida',
-                                        'La funcionalidad requerida está disponible sólo para el '
-                                        . 'administrador del sistema', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result('&lib_language::_msg_prontus('_access_restricted_area')',&lib_language::_msg_prontus('_functionality_available_administrator'), 1, 'exit=1,ctype=1');
     };
 
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_CPAN/procs/prontus_art_regenbd_log.html";
-    &lib_logproc::log_init('Log de Regenerar Tabla de Articulos', 'Esta página muestra el avance del proceso de regenerar la tabla de artículos de la BD');
+    &lib_logproc::log_init(&lib_language::_msg_prontus('_regenerate_log_artic_table'), &lib_language::_msg_prontus('_page_shows_regen_progress_artic_table_db'));
 
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_bd_regen.js";
-    my $msg = '{"status":0, "msg": "En proceso"}';
+    my $msg = '{"status":0, "msg": "'.&lib_language::_msg_prontus('_inproces_in_process').'"}';
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
     my $result_page = "..$prontus_varglb::DIR_CPAN/core/prontus_loading_bd_regen.html";
 

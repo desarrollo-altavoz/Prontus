@@ -99,7 +99,7 @@ main: {
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Acceso a Area Restringida","La funcionalidad requerida está disponible sólo para el administrador del sistema",1,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
         exit;
     };
 
@@ -122,19 +122,19 @@ main: {
 #                    &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1,ctype=1');
 #                };
 #            };
-            &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1,ctype=1');
+            &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err_bd,1,'exit=1,ctype=1');
         };
         &crear_tablas($base);
     }
     elsif ($FORM{'Sbm_ACCION'} =~ /^Listar/i) {
         if (! ref($base)) {
-            &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1,ctype=1');
+            &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err_bd,1,'exit=1,ctype=1');
         };
         &listar_tablas($base);
     }
     else {
         $base->disconnect;
-        &glib_html_02::print_pag_result("Error",'Requerimiento no válido.',1,'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),'Requerimiento no válido.',1,'exit=1,ctype=1');
     };
     $base->disconnect;
     print "Content-Type: text/html\n\n";
@@ -150,7 +150,7 @@ sub salir {
   my $msg = $_[0];
   print "Content-Type: text/html\n\n";
   print $msg;
-  print "<p>&nbsp;</p><a href='#' onclick='parent.Opciones.cerrarColorbox();' style='color:#0099ff;; font-weight:bold; text-decoration:none;'>[Cerrar]</a>\n";
+  print "<p>&nbsp;</p><a href='#' onclick='parent.Opciones.cerrarColorbox();' style='color:#0099ff;; font-weight:bold; text-decoration:none;'>[".&lib_language::_msg_prontus('_close')."]</a>\n";
   exit;
 };
 # ---------------------------------------------------------------
@@ -158,7 +158,7 @@ sub crear_tablas {
     my ($base) = $_[0];
 
 
-    &add2result("<html><head><link type=\"text/css\" rel=\"stylesheet\" href=\"/$prontus_varglb::PRONTUS_ID/cpan/core/css/estilos.css\" /></head><body><span class=\"check-install\"><div class=\"desc\"><b>Creando tablas en BD MySQL: $prontus_varglb::NOM_BD</b><br/><div class=\"desc\" style=\"text-align:left\">");
+    &add2result("<html><head><link type=\"text/css\" rel=\"stylesheet\" href=\"/$prontus_varglb::PRONTUS_ID/cpan/core/css/estilos.css\" /></head><body><span class=\"check-install\"><div class=\"desc\"><b>".&lib_language::_msg_prontus('_creating_tables_db_mysql').": $prontus_varglb::NOM_BD</b><br/><div class=\"desc\" style=\"text-align:left\">");
 
     my ($msg_ret, $hay_err);
 
@@ -239,9 +239,9 @@ sub listar_tablas {
       $nom = '<b>' . $nom . '</b>';
 
       if ($count ne '') {
-        $RESULT .= "En la tabla [$nom] se encontraron: $count registros<br/>";
+        $RESULT .= &lib_language::_msg_prontus('_in_table')." [$nom] ".&lib_language::_msg_prontus('_were_found').": $count registros<br/>";
       } else {
-        $RESULT .= "En la tabla [$nom]... no se pudo obtener la información<br/>";
+        $RESULT .= &lib_language::_msg_prontus('_in_table')." [$nom]... ".&lib_language::_msg_prontus('_enable_obtain')." la información<br/>";
       };
     };
     $RESULT .= "</div></div></span></body>";

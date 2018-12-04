@@ -103,7 +103,7 @@ sub new {
     $artic->{ts} ||= '';
     if ($artic->{ts} ne '') {
         if ($artic->{ts} !~ /^\d{14}$/) {
-            $Artic::ERR = "TS indicado a Artic::new no es valido. TS[$artic->{ts}]";
+            $Artic::ERR = &lib_language::_msg_prontus('_ts_indicated_to')." Artic::new ".&lib_language::_msg_prontus('_invalid')." TS[$artic->{ts}]";
             return 0;
         };
     } else {
@@ -213,7 +213,7 @@ sub _set_dirs {
 
 
     if (! $this->_check_artic_dirs()) {
-        $Artic::ERR = "No se pueden crear directorios del artículo, dst_base[$this->{dst_base}]";
+        $Artic::ERR = &lib_language::_msg_prontus('_unable_create_artic_directories').", dst_base[$this->{dst_base}]";
         cluck $Artic::ERR . "[$!]\n";
         return 0;
     };
@@ -393,7 +393,7 @@ sub _flush_xml {
     if ((-f $this->{fullpath_xml}) && (-s $this->{fullpath_xml})) {
         return 1;
     } else {
-        $Artic::ERR = 'Error escribiendo XML del artículo';
+        $Artic::ERR = &lib_language::_msg_prontus('_error_writing_artic_xml');
         cluck $Artic::ERR . "[$!]";
         return 0;
     };
@@ -1237,7 +1237,7 @@ sub _genera_fotofija {
     my $path_foto = &lib_prontus::remove_front_string($full_path_foto, $this->{document_root});
 
     # Se revisa que la foto exista
-    return "La foto no existe $nom_foto: $full_path_foto" unless(-f "$full_path_foto");
+    return &lib_language::_msg_prontus('_photo_no_exist')." $nom_foto: $full_path_foto" unless(-f "$full_path_foto");
 
     # Obtiene dimensiones actuales de la foto
     my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$full_path_foto");
@@ -1252,10 +1252,10 @@ sub _genera_fotofija {
             print STDERR "$fotofija, $path_foto, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar, $nom_campo_orig\n";
             $this->_add_foto_sitiolocal_articulolocal($fotofija, $path_foto, $maxw, $maxh, $foto_dimx, $foto_dimy, $cuadrar, $nom_campo_orig);
         } else {
-            return "Error en regexp: nom_foto[$nom_foto]";
+            return &lib_language::_msg_prontus('_error_regexp').": nom_foto[$nom_foto]";
         }
     } else {
-        return "Error en las dimensiones: maxw[$maxw], maxh[$maxh], foto_dimx[$foto_dimx], foto_dimy[$foto_dimy]";
+        return &lib_language::_msg_prontus('_size_error').": maxw[$maxw], maxh[$maxh], foto_dimx[$foto_dimx], foto_dimy[$foto_dimy]";
     }
     return '';
 };
@@ -1297,7 +1297,7 @@ sub tags2bd {
     my $sql = "delete from TAGSART where TAGSART_IDART='$this->{ts}'";
     my $res = $base->do($sql);
     if (!$res) {
-        $Artic::ERR = "Error actualizando tabla de Tags, ts[$this->{ts}]\n";
+        $Artic::ERR = &lib_language::_msg_prontus('_error_updating_tag_table').", ts[$this->{ts}]\n";
         cluck $Artic::ERR . "sql[$sql][$!]";
         return 0;
     };
@@ -1307,7 +1307,7 @@ sub tags2bd {
         $sql = "insert into TAGSART set TAGSART_IDTAGS='$idtag', TAGSART_IDART='$this->{ts}'";
         my $res = $base->do($sql);
         if (!$res) {
-            $Artic::ERR = "Error actualizando tabla de Tags, ts[$this->{ts}]\n";
+            $Artic::ERR = &lib_language::_msg_prontus('_error_updating_tag_table').", ts[$this->{ts}]\n";
             cluck $Artic::ERR . "sql[$sql][$!]";
             return 0;
         };
@@ -1527,7 +1527,7 @@ sub art_delete_bd {
     my $res = $base->do($sql);
     # print STDERR "$sql\n";
     if (!$res) {
-        $Artic::ERR = "Error actualizando tabla de artículos, ts[$this->{ts}] Cod[$DBI::err]\n";
+        $Artic::ERR = &lib_language::_msg_prontus('_error_updating_artic_table').", ts[$this->{ts}] Cod[$DBI::err]\n";
         cluck $Artic::ERR . "sql[$sql][$!][$DBI::errstr]";
         return 0;
     };
@@ -1582,13 +1582,13 @@ sub art_update_bd {
         my $res = $base->do($sql);
         # print STDERR "$sql\n";
         if (!$res) {
-            $Artic::ERR = "Error actualizando tabla de artículos, ts[$this->{ts}] Cod[$DBI::err]\n";
+            $Artic::ERR = &lib_language::_msg_prontus('_error_updating_artic_table').", ts[$this->{ts}] Cod[$DBI::err]\n";
             cluck $Artic::ERR . "sql[$sql][$!][$DBI::errstr]";
             return 0;
         };
 
     } else {
-        $Artic::ERR = "Error actualizando tabla de artículos, no se pudo ubicar autoinc correspondiente al TS[$this->{ts}]\n";
+        $Artic::ERR = &lib_language::_msg_prontus('_error_updating_artic_table_unable_found_autoinc')."[$this->{ts}]\n";
         return 0;
     };
 
@@ -1644,14 +1644,14 @@ sub art_insert_bd {
 
     if ($regenerar_registro) {
         if ($campos{'_art_autoinc'} !~ /^\d+$/) {
-            $Artic::ERR = "No es posible regenerar registro, artículo TS[$this->{ts}] sin ID autoincremento en XML.\n";
+            $Artic::ERR = &lib_language::_msg_prontus('_unable_regenerate_record_artic_ts')."[$this->{ts}] ".&lib_language::_msg_prontus('_no_autoincrement_xml')."\n";
             cluck $Artic::ERR . " $this->{fullpath_xml} ";
             return 0;
         };
         if ($prontus_varglb::MOTOR_BD eq 'MYSQL') {
             my $ret = $base->do("SET INSERT_ID = $campos{'_art_autoinc'}");
             if (! $ret) {
-                $Artic::ERR = "Error estableciendo ID = $campos{'_art_autoinc'} en tabla de artículos, TS[$this->{ts}]\n";
+                $Artic::ERR = &lib_language::_msg_prontus('_error_setting_id')." = $campos{'_art_autoinc'} ".&lib_language::_msg_prontus('_in_artic_table').", TS[$this->{ts}]\n";
                 cluck $Artic::ERR . " [$!]  $this->{fullpath_xml} [$DBI::errstr]";
                 return 0;
             };
@@ -1668,7 +1668,7 @@ sub art_insert_bd {
     my $autoinc = &lib_prontus::insert_dev_id($sql, $base, $motor_bd);
 
     if (!$autoinc) {
-        $Artic::ERR = "Error insertando en tabla de artículos, ts[$this->{ts}] Cod[$DBI::err]\n";
+        $Artic::ERR = &lib_language::_msg_prontus('_error_inserting_artic_table').", ts[$this->{ts}] Cod[$DBI::err]\n";
         cluck $Artic::ERR . "sql[$sql][$!]  $this->{fullpath_xml} [$DBI::errstr]";
         return 0;
     };
@@ -1898,8 +1898,9 @@ sub generar_vista_art {
         utf8::decode($titular);
 
         my $vista;
-        $vista = "<br/>Vista asociada[$mv]\n" if($mv);
-        $Artic::ERR = 'Plantilla de artículo vacia o no existe, el art. ' . $this->{ts} . ' (' . $titular . ") se creó en blanco.<br/>Archivo de plantilla con problemas [".$campos_xml{'_plt'}."]".$vista;
+        $vista = "<br/>".&lib_language::_msg_prontus('_associated_view')."[$mv]\n" if($mv);
+        $Artic::ERR = &lib_language::_msg_prontus('_artic_template_empty_or_no_exist_artic') . $this->{ts} . ' (' . $titular . ") ".&lib_language::_msg_prontus('_create_in_blank')
+        ."<br/>".&lib_language::_msg_prontus('_template_file_with_problems')." [".$campos_xml{'_plt'}."]".$vista;
         warn "$Artic::ERR fullpath_plt[$fullpath_plt]";
         return 0;
     };
@@ -1908,7 +1909,7 @@ sub generar_vista_art {
     my $fulldir_vista = $this->_get_fulldir_vista($mv);
     my $dir_ret = &glib_fildir_02::check_dir($fulldir_vista);
     if (!$dir_ret) {
-        $Artic::ERR = "Error creando directorio para el artículo. TS[$this->{ts}]\n";
+        $Artic::ERR = &lib_language::_msg_prontus('_error_creating_directory_for_artic')." TS[$this->{ts}]\n";
         cluck "$Artic::ERR fulldir_vista[$fulldir_vista] $!";
         return 0;
     };
@@ -1920,7 +1921,7 @@ sub generar_vista_art {
 
     # Chequea que se haya podido crear el archivo
     if (!-f $fullpath_vista) {
-        $Artic::ERR = "No se pudo crear archivo vista para el artículo. TS[$this->{ts}]\n";
+        $Artic::ERR = &lib_language::_msg_prontus('_unable_create_view_file_for_article')." TS[$this->{ts}]\n";
         cluck "$Artic::ERR fullpath_vista[$fullpath_vista] $!";
         return 0;
     };
@@ -1929,7 +1930,7 @@ sub generar_vista_art {
     if (!$mv) {
         # chequea que el archivo no haya quedado vacio.
         if (!-s $fullpath_vista) {
-            $Artic::ERR = "Error escribiendo archivo de la vista principal para el artículo. Quedó de largo cero. Esto puede deberse a problemas de espacio disponible, o bien, a que no se dispone de plantilla de artículo o ésta está vacía. TS[$this->{ts}] PLT[$campos_xml{'_plt'}]\n";
+            $Artic::ERR = &lib_language::_msg_prontus('_error_writing_file_for_principal_view')." TS[$this->{ts}] PLT[$campos_xml{'_plt'}]\n";
             cluck "$Artic::ERR fullpath_vista[$fullpath_vista] $!";
             return 0;
         };
@@ -2379,7 +2380,7 @@ sub _parsing_vtxt {
 
                 if($file =~ /^\// && $file !~ /\/..\//) {
                     if(! -f "$this->{document_root}$file") {
-                        $newnode = "Archivo No Existe [$this->{document_root}$file]";
+                        $newnode = &lib_language::_msg_prontus('_file_no_exist')." [$this->{document_root}$file]";
                     } else {
                         if($tipo eq 'ssi') {
                             $newnode = '<!--#include file="'.$file.'" -->';
@@ -2396,7 +2397,7 @@ sub _parsing_vtxt {
                     if(-f "$this->{document_root}$file") {
                         $newnode = '<script src="'.$file.'" type="text/javascript"></script>';
                     } else {
-                        $newnode = "Archivo No Existe [$this->{document_root}$file]";
+                        $newnode = &lib_language::_msg_prontus('_file_no_exist')." [$this->{document_root}$file]";
                     }
                 } elsif($file =~ /^https?:\/\//) {
                     $newnode = '<script src="'.$file.'" type="text/javascript"></script>';

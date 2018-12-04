@@ -118,13 +118,13 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de articulos no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_template_directory'));
     exit;
   };
 
   if (!(&check_contenido_dir($dir))) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de artículos está vacío, éste debe contener al menos una plantilla");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_artic_template_directory_empty'));
     exit;
   };
 
@@ -138,7 +138,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio destino de artículos no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_artic_target_directory'));
     exit;
   };
 
@@ -151,12 +151,12 @@ my ($dir);
 
     if ( ! (&glib_fildir_02::check_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados no es válido");
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_related_artic_template'));
       exit;
     };
     if ( ! (&check_contenido_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de art. relacionados está vacío. Debe haber a lo menos una plantilla.");
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_related_artic_template_directory_empty'));
       exit;
     };
 
@@ -170,7 +170,7 @@ my ($dir);
 
     if ( ! (&glib_fildir_02::check_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de destino de art. relacionados no es válido");
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_related_artic_target_directory'));
       exit;
     };
   };
@@ -183,7 +183,7 @@ my ($dir);
 
     if ( ! (&glib_fildir_02::check_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas tipo tema no es válido");
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_topic_front_page_template_directory'));
       exit;
     };
 
@@ -197,7 +197,7 @@ my ($dir);
 
     if ( ! (&glib_fildir_02::check_dir($dir)) ) {
       print "Content-Type: text/html\n\n";
-      &glib_html_02::print_pag_result("Error","El directorio de destino de portadas tipo tema no es válido");
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_topic_front_page_target_directory'));
       exit;
     };
   };
@@ -206,14 +206,14 @@ my ($dir);
   # Dir de los dbm
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_DBM)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de data de usuarios no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_data_user_directory'));
     exit;
   };
 
   # Dir de los logs
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/log')) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de logs de Prontus no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_prontus_log_directory'));
     exit;
   };
 
@@ -224,7 +224,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/procs')) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de logs de procesos masivos de Prontus no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_prontus_logs_directory_massive_processes'));
     exit;
   };
 
@@ -233,19 +233,19 @@ my ($dir);
   # Dir cpan
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio cpan no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_cpan_directory'));
     exit;
   };
 
   # Dir cpan/fid
   if ( ! (&glib_fildir_02::check_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/fid')) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de FIDs no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_fid_directory'));
     exit;
   };
   if (!(&check_contenido_dir($prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CPAN . '/fid'))) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error", "El directorio de FIDs está vacío, éste debe contener al menos un FID");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_fid_directory_empty'));
     exit;
   };
 
@@ -262,7 +262,7 @@ my ($dir);
   $core_dir = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE;
   if ( ! (&glib_fildir_02::check_dir($core_dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio cpan no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_cpan_directory'));
     exit;
   };
 
@@ -406,13 +406,13 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_front_page_template_directory'));
     exit;
   };
 
   if (!(&check_contenido_dir($dir))) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error", "El directorio de plantillas de portadas está vacío, éste debe contener al menos un template");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'), &lib_language::_msg_prontus('_front_page_template_directory_empty'));
     exit;
   };
 
@@ -425,7 +425,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantillas de portadas de recambio no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_replacement_front_template_directory'));
     exit;
   };
 
@@ -435,7 +435,7 @@ my ($dir);
   # Tpls. repetidos.
   if (&tpls_duplicados($dir)) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Una o más plantillas de portada está repetida dentro del mismo directorio pero con extensión distinta");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_repeated_front_page_template_same_directory'));
     exit;
   };
 
@@ -448,7 +448,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de plantilla de la home page de ediciones no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_home_page_template_directory'));
     exit;
   };
 
@@ -456,7 +456,7 @@ my ($dir);
   my $nom_tpl_home = "$dir/$prontus_varglb::INDEX_EDIC"; # 8.0
   if (! -f $nom_tpl_home) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Plantilla de homepage de edicion no existe");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_home_page_template_no_exist'));
     exit;
   };
 
@@ -472,7 +472,7 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de ediciones no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_target_directory_editions'));
     exit;
   };
 
@@ -481,7 +481,7 @@ my ($dir);
   # Pagina de inicializacion para las portadas en construccion.
   if ( ! (-f "$prontus_varglb::DIR_SERVER$prontus_varglb::RELDIR_BASE/$prontus_varglb::PRONTUS_ID/$prontus_varglb::PAG_WORKING") ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Pagina para portada 'en construcción' no existe");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_front_page_contruction_no_existe'));
     exit;
   };
 
@@ -495,14 +495,14 @@ my ($dir);
 
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de edición única no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_unique_edition_directory'));
     exit;
   };
 
   $dir .= $prontus_varglb::DIR_SECC;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de las portadas de la edición única no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_unique_edition_target_directory'));
     exit;
   };
 
@@ -511,7 +511,7 @@ my ($dir);
   # print STDERR "alfa[$dir]\n";
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino del xml de las portadas de la edición única no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_unique_edition_xml_target_directory'));
     exit;
   };
 
@@ -519,7 +519,7 @@ my ($dir);
   $dir =~ s/\/xml$/\/rss/;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de destino de los rss de las portadas de la edición única no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_unique_edition_rss_target_directory'));
     exit;
   };
 
@@ -813,9 +813,9 @@ my ($tipart, $port, $usr1, $usr2, $buffer);
 # ---------------------------------------------------------------
 # Prontus 6.0
 sub get_glosa_perfil {
-  if ($prontus_varglb::USERS_PERFIL eq 'P') { return 'Redactor';}
-  elsif ($prontus_varglb::USERS_PERFIL eq 'E') { return 'Editor';}
-  elsif ($prontus_varglb::USERS_PERFIL eq 'A') { return 'Administrador';}
+  if ($prontus_varglb::USERS_PERFIL eq 'P') { return &lib_language::_msg_prontus('_writer');}
+  elsif ($prontus_varglb::USERS_PERFIL eq 'E') { return &lib_language::_msg_prontus('_editor');}
+  elsif ($prontus_varglb::USERS_PERFIL eq 'A') { return &lib_language::_msg_prontus('_admin');}
   else { return '';};
 };
 # ---------------------------------------------------------------
@@ -865,7 +865,7 @@ sub check_user {
             print "<script type='text/javascript'>window.location.href='/$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html';</script>";
             exit;
         } else {
-            return ('', 'No se detect&oacute; una sesi&oacute;n activa');
+            return ('', &lib_language::_msg_prontus('_no_active_session'));
         };
     };
 
@@ -888,7 +888,7 @@ sub check_user {
         };
     } else { # users normales
         if (&lib_prontus::open_dbm_files() ne 'ok') {
-            return ('', 'No fue posible cargar archivos de privilegios de usuario');
+            return ('', &lib_language::_msg_prontus('_not_possible_upload_files_user_privileges'));
             print STDERR "No fue posible cargar archivos de privilegios de usuario.\n";
         };
 
@@ -901,7 +901,7 @@ sub check_user {
                 last;
             };
         };
-        $perfil = 'Usuario o Contrase&ntilde;a no v&aacute;lida.' if (!$id);
+        $perfil = &lib_language::_msg_prontus('_invalid_user_pass') if (!$id);
         return ($id, $perfil);
     };
 
@@ -1200,7 +1200,7 @@ sub load_config {
   if (not(-f "$nomcfg-id.cfg")) { # 1.22
     print STDERR "No se pudo localizar el Archivo de Configuración PRONTUS\n";
     print "Content-Type: text/html\n\n";
-    print "<P>No se pudo localizar el Archivo de Configuraci&oacute;n PRONTUS";
+    print "<P>".&lib_language::_msg_prontus('_prontus_config_file_not_found');
     exit;
   };
 
@@ -1213,7 +1213,7 @@ sub load_config {
   if ($errcfg) {
     print STDERR "No se pudo localizar el Archivo de Configuración PRONTUS $errcfg\n";
     print "Content-Type: text/html\n\n";
-    print "<P>No se pudo localizar el Archivo de Configuraci&oacute;n PRONTUS $errcfg";
+    print "<P>".&lib_language::_msg_prontus('_prontus_config_file_not_found'). $errcfg;
     exit;
   };
 
@@ -1237,7 +1237,7 @@ sub load_config {
   if ($buffer !~ /\w/) {
     print STDERR "Archivos de Configuración PRONTUS están vacíos.\n";
     print "Content-Type: text/html\n\n";
-    print "<P>Archivos de Configuración PRONTUS están vacíos.";
+    print "<P>".&lib_language::_msg_prontus('_writer');
     exit;
   };
 
@@ -1343,7 +1343,7 @@ sub load_config {
   $prontus_varglb::CLOUDFLARE_EMAIL = $cloudflare_email;
 
   my $cloudflare_zone = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*("|')(.*?)("|')/s) { # SI | NO
+  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*("|')(.*?)("|')/) { # SI | NO
     $cloudflare_zone = $2;
   };
   $prontus_varglb::CLOUDFLARE_ZONE = $cloudflare_zone;
@@ -1467,7 +1467,7 @@ sub load_config {
      if ($clave !~ /^\w+\.\w+$/) {
         print STDERR "Error en CFG: Nombre de Portada [$clave] no es válido, debe contener sólo caracteres alfanuméricos, incluido el underscore. Además, debe tener una extensión válida.\n";
         print "Content-Type: text/html\n\n";
-        print "<p>Error en CFG: Nombre de Portada [$clave] no es válido, debe contener sólo caracteres alfanuméricos, incluido el underscore. Además, debe tener una extensión válida.<p>";
+        print "<p>".&lib_language::_msg_prontus('_error_cfg_front_page_name')." [$clave]". &lib_language::_msg_prontus('_error_cfg_format') ."<p>";
         exit;
      };
      $prontus_varglb::PORT_PLTS{$clave} = 1;
@@ -1480,7 +1480,7 @@ sub load_config {
   if (keys(%prontus_varglb::PORT_PLTS) <= 0) {
     print STDERR "Error en CFG: No hay portadas definidas\n";
     print "Content-Type: text/html\n\n";
-    print "<P>Error en CFG: No hay portadas definidas";
+    print "<P>".&lib_language::_msg_prontus('_error_cfg_no_defined_front_page');
     exit;
   };
 
@@ -1545,7 +1545,7 @@ sub load_config {
     if ($oct_dig_tipoprontus ne $nro_prontus) {
       print STDERR "Requerimiento de Versión PRONTUS no autorizada, contáctese con AltaVoz SA.\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Requerimiento de Versión PRONTUS no autorizada, contáctese con AltaVoz SA.";
+      print "<P>".&lib_language::_msg_prontus('_prontus_version_requirement_unauthorized');
       exit;
     };
 
@@ -1735,7 +1735,7 @@ sub load_config {
       if ((! $server_bd) || (! $nom_bd) || (! $user_bd) || (! $pwd_bd)) {
         print STDERR "Error en CFG: Faltan parametros de conexion a la base de datos MySQL. Los parámetros son: SERVER_BD, NOM_BD, USER_BD y PWD_BD\n";
         print "Content-Type: text/html\n\n";
-        print "<P>Error en CFG: Faltan parametros de conexion a la base de datos MySQL. Los parámetros son: SERVER_BD, NOM_BD, USER_BD y PWD_BD";
+        print "<P>".&lib_language::_msg_prontus('_error_cfg_parameters_DB');
         exit;
       };
 
@@ -1744,7 +1744,7 @@ sub load_config {
     if (($motor_bd ne 'MYSQL') && ($motor_bd ne 'PRONTUS')) {
       print STDERR "Error en CFG: Motor de base de datos no válido, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: Motor de base de datos no válido, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.";
+      print "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_DB_engine');
       exit;
     };
 
@@ -1752,7 +1752,7 @@ sub load_config {
   else {
     print STDERR "Error en CFG: Debe indicar Motor de base de datos, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.\n";
     print "Content-Type: text/html\n\n";
-    print "<P>Error en CFG: Debe indicar Motor de base de datos, la variable MOTOR_BD debe ser 'MYSQL' o 'PRONTUS'.";
+    print "<P>".&lib_language::_msg_prontus('_error_cfg_DB_engine_not_indicated');
     exit;
   };
 
@@ -1860,7 +1860,7 @@ sub load_config {
   if ($tagport_orden_err) {
     print STDERR "Error en CFG: seteo de variable TAGPORT_ORDEN contiene un valor no v&aacute;lido.<br>Valores posibles: 'PUBLICACION(ASC|DESC)', 'TITULAR(ASC|DESC)', 'CREACION(ASC|DESC)'<br>Por omisi&oacute;n es: 'PUBLICACION(DESC)'\n";
     print "Content-Type: text/html\n\n";
-    print "<P>Error en CFG: seteo de variable TAGPORT_ORDEN contiene un valor no v&aacute;lido.<br>Valores posibles: 'PUBLICACION(ASC|DESC)', 'TITULAR(ASC|DESC)', 'CREACION(ASC|DESC)'<br>Por omisi&oacute;n es: 'PUBLICACION(DESC)'";
+    print "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_TAGPORT_ORDEN')."<br>".&lib_language::_msg_prontus('_possible_values_TAGPORT_ORDEN');
     exit;
   };
   $prontus_varglb::TAGPORT_ORDEN = $tagport_orden_new if ($tagport_orden_new);
@@ -1922,7 +1922,7 @@ sub load_config {
   if ($list_orden_err) {
     print STDERR "Error en CFG: seteo de variable LIST_ORDEN contiene un valor no v&aacute;lido.<br>Valores posibles: 'PUBLICACION(ASC|DESC)', 'TITULAR(ASC|DESC)', 'CREACION(ASC|DESC)'<br>Por omisi&oacute;n es: 'PUBLICACION(DESC)'\n";
     print "Content-Type: text/html\n\n";
-    print "<P>Error en CFG: seteo de variable LIST_ORDEN contiene un valor no v&aacute;lido.<br>Valores posibles: 'PUBLICACION(ASC|DESC)', 'TITULAR(ASC|DESC)', 'CREACION(ASC|DESC)'<br>Por omisi&oacute;n es: 'PUBLICACION(DESC)'";
+    print "<P>".&lib_language::_msg_prontus('_error_cfg_set_LIST_ORDEN')."<br>".&lib_language::_msg_prontus('_possible_values_LIST_ORDEN');
     exit;
   };
   $prontus_varglb::LIST_ORDEN = $list_orden_new if ($list_orden_new);
@@ -1977,7 +1977,7 @@ sub load_config {
   if (!-d $prontus_varglb::DIR_FFMPEG) {
       print STDERR "Error en CFG: variable DIR_FFMPEG [$prontus_varglb::DIR_FFMPEG] no corresponde a un directorio existente en el sistema.\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: variable DIR_FFMPEG no corresponde a un directorio existente en el sistema.";
+      print "<P>".&lib_language::_msg_prontus('_error_cfg_DIR_FFMPEG_directory_no_exist');
       exit;
   };
   #print STDERR "DIR_FFMPEG[$prontus_varglb::DIR_FFMPEG]\n";
@@ -1999,7 +1999,7 @@ sub load_config {
     if ($vtxt_dtd !~ /^(STRICT|TRANSITIONAL)$/) {
       print STDERR "Error en CFG: seteo de variable VTXT_DTD\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable VTXT_DTD contiene un valor no v&aacute;lido.<br>Valores posibles: 'STRICT', 'TRANSITIONAL'<br>Por omisi&oacute;n es: 'STRICT'";
+      print "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_VTXT_DTD')"<br>".&lib_language::_msg_prontus('_possible_values_VTXT_DTD')."<br>".&lib_language::_msg_prontus('_omission_value_VTXT_DTD');
       exit;
     };
   };
@@ -2113,7 +2113,7 @@ sub load_config {
   if ($taxport_orden_err) {
     print STDERR "Error en CFG: seteo de variable TAXPORT_ORDEN contiene un valor no v&aacute;lido.<br>Valores posibles: 'PUBLICACION(ASC|DESC)', 'TITULAR(ASC|DESC)', 'CREACION(ASC|DESC)', Por omisi&oacute;n es: 'PUBLICACION(DESC)'\n";
     print "Content-Type: text/html\n\n";
-    print "<P>Error en CFG: seteo de variable TAXPORT_ORDEN contiene un valor no v&aacute;lido.<br>Valores posibles: 'PUBLICACION(ASC|DESC)', 'TITULAR(ASC|DESC)', 'CREACION(ASC|DESC)'<br>Por omisi&oacute;n es: 'PUBLICACION(DESC)'";
+    print "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_TAXPORT_ORDEN')."<br>".&lib_language::_msg_prontus('_possible_values_TAXPORT_ORDEN')."<br>".&lib_language::_msg_prontus('_omission_value_TAXPORT_ORDEN');
     exit;
   };
   $prontus_varglb::TAXPORT_ORDEN = $taxport_orden_new if ($taxport_orden_new);
@@ -2144,7 +2144,7 @@ sub load_config {
   if ($nubetags_factor_olvido !~ /^[0-9]+(\.[0-9]+)?$/) {
       print STDERR "Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un número entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un número entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'";
+      print "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_NUBETAGS_FACTOR_OLVIDO')."<br>".&lib_language::_msg_prontus('_example_NUBETAGS_FACTOR_OLVIDO')."<br>".&lib_language::_msg_prontus('_omission_value_NUBETAGS_FACTOR_OLVIDO');
       exit;
   };
   $prontus_varglb::NUBETAGS_FACTOR_OLVIDO = $nubetags_factor_olvido;
@@ -2157,7 +2157,7 @@ sub load_config {
   if ($nubetags_max_tags !~ /^[0-9]+$/) {
       print STDERR "Error en CFG: seteo de variable NUBETAGS_MAX_TAGS contiene un valor no v&aacute;lido.<br>Debe contener un número entero, por ejemplo: '10'<br>Por omisi&oacute;n es: '30'\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable NUBETAGS_MAX_TAGS contiene un valor no v&aacute;lido.<br>Debe contener un número entero, por ejemplo: '10'<br>Por omisi&oacute;n es: '30'";
+      print "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_NUBETAG_MAX_TAGS')."<br>".&lib_language::_msg_prontus('_example_value_NUBETAG_MAX_TAGS')."<br>".&lib_language::_msg_prontus('_omission_value_NUBETAGS_MAX_TEAGS');
       exit;
   };
   $prontus_varglb::NUBETAGS_MAX_TAGS = $nubetags_max_tags;
@@ -2202,10 +2202,10 @@ sub load_config {
         $clustering_debug_level = $2;
       };
       if ($clustering_debug_level !~ /^[0-2]$/) {
-         my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_DEBUG_LEVEL contiene un valor no v&aacute;lido."
-                  . "<br>Valores posibles: '0', '1' o '2'."
-                  . "<br>'0':Sólo errores | '1': Errores e información básica | '2': Todo lo anterior y además debug específico de FTP"
-                  . "<br>Por omisi&oacute;n es: '1'";
+         my $msg = "<P>".&lib_language::_msg_prontus('_error_cgf_invalid_set_CLUSTERING_DEBUG_LEVEL')
+                  . "<br>".&lib_language::_msg_prontus('_possible_values_CLUSTERING_DEBUG_LEVEL')
+                  . "<br>".&lib_language::_msg_prontus('_values_details_CLUSTERING_DEBUG_LEVEL')
+                  . "<br>".&lib_language::_msg_prontus('_omission_values_CLUSTERING_DEBUG_LEVEL');
           &glib_html_02::print_pag_result('Error', $msg, 0, 'exit=1,ctype=1');
       };
       $prontus_varglb::CLUSTERING_DEBUG_LEVEL = $clustering_debug_level;
@@ -2216,9 +2216,9 @@ sub load_config {
         $clustering_timeout_connect_segs = $2;
       };
       if ($clustering_timeout_connect_segs !~ /^[0-9]+$/) {
-          my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_TIMEOUT_CONNECT_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '10'"
-                  . "<br>Por omisi&oacute;n es: '15'";
+          my $msg = "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_CLUSTERING_CONNECT_SEGS')
+                  . "<br>".&lib_language::_msg_prontus('_example_value_CLUSTERING_CONNECT_SEGS')
+                  . "<br>".&lib_language::_msg_prontus('_omission_value_CLUSTERING_CONNECT_SEGS');
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
       $prontus_varglb::CLUSTERING_TIMEOUT_CONNECT_SEGS = $clustering_timeout_connect_segs;
@@ -2229,9 +2229,9 @@ sub load_config {
         $clustering_log_duration_segs = $2;
       };
       if ($clustering_log_duration_segs !~ /^[0-9]+$/) {
-          my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_LOG_DURATION_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '3600'"
-                  . "<br>Por omisi&oacute;n es: '86400' (24 horas)";
+          my $msg = "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_CLUSTERING_LOG_DURATION_SEGS')
+                  . "<br>".&lib_language::_msg_prontus('_example_values_CLUSTERING_LOG_DURATION_SEGS')
+                  . "<br>".&lib_language::_msg_prontus('_omission_value_CLUSTERING_LOG_DURATION_SEGS');
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
       $prontus_varglb::CLUSTERING_LOG_DURATION_SEGS = $clustering_log_duration_segs;
@@ -2242,9 +2242,9 @@ sub load_config {
         $clustering_file_update_segs = $2;
       };
       if ($clustering_file_update_segs !~ /^[0-9]+$/) {
-          my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_FILE_UPDATE_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '10'"
-                  . "<br>Por omisi&oacute;n es: '15'";
+          my $msg = "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_CLUSTERING_FILE_UPDATE_SEGS')
+                  . "<br>".&lib_language::_msg_prontus('_example_value_CLUSTERING_FILE_UPDATE_SEGS')
+                  . "<br>".&lib_language::_msg_prontus('_omission_value_CLUSTERING_FILE_UPDATE_SEGS');
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
       $prontus_varglb::CLUSTERING_FILE_UPDATE_SEGS = $clustering_file_update_segs;
@@ -2259,7 +2259,7 @@ sub load_config {
     if ($form_csv_charset !~ /^(utf-8|iso-8859-1)$/i) {
       print STDERR "Error en CFG: seteo de variable FORM_CSV_CHARSET\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable FORM_CSV_CHARSET contiene un valor no v&aacute;lido.<br>Valores posibles: 'utf-8', 'iso-8859-1'<br>Por omisi&oacute;n es: 'utf-8'";
+      print "<P>".&lib_language::_msg_prontus('_error_cfg_invalid_set_FORM_CSV_CHARSET')."<br>".&lib_language::_msg_prontus('_possible_values_FORM_CSV_CHARSET')."<br>".&lib_language::_msg_prontus('_omission_value_FORM_CSV_CHARSET');
       exit;
     };
   };
@@ -2950,7 +2950,7 @@ sub add_macros {
     $buffer_macro = &glib_fildir_02::read_file("$dir_macros/$nomfile");
     if (! -f "$dir_macros/$nomfile") {
         my $relpath_macro = &remove_front_string("$dir_macros/$nomfile", $prontus_varglb::DIR_SERVER);
-        $buffer_macro = "Macro '$relpath_macro' no existe";
+        $buffer_macro = &lib_language::_msg_prontus('_macro')."'$relpath_macro'".&lib_language::_msg_prontus('_no_exist');
         $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
         next;
     };
@@ -2965,7 +2965,7 @@ sub add_macros {
     $profundidad++;
 
     if ($profundidad > 10) {
-      $buffer_macro = '<b>[Error: Se alcanzó el nivel máximo de anidamiento de macros (max=10)]</b>';
+      $buffer_macro = '<b>'.&lib_language::_msg_prontus('_error_max_nesting_macro').'</b>';
       $textpag =~ s/%%MACRO\(\Q$nomfile\E\)%%/$buffer_macro/is;
       $profundidad = 0;
       next;
@@ -3779,7 +3779,7 @@ sub test_servers {
   };
   # El request no proviene de ningun server habilitado.
   print "Content-Type: text/html\n\n";
-  print "<P>Error de Ejecución - Falta el parámetro requerido. [$referer]";
+  print "<P>".&lib_language::_msg_prontus('_execution_error_missing_parameter')." [$referer]";
   exit;
 
 };
@@ -4570,7 +4570,7 @@ sub check_dirs_edic() {
   # Dir de la edicion.
   if ( ! (&glib_fildir_02::check_dir($dir_dest_edic)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de la edicion no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_edition_directory'));
     exit;
   };
 
@@ -4578,7 +4578,7 @@ sub check_dirs_edic() {
   $dir = $dir_dest_edic . $prontus_varglb::DIR_SECC;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de portadas de la edición no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_edition_front_page_directory'));
     exit;
   };
 
@@ -4586,7 +4586,7 @@ sub check_dirs_edic() {
   $dir =~ s/$prontus_varglb::DIR_SECC$/\/xml/;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio del xml de portadas de la edición no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_edition_xml_directory'));
     exit;
   }
   else {
@@ -4598,7 +4598,7 @@ sub check_dirs_edic() {
   $dir = $dir_dest_edic . $prontus_varglb::DIR_HPAGES;
   if ( ! (&glib_fildir_02::check_dir($dir)) ) {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","El directorio de homepage de la edición no es válido");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_invalid_edition_home_page_directory'));
     exit;
   };
 
@@ -4704,7 +4704,7 @@ sub dev_tam_img {
   my ($ancho, $alto, $msg);
 
   if (! -e $file) {
-    return ('Archivo no existe', 0, 0);
+    return (&lib_language::_msg_prontus('_file_no_exist'), 0, 0);
   }
   else {
     if ($file =~ /.*\.(jpg|jpe|jpeg)$/i) {
@@ -4718,7 +4718,7 @@ sub dev_tam_img {
       ($msg, $ancho, $alto) = &ancho_alto_png($file);
     }
     else {
-      return ('Archivo no tiene extensión JPG/JPE/JPEG/PNG/GIF/BMP', 0, 0);
+      return (&lib_language::_msg_prontus('_file_without_extension'), 0, 0);
     };
 
     return ($msg, $ancho, $alto);
@@ -4732,7 +4732,7 @@ sub ancho_alto_png {
   my($file) = $_[0];
   my($head) = "";
 
-  (open my $png, "<$file") || return ("No se puede abrir archivo PNG!", 0, 0);
+  (open my $png, "<$file") || return (&lib_language::_msg_prontus('_unable_open_png_file'), 0, 0);
   binmode $png;
 
   my($a, $b, $c, $d, $e, $f, $g, $h)=0;
@@ -4755,11 +4755,11 @@ sub ancho_alto_png {
 sub ancho_alto_jpg {
   my ($file) = $_[0];
   my ($c1, $c2, $ch, $s, $junk, $a, $b, $c, $d, $length);
-  (open my $jpeg, "<$file") || return ("No se puede abrir archivo JPEG!", 0, 0);
+  (open my $jpeg, "<$file") || return (&lib_language::_msg_prontus('_unables_open_jpeg_file'), 0, 0);
   binmode $jpeg;
   read($jpeg, $c1, 1);
   read($jpeg, $c2, 1);
-  ((ord($c1) == 0xFF) && (ord($c2) == 0xD8)) || return ("Este archivo no es un JPEG!", 0, 0);
+  ((ord($c1) == 0xFF) && (ord($c2) == 0xD8)) || return (&lib_language::_msg_prontus('_not_jpeg_file'), 0, 0);
 
   my ($done) = 0;
   my ($dummy);
@@ -4787,8 +4787,8 @@ sub ancho_alto_jpg {
 #       close(JPEG);
 #       return ('', ($c<<8|$d), ($a<<8|$b));
     if( ( ord( $ch ) >= 0xC0 ) && ( ord( $ch ) <= 0xC3 ) ) {
-      return('Error de formato en jpg', 0, 0 ) unless read( $jpeg, $dummy, 3 );
-      return('Error de formato en jpg', 0, 0 ) unless read( $jpeg, $s, 4 );
+      return(&lib_language::_msg_prontus('_jpeg_format_error'), 0, 0 ) unless read( $jpeg, $dummy, 3 );
+      return(&lib_language::_msg_prontus('_jpeg_format_error'), 0, 0 ) unless read( $jpeg, $s, 4 );
       ( $a, $b, $c, $d ) = unpack( "C"x4, $s );
       return('', $c<<8|$d, $a<<8|$b );
 
@@ -4803,7 +4803,7 @@ sub ancho_alto_jpg {
       # if ($length < 2) { # ych
       if( !defined( $length ) || $length < 2 ) {
         close($jpeg);
-        return ("Longitud del marcador JPEG errónea!", 0, 0);
+        return (&lib_language::_msg_prontus('_jpeg_marker_length_erroneous'), 0, 0);
       };
 
       read($jpeg, $dummy, $length-2);
@@ -4814,11 +4814,11 @@ sub ancho_alto_jpg {
 sub ancho_alto_gif {
   my ($file) = $_[0];
   my ($a,$b,$c,$d, $s, $type);
-  (open my $gif, "<$file") || return ("No se puede abrir archivo GIF!", 0, 0);
+  (open my $gif, "<$file") || return (&lib_language::_msg_prontus('_unable_open_gif_file'), 0, 0);
   binmode $gif;
   read($gif, $type, 6);
-  $type =~ /GIF8[7,9]a/ || return ("Archivo GIF inválido!", 0, 0);
-  read($gif, $s, 4) == 4 || return ("Archivo GIF corrupto!", 0, 0);
+  $type =~ /GIF8[7,9]a/ || return (&lib_language::_msg_prontus('_invalid_gif_file'), 0, 0);
+  read($gif, $s, 4) == 4 || return (&lib_language::_msg_prontus('_gif_file_corrupt'), 0, 0);
   close($gif);
   ($a,$b,$c,$d)=unpack("C"x4,$s);
   return ('', ($b<<8|$a), ($d<<8|$c));
@@ -4827,21 +4827,21 @@ sub ancho_alto_gif {
 sub ancho_alto_bmp {
   my ($file) = $_[0];
   my ($a,$b,$c,$d,$e,$f,$g,$h, $s, $type);
-  (open $bmp, "<$file") || return ("No se puede abrir archivo BMP!", 0, 0);
+  (open $bmp, "<$file") || return (&lib_language::_msg_prontus('_unable_open_bmp_file'), 0, 0);
   binmode $bmp;
   read($bmp, $type, 2);
-  $type =~ /BM/ || return ("Archivo BMP inválido!", 0, 0);
+  $type =~ /BM/ || return (&lib_language::_msg_prontus('_invalid_bmp_file'), 0, 0);
   read($bmp, $type, 12);
-  read($bmp, $s, 4) == 4 || return ("Archivo BMP corrupto!", 0, 0);
+  read($bmp, $s, 4) == 4 || return (&lib_language::_msg_prontus('_bmp_file_corrupt'), 0, 0);
   $a=unpack("C"x1,$s);
   if ($a-4 == 12) {
-    read($bmp, $s, 4) == 4 || return ("Archivo BMP corrupto!", 0, 0);
+    read($bmp, $s, 4) == 4 || return (&lib_language::_msg_prontus('_bmp_file_corrupt'), 0, 0);
     ($a,$b,$c,$d)=unpack("C"x4,$s);
     close($bmp);
     return ('', ($b<<8|$a), ($d<<8|$c));
   }
   elsif ($a-4 > 12) {
-    read($bmp, $s, 8) == 8 || return ("Archivo BMP corrupto!", 0, 0);
+    read($bmp, $s, 8) == 8 || return (&lib_language::_msg_prontus('_bmp_file_corrupt'), 0, 0);
     ($a,$b,$c,$d,$e,$f,$g,$h)=unpack("C"x8,$s);
     close($bmp);
     return ('', ($b<<8|$a|$d<<8|$c), ($f<<8|$e|$h<<8|$g));
@@ -5895,7 +5895,7 @@ sub call_system_and_location {
     $path_conf =~ s/^$dir_server//;
     $script .= "?path_conf=$path_conf";
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Ejecutar Proceso","Para completar la ejecución del proceso requerido, haga click <a href=\"$script\">aquí</a>.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_run_process'),&lib_language::_msg_prontus('_complete_execution_required_process_click')." <a href=\"$script\">".&lib_language::_msg_prontus('_here')."</a>.");
   }
   # SI UNIX
   else {

@@ -78,7 +78,7 @@ main: {
     if ($prontus_varglb::USERS_ID eq '') {
         my $resp;
         $resp->{'error'} = '1';
-        $resp->{'msg'} = "Ud no tiene una sesi&oacute;n iniciada";
+        $resp->{'msg'} = &lib_language::_msg_prontus('_user_session_not_init');
         &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=1');
     };
 
@@ -90,7 +90,7 @@ main: {
         if(-f $file) {
             my $resp;
             $resp->{'error'} = '1';
-            $resp->{'msg'} = "No se pudo eliminar la b&uacute;squeda.";
+            $resp->{'msg'} = &lib_language::_msg_prontus('_seach_not_erased');
             &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=1');
         };
     };
@@ -98,7 +98,7 @@ main: {
     #~ Todo salió ok, la busqueda fue eliminada
     my $resp;
     $resp->{'error'} = '0';
-    $resp->{'msg'} = "B&uacute;squeda eliminada exitosamente.";
+    $resp->{'msg'} = &lib_language::_msg_prontus('_seach_erased_success');
     #~ Mensaje para cuando no quedan busquedas
     my $msgextra = $lib_search::MIS_BUSQUEDAS_MSG;
     utf8::encode($msgextra);

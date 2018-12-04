@@ -106,7 +106,7 @@ main:{
 
     # user no valido
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
 #    # Acceso permitido solo para admin o editor
@@ -135,7 +135,7 @@ main:{
   my $msg_err_bd;
   ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
   if (! ref($BD)) {
-      &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err_bd,1,'exit=1');
   };
 
   # Se obtienen los que ya existen o han sido asignados

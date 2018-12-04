@@ -106,11 +106,11 @@ main: {
 
     # Valida datos de entrada
     my $msg_err;
-    $msg_err = "Parámetro [video] no es válido [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_video')." [$FORM{'video'}]" if ((!-f "$prontus_varglb::DIR_SERVER$FORM{'video'}") || (!-s "$prontus_varglb::DIR_SERVER$FORM{'video'}"));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = &lib_language::_msg_prontus('_invalid_parameter_prontus_id') if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
 
-    &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_msg_generic_error').": $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
     # Path conf y load config de prontus
     my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
@@ -126,7 +126,7 @@ main: {
 
     my $infile = $FORM{'video'};
     if ($infile !~ /\.mp4$/i) {
-        &glib_html_02::print_json_result(0, "Error: El video no es mp4.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_no_mp4_video'), 'exit=1,ctype=1');
     };
     if ($infile =~ /^\//) {
         $infile = $prontus_varglb::DIR_SERVER . $infile;
@@ -135,7 +135,7 @@ main: {
     };
 
     if($infile eq '' || !(-f $infile)) {
-        &glib_html_02::print_json_result(0, 'Debe especificar el archivo a procesar', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_file_processed_no_specified'), 'exit=1,ctype=1');
     };
 
     $FILE = $infile;
@@ -269,7 +269,7 @@ sub checkStatus {
             return;
         };
     };
-    &glib_html_02::print_json_result(0, "Error: Archivo mp4 no se encuentra en XML de articulo", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_mp4_not_found_artic_xml'), 'exit=1,ctype=1');
 }; # checkStatus
 
 # ------------------------------------------------
@@ -328,7 +328,7 @@ sub get_index {
     # Make sure the atoms we need exist
     if($toplevel && ( !($index{"moov"}) || !($index{"mdat"}))) {
         warn("No existe por lo menos uno de los atoms obligatorios");
-        &glib_html_02::print_json_result(0, "Error: No existe por lo menos uno de los atoms obligatorios en el video cargado", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_required_atoms_no_exist'), 'exit=1,ctype=1');
         exit;
     }
 }

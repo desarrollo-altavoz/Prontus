@@ -60,10 +60,10 @@ main: {
 
     # Valida datos de entrada
     my $msg_err;
-    $msg_err = "Parámetro [prontus_id] no es válido" if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
-    $msg_err = "Parámetro [prontus_id] no es válido" if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
+    $msg_err = &lib_language::_msg_prontus('invalid_prontus_id_paratemer') if (! &lib_prontus::valida_prontus($FORM{'prontus_id'}));
+    $msg_err = &lib_language::_msg_prontus('invalid_prontus_id_paratemer') if (!-d "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}");
 
-    &glib_html_02::print_json_result(0, "Error: $msg_err", 'exit=1,ctype=1') if ($msg_err);
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_msg_generic_error').": $msg_err", 'exit=1,ctype=1') if ($msg_err);
 
     # Path conf y load config de prontus
     my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
@@ -86,17 +86,17 @@ main: {
     print "Prontus - Verificar FFMPEG";
     print "</b></center>";
     print "<pre><b>";
-    print "Chequeando configuración de ffmpeg ...\n";
+    print &lib_language::_msg_prontus('_check_ffmpeg_config')." ...\n";
     print "</b>";
 
     my $os = uc $^O; # solo esta en algunas plataformas
-    print "Sistema Operativo: $os\n";
+    print &lib_language::_msg_prontus('_os').": $os\n";
 
-    printf(" * %28s %-12s ", "Directorio $FORM{'path'}", '' );
+    printf(" * %28s %-12s ", &lib_language::_msg_prontus('_directory')." $FORM{'path'}", '' );
     if ( -d $FORM{'path'}) {
         print "ok\n";
     } else {
-        print "<span class=\"check-error\">error (No es directorio)</span>\n";
+        print "<span class=\"check-error\">".&lib_language::_msg_prontus('_error_no_directory')."</span>\n";
         print "</pre>";
         exit;
     }
@@ -111,7 +111,7 @@ main: {
 sub check_xcoding {
     my $path_ffmpeg = shift;
 
-    print "Revisando soporte con $path_ffmpeg\n";
+    print &lib_language::_msg_prontus('_checking_support')." $path_ffmpeg\n";
     my $xcoding_ver = '0.5.2';
 
     # Primero se chequea la version
@@ -134,11 +134,11 @@ sub check_xcoding {
 
         } elsif($resp =~ /(built on .*?) with/) {
             my $built = $1;
-            print "<span class=\"check-error\">no se pudo comparar la version</span>\n";
+            print "<span class=\"check-error\">".&lib_language::_msg_prontus('_unable_version_comparison')."</span>\n";
             printf(" * %42s", '');
             print "<span class=\"check-error\">($built)</span>\n";
         } else {
-            print "<span class=\"check-error\">no se pudo comparar version ($origver)</span>\n";
+            print "<span class=\"check-error\">"&lib_language::_msg_prontus('_unable_version_comparison')" ($origver)</span>\n";
         }
 
         # Se comprueba soporte para libx264
@@ -183,23 +183,23 @@ sub check_xcoding {
 
         if ($x264 && ($faac || $fdk)) {
             if ($fdk && !$faac) {
-                print " <span class=\"check-error\">Se debe activar USAR_LIB_FDK, para usar el codec AAC.</span>\n";
+                print " <span class=\"check-error\">".&lib_language::_msg_prontus('_must_be_activated')." USAR_LIB_FDK, ".&lib_language::_msg_prontus('_to_use_codec')." AAC.</span>\n";
             } elsif ($fdk) {
-                print " Se puede activar USAR_LIB_FDK, para usar libfdk_aac.\n";
+                print &lib_language::_msg_prontus('_activate')." USAR_LIB_FDK, ".&lib_language::_msg_prontus('_to_use')." libfdk_aac.\n";
             }
             if (vers_cmp($ver,'1.0.0') > -1) {
-                print " Se puede activar la transcodificación avanzada, ADVANCED_XCODING. (FFmpeg version: $origver)\n";
-                print " Se puede activar la generación de HLS, GEN_HLS.\n";
+                print &lib_language::_msg_prontus('_activate_advanced_transcoding').", ADVANCED_XCODING. (FFmpeg version: $origver)\n";
+                print &lib_language::_msg_prontus('_activate_generation_HLS').", GEN_HLS.\n";
             }
             if (vers_cmp($ver,'1.2.12') > -1) {
-                print " Se puede activar la mejora de precisión al generar HLS, PRECISION_HLS. (FFmpeg version: $origver)\n";
+                print &lib_language::_msg_prontus('_enable_improved_accuracy_generating_HLS').", PRECISION_HLS. (FFmpeg version: $origver)\n";
             }
             if (vers_cmp($ver,'2.0.0') < 1) {
-                print "\n Se recomienda usar FFmpeg version 2 o superior. (FFmpeg version: $origver)\n";
+                print "\n ".&lib_language::_msg_prontus('_recommend_ffmpeg_version').". (FFmpeg version: $origver)\n";
             }
         } else {
             print "<span class=\"check-error\">";
-            print "No se encontraron los soportes necesarios";
+            print &lib_language::_msg_prontus('_media_required_not_found');
             print "</span>\n";
         }
 
@@ -208,14 +208,14 @@ sub check_xcoding {
         $version =~ s/^(\d+)\.(\d+)\.(\d+).+$/$1_$2/;
         my $url_manual_desa = $url_manual . '/prontus_desarrollo_v' . $version;
 
-        my $msg = "<u>Importante:</u> Es posible que la transcodificaci&oacute;n falle, aun cuando todos estos <br>requisitos se cumplan. ";
-        $msg .= "Para mayor informaci&oacute;n y ayuda frente a errores, dirigirse <br>al <a href=\"$url_manual_desa\" target=\"_blank\">manual de desarrollo</a>, ";
-        $msg .= "secci&oacute;n \"Instalaci&oacute;n\", sub-secci&oacute;n \"Soporte para transcodificaci&oacute;n\"";
+        my $msg = "<u>".&lib_language::_msg_prontus('_important').":</u> ".&lib_language::_msg_prontus('_transcodig_failure_warning')." <br>".&lib_language::_msg_prontus('_fulfilling_requirements');
+        $msg .= &lib_language::_msg_prontus('_more_information')." <br>al <a href=\"$url_manual_desa\" target=\"_blank\">".&lib_language::_msg_prontus('_development_manual')."</a>, ";
+        $msg .= &lib_language::_msg_prontus('_section')."\"".&lib_language::_msg_prontus('_instalation')."\", ".&lib_language::_msg_prontus('_sub_section')." \"".&lib_language::_msg_prontus('_transcoding_support')."\"";
         print "<br>".$msg."<br><br>";
 
     } else {
         print "FFmpeg... <span class=\"check-error\">";
-        print "no se pudo leer la version\n";
+        print &lib_language::_msg_prontus('_unable_read_version')."\n";
         print "</span>\n";
         return;
     }

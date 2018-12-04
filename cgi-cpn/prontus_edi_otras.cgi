@@ -101,7 +101,7 @@ sub main {
 
   if ($prontus_varglb::MULTI_EDICION ne 'SI') {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","Este Prontus no está configurado como multi edición.");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_prontus_not_configured_multi _edition'));
     exit;
   };
 
@@ -127,7 +127,8 @@ sub main {
   $pagina =~ s/<!--item_loop-->.*<!--\/item_loop-->/$lista/s;
   
   if ($lista eq '') {
-  	$pagina =~ s/%%_edic_msg%%/No existen ediciones anteriores./isg;
+  my $str = &lib_language::_msg_prontus('_no_previous_edition');
+  	$pagina =~ s/%%_edic_msg%%/$str/isg;
   	$pagina =~ s/<!--ul-->.*<!--\/ul-->//s;
   } else {
   	$pagina =~ s/<!--edic_msg-->.*<!--\/edic_msg-->//s;

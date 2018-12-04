@@ -86,7 +86,7 @@ main:{
   ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
   # Acceso permitido solo para admin
   if (($prontus_varglb::PRONTUS_EDITOR ne 'SI') or $prontus_varglb::USERS_PERFIL ne 'A') {
-    &glib_html_02::print_json_result(0, "La funcionalidad requerida está disponible sólo para el administrador del sistema.", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
   };
 
   if ($prontus_varglb::IP_SERVER ne '') { # implica llamada desde ambiente web. # 1.23
@@ -113,12 +113,12 @@ main:{
 
     my $file2remove = "$prontus_varglb::DIR_SERVER$FORM{'path_file'}";
     if ( (!(-f $file2remove)) || ($file2remove =~ /\.\./) )  {
-      &glib_html_02::print_json_result(0, "Archivo no válido.", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_file'), 'exit=1,ctype=1');
     };
     print STDERR "Borrando file... $file2remove\n";
     unlink $file2remove;
     &lib_prontus::write_log('Borrar', 'Editor', 'Archivo: '.$FORM{'path_file'});
-    &glib_html_02::print_json_result(1, "El archivo ha sido borrado", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_file_has_been_deleted'), 'exit=1,ctype=1');
 
   # Seccion para borrar directorio
   } elsif($FORM{'type_item'} eq 'dir') {
@@ -131,23 +131,23 @@ main:{
 
     my $dir2remove = "$prontus_varglb::DIR_SERVER$FORM{'curr_dir'}";
     if ( (!(-d $dir2remove)) || ($dir2remove =~ /\.\./) )  {
-      &glib_html_02::print_json_result(0, "Directorio no válido.", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_directory'), 'exit=1,ctype=1');
     }
     if(! &lib_edit::is_empty_dir($dir2remove)) {
-      &glib_html_02::print_json_result(0, "Directorio indicado no se puede borrar, ya que no está vacío.", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_delete_directory_not_empty'), 'exit=1,ctype=1');
     }
     print STDERR "Borrando dir... $dir2remove\n";
     if(rmdir $dir2remove) {
       &lib_prontus::write_log('Borrar', 'Editor', 'Directorio: '.$FORM{'curr_dir'});
-      &glib_html_02::print_json_result(1, "El directorio ha sido borrado", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_directory_has_been_deleted'), 'exit=1,ctype=1');
     } else {
       print STDERR "Hubo un error al borrar el directorio: $dir2remove\n$!";
-      &glib_html_02::print_json_result(0, "Hubo un error al borrar el directorio", 'exit=1,ctype=1');
+      &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_failed_deleted_directory'), 'exit=1,ctype=1');
     }
 
   # En el caso que no se haya especificado un tipo
   } else {
-    &glib_html_02::print_json_result(0, "Tipo de archivo no especificado", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_file_type_no_especified'), 'exit=1,ctype=1');
   }
 
 };

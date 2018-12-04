@@ -88,7 +88,7 @@ main: {
       $newbuffer = &lib_search::parsea_mis_busquedas($newbuffer, $prontus_varglb::USERS_ID);
 
     } else {
-      $newbuffer = 'Error al cargar la plantilla';
+      $newbuffer = &lib_language::_msg_prontus('_error_load_template');
     };
 
     print "Cache-Control: no-cache\n";

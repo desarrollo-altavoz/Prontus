@@ -65,7 +65,7 @@ main: {
     my $FORMAT    = $FORM{'_format'};
 
     if($PRONTUS eq '' || ! -d "$ROOT/$PRONTUS") {
-        &send_error("Directorio Prontus no es v&aacute;lido [$PRONTUS]");
+        &send_error(&lib_language::_msg_prontus('_invalid_prontus_directory')." [$PRONTUS]");
         exit;
     }
 
@@ -76,7 +76,7 @@ main: {
 
     # Se comprueba que venga el TS del artículo
     if($TS !~ /\d{14}/) {
-        &send_error("El parámetro _ts no es válido");
+        &send_error(&lib_language::_msg_prontus('_the_parameter')" _ts ".&lib_language::_msg_prontus('_invalid'));
         exit;
     };
 
@@ -85,7 +85,7 @@ main: {
         $FORMAT = 'csv';
 
     } elsif($FORMAT !~ /^csv$/) {
-        &send_error("El parámetro _format no es válido");
+        &send_error(&lib_language::_msg_prontus('_the_parameter')." ".&lib_language::_msg_prontus('_invalid'));
         exit;
     };
 
@@ -97,7 +97,7 @@ main: {
 
         # Si el order no existe, se  revisa que el archivo de respaldo exista
         if (!(-d $ROOT . $DIRFORM) || !(-f $ROOT . $DIRFORM . '/' . $BACKUPFILE)) {
-            &send_error('El archivo de datos está vacío o no existe');
+            &send_error(&lib_language::_msg_prontus('_data_file_empty_or_no_exist'));
             exit;
         };
         $CSV = &glib_fildir_02::read_file("$ROOT$DIRFORM/$BACKUPFILE");

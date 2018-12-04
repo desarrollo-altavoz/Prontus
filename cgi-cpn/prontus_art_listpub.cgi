@@ -185,7 +185,7 @@ main: {
                                                           $prontus_varglb::USERS_USR,
                                                           $id_session);
 
-    $buffer =~ s/%%_concurrency%%/otros users editando esta port: $concurrency/g;
+    $buffer =~ s/%%_concurrency%%/&lib_language::_msg_prontus('_other_users_editing_this_fp'): $concurrency/eg;
 
 
     $buffer =~ s/%%_port%%/$FORM{'_port'}/g;
@@ -348,7 +348,7 @@ sub get_time {
   my $label = $_[0];
   my $dt = &glib_hrfec_02::get_dtime_pack4();
   $dt =~ /(\d{2})(\d{2})(\d{2})$/;
-  return "\nHora $label [$1:$2:$3]";
+  return "\n" . &lib_language::_msg_prontus('_time') . " $label [$1:$2:$3]";
 
 };
 
@@ -544,10 +544,10 @@ sub get_artic_parsed {
     my $st_vb = $HASH_VB{$ts};
     $st_vb = 1 if ($st_vb eq '');
     if ($st_vb) {
-        $loop_art_tpl =~ s/%%_status_vobo%%/No publicar en esta portada/g;
+        $loop_art_tpl =~ s/%%_status_vobo%%/&lib_language::_msg_prontus('_not_publish_on_this_front_page')/eg;
         $loop_art_tpl =~ s/%%_vobo_st_img%%/pub/g;
     } else {
-        $loop_art_tpl =~ s/%%_status_vobo%%/Publicar en esta portada/g;
+        $loop_art_tpl =~ s/%%_status_vobo%%/&lib_language::_msg_prontus('_publish_on_this_front_page')/eg;
         $loop_art_tpl =~ s/%%_vobo_st_img%%/nopub/g;
     };
 
@@ -586,22 +586,22 @@ sub get_artic_parsed {
     # CVI - 06/02/2012 - Para indicar si el artículo posee fotos o no
     if(&lib_prontus::check_fotos_from_ts($ts)) {
         $loop_art_tpl =~ s/%%_con_foto%%/$prontus_varglb::FOTOS_ARTIC_SI_IMG/g;
-        $loop_art_tpl =~ s/%%_con_foto_texto%%/El art&iacute;culo tiene fotos/g;
+        $loop_art_tpl =~ s/%%_con_foto_texto%%/&lib_language::_msg_prontus('_artic_contain_images')/eg;
     } else {
         $loop_art_tpl =~ s/%%_con_foto%%/$prontus_varglb::FOTOS_ARTIC_NO_IMG/g;
-        $loop_art_tpl =~ s/%%_con_foto_texto%%/El art&iacute;culo no posee fotos/g;
+        $loop_art_tpl =~ s/%%_con_foto_texto%%/&lib_language::_msg_prontus('_artic_not_contain_images')/eg;
     }
 
     # CVI - 06/02/2012 - Para indicar en cuantas portadas se encuentra publicado el articulo
     my $portadas = &lib_prontus::check_artic_pub($ts, \%HASH_ARTIC_PUBS);
     if($portadas) {
         $loop_art_tpl =~ s/%%_artic_pub%%/$prontus_varglb::ARTIC_PUB_SI_IMG/g;
-        $loop_art_tpl =~ s/%%_artic_pub_texto%%/El art&iacute;culo est&aacute; publicado/g;
+        $loop_art_tpl =~ s/%%_artic_pub_texto%%/&lib_language::_msg_prontus('_artic_published')/eg;
         $loop_art_tpl =~ s/%%_artic_pub_resumen%%/$portadas/g;
     } else {
         $loop_art_tpl =~ s/%%_artic_pub%%/$prontus_varglb::ARTIC_PUB_NO_IMG/g;
-        $loop_art_tpl =~ s/%%_artic_pub_texto%%/El art&iacute;culo no est&aacute; publicado/g;
-        $loop_art_tpl =~ s/%%_artic_pub_resumen%%/El art&iacute;culo no est&aacute; publicado/g;
+        $loop_art_tpl =~ s/%%_artic_pub_texto%%/&lib_language::_msg_prontus('_artic_not_published')/eg;
+        $loop_art_tpl =~ s/%%_artic_pub_resumen%%/&lib_language::_msg_prontus('_artic_not_published')/eg;
     }
 
     # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
@@ -613,9 +613,9 @@ sub get_artic_parsed {
     $loop_art_tpl =~ s/%%_titular%%/$titulo/g;
 
     if ($nom_seccion) {
-        $nom_seccion = "<b>Secci&oacute;n: </b> $nom_seccion";
+        $nom_seccion = "<b>" . &lib_language::_msg_prontus('_section') . ": </b> $nom_seccion";
     } else {
-        $nom_seccion = "Sin Secci&oacute;n";
+        $nom_seccion = &lib_language::_msg_prontus('_without_section');
     };
     $loop_art_tpl =~ s/%%_nom_seccion%%/$nom_seccion/g;
     $loop_art_tpl =~ s/%%_labelfid%%/$glosa_tipo_ficha/g;

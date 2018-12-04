@@ -45,17 +45,17 @@ main: {
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL eq 'A') {
-        &glib_html_02::print_pag_result('Error','La funcionalidad requerida está disponible sólo para usuario editor y redactor.', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_functionality_available_editor_writer'), 1, 'exit=1,ctype=1');
     };
     
     if (&lib_prontus::open_dbm_files() ne 'ok') {
         print "Content-Type: text/html\n\n";
-        &glib_html_02::print_pag_result("Error","No fue posible abrir archivos dbm.");
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_open_dbm_file'));
         exit;
     };
   

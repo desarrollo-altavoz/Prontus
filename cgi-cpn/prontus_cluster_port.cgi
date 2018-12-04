@@ -108,18 +108,18 @@ main:{
         $nomport = $4;
         $extport = $5;
     } else {
-        &lib_clustering::salir("error al descomponer el path de entrada");
+        &lib_clustering::salir(&lib_language::_msg_prontus('_error_decompose_input_path'));
     };
 
 
     # valida dir prontus
     if (! -d "$prontus_varglb::DIR_SERVER/$prontus_id") {
-        &lib_clustering::salir("Error: Directorios de trabajo no válidos [$prontus_id].");
+        &lib_clustering::salir(&lib_language::_msg_prontus('_error_invalid_work_directories')." [$prontus_id].");
     };
 
     # Semaforo
     my $dir_smf = "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/data/procs";
-    &glib_fildir_02::check_dir($dir_smf) || &lib_clustering::salir("Error: No se pudo crear dir de semaforo [$dir_smf]");
+    &glib_fildir_02::check_dir($dir_smf) || &lib_clustering::salir(&lib_language::_msg_prontus('_error_unable_create_semaphore_directory')." [$dir_smf]");
     my $semaforo = "$dir_smf/semaforo_cluster_portadas_$nomport";
     $lib_waitlock::MAX_SEGS = 120;
     &lib_waitlock::lock_file($semaforo); # se le pasa el path completo al arch. semaforo.

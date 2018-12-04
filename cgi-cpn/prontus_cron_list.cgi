@@ -98,7 +98,7 @@ my %CONTENT_PLTS;
 my %CONFIG_PLTS;
 
 if ( (! -d "$prontus_varglb::DIR_SERVER") || ($prontus_varglb::DIR_SERVER eq '') )  {
-  print STDERR "\nError: Document root no valido.\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
+  print STDERR "\n"Error: Document root no valido."\n\nComo primer parametro debe indicar el path fisico al directorio raiz del servidor web, ejemplo: /sites/misitio/web \n";
   exit;
 };
 $FORM{'prontus'} = $ARGV[0];

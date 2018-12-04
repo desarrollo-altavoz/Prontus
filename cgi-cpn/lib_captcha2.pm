@@ -26,14 +26,14 @@ our $ERRCODE = 0;
 $TTF = './fontcaptcha.ttf';
 
 %ERR_MSGS = (
-    'MSG_CAPTCHA_SYSTEM' => 'Error interno del sistema',
-    'MSG_CAPTCHA_VOID' => 'Debe ingresar el c&oacute;digo de seguridad',
-    'MSG_CAPTCHA_INVALID' => 'El c&oacute;digo de seguridad no es v&aacute;lido',
-    'MSG_CAPTCHA_EXPIRED' => 'El c&oacute;digo de seguridad ha expirado',
-    'MSG_CAPTCHA_TYPE' => 'Petición invalida, especifique el tipo de captcha',
-    'MSG_CAPTCHA_BADTYPE' => 'El tipo de captcha, no es v&aacute;lido',
-    'MSG_CAPTCHA_BUSY' => 'Servidor ocupado, no se pudo generar la imagen del captcha',
-    'MSG_CAPTCHA_BLOCKED' => 'Petición invalida, usuario restringido'
+    'MSG_CAPTCHA_SYSTEM' => &lib_language::_msg_prontus('_internal_system_error'),
+    'MSG_CAPTCHA_VOID' => &lib_language::_msg_prontus('_enter_security_code'),
+    'MSG_CAPTCHA_INVALID' => &lib_language::_msg_prontus('_invalid_security_code'),
+    'MSG_CAPTCHA_EXPIRED' => &lib_language::_msg_prontus('_security_code_expired'),
+    'MSG_CAPTCHA_TYPE' => &lib_language::_msg_prontus('_invalid_request_specify_captcha_type'),
+    'MSG_CAPTCHA_BADTYPE' => &lib_language::_msg_prontus('_invalid_captcha_type'),
+    'MSG_CAPTCHA_BUSY' => &lib_language::_msg_prontus('_server_busy_captcha_not_generated'),
+    'MSG_CAPTCHA_BLOCKED' => &lib_language::_msg_prontus('_invalid_request_restricted_user')
 );
 
 

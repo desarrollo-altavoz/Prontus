@@ -61,7 +61,7 @@ main: {
         my $sess_obj = Session->new(
                         'prontus_id'        => $prontus_varglb::PRONTUS_ID,
                         'document_root'     => $prontus_varglb::DIR_SERVER)
-                        || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
+                        || &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_error_initializing_session_object').": $Session::ERR", 'exit=1,ctype=1');
 
 
         # para evitar que sea borrada por el gc.
@@ -74,7 +74,7 @@ main: {
                         'path_conf'         => $FORM{'path_conf'},
                         'document_root'     => $prontus_varglb::DIR_SERVER,
                         'just_status'       => '1')
-                        || &glib_html_02::print_pag_result('Error',"Error inicializando objeto Update: $Update::ERR", 1, 'exit=1,ctype=1');
+                        || &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_error_initializing_update_object').": $Update::ERR", 1, 'exit=1,ctype=1');
 
         $upd_obj->descarga_upd_descriptor();
 

@@ -102,7 +102,7 @@ use lib_maxrunning;
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(5)) {
     print "Content-type: text/html\n";
-    print "\n<html><body><p>Error: Servidor ocupado. Intente otra vez m&aacute;s tarde.</p></body></html>.\n";
+    print "\n<html><body><p>".&lib_language::_msg_prontus('_server_busy_error_extended')."</p></body></html>.\n";
     exit;
 };
 
@@ -140,7 +140,7 @@ main: {
   $FORM{'_FILE'} =~ s/https?:\/\/[^\/]+//i; # CVI
 
   # 2.9
-  &aborta('Art&iacute;culo no v&aacute;lido') if ((! -f "$ROOTDIR$FORM{'_FILE'}") || (! -s "$ROOTDIR$FORM{'_FILE'}"));
+  &aborta(&lib_language::_msg_prontus('_invalid_article')) if ((! -f "$ROOTDIR$FORM{'_FILE'}") || (! -s "$ROOTDIR$FORM{'_FILE'}"));
 
   # Obtiene prontus dir.
   my $ruta = $FORM{'_FILE'};         # onda /prontus_dir/site/artic/20050823/pags/20050823163215.html
@@ -151,7 +151,7 @@ main: {
   }
   # Se valida el nombre del prontus, por si las moscas
   if(! &lib_prontus::valida_prontus($PRONTUS_ID)) {
-    &aborta('El Prontus indicado, no es v&aacute;lido.');  
+    &aborta(&lib_language::_msg_prontus('_invalid_indicated_prontus'));  
   }
 
   # Dir de Plantillas usadas por la aplicacion.
@@ -159,7 +159,7 @@ main: {
   if ($FORM{'_MV'}) { # nombre de la vista.
     $TDIR = $TDIR . '-' . $FORM{'_MV'};
   };
-  &aborta('Dir de plantillas no v&aacute;lido.') if (! -d $TDIR);
+  &aborta(&lib_language::_msg_prontus('_invalid_template_directory')) if (! -d $TDIR);
 
   # Lee xml del artic.
   my $xml_data = &get_xml_data();
@@ -383,7 +383,7 @@ sub get_plt_print {
   $buffer_plt = &leeAllFile("$TDIR/imprimir.html", '') if $buffer_plt eq '';
 
   if ($buffer_plt eq '') {
-    &show_msg('Error de configuraci&oacute;n: No hay plantilla para generar p&aacute;gina para imprimir.');
+    &show_msg(&lib_language::_msg_prontus('_configuration_error_no template_no_print'));
     exit;
   };
 
@@ -405,8 +405,7 @@ sub get_xml_data {
   $cont =~ s/.*?<_PRIVATE>(.*?)<\/_PRIVATE>.*?<_PUBLIC>(.*?)<\/_PUBLIC>.*?/$1\r\n$2/is;
 
   if ($cont eq '') {
-    &show_msg('El servicio no est&aacute; disponible en este momento. [noxmldata] '
-          . 'Intente nuevamente m&aacute;s tarde.');
+    &show_msg(&lib_language::_msg_prontus('_service_not_available'));
     exit;
   };
 
@@ -512,15 +511,22 @@ sub aborta {
 
  sub expande_fecha {
    my($fecha) = $_[0];
-   my(@dias) = ('Domingo','Lunes','Martes','Mi&eacute;rcoles','Jueves','Viernes','S&aacute;bado');
-   my(@meses) = ('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio',
-                    'Agosto','Septiembre','Octubre','Noviembre','Diciembre');
+   my(@dias) = (&lib_language::_msg_prontus('_sunday'),&lib_language::_msg_prontus('_monday')
+                ,&lib_language::_msg_prontus('_tuesday'),&lib_language::_msg_prontus('_wednesday')
+                ,&lib_language::_msg_prontus('_thursday'),&lib_language::_msg_prontus('_friday')
+                ,&lib_language::_msg_prontus('_saturday'));
+   my(@meses) = (&lib_language::_msg_prontus('_january'),&lib_language::_msg_prontus('_february')
+                ,&lib_language::_msg_prontus('_march'),&lib_language::_msg_prontus('_april')
+                ,&lib_language::_msg_prontus('_may'),&lib_language::_msg_prontus('_june')
+                ,&lib_language::_msg_prontus('_july'),&lib_language::_msg_prontus('_august')
+                ,&lib_language::_msg_prontus('_september'),&lib_language::_msg_prontus('_october')
+                ,&lib_language::_msg_prontus('_november'),&lib_language::_msg_prontus('_december'));
    $fecha =~ /(\d\d\d\d)(\d\d)(\d\d)/g;
    my($dia,$mes,$ano) = ($3,$2,$1);
    my($tiempo) = &POSIX::mktime(0,0,12,$dia,($mes - 1),($ano - 1900));
    my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($tiempo);
    $dia = $dia + 0; # Para extraer los ceros de adelante.
-   return $dias[$wday] . " $dia de " . $meses[($mes - 1)] . " de $ano";
+   return $dias[$wday] . " $dia of " . $meses[($mes - 1)] . " of $ano";
 
  }; # expande_fecha
 

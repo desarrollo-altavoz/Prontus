@@ -68,7 +68,7 @@ main: {
     # nombre de la vista a previsualizar, o nada.
     $FORM{'_vista'} = &glib_cgi_04::param('_vista');
     if ($FORM{'_vista'} !~ /^\w+$/) {
-        &glib_html_02::print_json_result(0, 'Vista no válida.', 'exit=1,ctype=1') if ($FORM{'_vista'} ne '');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_view'), 'exit=1,ctype=1') if ($FORM{'_vista'} ne '');
     };
 
     # fecha preview
@@ -89,19 +89,19 @@ main: {
         $FORM{'_edic'} =~ s/^\///;
     } else {
         if ($FORM{'_edic'} !~ /^\w+$/) {
-            &glib_html_02::print_json_result(0, 'Edición no válida.', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_edition'), 'exit=1,ctype=1');
         };
     };
 
     # Arch. de tpl. de portada. , con extension y sin path. (El Nombre del archivo correspondiente a la portada publicada es el mismo)
     $FORM{'_port'} = &glib_cgi_04::param('_port');
     if ($FORM{'_port'} !~ /^[\w\-]+\.\w+$/) {
-        &glib_html_02::print_json_result(0, 'Portada no válida.', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_front_page'), 'exit=1,ctype=1');
     };
 
     # Arma dirs de trabajo
     if (! &set_dirs() ) {
-        &glib_html_02::print_json_result(0, '901-Error al componer directorios', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_901_error_compose_directory'), 'exit=1,ctype=1');
     };
 
     # Cargar paraemtros en lib_dd
@@ -173,7 +173,7 @@ sub get_ts_preview {
         my $ts_preview = "$fprev_iso$hhmm_prev";
         return $ts_preview;
     } else {
-        &glib_html_02::print_json_result(0, 'Fecha preview no es válida.', 'exit=1,ctype=1') if ($fecha_preview ne '');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_preview_date'), 'exit=1,ctype=1') if ($fecha_preview ne '');
     };
 };
 

@@ -53,7 +53,7 @@ sub validation {
   # print STDERR "cierre_fecha[$cierre_fecha]\n";
   # valida q el foro no este cerrado, esto afecta indistintamente de si el foro requiere o no autenticacion
   if ($forocerrado) {
-    return 'Este foro se encuentra cerrado.';
+    return &lib_language::_msg_prontus('_forum_closed');
   };
 
   # fechas vienen como dd/mm/aaaa y horas como hh:mm
@@ -61,10 +61,10 @@ sub validation {
   my $apert = &glib_hrfec_02::normaliza_fecha($apert_fecha) . substr($apert_hora,0,2) .  substr($apert_hora,3,2); # aaaammddhhmm
   my $ts_now = substr(&glib_hrfec_02::get_dtime_pack4(), 0, 12); # aaaammddhhmm
   if (($cierre <= $ts_now) and ($cierre >= $apert)) {
-    return "Este foro se encuentra cerrado desde el $cierre_fecha - $cierre_hora hrs.";
+    return &lib_language::_msg_prontus('_forum_closed_from')." $cierre_fecha - $cierre_hora hrs.";
   };
   if ($apert > $ts_now) {
-    return "Este foro se encuentra cerrado hasta el $apert_fecha - $apert_hora hrs.";
+    return &lib_language::_msg_prontus('_forum_closed_until')." $apert_fecha - $apert_hora hrs.";
   };
 
   my ($session_name, $session_path) = ($hash_tipos{$form{'OBJTIPO'}}{'PHP_SESSION_NAME'}, $hash_tipos{$form{'OBJTIPO'}}{'PHP_SESSION_PATH'});
@@ -75,11 +75,11 @@ sub validation {
   if ($protegido) {
     # Si esta protegido y el user no esta autenticado...
     if (! $ses_nickname) {
-      return 'Este foro requiere autenticación.';
+      return &lib_language::_msg_prontus('_forum_authentication');
     };
     # Si esta autenticado pero esta bloqueado...
     if ($ses_bloqforos == 'S') {
-      return 'Acceso denegado.';
+      return &lib_language::_msg_prontus('_access_denied');
     };
   };
 
@@ -95,7 +95,7 @@ sub validation {
     my $sentencia = '$result = &lib_custom_val::custom_validation;';
     eval($sentencia);
     if ($@) {
-      print STDERR 'Error ejecutando &lib_custom_val::custom_validation : ' . "$@\n";
+      print STDERR &lib_language::_msg_prontus('_error_execution').' &lib_custom_val::custom_validation : ' . "$@\n";
     };
     return $result;
   };

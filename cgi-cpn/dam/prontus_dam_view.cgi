@@ -76,17 +76,17 @@ main: {
   print "Content-Type: text/html\n\n";
 
   if($FORM{'view_tmpl'} =~ /[\/\\]/) {
-    print "Plantilla no válida";
+    print &lib_language::_msg_prontus('_invalid_template');
     exit;
   };
   my $prontus = $ENV{'DOCUMENT_ROOT'} . '/' . $FORM{'view_prontus'};
   if(!(-d $prontus)) {
-    print "Prontus no válido";
+    print &lib_language::_msg_prontus('_invalid_prontus');
     exit;
   };
   my $tmpl = $prontus . $dam_varglb::DIR_TMPL . $FORM{'view_tmpl'};
   if(!(-f $tmpl)) {
-    print "Plantilla no válida";
+    print &lib_language::_msg_prontus('_invalid_template');
     exit;
   };
 

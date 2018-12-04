@@ -99,7 +99,7 @@ my (%FORM, $BD);
 my %DATA_VISTAS;
 my $RELPATH_TEMPL = '/cpan/core/prontus_tags_resumen.html';
 my $MAX_ARTIC_RESUMEN = 10;
-my $MSG_NO_ARTIC = "Este Tag no posee art&iacute;culos asociados";
+my $MSG_NO_ARTIC = &lib_language::_msg_prontus('_tag_no_items_associated');
 my (%TABLA_SECC, %TABLA_TEMAS, %TABLA_SUBTEMAS);
 
 main: {
@@ -120,12 +120,12 @@ main: {
 
     # user no valido
     if ($prontus_varglb::USERS_ID eq '') {
-        &glib_html_02::print_pag_result('Error',$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$prontus_varglb::USERS_PERFIL, 1, 'exit=1,ctype=1');
     };
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
     # Carga la plantilla
@@ -135,7 +135,7 @@ main: {
     $FORM{'_id'}= &glib_cgi_04::param('_id');
     if ($FORM{'_id'} ne '') {
         if (($FORM{'_id'} !~ /^[0-9]+$/) || (!$FORM{'_id'})) {
-            &parse_error('Id no válido', $pagina);
+            &parse_error(&lib_language::_msg_prontus('_invalid_id'), $pagina);
         };
     };
 

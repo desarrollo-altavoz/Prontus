@@ -330,13 +330,13 @@ sub implementar_anterior_sgte {
 
     if ($tot_reg > $ult_reg) { # habilitar link siguiente
 
-        $sgte = "<a href=\"#\" onclick=\"Listartic.nextpag('$ult_reg'); return false;\">Siguiente &rsaquo;&nbsp;</a>";
+        $sgte = "<a href=\"#\" onclick=\"Listartic.nextpag('$ult_reg'); return false;\">" . &lib_language::_msg_prontus('_next') . " &rsaquo;&nbsp;</a>";
 
         $from_ultpag = $tot_reg - ($tot_reg % $prontus_varglb::MAX_NRO_ARTIC);
 
         $from_ultpag -= $prontus_varglb::MAX_NRO_ARTIC if ($tot_reg % $prontus_varglb::MAX_NRO_ARTIC) == 0;
 
-        $ultpag = "<a href=\"#\" onclick=\"Listartic.ultpag('$from_ultpag'); return false;\">&Uacute;ltima P&aacute;gina &raquo;</a>";
+        $ultpag = "<a href=\"#\" onclick=\"Listartic.ultpag('$from_ultpag'); return false;\">" . &lib_language::_msg_prontus('_last_page') . " &raquo;</a>";
     }
     else { # deshabilitarlo
         $sgte =  "";
@@ -345,9 +345,9 @@ sub implementar_anterior_sgte {
     if ($FORM{'_rec_ini'} > $prontus_varglb::MAX_NRO_ARTIC) { # habilitar link anterior
 
         $prev_ini = ($FORM{'_rec_ini'} - 1) - $prontus_varglb::MAX_NRO_ARTIC;
-        $anter = "<a href=\"#\" onclick=\"Listartic.prevpag('$prev_ini'); return false;\"> &nbsp;&lsaquo; Anterior</a>";
+        $anter = "<a href=\"#\" onclick=\"Listartic.prevpag('$prev_ini'); return false;\"> &nbsp;&lsaquo; " . &lib_language::_msg_prontus('_previous') . "</a>";
         $from_firstpag = 0;
-        $firstpag = "<a href=\"#\" onclick=\"Listartic.firstpag('$from_firstpag'); return false;\">&laquo; Primera P&aacute;gina</a>";
+        $firstpag = "<a href=\"#\" onclick=\"Listartic.firstpag('$from_firstpag'); return false;\">&laquo; " . &lib_language::_msg_prontus('_first_page') . "</a>";
 
     }
     else { # deshabilitarlo.
@@ -359,7 +359,7 @@ sub implementar_anterior_sgte {
     }
     else {
 
-        $result = "<b>$FORM{'_rec_ini'}</b> a <b>$ult_reg</b> de <b>$tot_reg</b>"; # No hay para que informar cuantos encontro.
+        $result = "<b>$FORM{'_rec_ini'}</b> ". &lib_language::_msg_prontus('_to') . " <b>$ult_reg</b> " . &lib_language::_msg_prontus('_of') . " <b>$tot_reg</b>"; # No hay para que informar cuantos encontro.
     };
 
     if (($anter ne  "") or ($sgte ne  "")) {
@@ -373,18 +373,15 @@ sub implementar_anterior_sgte {
 
     $tot_reg = '0' if ($tot_reg eq '');
 
-    my ($plural, $plural_n) = '';
-    $plural = 's' if $tot_reg > 1;
-    $plural_n = 'n' if $tot_reg > 1;
-
-
     my $label_tablanopub;
     if ($FORM{'_search'}) {
-        $label_tablanopub = "\nSu b&uacute;squeda entreg&oacute; <b>$tot_reg</b> art&iacute;culo$plural "
-                          . "que cumple$plural_n con los siguentes atributos:<br/> $ftexto";
+        $label_tablanopub = "\n" . &lib_language::_msg_prontus('_search_results') . " <b>$tot_reg</b> "        
+        $label_tablanopub = &lib_language::_msg_prontus('_article_acording_the atributes') if !($tot_reg > 1);
+        $label_tablanopub = &lib_language::_msg_prontus('_articles_acording_the atributes') if $tot_reg > 1;
+        $label_tablanopub = ":<br/> $ftexto";
     }
     else {
-        $label_tablanopub = "\n&Uacute;ltimos Art&iacute;culos Ingresados. $ftexto";
+        $label_tablanopub = "\n" . &lib_language::_msg_prontus('_last_articles_entered') . " $ftexto";
     };
     $label_tablanopub .= '<br/>' . $result . '&nbsp;' x 20 . $ant_sig;
 
@@ -571,7 +568,7 @@ sub genera_filtros {
 
   if ($FORM{'autoinc'} ne '') {
     $filtros .= " ART_AUTOINC = $FORM{'autoinc'}";
-    $filtros_texto = "<b>C&oacute;digo:</b> $FORM{'autoinc'}";
+    $filtros_texto = "<b>" . &lib_language::_msg_prontus('_code') . ":</b> $FORM{'autoinc'}";
 
   }
   else {
@@ -579,39 +576,39 @@ sub genera_filtros {
     if ($FORM{'tipart'}) { # Distinto de todos.
       $filtros .= " and ART_TIPOFICHA = \"$FORM{'tipart'}\"" if $filtros ne '';
       $filtros = "ART_TIPOFICHA = \"$FORM{'tipart'}\"" if $filtros eq '';
-      $filtros_texto .= "<b>Tipo artic:</b> $FORM{'nom_tipart'}" if $filtros_texto eq '';
+      $filtros_texto .= "<b>" . &lib_language::_msg_prontus('_type_artic') . ":</b> $FORM{'nom_tipart'}" if $filtros_texto eq '';
     };
 
     if ($FORM{'seccion'} eq 'SS') { # Los sin seccion
       my $esc_value = &lib_prontus::escape_html($FORM{'nom_seccion'});
       $filtros .= " and " if $filtros ne '';
       $filtros .= "(ART_IDSECC1 = \"0\" and ART_IDSECC2 = \"0\" and ART_IDSECC3 = \"0\")";
-      $filtros_texto .= " | <b>Secci&oacute;n:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto .= "<b>Secci&oacute;n:</b> $esc_value" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_section') . ":</b> $esc_value" if $filtros_texto ne '';
+      $filtros_texto .= "<b>" . &lib_language::_msg_prontus('_section') . ":</b> $esc_value" if $filtros_texto eq '';
     };
 
     if (($FORM{'seccion'} =~ /^\d+$/) && ($FORM{'seccion'} > 0)) { # Distinto de todos.
       my $esc_value = &lib_prontus::escape_html($FORM{'nom_seccion'});
       $filtros .= " and " if $filtros ne '';
       $filtros .= "(ART_IDSECC1 = \"$FORM{'seccion'}\" or ART_IDSECC2 = \"$FORM{'seccion'}\" or ART_IDSECC3 = \"$FORM{'seccion'}\")";
-      $filtros_texto .= " | <b>Secci&oacute;n:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto .= "<b>Secci&oacute;n:</b> $esc_value" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_section') . ":</b> $esc_value" if $filtros_texto ne '';
+      $filtros_texto .= "<b>" . &lib_language::_msg_prontus('_section') . ":</b> $esc_value" if $filtros_texto eq '';
     };
 
     if ($FORM{'tema'}) { # Distinto de todos.
       my $esc_value = &lib_prontus::escape_html($FORM{'nom_tema'});
       $filtros .= " and " if $filtros ne '';
       $filtros .= "(ART_IDTEMAS1 = \"$FORM{'tema'}\" or ART_IDTEMAS2 = \"$FORM{'tema'}\" or ART_IDTEMAS3 = \"$FORM{'tema'}\")";
-      $filtros_texto .= " | <b>Tema:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Tema:</b> $esc_value" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_theme') . ":</b> $esc_value" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_theme') . ":</b> $esc_value" if $filtros_texto eq '';
     };
 
     if ($FORM{'subtema'}) { # Distinto de todos.
       my $esc_value = &lib_prontus::escape_html($FORM{'nom_subtema'});
       $filtros .= " and " if $filtros ne '';
       $filtros .= "(ART_IDSUBTEMAS1 = \"$FORM{'subtema'}\" or ART_IDSUBTEMAS2 = \"$FORM{'subtema'}\" or ART_IDSUBTEMAS3 = \"$FORM{'subtema'}\")";
-      $filtros_texto .= " | <b>Subtema:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Subtema:</b> $esc_value" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>". &lib_language::_msg_prontus('_subtheme') . ":</b> $esc_value" if $filtros_texto ne '';
+      $filtros_texto = "<b>". &lib_language::_msg_prontus('_subtheme') . ":</b> $esc_value" if $filtros_texto eq '';
     };
 
 
@@ -666,8 +663,8 @@ sub genera_filtros {
       };
       my $esc_value = &lib_prontus::escape_html($FORM{'titu'});
       $esc_value =~ s/\\//sig;
-      $filtros_texto .= " | <b>Titular:</b> $esc_value" if $filtros_texto ne '';
-      $filtros_texto = "<b>Titular:</b> $esc_value" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_title') . ":</b> $esc_value" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_title') . ":</b> $esc_value" if $filtros_texto eq '';
     };
 
 
@@ -708,16 +705,16 @@ sub genera_filtros {
       my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'dia'});
       my $diahasta_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diahasta'});
 
-      $filtros_texto .= " | <b>Fec. creaci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
-      $filtros_texto = "<b>Fec. creaci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
     };
 
     if ($FORM{'diapub'} ne '' && $FORM{'diapubhasta'} eq '') {
       $filtros .= " and ART_FECHAP = \"$FORM{'diapub'}\"" if $filtros ne '';
       $filtros = "ART_FECHAP = \"$FORM{'diapub'}\"" if $filtros eq '';
       my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diapub'});
-      $filtros_texto .= " | <b>Fec. publicaci&oacute;n:</b> $dia_desnorm" if $filtros_texto ne '';
-      $filtros_texto = "<b>Fec. publicaci&oacute;n:</b> $dia_desnorm" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm" if $filtros_texto eq '';
     } elsif ($FORM{'diapub'} ne '' && $FORM{'diapubhasta'} ne '') {
       $filtros .= " and (ART_FECHAP between \"$FORM{'diapub'}\" and \"$FORM{'diapubhasta'}\")" if $filtros ne '';
       $filtros = "(ART_FECHAP between \"$FORM{'diapub'}\" and \"$FORM{'diapubhasta'}\")" if $filtros eq '';
@@ -725,16 +722,16 @@ sub genera_filtros {
       my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diapub'});
       my $diahasta_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diapubhasta'});
 
-      $filtros_texto .= " | <b>Fec. publicaci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
-      $filtros_texto = "<b>Fec. publicaci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
     };
 
     if ($FORM{'diaexp'} ne '' && $FORM{'diaexphasta'} eq '') {
       $filtros .= " and ART_FECHAE = \"$FORM{'diaexp'}\"" if $filtros ne '';
       $filtros = "ART_FECHAE = \"$FORM{'diaexp'}\"" if $filtros eq '';
       my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diaexp'});
-      $filtros_texto .= " | <b>Fec. expiraci&oacute;n:</b> $dia_desnorm" if $filtros_texto ne '';
-      $filtros_texto = "<b>Fec. expiraci&oacute;n:</b> $dia_desnorm" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm" if $filtros_texto ne '';
+      $filtros_texto = "<b>F" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm" if $filtros_texto eq '';
     } elsif ($FORM{'diaexp'} ne '' && $FORM{'diaexphasta'} ne '') {
       $filtros .= " and (ART_FECHAE between \"$FORM{'diaexp'}\" and \"$FORM{'diaexphasta'}\")" if $filtros ne '';
       $filtros = "(ART_FECHAE between \"$FORM{'diaexp'}\" and \"$FORM{'diaexphasta'}\")" if $filtros eq '';
@@ -742,8 +739,8 @@ sub genera_filtros {
       my $dia_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diaexp'});
       my $diahasta_desnorm = &glib_hrfec_02::des_normaliza_fecha($FORM{'diaexphasta'});
 
-      $filtros_texto .= " | <b>Fec. expiraci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
-      $filtros_texto = "<b>Fec. expiraci&oacute;n:</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_creation_date') . ":</b> $dia_desnorm - $diahasta_desnorm" if $filtros_texto eq '';
     };
 
     if ($FORM{'alta'} ne '') { # Distinto de todos.
@@ -751,16 +748,16 @@ sub genera_filtros {
       $alta_value = '' if ($alta_value eq '0'); # Cuando se niega el alta, queda con '' y no con '0'
       $filtros .= " and ART_ALTA = \"$alta_value\"" if $filtros ne '';
       $filtros = "ART_ALTA = \"$alta_value\"" if $filtros eq '';
-      $filtros_texto .= " | <b>Alta:</b> $FORM{'nom_alta'}" if $filtros_texto ne '';
-      $filtros_texto = "<b>Alta:</b> $FORM{'nom_alta'}" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_approval') . ":</b> $FORM{'nom_alta'}" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_approval') . ":</b> $FORM{'nom_alta'}" if $filtros_texto eq '';
     };
 
     # CVI - para busqueda rápida por TS
     if ($FORM{'ts'} ne '') {
       $filtros .= " and ART_ID = \"$FORM{'ts'}\"" if $filtros ne '';
       $filtros = "ART_ID = \"$FORM{'ts'}\"" if $filtros eq '';
-      $filtros_texto .= " | <b>Timestamp:</b> $FORM{'ts'}" if $filtros_texto ne '';
-      $filtros_texto = "<b>Timestamp:</b> $FORM{'ts'}" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_timestamp') . ":</b> $FORM{'ts'}" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_timestamp') . ":</b> $FORM{'ts'}" if $filtros_texto eq '';
     };
 
     # OCULTAR ARTICS AJENOS AUTOMATICAMENTE
@@ -769,8 +766,8 @@ sub genera_filtros {
 
       $filtros .= " and ART_IDUSR = \"$prontus_varglb::USERS_ID\"" if $filtros ne '';
       $filtros = "ART_IDUSR = \"$prontus_varglb::USERS_ID\"" if $filtros eq '';
-      $filtros_texto .= " | <b>S&oacute;lo art&iacute;culos propios.</b>" if $filtros_texto ne '';
-      $filtros_texto = "<b>S&oacute;lo art&iacute;culos propios.</b>" if $filtros_texto eq '';
+      $filtros_texto .= " | <b>" . &lib_language::_msg_prontus('_only_self_artics') . "</b>" if $filtros_texto ne '';
+      $filtros_texto = "<b>" . &lib_language::_msg_prontus('_only_self_artics') . "</b>" if $filtros_texto eq '';
     };
   };
 
@@ -778,10 +775,10 @@ sub genera_filtros {
   # -----------------------
 
   if ($filtros_texto eq '') {
-    $filtros_texto = '&nbsp;Sin filtros';
+    $filtros_texto = '&nbsp;'. &lib_language::_msg_prontus('_no_filters');
   } else {
-    my $imgDel = '<img src="/'.$prontus_varglb::PRONTUS_ID.'/cpan/core/imag/boto/delete10x10px.png" width="10" height="10" alt="Eliminar Filtros" />';
-    $filtros_texto .= '&nbsp;&nbsp;&nbsp;<a href="#" onclick="Buscador.limpiaFiltros(); return false;" class="elim-filtros">['.$imgDel.' Eliminar filtros]</a>';
+    my $imgDel = '<img src="/'.$prontus_varglb::PRONTUS_ID.'/cpan/core/imag/boto/delete10x10px.png" width="10" height="10" alt="'. &lib_language::_msg_prontus('_erase_filters') . '" />';
+    $filtros_texto .= '&nbsp;&nbsp;&nbsp;<a href="#" onclick="Buscador.limpiaFiltros(); return false;" class="elim-filtros">['.$imgDel.' '. &lib_language::_msg_prontus('_erase_filters') . ']</a>';
   };
 
 
@@ -861,7 +858,7 @@ sub get_time {
   my $label = $_[0];
   my $dt = &glib_hrfec_02::get_dtime_pack4();
   $dt =~ /(\d{2})(\d{2})(\d{2})$/;
-  return "\nHora $label [$1:$2:$3]";
+  return "\n" . &lib_language::_msg_prontus('_time') . " $label [$1:$2:$3]";
 
 };
 
@@ -916,14 +913,14 @@ sub des_normaliza_fecha_plus {
   my($dia,$mes,$ano);
   if ($fecha =~ /^(\d\d\d\d)(\d\d)(\d\d)$/) {
     ($dia,$mes,$ano) = ($3,$2,$1);
-    return "Fecha: $dia/$mes/$ano";
+    return &lib_language::_msg_prontus('_date') . ": $dia/$mes/$ano";
   }
   elsif ($fecha =~ /^(\d\d\d\d)(\d\d)$/) {
     ($mes,$ano) = ($2,$1);
-    return "Mes: $mes/$ano";
+    return &lib_language::_msg_prontus('_month') . ": $mes/$ano";
   }
   elsif ($fecha =~ /^(\d\d\d\d)$/) {
-    return "Año: $1";
+    return &lib_language::_msg_prontus('_year') . ": $1";
   }
   else {
     return '';
@@ -1082,7 +1079,7 @@ sub get_artic_parsed {
     $loop_art_tpl =~ s/%%_status_pub%%/$st_pub/g;
 
     # vobo.
-    $loop_art_tpl =~ s/%%_status_vobo%%/No publicar en esta portada/g;
+    $loop_art_tpl =~ s/%%_status_vobo%%/&lib_language::_msg_prontus('_not_publish_on_this_front_page')/eg;
     $loop_art_tpl =~ s/%%_vobo_st_img%%/pub/g;
     $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo_disabled/g;
     $loop_art_tpl =~ s/%%_voboboto_class_name%%/voboboto_disabled/g;
@@ -1102,22 +1099,22 @@ sub get_artic_parsed {
     # CVI - 06/02/2012 - Para indicar si el artículo posee fotos o no
     if(&lib_prontus::check_fotos_from_ts($ts)) {
         $loop_art_tpl =~ s/%%_con_foto%%/$prontus_varglb::FOTOS_ARTIC_SI_IMG/g;
-        $loop_art_tpl =~ s/%%_con_foto_texto%%/El art&iacute;culo tiene fotos/g;
+        $loop_art_tpl =~ s/%%_con_foto_texto%%/&lib_language::_msg_prontus('_artic_contain_images')/eg;
     } else {
         $loop_art_tpl =~ s/%%_con_foto%%/$prontus_varglb::FOTOS_ARTIC_NO_IMG/g;
-        $loop_art_tpl =~ s/%%_con_foto_texto%%/El art&iacute;culo no posee fotos/g;
+        $loop_art_tpl =~ s/%%_con_foto_texto%%/&lib_language::_msg_prontus('_artic_not_contain_images')/eg;
     }
 
     # CVI - 06/02/2012 - Para indicar en cuantas portadas se encuentra publicado el articulo
     my $portadas = &lib_prontus::check_artic_pub($ts, \%HASH_ARTIC_PUBS);
     if($portadas) {
         $loop_art_tpl =~ s/%%_artic_pub%%/$prontus_varglb::ARTIC_PUB_SI_IMG/g;
-        $loop_art_tpl =~ s/%%_artic_pub_texto%%/El art&iacute;culo est&aacute; publicado/g;
+        $loop_art_tpl =~ s/%%_artic_pub_texto%%/&lib_language::_msg_prontus('_artic_not_published')/eg;
         $loop_art_tpl =~ s/%%_artic_pub_resumen%%/$portadas/g;
     } else {
         $loop_art_tpl =~ s/%%_artic_pub%%/$prontus_varglb::ARTIC_PUB_NO_IMG/g;
-        $loop_art_tpl =~ s/%%_artic_pub_texto%%/El art&iacute;culo no est&aacute; publicado/g;
-        $loop_art_tpl =~ s/%%_artic_pub_resumen%%/El art&iacute;culo no est&aacute; publicado/g;
+        $loop_art_tpl =~ s/%%_artic_pub_texto%%/&lib_language::_msg_prontus('_artic_not_published')/eg;
+        $loop_art_tpl =~ s/%%_artic_pub_resumen%%/&lib_language::_msg_prontus('_artic_not_published')/eg;
     }
 
     # CVI - 29/03/2011 - Para habilitar las friendly urls en el admin de comentarios
@@ -1132,9 +1129,9 @@ sub get_artic_parsed {
 
     $loop_art_tpl =~ s/%%_titular%%/$titulo/g;
     if ($nom_seccion) {
-        $nom_seccion = "<b>Secci&oacute;n: </b> $nom_seccion";
+        $nom_seccion = "<b>" . &lib_language::_msg_prontus('_section') . ": </b> $nom_seccion";
     } else {
-        $nom_seccion = "Sin Secci&oacute;n";
+        $nom_seccion = &lib_language::_msg_prontus('_without_section');
     };
     $loop_art_tpl =~ s/%%_nom_seccion%%/$nom_seccion/g;
     $loop_art_tpl =~ s/%%_labelfid%%/$glosa_tipo_ficha/g;
@@ -1200,7 +1197,7 @@ sub get_artic_parsed {
         else {
             $art_horap = '00:00';
         };
-        $publicacion = &glib_hrfec_02::des_normaliza_fecha($art_fechap) . ' ' . $art_horap . 'hrs.';
+        $publicacion = &glib_hrfec_02::des_normaliza_fecha($art_fechap) . ' ' . $art_horap . &lib_language::_msg_prontus('_abbrev_time');
     };
     $loop_art_tpl =~ s/%%_fec_publicacion%%/$publicacion/g;
 
@@ -1214,7 +1211,7 @@ sub get_artic_parsed {
             else {
                 $art_horae = '00:00';
             };
-            $expiracion = &glib_hrfec_02::des_normaliza_fecha($art_fechae) . ' ' . $art_horae . 'hrs.';
+            $expiracion = &glib_hrfec_02::des_normaliza_fecha($art_fechae) . ' ' . $art_horae . &lib_language::_msg_prontus('_abbrev_time');
         };
         $loop_art_tpl =~ s/%%_fec_expiracion%%/$expiracion/g;
         $loop_art_tpl =~ s/<!--control_fecha-->(.*)<!--\/control_fecha-->//sg if (!$expiracion);

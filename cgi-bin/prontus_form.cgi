@@ -206,16 +206,16 @@ binmode(STDOUT, ":utf8");
 # Inicializaciones varias.
 
 # Inicializacion de mensajes de error.
-$MSGS{'out_of_service'} = 'Sistema fuera de servicio. Intente otra vez m&aacute;s tarde ...';
-$MSGS{'required_data'} = 'Este dato es obligatorio:';
-$MSGS{'wrong_data'} = 'Este dato es incorrecto:';
-$MSGS{'wrong_captcha'} = 'El c&oacute;digo de validaci&oacute;n ingresado no es v&aacute;lido';
-$MSGS{'wrong_vista'} = 'La vista ingresada no es v&aacute;lida: ';
+$MSGS{'out_of_service'} = &lib_language::_msg_prontus('_system_out_service');
+$MSGS{'required_data'} = &lib_language::_msg_prontus('_required_data');
+$MSGS{'wrong_data'} = &lib_language::_msg_prontus('_incorrect_data');
+$MSGS{'wrong_captcha'} = &lib_language('invalid_validation_code');
+$MSGS{'wrong_vista'} = &lib_language::_msg_prontus('_invalid_view');
 
 #~ &lib_form::max_running(5); # Soporta un maximo de 5 copias corriendo.
 # Soporta un maximo de n copias corriendo.
 if (&lib_maxrunning::maxExcedido(5)) {
-    &aborta("Error: Servidor ocupado. Intente otra vez m&aacute;s tarde."); # 1.3.1 # 1.10
+    &aborta(&lib_language::_msg_prontus('_server_busy_error_extended')); # 1.3.1 # 1.10
 };
 
 # Variables globales.
@@ -467,7 +467,7 @@ sub valida_data {
         $form_admin = $mails[$form_admin - 1];
     };
     if ($form_admin eq '') {
-        &lib_form::aborta("Error: no existe E-mail de destino."); # 1.10
+        &lib_form::aborta(&lib_language::_msg_prontus('_email_no_exist')); # 1.10
     };
     $form_admin =~ s/\#/\@/g; # Sustituye # por @.
     $form_admin =~ s/\s+//g;  # Elimina espacios.
@@ -475,13 +475,13 @@ sub valida_data {
     @ADMIN_MAILS = split(/,/,$form_admin);
     foreach $email (@ADMIN_MAILS) {
         if ($email !~ /[\w\.\-\,\']+\@[\w\-\.]+\.[\w]+/) {
-            &lib_form::aborta("Error: E-mail de destino incorrecto"); # 1.10
+            &lib_form::aborta(&lib_language::_msg_prontus('_error_incorrect_email_destination')); # 1.10
         };
     };
     # 1.6 Permite que el mail del remitente sea vacio. En ese caso no se envia mail de autorrespuesta.
     if ($PRONTUS_VARS{'form_from'} ne '') {
         if ($PRONTUS_VARS{'form_from'} !~ /[\w\.\-\,\']+\@[\w\-\.]+\.[\w]+/) {
-            &lib_form::aborta("Error: E-mail del remitente incorrecto [" . $PRONTUS_VARS{'form_from'} . "]"); # 1.10
+            &lib_form::aborta(&lib_language::_msg_prontus('_error_incorrect_email_sender')."[" . $PRONTUS_VARS{'form_from'} . "]"); # 1.10
         };
     };
     # Deduce la extension del formulario.
@@ -489,7 +489,7 @@ sub valida_data {
     if ($file =~ /\.([\w]+)$/) {
         $EXT = $1;
     } else {
-        &lib_form::aborta("Archivo inv&aacute;lido"); # 1.10
+        &lib_form::aborta(&lib_language::_msg_prontus('_invalid_file')); # 1.10
     };
     # 1.1 Establece cuales son y verifica que existen las plantillas basicas.
     if (&glib_cgi_04::param('_pag_exito') ne '') {
@@ -500,7 +500,7 @@ sub valida_data {
         $TMP_EXITO = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/exito\.$EXT");
     };
     if ( $TMP_EXITO eq '') {
-        &lib_form::aborta("No existe plantilla de exito.");
+        &lib_form::aborta(&lib_language::_msg_prontus('_success_template_no_exist'));
     };
     if (&glib_cgi_04::param('_pag_error') ne '') {
         $plantilla = &glib_cgi_04::param('_pag_error');
@@ -511,14 +511,14 @@ sub valida_data {
         $TMP_ERROR = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/error\.$EXT");
     };
     if ( $TMP_ERROR eq '' ) {
-        &lib_form::aborta("No existe plantilla de error.");
+        &lib_form::aborta(&lib_language::_msg_prontus(&lib_language::_msg_prontus('_error_template_no_exist')));
     };
     &inicializaMensajes(\$TMP_ERROR);
     # Define directorio de las respuestas y la identificacion de esta.
     $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR";
     if (! (-d "$ROOTDIR/$ANSWERS_DIR") ) {
         if (&glib_fildir_02::check_dir("$ROOTDIR/$ANSWERS_DIR") == 0) {
-            &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
+            &lib_form::aborta( &lib_language::_msg_prontus('_unable_create_responses_directory')." [$ANSWERS_DIR].");
         };
     };
 
@@ -660,7 +660,7 @@ sub valida_data {
         if (&glib_cgi_04::real_paths($nombre) ne '') { # Es un archivo.
             my $upload_filename = &glib_cgi_04::real_paths($nombre);
             if ($upload_filename !~ /(\.pdf|\.doc|\.docx|\.rtf|\.xls|\.xlsx|\.csv|\.zip|\.rar|\.jpg|\.jpeg|\.gif|\.png|\.bmp|\.txt|\.ppt|\.pptx|\.swf)$/i) {
-                &salida('El tipo de archivo que est&aacute; intentando subir no es v&aacute;lido',$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR);
+                &salida(&lib_language::_msg_prontus('_invalid_upload_file_type'),$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR);
             };
         };
     };
@@ -672,20 +672,20 @@ sub get_form_data {
     my($xmlpath);
     $TS = &glib_cgi_04::param('_TS'); # Timestamp.
     if ($TS !~ /\d{14}/) {
-        &lib_form::aborta("Error: Formulario no identificado."); # 1.3.1 # 1.10
+        &lib_form::aborta(lib_language::_msg_prontus('error_Form_unidentified')); # 1.3.1 # 1.10
     };
     $FECHA = substr($TS,0,8);
     $PRONTUS_ID = &glib_cgi_04::param('_PRONTUS_ID'); # Nombre del Prontus.
     if ($PRONTUS_ID eq '') {
-        &lib_form::aborta("Error: Prontus no identificado."); # 1.3.1 # 1.10
+        &lib_form::aborta(&lib_language::_msg_prontus('_error_prontus_unidentified')); # 1.3.1 # 1.10
     };
 
     if(! &lib_prontus::valida_prontus($PRONTUS_ID)) {
-        &lib_form::aborta("Error: Prontus indicado no es valido.");
+        &lib_form::aborta(&lib_language::_msg_prontus('_error_invalid_indicated_prontus'));
     };
 
     # Busca y lee las variables Prontus del articulo.
-    $xmlpath = "$ROOTDIR/$PRONTUS_ID/site/artic/$FECHA/xml/$TS\.xml";
+    $xmlpath = "$ROOTDIR/$PRONTUS_ID/site/artic/$FECHA/xml/$TS\.xml"; 
     &get_prontus_vars($xmlpath);
 }; # getFormData
 
@@ -734,7 +734,7 @@ sub salida {
         # Verifica que existe el directorios de cache y los crea si no es asi.
         if (! (-d "$ROOTDIR/$ANSWERS_DIR") ) {
             if (&glib_fildir_02::check_dir("$ROOTDIR/$ANSWERS_DIR") == 0) {
-                &lib_form::aborta("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
+                &lib_form::aborta(&lib_language::_msg_prontus('_cant_create_responses_directory')." [$ANSWERS_DIR].");
             };
         };
 
@@ -755,7 +755,7 @@ sub salida {
         print "Location: $ANSWERS_DIR/$ANSWERID\.$EXT\n\n";
         exit;
     } else {
-        &lib_form::aborta("Error: NO existe directorio de plantillas."); # 1.10
+        &lib_form::aborta(&lib_language::_msg_prontus('_error_template_no_exist')); # 1.10
     };
 }; # salida
 

@@ -99,7 +99,7 @@ main: {
   # Acceso permitido solo para admin
   if ($prontus_varglb::USERS_PERFIL ne 'A') {
     print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Acceso a Area Restringida","La funcionalidad requerida está disponible sólo para el administrador del sistema");
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_administrator'));
     exit;
   };
 

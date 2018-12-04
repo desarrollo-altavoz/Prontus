@@ -89,7 +89,7 @@ main:{
   
     # Acceso permitido solo para admin
     if (($prontus_varglb::PRONTUS_EDITOR ne 'SI') or $prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_json_result(0, "La funcionalidad requerida está disponible sólo para el administrador del sistema.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
     };
 
     if ($prontus_varglb::IP_SERVER ne '') { # implica llamada desde ambiente web. # 1.23
@@ -125,44 +125,44 @@ main:{
 
     # Si comienza con punto, no se puede crear
     if($FORM{'NOM_NEW_FILE'} =~ /^\./) {
-        &glib_html_02::print_json_result(0, "El nombre no puede comenzar con punto", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_start_restriction_name'), 'exit=1,ctype=1');
     }
 
     # Se revisa que el nombre sea valido
     if(!&lib_edit::is_editable($FORM{'NOM_NEW_FILE'})) {
         my $edit_permitidos = $lib_edit::EDIT_PERMITIDOS;
         $edit_permitidos =~ s/,/, /g;
-        &glib_html_02::print_json_result(0, "Extensión no válida, sólo se permiten las siguientes extensiones:<br/>$edit_permitidos", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_extension').":<br/>$edit_permitidos", 'exit=1,ctype=1');
     }
 
     # Se chequea el nombre del nuevo archivo
     if (! &lib_edit::check_name($FORM{'NOM_NEW_FILE'})) {
-        &glib_html_02::print_json_result(0, "El nombre no es válido", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_name'), 'exit=1,ctype=1');
     }
 
     # Se chequea existencia del archivo
     if (-f $path_new_file) {
-        &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un archivo existente, especifique uno distinto por favor.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_file_name_already_exist_enter_another'), 'exit=1,ctype=1');
 
     } elsif (-d $path_new_file) {
-        &glib_html_02::print_json_result(0, "El nombre indicado corresponde a un directorio existente, especifique uno distinto por favor.", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_directory_name_already_exist_enter_another'), 'exit=1,ctype=1');
     }
 
     # Se chequea existencia del archivo de origen
     if(! -f $path_orig_file) {
-        &glib_html_02::print_json_result(0, "El archivo de origen no existe", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_source_file_no_exist'), 'exit=1,ctype=1');
     }
     
     # Se procede con la copia
     print STDERR "copiando $path_orig_file to $path_new_file";
     unless( copy($path_orig_file, $path_new_file)) {
-        &glib_html_02::print_json_result(0, "Hubo un error al copiar el archivo", 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_failed_copy_file'), 'exit=1,ctype=1');
     }
     
     &lib_prontus::write_log('Copy', 'Editor', "$FORM{'curr_dir'}/$FORM{'NOM_NEW_FILE'} hacia $FORM{'path_file'}");
     
     # Si todo sale bien, se imprime respuesta
-    &glib_html_02::print_json_result(1, "El archivo ha sido copiado", 'exit=1,ctype=1');
+    &glib_html_02::print_json_result(1, &lib_language::_msg_prontus('_file_has_been_copied'), 'exit=1,ctype=1');
 
 };
 

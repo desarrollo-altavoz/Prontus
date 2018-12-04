@@ -80,18 +80,18 @@ main: {
   print "Content-Type: text/html\n\n" if ($ambiente_web);
   print "<style type=\"text/css\">.check-error {color:#d00;}</style>" if ($ambiente_web);
   print "<center><b>" if ($ambiente_web);
-  print "\nProntus - Verificar Plataforma\n";
+  print "\n" . &lib_language::_msg_prontus('_prontus_check_platform') . "\n";
   print "</b></center>" if ($ambiente_web);
   print "<pre><b>" if ($ambiente_web);
-  print "\nChequeando modulos PERL requeridos por Prontus...\n";
+  print &lib_language::_msg_prontus('_checking_perl_modules');
   print "</b>" if ($ambiente_web);
 
   # S.O.
   my $os = uc $^O; # solo esta en algunas plataformas
-  print "Sistema Operativo: $os\n";
+  print &lib_language::_msg_prontus('_operative_system') . ": $os\n";
 
   if ($] < 5.008) {
-    print "Perl version incorrecta, se requiere Perl 5.8 o superior\n";
+    print &lib_language::_msg_prontus('_error_perl_version');
     print "</pre>" if ($ambiente_web);
     exit;
   };
@@ -100,7 +100,7 @@ main: {
   my $perlv = $];
   $perlv =~ s/\.0+/\./;
   $perlv =~ s/0+([1-9]+)$/\.\1/;
-  print "Perl version: $perlv OK\n";
+  print &lib_language::_msg_prontus('_perl_version') . ": $perlv " . &lib_language::_msg_prontus('_msg_generic_ok') . "\n";
 
   my %missing = ();
 
@@ -129,7 +129,7 @@ main: {
   };
 
   print "\n<b>" if ($ambiente_web);
-  print "Chequeando soporte transcodificación ...\n";
+  print &lib_language::_msg_prontus('_checking_transcode_support');
   print "</b>" if ($ambiente_web);
 
 #    # Se comprueba presencia de Python
@@ -155,15 +155,15 @@ main: {
 
   if (!$found_path_ffmpeg) {
     print "<span class=\"check-error\">" if ($ambiente_web);
-    print "No se pudo detectar ffmpeg instalado en el sistema.\n";
+    print &lib_language::_msg_prontus('_ffmpeg_not_installed');
     print "<br>" if ($ambiente_web);
-    print "Rutas analizadas:\n";
+    print &lib_language::_msg_prontus('_ffmpeg_viewed_path');
     print "<br>" if ($ambiente_web);
-    print "$paths_ffmpeg[0] y $paths_ffmpeg[1]\n";
+    print "$paths_ffmpeg[0] " . &lib_language::_msg_prontus('_and') . " $paths_ffmpeg[1]\n";
     print "</span>\n" if ($ambiente_web);
   };
 
-  print "\n==== FIN ====\n\n";
+  print &lib_language::_msg_prontus('_end');
   print "</pre>" if ($ambiente_web);
 
 }; # main
@@ -267,7 +267,7 @@ sub check_soporte_gd { # jpeg, libungif y libpng
   $nomlib = 'libpng' if ($format eq 'png');
   printf(" * %28s %-12s ", "GD - soporte $format", "($nomlib)");
   if (GD::Image->can($format)) {
-    print "ok\n";
+    print &lib_language::_msg_prontus('_msg_generic_ok') . "\n";
   }
   else {
     print "not found\n";
@@ -278,7 +278,7 @@ sub check_soporte_gd { # jpeg, libungif y libpng
 sub check_xcoding {
   my $path_ffmpeg = shift;
 
-  print "Revisando soporte con $path_ffmpeg\n";
+  print &lib_language::_msg_prontus('_checking_support_with') . " $path_ffmpeg\n";
   my $xcoding_ver = '0.5.2';
 
   # Primero se chequea la version
@@ -290,73 +290,73 @@ sub check_xcoding {
 
     if($ver =~ /\d+\.\d+\.\d+/) {
       my $vok = (vers_cmp($ver,$xcoding_ver) > -1);
-      print ((($vok) ? "ok (found $ver)\n" : "<span class=\"check-error\">error (found $ver)</span>\n"));
+      print ((($vok) ? &lib_language::_msg_prontus('_msg_generic_ok') ." (found $ver)\n" : "<span class=\"check-error\">" . &lib_language::_msg_prontus('_msg_generic_error') . " (found $ver)</span>\n"));
 
     } elsif($resp =~ /(built on .*?) with/) {
       my $built = $1;
-      print "<span class=\"check-error\">no se pudo comparar la version</span>\n";
+      print "<span class=\"check-error\">" . &lib_language::_msg_prontus('_error_compare_version') . "</span>\n";
       printf(" * %42s", '');
       print "<span class=\"check-error\">($built)</span>\n";
     } else {
-      print "<span class=\"check-error\">no se pudo comparar version ($ver)</span>\n";
+      print "<span class=\"check-error\">" . &lib_language::_msg_prontus('_error_compare_version') . " ($ver)</span>\n";
     }
 
     # Se comprueba soporte para libx264
-    printf(" * %28s %-12s ", 'FFmpeg con soporte libx264', '');
+    printf(" * %28s %-12s ", &lib_language::_msg_prontus('_ffmpeg_support_libx264'), '');
     if($resp =~ /--enable-libx264/) {
-      print "ok\n";
+      print &lib_language::_msg_prontus('_msg_generic_ok') . "\n";
     } else {
       my $resp = `$path_ffmpeg -codecs 2> /dev/null | grep x264`;
       if($resp ne '') {
-        print "ok\n";
+        print &lib_language::_msg_prontus('_msg_generic_ok') . "\n";
       } else {
         print "<span class=\"check-error\">" if ($ambiente_web);
-        print "not enabled";
+        print &lib_language::_msg_prontus('_not_enabled');
         print "</span>\n" if ($ambiente_web);
       };
     }
 
     # Se comprueba soporte para libfaac
-    printf(" * %28s %-12s ", 'FFmpeg con soporte libfaac', '');
+    printf(" * %28s %-12s ", &lib_language::_msg_prontus('_ffmpeg_support_libfaac'), '');
     if($resp =~ /--enable-libfaac/) {
-      print "ok\n";
+      print &lib_language::_msg_prontus('_msg_generic_ok') . "\n";
     } else {
       my $resp = `$path_ffmpeg -codecs 2> /dev/null | grep libfaac`;
       if($resp ne '') {
-        print "ok\n";
+        print &lib_language::_msg_prontus('_msg_generic_ok') . "\n";
       } else {
         print "<span class=\"check-error\">" if ($ambiente_web);
-        print "not enabled\n";
+        print &lib_language::_msg_prontus('_not_enabled');
         print "</span>" if ($ambiente_web);
       };
     };
 
     # Se comprueba soporte para libfdk_aac
-    printf(" * %28s %-12s ", 'FFmpeg con soporte libfdk_aac', '');
+    printf(" * %28s %-12s ", &lib_language::_msg_prontus('_ffmpeg_support_libfdk'), '');
     if($resp =~ /--enable-libfdk-aac/) {
-      print "ok\n";
+      print &lib_language::_msg_prontus('_msg_generic_ok') ."\n";
     } else {
       my $resp = `$path_ffmpeg -codecs 2> /dev/null | grep libfdk_aac`;
       if($resp ne '') {
-        print "ok\n";
+        print &lib_language::_msg_prontus('_msg_generic_ok') ."\n";
       } else {
         print "<span class=\"check-error\">" if ($ambiente_web);
-        print "not enabled\n";
+        print &lib_language::_msg_prontus('_not_enabled');
         print "</span>" if ($ambiente_web);
       };
     };
 
     # Se comprueba presencia de la libx264
-    printf(" * %28s %-12s ", 'libreria x264', '');
+    printf(" * %28s %-12s ", &lib_language::_msg_prontus('_lib_x264'), '');
     my $resp2 = `ls /usr/local/lib/ | grep libx264`;
     $resp2 =~ s/^\s+|\s$//isg;
     if($resp2) {
       $resp2 =~ s/\s+$//ig;
       $resp2 =~ s/\s+/, /ig;
-      print "ok ($resp2)\n";
+      print &lib_language::_msg_prontus('_msg_generic_ok') . " ($resp2)\n";
     } else {
       print "<span class=\"check-error\">" if ($ambiente_web);
-      print "/usr/local/lib/ -> no se encontró\n";
+      print "/usr/local/lib/ -> ". &lib_language::_msg_prontus('_not_found');
       print "</span>" if ($ambiente_web);
 
       printf(" * %42s", '');
@@ -365,10 +365,10 @@ sub check_xcoding {
         $resp2
          =~ s/\s+$//ig;
         $resp2 =~ s/\s+/, /ig;
-        print "/usr/lib/       -> ok ($resp2)\n";
+        print "/usr/lib/       -> ". &lib_language::_msg_prontus('_msg_generic_ok') . " ($resp2)\n";
       } else {
         print "<span class=\"check-error\">" if ($ambiente_web);
-        print "/usr/lib/       -> no se encontró\n";
+        print "/usr/lib/       -> " . &lib_language::_msg_prontus('_not_found');
         print "</span>" if ($ambiente_web);
 
         printf(" * %42s", '');
@@ -379,7 +379,7 @@ sub check_xcoding {
           print "/usr/bin/       -> ok ($resp2)\n";
         } else {
           print "<span class=\"check-error\">" if ($ambiente_web);
-          print "/usr/bin/       -> no se encontró\n";
+          print "/usr/bin/       -> " . &lib_language::_msg_prontus('_not_found';)
           print "</span>" if ($ambiente_web);
         }
       }
@@ -390,14 +390,14 @@ sub check_xcoding {
     $version =~ s/^(\d+)\.(\d+)\.(\d+).+$/\1_\2/;
     my $url_manual_desa = $url_manual . '/prontus_desarrollo_v' . $version;
 
-    my $msg = "<u>Importante:</u> Es posible que la transcodificaci&oacute;n falle, aun cuando todos estos <br>requisitos se cumplan. ";
-    $msg .= "Para mayor informaci&oacute;n y ayuda frente a errores, dirigirse <br>al <a href=\"$url_manual_desa\" target=\"_blank\">manual de desarrollo</a>, ";
-    $msg .= "secci&oacute;n \"Instalaci&oacute;n\", sub-secci&oacute;n \"Soporte para transcodificaci&oacute;n\"";
+    my $msg = &lib_language::_msg_prontus('_msg_important_1');
+    $msg .= &lib_language::_msg_prontus('_mgs_important_2') . " <a href=\"$url_manual_desa\" target=\"_blank\">" . &lib_language::_msg_prontus('_develop_manual') . "</a>, ";
+    $msg .= &lib_language::_msg_prontus('_develop_manual_route');
     print "<br>".$msg."<br><br>" if ($ambiente_web);
 
   } else {
     print "FFmpeg... <span class=\"check-error\">" if ($ambiente_web);
-    print "no se pudo leer la version\n";
+    print &lib_language::_msg_prontus('_unable_read_version') . "\n";
     print "</span>\n" if ($ambiente_web);
     return;
   }

@@ -52,7 +52,7 @@ sub new {
     $upd_obj->{just_status} ||='0';
 
     if ( (! &lib_prontus::valida_prontus($upd_obj->{prontus_id})) || ($upd_obj->{version_prontus} eq '') || ($upd_obj->{path_conf} eq '') ) {
-        $Update::ERR = "Update::new con params no validos:\n"
+        $Update::ERR = "Update::new ".&lib_language::_msg_prontus('_with_invalid_parameters').":\n"
                     . "prontus_id[$upd_obj->{prontus_id}] \n"
                     . "path_conf[$upd_obj->{path_conf}] \n"
                     . "version_prontus[$upd_obj->{version_prontus}] \n";
@@ -66,7 +66,7 @@ sub new {
     $upd_obj->{dir_updates} = $upd_obj->{document_root} . "/_prontus_update";
 
     if(! &glib_fildir_02::check_dir($upd_obj->{dir_updates}) ) {
-        $Update::ERR = "No se pueden crear directorios de update";
+        $Update::ERR = &lib_language::_msg_prontus('_unable_create_update_directory');
         cluck $Update::ERR . "[$!]\n";
         return 0;
     }
@@ -98,21 +98,21 @@ sub new {
 
     $upd_obj->{core_dirs} = $upd_obj->get_core_dirs();
     if ($upd_obj->{core_dirs} eq '') {
-        $Update::ERR = "No se detectaron instancias Prontus para actualizar core.\nEl proceso de actualización no realizó cambios.";
+        $Update::ERR = &lib_language::_msg_prontus('_no_prontus_instances_found_update_core')."\n".&lib_language::_msg_prontus('_update_process_made_no_changes');
         return 0;
     };
 
     if ($upd_obj->{just_status} ne '1') {
         $upd_obj->{dir_backup} = $upd_obj->get_dir_backup();
         if($upd_obj->{dir_backup} eq '') {
-            $Update::ERR = "No se pueden crear directorios de respaldo";
+            $Update::ERR = &lib_language::_msg_prontus('_unable_create_backup_directories');
             cluck $Update::ERR . "[$!]\n";
             return 0;
         }
 
         $upd_obj->{dir_descarga} = $upd_obj->get_dir_descarga();
         if($upd_obj->{dir_descarga} eq '') {
-            $Update::ERR = "No se pueden crear directorios de descarga";
+            $Update::ERR = &lib_language::_msg_prontus('_unable_create_download_directories');
             cluck $Update::ERR . "[$!]\n";
             return 0;
         }
@@ -174,13 +174,13 @@ sub check_before_update {
 
     # Ver si estan las carpetas a respaldar (aunque se supone que estan!)
     if (! -d "$this->{document_root}/$this->{nom_cgicpn_current}") {
-        $Update::ERR = "Error al respaldar version actual de las CGIs back-end de Prontus: el directorio de origen no existe o no es valido.";
-        cluck $Update::ERR . " - dir cgis backend origen[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
+        $Update::ERR = &lib_language::_msg_prontus('_error_backup_current_version_CGI_back_end_Prontus');
+        cluck $Update::ERR . " - ".&lib_language::_msg_prontus('_dir_cgi_backend_source')."[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
         return 0;
     };
     if (! -d "$this->{document_root}/$this->{nom_cgibin_current}") {
-        $Update::ERR = "Error al respaldar version actual de las CGIs front-end de Prontus: el directorio de origen no existe o no es valido.";
-        cluck $Update::ERR . " - dir cgis frontend origen[$this->{document_root}/$this->{nom_cgibin_current}]\n";
+        $Update::ERR = &lib_language::_msg_prontus('_error_backup_current_version_CGI_front_end_prontus');
+        cluck $Update::ERR . " - ".&lib_language::_msg_prontus('_dir_cgi_frontend_source')."[$this->{document_root}/$this->{nom_cgibin_current}]\n";
         return 0;
     };
 
@@ -191,8 +191,8 @@ sub check_before_update {
     }
     &glib_fildir_02::write_file("$this->{document_root}/$this->{nom_cgicpn_current}/$random.txt", $random);
     if(! unlink("$this->{document_root}/$this->{nom_cgicpn_current}/$random.txt")) {
-        $Update::ERR = "No se pudo escribir en el directorio: /$this->{nom_cgicpn_current}";
-        cluck $Update::ERR . " - dir cgis frontend origen[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
+        $Update::ERR = &lib_language::_msg_prontus('_unable_write_in_directory').": /$this->{nom_cgicpn_current}";
+        cluck $Update::ERR . " - ".&lib_language::_msg_prontus('_dir_cgi_frontend_source')."[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
         return 0;
     }
 
@@ -202,22 +202,22 @@ sub check_before_update {
     }
     &glib_fildir_02::write_file("$this->{document_root}/$this->{nom_cgibin_current}/$random.txt", $random);
     if(! unlink("$this->{document_root}/$this->{nom_cgibin_current}/$random.txt")) {
-        $Update::ERR = "No se pudo escribir en el directorio: /$this->{nom_cgibin_current}";
-        cluck $Update::ERR . " - dir cgis frontend origen[$this->{document_root}/$this->{nom_cgibin_current}]\n";
+        $Update::ERR = &lib_language::_msg_prontus('_unable_write_in_directory').": /$this->{nom_cgibin_current}";
+        cluck $Update::ERR . " - ".&lib_language::_msg_prontus('_dir_cgi_frontend_source')."[$this->{document_root}/$this->{nom_cgibin_current}]\n";
         return 0;
     }
 
     # Revisa si se pueden asignar permisos ejecucion a las cgis, recursivamente.
     my $permResult = $this->setExecPermisos("$this->{document_root}/$this->{nom_cgicpn_current}", 755);
     if ($permResult ne '') {
-        $Update::ERR = "Error al cambiar permisos de las CGIs back-end de Prontus: no se pudo asignar permisos de ejecucion a las CGIs: [$permResult]";
-        cluck $Update::ERR . " - dir de cgis backend[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
+        $Update::ERR = &lib_language::_msg_prontus('_error_change_permissions_backeng_cgi_prontus').": [$permResult]";
+        cluck $Update::ERR . " - ".&lib_language::_msg_prontus('_dir_cgi_backend_source')."[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
         return 0;
     };
     $permResult = $this->setExecPermisos("$this->{document_root}/$this->{nom_cgibin_current}", 755);
     if ($permResult ne '') {
-        $Update::ERR = "Error al cambiar permisos de las CGIs front-end de Prontus: no se pudo asignar permisos de ejecucion a las CGIs: [$permResult]";
-        cluck $Update::ERR . " - dir de cgis frontend[$this->{document_root}/$this->{nom_cgibin_current}]\n";
+        $Update::ERR = &lib_language::_msg_prontus('_error_change_permissions_frontend_cgi_prontus').": [$permResult]";
+        cluck $Update::ERR . " - ".&lib_language::_msg_prontus('_dir_cgi_frontend_source')."[$this->{document_root}/$this->{nom_cgibin_current}]\n";
         return 0;
     };
 
@@ -307,16 +307,16 @@ sub descarga_upd_descriptor {
 
     if ($msg_err) {
         if ($msg_err =~ /^404 /) {
-            warn "No hay actualizacion disponible, 404 - no se encuentra el archivo[$url]";
+            warn &lib_language::_msg_prontus('_no_update_available_404_file_not_found')."[$url]";
             $download_ok = 0;
         } else {
-            my $err = "No se pudo descargar información de nuevas versiones disponibles: $msg_err";
+            my $err = &lib_language::_msg_prontus('_unable_download_information_version_available').": $msg_err";
             warn("$err - url[$url] - " . $msg_err . "\n");
             $download_ok = 0;
         };
     } else {
         if ($last_version_available !~ /[0-9]+\.[0-9]+\.[0-9]+(\.beta)?/) {
-            warn "No hay actualizacion disponible, el archivo [$url] existe pero no contiene info valida, last_version_available[$last_version_available]";
+            warn &lib_language::_msg_prontus('_no_update_available_file')." [$url] ".&lib_language::_msg_prontus('_exist_but_contain_invalid_info').", last_version_available[$last_version_available]";
             $download_ok = 0;
         };
     };
@@ -332,7 +332,7 @@ sub check_before_download {
     my $url = $this->{update_server} . '/release/prontus.' . $this->{rama_instalada} . '/files.' . $this->{last_version_disponible} . '.tgz';
 
     if ($this->{quota_usado_porc} eq '' || $this->{quota_usado} eq '' || $this->{quota_asignado} eq '') {
-        $Update::ERR = "No se pudo determinar el espacio libre en disco.";
+        $Update::ERR = &lib_language::_msg_prontus('_unable_determine_free_disk_space');
         cluck $Update::ERR . "\n";
         return 0;
     };
@@ -341,7 +341,7 @@ sub check_before_download {
     $content_length = 0 if (!$content_length);
 
     if ($content_length <= 0) {
-        $Update::ERR = "No se pudo determinar el tamaño de la actualización.";
+        $Update::ERR = &lib_language::_msg_prontus('_unable_determine_update_size');
         cluck $Update::ERR . "\n";
         return 0;
     };
@@ -354,13 +354,13 @@ sub check_before_download {
     my $disponible_mb = &lib_quota::format_bytes($this->{quota_asignado} - $this->{quota_usado});
 
     if ($this->{quota_usado_porc} eq '100%') {
-        $Update::ERR = "No hay suficiente espacio libre en disco para descargar la actualización.";
+        $Update::ERR = &lib_language::_msg_prontus('_not_enough_free_disk_space_download_update.');
         cluck $Update::ERR . "\n";
         return 0;
     } else {
         my $quota_usado = $this->{quota_usado} + $content_length + 1024; # kb, con offset de 1mb.. porsiaca.
         if ($quota_usado > $this->{quota_asignado}) {
-            $Update::ERR = "No hay suficiente espacio libre en disco para descargar la actualización. (Requerido: $tgz_size_mb, Disponible: $disponible_mb)";
+            $Update::ERR = &lib_language::_msg_prontus('_not_enough_free_disk_space_download_update.')." (".&lib_language::_msg_prontus('_requested').": $tgz_size_mb, ".&lib_language::_msg_prontus('_available').": $disponible_mb)";
             cluck $Update::ERR . "\n";
             return 0;
          };
@@ -383,7 +383,7 @@ sub check_after_download {
         my $quota_usado = $this->{quota_usado} + $uncompressed + 1024; # kb, con offset de 1mb.. porsiaca.
         if ($quota_usado > $this->{quota_asignado}) {
             my $requerido_mb = &lib_quota::format_bytes($uncompressed);
-            $Update::ERR = "No hay suficiente espacio libre en disco para descomprimir la actualización (Requerido: $requerido_mb, Disponible: $disponible_mb).";
+            $Update::ERR = &lib_language::_msg_prontus('_not_enough_free_disk_space_decompress_update.')." (".(&lib_language::_msg_prontus('_requested').": $requerido_mb, ".&lib_language::_msg_prontus('_available').": $disponible_mb).";
             cluck $Update::ERR . "\n";
             return 0;
          };
@@ -411,10 +411,10 @@ sub descarga_release {
 
     if ($msg_err) {
         if ($msg_err =~ /^404 /) {
-            $Update::ERR = "Error al descargar release .tgz, 404 - no se encuentra el archivo[$url]";
+            $Update::ERR = &lib_language::_msg_prontus('_error_downloading_release_tgz_404_file_not_found')."[$url]";
             cluck $Update::ERR . "\n";
         } else {
-            $Update::ERR = "Error al descargar release .tgz [$url]: $msg_err";
+            $Update::ERR = &lib_language::_msg_prontus('_error_downloading_release_tgz')." [$url]: $msg_err";
             cluck $Update::ERR . "\n";
         };
         return 0;
@@ -426,10 +426,10 @@ sub descarga_release {
         my ($md5_remoto, $msg_err_md5) = &lib_prontus::get_url($url_md5, 10);
         if ($msg_err_md5) {
             if ($msg_err_md5 =~ /^404 /) {
-                $Update::ERR = "Error al descargar release md5, 404 - no se encuentra el archivo[$url_md5]";
+                $Update::ERR = &lib_language::_msg_prontus('_error_downloading_release_md5_404_file_not_found')."[$url_md5]";
                 cluck $Update::ERR . "\n";
             } else {
-                $Update::ERR = "Error al descargar release md5 [$url_md5]: $msg_err_md5";
+                $Update::ERR = &lib_language::_msg_prontus('_error_downloading_release_md5')." [$url_md5]: $msg_err_md5";
                 cluck $Update::ERR . "\n";
             };
             return 0;
@@ -437,7 +437,7 @@ sub descarga_release {
             if ($md5_remoto =~ /([a-z0-9]{32})/) {
                 $md5_remoto = $1;
             } else {
-                $Update::ERR = "Error al descargar release md5 [$url_md5]: No contiene un string md5 valido, contiene[$md5_remoto]";
+                $Update::ERR = &lib_language::_msg_prontus('_error_downloading_release_md5')." [$url_md5]: ".&lib_language::_msg_prontus('_not_contain_valid_md5_string_contain')."[$md5_remoto]";
                 cluck $Update::ERR . "\n";
                 return 0;
             };
@@ -445,7 +445,7 @@ sub descarga_release {
             # Si descargo ok el md5, verificar el tgz con este
             my $md5_local = md5_hex($tgz_content);
             if ($md5_local ne $md5_remoto) {
-                $Update::ERR = "Error al descargar release [$url]: md5 no coincide\nlocal [$md5_local]\nremoto[$md5_remoto]\nEl archivo no se pudo descargar correctamente.";
+                $Update::ERR = &lib_language::_msg_prontus('_error_downloading_release')." [$url]: ".&lib_language::_msg_prontus('_md5_mismatch')."\n".&lib_language::_msg_prontus('_local')." [$md5_local]\n".&lib_language::_msg_prontus('_remote')."[$md5_remoto]\n".&lib_language::_msg_prontus('_unable_download_file_correctly');
                 cluck $Update::ERR . "\n";
                 return 0;
             } else {
@@ -465,7 +465,7 @@ sub descarga_release {
                     # descomprimir en el mismo dir, el .tgz
                     system("tar xzf $path_local_tgz -C $this->{dir_descarga}");
                     if ($? != 0) {
-                        $Update::ERR = "Error al descomprimir release .tgz[$path_local_tgz] en dir[$this->{dir_descarga}]: Error[$!]";
+                        $Update::ERR = &lib_language::_msg_prontus('_error_decompress_release')." .tgz[$path_local_tgz] ".&lib_language::_msg_prontus('_in_dir')."[$this->{dir_descarga}]: Error[$!]";
                         cluck $Update::ERR . "\n";
                         return 0;
                     };
@@ -487,13 +487,13 @@ sub descarga_release {
     # Finalmente se chequea que realmente vengan los cgi-cgi y cgi-bin
     my $dir_src_cgicpn = "$this->{dir_descarga}/cgi-cpn";
     if (! -d $dir_src_cgicpn) {
-        $Update::ERR = "En la release a instalar no se encontro directorio cgi-cpn";
+        $Update::ERR = &lib_language::_msg_prontus('_cgi-cpn_not_found_in_release');
         cluck $Update::ERR . " - dir_src_cgicpn[$dir_src_cgicpn]\n";
         return 0;
     };
     my $dir_src_cgibin = "$this->{dir_descarga}/cgi-bin";
     if (! -d $dir_src_cgibin) {
-        $Update::ERR = "En la release a instalar no se encontro directorio cgi-bin";
+        $Update::ERR = &lib_language::_msg_prontus('_cgi-bin_not_found_in_release');
         cluck $Update::ERR . " - dir_src_cgicpn[$dir_src_cgibin]\n";
         return 0;
     };
@@ -501,13 +501,13 @@ sub descarga_release {
     # Se chequea que venga el prontus_dir y el core del wizard
     my $dir_src_core = "$this->{dir_descarga}/wizard_prontus/prontus_dir/cpan/core";
     if (! -d $dir_src_core) {
-        $Update::ERR = "En la release a instalar no se encontro directorio core";
+        $Update::ERR = &lib_language::_msg_prontus('_core_not_found_in_release');
         cluck $Update::ERR . " - dir_src[$dir_src_core]\n";
         return 0;
     };
     my $dir_src_core_wiz = "$this->{dir_descarga}/wizard_prontus/core";
     if (! -d $dir_src_core_wiz) {
-        $Update::ERR = "En la release a instalar no se encontro directorio core";
+        $Update::ERR = &lib_language::_msg_prontus('_core_not_found_in_release');
         cluck $Update::ERR . " - dir_src[$dir_src_core_wiz]\n";
         return 0;
     };
@@ -559,20 +559,20 @@ sub crea_respaldos {
 
     # Chequear integridad de respaldo - cgi-cpn.
     if (! -d "$this->{dir_backup}/$this->{nom_cgicpn_current}") {
-        $Update::ERR = "Error al respaldar version actual de las CGIs back-end de Prontus: no se creo el directorio destino.";
-        cluck $Update::ERR . " - dir bak de cgis backend[$this->{dir_backup}/$this->{nom_cgicpn_current}]\n";
+        $Update::ERR = &lib_language::_msg_prontus('_error_backup_current_version_CGI_back_end_Prontus_no_create_target_directory');
+        cluck $Update::ERR . " - "dir bak de cgis backend"[$this->{dir_backup}/$this->{nom_cgicpn_current}]\n";
         return 0;
     };
     my $cmpResult = $this->compareDirs("$this->{dir_backup}/$this->{nom_cgicpn_current}", "$this->{document_root}/$this->{nom_cgicpn_current}");
     if ($cmpResult ne '') {
-        $Update::ERR = "Error al respaldar version actual de las CGIs back-end de Prontus: el dir. origen y el de destino del backup presentan diferencias en sus archivos:\n$cmpResult";
+        $Update::ERR = &lib_language::_msg_prontus('_error_backup_current_version_CGI_back_end_Prontus_source_target_directory_are_diferent').":\n$cmpResult";
         cluck $Update::ERR . " - dir bak de cgis backend[$this->{dir_backup}/$this->{nom_cgicpn_current}]\n";
         return 0;
     };
 
     # Chequear integridad de respaldo - cgi-bin.
     if (! -d "$this->{dir_backup}/$this->{nom_cgibin_current}") {
-        $Update::ERR = "Error al respaldar version actual de las CGIs front-end de Prontus: no se creo el directorio destino.";
+        $Update::ERR = &lib_language::_msg_prontus('_error_backup_current_version_CGI_front_end_prontus_no_create_target_directory');
         cluck $Update::ERR . " - dir bak de cgis frontend[$this->{dir_backup}/$this->{nom_cgibin_current}]\n";
         return 0;
     };
@@ -596,13 +596,13 @@ sub crea_respaldos {
 
         # Chequear integridad de respaldo de core.
         if (! -d "$this->{dir_backup}/$prontus_dir/cpan/core") {
-            $Update::ERR = "Error al respaldar core de instancia Prontus [$prontus_dir/cpan/core]: no se creo el directorio destino.";
+            $Update::ERR = &lib_language::_msg_prontus('_error_backup_core_prontus_instance')." [$prontus_dir/cpan/core]: ".&lib_language::_msg_prontus('_no_create_target_directory');
             cluck $Update::ERR . " - dir destino[$this->{dir_backup}/$prontus_dir/cpan/core]\n";
             return 0;
         };
         $cmpResult = $this->compareDirs("$this->{dir_backup}/$prontus_dir/cpan/core", "$this->{document_root}/$prontus_dir/cpan/core");
         if ($cmpResult ne '') {
-            $Update::ERR = "Error al respaldar version actual de core de instancia Prontus [$prontus_dir/cpan/core]: el dir. origen y el de destino del backup presentan diferencias en sus archivos:\n$cmpResult";
+            $Update::ERR = &lib_language::_msg_prontus('_error_backup_current_version_core_prontus_instance')." [$prontus_dir/cpan/core]: ".&lib_language::_msg_prontus('_source_target_dir_showing_differences_files').":\n$cmpResult";
             cluck $Update::ERR . " - dir destino[$this->{dir_backup}/$prontus_dir/cpan/core]\n";
             return 0;
         };
@@ -616,7 +616,7 @@ sub crea_respaldos {
                                    "$this->{dir_backup}/wizard_prontus/prontus_dir/cpan", 'core');
         $cmpResult = $this->compareDirs("$this->{document_root}/wizard_prontus/prontus_dir/cpan/core", "$this->{dir_backup}/wizard_prontus/prontus_dir/cpan/core");
         if ($cmpResult ne '') {
-            $Update::ERR = "Error al respaldar el core Prontus dir del Wizard: el dir. origen (actual wizard) y el de destino presentan diferencias en sus archivos:\n$cmpResult";
+            $Update::ERR = &lib_language::_msg_prontus('_error_backup_core_wizard_prontus_dir_source_target_directory_showing_differences_files').":\n$cmpResult";
             cluck $Update::ERR . " - dir de core target[$this->{document_root}/wizard_prontus/prontus_dir/cpan/core]\n";
             return 0;
         };
@@ -626,7 +626,7 @@ sub crea_respaldos {
                                    "$this->{dir_backup}/wizard_prontus", 'core');
         $cmpResult = $this->compareDirs("$this->{document_root}/wizard_prontus/core", "$this->{dir_backup}/wizard_prontus/core");
         if ($cmpResult ne '') {
-            $Update::ERR = "Error al actualizar Core del Wizard: el dir. origen (nueva release) y el de destino presentan diferencias en sus archivos:\n$cmpResult";
+            $Update::ERR = &lib_language::_msg_prontus('_error_backup_core_wizard_prontus_dir_source_target_directory_showing_differences_files')":\n$cmpResult";
             cluck $Update::ERR . " - dir target[$this->{document_root}/wizard_prontus/core]\n";
             return 0;
         };
@@ -654,7 +654,7 @@ sub install_cgis {
     # Chequear integridad de cgi-cpn current.
     my $cmpResult = $this->compareDirs("$this->{document_root}/$this->{nom_cgicpn_current}", "$this->{dir_descarga}/cgi-cpn");
     if ($cmpResult ne '') {
-        $Update::ERR = "Error al instalar CGIs back-end de Prontus: el dir. origen (nueva release) y el de destino presentan diferencias en sus archivos:\n$cmpResult";
+        $Update::ERR = &lib_language::_msg_prontus('_error_backup_core_wizard_prontus_dir_source_target_directory_showing_differences_files').":\n$cmpResult";
         cluck $Update::ERR . " - dir de cgis backend[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
         # $this->rollback_update();
         return 0;
@@ -663,7 +663,7 @@ sub install_cgis {
     # Chequear integridad de  cgi-bin current.
     $cmpResult = $this->compareDirs("$this->{document_root}/$this->{nom_cgibin_current}", "$this->{dir_descarga}/cgi-bin");
     if ($cmpResult ne '') {
-        $Update::ERR = "Error al instalar CGIs front-end de Prontus: el dir. origen (nueva release) y el de destino presentan diferencias en sus archivos:\n$cmpResult";
+        $Update::ERR = &lib_language::_msg_prontus('_error_backup_core_wizard_prontus_dir_source_target_directory_showing_differences_files').":\n$cmpResult";
         cluck $Update::ERR . " - dir de cgis frontend[$this->{document_root}/$this->{nom_cgibin_current}]\n";
         # $this->rollback_update();
         return 0;
@@ -672,14 +672,14 @@ sub install_cgis {
     # Asignar permisos ejecucion a las cgis, recursivamente.
     my $permResult = $this->setExecPermisos("$this->{document_root}/$this->{nom_cgicpn_current}", 755);
     if ($permResult ne '') {
-        $Update::ERR = "Error al instalar CGIs back-end de Prontus: no se pudo asignar permisos de ejecucion a las CGIs: [$permResult]";
+        $Update::ERR = &lib_language::_msg_prontus('_error_installing_prontus_cgi_backend').": [$permResult]";
         cluck $Update::ERR . " - dir de cgis backend[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
         # $this->rollback_update();
         return 0;
     };
     $permResult = $this->setExecPermisos("$this->{document_root}/$this->{nom_cgibin_current}", 755);
     if ($permResult ne '') {
-        $Update::ERR = "Error al instalar CGIs front-end de Prontus: no se pudo asignar permisos de ejecucion a las CGIs: [$permResult]";
+        $Update::ERR = &lib_language::_msg_prontus('_error_installing_prontus_cgi_frontend').": [$permResult]";
         cluck $Update::ERR . " - dir de cgis frontend[$this->{document_root}/$this->{nom_cgibin_current}]\n";
         # $this->rollback_update();
         return 0;
@@ -709,7 +709,7 @@ sub install_core {
         # Chequear integridad de lo copiado
         my $cmpResult = $this->compareDirs("$this->{document_root}/$prontus_dir/cpan/core", "$this->{dir_descarga}/wizard_prontus/prontus_dir/cpan/core");
         if ($cmpResult ne '') {
-            $Update::ERR = "Error al instalar nuevo core de Prontus: el dir. origen (nueva release) y el de destino presentan diferencias en sus archivos:\n$cmpResult";
+            $Update::ERR = &lib_language::_msg_prontus('_error_instaling_new_prontus_core').":\n$cmpResult";
             cluck $Update::ERR . " - dir de core target[$this->{document_root}/$prontus_dir/cpan/core]\n";
             return 0;
         };
@@ -724,7 +724,7 @@ sub install_core {
         # Chequear integridad de lo copiado
         my $cmpResult = $this->compareDirs("$this->{document_root}/wizard_prontus/prontus_dir/cpan/core", "$this->{dir_descarga}/wizard_prontus/prontus_dir/cpan/core");
         if ($cmpResult ne '') {
-            $Update::ERR = "Error al actualizar Wizard con nuevo core de Prontus: el dir. origen (nueva release) y el de destino presentan diferencias en sus archivos:\n$cmpResult";
+            $Update::ERR = &lib_language::_msg_prontus('_error_updating_wizard_with_new_prontus_core').":\n$cmpResult";
             cluck $Update::ERR . " - dir de core target[$this->{document_root}/wizard_prontus/prontus_dir/cpan/core]\n";
             return 0;
         };
@@ -749,7 +749,7 @@ sub install_core_wizard {
         # Chequear integridad de lo copiado
         my $cmpResult = $this->compareDirs("$this->{document_root}/wizard_prontus/core", "$this->{dir_descarga}/wizard_prontus/core");
         if ($cmpResult ne '') {
-            $Update::ERR = "Error al actualizar Core del Wizard: el dir. origen (nueva release) y el de destino presentan diferencias en sus archivos:\n$cmpResult";
+            $Update::ERR = &lib_language::_msg_prontus('_error_updating_wizard_with_new_prontus_core').":\n$cmpResult";
             cluck $Update::ERR . " - dir target[$this->{document_root}/wizard_prontus/core]\n";
             return 0;
         };
@@ -811,7 +811,7 @@ sub setExecPermisos {
             next if ($entry !~ /(\.cgi|\.pl|\.py)$/);
             if ($entry =~ /^prontus_/ || $entry =~ /^wizard_/) { # solo cambiar permisos a cgi que comiencen con prontus_ o wizard_
                 my $ret = chmod 0755, "$dir/$entry";
-                $errors .= "No fue posible asignar permisos de ejecucion a $dir/$entry\n" if (!$ret);
+                $errors .= &lib_language::_msg_prontus('_unable_assign_execute_permissions')." $dir/$entry\n" if (!$ret);
             };
         };
     };
@@ -839,7 +839,7 @@ sub rollback_update {
     # Asignar permisos ejecucion a las cgis, recursivamente.
     my $permResult = $this->setExecPermisos("$this->{document_root}/$this->{nom_cgicpn_current}", 755);
     if ($permResult ne '') {
-        $Update::ERR = "Error en el Rollback de Prontus: no se pudo asignar permisos de ejecucion a las CGIs: [$permResult]";
+        $Update::ERR = &lib_language::_msg_prontus('_error_prontus_rollback').": [$permResult]";
         cluck $Update::ERR . " - dir de cgis backend[$this->{document_root}/$this->{nom_cgicpn_current}]\n";
     };
 

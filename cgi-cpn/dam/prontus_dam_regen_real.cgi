@@ -92,19 +92,19 @@ print STDERR "Log File... $lib_logproc::LOG_FILE\n";
 # Init
 &lib_logproc::flush_log();
 &lib_logproc::writeRule();
-&lib_logproc::add_to_log_count("INICIANDO PROCESO DE ACTUALIZACION DE MULTIMEDIA");
+&lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_starting_multimedia_update_process'));
 
 # reparsea articulos en base a su tpl.
 &regenera_dam();
 
-&lib_logproc::add_to_log_count("PROCESO DE ACTUALIZACION DE MULTIMEDIA FINALIZADO");
+&lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_multimedia_update_process_ended'));
 &lib_logproc::writeRule();
 
 $TOT_REGS = '0' if ($TOT_REGS eq '');
 $TOT_REGS_CON_ERR = '0' if ($TOT_REGS_CON_ERR eq '');
 
-&lib_logproc::add_to_log("Nro. de registros procesados: $TOT_REGS\nRegistros con Errores: $TOT_REGS_CON_ERR");
-&lib_logproc::add_to_log_finish("Operaci&oacute;n finalizada.");
+&lib_logproc::add_to_log(&lib_language::_msg_prontus('_number_records_processed').": $TOT_REGS\nRegistros &lib_language::_msg_prontus('_with_errors'): $TOT_REGS_CON_ERR");
+&lib_logproc::add_to_log_finish(&lib_language::_msg_prontus('Operation_completed'));
 
 &finishLoading('', $TOT_REGS);
 print STDERR "------- proceso terimado -------\n\n";
@@ -121,8 +121,8 @@ sub regenera_dam {
     # Inicia conexion a BD
     my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($base)) {
-        &finishLoading("Error: $msg_err_bd\nProceso abortado.");
-        &lib_logproc::handle_error("Error: $msg_err_bd\nProceso abortado.");
+        &finishLoading(&lib_language::_msg_prontus('_msg_generic_error').": $msg_err_bd\n".&lib_language::_msg_prontus('_process_aborted'));
+        &lib_logproc::handle_error(&lib_language::_msg_prontus('_msg_generic_error').": $msg_err_bd\n".&lib_language::_msg_prontus('_process_aborted'));
     };
 
     my ($ruta_dir) = $prontus_varglb::DIR_SERVER
@@ -145,8 +145,8 @@ sub regenera_dam {
     foreach $dirfecha (@lisdir) {
         if (-d "$ruta_dir/$dirfecha/xml") {
             $dircounter++;
-            &messageLoading('Vista: <b>Default</b>, Directorios Procesados: <b>' . $dircounter . '</b>');
-            &lib_logproc::add_to_log_count("Procesando DIR [$dirfecha/xml]");
+            &messageLoading(&lib_language::_msg_prontus('_view').': <b>Default</b>, ".&lib_language::_msg_prontus('_processed_directories').": <b>' . $dircounter . '</b>');
+            &lib_logproc::add_to_log_count(&lib_language::_msg_prontus('_dir_processing')." [$dirfecha/xml]");
             print STDERR "  Procesando DIR [$dirfecha/xml]\n";
             &procesa_files("$ruta_dir/$dirfecha/xml", $dirfecha, $base);
         };
@@ -178,7 +178,7 @@ sub procesa_files {
         };# if
 
     };# foreach
-    &lib_logproc::add_to_log("\t\t\t\t$count_files_in_dir archivos procesados en el DIR") if ($count_files_in_dir);
+    &lib_logproc::add_to_log("\t\t\t\t$count_files_in_dir ".&lib_language::_msg_prontus('_processed_files_DIR')) if ($count_files_in_dir);
 };
 
 # ---------------------------------------------------------------

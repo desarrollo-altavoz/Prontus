@@ -106,20 +106,20 @@ main: {
 
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_json_result(0, 'La funcionalidad requerida está disponible sólo para el administrador del sistema', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_functionality_available_administrator'), 'exit=1,ctype=1');
     };
 
 
 
     # Abrir dbm files
     if (&lib_prontus::open_dbm_files() ne 'ok') {
-        &glib_html_02::print_json_result(0, 'No fue posible abrir archivos de usuario', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_unable_open_user_files'), 'exit=1,ctype=1');
     };
 
 
     $FORM{'_id'}= &glib_cgi_04::param('_id');
     if (($FORM{'_id'} !~ /^[0-9]+$/) || (!$FORM{'_id'})) {
-        &glib_html_02::print_json_result(0, 'Id no válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_id'), 'exit=1,ctype=1');
     };
 
     delete $prontus_varglb::USERS{$FORM{'_id'}};

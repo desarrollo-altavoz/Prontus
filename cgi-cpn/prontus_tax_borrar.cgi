@@ -122,33 +122,33 @@ main: {
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
     $FORM{'_entidad'} = &glib_cgi_04::param('_entidad');
     $FORM{'_entidad'} = 'seccion' if ($FORM{'_entidad'} eq '');
     if ($FORM{'_entidad'} !~ /^(seccion|tema|subtema)$/) {
-        &glib_html_02::print_json_result(0, 'Tipo de entidad no es válida', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_entity_type'), 'exit=1,ctype=1');
     };
 
     if ($FORM{'_entidad'} eq 'tema') {
         $FORM{'_secc_id'} = &glib_cgi_04::param('_secc_id');
         if ($FORM{'_secc_id'} !~ /^[0-9]+$/) {
-            &glib_html_02::print_json_result(0, 'Sección no es válida', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_section'), 'exit=1,ctype=1');
         };
     };
 
     if ($FORM{'_entidad'} eq 'subtema') {
         $FORM{'_tema_id'} = &glib_cgi_04::param('_tema_id');
         if ($FORM{'_tema_id'} !~ /^[0-9]+$/) {
-            &glib_html_02::print_json_result(0, 'Tema no es válido', 'exit=1,ctype=1');
+            &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_topic'), 'exit=1,ctype=1');
         };
     };
 
 
     $FORM{'_id'}= &glib_cgi_04::param('_id');
     if (($FORM{'_id'} !~ /^[0-9]+$/) || (!$FORM{'_id'})) {
-        &glib_html_02::print_json_result(0, 'Id no válido', 'exit=1,ctype=1');
+        &glib_html_02::print_json_result(0, &lib_language::_msg_prontus('_invalid_id'), 'exit=1,ctype=1');
     };
 
 
@@ -190,7 +190,7 @@ main: {
 sub do_delete {
 
     if (! &no_referenciada($FORM{'_id'})) {
-        return 'Item está siendo utilizado en algún artículo. No se puede borrar.';
+        return &lib_language::_msg_prontus('_item_being_used_in_article_unable_erase');
     };
 
     my ($sql, $salida);
@@ -205,18 +205,18 @@ sub do_delete {
         while ($salida->fetch) {
             # Elimina subtema.
             $sql = " delete from SUBTEMAS where SUBTEMAS_IDTEMAS = $id_temas";
-            $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, 'Error eliminando categorías de la base de datos', 'exit=0');
+            $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, &lib_language::_msg_prontus('_error_deleting_categories_database'), 'exit=0');
         };
 
         $salida->finish;
 
         # Elimina Temas.
         $sql = " delete from TEMAS where TEMAS_IDSECC = $FORM{'_id'}";
-        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, 'Error eliminando categorías de la base de datos', 'exit=0');
+        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, &lib_language::_msg_prontus('_error_deleting_categories_database'), 'exit=0');
 
         # Elimina Secc.
         $sql = " delete from SECC where SECC_ID = $FORM{'_id'}";
-        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, 'Error eliminando categorías de la base de datos', 'exit=0');
+        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, &lib_language::_msg_prontus('_error_deleting_categories_database'), 'exit=0');
     };
 
     # Eliminar tema y todos sus subtemas
@@ -224,11 +224,11 @@ sub do_delete {
 
         # Elimina subtemas.
         $sql = " delete from SUBTEMAS where SUBTEMAS_IDTEMAS = $FORM{'_id'}";
-        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, 'Error eliminando categorías de la base de datos', 'exit=0');
+        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, &lib_language::_msg_prontus('_error_deleting_categories_database'), 'exit=0');
 
         # Elimina tema
         $sql = " delete from TEMAS where TEMAS_ID = $FORM{'_id'}";
-        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, 'Error eliminando categorías de la base de datos', 'exit=0');
+        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, &lib_language::_msg_prontus('_error_deleting_categories_database'), 'exit=0');
     };
 
     # Eliminar subtema
@@ -236,7 +236,7 @@ sub do_delete {
 
         # Elimina subtema
         $sql = " delete from SUBTEMAS where SUBTEMAS_ID = $FORM{'_id'}";
-        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, 'Error eliminando categorías de la base de datos', 'exit=0');
+        $BD->do($sql) || return &lib_prontus::handle_internal_error($BD->errstr, &lib_language::_msg_prontus('_error_deleting_categories_database'), 'exit=0');
     };
 
     return '';

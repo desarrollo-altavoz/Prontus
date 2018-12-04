@@ -247,10 +247,10 @@ main:{
     my $msg_resp;
     if ($MODERACION eq 'SI') {
         $msg_resp = $hash_tipos{$FORM{'OBJTIPO'}}{'MSG_MODER'};
-        $msg_resp = 'Gracias, tu comentario ha sido recibido y pronto lo publicaremos!' if (!$msg_resp);
+        $msg_resp = &lib_language::_msg_prontus('_comments_received') if (!$msg_resp);
     } else {
         $msg_resp = $hash_tipos{$FORM{'OBJTIPO'}}{'MSG_NOMODER'};
-        $msg_resp = 'Gracias, tu comentario ya se encuentra publicado!' if (!$msg_resp);
+        $msg_resp = &lib_language::_msg_prontus('_comments_posted') if (!$msg_resp);
     };
     print "1|$msg_resp";
 
@@ -264,18 +264,18 @@ sub check_captcha {
 
     # Valida captcha
     if (!$FORM{'CODSEG'}) {
-        return 'Debes ingresar C&oacute;digo de Seguridad.';
+        return &lib_language::_msg_prontus('_enter_security_code');
     };
     my $session_captcha = &lib_phpsession::get_php_session_var('_COMENT_CAPTCHA_' . $FORM{'OBJID'}, $session_name, $session_path); # CPN - 16/08/2008 - Variable session con ts articulo #
 
     if (!$session_captcha) {
-        return 'No es posible verificar C&oacute;digo de Seguridad.'
+        return &lib_language::_msg_prontus('_security_code_unverified')
     };
 
     my $codseg_crypt = crypt(lc $FORM{'CODSEG'},'av');
     print STDERR "codseg_crypt[$codseg_crypt] - session_captcha[$session_captcha]\n";
     if ($codseg_crypt ne $session_captcha) {
-        return "Verifica el C&oacute;digo de Seguridad ingresado.";
+        return &lib_language::_msg_prontus('_Verify_your_security_code');
     };
     return '';
 };

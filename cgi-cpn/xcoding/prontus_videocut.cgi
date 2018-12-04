@@ -86,7 +86,7 @@ main: {
     # Se valida el nombre del prontus
     if (! &lib_prontus::valida_prontus($FORM{'prontus_id'})) {
         print STDERR "Prontus ID inicado no es valido: $FORM{'prontus_id'}\n";
-        die("Prontus ID inicado no es valido");
+        die(&lib_language::_msg_prontus('_invalid_prontus_id_indicated'));
     }
 
     # Path conf y load config de prontus
@@ -106,8 +106,8 @@ main: {
     $FORM{'t2'} =~ s/[^0-9\.]//g;
 
     if (!&load_artic_info()) {
-        print STDERR "No se obtener la información del artículo asociado al video: $FORM{'video'}\n";
-        return "No se obtener la información del artículo asociado al video.";
+        print STDERR "No se puede obtener la información del artículo asociado al video: $FORM{'video'}\n";
+        return &lib_language::_msg_prontus('_unable_get_artic_information_associated_video');
     };
 
     $FORM{'video'} =~ /\/mmedia\/(multimedia_video\d+)\d{14}\.(\w+)$/i;
@@ -154,13 +154,13 @@ sub cortar_video  {
     print STDERR "Cortando video cmd[$cmd]...\n";
     $res = qx/$cmd 2>&1/;
     print STDERR "cmd result: [$res][$?][$!]\n";
-    return "Falló corte de video." if ($? != 0);
+    return &lib_language::_msg_prontus('_failed_cut_video.') if ($? != 0);
 
     $cmd = "$Bin/qtfaststart.cgi $destino";
     print STDERR "Ajustando video cmd[$cmd]...\n";
     $res = qx/$cmd 2>&1/;
     print STDERR ("Falló Ajuste de Mp4 [$!][$res].") if ($? != 0);
-    return "Falló Ajuste de Mp4" if ($? != 0);
+    return &lib_language::_msg_prontus('_fit_mp4_failed') if ($? != 0);
     # Elimina el archivo de origen si es que el destino se genero ok
 
     if (-s $destino > 0) {
@@ -168,7 +168,7 @@ sub cortar_video  {
         rename $destino ,$origen;
         return 'OK';
     } else {
-        my $msg_err_usr = 'Error al realizar corte del video, el archivo resultante no pudo ser generado. Los detalles fueron agregados al error log interno de Prontus.';
+        my $msg_err_usr = &lib_language::_msg_prontus('_cut_video_failed_result_file_not_generated');
         print STDERR "$msg_err_usr\nError: el archivo resultante [$destino] no pudo ser generado por ffmpeg\n";
         return $msg_err_usr;
     };

@@ -71,9 +71,8 @@ sub main {
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
     # Acceso permitido solo para admin
     if ($prontus_varglb::USERS_PERFIL ne 'A') {
-        &glib_html_02::print_pag_result('Acceso a Area Restringida',
-                                        'La funcionalidad requerida está disponible sólo para el '
-                                        . 'administrador del sistema', 1, 'exit=1,ctype=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),
+                                        &lib_language::_msg_prontus('_available_only_system_admin'), 1, 'exit=1,ctype=1');
     };
 
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_CPAN/procs/prontus_art_regen_log.html";

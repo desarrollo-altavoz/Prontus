@@ -135,7 +135,7 @@ main:{
 
     # Acceso permitido solo para admin o editor
     if ($prontus_varglb::USERS_PERFIL eq 'P') {
-      &glib_html_02::print_pag_result('Acceso a Area Restringida','La funcionalidad requerida no está disponible para perfil Redactor',1,'exit=1,ctype=1');
+      &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_access_restricted_area'),&lib_language::_msg_prontus('_functionality_available_writer'),1,'exit=1,ctype=1');
     };
 
     print "Content-Type: text/html\n\n";
@@ -144,7 +144,7 @@ main:{
     my $msg_err_bd;
     ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     if (! ref($BD)) {
-        &glib_html_02::print_pag_result("Error",$msg_err_bd,1,'exit=1');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),$msg_err_bd,1,'exit=1');
     };
 
     # Chequea el el campo Mostrar Tag exista:
@@ -326,7 +326,7 @@ sub generar_fila {
 sub check_col {
     my ($tabla, $colname, $coldef) = @_;
     my $res_check_col = &glib_dbi_02::check_table_column($BD, $tabla, $colname, $coldef);
-    &glib_html_02::print_pag_result("Error","No se pudo crear la columna $colname",1,'exit=1') if (!$res_check_col);
+    &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_msg_generic_error'),&lib_language::_msg_prontus('_unable_create_column')." $colname",1,'exit=1') if (!$res_check_col);
 };
 
 # ---------------------------------------------------------------
@@ -335,7 +335,7 @@ sub generate_pagination_links {
   my ($page, $pageSize, $totalRecords, $lnk_base, $desde_nroreg, $nro_filas) = @_;
 
   if ($desde_nroreg >= $totalRecords) {
-      return "<strong>Resultados:</strong> Sin resultados";
+      return "<strong>".&lib_language::_msg_prontus('_results').":</strong> ".&lib_language::_msg_prontus('_no_results');
   };
 
   my ($hasta_nroreg) = $nro_filas;
@@ -388,17 +388,17 @@ sub generate_pagination_links {
   # la anterior y la siguiente, si aplican
   if ($page > 1) {
     $links = "<a href=\"$lnk_base&amp;page=" .
-              ($page - 1) . "\"><strong>&laquo; Anterior</strong></a>&nbsp;&nbsp;" .
+              ($page - 1) . "\"><strong>&laquo; ".&lib_language::_msg_prontus('_previous')."</strong></a>&nbsp;&nbsp;" .
               $links;
   };
 
   if ($page < $maxPages) {
     $links = $links .
              "&nbsp;&nbsp;<a href=\"$lnk_base&amp;page=" .
-             ($page + 1) . "\"><strong>Siguiente &raquo;</strong></a>";
+             ($page + 1) . "\"><strong>".&lib_language::_msg_prontus('_next')." &raquo;</strong></a>";
   };
 
-  $links = "<strong>Resultados:</strong> $desde_nroreg a $hasta_nroreg de $totalRecords<br/><strong>P&aacute;ginas</strong>: $links";
+  $links = "<strong>".&lib_language::_msg_prontus('_results').":</strong> $desde_nroreg ".&lib_language::_msg_prontus('_to')." $hasta_nroreg ".&lib_language::_msg_prontus('_of')." $totalRecords<br/><strong>".&lib_language::_msg_prontus('_pages')."</strong>: $links";
 
   return $links;
 };

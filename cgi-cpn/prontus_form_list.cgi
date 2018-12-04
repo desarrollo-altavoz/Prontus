@@ -82,7 +82,7 @@ main: {
     $TS        = $FORM{'_ts'};      # Nombre del publicador Prontus donde se aloja el formulario.
 
     if ($PRONTUS eq '') { # Muestra pagina en blanco.
-        &lib_form::aborta("Directorio Prontus no especificado.");
+        &lib_form::aborta(&lib_language::_msg_prontus('_prontus_directory_not_especified'));
     };
 
     my $PATH_CONF = "/$PRONTUS/cpan/$PRONTUS.cfg";
@@ -100,12 +100,12 @@ main: {
     print "Content-type: text/html\n\n";
 
     if ($TS eq '') {
-        &glib_html_02::print_pag_result("Listado de Datos", 'Formulario no especificado', 1, '');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_data_list'), &lib_language::_msg_prontus('_form_not_especified'), 1, '');
         exit;
     };
     my $PLANTILLA = &glib_fildir_02::read_file("$ROOT$prontus_varglb::DIR_CORE/prontus_form_list.html");
     if ($PLANTILLA eq '') { # Muestra pagina en blanco.
-        &glib_html_02::print_pag_result("Listado de Datos", 'La Plantilla no existe', 1, '');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_data_list'), &lib_language::_msg_prontus('_template_no_exist'), 1, '');
         exit;
     };
 
@@ -234,7 +234,7 @@ main: {
     } else {
 
         # Si ningun archivo existe, se arroja error
-        &glib_html_02::print_pag_result("Listado de Datos", 'El archivo de datos está vacío o no existe', 1, '');
+        &glib_html_02::print_pag_result(&lib_language::_msg_prontus('_data_list'), &lib_language::_msg_prontus('_data_file_empty_or_no_exist'), 1, '');
         exit;
     }
 
