@@ -10328,3 +10328,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Agrega rel="stylesheet" para identificar archivos css en la plantilla de artículo
     [files]
         /cgi-cpn/prontus_art_ficha.cgi
+    [bugfixes]
+        - Corrige el encoding de la cgi cgi-bin/prontus_form.cgi
+    [files]
+        /cgi-bin/prontus_form.cgi
+        
