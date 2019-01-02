@@ -24,6 +24,29 @@
             <td>Vigente</td>
             <td><INPUT TYPE="checkbox" NAME="ED_VIGENTE" VALUE="SI" %%ED_VIGENTE%%></td>
           </tr>
+          <tr>
+            <td>Usar edición como base</td>
+            <td>
+              <select name="Cmb_EDIC" id="edicBase" class="form-control" onchange="EdiAdmin.showPorts();">
+                  <option value="">- Ninguna -</option>
+                  <!--port_all_edics-->
+                  <option value="%%_nombre_edic%%">%%_fecha_edic%%</option>
+                  <!--/port_all_edics-->
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">Seleccione las portadas a copiar</td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <ul class="list-unstyled list-inline">
+                  <!--not_base_port_list-->
+                  <li><input type="checkbox" name="selPorts-%%_portname%%" id="%%_portname%%" value="%%_portname%%"> <label for="%%_portname%%">%%_portname%%</label></li>
+                  <!--/not_base_port_list-->
+              </ul>
+            </td>
+          </tr>
         </table>
         <table>
           <tr>

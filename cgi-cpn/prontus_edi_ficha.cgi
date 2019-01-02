@@ -55,6 +55,7 @@ use glib_fildir_02;
 use lib_prontus;
 
 use glib_cgi_04;
+use glib_hrfec_02;
 use strict;
 
 my ($RELDIR_EDICIONES);
@@ -177,6 +178,10 @@ if ($prontus_varglb::USERS_ID eq '') {
   };
 
   $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
+
+  $pagina = &parse_all_edics($pagina);
+  $pagina = &parse_port_list($pagina);
+
   print "Content-type: text/html\n\n";
   print $pagina;
   exit;
@@ -198,5 +203,119 @@ sub parse_dirs_edic {
   $RELDIR_CONT_HPAGE =~ s/%%ED_NOM%%/$nom_edic/;
 
 };
+
+sub parse_all_edics {
+    my $buffer = $_[0];
+    my $filas;
+
+    if ($prontus_varglb::MULTI_EDICION eq 'SI') {
+        my @entries = &glib_fildir_02::lee_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EDIC");
+        my %aux_sort;
+
+        $buffer =~ /<!--port_all_edics-->(.*)<!--\/port_all_edics-->/is;
+        my $loop = $1;
+
+        return $buffer if (!$loop);
+
+        foreach my $entry (@entries) {
+            $entry =~ /^(\d\d\d\d)\_(\d\d)\_(\d\d)\_(\d+)$/;
+            my $aaaammddnro = $1 . $2 . $3 . $4;
+            $aux_sort{$entry} = $aaaammddnro;
+        }
+
+        # Ordena numericamente de mayor a menor.
+        @entries = sort { $aux_sort{$b} <=> $aux_sort{$a} } @entries;
+        my $nro_filas = scalar @entries;
+
+        foreach my $entry (@entries) {
+            if ($entry =~ /^\d\d\d\d\_\d\d\_\d\d\_/) {
+                my $homepage = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EDIC/$entry$prontus_varglb::DIR_HPAGES/$prontus_varglb::INDEX_EDIC";
+                if (-f $homepage) {
+                    # Imprimir la fila de datos contenida en el hash.
+                    $filas .= &generar_fila_edic($entry, $loop);
+                }
+            }
+        }
+    }
+
+    $buffer =~ s/<!--port_all_edics-->.*<!--\/port_all_edics-->/$filas/s;
+
+    return $buffer;
+}
+
+sub parse_port_list {
+    my $buffer = $_[0];
+    my %PORTS_TO_ORDER;
+
+    $buffer =~ /<!--not_base_port_list-->(.*)<!--\/not_base_port_list-->/is;
+    my $loop = $1;
+    my $filas;
+
+    return $buffer if (!$loop);
+
+    foreach my $key (sort { $a cmp $b } keys %prontus_varglb::PORT_PLTS) {
+        my $name = $key;
+        $name = $prontus_varglb::PORT_PLTS_NOM{$key} if ($prontus_varglb::PORT_PLTS_NOM{$key} ne '');
+        $name =~ s/^\s+//;
+        $name =~ s/\s+$//;
+
+        if ($name =~ /(.*?)\.(.*?)$/i) {
+            $name =~ s/\.$2//ig;
+        }
+
+        $PORTS_TO_ORDER{$key} = $name;
+    }
+
+    my %base_ports = map {$_ => 1} @prontus_varglb::BASE_PORTS;
+
+
+    foreach my $key (sort { lc($PORTS_TO_ORDER{$a}) cmp lc($PORTS_TO_ORDER{$b}) } keys %PORTS_TO_ORDER) {
+        my $val_display = $prontus_varglb::PORT_PLTS_NOM{$key};
+
+        if (!exists $base_ports{$key}) {
+            my $tmp = $loop;
+            $tmp =~ s/%%_portname%%/$key/sg;
+
+            $filas .= $tmp;
+        }
+    }
+
+    print STDERR "filas[$filas]\n";
+
+    $buffer =~ s/<!--not_base_port_list-->.*<!--\/not_base_port_list-->/$filas/s;
+
+    return $buffer;
+};
+
+sub generar_fila_edic {
+    my ($ed_nom, $loop_row) = @_;
+    $loop_row =~ s/%%_nombre_edic%%/$ed_nom/g;
+    # Celda con fecha de la edicion.
+    $ed_nom =~ /^(\d\d\d\d)\_(\d\d)\_(\d\d)/;
+    my $aaammdd = $1 . $2 . $3;
+    my $fechaplong = &glib_hrfec_02::expande_fecha($aaammdd);
+
+    $loop_row =~ s/%%_fecha_edic%%/$fechaplong/g;
+
+    my $vigente_class = 'default';
+    my $vigente_status = 0;
+    my $vigente_status_name = 'No vigente';
+
+    if (&lib_prontus::ed_vigente($ed_nom) eq 'SI') {
+        $vigente_class = 'success';
+        $vigente_status = 1;
+        $vigente_status_name = 'Vigente';
+    }
+
+    $loop_row =~ s/%%ed_vigente%%/$vigente_class/g;
+    $loop_row =~ s/%%ed_vigente_status%%/$vigente_status/g;
+    $loop_row =~ s/%%ed_vigente_status_name%%/$vigente_status_name/g;
+
+    my $ver_edic = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EDIC/$ed_nom$prontus_varglb::DIR_HPAGES/$prontus_varglb::INDEX_EDIC";
+
+    $loop_row =~ s/%%_ver_edic%%/$ver_edic/g;
+
+    return $loop_row;
+}
 
 #-------------------------------END SCRIPT----------------------
