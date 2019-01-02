@@ -79,5 +79,14 @@ var EdiAdmin = {
                 }
             });
         }
+    },
+    showPorts: function () {
+        var selected = $('#edicBase option:selected').val();
+
+        if (selected) {
+            $('.edicBasePorts').show();
+        } else {
+            $('.edicBasePorts').hide();
+        }
     }
 };
