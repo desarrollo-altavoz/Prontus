@@ -1101,6 +1101,14 @@ sub parseaVars {
         $pagina =~ s/%%CONTROLAR_ALTA_ARTICULOS_NO%%/ checked="checked"/ig;
     };
 
+    if ($prontus_varglb::CREAR_VISTAS_SIN_ALTA eq 'NO') {
+        $pagina =~ s/%%CREAR_VISTAS_SIN_ALTA_SI%%//ig;
+        $pagina =~ s/%%CREAR_VISTAS_SIN_ALTA_NO%%/ checked="checked"/ig;
+    } else {
+        $pagina =~ s/%%CREAR_VISTAS_SIN_ALTA_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CREAR_VISTAS_SIN_ALTA_NO%%//ig;
+    };
+
     if ($prontus_varglb::ACTUALIZACIONES eq 'SI') {
         $pagina =~ s/%%ACTUALIZACIONES_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%ACTUALIZACIONES_NO%%//ig;
