@@ -260,8 +260,6 @@ sub do_save {
     my %campos_xml = $ARTIC_OBJ->get_xml_content();
     my $fid = $ARTIC_OBJ->{campos}->{'_fid'};
     
-    print STDERR "vistas sin alta: [$prontus_varglb::CREAR_VISTAS_SIN_ALTA] alta [$campos_xml{'_alta'}] \n";
-
     if ($prontus_varglb::CREAR_VISTAS_SIN_ALTA ne 'NO' || $campos_xml{'_alta'}) {
         # Generar vista principal (a partir del xml)
         # print STDERR "Generar vista normal con autoinc[$autoinc]\n";
