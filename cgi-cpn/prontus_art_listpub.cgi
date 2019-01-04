@@ -512,7 +512,8 @@ sub get_artic_parsed {
 
 
     # Art. inexistente
-    if (! -f $path_artic) {
+    if (! -f $path_artic && ! $campos_xml{'_alta'} && $prontus_varglb::CREAR_VISTAS_SIN_ALTA ne 'NO') {
+        print STDERR "[$ts] pub, No existe $path_artic. alta: [$campos_xml{'_alta'}], crear_vistas_sin_alta: [$prontus_varglb::CREAR_VISTAS_SIN_ALTA] \n";
         $loop_art_tpl =~ s/%%_ts%%/$ts/g;
         $loop_art_tpl =~ s/%%_artic_sin_file%%/_artic_sin_file/g;
         $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo_disabled/g;
