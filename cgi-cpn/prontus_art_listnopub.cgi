@@ -403,7 +403,7 @@ sub make_lista {
         $sql =~ s/%%FILTRO%%//;
     };
 
-    print STDERR "sql busqueda[$sql]\n\n";
+    #print STDERR "sql busqueda[$sql]\n\n";
     my ($art_id, $art_dirfecha, $art_tit, $art_seccion, $art_tema,
         $art_subtema, $art_extension, $art_autoinc, $art_tipoficha,
         $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_alta,
@@ -875,8 +875,8 @@ sub get_artic_parsed {
     $nom_seccion = &lib_prontus::escape_html($nom_seccion);
 
     # Art. inexistente
-    if (! -f $path_artic) {
-        print STDERR "[$ts] No existe $path_artic\n";
+    if (! -f $path_artic && ! $alta && $prontus_varglb::CREAR_VISTAS_SIN_ALTA ne 'NO') {
+        print STDERR "[$ts] nopub No existe $path_artic. alta: [$alta], crear_vistas_sin_alta: [$prontus_varglb::CREAR_VISTAS_SIN_ALTA] \n";
         $loop_art_tpl =~ s/%%_ts%%/$ts/g;
         $loop_art_tpl =~ s/%%_artic_sin_file%%/_artic_sin_file/g;
         $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo_disabled/g;

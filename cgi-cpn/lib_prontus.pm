@@ -1726,6 +1726,11 @@ sub load_config {
   if ($buffer =~ m/\s*CONTROLAR_ALTA_ARTICULOS\s*=\s*["'](SI|NO)["']/) { # SI | NO
    $control_alta = $1;
   };
+  
+  my $regenerar_sin_alta = 'SI'; # seteado a sí por defecto por retrocompatibilidad.
+  if ($buffer =~ m/\s*CREAR_VISTAS_SIN_ALTA\s*=\s*["'](SI|NO)["']/) { # SI | NO
+   $regenerar_sin_alta = $1;
+  };
 
   my $artic_actualiza_ports = 'NO';
   if ($buffer =~ m/\s*ARTIC_ACTUALIZA_PORTS\s*=\s*["'](SI|NO)["']/) { # SI | NO
@@ -1735,6 +1740,7 @@ sub load_config {
   $prontus_varglb::TAXONOMIA_NIVELES = $tax_niv;
   $prontus_varglb::CONTROLAR_ALTA_ARTICULOS = $control_alta;
   $prontus_varglb::ARTIC_ACTUALIZA_PORTS = $artic_actualiza_ports;
+  $prontus_varglb::CREAR_VISTAS_SIN_ALTA = $regenerar_sin_alta;
 
   # tagonomicas
 
@@ -2038,9 +2044,9 @@ sub load_config {
   };
   $nubetags_factor_olvido =~ s/\,/\./;
   if ($nubetags_factor_olvido !~ /^[0-9]+(\.[0-9]+)?$/) {
-      print STDERR "Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un número entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'\n";
+      print STDERR "Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un n&uacute;mero entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un número entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'";
+      print "<P>Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un n&uacute;mero entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'";
       exit;
   };
   $prontus_varglb::NUBETAGS_FACTOR_OLVIDO = $nubetags_factor_olvido;
@@ -2100,7 +2106,7 @@ sub load_config {
       if ($clustering_debug_level !~ /^[0-2]$/) {
          my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_DEBUG_LEVEL contiene un valor no v&aacute;lido."
                   . "<br>Valores posibles: '0', '1' o '2'."
-                  . "<br>'0':Sólo errores | '1': Errores e información básica | '2': Todo lo anterior y además debug específico de FTP"
+                  . "<br>'0':S&oacute;lo errores | '1': Errores e informaci&oacute;n b&aacute;sica | '2': Todo lo anterior y adem&aacute;s debug espec&iacute;fico de FTP"
                   . "<br>Por omisi&oacute;n es: '1'";
           &glib_html_02::print_pag_result('Error', $msg, 0, 'exit=1,ctype=1');
       };
@@ -2113,7 +2119,7 @@ sub load_config {
       };
       if ($clustering_timeout_connect_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_TIMEOUT_CONNECT_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '10'"
+                  . "<br>Debe contener un n&uacute;mero entero de segundos, por ejemplo: '10'"
                   . "<br>Por omisi&oacute;n es: '15'";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
@@ -2126,7 +2132,7 @@ sub load_config {
       };
       if ($clustering_log_duration_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_LOG_DURATION_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '3600'"
+                  . "<br>Debe contener un n&uacute;mero entero de segundos, por ejemplo: '3600'"
                   . "<br>Por omisi&oacute;n es: '86400' (24 horas)";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
@@ -2139,7 +2145,7 @@ sub load_config {
       };
       if ($clustering_file_update_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_FILE_UPDATE_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '10'"
+                  . "<br>Debe contener un n&uacute;mero entero de segundos, por ejemplo: '10'"
                   . "<br>Por omisi&oacute;n es: '15'";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
