@@ -1,4 +1,14 @@
 ====================================================================================================
+11.2.103 - 16/01/2018 - EAG/JOR
+====================================================================================================
+- improvement: (fid) Agrega rel="stylesheet" para identificar archivos css en la plantilla de artículo
+- bugfixes: Corrige el encoding de la cgi cgi-bin/prontus_form.cgi
+- improvement: (multiedicion) Agrega opción para crear una edición usando como base una más antigua.
+Además se permite seleccionar que portadas se van a copiar.
+- improvement: (multiedicion) Agrega opción para no generar vistas de archivos sin alta.
+- improvement: (seguridad)  Modifica el manejo de cookies de sesion y datos de sesion para mejorar la seguridad
+
+====================================================================================================
 11.2.102 - 15/11/2018 - AVP/EAG
 ====================================================================================================
 - bugfixes: (fid) En firefox no aparecía método para subir fotos si el sitio usa https y había flash disponible pero no activado.
@@ -2061,4 +2071,3 @@ siempre se parseaba el mismo valor para todos los artículos.
 - improvement: Procesos masivos: mejoras de interfaz, agrega barra avance en algunos casos
 - changes: En la lista de artículos, el borrado de artículos ahora es 1 a 1, no como antes que se seleccionaban varios.
 - changes: Se elimina el botón para ver el mapa de áreas de una portada (como imagen)
-

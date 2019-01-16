@@ -135,7 +135,6 @@ main: {
     }
 
     if ($login_result >= 1) {
-
         my $check_msg;
         $check_msg = &check_modules() if (! &lib_prontus::is_win32());
         &glib_html_02::print_json_result(0, $check_msg, 'exit=1,ctype=1') if ($check_msg);
@@ -145,9 +144,6 @@ main: {
         &release_user($file_userlock);
 
         if ((($FORM{'_usr'} eq 'admin') && ($FORM{'_psw'} eq 'prontus')) || ($FORM{'_psw'} =~ /\w\w\wprontus\w\w\w/)) {
-            # Si ingreso la "clave maestra", entonces obligar a cambiarla, de paso le borro la cookie para que no siga navegando.
-            &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, ''); # pa q no pueda navegar
-            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, '');
             # Mata sesion en caso de que haya
             my $sess_obj = Session->new(
                             'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
@@ -196,19 +192,15 @@ main: {
             my $buffer_changepass = &get_changepass(); # hacer location a cgi
             &glib_html_02::print_json_result(2, $buffer_changepass, 'exit=1,ctype=1');
         } else {
-            # Ok y setear cookie.
-            &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, $prontus_auth::USERS_USR);
-            &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, &prontus_auth::get_hash_for_cookie($prontus_auth::USERS_PSW));
+            # login Ok
             # crea obj session
             my $sess_obj = Session->new(
                             'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                             'document_root'     => $prontus_varglb::DIR_SERVER)
                             || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
-            # libera recursos de sesion existente para info de concurrencia
-            if ($sess_obj->{id_session} ne '') {
-                my %cookies = &lib_cookies::get_cookies();
-                my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
 
+            # libera recursos de sesion existente para info de concurrencia
+            if ($sess_obj->{id_session} ne '' && $sess_obj->{username} ne '') {
                 my @prontus_id;
                 if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
                     @prontus_id = &lib_prontus::get_prontus_sso_dirs();
@@ -220,31 +212,31 @@ main: {
                     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                                           $prontus,
                                                           'port',
-                                                          $user_anterior,
+                                                          $sess_obj->{username},
                                                           $sess_obj->{id_session});
 
                     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                                           $prontus,
                                                           'art',
-                                                          $user_anterior,
+                                                          $sess_obj->{username},
                                                           $sess_obj->{id_session});
 
                     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                                   $prontus,
                                                   'art',
-                                                  $user_anterior,
+                                                  $sess_obj->{username},
                                                   $sess_obj->{id_session});
 
                     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                                   $prontus,
                                                   'port',
-                                                  $user_anterior,
+                                                  $sess_obj->{username},
                                                   $sess_obj->{id_session});
                 }
 
             };
             # nueva sesion
-            $sess_obj->set_new_session();
+            $sess_obj->set_new_session($prontus_auth::USERS_USR, &prontus_auth::get_hash_for_cookie($prontus_auth::USERS_PSW));
 
             # Descarga archivo descriptor de update
             my $upd_obj = Update->new(

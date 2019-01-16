@@ -10321,41 +10321,28 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/lib_xcoding.pm
 
 ====================================================================================================
-11.2.102.1 - XX/XX/2018 - EAG
+11.2.103 - 16/01/2018 - AVP/EAG/JOR
 ====================================================================================================
 - Fid
     [mejora]
         - Agrega rel="stylesheet" para identificar archivos css en la plantilla de artículo
     [files]
         /cgi-cpn/prontus_art_ficha.cgi
+- Otros
     [bugfixes]
         - Corrige el encoding de la cgi cgi-bin/prontus_form.cgi
     [files]
         /cgi-bin/prontus_form.cgi
 
-====================================================================================================
-11.2.103 - XX/XX/2018 - JOR
-====================================================================================================
 - Multiedición
     [mejora]
         - Agrega opción para crear una edición usando como base una más antigua. Además se permite seleccionar que portadas se van a copiar.
-    [files]
-        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_ficha.html
-        /wizard_prontus/prontus_dir/cpan/core/js-local/EdiAdmin.class.js
-        /wizard_prontus/prontus_dir/cpan/core/css/edi.css
-        /cgi-cpn/prontus_edi_ficha.cgi
-        /cgi-cpn/prontus_edi_guardar.cgi
-    [bugfixes]
-
-====================================================================================================
-11.2.104 - XX/XX/2019 - AVP
-====================================================================================================
-- Multiedición
-    [mejora]
         - Agrega opción para no generar vistas de archivos sin alta. Al guardar un artículo sin alta
         con la opción CREAR_VISTAS_SIN_ALTA configurada a NO no se generan las vistas normal, multivista,
         paralelas, etc., y se borran esas vistas si existen.
     [files]
+        /cgi-cpn/prontus_edi_ficha.cgi
+        /cgi-cpn/prontus_edi_guardar.cgi
         /cgi-cpn/Artic.pm
         /cgi-cpn/lib_artic.pm
         /cgi-cpn/lib_prontus.pm
@@ -10365,4 +10352,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_art_regen_real.cgi
         /cgi-cpn/prontus_cfg_save.cgi
         /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_ficha.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/EdiAdmin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/css/edi.css
 
+- Seguridad
+    [mejora]
+        - Modifica el manejo de cookies de sesion y datos de sesion para mejorar la seguridad
+    [files]
+        /cgi-cpn/Session.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_login.cgi

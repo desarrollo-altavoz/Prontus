@@ -709,25 +709,16 @@ sub ed_vigente {
 sub check_user {
     # Chequea que el username pasado por parametro exista en el hash de USERS y retorna el USERS_ID y el USERS_PERFIL.
     # Si no se logra autenticar, retorna el id vacio y en el perfil retorna el mesnaje de error.
-    my ($username, $crypted_pass);
-    my ($key, $value, %cookies);
-    my ($id, $perfil);
 
     my $redir = $_[0]; # redireccion en caso de que no se detecte una sesion activa.
-
-    %cookies = &lib_cookies::get_cookies();
-    $username = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
-    $crypted_pass = $cookies{'KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID}; # CLAVE PRONTUS ENCRIPTADA
-    $prontus_varglb::USERS_USR = $username;
 
     my $sess_obj = Session->new(
                     'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
-    if ($sess_obj->{id_session} eq '') {
+    if ($sess_obj->{id_session} eq '' || $sess_obj->{username} eq '' || $sess_obj->{psw_hash} eq '') {
         if ($redir) {
             # redirecciona al login.
-            #~ print "Location: ../$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html\n\n";
             print "Content-Type: text/html\n\n";
             print "<script type='text/javascript'>window.location.href='/$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html';</script>";
             exit;
@@ -742,7 +733,7 @@ sub check_user {
         return ('', 'No fue posible cargar archivos de privilegios de usuario');
     };
 
-    my $login_result = &prontus_auth::check_valid_hash_psw($username, $crypted_pass);
+    my $login_result = &prontus_auth::check_valid_hash_psw($sess_obj->{username}, $sess_obj->{psw_hash});
 
     # caso mas comun, usuario logeado correctamente
     if ($login_result == 1) {
@@ -1726,7 +1717,7 @@ sub load_config {
   if ($buffer =~ m/\s*CONTROLAR_ALTA_ARTICULOS\s*=\s*["'](SI|NO)["']/) { # SI | NO
    $control_alta = $1;
   };
-  
+
   my $regenerar_sin_alta = 'SI'; # seteado a sí por defecto por retrocompatibilidad.
   if ($buffer =~ m/\s*CREAR_VISTAS_SIN_ALTA\s*=\s*["'](SI|NO)["']/) { # SI | NO
    $regenerar_sin_alta = $1;
