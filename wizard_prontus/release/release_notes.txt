@@ -10326,8 +10326,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Fid
     [mejora]
         - Agrega rel="stylesheet" para identificar archivos css en la plantilla de artículo
+        - Parsea TS original del artículo en la vista previa
     [files]
         /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/Artic.pm
+
 - Otros
     [bugfixes]
         - Corrige el encoding de la cgi cgi-bin/prontus_form.cgi

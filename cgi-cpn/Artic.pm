@@ -147,6 +147,7 @@ sub new {
 sub set_preview_artic {
     # Permite establecer que el ts para todos los efectos es 'preview'
     my $this = shift;
+    $this->{original_ts} = $this->{ts};
     $this->{ts} = 'preview';
     $this->{'campos'}->{'_alta'} = 1;
     # Re-asigna el path xml
@@ -2407,6 +2408,7 @@ sub parse_artic_data {
     # Parsea campos
     foreach my $nom_campo (keys %campos_xml) {
         my $val_campo = $campos_xml{$nom_campo};
+        next if ($nom_campo eq '_ts');
         next if ($val_campo eq '');
         next if ($nom_campo =~ /^(_seccion|_tema|_subtema)/ && $val_campo eq '0'); # evitar que s/t/st se guarde con 0.
         next if ($nom_campo =~ /^_fecha(p|e)$/);
@@ -2439,7 +2441,11 @@ sub parse_artic_data {
     $buffer = &lib_prontus::replace_in_artic($utc_pub, '_utcp', $buffer);
 
     # Reemplaza TS, FECHAC, FECHACLONG, FECHACSHRT
-    $buffer = &lib_prontus::replace_tsdata($buffer, $this->{ts});
+    if ($this->{ts} eq 'preview' && $this->{original_ts} ne '') {
+        $buffer = &lib_prontus::replace_tsdata($buffer, $this->{original_ts});
+    } else {
+        $buffer = &lib_prontus::replace_tsdata($buffer, $this->{ts});
+    }
 
     # Marca _FILE y _FILEURL
     my $marca_file = $fullpath_vista;
