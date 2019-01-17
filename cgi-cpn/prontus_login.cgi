@@ -150,10 +150,7 @@ main: {
                             'document_root'     => $prontus_varglb::DIR_SERVER)
                             || &glib_html_02::print_json_result(0, "Error inicializando objeto Session: $Session::ERR", 'exit=1,ctype=1');
             # libera recursos de sesion existente para info de concurrencia
-            if ($sess_obj->{id_session} ne '') {
-                my %cookies = &lib_cookies::get_cookies();
-                my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
-
+            if ($sess_obj->{id_session} ne '' && $sess_obj->{username} ne '') {
                 my @prontus_id;
                 if ($prontus_varglb::PRONTUS_SSO eq 'SI') {
                     @prontus_id = &lib_prontus::get_prontus_sso_dirs();
@@ -165,25 +162,25 @@ main: {
                     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                                           $prontus,
                                                           'port',
-                                                          $user_anterior,
+                                                          $sess_obj->{username},
                                                           $sess_obj->{id_session});
 
                     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                                           $prontus,
                                                           'art',
-                                                          $user_anterior,
+                                                          $sess_obj->{username},
                                                           $sess_obj->{id_session});
 
                     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                                   $prontus,
                                                   'art',
-                                                  $user_anterior,
+                                                  $sess_obj->{username},
                                                   $sess_obj->{id_session});
 
                     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                                   $prontus,
                                                   'port',
-                                                  $user_anterior,
+                                                  $sess_obj->{username},
                                                   $sess_obj->{id_session});
                 }
             };
