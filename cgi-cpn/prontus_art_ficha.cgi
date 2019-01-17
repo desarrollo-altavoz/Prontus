@@ -1114,6 +1114,16 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg2 =~ s/%%wfoto%%/$wfoto/ig;
         $bufferBancoImg2 =~ s/%%hfoto%%/$hfoto/ig;
 
+        my $img_type = &lib_prontus::get_img_type($relpath_foto);
+
+        $bufferBancoImg =~ s/%%img_type%%/$img_type/ig;
+
+        if (!&lib_prontus::can_edit_img($img_type)) {
+            $bufferBancoImg =~ s/%%openFotoEditor%%/openFotoEditorDisabled/ig;
+        } else {
+            $bufferBancoImg =~ s/%%openFotoEditor%%/openFotoEditor/ig;
+        }
+
         # Para los iconos de acciones sobre la imagen
         my $reldir_icons = "$prontus_varglb::DIR_CORE/imag/boto";
         $bufferBancoImg =~ s/%%reldir_icons%%/$reldir_icons/ig;

@@ -7,6 +7,7 @@
         <!--/FOTO_ICONIZADA-->
       </td>
       <td align="left" valign="top" class="datos-foto">&nbsp;
+        <span>Tipo: %%img_type%%</span><br/>&nbsp;
         <span>%%dimensiones%%</span><br/>&nbsp;
         <span>%%tamano%%</span>&nbsp;&nbsp;<span class="sin-usar">%%fotoSinUsar%%</span>
         <div class="botonera">
@@ -16,7 +17,7 @@
           <a href="%%relpath_foto%%" onclick="Fid.showFotoFija('%%relpath_foto%%'); return false;">
             <img src="%%reldir_icons%%/lu2_of.png" class="butBancoImg cambia-boton" alt="Ver imagen" title="Ver imagen" height="17" width="18" />
           </a>
-          <a href="#" class="openFotoEditor" data-nomfoto="%%nom_campo%%" data-relfoto="%%relpath_foto%%" data-wfoto="%%wfoto%%" data-hfoto="%%hfoto%%">
+          <a href="#" class="%%openFotoEditor%%" data-nomfoto="%%nom_campo%%" data-relfoto="%%relpath_foto%%" data-wfoto="%%wfoto%%" data-hfoto="%%hfoto%%">
             <img id="editimg%%nom_campo%%" src="%%reldir_icons%%/ed2_of.gif" height="17" width="18" class="butBancoImg cambia-boton" alt="Editar imagen" title="Editar imagen" />
           </a>
           <a href="#" onclick="Fid.deleteFotoBanco('%%nom_campo%%'); return false;">
