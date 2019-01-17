@@ -147,6 +147,7 @@ sub new {
 sub set_preview_artic {
     # Permite establecer que el ts para todos los efectos es 'preview'
     my $this = shift;
+    $this->{original_ts} = $this->{ts};
     $this->{ts} = 'preview';
     $this->{'campos'}->{'_alta'} = 1;
     # Re-asigna el path xml
@@ -2156,15 +2157,23 @@ sub _ajusta_campos_art4bd {
 sub generar_vista_art {
 # Genera vista html del articulo y graba el archivo.
 # Toma como entrada los datos del XML, no los que vengan en el hash $this->{campos}.
-    my ($this) = shift;
-    my ($mv) = shift;
-    my ($stamp_demo) = shift;
-    my ($prontus_key) = shift;
-    my ($plt) = shift;
-    my ($is_paralela) = shift;
+    my $this = shift;
+    my $mv = shift;
+    my $stamp_demo = shift;
+    my $prontus_key = shift;
+    my $plt = shift;
+    my $is_paralela = shift;
+    my $only_pproc = shift;
 
     # Carga campos
     my %campos_xml = $this->get_xml_content();
+
+    # si el articulo no esta publicado, no se generan vistas
+    if (!defined($only_pproc) && !$this->check_publish_art()) {
+        # retorna 1 porque no es un error
+        return 1;
+    }
+
     my $titular_crudo = $campos_xml{'_txt_titular'}; # lo rescata para usos varios
     my ($nom_seccion1, $nom_tema1, $nom_subtema1, $fid);
     $nom_seccion1 = $campos_xml{'_nom_seccion1'};
@@ -2399,6 +2408,7 @@ sub parse_artic_data {
     # Parsea campos
     foreach my $nom_campo (keys %campos_xml) {
         my $val_campo = $campos_xml{$nom_campo};
+        next if ($nom_campo eq '_ts');
         next if ($val_campo eq '');
         next if ($nom_campo =~ /^(_seccion|_tema|_subtema)/ && $val_campo eq '0'); # evitar que s/t/st se guarde con 0.
         next if ($nom_campo =~ /^_fecha(p|e)$/);
@@ -2431,7 +2441,11 @@ sub parse_artic_data {
     $buffer = &lib_prontus::replace_in_artic($utc_pub, '_utcp', $buffer);
 
     # Reemplaza TS, FECHAC, FECHACLONG, FECHACSHRT
-    $buffer = &lib_prontus::replace_tsdata($buffer, $this->{ts});
+    if ($this->{ts} eq 'preview' && $this->{original_ts} ne '') {
+        $buffer = &lib_prontus::replace_tsdata($buffer, $this->{original_ts});
+    } else {
+        $buffer = &lib_prontus::replace_tsdata($buffer, $this->{ts});
+    }
 
     # Marca _FILE y _FILEURL
     my $marca_file = $fullpath_vista;
@@ -2865,6 +2879,234 @@ sub setear_autoinc {
 };
 
 
+# ---------------------------------------------------------------
+# verifica si el articulo es visible:
+# si es una preview, es visible. De otro modo,
+# alta = 1
+# fecha de publicacion es anterior a la fecha actual
+# fecha de expiracion es posterior a la fecha actual
+# si esta marcado "solo despublicar de portadas" el articulo es visible
+sub check_publish_art {
+    my $this = shift;
+
+    # si la variable de config CREAR_VISTAS_SIN_ALTA es distinto de NO (puede ser vacío o 'SI') asumimos el comportamiento global de regenerar las vistas siempre.
+    if ($prontus_varglb::CREAR_VISTAS_SIN_ALTA ne 'NO') {
+        return 1;
+    }
+
+    if ($this->{is_preview} == 1)  {
+        return 1;
+    }
+
+    # $prontus_varglb::CREAR_VISTAS_SIN_ALTA == NO, chequeamos caso por caso.
+    $this->get_xml_content();
+    if ($this->{'xml_content'}{'_alta'} ne '1') {
+        return 0;
+    }
+    if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
+        if ($this->{'xml_content'}{'_soloportadas'}) {
+            return 1;
+        } else {
+            my $ts_now = &glib_hrfec_02::get_dtime_pack4();
+            my $fechahorap = $this->{'xml_content'}{'_fechap'} . $this->{'xml_content'}{'_horap'} . '00';
+            $fechahorap =~ s/://g;
+            my $fechahorae = $this->{'xml_content'}{'_fechae'} . $this->{'xml_content'}{'_horae'} . '00';
+            $fechahorae =~ s/://g;
+            if ($ts_now <= $fechahorae && $ts_now >= $fechahorap) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+# ---------------------------------------------------------------
+# Invocada al eliminar vistas de artículos para el cron fechas.
+# Elimina todos los archivos de vista.
+# Elimina archivos de friendly URL.
+# No elimina XML ni archivos asociados.
+sub borra_pags_artic {
+    my ($this, $base) = @_;
+
+    # si el articulo esta publicado, no se eliminan las paginas
+    if ($this->check_publish_art()) {
+        return '';
+    }
+
+    my $ts        = $this->{ts};
+    my $dir_fecha = $this->{fechac};
+
+    my $dirpag      = $this->{dst_pags};
+    my $dirpagpar   = $this->{dst_pagspar};
+
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if ($pathnice);
+
+    # Cargar datos del xml. Necesarios para poder armar friendly url.
+    my %campos_xml = $this->get_xml_content();
+
+    # Borra paginas generadas
+    my @files2delete = glob("$dirpag/$ts" . '.*');
+    foreach my $file2delete (@files2delete) {
+        unlink $file2delete;
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+            &lib_prontus::purge_cache($file2delete);
+        }
+    }
+
+    if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+        # Arma friendly url para hacer el purge
+        my $marca_file = $this->get_fullpath_artic('', $campos_xml{'_plt'});
+        $marca_file = &lib_prontus::remove_front_string($marca_file, $this->{document_root});
+
+        my %artic_data = ();
+        $artic_data{'fid'} = $campos_xml{'_fid'};
+        $artic_data{'custom_slug'} = $campos_xml{'_custom_slug'};
+        $artic_data{'slug'} = $campos_xml{'_slug'};
+        $artic_data{'nom_seccion'} = $campos_xml{'_nom_seccion1'};
+        $artic_data{'nom_tema'} = $campos_xml{'_nom_tema1'};
+        $artic_data{'nom_subtema'} = $campos_xml{'_nom_subtema1'};
+
+        my $fileurl = &lib_prontus::parse_filef('%%_FILEURL%%', $campos_xml{'_txt_titular'}, $this->{ts}, $this->{prontus_id}, $marca_file, \%artic_data);
+        &lib_prontus::purge_cache($fileurl);
+    }
+
+    # Borrar paginas paralelas
+    @files2delete = glob("$dirpagpar/$ts*" . '.*');
+    foreach my $file2delete (@files2delete) {
+        unlink $file2delete;
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+            &lib_prontus::purge_cache($file2delete);
+        }
+    }
+
+    # Borra paginas de multivistas
+    my $mv;
+    foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+        my $dir_art_mv = $dirpag;
+        $dir_art_mv =~ s/(\d{8})\/pags/$1\/pags-$mv/;
+        my @files2delete_mv = glob("$dir_art_mv/$ts" . '.*');
+        foreach my $file2delete (@files2delete_mv) {
+            unlink $file2delete;
+            if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+                &lib_prontus::purge_cache($file2delete);
+            }
+        }
+
+        # Paginas paralelas
+        $dir_art_mv = $dirpagpar;
+        $dir_art_mv =~ s/(\d{8})\/pagspar/$1\/pagspar-$mv/;
+        @files2delete_mv = glob("$dir_art_mv/$ts*" . '.*');
+        foreach my $file2delete (@files2delete_mv) {
+            unlink $file2delete;
+            if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+                &lib_prontus::purge_cache($file2delete);
+            }
+        }
+    }
+
+    # borramos archivos de friendly v4
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        my $filepath = '/' . substr($titularV4, 0, 2) . '/' . substr($titularV4, 2, 2) . "/$titularV4.html";
+        unlink $this->{dst_links_url} . $filepath;
+
+        # se eliminan los archivos de las multivistas
+        foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+            unlink $this->{dst_links_url} . "-$mv" . $filepath;
+        }
+        # se borra el articulo de la tabla
+        my $sql_delurl = "delete from URL where URL_ART_ID='$ts'";
+        $base->do($sql_delurl);
+    }
+
+    my $path_artic_xml = $this->{dst_xml} . "/$ts.xml";
+
+    # Lee articulo xml para luego poder determinar cuales son sus asocfiles
+    # y sus tags
+    my $buffer_artic = &glib_fildir_03::read_file($path_artic_xml);
+
+    # Borra relacionados manual
+    &lib_tax::borrar_relacionados_manualtax($dirpag, $ts);
+
+    # Obtiene taxonomia antes de eliminar
+    my %hashtemp;
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        for (my $i = 1 ; $i <= $prontus_varglb::TAXONOMIA_NIVELES ; $i++) {
+            my ($secc, $tem, $stem) = &lib_tax::get_taxonomia($ts, $base, $i);
+            $hashtemp{$i} = "$secc/$tem/$stem" if ($secc > 0);    # se evita para generar relacionados sin taxonomia.
+        }
+    }
+
+    # Regenera relacionados
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO, $prontus_varglb::DIR_ARTIC, $prontus_varglb::DIR_PAG, $prontus_varglb::DIR_TEMP, $prontus_varglb::DIR_TAXONOMIA, $prontus_varglb::DIR_CONTENIDO, $prontus_varglb::NUM_RELAC_DEFAULT);
+        for (my $i = 1 ; $i <= $prontus_varglb::TAXONOMIA_NIVELES ; $i++) {
+            if (defined $hashtemp{$i}) {
+                my $taxonomia = $hashtemp{$i};
+                my ($secc, $tem, $stem) = split /\//, $taxonomia;
+                &lib_tax::generar_relacionados($secc, $tem, $stem, $base);
+                # Ahora parsea art relacionados para MVs
+                foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+
+                    print STDERR "generar_relacionados [$secc, $tem, $stem]\n";
+                    &lib_tax::generar_relacionados($secc, $tem, $stem, $base, $mv);
+                }
+            }
+        }
+    }
+
+    # regenera tagports
+    my $fid;
+    if ($buffer_artic =~ /<_fid>(.+?)<\/_fid>/is) {
+        $fid = $1;
+    }
+
+    # TODO: agrupar los datos de tags entre todos los artículos procesados para regenerar una sola vez.
+    my $tags_data;
+    if ($buffer_artic =~ /<_tags>(.+?)<\/_tags>/is) {
+        $tags_data = $1;
+    }
+
+    if ($tags_data) {
+        # Regenerar portadas tagonomicas.
+        my $param_especif_tagonomicas = $tags_data;
+        $param_especif_tagonomicas =~ s/,/\//sg;
+        my $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $param_especif_tagonomicas $fid >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    }
+
+    $base->disconnect;
+
+    # Borra cache listas de articulo
+    &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
+
+    # regenera taxports
+    my $cmd;
+
+    for (my $i = 1 ; $i <= $prontus_varglb::TAXONOMIA_NIVELES ; $i++) {
+
+        my $taxonomia = $hashtemp{$i};
+        my ($secc, $tem, $stem) = split /\//, $taxonomia;
+
+        $secc = '0' if ($secc < 0);    # para evitar el -1, ver dps por que get_taxonomia devuelve -1
+        my $param_especif = $fid . '/' . $secc . '/' . $tem . '/' . $stem;
+
+        $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+
+        # Regenera las salidas List
+        $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    }
+
+    return '';
+}
 # ---------------------------------------------------------------
 return 1;
 

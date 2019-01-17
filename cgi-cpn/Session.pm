@@ -69,10 +69,16 @@ sub new {
         return 0;
     };
 
+    $sess->{id_session} = '';
+    $sess->{username} = '';
+
     # Recupera sesion activa
     my $sesion_existente = $sess->_existe_session();
     if ($sesion_existente ne '') {
         $sess->{id_session} = $sesion_existente;
+        my @sesion_data = split(/\|/, &glib_fildir_02::read_file("$sess->{dir_sessions}/$sesion_existente"));
+        $sess->{username} = $sesion_data[0];
+        $sess->{psw_hash} = $sesion_data[1];
     };
 
     return $sess;
@@ -96,13 +102,13 @@ sub _existe_session {
     } else {
         return '';
     };
-
 };
-
 
 # ---------------------------------------------------------------
 sub set_new_session {
     my $this = shift;
+    my $usr = shift;
+    my $psw_hash = shift;
 
     # Primero detecta si hay una activa y la mata--> basta con q este la cookie
     my %cookies = &lib_cookies::get_cookies();
@@ -115,7 +121,7 @@ sub set_new_session {
     while (-f "$this->{dir_sessions}/$this->{id_session}") {
         $this->{id_session} = &glib_str_02::random_string(20);
     };
-    &glib_fildir_02::write_file("$this->{dir_sessions}/$this->{id_session}");
+    &glib_fildir_02::write_file("$this->{dir_sessions}/$this->{id_session}", "$usr|$psw_hash");
     &lib_cookies::set_simple_cookie('SESSION_' . $this->{prontus_id}, $this->{id_session});
 
     # Grabage de sesiones antiguas

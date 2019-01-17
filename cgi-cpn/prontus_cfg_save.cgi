@@ -94,6 +94,7 @@ main: {
     $hash_defaultvars{'var'}{'VTXT_RELPATH_LINK'} = 'VTXT_RELPATH_LINK;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'CONTROL_FECHA'} = 'CONTROL_FECHA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'CONTROLAR_ALTA_ARTICULOS'} = 'CONTROLAR_ALTA_ARTICULOS;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'CREAR_VISTAS_SIN_ALTA'} = 'CREAR_VISTAS_SIN_ALTA;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URL_IMAGES'} = 'FRIENDLY_URL_IMAGES;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_INCLUDE_VIEW_NAME'} = 'FRIENDLY_V4_INCLUDE_VIEW_NAME;(SI|NO);NO;U';

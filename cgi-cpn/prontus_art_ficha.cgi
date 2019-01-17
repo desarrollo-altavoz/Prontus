@@ -1714,7 +1714,7 @@ sub get_css_artic {
   while ($buffer =~ /(<link [^>]*?href="([^>]+?)"[^>]*?>)/isg) {
     $ellink = $1;
     $elcss = $2;
-    next unless($ellink =~ /type="text\/css"/i);
+    next unless($ellink =~ /type="text\/css"/i || $ellink =~ /rel="stylesheet"/i);
     # print STDERR "css[$elcss]\n";
     $elcss = &relative2abs($path_tpl, $elcss);
     $elcss =~ s/,/%2C/g; # para tomar en cuenta googlefonts

@@ -250,6 +250,25 @@ sub procesa_files {
             my $tem1 = $campos_xml{'_tema1'};
             my $sub1 = $campos_xml{'_subtema1'};
 
+            # Eliminar vistas de artículos sin alta si la varglb CREAR_VISTAS_SIN_ALTA está configurada a NO.
+my $glob_path = '';
+            if (!$campos_xml{'_alta'} && $prontus_varglb::CREAR_VISTAS_SIN_ALTA eq 'NO') {
+                # borrar si existe.
+                my $fullpath = $artic_obj->get_fullpath_artic('', $campos_xml{'_plt'});
+                unlink $fullpath;
+                # paralelas
+                $glob_path = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/site/artic/$art_dirfecha/pagspar/$ts.*";
+                unlink glob $glob_path or warn "No pudieron borrarse los archivos $glob_path: $!";
+
+                # Borra las vistas generadas.
+                foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+                    $fullpath = $artic_obj->get_fullpath_artic($mv, $campos_xml{'_plt'});
+                    unlink $fullpath;
+                }
+
+                next;
+            }
+
             if($FID_TYPES_STR eq '' || $FID_TYPES{$campos_xml{'_fid'}}) {
 
                 # si no hay filtro o la sección se matchea con el filtro, lo deja pasar.
