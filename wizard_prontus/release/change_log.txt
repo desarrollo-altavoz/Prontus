@@ -1,5 +1,10 @@
 ====================================================================================================
-11.2.103 - 16/01/2018 - AVP/EAG/JOR
+11.2.103 - 17/01/2019 - EAG
+====================================================================================================
+- bugfixes: (login) Corrige liberacion de concurrencias al resetear clave de admin
+- bugfixes: (login) Corrige rejuvenecimiento de sesion
+====================================================================================================
+11.2.103 - 16/01/2019 - AVP/EAG/JOR
 ====================================================================================================
 - improvement: (fid) Agrega rel="stylesheet" para identificar archivos css en la plantilla de artículo
 - improvement: (fid) Parsea TS original del artículo en la vista previa
