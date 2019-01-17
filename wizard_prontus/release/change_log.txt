@@ -7,7 +7,7 @@
 - improvement: (multiedicion) Agrega opción para crear una edición usando como base una más antigua.
 Además se permite seleccionar que portadas se van a copiar.
 - improvement: (multiedicion) Agrega opción para no generar vistas de archivos sin alta.
-- improvement: (seguridad)  Modifica el manejo de cookies de sesion y datos de sesion para mejorar la seguridad
+- improvement: (seguridad)  Modifica el manejo de cookies de sesión y datos de sesión para mejorar la seguridad
 ====================================================================================================
 11.2.102 - 15/11/2018 - AVP/EAG
 ====================================================================================================

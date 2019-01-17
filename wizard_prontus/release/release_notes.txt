@@ -10361,7 +10361,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Seguridad
     [mejora]
-        - Modifica el manejo de cookies de sesion y datos de sesion para mejorar la seguridad
+        - Modifica el manejo de cookies de sesión y datos de sesión para mejorar la seguridad
     [files]
         /cgi-cpn/Session.pm
         /cgi-cpn/lib_prontus.pm
