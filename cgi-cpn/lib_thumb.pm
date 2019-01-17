@@ -15,8 +15,8 @@
 # -----------
 # Funciones para generar thumbnails
 # El output de JPEGs usa la varglb NIVEL_OPTIMIZACION_JPG. El valor
-# de esa variable (por defecto 85) está determinado por el usuario 
-# si la varglb REDUCIR_CALIDAD_JPEGS está seteada a SI, 
+# de esa variable (por defecto 85) está determinado por el usuario
+# si la varglb REDUCIR_CALIDAD_JPEGS está seteada a SI,
 # y está seteado a 100 de otro modo.
 
 # ---------------------------------------------------------------
@@ -542,7 +542,7 @@ sub get_propiedades {
 
     my ($ancho, $alto, $tipo, $ratio); # Ancho, alto y tipo (gif o jpg) de la foto.
     my $imagen; # Objeto GD que contiene la imagen original.
-    
+
     # Determina si se trata de un GIF, un JPG u otro.
     $tipo = &get_imag_extension($lafoto);
     if (!$tipo) {

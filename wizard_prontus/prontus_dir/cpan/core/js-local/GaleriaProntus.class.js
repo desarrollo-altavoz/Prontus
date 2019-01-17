@@ -368,8 +368,8 @@ var GaleriaProntus = {
                     var fail = false;
                     $.each(data.files, function (index, file) {
                         var ext = (file.name).split('.').pop().toLowerCase();
-                        if ($.inArray(ext, ['gif','png','jpg','jpeg', 'zip']) == -1) {
-                            alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, jpg o jpeg; o un comprimido .zip con imágenes.");
+                        if ($.inArray(ext, ['gif','png','jpg','jpeg', 'zip', 'svg']) == -1) {
+                            alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, svg, jpg o jpeg; o un comprimido .zip con imágenes.");
                             fail = true;
                             return false;
                         }
@@ -529,6 +529,7 @@ var GaleriaProntus = {
     // --------------------------------------------------------------------
     accionShow: function(iditem) {
         var urlFoto = $(iditem).find('.show').attr('href');
+
         $.fn.colorbox({
                 transition: 'elastic',
                 scrolling: true,
@@ -536,6 +537,8 @@ var GaleriaProntus = {
                 href: urlFoto,
                 maxWidth: '100%',
                 maxHeight: '100%',
+                width: '50%',
+                height: '50%',
                 scalePhotos: true,
                 opacity: 0.8
         });

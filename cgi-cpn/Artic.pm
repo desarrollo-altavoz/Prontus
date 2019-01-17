@@ -616,7 +616,6 @@ sub _get_newnom_arch {
     my ($val_campo) = shift;
     my ($arch_existente) = shift;
     my ($nom_foto_orig) = shift;
-
     my $nom_arch;
 
     # Valida extensiones permitidas por prontus (seguridad)
@@ -651,7 +650,7 @@ sub _check_ext_foto {
 
     my $ext;
     $ext = $1 if ($path_foto =~ /\.(\w+)$/);
-    if ($ext =~ /^(jpe?g|jpeg?|gif|png)$/i)  {
+    if ($ext =~ /^(jpe?g|jpeg?|gif|png|svg)$/i)  {
         return 1;
     } else {
         return 0;
@@ -879,6 +878,7 @@ sub _guarda_fotosbatch {
             }
         }
         $nom_arch = $this->_get_newnom_arch('foto', '', $path_foto_batch, '', $nom_foto_real);
+
         next if ($nom_arch eq '');
         &glib_fildir_02::check_dir($dst_dir);
         &File::Copy::move($path_foto_batch, "$dst_dir/$nom_arch");
@@ -1042,10 +1042,19 @@ sub _guarda_fotosfijas {
 
         # Obtiene dimensiones actuales de la foto
         my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$document_root$val_campo");
+        my $img_type = &lib_prontus::get_img_type($val_campo);
 
         # Obtiene dimensiones maximas permitidas para la foto
         my ($maxw) = $this->{campos}->{'_maxw' . $nom_campo};
         my ($maxh) = $this->{campos}->{'_maxh' . $nom_campo};
+
+        # Al hacer esto la imagen no se agrega como nueva al xml. Se reutiliza la misma.
+        # Como algunas imágenes no se pueden manipular en prontus, se mantiene el archivo original,
+        # solo se asigna al controlador de fotofija.
+        if (!&lib_prontus::can_edit_img($img_type)) {
+            $foto_dimx = $maxw;
+            $foto_dimy = $maxh;
+        }
 
         # Solo procede si viene ancho o alto
         if (($maxw =~ /^\d+$/) || ($maxh =~ /^\d+$/)) {
@@ -1371,8 +1380,9 @@ sub _genera_fotofija {
     my $document_root = $this->{document_root};
     my $ts = $this->{ts};
     my $prontus_id = $this->{prontus_id};
+    my $img_type = &lib_prontus::get_img_type($nom_foto);
 
-    $cuadrar = '' unless($cuadrar eq 'si');
+    $cuadrar = '' unless ($cuadrar eq 'si' || &lib_prontus::can_edit_img($img_type));
 
     my $full_path_foto = $this->{dst_foto} . "/$nom_foto";
     my $path_foto = &lib_prontus::remove_front_string($full_path_foto, $this->{document_root});
@@ -1381,7 +1391,17 @@ sub _genera_fotofija {
     return "La foto no existe $nom_foto: $full_path_foto" unless(-f "$full_path_foto");
 
     # Obtiene dimensiones actuales de la foto
-    my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$full_path_foto");
+    my ($msg, $foto_dimx, $foto_dimy);
+
+    # Si el tipo de imagen se puede editar, continua normal.
+    if (&lib_prontus::can_edit_img($img_type)) {
+        # Obtiene dimensiones actuales de la foto
+        ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$full_path_foto");
+        return ($msg, '', '', '', '') if ($msg);
+    } else {
+        ($msg, $foto_dimx, $foto_dimy) = ('', $maxw, $maxh);
+    }
+
     return $msg if($msg);
 
     # Solo procede si viene ancho o alto

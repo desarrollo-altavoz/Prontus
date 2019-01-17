@@ -4651,6 +4651,27 @@ sub generar_popupdirs_from_dir {
 
 };
 
+sub get_img_type {
+    my $nomfoto = $_[0];
+    my $ext;
+
+    $nomfoto =~ /.*\.(.*?)$/i;
+    $ext = $1;
+
+    return $ext;
+};
+
+sub can_edit_img {
+    my $img_type = $_[0];
+
+    # Si no existe en el hash, se puede manipular.
+    if (!defined $prontus_varglb::IMG_TYPE_NOEDIT{$img_type}) {
+        return 1;
+    }
+
+    return 0;
+};
+
 # ---------------------------------------------------------------
 sub dev_tam_img {
   my ($file) = $_[0];
@@ -4658,19 +4679,17 @@ sub dev_tam_img {
 
   if (! -e $file) {
     return ('Archivo no existe', 0, 0);
-  }
-  else {
+  } else {
     if ($file =~ /.*\.(jpg|jpe|jpeg)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_jpg($file);
-      # print STDERR "FILE[$file] ancho[$ancho] alto[$alto] MSG[$msg]\n";
-    }
-    elsif ($file =~ /.*\.(gif)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_gif($file);
-    }
-    elsif ($file =~ /.*\.(png)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_png($file);
-    }
-    else {
+        ($msg, $ancho, $alto) = &ancho_alto_jpg($file);
+        # print STDERR "FILE[$file] ancho[$ancho] alto[$alto] MSG[$msg]\n";
+    } elsif ($file =~ /.*\.(gif)$/i) {
+        ($msg, $ancho, $alto) = &ancho_alto_gif($file);
+    } elsif ($file =~ /.*\.(png)$/i) {
+        ($msg, $ancho, $alto) = &ancho_alto_png($file);
+    } elsif ($file =~ /.*\.(svg)$/) {
+        ($msg, $ancho, $alto) = &ancho_alto_svg($file);
+    } else {
       return ('Archivo no tiene extensión JPG/JPE/JPEG/PNG/GIF/BMP', 0, 0);
     };
 
@@ -4679,6 +4698,35 @@ sub dev_tam_img {
 
   return ('Archivo no existe', 0, 0);
 }; # dev_tam_img.
+# ---------------------------------------------------------------
+sub ancho_alto_svg {
+    my ($file) = $_[0];
+    my $svg = &glib_fildir_02::read_file($file);
+    my ($w, $h, $msg) = '';
+
+    if ($svg =~ /<svg([^>]*)/) {
+        my $svg_props = $1;
+
+        if ($svg_props =~ /width=["|'](\d+)["|']/) {
+            $w = $1;
+        }
+
+        if ($svg_props =~ /height=["|'](\d+)["|']/) {
+            $h = $1;
+        }
+
+        if (!$w || !$h) {
+            if ($svg_props =~ /viewBox="(\d+) (\d+) (\d+) (\d+)"/) {
+                $w = $3;
+                $h = $4;
+            }
+        }
+    }
+
+    $msg = 'error leyendo dims svg.' if (!$w || !$h);
+
+    return ($msg, $w, $h);
+};
 # ---------------------------------------------------------------
 sub ancho_alto_png {
   # Adaptacion de http://www.la-grange.net/2000/05/04-png.html

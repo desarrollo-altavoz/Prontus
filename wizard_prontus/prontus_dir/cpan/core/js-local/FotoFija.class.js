@@ -205,6 +205,11 @@
                 });
             },
             bindEditorFotos: function () {
+                $('body').find('.openFotoEditorDisabled').off('click').on('click', function (e) {
+                    e.preventDefault();
+                    alert("No es posible editar este tipo de imagen.");
+                });
+
                 $('body').find('.openFotoEditor').off('click').on('click', function (e) {
                     e.preventDefault();
 
@@ -222,7 +227,7 @@
                         escKey: false,
                         closeButton: false
                     });
-                })
+                });
             },
             reloadBancoImagenes: function (submitir) {
                 $('#scroll-banco').empty();
@@ -288,8 +293,17 @@
 
                 if (currImgSrc && currImgSrc != 'javascript:void(0)') {
 
+                    var cuadrar = 'on';
+                    var editar = 'on';
+
+                    // Si es SVG no se puede cuadrar ni editar.
+                    if (currImgSrc.substring(currImgSrc.length - 3) == 'svg') {
+                        cuadrar = 'off';
+                        editar = 'off';
+                    }
+
                     $('div#recuadro_FOTOFIJA_' + id).html('<img src="' + currImgSrc + '" />');
-                    self.methods.toggleButtons(id, {lupa:'on',borrar:'on', cuadrar:'on'});
+                    self.methods.toggleButtons(id, {lupa:'on',borrar:'on', cuadrar:cuadrar, editar:editar});
                     self.foto.bindEvents(id);
                     // Para compatibilidad, se agrega al iframe.
                     $('iframe[id="FOTOFIJA_' + id + '"]').contents().find('body').html('<img src="' + currImgSrc + '" />');
@@ -370,7 +384,15 @@
                 // Para compatibilidad, se agrega al iframe.
                 $('iframe[id="FOTOFIJA_' + id + '"]').contents().find('body').html('<img src="' + imgSrc + '" />');
 
-                self.methods.toggleButtons(id, {lupa:'on',borrar:'on',cuadrar:'on'});
+                var cuadrar = 'on';
+                var editar = 'on';
+
+                if (imgSrc.substring(imgSrc.length - 3) == 'svg') {
+                    cuadrar = 'off';
+                    editar = 'off';
+                }
+
+                self.methods.toggleButtons(id, {lupa:'on',borrar:'on',cuadrar: cuadrar, editar: editar});
                 self.foto.bindEvents(id);
             },
             // ---------------------------------------------------------------

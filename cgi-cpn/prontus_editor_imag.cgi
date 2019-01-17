@@ -56,6 +56,14 @@ main: {
 
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
 
+    my $img_type = &lib_prontus::get_img_type($FORM{'relfoto'});
+
+    if (!&lib_prontus::can_edit_img($img_type)) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error", "No es posible editar este tipo de imagen.");
+        exit;    
+    }
+
     print "Content-Type: text/html\n\n";
     # Generar pagina final (loopeando una fila modelo)
     my $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/editor_imag/prontus_editor_imag.html"; #_20110119
