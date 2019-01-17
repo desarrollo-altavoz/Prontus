@@ -6646,25 +6646,25 @@ sub cerrar_sesion {
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'port',
-                                          $sess_obj->{username}
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art',
-                                          $sess_obj->{username}
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art',
-                                          $sess_obj->{username}
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'port',
-                                          $sess_obj->{username}
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     # Garbage de archivos mas antiguos de X dias
