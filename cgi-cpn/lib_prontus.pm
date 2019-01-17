@@ -6642,37 +6642,29 @@ sub cerrar_sesion {
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
 
-    # Ver user logueado
-    my %cookies = &lib_cookies::get_cookies();
-    my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
-
-    # Setear cookie en blanco para dar por terminada la sesion.
-    &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, ''); # pa q no pueda navegar
-    &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, '');
-
     # libera recursos para info de concurrencia
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'port',
-                                          $user_anterior,
+                                          $sess_obj->{username}
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art',
-                                          $user_anterior,
+                                          $sess_obj->{username}
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art',
-                                          $user_anterior,
+                                          $sess_obj->{username}
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'port',
-                                          $user_anterior,
+                                          $sess_obj->{username}
                                           $sess_obj->{id_session});
 
     # Garbage de archivos mas antiguos de X dias
