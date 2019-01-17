@@ -61,7 +61,7 @@ main: {
 
 
         # para evitar que sea borrada por el gc.
-        $sess_obj->rejuvenece_sesion();
+        $sess_obj->rejuvenece_sesion($sess_obj->{username}, $sess_obj->{psw_hash});
 
         # Descarga archivo descriptor de update
         my $upd_obj = Update->new(
