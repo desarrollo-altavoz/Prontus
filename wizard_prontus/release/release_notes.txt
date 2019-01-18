@@ -10366,6 +10366,22 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Session.pm
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_login.cgi
+
+====================================================================================================
+11.2.103.1 - 17/01/2018 - EAG
+====================================================================================================
+- Login
+    [bugfixes]
+        - Corrige liberacion de concurrencias al resetear clave de admin
+        - Corrige rejuvenecimiento de sesion
+    [files]
+        /cgi-bin/prontus_login.cgi
+        /cgi-cpn/prontus_check_session.cgi
+        /cgi-cpn/Session.pm
+
+====================================================================================================
+11.2.104 - XX/XX/2018 - JOR
+====================================================================================================
 - Artículos
     [mejora]
         - Agrega soporte de imágenes SVG
@@ -10383,3 +10399,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/GaleriaProntus.class.js
+
+- Logout
+    [bugfixes]
+        - Corrige seteo de cookies de cierre de sesion y liberacion de concurrencias
+    [files]
+        /cgi-bin/lib_prontus.pm

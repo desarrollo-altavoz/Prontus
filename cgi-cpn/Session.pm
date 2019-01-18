@@ -131,7 +131,10 @@ sub set_new_session {
 sub rejuvenece_sesion {
 # Renueva el arch de la sesion para que esta siga activa y no sea borrada por el garbage
     my $this = shift;
-    &glib_fildir_02::write_file("$this->{dir_sessions}/$this->{id_session}");
+    my $usr = shift;
+    my $psw_hash = shift;
+
+    &glib_fildir_02::write_file("$this->{dir_sessions}/$this->{id_session}", "$usr|$psw_hash");
 };
 
 # ---------------------------------------------------------------
