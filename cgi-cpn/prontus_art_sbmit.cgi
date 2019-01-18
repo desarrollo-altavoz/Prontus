@@ -337,6 +337,18 @@ main: {
         my $param_especif_tagonomicas = $tags_id;
         $param_especif_tagonomicas .= " $filtro_fid" if ($filtro_fid);
         &call_tagonomicas_regen($rutaScript, $param_especif_tagonomicas);
+
+        # Conectar a BD
+        # my ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
+        
+        # if (ref($BD)) {
+        #     # Generar mapa de tags.
+        #     &lib_prontus::make_mapa_tags('', $BD);
+
+        #     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+        #         &lib_prontus::make_mapa_tags($mv, $BD);
+        #     }
+        # }
     };
 
 
