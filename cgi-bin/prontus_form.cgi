@@ -321,17 +321,24 @@ sub data_management {
         if (&glib_cgi_04::real_paths($key) ne '') { # Es un archivo.
             $filename = &glib_cgi_04::real_paths($key);
             $filename =~ s/.+[\/\\]([^\/\\]+)/$1/; # 1.3 Extrae path por si lo trae.
-            utf8::decode($filename);
-            my $nomfile = '';
-            my $ext = '';
-            if ($filename =~ /(.+?)(\.\w+|)$/) {
-                $nomfile = lc $1;
-                $ext = lc $2; # ext con punto si viene
-            };
-            $nomfile =~ tr/\xe1\xe9\xed\xf3\xfa\xc1\xc9\xcd\xd3\xda\xd1\xf1\x20\xfc\xdc/aeiouaeiounn_uu/;
-            $nomfile =~ s/\W/_/sg;
 
-            $filename = $nomfile.$ext;
+            my $ext = '';
+            $filename =~ /(.*)(\.\w+)$/;
+            $filename = $1;
+            $ext = lc $2; # ext con punto
+
+            $filename = &lib_prontus::notildes($filename);
+            #convierte todos los caracteres que no son de palabras en espacios
+            $filename =~ s/[^a-zA-Z0-9_\-\.]/ /sig;            
+            $filename =~ s/ {2,}/ /sig; # elimina espacios repetidos
+            $filename =~ s/^\s+//sig; # elimina espacios iniciales
+            $filename =~ s/\s+$//sig; # elimina espacios finales
+            $filename =~ s/^-+//sg;   # elimina todos los guiones al principio
+            $filename =~ s/-+$//sg;   # elimina todos los guiones al final
+            $filename =~ s/ /\_/sig; # convierte espacios a _
+
+            $filename = $filename . $ext;
+            
             $filedata = &glib_cgi_04::param($key);
             $files{$key}{'_name'} = 'file_' . $random.'--'.$filename;
             $files{$key}{'_temp'} = $filedata;

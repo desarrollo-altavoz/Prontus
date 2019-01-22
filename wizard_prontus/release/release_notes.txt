@@ -10380,7 +10380,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Session.pm
 
 ====================================================================================================
-11.2.104 - XX/XX/2018 - JOR
+11.2.104 - 22/01/2018 - JOR/EAG
 ====================================================================================================
 - Artículos
     [mejora]
@@ -10404,4 +10404,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Corrige seteo de cookies de cierre de sesion y liberacion de concurrencias
     [files]
-        /cgi-bin/lib_prontus.pm
+        /cgi-cpn/lib_prontus.pm
+
+- Prontus Form
+    [bugifxes]
+        - Corrige encoding de archivos adjuntos
+    [files]
+        /cgi-bin/prontus_form.cgi
