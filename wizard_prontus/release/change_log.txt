@@ -1,8 +1,8 @@
 ====================================================================================================
 11.2.104 - 22/01/2019 - JOR/EAG
 ====================================================================================================
-- improvement: (artículos) Agrega soporte de imagenes SVG.
-- bugfixes: (logout) Corrige seteo de cookies de cierre de sesion y liberacion de concurrencias.
+- improvement: (artículos) Agrega soporte de imágenes SVG.
+- bugfixes: (logout) Corrige seteo de cookies de cierre de sesión y liberación de concurrencias.
 - bugfixes: (prontus form) Corrige encoding de archivos adjuntos
 ====================================================================================================
 11.2.103 - 17/01/2019 - EAG

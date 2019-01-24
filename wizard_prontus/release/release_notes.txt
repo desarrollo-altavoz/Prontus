@@ -10402,7 +10402,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Logout
     [bugfixes]
-        - Corrige seteo de cookies de cierre de sesion y liberacion de concurrencias
+        - Corrige seteo de cookies de cierre de sesión y liberación de concurrencias
     [files]
         /cgi-cpn/lib_prontus.pm
 
