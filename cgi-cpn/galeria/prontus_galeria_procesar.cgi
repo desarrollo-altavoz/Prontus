@@ -267,7 +267,7 @@ sub procesar_zip {
 
     foreach my $file (sort @DIRFILES) {
         next if(-d $DIRTMP.'/'.$file);
-        next unless($file =~ /\.jpg$/i or $file =~ /\.jpeg$/i or $file =~ /\.png$/i);
+        next unless($file =~ /\.jpg$/i or $file =~ /\.jpeg$/i or $file =~ /\.png$/i or $file =~ /\.svg$/i);
 
         while(&existe_imagen_xml($bufferxml, $counter) && $counter < $MAXITEM) {
             # Se agrega la imagen al string de fotos

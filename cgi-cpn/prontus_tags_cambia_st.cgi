@@ -151,6 +151,13 @@ main: {
     # Se libera el caché de los tags del fid
     &lib_tags::clear_cache($prontus_varglb::PRONTUS_ID);
 
+    # Generar mapa de tags.
+    &lib_prontus::make_mapa_tags('', $BD);
+
+    foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+        &lib_prontus::make_mapa_tags($mv, $BD);
+    }
+    
     $BD->disconnect;
 
     &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');

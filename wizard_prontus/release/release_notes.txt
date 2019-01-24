@@ -10366,6 +10366,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Session.pm
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/prontus_login.cgi
+
 ====================================================================================================
 11.2.103.1 - 17/01/2018 - EAG
 ====================================================================================================
@@ -10377,3 +10378,36 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_login.cgi
         /cgi-cpn/prontus_check_session.cgi
         /cgi-cpn/Session.pm
+
+====================================================================================================
+11.2.104 - 22/01/2018 - JOR/EAG
+====================================================================================================
+- Artículos
+    [mejora]
+        - Agrega soporte de imágenes SVG
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/galeria/prontus_galeria_procesar.cgi
+        /cgi-cpn/galeria/prontus_galeria_upfoto_dd.cgi
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_editor_imag.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /wizard_prontus/prontus_dir/cpan/core/fid/include_fotofija.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/GaleriaProntus.class.js
+
+- Logout
+    [bugfixes]
+        - Corrige seteo de cookies de cierre de sesión y liberación de concurrencias
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Prontus Form
+    [bugifxes]
+        - Corrige encoding de archivos adjuntos
+    [files]
+        /cgi-bin/prontus_form.cgi

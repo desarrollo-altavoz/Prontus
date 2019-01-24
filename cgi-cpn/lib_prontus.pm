@@ -84,6 +84,7 @@ require Artic;
 use lib_cookies;
 use Session;
 use Digest::MD5 qw(md5_hex);
+use POSIX qw(strftime ceil);
 use prontus_auth;
 
 our $CRLF = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # usar asi: $buffer =~ s/$CRLF/<p>/sg;
@@ -4651,6 +4652,27 @@ sub generar_popupdirs_from_dir {
 
 };
 
+sub get_img_type {
+    my $nomfoto = $_[0];
+    my $ext;
+
+    $nomfoto =~ /.*\.(.*?)$/i;
+    $ext = $1;
+
+    return $ext;
+};
+
+sub can_edit_img {
+    my $img_type = $_[0];
+
+    # Si no existe en el hash, se puede manipular.
+    if (!defined $prontus_varglb::IMG_TYPE_NOEDIT{$img_type}) {
+        return 1;
+    }
+
+    return 0;
+};
+
 # ---------------------------------------------------------------
 sub dev_tam_img {
   my ($file) = $_[0];
@@ -4658,19 +4680,17 @@ sub dev_tam_img {
 
   if (! -e $file) {
     return ('Archivo no existe', 0, 0);
-  }
-  else {
+  } else {
     if ($file =~ /.*\.(jpg|jpe|jpeg)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_jpg($file);
-      # print STDERR "FILE[$file] ancho[$ancho] alto[$alto] MSG[$msg]\n";
-    }
-    elsif ($file =~ /.*\.(gif)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_gif($file);
-    }
-    elsif ($file =~ /.*\.(png)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_png($file);
-    }
-    else {
+        ($msg, $ancho, $alto) = &ancho_alto_jpg($file);
+        # print STDERR "FILE[$file] ancho[$ancho] alto[$alto] MSG[$msg]\n";
+    } elsif ($file =~ /.*\.(gif)$/i) {
+        ($msg, $ancho, $alto) = &ancho_alto_gif($file);
+    } elsif ($file =~ /.*\.(png)$/i) {
+        ($msg, $ancho, $alto) = &ancho_alto_png($file);
+    } elsif ($file =~ /.*\.(svg)$/) {
+        ($msg, $ancho, $alto) = &ancho_alto_svg($file);
+    } else {
       return ('Archivo no tiene extensión JPG/JPE/JPEG/PNG/GIF/BMP', 0, 0);
     };
 
@@ -4679,6 +4699,35 @@ sub dev_tam_img {
 
   return ('Archivo no existe', 0, 0);
 }; # dev_tam_img.
+# ---------------------------------------------------------------
+sub ancho_alto_svg {
+    my ($file) = $_[0];
+    my $svg = &glib_fildir_02::read_file($file);
+    my ($w, $h, $msg) = '';
+
+    if ($svg =~ /<svg([^>]*)/) {
+        my $svg_props = $1;
+
+        if ($svg_props =~ /width=["|'](\d+)["|']/) {
+            $w = $1;
+        }
+
+        if ($svg_props =~ /height=["|'](\d+)["|']/) {
+            $h = $1;
+        }
+
+        if (!$w || !$h) {
+            if ($svg_props =~ /viewBox="(\d+) (\d+) (\d+) (\d+)"/) {
+                $w = $3;
+                $h = $4;
+            }
+        }
+    }
+
+    $msg = 'error leyendo dims svg.' if (!$w || !$h);
+
+    return ($msg, $w, $h);
+};
 # ---------------------------------------------------------------
 sub ancho_alto_png {
   # Adaptacion de http://www.la-grange.net/2000/05/04-png.html
@@ -5378,6 +5427,106 @@ sub generar_popup_multivistas {
 };
 
 # ---------------------------------------------------------------
+sub make_mapa_tags {
+    my $mv = $_[0];
+    my $bd = $_[1];
+    my $dir_plt = 'pags';
+    my @postprocesos;
+
+    $dir_plt .= "-$mv" if ($mv);
+
+    my $ruta_dir = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP/extra/tags/$dir_plt";
+    my @lisdir = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
+    my $loop_tags;
+
+    @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
+
+    foreach my $plt_file (@lisdir) {
+        next if (! -f "$ruta_dir/$plt_file");
+
+        my $mapa_plt = &glib_fildir_02::read_file("$ruta_dir/$plt_file");
+
+        $mapa_plt = &ajusta_crlf($mapa_plt);
+
+        if ($mapa_plt =~ /%%loop_tags%%(.*?)%%\/loop_tags%%/s) {
+            $loop_tags = $1;
+        }
+
+        my %config = &get_config_mapa_tags($mapa_plt);
+        my $output = &get_arbol_mapa_tags($loop_tags, $bd, $mv, \%config);
+
+        $mapa_plt =~ s/%%loop_tags%%.*?%%\/loop_tags%%/$output/is;
+
+        $mapa_plt = &parser_custom_function($mapa_plt);
+
+        $mapa_plt =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+        $mapa_plt =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
+
+        my ($_plt_nom, $_plt_ext) = &split_nom_y_extension($plt_file);
+        $mapa_plt =~ s/%%_plt_nom%%/$_plt_nom/ig;
+        $mapa_plt =~ s/%%_plt_ext%%/$_plt_ext/ig;
+        $mapa_plt =~ s/%%_vista%%/$mv/ig;
+
+        # rescata el post_proceso
+        if ($mv eq '') {
+            while ($mapa_plt =~ /<!--POST_PROCESO=(.+?)-->/isg) {
+                push(@postprocesos, $1);
+            }
+        }
+        $mapa_plt =~ s/<!--POST_PROCESO=.+?-->//isg;
+
+        # Borra marcas no sustituidas
+        $mapa_plt =~ s/%%.+?%%//g;
+
+        &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/tags/$dir_plt");
+        my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/tags/$dir_plt/$plt_file";
+        &glib_fildir_02::write_file($dst_mapa, $mapa_plt);
+        &lib_prontus::purge_cache($dst_mapa) if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI');
+    }
+
+    # ejecutamos los postprocesos asociados
+    my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
+
+    foreach my $pproc (@postprocesos) {
+        my $cmd = "$rutaScript/$pproc $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
+
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][mapa_tags][PPROC][$cmd]\n";
+        system $cmd;
+    }
+};
+
+sub get_config_mapa_tags {
+    my $plt = $_[0];
+    my %config = (
+        'order' => 'TAGS_ID',
+        'solo_con_artics' => 0
+    );
+
+    while ($plt =~ /<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->/sg) {
+        my $name = $1;
+        my $value = $2;
+
+        if ($name eq 'ORDERBY') {
+            if ($value eq 'name') {
+                $config{'order'} = 'TAGS_TAG';
+            }
+
+            if ($value eq 'id') {
+                $config{'order'} = 'TAGS_ID';
+            }
+        }
+
+        if ($name eq 'SOLO_CON_ARTICS') {
+            if ($value =~ /^\d+$/) {
+                $config{'solo_con_artics'} = $value;
+            }
+        }
+    }
+
+    return %config;
+};
+
+# ---------------------------------------------------------------
 sub make_mapa {
 # genera mapa del sitio en base a taxonomia
     my ($mv) = $_[0]; # nombre de la vista
@@ -5446,6 +5595,71 @@ sub make_mapa {
     }
 
 };
+
+sub get_arbol_mapa_tags {
+    my $loop =$_[0];
+    my $bd = $_[1];
+    my $mv = $_[2];
+    my $config_ref = $_[3];
+    my %config = %{$config_ref};
+    my $sql = "SELECT TAGS_ID, TAGS_TAG, TAGS_NOM4VISTAS, TAGS_MOSTRAR, TAGS_COUNT FROM TAGS";
+    # my $sql_total = "SELECT COUNT(*) as total, SUM(TAGS_COUNT) as suma FROM TAGS";
+
+    if ($config{'solo_con_artics'} ) {
+        $sql .= " WHERE TAGS_COUNT > 0";
+        # $sql_total .= " WHERE TAGS_COUNT > 0";
+    }
+
+    $sql .= " ORDER BY $config{'order'}";
+
+    # my ($tags_total, $tags_sum);
+    # my $salida_total = &glib_dbi_02::ejecutar_sql_bind($bd, $sql_total, \($tags_total, $tags_sum));
+
+    # $salida_total->fetch;
+    # $salida_total->finish;
+
+    my ($tags_id, $tags_tag, $tags_nom4vistas, $tags_mostrar, $tags_count);
+    my $salida = &glib_dbi_02::ejecutar_sql($bd, $sql);
+    my $mapa_tags;
+    my $output;
+
+    $salida->bind_columns(undef, \($tags_id, $tags_tag, $tags_nom4vistas, $tags_mostrar, $tags_count));
+
+    while ($salida->fetch) {
+        $mapa_tags = $loop;
+
+        $tags_tag = &lib_prontus::get_nomtax_envista($mv, $tags_nom4vistas) if ($mv);
+        $tags_tag = &lib_prontus::escape_html($tags_tag);
+
+        # my $percent = 0;
+
+        # if ($tags_sum > 0) {
+        #     $percent = ceil(($tags_count * 100) / $tags_sum);
+        # }
+
+        $mapa_tags =~ s/%%_id%%/$tags_id/ig;
+        $mapa_tags =~ s/%%_nom%%/$tags_tag/ig;
+        # $mapa_tags =~ s/%%_total_arts%%/$tags_count/ig;
+        $mapa_tags =~ s/%%_mostrar%%/$tags_mostrar/ig;
+        # $mapa_tags =~ s/%%_percent%%/$percent/ig;
+
+        my %claves = (
+            '_mostrar'      => $tags_mostrar,
+            # '_total_arts'   => $tags_count
+            # '_percent'      => $percent
+        );
+
+        $mapa_tags = &lib_prontus::parser_condicional('IF', $mapa_tags, \%claves);
+        $mapa_tags = &lib_prontus::parser_condicional('NIF', $mapa_tags, \%claves);
+
+        $output .= $mapa_tags;
+    }
+
+    $salida->finish;
+
+    return $output;
+};
+
 # ---------------------------------------------------------------
 sub get_arbol_mapa {
   my ($loop_mapa_s)   = $_[0];
@@ -6594,37 +6808,29 @@ sub cerrar_sesion {
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
 
-    # Ver user logueado
-    my %cookies = &lib_cookies::get_cookies();
-    my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
-
-    # Setear cookie en blanco para dar por terminada la sesion.
-    &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, ''); # pa q no pueda navegar
-    &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, '');
-
     # libera recursos para info de concurrencia
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'port',
-                                          $user_anterior,
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art',
-                                          $user_anterior,
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art',
-                                          $user_anterior,
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'port',
-                                          $user_anterior,
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     # Garbage de archivos mas antiguos de X dias

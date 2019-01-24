@@ -46,7 +46,7 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   do 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.103.1 - 17/01/2019';
+  $VERSION_PRONTUS = '11.2.104 - 22/01/2019';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
@@ -64,7 +64,7 @@ sub init { # Prontus 6.0
   $UPLOADS_PERMITIDOS_ORIG = 'jpg,jpeg,jpe,gif,png,bmp,tif,tiff,ico,asf,asx,wax,wmv,wmx,avi,divx,flv,mov'
                        . ',qt,mpeg,mpg,mpe,3gp,txt,rtx,css,htm,html,mp3,m4a,mp4,m4v,ra,ram,wav,ogg,mid'
                        . ',midi,wma,rtf,pdf,doc,docx,pot,pps,ppt,pptx,wri,xla,xls,xlsx,xlt,xlw,mdb'
-                       . ',mpp,swf,tar,zip,gz,gzip,odt,odp,ods,odg,odc,odb,odf,csv';
+                       . ',mpp,swf,tar,zip,gz,gzip,odt,odp,ods,odg,odc,odb,odf,csv,svg';
 
   $BD_CONN = '';
 
@@ -81,6 +81,9 @@ sub init { # Prontus 6.0
   $USER_BD = '';
   $PWD_BD = '';
   $SERVER_BD = '';
+
+  # Tipos de imagenes que no se pueden manipular.
+  $prontus_varglb::IMG_TYPE_NOEDIT{'svg'} = 1;
 
   # Taxonomia
   $TAXONOMIA_NIVELES = '';
