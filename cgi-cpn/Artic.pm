@@ -2461,9 +2461,12 @@ sub parse_artic_data {
     $buffer = &lib_prontus::replace_in_artic($utc_pub, '_utcp', $buffer);
 
     # Reemplaza TS, FECHAC, FECHACLONG, FECHACSHRT
-    if ($this->{ts} eq 'preview' && $this->{original_ts} ne '') {
+    if ($this->{ts} eq 'preview') {
+        $buffer =~ s/%%_TS%%/preview/isg;
+        $buffer =~ s/%%_TS_REAL%%/$this->{original_ts}/isg;
         $buffer = &lib_prontus::replace_tsdata($buffer, $this->{original_ts});
     } else {
+        $buffer =~ s/%%_TS_REAL%%/$this->{ts}/isg;
         $buffer = &lib_prontus::replace_tsdata($buffer, $this->{ts});
     }
 
