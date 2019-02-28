@@ -1089,11 +1089,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $size_total += $bytes_foto;
         my $kbytes_foto = &lib_prontus::bytes2kb($bytes_foto, 0);
 
-        # my ($reemp) = "<img src=\"$prontus_varglb::DIR_CORE/imag/cpan/reemp_of.gif\" style=\"border:0\;width:16\;heigth:16\;\" alt=\"Reemplazar por nueva imagen\" />";
-        #~ $relpath_foto = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_IMAG . "/$nom_foto";
-
-        # JOR - 02/03/2011 - Agrega parametro al azar para evitar cache del browser.
-        # $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/$nom_foto" . "?" . rand(1000);
         # CVI - 10/03/2011 - Se cambia sistema para evitar cache del browser, aplicando el random al nombre de la foto
         $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/" . $nom_foto;
 

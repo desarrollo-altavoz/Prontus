@@ -138,7 +138,6 @@ main: {
             my $bytes_foto = -s $base_path . $prontus_varglb::DIR_IMAG . "/$nom_foto";       # 1.9
             my $kbytes_foto = &lib_prontus::bytes2kb($bytes_foto, 0);
 
-            # my ($reemp) = "<img src=\"$prontus_varglb::DIR_CORE/imag/cpan/reemp_of.gif\" style=\"border:0\;width:16\;heigth:16\;\" alt=\"Reemplazar por nueva imagen\" />";
             my $relpath_foto = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_IMAG . "/$nom_foto";
             $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/" . $nom_foto;
 
@@ -149,6 +148,15 @@ main: {
             $bufferBancoImg =~ s/%%relpath_foto%%/$relpath_foto/ig;
             $bufferBancoImg =~ s/%%wfoto%%/$wfoto/ig;
             $bufferBancoImg =~ s/%%hfoto%%/$hfoto/ig;
+
+            my $img_type = &lib_prontus::get_img_type($relpath_foto);
+            $bufferBancoImg =~ s/%%img_type%%/$img_type/ig;
+
+            if (!&lib_prontus::can_edit_img($img_type)) {
+                $bufferBancoImg =~ s/%%openFotoEditor%%/openFotoEditorDisabled/ig;
+            } else {
+                $bufferBancoImg =~ s/%%openFotoEditor%%/openFotoEditor/ig;
+            }
 
             # Para los iconos de acciones sobre la imagen
             my $reldir_icons = "$prontus_varglb::DIR_CORE/imag/boto";

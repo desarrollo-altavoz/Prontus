@@ -1,4 +1,10 @@
 ====================================================================================================
+11.2.104.1 - 28/02/2019 - JOR/EAG
+====================================================================================================
+- bugfixes: (fid) Banco de imágenes funcionaba mal al "ver más" imágenes
+- bugfixes: (buscador) Textos con el caracter "|" provocaba errores en la búsqueda y resultados.
+- bugfixes: (general) Ajusta estilos de despliegue de combobox para corregir problemas en Firefox
+====================================================================================================
 11.2.104 - 22/01/2019 - JOR/EAG
 ====================================================================================================
 - improvement: (artículos) Agrega soporte de imágenes SVG.
