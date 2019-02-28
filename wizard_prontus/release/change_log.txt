@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.104.1 - 28/02/2018 - JOR/EAG
+11.2.104.1 - 28/02/2019 - JOR/EAG
 ====================================================================================================
 - bugfixes: (fid) Banco de imágenes funcionaba mal al "ver más" imágenes
 - bugfixes: (buscador) Textos con el caracter "|" provocaba errores en la búsqueda y resultados.
