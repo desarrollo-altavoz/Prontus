@@ -1,4 +1,9 @@
 ====================================================================================================
+11.2.104.2 - 01/03/2019 - EAG
+====================================================================================================
+- bugfixes: (general) No se estaba inicializando el user name del usuario logeado, esto afectaba al
+log de operación, todas las acciones quedaban como "System Script" excepto el login
+====================================================================================================
 11.2.104.1 - 28/02/2019 - JOR/EAG
 ====================================================================================================
 - bugfixes: (fid) Banco de imágenes funcionaba mal al "ver más" imágenes

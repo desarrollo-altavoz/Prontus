@@ -729,6 +729,8 @@ sub check_user {
         };
     };
 
+    $prontus_varglb::USERS_USR = $sess_obj->{username};
+
     if (&lib_prontus::open_dbm_files() ne 'ok') {
         print STDERR "No fue posible cargar archivos de privilegios de usuario.\n";
         return ('', 'No fue posible cargar archivos de privilegios de usuario');
