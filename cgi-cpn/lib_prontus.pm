@@ -729,6 +729,7 @@ sub check_user {
         };
     };
 
+    # solo aca se inicializa esta variable
     $prontus_varglb::USERS_USR = $sess_obj->{username};
 
     if (&lib_prontus::open_dbm_files() ne 'ok') {
