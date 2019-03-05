@@ -247,7 +247,9 @@ sub crear_objeto_artic {
         my $nom_lc = lc $nom_campo;
         $hash_datos{$nom_lc} = &param($nom_campo);
         if (($nom_lc =~ /^asocfile_/) && ($hash_datos{$nom_lc} ne '')) {
+            no stricts 'refs';
             $hash_datos{$nom_lc}{'real_path'} = &glib_cgi_04::real_paths($nom_campo);
+            use strict;
         };
     };
 
