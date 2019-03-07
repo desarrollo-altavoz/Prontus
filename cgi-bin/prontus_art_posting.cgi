@@ -91,6 +91,7 @@ use lib_ipcheck;
 use lib_artic;
 use lib_maxrunning;
 use lib_form;
+use lib_mail;
 
 # ---------------------------------------------------------------
 # MAIN.
