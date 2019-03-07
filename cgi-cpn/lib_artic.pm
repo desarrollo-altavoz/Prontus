@@ -39,7 +39,7 @@ sub save_artic_with_object {
     if (! ref($base)) {
         &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
         return $msg_err_bd;
-    };
+    }
 
     my $pag_articulo;
     my $autoinc = 0;
@@ -68,27 +68,14 @@ sub save_artic_with_object {
     if (!$is_new) {
         %campos_xml_old = $ARTIC_OBJ->get_xml_content();
         $tags_old = $campos_xml_old{'_tags'};
-    };
+    }
 
     # Generar y guardar xml. Se guardan los recursos subidos a traves del fid
     # Esto es comun para nuevo y actualizar
     if (!$ARTIC_OBJ->generar_xml_artic()) {
         &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
         return $Artic::ERR;
-    };
-
-    # Guardar articulo.
-    my $msg_err_save = &do_save($base, $is_new);
-    if ($msg_err_save) {
-        &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
-        return $msg_err_save;
-    };
-
-    # Full path del artic (de la vista default)
-    my $fullpath_artic = $ARTIC_OBJ->get_fullpath_artic('', $ARTIC_OBJ->{campos}->{'_plt'});
-
-    # Lee de vuelta del XML
-    my %campos_xml = $ARTIC_OBJ->get_xml_content();
+    }
 
     # Loguear modificacion
     my $label_action = 'Actualizar';
@@ -96,7 +83,6 @@ sub save_artic_with_object {
 
     # chequeamos cambio de alta para log.
     my $cambio_estado = '';
-    print STDERR "$label_action is_new[$is_new]\n";
     my $estado_articulo = $ARTIC_OBJ->{campos}->{'_alta'} ? 'SI' : 'NO';
     if (! $is_new) {
         my $estado_previo = $campos_xml_old{'_alta'} ? 'SI' : 'NO';
@@ -106,7 +92,24 @@ sub save_artic_with_object {
     } else {
         $cambio_estado = " (Alta: $estado_articulo)";
     }
-    &lib_prontus::write_log($label_action, 'Articulo'. $cambio_estado, $fullpath_artic);
+
+    # Guardar articulo.
+    my $msg_err_save = &do_save($base, $is_new);
+    if ($msg_err_save) {
+        if ($ARTIC_OBJ->{saved}) {
+            &lib_prontus::write_log($label_action, 'Articulo'. $cambio_estado, 'ID: '.$ARTIC_OBJ->{ts}. ', '.$Artic::ERR);
+        }
+        &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
+        return $msg_err_save;
+    }
+
+    &lib_prontus::write_log($label_action, 'Articulo'. $cambio_estado, 'ID: '.$ARTIC_OBJ->{ts});
+
+    # Full path del artic (de la vista default)
+    my $fullpath_artic = $ARTIC_OBJ->get_fullpath_artic('', $ARTIC_OBJ->{campos}->{'_plt'});
+
+    # Lee de vuelta del XML
+    my %campos_xml = $ARTIC_OBJ->get_xml_content();
 
     # Regen ports que correspondan
     &regen_ports($fullpath_artic);
@@ -256,10 +259,14 @@ sub do_save {
 
     # Agrega autoinc al XML del artic
     $ARTIC_OBJ->setear_autoinc($autoinc);
-    
+
+    # El artículo y los datos ingresados ya fueron guardados
+    # pueden ocurrir errores posteriores, pero los datos originales ya están guardados
+    $ARTIC_OBJ->{saved} = 1;
+
     my %campos_xml = $ARTIC_OBJ->get_xml_content();
     my $fid = $ARTIC_OBJ->{campos}->{'_fid'};
-    
+
     if ($prontus_varglb::CREAR_VISTAS_SIN_ALTA ne 'NO' || $campos_xml{'_alta'}) {
         # Generar vista principal (a partir del xml)
         # print STDERR "Generar vista normal con autoinc[$autoinc]\n";

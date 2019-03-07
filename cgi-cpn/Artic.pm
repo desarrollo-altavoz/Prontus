@@ -140,6 +140,9 @@ sub new {
     # Se llena en el metodo que genera la vista generar_vista_art()
     $artic->{post_proceso_lista} = '';
 
+    # Indica si el articulo se guardó, aunque no haya completado los demas procesos
+    $artic->{saved} = 0;
+
     return $artic;
 };
 
