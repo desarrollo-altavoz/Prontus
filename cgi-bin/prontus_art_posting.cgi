@@ -95,11 +95,12 @@ use lib_form;
 # ---------------------------------------------------------------
 # MAIN.
 # -------------
-my (%CONFIG_POSTING, $ARTIC_OBJ, %FORM);
+my (%CONFIG_POSTING, %FORM);
 
 my $CACHE_DIR = 'site/cache/posting'; # /pags-vvv Directorio de las paginas generadas.
 my $ANSWERS_DIR;
 my $RECAPTCHA_RESPONSE = "";
+my $USER_IP = '';
 
 main: {
     # Soporta un maximo de n copias corriendo.
@@ -114,15 +115,14 @@ main: {
 
     # Validacion y gestion de ip bloqueada
     my $dir_ip_control = 'ip_control_art_posting'; # dentro del prontus_temp
-    my $user_ip = '';
     if ( defined($ENV{'HTTP_X_FORWARDED_FOR'})) {
-        $user_ip = $ENV{'HTTP_X_FORWARDED_FOR'};
+        $USER_IP = $ENV{'HTTP_X_FORWARDED_FOR'};
     } else {
-        $user_ip = $ENV{'REMOTE_ADDR'};
+        $USER_IP = $ENV{'REMOTE_ADDR'};
     }
     my $maxrequest_por_ip = 30;
     my $bloqueoip_interval = 60;
-    my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $user_ip, $maxrequest_por_ip, $bloqueoip_interval);
+    my $bloquear_ip = &lib_ipcheck::check_bloqueo_ip($dir_ip_control, $USER_IP, $maxrequest_por_ip, $bloqueoip_interval);
     if ($bloquear_ip) {
         &msg_error("Acción no permitida.");
     }
@@ -345,7 +345,7 @@ sub load_config_posting {
     # Ejemplo de cfg.
     # [subetuscont]
     # _users_id = '1', id de usr a nombre del cual se publica el artic, si no viene, se asume admin
-    # _fid = 'fid_general.html', usr a nombre del cual se publica el artic, si no viene, se asume admin
+    # _fid = 'fid_general', usr a nombre del cual se publica el artic, si no viene, se asume admin
     # _plt = 'general.html', usr a nombre del cual se publica el artic, si no viene, se asume admin
     # _alta = '1'
     #
@@ -600,7 +600,7 @@ sub call_clustering {
 
 # ---------------------------------------------------------------
 sub write_log_and_mail {
-    my ($accion, $objeto, $path) = @_;
+    my ($alta, $ts, $error) = @_;
     my ($linea, $fecha, $hora, $buf, $nom_file, $usr);
 
     my $dir_log = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/posting/log";
@@ -608,21 +608,27 @@ sub write_log_and_mail {
     if (&glib_fildir_02::check_dir($dir_log)) {
         # <nombre del publicador>_aaaammdd.log
         $fecha    = &glib_hrfec_02::get_date_pack4();
-        $nom_file = $prontus_varglb::PRONTUS_ID . '_' . $fecha . '.txt';
+        $nom_file = $FORM{'_IDF'} . '_' . $fecha . '.csv';
 
         # dd/mm/aaaa hh:mm:ss - <ip> - <accion> - <user> - <ente afectado> - <path>
         $fecha = &glib_hrfec_02::des_normaliza_fecha($fecha);
         $hora = &glib_hrfec_02::get_date_time('', '', '', '', 1, '', time);
 
-        $linea = $fecha . "\t" . $hora . "\t" . $ENV{'REMOTE_ADDR'} . "\tArt Posting\t" . $accion . "\t" . $objeto . "\t" . $path;
+        if ($error) {
+            $error =~ s/[\n\r]+//;
+        }
+
+        $linea = "$fecha;$hora;$USER_IP;$ts;$alta;".$lib_artic::ARTIC_OBJ->{xml_content}->{_txt_titular} .";$error\n";
         &glib_fildir_02::append_file($dir_log . '/' . $nom_file, $linea);
     }
 
     my $body = "Los datos recibidos son los siguientes:\n\n";
+    $body .= sprintf('%-15s','formulario') . " = $FORM{'_IDF'}\n";
+    $body .= sprintf('%-15s','titular') . " = $lib_artic::ARTIC_OBJ->{xml_content}->{_txt_titular}\n";
 
     my @campos = &param(); # No toma los datos directamente submitidos, sino los adaptados
     foreach my $key (sort {$a cmp $b} @campos) {
-        next if ( (lc($key) ne '_txt_titular') && (($key =~ /^_/) || ($key =~ /g-recaptcha-response/)));
+        next if (($key =~ /^_/) || ($key =~ /g-recaptcha-response/));
         my $data;
         if (($key =~ /^asocfile_/i)) {
             $data = &glib_cgi_04::real_paths($key);
@@ -636,17 +642,11 @@ sub write_log_and_mail {
     if ($email_admin) {
         $fecha = &glib_hrfec_02::fecha_human();
         $hora = &glib_hrfec_02::hora_human();
-        my $ip = '';
-        if ( defined($ENV{'HTTP_X_FORWARDED_FOR'})) {
-            $ip = $ENV{'HTTP_X_FORWARDED_FOR'};
-        } else {
-            $ip = $ENV{'REMOTE_ADDR'};
-        }
 
-        $body .=  "\n$accion $objeto, $path\n";
-        $body .= "\r\nRecibido el $fecha a las $hora desde el IP $ip\n";
+        $body .=  "\n$alta\nID: $ts\n$error\n";
+        $body .= "\r\nRecibido el $fecha a las $hora desde el IP $USER_IP\n";
         $body .= "\nAtentamente,\nProntus CMS\r\n\r\n";
-        my $subject = "[$prontus_varglb::PUBLIC_SERVER_NAME][$prontus_varglb::PRONTUS_ID] Recibido por Art Posting ";
+        my $subject = "[$prontus_varglb::PUBLIC_SERVER_NAME][$prontus_varglb::PRONTUS_ID] Recibido por Art Posting";
 
         my $resp = &lib_mail::mail_text('noreply@prontus.cl', $email_admin, 'noreply@prontus.cl', $subject, $body, 0, $prontus_varglb::SERVER_SMTP);
     }
