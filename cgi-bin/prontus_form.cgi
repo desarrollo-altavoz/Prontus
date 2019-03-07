@@ -288,7 +288,11 @@ sub data_management {
     # Detecta informacion de fecha, hora e IP.
     $fecha = &glib_hrfec_02::fecha_human();
     $hora = &glib_hrfec_02::hora_human();
-    $ip = $ENV{'REMOTE_ADDR'};
+    if ( defined($ENV{'HTTP_X_FORWARDED_FOR'})) {
+        $ip = $ENV{'HTTP_X_FORWARDED_FOR'};
+    } else {
+        $ip = $ENV{'REMOTE_ADDR'};
+    }
 
     $backupdir = "$ROOTDIR/$PRONTUS_ID/$DATA_DIR/$TS";
     &glib_fildir_02::check_dir($backupdir);
@@ -329,7 +333,7 @@ sub data_management {
 
             $filename = &lib_prontus::notildes($filename);
             #convierte todos los caracteres que no son de palabras en espacios
-            $filename =~ s/[^a-zA-Z0-9_\-\.]/ /sig;            
+            $filename =~ s/[^a-zA-Z0-9_\-\.]/ /sig;
             $filename =~ s/ {2,}/ /sig; # elimina espacios repetidos
             $filename =~ s/^\s+//sig; # elimina espacios iniciales
             $filename =~ s/\s+$//sig; # elimina espacios finales
@@ -338,7 +342,7 @@ sub data_management {
             $filename =~ s/ /\_/sig; # convierte espacios a _
 
             $filename = $filename . $ext;
-            
+
             $filedata = &glib_cgi_04::param($key);
             $files{$key}{'_name'} = 'file_' . $random.'--'.$filename;
             $files{$key}{'_temp'} = $filedata;
