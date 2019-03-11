@@ -679,7 +679,7 @@ sub parseaVars {
     my $strcombo = '';
     foreach my $port_file (sort @ports_listado) {
         next if ($port_file =~ /^\./);
-        if ($port_file =~ /^(\w+)\.(\w+)$/ && $port_file ne '.' && $port_file ne '..') {
+        if ($port_file =~ /^\w+\.\w+$/) {
             if($ports_utilizadas{$port_file} != 1) {
                 $strcombo = $strcombo . '<option value="' . $port_file . '">' . $port_file . '</option>';
             };
