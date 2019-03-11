@@ -644,6 +644,10 @@ sub validarVar {
         };
     };
 
+    if (-f "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_sql_innodb.cfg") {
+        $lib_setbd::ENGINE = 'InnoDB';
+    }
+
     # si se usara friendly 4, intentamos crear la tabla en db
     if (&glib_cgi_04::param('FRIENDLY_URLS') eq 'SI' && $var eq 'FRIENDLY_URLS_VERSION' && $item eq '4') {
         my ($msg_ret, $hay_err);

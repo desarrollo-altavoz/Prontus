@@ -10440,3 +10440,31 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         todas las acciones quedaban como system script excepto el login
     [files]
         /cgi-cpn/lib_prontus.pm
+
+Prontus form detecta si esta detras de proxy para el bloqueo por ip
+cgi-bin/prontus_form.cgi
+
+Implementa envio de mail, logeo y soporte recaptcha
+
+Ademas mejora el uso de la plantilla para errores
+Agrega propiedad "saved" al articulo para saber que se guardo aunque
+fallen los procesos siguientes y poder logear la accion y realizar otras
+tareas
+Agrega soporte recaptcha en posting
+
+Corrige strict refs en art posting
+
+cgi-bin/prontus_art_posting.cgi
+cgi-cpn/Artic.pm
+cgi-cpn/lib_artic.pm
+
+
+Se pueden crear tablas en innodb
+
+crear archivo /cgi-cpn/prontus_sql_innodb.cfg
+
+/var/www/prontus_release/cgi-cpn/lib_setbd.pm
+/var/www/prontus_release/cgi-cpn/prontus_cfg_save.cgi
+/var/www/prontus_release/cgi-cpn/prontus_regenerabd_real.cgi
+/var/www/prontus_release/cgi-cpn/prontus_set_bd.cgi
+/var/www/prontus_release/cgi-cpn/wizard_deploy.cgi

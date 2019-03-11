@@ -186,6 +186,10 @@ sub deploy {
     # Por tanto ya se pueden crear las tablas.
     # Si ya existen, no crea nada y arroja error, puede significar que se esta usando la misma BD para 2 prontuses!
 
+    if (-f "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_sql_innodb.cfg") {
+        $lib_setbd::ENGINE = 'InnoDB';
+    }
+
     my ($msg_ret, $hay_err);
     ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_secc($base, 'MYSQL');
     return ($msg_ret, '') if ($hay_err ne '');
