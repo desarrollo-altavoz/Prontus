@@ -240,7 +240,6 @@ sub _set_dirs {
 
 
     if (! $this->_check_artic_dirs() && !$this->{no_check_dirs}) {
-        $Artic::ERR = "No se pueden crear directorios del artículo, dst_base[$this->{dst_base}]";
         cluck $Artic::ERR . "[$!]\n";
         return 0;
     };
@@ -257,16 +256,26 @@ sub DESTROY { # se llama automaticamente al destruirse el objeto
 # ---------------------------------------------------------------
 sub _check_artic_dirs {
     my ($this) = shift;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_xml[$this->{dst_xml}]";
     &glib_fildir_02::check_dir($this->{dst_xml})        || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_pags[$this->{dst_pags}]";
     &glib_fildir_02::check_dir($this->{dst_pags})       || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_pagspar[$this->{dst_pagspar}]";
     &glib_fildir_02::check_dir($this->{dst_pagspar})    || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_asocfile[$this->{dst_asocfile}]";
     &glib_fildir_02::check_dir($this->{dst_asocfile})   || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_foto[$this->{dst_foto}]";
     &glib_fildir_02::check_dir($this->{dst_foto})       || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_swf[$this->{dst_swf}]";
     &glib_fildir_02::check_dir($this->{dst_swf})        || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_multimedia[$this->{dst_multimedia}]";
     &glib_fildir_02::check_dir($this->{dst_multimedia}) || return 0;
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        $Artic::ERR = "No se pueden crear directorios del artículo, dst_links_url[$this->{dst_links_url}]";
         &glib_fildir_02::check_dir($this->{dst_links_url}) || return 0;
     }
+    # no hubo error
+    $Artic::ERR = '';
     return 1;
 };
 

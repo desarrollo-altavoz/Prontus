@@ -10468,3 +10468,6 @@ crear archivo /cgi-cpn/prontus_sql_innodb.cfg
 /var/www/prontus_release/cgi-cpn/prontus_regenerabd_real.cgi
 /var/www/prontus_release/cgi-cpn/prontus_set_bd.cgi
 /var/www/prontus_release/cgi-cpn/wizard_deploy.cgi
+
+Mejora informacion sobre que directorios no se pueden crear
+/var/www/prontus_release/cgi-cpn/Artic.pm
