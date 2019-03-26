@@ -1,4 +1,17 @@
 ====================================================================================================
+11.2.105 - 26/03/2019 - EAG
+====================================================================================================
+- bugfixes: (general) Corrige guardado de mis busquedas en administración
+- bugfixes: (posting) Corrige error que impedía cargar archivos adjuntos
+- improvement: (general) Agrega propiedad "saved" al articulo para saber que se guardo aunque
+fallen los procesos siguientes y poder logear la accion y realizar otras tareas
+- improvement: (general) Puede utilizar tablas en innodb, crear archivo /cgi-cpn/prontus_sql_innodb.cfg
+- improvement: (general) Mejora informacion sobre que directorios no se pueden crear
+- improvement: (prontus form)Prontus form detecta si esta detras de proxy para el bloqueo por ip
+- improvement: (posting) Implementa envio de mail, logeo y soporte recaptcha
+- improvement: (posting) Mejora el uso de la plantilla para errores
+- improvement: (posting) Agrega soporte recaptcha
+====================================================================================================
 11.2.104.2 - 01/03/2019 - EAG
 ====================================================================================================
 - bugfixes: (general) No se estaba inicializando el user name del usuario logeado, esto afectaba al

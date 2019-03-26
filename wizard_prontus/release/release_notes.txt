@@ -9828,10 +9828,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Mejora mensajes de diagnostico
         - Corrige error al procesar videos de articulo, se estaban procesando siempre en modo batch
     [files]
-        /var/www/prontus_release/cgi-cpn/prontus_art_sbmit.cgi
-        /var/www/prontus_release/cgi-cpn/xcoding/prontus_procesar_videos.pl
-        /var/www/prontus_release/cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
-        /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /cgi-cpn/xcoding/prontus_procesar_videos.pl
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
 
 ====================================================================================================
 11.2.99 - 08/03/2018 - JOR/EAG/MTC
@@ -9975,7 +9975,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Se corrige un error que no cargaba/mostraba adecuadamente la configuración del orden de
         categorías (TAXPORT_ORDEN), cuando esta estaba configurada como "Publicación".
     [files]
-        /var/www/prontus_release/cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_admin_main.cgi
 
  - General
     [mejoras]
@@ -10407,10 +10407,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/lib_prontus.pm
 
 - Prontus Form
-    [bugifxes]
+    [bugfixes]
         - Corrige encoding de archivos adjuntos
     [files]
         /cgi-bin/prontus_form.cgi
+
 ====================================================================================================
 11.2.104.1 - 28/02/2019 - JOR/EAG
 ====================================================================================================
@@ -10431,6 +10432,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Ajusta estilos de despliegue de combobox para corregir problemas en Firefox
     [files]
         /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+
 ====================================================================================================
 11.2.104.2 - 01/03/2019 - EAG
 ====================================================================================================
@@ -10441,37 +10443,42 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_prontus.pm
 
-Prontus form detecta si esta detras de proxy para el bloqueo por ip
-cgi-bin/prontus_form.cgi
+====================================================================================================
+11.2.105 - 26/03/2019 - EAG
+====================================================================================================
+- General
+    [mejora]
+        - Agrega propiedad "saved" al articulo para saber que se guardo aunque
+        fallen los procesos siguientes y poder logear la accion y realizar otras tareas
+        - Puede utilizar tablas en innodb, crear archivo /cgi-cpn/prontus_sql_innodb.cfg
+        - Mejora informacion sobre que directorios no se pueden crear
+    [bugfixes]
+        - Corrige guardado de mis busquedas en administración
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/lib_setbd.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_regenerabd_real.cgi
+        /cgi-cpn/prontus_set_bd.cgi
+        /cgi-cpn/wizard_deploy.cgi
+        /cgi-cpn/prontus_art_listnopub.cgi
 
-Implementa envio de mail, logeo y soporte recaptcha
+- Prontus Form
+    [mejora]
+        - Prontus form detecta si esta detras de proxy para el bloqueo por ip
+    [files]
+        /cgi-bin/prontus_form.cgi
 
-Ademas mejora el uso de la plantilla para errores
-Agrega propiedad "saved" al articulo para saber que se guardo aunque
-fallen los procesos siguientes y poder logear la accion y realizar otras
-tareas
-Agrega soporte recaptcha en posting
-
-Corrige strict refs en art posting
-
-cgi-bin/prontus_art_posting.cgi
-cgi-cpn/Artic.pm
-cgi-cpn/lib_artic.pm
-
-
-Se pueden crear tablas en innodb
-
-crear archivo /cgi-cpn/prontus_sql_innodb.cfg
-
-/var/www/prontus_release/cgi-cpn/lib_setbd.pm
-/var/www/prontus_release/cgi-cpn/prontus_cfg_save.cgi
-/var/www/prontus_release/cgi-cpn/prontus_regenerabd_real.cgi
-/var/www/prontus_release/cgi-cpn/prontus_set_bd.cgi
-/var/www/prontus_release/cgi-cpn/wizard_deploy.cgi
-
-Mejora informacion sobre que directorios no se pueden crear
-/var/www/prontus_release/cgi-cpn/Artic.pm
-
-
-Corrige guardado de mis busquedas
-/var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
+- Posting
+    [mejora]
+        - Implementa envio de mail, logeo y soporte recaptcha
+        - Mejora el uso de la plantilla para errores
+        - Agrega soporte recaptcha
+    [bugfixes]
+        - Corrige strict refs en art posting, impedía funcionamiento al cargar archivos adjuntos
+    [files]
+        /cgi-bin/prontus_art_posting.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
