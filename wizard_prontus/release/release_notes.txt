@@ -10471,3 +10471,7 @@ crear archivo /cgi-cpn/prontus_sql_innodb.cfg
 
 Mejora informacion sobre que directorios no se pueden crear
 /var/www/prontus_release/cgi-cpn/Artic.pm
+
+
+Corrige guardado de mis busquedas
+/var/www/prontus_release/cgi-cpn/prontus_art_listnopub.cgi
