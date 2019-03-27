@@ -1,5 +1,5 @@
 ====================================================================================================
-11.2.105 - 26/03/2019 - EAG
+11.2.105 - 27/03/2019 - EAG
 ====================================================================================================
 - bugfixes: (general) Corrige guardado de mis busquedas en administración
 - bugfixes: (posting) Corrige error que impedía cargar archivos adjuntos
