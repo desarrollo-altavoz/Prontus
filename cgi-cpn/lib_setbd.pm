@@ -36,6 +36,7 @@ use glib_html_02;
 use glib_fildir_02;
 
 use strict;
+our $ENGINE = "MYISAM";
 
 #---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -44,13 +45,12 @@ sub crear_tabla_secc {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'SECC', $motor)) {
 
         # MYSQL
         if ($motor eq 'MYSQL') {
-            $sql = "
+            my $sql = "
                     CREATE TABLE SECC (
                     SECC_ID int(5) NOT NULL auto_increment,
                     SECC_NOM varchar(128) NOT NULL default '',
@@ -63,8 +63,7 @@ sub crear_tabla_secc {
                     )
                         CHARACTER SET utf8
                         COLLATE utf8_general_ci
-                        ENGINE = MYISAM;
-            ";
+                        ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla SECC:" . $base->errstr, 1);
             $msg_ret = "- Tabla 'SECC' creada OK.";
         };
@@ -81,13 +80,12 @@ sub crear_tabla_temas {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'TEMAS', $motor)) {
 
         # MYSQL
         if ($motor eq 'MYSQL') {
-            $sql = "
+            my $sql = "
                     CREATE TABLE TEMAS (
                     TEMAS_ID int(5) NOT NULL auto_increment,
                     TEMAS_NOM varchar(128) NOT NULL default '',
@@ -102,8 +100,7 @@ sub crear_tabla_temas {
                     )
                         CHARACTER SET utf8
                         COLLATE utf8_general_ci
-                        ENGINE = MYISAM;
-            ";
+                        ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla TEMAS:" . $base->errstr, 1);
             $msg_ret = "- Tabla TEMAS creada OK.";
         };
@@ -120,13 +117,12 @@ sub crear_tabla_subtemas {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'SUBTEMAS', $motor)) {
 
         # MYSQL
         if ($motor eq 'MYSQL') {
-            $sql = "
+            my $sql = "
                     CREATE TABLE SUBTEMAS (
                     SUBTEMAS_ID int(5) NOT NULL auto_increment,
                     SUBTEMAS_NOM varchar(128) NOT NULL default '',
@@ -141,8 +137,7 @@ sub crear_tabla_subtemas {
                     )
                         CHARACTER SET utf8
                         COLLATE utf8_general_ci
-                        ENGINE = MYISAM;
-            ";
+                        ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla SUBTEMAS:" . $base->errstr, 1);
             $msg_ret = "- Tabla SUBTEMAS creada OK.";
         };
@@ -159,13 +154,12 @@ sub crear_tabla_tags {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'TAGS', $motor)) {
 
         # MYSQL
         if ($motor eq 'MYSQL') {
-            $sql = "
+            my $sql = "
                     CREATE TABLE TAGS (
                     TAGS_ID int(10) NOT NULL auto_increment,
                     TAGS_TAG varchar(255) not null default '',
@@ -178,8 +172,7 @@ sub crear_tabla_tags {
                     )
                         CHARACTER SET utf8
                         COLLATE utf8_general_ci
-                        ENGINE = MYISAM;
-            ";
+                        ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla TAGS:" . $base->errstr, 1);
             $msg_ret = "- Tabla TAGS creada OK.";
         };
@@ -196,13 +189,12 @@ sub crear_tabla_tagsart {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'TAGSART', $motor)) {
 
         # MYSQL
         if ($motor eq 'MYSQL') {
-            $sql = "
+            my $sql = "
                 CREATE TABLE TAGSART (
                 TAGSART_IDTAGS int(10) NOT NULL auto_increment,
                 TAGSART_IDART char(14) not null default '' ,
@@ -212,8 +204,7 @@ sub crear_tabla_tagsart {
                 )
                     CHARACTER SET utf8
                     COLLATE utf8_general_ci
-                    ENGINE = MYISAM;
-            ";
+                    ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla TAGSART:" . $base->errstr, 1);
             $msg_ret = "- Tabla TAGSART creada OK.";
         };
@@ -230,13 +221,12 @@ sub crear_tabla_coment {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'COMENT', $motor)) {
 
         # MYSQL
         if ($motor eq 'MYSQL') {
-            $sql = "
+            my $sql = "
                 create table COMENT (
                 COMENT_ID         int(16) not null auto_increment,
                 COMENT_OBJTIPO    varchar(32) not null default '',
@@ -255,9 +245,7 @@ sub crear_tabla_coment {
                 )
                     CHARACTER SET utf8
                     COLLATE utf8_general_ci
-                    ENGINE = MYISAM;
-
-            ";
+                    ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla COMENT:" . $base->errstr, 1);
             $msg_ret = "- Tabla COMENT creada OK.";
         };
@@ -274,13 +262,12 @@ sub crear_tabla_asset {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'ASSET', $motor)) {
 
         # MYSQL
         if ($motor eq 'MYSQL') {
-            $sql = "
+            my $sql = "
                 create table ASSET (
                 ASSET_ART_ID char(14) not null,
                 ASSET_FILE varchar(50) not null,
@@ -297,8 +284,7 @@ sub crear_tabla_asset {
                 )
                     CHARACTER SET utf8
                     COLLATE utf8_general_ci
-                    ENGINE = MYISAM;
-            ";
+                    ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla ASSET:" . $base->errstr, 1);
             $msg_ret = "- Tabla ASSET creada OK.";
         };
@@ -315,14 +301,12 @@ sub crear_tabla_art {
   my $base = $_[0];
   my $motor = $_[1]; # PRONTUS | MYSQL
   my ($msg_ret, $hay_error);
-  my $sql;
 
   if (!&existe_tabla($base, 'ART', $motor)) {
 
     # MYSQL
     if ($motor eq 'MYSQL') {
-      $sql = "
-            create table ART (
+        my $sql = "create table ART (
                 ART_AUTOINC int(18) auto_increment not null,
                 ART_ID char(14) not null default '' ,
 
@@ -378,9 +362,7 @@ sub crear_tabla_art {
             )
                 CHARACTER SET utf8
                 COLLATE utf8_general_ci
-                ENGINE = MYISAM;
-
-      ";
+                ENGINE = $ENGINE;";
       $base->do($sql) || return("Error al crear la tabla ART:" . $base->errstr, 1);
       $msg_ret = "- Tabla ART creada OK.";
     };
@@ -398,14 +380,12 @@ sub crear_tabla_url {
   my $base = $_[0];
   my $motor = $_[1]; # PRONTUS | MYSQL
   my ($msg_ret, $hay_error);
-  my $sql;
 
   if (!&existe_tabla($base, 'URL', $motor)) {
 
     # MYSQL
     if ($motor eq 'MYSQL') {
-      $sql = "
-            create table URL (
+        my $sql = "create table URL (
                 URL_ID int(18) auto_increment not null,
                 URL_ART_ID char(14) not null default '' ,
                 URL_ART_URI varchar(100) not null default '',
@@ -417,9 +397,7 @@ sub crear_tabla_url {
             )
                 CHARACTER SET utf8
                 COLLATE utf8_general_ci
-                ENGINE = MYISAM;
-
-      ";
+                ENGINE = $ENGINE;";
       $base->do($sql) || return("Error al crear la tabla URL:" . $base->errstr, 1);
       $msg_ret = "- Tabla URL creada OK.";
     };
@@ -437,18 +415,17 @@ sub crear_tabla_multitag_s {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'MULTITAG_S', $motor)) {
         if ($motor eq 'MYSQL') {
-            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_S` (
+            my $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_S` (
                 `MULTITAG_S_ID` INT NOT NULL AUTO_INCREMENT,
                 `MULTITAG_S_NOMBRE` VARCHAR(128) NOT NULL,
                 `MULTITAG_S_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_S_ESTADO` TINYINT NOT NULL DEFAULT 1,
                 PRIMARY KEY (`MULTITAG_S_ID`),
                 INDEX `index2` (`MULTITAG_S_FRIENDLY`))
-                ENGINE = MyISAM;";
+                ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla MULTITAG_S:" . $base->errstr, 1);
             $msg_ret = "- Tabla MULTITAG_S creada OK.";
         }
@@ -464,18 +441,17 @@ sub crear_tabla_multitag_t {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'MULTITAG_T', $motor)) {
         if ($motor eq 'MYSQL') {
-            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_T` (
+            my $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_T` (
                 `MULTITAG_T_ID` INT NOT NULL AUTO_INCREMENT,
                 `MULTITAG_T_NOMBRE` VARCHAR(128) NOT NULL,
                 `MULTITAG_T_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_T_ESTADO` TINYINT NOT NULL DEFAULT 1,
                 PRIMARY KEY (`MULTITAG_T_ID`),
                 INDEX `index2` (`MULTITAG_T_FRIENDLY`))
-                ENGINE = MyISAM;";
+                ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla MULTITAG_T:" . $base->errstr, 1);
             $msg_ret = "- Tabla MULTITAG_T creada OK.";
         }
@@ -491,18 +467,17 @@ sub crear_tabla_multitag_st {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'MULTITAG_ST', $motor)) {
         if ($motor eq 'MYSQL') {
-            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ST` (
+            my $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ST` (
                 `MULTITAG_ST_ID` INT NOT NULL AUTO_INCREMENT,
                 `MULTITAG_ST_NOMBRE` VARCHAR(128) NOT NULL,
                 `MULTITAG_ST_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_ST_ESTADO` TINYINT NOT NULL DEFAULT 1,
                 PRIMARY KEY (`MULTITAG_ST_ID`),
                 INDEX `index2` (`MULTITAG_ST_FRIENDLY`))
-                ENGINE = MyISAM;";
+                ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla MULTITAG_ST:" . $base->errstr, 1);
             $msg_ret = "- Tabla MULTITAG_ST creada OK.";
         }
@@ -518,11 +493,10 @@ sub crear_tabla_multitag_art_s {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'MULTITAG_ART_S', $motor)) {
         if ($motor eq 'MYSQL') {
-            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_S` (
+            my $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_S` (
                 `MULTITAG_ART_S_ID` INT NOT NULL,
                 `MULTITAG_ART_S_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_ART_S_ART_ID` CHAR(14) NOT NULL,
@@ -530,7 +504,7 @@ sub crear_tabla_multitag_art_s {
                 INDEX `index1` (`MULTITAG_ART_S_ID`),
                 INDEX `index2` (`MULTITAG_ART_S_ART_ID`),
                 INDEX `index3` (`MULTITAG_ART_S_ART_ID`, `MULTITAG_ART_S_ID`))
-                ENGINE = MyISAM;";
+                ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla MULTITAG_ART_S:" . $base->errstr, 1);
             $msg_ret = "- Tabla MULTITAG_ART_S creada OK.";
         }
@@ -546,11 +520,10 @@ sub crear_tabla_multitag_art_t {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'MULTITAG_ART_T', $motor)) {
         if ($motor eq 'MYSQL') {
-            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_T` (
+            my $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_T` (
                 `MULTITAG_ART_T_ID` INT NOT NULL,
                 `MULTITAG_ART_T_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_ART_T_ART_ID` CHAR(14) NOT NULL,
@@ -558,7 +531,7 @@ sub crear_tabla_multitag_art_t {
                 INDEX `index1` (`MULTITAG_ART_T_ID`),
                 INDEX `index2` (`MULTITAG_ART_T_ART_ID`),
                 INDEX `index3` (`MULTITAG_ART_T_ART_ID`, `MULTITAG_ART_T_ID`))
-                ENGINE = MyISAM;";
+                ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla MULTITAG_ART_T:" . $base->errstr, 1);
             $msg_ret = "- Tabla MULTITAG_ART_T creada OK.";
         }
@@ -574,11 +547,10 @@ sub crear_tabla_multitag_art_st {
     my $base = $_[0];
     my $motor = $_[1]; # PRONTUS | MYSQL
     my ($msg_ret, $hay_error);
-    my $sql;
 
     if (!&existe_tabla($base, 'MULTITAG_ART_ST', $motor)) {
         if ($motor eq 'MYSQL') {
-            $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_ST` (
+            my $sql = "CREATE TABLE IF NOT EXISTS `MULTITAG_ART_ST` (
                 `MULTITAG_ART_ST_ID` INT NOT NULL,
                 `MULTITAG_ART_ST_FRIENDLY` VARCHAR(64) NOT NULL,
                 `MULTITAG_ART_ST_ART_ID` CHAR(14) NOT NULL,
@@ -586,7 +558,7 @@ sub crear_tabla_multitag_art_st {
                 INDEX `index1` (`MULTITAG_ART_ST_ID`),
                 INDEX `index2` (`MULTITAG_ART_ST_ART_ID`),
                 INDEX `index3` (`MULTITAG_ART_ST_ART_ID`, `MULTITAG_ART_ST_ID`))
-                ENGINE = MyISAM;";
+                ENGINE = $ENGINE;";
             $base->do($sql) || return("Error al crear la tabla MULTITAG_ART_ST:" . $base->errstr, 1);
             $msg_ret = "- Tabla MULTITAG_ART_ST creada OK.";
         }
@@ -629,9 +601,7 @@ sub existe_tabla {
     $salida->finish;
     return $nom;
   };
-
 };
-
 
 return 1;
 

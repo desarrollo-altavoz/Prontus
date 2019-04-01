@@ -729,6 +729,7 @@ sub check_user {
         };
     };
 
+    # solo aca se inicializa esta variable
     $prontus_varglb::USERS_USR = $sess_obj->{username};
 
     if (&lib_prontus::open_dbm_files() ne 'ok') {
@@ -3270,18 +3271,16 @@ sub fechas_ok {
         $horae = $1 . $2 . '00';
     } else {
         print STDERR "horae undef[$horae]\n" if ($DEBUG_FECHAS);
-    };
-
+    }
 
     # ts_now
     my $ts_now;
     if ($ts_preview ne '') {
         $ts_now = $ts_preview;
-    }
-    else {
+    } else {
         $ts_now = &glib_hrfec_02::get_dtime_pack4(); # TS de AHORA.
         # $ts_now = '20110112000000'; # TS 0 de la mañana
-    };
+    }
 
     # ts_p
     my $ts_p = "$fechap$horap";
@@ -3293,7 +3292,7 @@ sub fechas_ok {
 
     if ( ($ts_p > $ts_now) || ($ts_e < $ts_now) ) {
         return 0; # no publicar articulo # 1.22
-    };
+    }
     return 1;
 };
 
@@ -3305,7 +3304,6 @@ sub replace_mtime {
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,
         $mtime, $ctime,  $blksize,  $blocks)= stat $path_artic;
     my $ts_lastmodif = &glib_hrfec_02::time2ts($mtime);
-    # warn("mtime[$mtime]ts_lastmodif[$ts_lastmodif]\n");
 
     if ($ts_lastmodif =~ /^(\d{8})(\d{6})$/) {
         my $fecham = $1;
@@ -3320,9 +3318,8 @@ sub replace_mtime {
 
         if ($horam =~ /(\d{2})(\d{2})(\d{2})$/) {
             $horam = $1 . ':' . $2 . ':' . $3;
-        };
+        }
         $buf =~ s/%%_horam%%/$horam/ig;
-        # warn("horam[$horam]");
     } else {
 
         $buf =~ s/%%_FECHAMLONG%%//ig;
@@ -3331,8 +3328,7 @@ sub replace_mtime {
         $buf =~ s/%%_horam%%//ig;
     };
     return $buf;
-};
-
+}
 
 # ---------------------------------------------------------------
 sub replace_tsdata {

@@ -151,6 +151,10 @@ sub crear_tablas {
 
     my ($msg_ret, $hay_err);
 
+    if (-f "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_sql_innodb.cfg") {
+        $lib_setbd::ENGINE = 'InnoDB';
+    }
+
     ($msg_ret, $hay_err) = &lib_setbd::crear_tabla_secc($base, $prontus_varglb::MOTOR_BD);
     &add2result($msg_ret, $hay_err);
 
