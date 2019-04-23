@@ -39,7 +39,6 @@ var CfgXcoding = {
      */
     cargaCfg: function () {
         $.ajax({
-            async: false,
             url: CfgXcoding.dirCgi + CfgXcoding.cgiCargaFormatos,
             data: {
                 prontus_id: Admin.prontus_id
