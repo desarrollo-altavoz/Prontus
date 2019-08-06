@@ -161,11 +161,25 @@ main: {
     $buffer = &set_rayo($buffer); # a partir de 11.2.19 el rayo va incorporado al guardar portada
     $buffer = &set_admin_port($buffer);
 
-    #~ Se parsean la seccion de Mis Busquedas
+    # Se parsean la seccion de Mis Busquedas
     $buffer = &lib_search::parsea_mis_busquedas($buffer, $prontus_varglb::USERS_ID);
 
-    #~ Parsea un par de variables del CFG
+    # Parsea portada de inicio seleccionada
     $buffer =~ s/%%_edicbase_ini_selected%%/$prontus_varglb::EDICBASE_INI_SELECTED/ig;
+
+    if ($prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC eq 'SI') {
+        my $public_server_name;
+        if ($prontus_varglb::PUBLIC_SERVER_NAME !~/^http/i ) {
+            $public_server_name = 'http://'.$prontus_varglb::PUBLIC_SERVER_NAME;
+        } else {
+            $public_server_name = $prontus_varglb::PUBLIC_SERVER_NAME;
+        }
+        $buffer =~ s/%%_use_public_server_name%%/si/;
+        $buffer =~ s/%%_public_server_name%%/$public_server_name/;
+    } else {
+        $buffer =~ s/%%_use_public_server_name%%/no/;
+        $buffer =~ s/%%_public_server%%//;
+    }
 
     print "Content-type: text/html\n\n";
     print $buffer;
