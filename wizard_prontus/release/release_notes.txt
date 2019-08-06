@@ -10498,3 +10498,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Publicacion por email
     [bugfixes]
         - Corrige mensaje de error de conexión a casilla
+    [files]
+        /cgi-cpn/prontus_art_fromemail.cgi
+
+- Transcodificación
+    [bugfixes]
+        - Transcodificación fallaba si video original tenía resolución impar
+    [files]
+        /cgi-cpn/xcoding/lib_xcoding.pm
+
+
