@@ -249,12 +249,12 @@ sub get_default_port {
                                $prontus_varglb::DIR_SECC;
             print "Content-Type: text/html\n\n";
             my $msg = "El archivo plantilla de portada <b>$dir_tpl_port/$entry</b> no existe."
-                    . " Debes crearlo o cambiar la configuraci&oacute;n manualmente"
+                    . " Debes crearlo o cambiar la configuraci&oacute;n manualmente en"
+                    . " el archivo <b>/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID-port.cfg</b>.<br/><br/>"
                     . " <a href=\"/$prontus_varglb::DIR_CGI_CPAN/prontus_edit_main.cgi"
                     . "?_path_conf=/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID.cfg"
                     . "&_dir=/$prontus_varglb::PRONTUS_ID/cpan&_file=$prontus_varglb::PRONTUS_ID-port.cfg\">"
-                    . "editando</a>"
-                    . " el archivo <b>/$prontus_varglb::PRONTUS_ID/cpan/$prontus_varglb::PRONTUS_ID-port.cfg</b>.";
+                    . "Haz click aqu&iacute; para editar la configuraci&oacute;n</a>";
 
             &glib_html_02::print_pag_result("Ha ocurrido un problema", $msg);
             print STDERR "Error: Archivo plantilla de portada no existe: $dir_tpl_port/$entry\n";
@@ -330,8 +330,8 @@ sub get_html_port {
         if ($incluir_item eq 'S') {
             if (! -f "$dir_tpl_port/$value") {
                 print "Content-Type: text/html\n\n";
-                &glib_html_02::print_pag_result("","Error: Archivo plantilla de portada no existe: $dir_tpl_port/$clave");
-                print STDERR "Error: Archivo plantilla de portada no existe: $dir_tpl_port/$clave\n";
+                &glib_html_02::print_pag_result("","Error: Archivo plantilla de portada no existe: $dir_tpl_port/$value");
+                print STDERR "Error: Archivo plantilla de portada no existe: $dir_tpl_port/$value\n";
                 exit;
             };
             $val_display = $value if ($val_display eq '');
