@@ -35,12 +35,9 @@ our $XML_BASE =
 "<?xml version='1.0' encoding='UTF-8'?>
 <artic_data>
 <_private>
-<_txt_titular>
-</_txt_titular>
-<_slug>
-</_slug>
-<_custom_slug>
-</_custom_slug>
+<_txt_titular></_txt_titular>
+<_slug></_slug>
+<_custom_slug></_custom_slug>
 <_art_autoinc></_art_autoinc>
 <_users_id></_users_id>
 <_fid></_fid>
