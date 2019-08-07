@@ -24,6 +24,21 @@ our $MAX_ROWS = 50;
 # ------------------------------------------------------------------------- #
 # Envia un mensaje de correo electronico.
 # &envia_mail($to,$from,$subj,$body,$filename,$filedata)
+sub envia_mail2 {
+    my ($to, $from, $replyto, $subj, $body, $filename, $filedata) = @_;
+    my $resp;
+
+    if ($filename) {
+        $resp = &lib_mail::mail_multipart($from, $to, $replyto, $subj, $body, $filename, $filedata, 0, $lib_form::SERVER_SMTP);
+    } else {
+        $resp = &lib_mail::mail_text($from, $to, $replyto, $subj, $body, 0, $lib_form::SERVER_SMTP);
+    };
+    return $resp;
+
+}; # envia_mail
+# ------------------------------------------------------------------------- #
+# Envia un mensaje de correo electronico.
+# &envia_mail($to,$from,$subj,$body,$filename,$filedata)
 sub envia_mail {
 
     my ($to,$from,$subj,$body,$filename,$filedata) = @_;

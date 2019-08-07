@@ -444,9 +444,10 @@ sub data_management {
     foreach my $email (@ADMIN_MAILS) {
         $to = $email;
         if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
-            $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
+            $result .= ' 1 ' . &lib_form::envia_mail2($to,$to,$from, $subj,$body,'','');
         } else {
-            $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$file_final_path);
+            $result .= ' 1 ' . &lib_form::envia_mail2($to,$to,$from, $subj,$body,$filename,$file_final_path);
+        }
         }
 
     };
@@ -491,10 +492,9 @@ sub data_management {
 
             $body =~ s/%\w+%//sg; # Elimina tags no parseados.
             $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
-            $result .= ' 5 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
-        };
-    };
-
+            $result .= ' 5 ' . &lib_form::envia_mail2($to, $from, $from, $subj, $body, '', '');
+        }
+    }
     return $result; # $result es solo para debug.
 }; # dataManagement
 

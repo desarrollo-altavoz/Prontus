@@ -10495,6 +10495,14 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 11.2.106 - XX/08/2019 - EAG
 ====================================================================================================
+- Prontus Form
+    [mejora]
+        Prontus form usa "reply-to" en vez "from" para correo del usuario que hace la consulta, el
+    "from" para los correos es el mismo usado para los correos enviados a usuarios.
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/lib_form.pm
+
 - Publicacion por email
     [bugfixes]
         - Corrige mensaje de error de conexión a casilla
