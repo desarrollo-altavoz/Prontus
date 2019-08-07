@@ -281,7 +281,6 @@ main: {
 sub data_management {
     my($body,$data,$backupdir,$backupdata,$backupheaders);
     my ($to,$from,$subj,$filename,$filedata,$file_final_path,$fecha,$hora,$ip);
-    # my (@datos) = &glib_cgi_04::param();
     my ($result);
     my (%files);
     my ($random) = time . $$; # Mejor usamos el numero de proceso y listo. time . rand(1000000);
@@ -448,8 +447,6 @@ sub data_management {
         } else {
             $result .= ' 1 ' . &lib_form::envia_mail2($to,$to,$from, $subj,$body,$filename,$file_final_path);
         }
-        }
-
     };
     # Forma cuerpo para el remitente (autorrespuesta).
     if ($PRONTUS_VARS{'form_from'} ne '') {
