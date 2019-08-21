@@ -100,6 +100,12 @@ main: {
     $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
 
+    if ($FORM{'video'} =~ /(\/site\/\w+\/\d+\/mmedia\/multimedia_video\d+\d{14}\.\w+)$/i) {
+        $FORM{'video'} = "/$prontus_varglb::PRONTUS_ID$1";
+    } else {
+        &glib_html_02::print_json_result(0, "Error: Archivo de video no valido", 'exit=1,ctype=1');
+    }
+
     # chequeo de tamaño de archivo
     # no se procesa si es mas grande de 50 MB 52428800 por defecto
     $msg_err = "Tamaño de archivo es muy grande para ser transcodificado, límite: [$prontus_varglb::MAX_XCODING MB]" if ( (-s "$prontus_varglb::DIR_SERVER$FORM{'video'}") > ($prontus_varglb::MAX_XCODING*1048576));

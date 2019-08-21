@@ -281,7 +281,6 @@ main: {
 sub data_management {
     my($body,$data,$backupdir,$backupdata,$backupheaders);
     my ($to,$from,$subj,$filename,$filedata,$file_final_path,$fecha,$hora,$ip);
-    # my (@datos) = &glib_cgi_04::param();
     my ($result);
     my (%files);
     my ($random) = time . $$; # Mejor usamos el numero de proceso y listo. time . rand(1000000);
@@ -418,16 +417,12 @@ sub data_management {
     $body .= $msg_signature;
 
     # Envia mail a el o los administradores.
-    if($PRONTUS_VARS{'chk_form_force_from'}) {
-        $from = $PRONTUS_VARS{'form_from'};
-    #Se agrega campo para correo remitente fijo
-    } elsif ($PRONTUS_VARS{'form_remitente'} ne '') {
+    if ($PRONTUS_VARS{'form_remitente'} ne '') {
         $from = $PRONTUS_VARS{'form_remitente'};
-    } elsif (&glib_cgi_04::param('email') ne '') {
-        $from = &glib_cgi_04::param('email');
     } else {
         $from = $PRONTUS_VARS{'form_from'};
-    };
+    }
+
     $subj = $PRONTUS_VARS{'form_subject'.$VISTAVAR};
     # 1.1
     $subj = &procesaIFs($subj,1);
@@ -441,14 +436,14 @@ sub data_management {
         $subj =~ s/\%$key\%/$data/sg;
     };
     $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
+    my $replyto = &glib_cgi_04::param('email');
     foreach my $email (@ADMIN_MAILS) {
         $to = $email;
         if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
-            $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
+            $result .= ' 1 ' . &lib_form::envia_mail2($to,$from,$replyto,$subj,$body,'','');
         } else {
-            $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$file_final_path);
+            $result .= ' 1 ' . &lib_form::envia_mail2($to,$from,$replyto,$subj,$body,$filename,$file_final_path);
         }
-
     };
     # Forma cuerpo para el remitente (autorrespuesta).
     if ($PRONTUS_VARS{'form_from'} ne '') {
@@ -491,10 +486,9 @@ sub data_management {
 
             $body =~ s/%\w+%//sg; # Elimina tags no parseados.
             $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
-            $result .= ' 5 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
-        };
-    };
-
+            $result .= ' 5 ' . &lib_form::envia_mail2($to, $from, $from, $subj, $body, '', '');
+        }
+    }
     return $result; # $result es solo para debug.
 }; # dataManagement
 

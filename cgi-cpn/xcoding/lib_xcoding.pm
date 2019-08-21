@@ -186,6 +186,18 @@ sub get_cmd_ffmpeg {
         $ruta_trabajo = $RUTA_TEMPORAL;
     }
 
+    # la resolucion SIEMPRE debe ser par, si no es par se debe redimensionar
+    $nuevo_ancho = $ANCHO;
+    $nuevo_alto = $ALTO;
+    if ($ANCHO %2 != 0) {
+        $nuevo_ancho += 1;
+        $resize = 1;
+    }
+    if ($ALTO%2 != 0) {
+        $nuevo_alto += 1;
+        $resize = 1;
+    }
+
     # si el bitrate de video es mayor al maximo se debe cambiar la resolucion
     # o si el alto o ancho superan el tamaño definido
     if ($VBITRATE > $max_vrate || $ANCHO > $max_size || $ALTO > $max_size) {
@@ -308,7 +320,7 @@ sub get_cmd_ffmpeg {
         #si se hacen 2 pasos hay que entregar el string correspondiente a cada paso
         if (!$pass) {
             # primer paso los datos se envian a /dev/null ya que no se necesitan, no se procesa resize tampoco $ruta_trabajo$ARTIC_filename
-            return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y $force_frames -vcodec $video_string -pass 1 -an -passlogfile $ruta_trabajo$ARTIC_filename.log -f rawvideo /dev/null", 1);
+            return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y $resize_string $force_frames -vcodec $video_string -pass 1 -an -passlogfile $ruta_trabajo$ARTIC_filename.log -f rawvideo /dev/null", 1);
         } else {
             # segundo paso
             return ("$PATHNICE $prontus_varglb::DIR_FFMPEG/ffmpeg $threads_string -i $origen -y $resize_string $force_frames -vcodec $video_string -pass 2 -acodec $audio_string -passlogfile $ruta_trabajo$ARTIC_filename.log -f mp4 $ruta_trabajo$destino", 1);

@@ -10491,3 +10491,44 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige compatibilidad por deprecación de asincronia en ajax
     [files]
         /wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
+
+====================================================================================================
+11.2.106 - 21/08/2019 - EAG
+====================================================================================================
+- Prontus Form
+    [mejora]
+        - Prontus form usa "reply-to" en vez "from" para correo del usuario que hace la consulta, el
+    "from" para los correos es el mismo usado para los correos enviados a usuarios.
+        - Los correos llegan siempre desde el correo ingresado enn el campo from_form o form_remitente
+         si se define, esto evita que los correos sean identificados como "suplantación de identidad"
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/lib_form.pm
+
+- Publicacion por email
+    [bugfixes]
+        - Corrige mensaje de error de conexión a casilla
+    [files]
+        /cgi-cpn/prontus_art_fromemail.cgi
+
+- Administrador de artículos
+    [mejora]
+        - Portadas se abren usando PUBLIC_SERVER_NAME si esta configurado USAR_PUBLIC_SERVER_NAME_VER_ARTIC en SI.
+    [bugfixes]
+        - Mensaje de error de configuración de portadas era erróneo y poco claro para corregir.
+    [files]
+        /cgi-cpn/prontus_art_newadmin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+
+- Transcodificación
+    [bugfixes]
+        - Transcodificación fallaba si video original tenía resolución impar
+        - Error en validación de parametros permitía ejecutar comandos
+    [files]
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videocut.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi

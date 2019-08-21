@@ -89,18 +89,27 @@ main: {
         die("Prontus ID inicado no es valido");
     }
 
+    ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
+    if ($prontus_varglb::USERS_ID eq '') {
+        print "Sesion invalida";
+        exit;
+    };
+
     # Path conf y load config de prontus
     my $path_conf = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/cpan/$FORM{'prontus_id'}.cfg";
     $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
     $path_conf =~ s/^$prontus_varglb::DIR_SERVER//;
 
-    if ($FORM{'video'} =~ /^\//) {
-        $FORM{'video'} = $prontus_varglb::DIR_SERVER . $FORM{'video'};
+    # se valida el nombre de archivo del video
+    if ($FORM{'video'} =~ /(\/site\/\w+\/\d+\/mmedia\/multimedia_video\d+\d{14}\.\w+)$/i) {
+        $FORM{'video'} = "/$prontus_varglb::PRONTUS_ID$1";
     } else {
-        $FORM{'video'} = $prontus_varglb::DIR_SERVER .'/'. $FORM{'video'};
-    };
+        print "Error: Archivo de video no valido\n";
+        exit;
+    }
 
+    $FORM{'video'} = "$prontus_varglb::DIR_SERVER$FORM{'video'}";
 
     $FORM{'t1'} =~ s/[^0-9\.]//g;
     $FORM{'t2'} =~ s/[^0-9\.]//g;
