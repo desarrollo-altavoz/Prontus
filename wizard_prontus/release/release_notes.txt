@@ -10499,6 +10499,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejora]
         - Prontus form usa "reply-to" en vez "from" para correo del usuario que hace la consulta, el
     "from" para los correos es el mismo usado para los correos enviados a usuarios.
+        - Los correos llegan siempre desde el correo ingresado enn el campo from_form o form_remitente
+         si se define, esto evita que los correos sean identificados como "suplantación de identidad"
     [files]
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/lib_form.pm
