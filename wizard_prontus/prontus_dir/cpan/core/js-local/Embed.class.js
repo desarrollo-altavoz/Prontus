@@ -28,7 +28,7 @@ var Embed = {
             var result = patt.exec(videoUrl);
             pathPlayer = '/'+result[1]+'/flash/players/playerVideo.swf';
         }
-        code += '<textarea rows="10" cols="80" style="font-size:12px;" id="embedable-code" class="fieldform">';
+        code += '<textarea rows="10" cols="80" style="font-size:12px;" class="embedable-code fieldform">';
         code += '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="'+width+'" height="'+heigth+'" id="videoembed">';
         code += '<param name="movie" value="'+pathPlayer+'">';
         code += '<param name="quality" value="high">';
@@ -40,7 +40,7 @@ var Embed = {
         code += '</object>';
         code += '</textarea>';
         $('#embed-code').append(code);
-        $('#embedable-code').select();
+        $('.embedable-code').select();
     },
     // -------------------------------------------------------------------------
     //muestra/oculta el codigo para embeber el video
@@ -63,7 +63,7 @@ var Embed = {
         var code = '';
         var patt = new RegExp('/(.+?)/site/.+');
         var result = patt.exec(audioUrl);
-        code += '<textarea rows="13" cols="50" class="fieldform" id="embedable-code">';
+        code += '<textarea rows="13" cols="50" class="fieldform embedable-code">';
         code += '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="'+width+'" height="'+heigth+'" id="audioembed">';
         code += '<param name="movie" value="/'+result[1]+'/flash/players/playerAudio.swf">';
         code += '<param name="quality" value="high">';
@@ -75,6 +75,6 @@ var Embed = {
         code += '</object>';
         code += '</textarea>';
         $('#embed-code').append(code);
-        $('#embedable-code').select();
+        $('.embedable-code').select();
     }
 };
