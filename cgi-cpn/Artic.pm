@@ -2109,8 +2109,7 @@ sub _ajusta_campos_art4bd {
 
     $campos{'_users_id'} = '' if ($campos{'_users_id'} eq '');
     $campos{'_soloportadas'} = '' if ($campos{'_soloportadas'} eq '');
-
-
+    $campos{'_txt_bajada'}   = '' if (!defined($campos{'_txt_bajada'}));
 
     $campos{'_seccion1'} = '0' if ($campos{'_seccion1'} eq '');
     $campos{'_tema1'} = '0' if ($campos{'_tema1'} eq '');
@@ -2133,35 +2132,29 @@ sub _ajusta_campos_art4bd {
 
     # Ajusta bajada
     my $bajada = $campos{'_txt_bajada'};
-    if ($bajada eq '') {
-        $bajada = $this->{campos}->{'vtxt_cuerpo'};
+    if ($bajada eq '' && $campos{'vtxt_cuerpo'} ne '') {
+        $bajada = $campos{'vtxt_cuerpo'};
         $bajada = &lib_prontus::get_minitext_value($bajada);
-    };
-    $bajada =~ s/\s+$//s;
-    $bajada =~ s/^\s+//s;
-    $bajada =~ s/ +/ /sg;
-    $bajada =~ s/ +$//sg;
-    # Ajusta en caso de bajada muy larga, de manera de evitar truncado brusco en la BD
+    }
 
-    # convierte a latin1 para poder contar bien los chars
-    # utf8::decode($bajada);
-
-    my $largo_bajada = length($bajada);
-    # print STDERR "bajada original[$bajada] largo[$largo_bajada]\n";
-
-    if ((length $bajada) < 200) {
-        if ( ($bajada !~ /\.$/) && ($bajada ne '') ) {
-            $bajada .= '.'; # queda de 200
+    if ($bajada ne '') {
+        $bajada =~ s/\s+$//s;
+        $bajada =~ s/^\s+//s;
+        $bajada =~ s/ +/ /sg;
+        $bajada =~ s/ +$//sg;
+        # Ajusta en caso de bajada muy larga, de manera de evitar truncado brusco en la BD
+        if ((length $bajada) < 200) {
+            if ( ($bajada !~ /\.$/) && ($bajada ne '') ) {
+                $bajada .= '.'; # queda de 200
+            };
+        } else {
+            # $bajada = substr($bajada, 0, 197) . '...';
+            $bajada = &lib_prontus::ajusta_nchars($bajada, 200, 1); # ajusta por palabras en modo conteo de bytes
         };
-    } else {
-        # $bajada = substr($bajada, 0, 197) . '...';
-        $bajada = &lib_prontus::ajusta_nchars($bajada, 200, 1); # ajusta por palabras en modo conteo de bytes
-    };
-    # restaura a utf8
-    # utf8::encode($bajada);
-    # print STDERR "bajada ajustada[$bajada]\n";
 
-    $campos{'_txt_bajada'} = $bajada;
+        # print STDERR "bajada ajustada[$bajada]\n";
+        $campos{'_txt_bajada'} = $bajada;
+    }
 
     # Ajusta titular
     my $titu = $campos{'_txt_titular'};
@@ -2174,8 +2167,6 @@ sub _ajusta_campos_art4bd {
     # restaura a utf8
     utf8::encode($titu);
     $campos{'_txt_titular'} = $titu;
-
-
 
     $campos{'_fechap_horap'} = "$campos{'_fechap'}$campos{'_horap'}";
     $campos{'_fechae_horae'} = "$campos{'_fechae'}$campos{'_horae'}";
