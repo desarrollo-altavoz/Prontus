@@ -19,8 +19,8 @@ var Embed = {
     //genera el codigo para embeber el video
     embedVideo: function() {
         var videoUrl =$('#linkVideo').children().attr('href');
-        var width = 440;
-        var heigth = 350;
+        var width = 640;
+        var heigth = 360;
         var code = '';
         var pathPlayer = $('#_xcode_player_path').val();
         if(typeof pathPlayer === 'undefined' || pathPlayer === null || pathPlayer === '') {
@@ -38,6 +38,12 @@ var Embed = {
         code += '<param name="flashvars" value="VURL=' + videoUrl + '">';
         code += '<embed src="'+pathPlayer+'" width="'+width+'" height="'+heigth+'" name="videoembed" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" wmode="opaque" allowfullscreen="true" allowscriptaccess="sameDomain" flashvars="VURL='+videoUrl+'">';
         code += '</object>';
+        code += '</textarea>';
+        // html5 tag
+        code += '<textarea rows="10" cols="80" style="font-size:12px;" class="embedable-code fieldform">';
+        code += '<video width="640" height="360" controls>';
+        code += '<source src="' + videoUrl + '" type="video/mp4">';
+        code += '</video>';
         code += '</textarea>';
         $('#embed-code').append(code);
         $('.embedable-code').select();
@@ -73,6 +79,11 @@ var Embed = {
         code += '<param name="flashvars" value="VURL=' + audioUrl + '">';
         code += '<embed src="/'+result[1]+'/flash/players/playerAudio.swf" width="'+width+'" height="'+heigth+'" name="audioembed" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" wmode="opaque" allowfullscreen="true" allowscriptaccess="sameDomain" flashvars="VURL='+audioUrl+'">';
         code += '</object>';
+        code += '</textarea>';
+        // html5 tag
+        code += '<textarea rows="10" cols="80" style="font-size:12px;" class="embedable-code fieldform">';
+        code += '<audio src="' + audioUrl + '" controls>';
+        code += '</audio>';
         code += '</textarea>';
         $('#embed-code').append(code);
         $('.embedable-code').select();
