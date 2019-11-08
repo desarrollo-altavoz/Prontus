@@ -108,8 +108,9 @@ main: {
     } elsif($used > 80) {
       $class_level = 3;
     };
+
+    $buffer =~ s/%%_quota_msg%%/$msg/g;
     if ($msg ne '') {
-        $buffer =~ s/%%_quota_msg%%/$msg/g;
         $buffer =~ s/<!--quota_data-->(.*)<!--\/quota_data-->//sg;
     } else {
         $buffer =~ s/<!--quota_msg-->(.*)<!--\/quota_msg-->//sg;

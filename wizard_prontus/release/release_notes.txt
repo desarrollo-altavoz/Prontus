@@ -10448,7 +10448,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 - General
     [mejora]
-        - Agrega propiedad "saved" al articulo para saber que se guardo aunque
+        - Agrega propiedad "saved" al articulo para saber que se guardó aunque
         fallen los procesos siguientes y poder logear la accion y realizar otras tareas
         - Puede utilizar tablas en innodb, crear archivo /cgi-cpn/prontus_sql_innodb.cfg
         - Mejora informacion sobre que directorios no se pueden crear
@@ -10536,11 +10536,19 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 11.2.107 - XX/10/2019 - EAG
 ====================================================================================================
+- General
+    [mejora]
+        - Agrega códigos de embed para html5
+    [bugfixes]
+        - Bajada se estaba guardando mal en base de datos si venía vacía
+        - Corrige error en información de Prontus que ocultaba menu para deslogear
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/prontus_head_info.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Embed.class.js
 
-Bajada se estaba guardando mal
-
-cgi-cpn/Artic.pm
-
-Validación de video para sacar screenshot estaba incorrecta
-
-cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
+- Transcodificación
+    [bugfixes]
+        - Validación de video para sacar screenshot estaba incorrecta
+    [files]
+        /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
