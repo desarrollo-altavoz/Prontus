@@ -10561,7 +10561,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 - Multitag
     [mejora]
-        - Implementa bindings para consulta SQL
+        - Implementa bindings para consultas SQL de multitag
     [files]
         /cgi-bin/multitag/prontus_multitag_list.cgi
         /cgi-cpn/glib_dbi_02.pm
