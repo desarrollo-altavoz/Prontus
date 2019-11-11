@@ -199,7 +199,46 @@ sub ejecutar_sql_bind { # 01.2
   return($sth);
 };
 
+#-------------------------------------------------------------------------
+# Ejecuta una sentencia sql parametrizada y devuelve su handler.
+# Param entrada:
+#  0) descriptor de la base de datos abierta.
+#  1) sentencia SQL parametrizada.
+#  2) ref a array con nombres de los parámetros a usar en la sentencia SQL.
+#  3) ref a array con nombres de las variables asociadas a los campos de respuesta.
+# retorno:
+#  0) descriptor de la respuesta. (Usar solamente fetch para cargar las variables con las filas siguientes.)
+sub ejecutar_sql_bind_param {
+    my $dbh = shift;
+    my $sql = shift;
+    my $ref_params = shift;
+    my @ref_vars = @_;
+
+
+    my $sth = $dbh->prepare($sql) or print STDERR "Error: ".$dbh->errstr ."\n";
+    $sth->execute(@$ref_params) or print STDERR "Error: ". $dbh->errstr."\n";
+    $sth->bind_columns(undef, @ref_vars) or print STDERR "Error: ". $dbh->errstr."\n";
+    print STDERR "SQL Error: [$sql]\n" if ($dbh->errstr);
+    return($sth);
+}
+
+#-------------------------------------------------------------------------
+# Ejecuta una sentencia sql parametrizada y devuelve su handler.
+# Param entrada:
+#  0) descriptor de la base de datos abierta.
+#  1) sentencia SQL parametrizada.
+#  2) ref a array los parámetros a usar en la sentencia SQL.
+# Retorna : handle de salida de la sentencia
+sub ejecutar_sql_param {
+    my $dbh = shift;
+    my $sql = shift;
+    my $ref_params = shift;
+
+    my $sth = $dbh->prepare($sql) or print STDERR "Error: ".$dbh->errstr ."\n";
+    $sth->execute(@$ref_params) or print STDERR "Error: ".$dbh->errstr ."\n";
+    print STDERR "SQL Error: [$sql]\n" if ($dbh->errstr);
+    return($sth);
+}
 
 #-------------------------------END LIBRERIA------------------
-
 return 1;

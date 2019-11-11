@@ -10558,3 +10558,10 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Corrige de codificación de la cgi
     [files]
         /cgi-cpn/prontus_art_ficha.cgi
+
+- Multitag
+    [mejora]
+        - Implementa bindings para consulta SQL
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+        /cgi-cpn/glib_dbi_02.pm
