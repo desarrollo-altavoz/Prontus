@@ -10552,3 +10552,9 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Validación de video para sacar screenshot estaba incorrecta
     [files]
         /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
+
+- Ficha de Artículo
+    [bugfixes]
+        - Corrige de codificación de la cgi
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
