@@ -2292,9 +2292,7 @@ sub generar_vista_art {
         # Stamp demo
         $buffer =~ s/<title>(.*?)<\/title>/<title>$stamp_demo$1<\/title>/is;
 
-        # tag Generator
-        $buffer = &lib_prontus::add_generator_tag($buffer);
-
+        # procesa PF
         $buffer = &lib_prontus::parser_custom_function($buffer);
 
         $buffer =~ s/%%_vista%%/$mv/g;

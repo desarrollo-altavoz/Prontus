@@ -2494,8 +2494,6 @@ sub parse_plantilla_portada {
     my $buffer = &generic_parse_port($path_tpl, $dir_server, $prontus_id, $public_server_name, $nom_edic,
     0, 0, 0, $users_perfil, $mv);
     # print STDERR "buffer[$buffer]\n";
-    # Parseos especificos
-    $buffer = &lib_prontus::add_generator_tag($buffer);
 
     # En los preview, poner links a los demas previews
     $buffer =~ s/%%_vista%%/$mv/g;
@@ -2551,9 +2549,6 @@ sub make_portada {
         my $buffer = &generic_parse_port($path_tpl_clon, $dir_server, $prontus_id, $public_server_name, $nom_edic,
         $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil, $mv);
         # print STDERR "buffer[$buffer]\n";
-        # Parseos especificos
-        # $buffer =~ s/<\/head>/\n<!--prontus_key=$prontus_key-->\n<\/head>/is;  # 1.16
-        $buffer = &lib_prontus::add_generator_tag($buffer);
 
         # Escribe portada html
         $dest_file_clon =~ s/\/port\//\/port-$mv\// if ($mv);
@@ -6725,15 +6720,6 @@ sub get_formatos_multimedia {
 }
 
 # ---------------------------------------------------------------
-sub add_generator_tag {
-    my $buffer = shift;
-    if ($buffer !~ /<meta name *= *["']Generator["']/i) {
-        my $gen_content = "Prontus CMS";
-        $buffer =~ s/<\/head>/\n<meta name="Generator" content="$gen_content" \/>\n<\/head>/is;
-    };
-    return $buffer;
-};
-
 sub dropbox_backup {
     my $recurso = $_[0];
     my $dir_dropbox = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/dropbox";
