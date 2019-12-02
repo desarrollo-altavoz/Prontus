@@ -46,7 +46,7 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   do 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.98.1 - 07/11/2017';
+  $VERSION_PRONTUS = '11.2.106 - 21/08/2019';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
@@ -64,7 +64,7 @@ sub init { # Prontus 6.0
   $UPLOADS_PERMITIDOS_ORIG = 'jpg,jpeg,jpe,gif,png,bmp,tif,tiff,ico,asf,asx,wax,wmv,wmx,avi,divx,flv,mov'
                        . ',qt,mpeg,mpg,mpe,3gp,txt,rtx,css,htm,html,mp3,m4a,mp4,m4v,ra,ram,wav,ogg,mid'
                        . ',midi,wma,rtf,pdf,doc,docx,pot,pps,ppt,pptx,wri,xla,xls,xlsx,xlt,xlw,mdb'
-                       . ',mpp,swf,tar,zip,gz,gzip,odt,odp,ods,odg,odc,odb,odf,csv';
+                       . ',mpp,swf,tar,zip,gz,gzip,odt,odp,ods,odg,odc,odb,odf,csv,svg';
 
   $BD_CONN = '';
 
@@ -81,6 +81,9 @@ sub init { # Prontus 6.0
   $USER_BD = '';
   $PWD_BD = '';
   $SERVER_BD = '';
+
+  # Tipos de imagenes que no se pueden manipular.
+  $prontus_varglb::IMG_TYPE_NOEDIT{'svg'} = 1;
 
   # Taxonomia
   $TAXONOMIA_NIVELES = '';
@@ -172,7 +175,7 @@ sub init { # Prontus 6.0
 
     # variables para friendly url v4
     $DIR_FRIENDLY = '/friendly/links'; # directorio donde se almacenaran los includes de friendly urls
-    $URL_NUMBER = 1478228400; # numero base de epoch para restar de forma de no generar ids adicionales muy grandes pero siempre crecientes para diferenciar las urls
+    $URL_NUMBER = 1514775600; # numero base de epoch para restar de forma de no generar ids adicionales muy grandes pero siempre crecientes para diferenciar las urls
 
     # directorio cache multitag
     $DIR_MULTITAG = '/cache/multitag';
@@ -283,7 +286,7 @@ sub init { # Prontus 6.0
 
 
   # Mostrar en la adm. de articulos y ediciones las xx ultimas ediciones, ordenadas por tmstamp
-  $NRO_EDICS_WORK = 10000;
+  $NRO_EDICS_WORK = 15;
   $DIR_LOG = ''; # Dir. absoluto al dir donde se deja el log del publicador.
   $PRONTUS_LOG = ''; # SI | NO.
 

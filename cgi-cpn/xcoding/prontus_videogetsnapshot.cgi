@@ -95,6 +95,12 @@ main: {
         &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
     };
 
+    if ($FORM{'video'} =~ /(\/site\/\w+\/\d+\/mmedia\/multimedia_video\d+\d{14}\.\w+)$/i) {
+        $FORM{'video'} = "/$prontus_varglb::PRONTUS_ID$1";
+    } else {
+        &glib_html_02::print_json_result(0, "Error: Archivo de video no valido", 'exit=1,ctype=1');
+    }
+
     my $res = &do_snapshots();
 
     # Falta convertir JS para que recepcione json.

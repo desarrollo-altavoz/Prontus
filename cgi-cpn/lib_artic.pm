@@ -39,7 +39,7 @@ sub save_artic_with_object {
     if (! ref($base)) {
         &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
         return $msg_err_bd;
-    };
+    }
 
     my $pag_articulo;
     my $autoinc = 0;
@@ -68,29 +68,45 @@ sub save_artic_with_object {
     if (!$is_new) {
         %campos_xml_old = $ARTIC_OBJ->get_xml_content();
         $tags_old = $campos_xml_old{'_tags'};
-    };
+    }
 
     # Generar y guardar xml. Se guardan los recursos subidos a traves del fid
     # Esto es comun para nuevo y actualizar
     if (!$ARTIC_OBJ->generar_xml_artic()) {
         &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
         return $Artic::ERR;
-    };
-
-    # Guardar articulo.
-    my $msg_err_save = &do_save($base, $is_new);
-    if ($msg_err_save) {
-        &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
-        return $msg_err_save;
-    };
-
-    # Full path del artic (de la vista default)
-    my $fullpath_artic = $ARTIC_OBJ->get_fullpath_artic('', $ARTIC_OBJ->{campos}->{'_plt'});
+    }
 
     # Loguear modificacion
     my $label_action = 'Actualizar';
     $label_action = 'Ingresar' if ($is_new);
-    &lib_prontus::write_log($label_action, 'Articulo', $fullpath_artic);
+
+    # chequeamos cambio de alta para log.
+    my $cambio_estado = '';
+    my $estado_articulo = $ARTIC_OBJ->{campos}->{'_alta'} ? 'SI' : 'NO';
+    if (! $is_new) {
+        my $estado_previo = $campos_xml_old{'_alta'} ? 'SI' : 'NO';
+        if ($estado_articulo ne $estado_previo) {
+            $cambio_estado = " (Cambia Alta: $estado_previo -> $estado_articulo)";
+        }
+    } else {
+        $cambio_estado = " (Alta: $estado_articulo)";
+    }
+
+    # Guardar articulo.
+    my $msg_err_save = &do_save($base, $is_new);
+    if ($msg_err_save) {
+        if ($ARTIC_OBJ->{saved}) {
+            &lib_prontus::write_log($label_action, 'Articulo'. $cambio_estado, 'ID: '.$ARTIC_OBJ->{ts}. ', '.$Artic::ERR);
+        }
+        &lib_waitlock::unlock_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/art.smf");
+        return $msg_err_save;
+    }
+
+    &lib_prontus::write_log($label_action, 'Articulo'. $cambio_estado, 'ID: '.$ARTIC_OBJ->{ts});
+
+    # Full path del artic (de la vista default)
+    my $fullpath_artic = $ARTIC_OBJ->get_fullpath_artic('', $ARTIC_OBJ->{campos}->{'_plt'});
 
     # Lee de vuelta del XML
     my %campos_xml = $ARTIC_OBJ->get_xml_content();
@@ -244,20 +260,66 @@ sub do_save {
     # Agrega autoinc al XML del artic
     $ARTIC_OBJ->setear_autoinc($autoinc);
 
-    # Generar vista principal (a partir del xml)
-    # print STDERR "Generar vista normal con autoinc[$autoinc]\n";
-    %{$ARTIC_OBJ->{xml_content}} = (); # fuerza a que se lea el XML porque cuando se hizo el new, se setearon algunas vars pero no todas.
-    $ARTIC_OBJ->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
-            || return $Artic::ERR;
+    # El artículo y los datos ingresados ya fueron guardados
+    # pueden ocurrir errores posteriores, pero los datos originales ya están guardados
+    $ARTIC_OBJ->{saved} = 1;
 
+    my %campos_xml = $ARTIC_OBJ->get_xml_content();
     my $fid = $ARTIC_OBJ->{campos}->{'_fid'};
 
-    # Generar vistas secundarias (a partir del xml)
-    foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
-        # print STDERR "Generar vista $mv con autoinc[$autoinc]\n";
-        $ARTIC_OBJ->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
+    if ($prontus_varglb::CREAR_VISTAS_SIN_ALTA ne 'NO' || $campos_xml{'_alta'}) {
+        # Generar vista principal (a partir del xml)
+        # print STDERR "Generar vista normal con autoinc[$autoinc]\n";
+        %{$ARTIC_OBJ->{xml_content}} = (); # fuerza a que se lea el XML porque cuando se hizo el new, se setearon algunas vars pero no todas.
+        $ARTIC_OBJ->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
                 || return $Artic::ERR;
-    };
+
+        my $fid = $ARTIC_OBJ->{campos}->{'_fid'};
+
+        # Generar vistas secundarias (a partir del xml)
+        foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+            # print STDERR "Generar vista $mv con autoinc[$autoinc]\n";
+            $ARTIC_OBJ->generar_vista_art($mv, $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY)
+                    || return $Artic::ERR;
+        }
+    } else {
+        # llamamos de todos modos a los postprocesos.
+        my $fullpath_plt       = "$ARTIC_OBJ->{pathdir_plt_pags}/$campos_xml{'_plt'}";
+        my $pathdir_plt_macros = $ARTIC_OBJ->{pathdir_plt_macros};
+        # invocamos a los postprocesos del artículo.
+        $ARTIC_OBJ->generar_vista_art('', $prontus_varglb::STAMP_DEMO, $prontus_varglb::PRONTUS_KEY, undef, 0, 1) || return $Artic::ERR;
+
+        my $fullpath_vista = $ARTIC_OBJ->get_fullpath_artic('', $campos_xml{'_plt'});
+        my $fullpath_vista_pagpar = $fullpath_vista;
+        my @plt_paralelas_list = split(/;/, $prontus_varglb::FORM_PLTS_PARALELAS{$fid});
+
+        foreach my $plt_paralela (@plt_paralelas_list) {
+            $plt_paralela =~ /(.*?)\.(\w+)$/;
+            my $nom_plt     = $1;
+            my $ext_plt     = $2;
+
+            $fullpath_vista_pagpar =~ s/\/pags(-.+)?\/($ARTIC_OBJ->{ts})\.(\w+)$/\/pagspar$1\/$2\_$nom_plt.$ext_plt/;
+            unlink $fullpath_vista_pagpar if (-f $fullpath_vista_pagpar);
+        }
+
+        unlink $fullpath_vista if (-f $fullpath_vista);
+
+        foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+            $fullpath_vista = $ARTIC_OBJ->get_fullpath_artic($mv, $campos_xml{'_plt'});
+            $fullpath_vista_pagpar = $fullpath_vista;
+
+            unlink $fullpath_vista if (-f $fullpath_vista);
+
+            foreach my $plt_paralela (@plt_paralelas_list) {
+                $plt_paralela =~ /(.*?)\.(\w+)$/;
+                my $nom_plt     = $1;
+                my $ext_plt     = $2;
+
+                $fullpath_vista_pagpar =~ s/\/pags(-.+)?\/($ARTIC_OBJ->{ts})\.(\w+)$/\/pagspar$1\/$2\_$nom_plt.$ext_plt/;
+                unlink $fullpath_vista_pagpar if (-f $fullpath_vista_pagpar);
+            }
+        }
+    }
 
     $ARTIC_OBJ->tags2bd($base, $is_new) || return $Artic::ERR;
     # print STDERR "fin save con autoinc[$autoinc]\n";

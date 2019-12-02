@@ -1,4 +1,173 @@
 ====================================================================================================
+11.2.106 - 21/08/2019 - EAG
+====================================================================================================
+- bugfixes: (xcoding) Transcodificación fallaba si video original tenía resolución impar
+- bugfixes: (xcoding) Error en validación de parametros permitía ejecutar comandos
+- bugfixes: (email posting) Corrige mensaje de error de conexión a casilla
+- bugfixes: (general) Mensaje de error de configuración de portadas era erróneo y poco claro para corregir.
+- improvement: (prontus form) Prontus form usa "reply-to" en vez "from" para correo del usuario que hace la consulta, el
+    "from" para los correos es el mismo usado para los correos enviados a usuarios.
+- improvement: (prontus form) Los correos llegan siempre desde el correo ingresado enn el campo from_form o form_remitente
+    si se define, esto evita que los correos sean identificados como "suplantación de identidad"
+- improvement: (general) Portadas se abren usando PUBLIC_SERVER_NAME si esta configurado USAR_PUBLIC_SERVER_NAME_VER_ARTIC en SI.
+====================================================================================================
+11.2.105.1 - 25/04/2019 - EAG
+====================================================================================================
+- bugfixes: (configuración) Corrige compatibilidad por deprecación de asincronía en ajax
+====================================================================================================
+11.2.105 - 27/03/2019 - EAG
+====================================================================================================
+- bugfixes: (general) Corrige guardado de mis busquedas en administración
+- bugfixes: (posting) Corrige error que impedía cargar archivos adjuntos
+- improvement: (general) Agrega propiedad "saved" al articulo para saber que se guardo aunque
+fallen los procesos siguientes y poder logear la accion y realizar otras tareas
+- improvement: (general) Puede utilizar tablas en innodb, crear archivo /cgi-cpn/prontus_sql_innodb.cfg
+- improvement: (general) Mejora informacion sobre que directorios no se pueden crear
+- improvement: (prontus form)Prontus form detecta si esta detras de proxy para el bloqueo por ip
+- improvement: (posting) Implementa envio de mail, logeo y soporte recaptcha
+- improvement: (posting) Mejora el uso de la plantilla para errores
+- improvement: (posting) Agrega soporte recaptcha
+====================================================================================================
+11.2.104.2 - 01/03/2019 - EAG
+====================================================================================================
+- bugfixes: (general) No se estaba inicializando el user name del usuario logeado, esto afectaba al
+log de operación, todas las acciones quedaban como "System Script" excepto el login
+====================================================================================================
+11.2.104.1 - 28/02/2019 - JOR/EAG
+====================================================================================================
+- bugfixes: (fid) Banco de imágenes funcionaba mal al "ver más" imágenes
+- bugfixes: (buscador) Textos con el caracter "|" provocaba errores en la búsqueda y resultados.
+- bugfixes: (general) Ajusta estilos de despliegue de combobox para corregir problemas en Firefox
+====================================================================================================
+11.2.104 - 22/01/2019 - JOR/EAG
+====================================================================================================
+- improvement: (artículos) Agrega soporte de imágenes SVG.
+- bugfixes: (logout) Corrige seteo de cookies de cierre de sesión y liberación de concurrencias.
+- bugfixes: (prontus form) Corrige encoding de archivos adjuntos
+====================================================================================================
+11.2.103 - 17/01/2019 - EAG
+====================================================================================================
+- bugfixes: (login) Corrige liberacion de concurrencias al resetear clave de admin
+- bugfixes: (login) Corrige rejuvenecimiento de sesion
+====================================================================================================
+11.2.103 - 16/01/2019 - AVP/EAG/JOR
+====================================================================================================
+- improvement: (fid) Agrega rel="stylesheet" para identificar archivos css en la plantilla de artículo
+- improvement: (fid) Parsea TS original del artículo en la vista previa
+- bugfixes: Corrige el encoding de la cgi cgi-bin/prontus_form.cgi
+- improvement: (multiedicion) Agrega opción para crear una edición usando como base una más antigua.
+Además se permite seleccionar que portadas se van a copiar.
+- improvement: (multiedicion) Agrega opción para no generar vistas de archivos sin alta.
+- improvement: (seguridad)  Modifica el manejo de cookies de sesión y datos de sesión para mejorar la seguridad
+====================================================================================================
+11.2.102 - 15/11/2018 - AVP/EAG
+====================================================================================================
+- bugfixes: (fid) En firefox no aparecía método para subir fotos si el sitio usa https y había flash disponible pero no activado.
+- bugfixes: (form) Corrige mensaje de error en STDERR al recibir un error de google captcha
+- bugfixes: (log) Elimina despliegue de passwords erróneas del log de errores de login. Sólo se guarda el username.
+- bugfixes: (general) Detección de quota no funcionaba si document root estaba en directorio raíz, por ej /web
+- improvement: (portadas) Se listan 15 ediciones más recientes y el resto en ediciones anteriores
+- improvement: (xcoding) Corrige comando para generar HLS para compatibilidad con ffmpeg 3.x+
+- improvement: (fid) Agrega procesamiento de _loop_artic en el fid
+- improvement: (fid) Registra cambio de alta de artículos en log de operación
+- improvement: (mails) Desactiva TLS para mail multipart
+====================================================================================================
+11.2.101 - 08/08/2018 - AVP/EAG
+====================================================================================================
+- improvement: (buscador) Hace más estricta la carga de configuración en el buscador para evitar errores
+- improvement: (form) Agrega configuración para permitir adjuntar archivos a los emails enviados a las cuentas de administración desde Prontus Form.
+- improvement: (xcoding) Escribe y lee los archivos de status a cpan/procs/xcoding, no a cpan/procs
+- improvement: (xcoding) Cambia lógica de lectura de archivos de status de transcodificación
+- bugfixes: (form) Correcciones para la generación del csv por problemas de codificación
+- bugfixes: (xcoding) Corrige path para determinar si un video ya esta en el xml del articulo
+====================================================================================================
+11.2.100.1 - 26/07/2018 - AVP/EAG
+====================================================================================================
+- bugfixes: (multivistas) Corrige generación de taxports para generar migas de pan con nombres de taxonomia correctos para cada multivista.
+- bugfixes: (artículos) No se parseaban los datos de ancho y alto de las fotos al usar urls friendly de imagenes
+====================================================================================================
+11.2.100 - 18/07/2018 - AVP/EAG
+====================================================================================================
+- bugfixes: (general) Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
+- bugfixes: (general) Agrega primera keys faltantes a tablas de multitag, solo afecta a creacion de nuevas tablas.
+- bugfixes: (general) Usa el valor de PUBLIC_SERVER_NAME para ver archivos y portadas desde los listados
+ si está habilitada USAR_PUBLIC_SERVER_NAME_VER_ARTIC
+- bugfixes: (general) Evita la generacion de symlinks para friendly 4 si se está haciendo preview de un artículo
+- bugfixes: (general) Hace mas estricta la carga de configuracion para no dejar variables vacías sin su valor por defecto
+- bugfixes: (prontus form) Despliega los archivos correctamente en el listado de datos almacenados del form.
+- bugfixes: (prontus form) Corrige duplicación de items en encabezado del archivo CSV a descargar.
+- bugfixes: (prontus form) Agrega un valor aleatorio a la página de respuesta para asegurar que cada usuario recibe una página única.
+- bugfixes: (prontus form) Quita codificacion de form y subject de correos ya que genera errores en envios de correos en servidores debian 9+.
+- improvement: (fid) Agrega estilos especiales para mejorar la usabilidad del editor vtxt, en visualizacion de tablas
+y para el ancho de las imagenes en sitios responsivos
+- improvement: (fid) Mejora compatibilidad de fid al usar estilos desde servidores externos
+- improvement: (fid) Implementa opcion para examinar y cargar fotos en caso de que no haya flash disponible.
+- improvement: (multitag)La cantidad de items por página ahora se configura usando la misma variable que para portadas tagonómicas: TAGPORT_ARTXPAG.
+- improvement: (prontus form) Ahora usa CPAN_SERVER_NAME para generar los enlaces de descarga de archivos recibidos en el csv de datos
+- improvement: (general) Fuerza la regeneración de cache de prontus_art_listpub.html si detecta que la
+ plantilla de la portada correspondiente fue modificada luego de la creación del cache.
+- improvement: (general) Agrega información para saber que articulo tiene demasiados includes
+- improvement: (general) Mueve la opción de config USAR_PUBLIC_SERVER_NAME_VER_ARTIC junto a PUBLIC_SERVER_NAME.
+- improvement: (general) Implementa nivel de optimización configurable para JPEGs. Altera la calidad de imagen al hacer
+upload y al redimensionar, si está habilitada la opción. Agrega opciones relevantes en la
+configuración de Prontus.
+- improvement: (taxport, tagport, list) Implementa múltiples loops en taxports y tagports
+- improvement: (taxport) Cambia forma de actualizar de paginas únicas, ahora se procesan usando cola que
+valida cuandos procesos simultáneos estan corriendo antes de lanzar más
+- improvement: (prontus form) Sustituye el único archivo adjunto en emails al admin por enlaces para descargar cada archivo desde el servidor.
+- improvement: (prontus form) Muestra el timestamp del form en la URL de la página de éxito o error luego de enviar el formulario
+- improvement: (wizard) Se aumenta a 64 caracteres el largo maximo de las claves para BD
+- improvement: (friendly url) Agrega marca %%_FILEURL_CANON%%, siempre parsea la url a la vista principal,
+ en el caso de usar multivistas con la vista en la url.
+- improvement: (cloudflare) Implementa purge_everything según API v4 de Cloudflare.
+
+====================================================================================================
+11.2.99.3 - 27/03/2018 - EAG
+====================================================================================================
+- bugfixes: (buscador) Corrige problema al armar url de resultados de busqueda, si era friendly v4 no estaba incluyendo el prontus id
+
+====================================================================================================
+11.2.99.2 - 20/03/2018 - EAG
+====================================================================================================
+- bugfixes: (general) Corrige problema en almacenamiento de claves antiguas
+- bugfixes: (general) Corrige validación de ingreso de nueva clave al realizar cambio
+- bugfixes: (prontus_form) Agrega captura de error al decodificar json's invalidos al reconstruir csv de datos recibidos,
+de esta forma la generacion del csv no falla.
+- bugfixes: (general) Corrige descripción de variable FRIENDLY_V4_INCLUDE_PRONTUS_ID
+
+====================================================================================================
+11.2.99.1 - 19/03/2018 - EAG
+====================================================================================================
+- bugfixes: (general) Corrige problema en ejecución de generación de taxports
+- bugfixes: (general) Corrige maximo de articulos en listas, no se respetaba el valor de LIST_MAXARTICS.
+
+====================================================================================================
+11.2.99 - 08/03/2018 - JOR/EAG/MTC
+====================================================================================================
+- bugfixes: (multitag) Corrige parseo de plantillas, ahora no se distingue mayusculas y minusculas en las
+ marcas prontus. Se eliminan todas las marcas no parseadas
+- bugfixes: (general) Corrige la generacion de friendly url para no fallar en caso de configuración incompleta.
+- bugfixes: (buscador) Corrige el buscador para que cargue una configuración de friendly url por defecto.
+- bugfixes: (general) Corrige deteccion de slug desactivado en el fid, se veia con estilo grafico incorrecto
+- bugfixes: (general) Corrige el uso del timestamp al instanciar player de video en el fid
+- bugfixes: (config) Se corrige un error que no cargaba/mostraba adecuadamente la configuración del orden de
+ categorías (TAXPORT_ORDEN), cuando esta estaba configurada como "Publicación".
+- bugfixes: (art) Se previene la posibilidad de perder la extension de las imagenes al tener nombres muy largos.
+- improvement: (tax y tag) Se parsean marcas individuales de paginación que se pueden usar en cualquier parte de las plantillas.
+- improvement: (friendly_v4) Se implementa nueva version de friendly url para articulos que no incluye el prontus_id.
+Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
+- improvement: (admin) Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
+ de prontus, por ejemplo: prontus.misitio.cl.
+- improvement: (admin) Agrega variable para permitir habilitar y deshabilitar la conversion de urls relativas a absolutas en el VTXT
+- improvement: (art) La ruta de archivos asociados es configurable al igual que la ruta de multimedia
+- improvement: (log) Agrega actualización de Prontus al log de operación
+- improvement: (security) Aumenta la seguridad de las claves, se puede configurar el largo minimo, máximo y si se deben
+ almacenar las claves antiguas para prevenir su reutilizacion
+- improvement: (port) Agrega NIFLOOP a parseo de portadas, se parsea en caso de que un loop de portada esté vacío
+- changes: (login) El correo de recuperacion de contraseña genera los links con CPAN_SERVER_NAME
+- changes: (art) Ahora se permite hasta 100 "prontus insert" en el cuerpo de un artículo.
+
+====================================================================================================
 11.2.98.1 - 07/11/2017 - JOR/EAG
 ====================================================================================================
 - bugfixes: (fid) Corrige errores para mejorar compatibilidad con IE 7-8
@@ -8,6 +177,7 @@
 - bugfixes: (xcoding) Corrige error que evitaba generar versiones de un video al usar transcodificación no avanzada
 - bugfixes: (xcoding) Mejora mensajes de diagnostico
 - bugfixes: (xcoding) Corrige error al procesar videos de articulo, se estaban procesando siempre en modo batch
+
 ====================================================================================================
 11.2.98 - 30/10/2017 - JOR/EAG/CSS
 ====================================================================================================
@@ -1952,4 +2122,3 @@ siempre se parseaba el mismo valor para todos los artículos.
 - improvement: Procesos masivos: mejoras de interfaz, agrega barra avance en algunos casos
 - changes: En la lista de artículos, el borrado de artículos ahora es 1 a 1, no como antes que se seleccionaban varios.
 - changes: Se elimina el botón para ver el mapa de áreas de una portada (como imagen)
-

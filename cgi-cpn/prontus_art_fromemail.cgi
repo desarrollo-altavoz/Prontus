@@ -60,7 +60,7 @@ BEGIN {
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
 
-    eval {"require MIME::Parser; 1;";} 
+    eval {"require MIME::Parser; 1;";}
             or die("Se necesita el módulo MIME::Parser; para ejecutar este Script");
 };
 
@@ -85,6 +85,7 @@ use lib_tax;
 # MAIN.
 # ---------------------------------------------------------------
 my ($ARTIC_OBJ);
+my %FORM;
 
 &main();
 exit;
@@ -140,7 +141,7 @@ sub main {
 # detectar utf8
 
     my $messages = $pop3->list();
-    foreach $msg_id (keys(%$messages)) {
+    foreach my $msg_id (keys(%$messages)) {
         my $uid = $pop3->uidl($msg_id);
         # print "reading msg[$msg_id][$uid]\n";
         my $fh = $pop3->getfh($msg_id) || die "No se pudo obtener mensaje nro [$msg_id] $!\n";
@@ -239,9 +240,9 @@ sub crear_objeto_artic {
 sub conectar_pop {
   my ($popserver, $user, $pass) = @_;
   my $pop3 = Net::POP3->new($popserver);
-  return "No es posible conectar con el servidor pop especificado para la casilla de rebotes server[$popserver], user[$user], pass[$pass]\n" unless $pop3;
+  return "No es posible conectar con el servidor pop especificado para la casilla de publicacion[$popserver], user[$user], pass[$pass]\n" unless $pop3;
   my $num_messages = $pop3->login($user, $pass);
-  return "Falla login al servidor pop especificado para la casilla de rebotes server[$popserver], user[$user], pass[$pass]\n" unless defined($num_messages);
+  return "Falla login al servidor pop especificado para la casilla de publicacion server[$popserver], user[$user], pass[$pass]\n" unless defined($num_messages);
   # my ($num, $size) = $pop3->popstat();
   # print STDERR "num_messages[$num_messages]\n";
   return ('',$pop3);
@@ -310,7 +311,6 @@ sub get_path_foto_from_email {
     my $path_foto;
     my (@lisdir) = &glib_fildir_02::lee_dir($ruta_dir);
     @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
-    my $path_foto;
     foreach my $part (@lisdir) {
         next if (! -f "$ruta_dir/$part");
         next if ($part !~ /\.jpg$/i);

@@ -78,9 +78,9 @@ main: {
     $FORM{'usr'} = &glib_cgi_04::param('_usr');
 
     if (&lib_prontus::open_dbm_files() ne 'ok') { # Prontus 6.0
-    print "Content-Type: text/html\n\n";
-    &glib_html_02::print_pag_result("Error","No fue posible abrir archivos de usuarios.");
-    exit;
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error","No fue posible abrir archivos de usuarios.");
+        exit;
     };
 
     if ($FORM{'token'} ne '' && $FORM{'usr'} ne '') {
@@ -111,7 +111,7 @@ sub show_recordarpass {
 
 sub show_recordarpass_reset {
     my $buf = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/prontus_olvidopass.html");
-    
+
     $buf =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg;
     $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
     $buf =~ s/%%_PATH_CONF%%/$FORM{'_path_conf'}/isg;
@@ -119,7 +119,7 @@ sub show_recordarpass_reset {
     $buf =~ s/%%_usr%%/$FORM{'usr'}/isg;
 
     $buf =~ s/<!--olvidopass-->.*?<!--\/olvidopass-->//isg;
-    
+
     print "Content-Type: text/html\n\n";
     print $buf;
 };
@@ -154,7 +154,4 @@ sub validacion_token {
         # antiguedad.
     };
 };
-
-
 # -------------------------------END SCRIPT----------------------
-

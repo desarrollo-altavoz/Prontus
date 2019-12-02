@@ -239,44 +239,42 @@ main: {
 # SUB-RUTINAS.
 # -------------
 sub print_date_or_time {
-  # Escribe la fecha u hora, dependiendo si la fecha del art. es de hoy o no.
-  my ($aaaammdd_art, $hhmmss_art) = @_;
-  my $isofec = &glib_hrfec_02::get_date_pack4();
+    # Escribe la fecha u hora, dependiendo si la fecha del art. es de hoy o no.
+    my ($aaaammdd_art, $hhmmss_art) = @_;
+    my $isofec = &glib_hrfec_02::get_date_pack4();
 
-  if ($aaaammdd_art eq $isofec) { # es de hoy
-    # Escribe hora (puede venir formateada o no.)
-    if ($hhmmss_art =~ /:/) {
-      return $hhmmss_art;
+    if ($aaaammdd_art eq $isofec) { # es de hoy
+        # Escribe hora (puede venir formateada o no.)
+        if ($hhmmss_art =~ /:/) {
+            return $hhmmss_art;
+        }
+        else {
+            if ($hhmmss_art =~ /^(\d\d)(\d\d)(\d\d)$/) {
+                return $1 . ':' . $2 . ':' . $3;
+            }
+            else {
+                return '';
+            };
+        };
     }
     else {
-      if ($hhmmss_art =~ /^(\d\d)(\d\d)(\d\d)$/) {
-        return $1 . ':' . $2 . ':' . $3;
-      }
-      else {
-        return '';
-      };
+        # Escribe fecha
+        if ($aaaammdd_art =~ /^(\d\d\d\d)(\d\d)(\d\d)$/) {
+            return $3 . '/' . $2 . '/' . $1;
+        }
+        else {
+            return '';
+        };
     };
-  }
-  else {
-    # Escribe fecha
-
-    if ($aaaammdd_art =~ /^(\d\d\d\d)(\d\d)(\d\d)$/) {
-      return $3 . '/' . $2 . '/' . $1;
-    }
-    else {
-      return '';
-    };
-
-  };
 };
 
 
 # ---------------------------------------------------------------
 sub salir {
-  my $msg = $_[0];
-  # print "Content-Type: text/html\n\n";
-  print $msg;
-  exit;
+    my $msg = $_[0];
+    # print "Content-Type: text/html\n\n";
+    print $msg;
+    exit;
 };
 # ---------------------------------------------------------------
 sub implementar_anterior_sgte {
@@ -403,7 +401,7 @@ sub make_lista {
         $sql =~ s/%%FILTRO%%//;
     };
 
-    print STDERR "sql busqueda[$sql]\n\n";
+    #print STDERR "sql busqueda[$sql]\n\n";
     my ($art_id, $art_dirfecha, $art_tit, $art_seccion, $art_tema,
         $art_subtema, $art_extension, $art_autoinc, $art_tipoficha,
         $art_idsecc1, $art_idtemas1, $art_idsubtemas1, $art_alta,
@@ -717,12 +715,10 @@ sub genera_filtros {
 }; # genera_filtros.
 #-------------------------------------------------------------------------#
 sub guarda_busqueda {
-
     my %search;
-
     # Si se llego al limite no se pueden guardar mas
     my $total = &lib_search::get_total_mis_busquedas($prontus_varglb::USERS_ID);
-    if($total >= $prontus_varglb::MAX_MY_SEARCH) {
+    if ($total >= $prontus_varglb::MAX_MY_SEARCH) {
         return;
     };
     $search{'name_search'} = $FORM{'name_search'};
@@ -744,10 +740,21 @@ sub guarda_busqueda {
     $search{'ts'} = $FORM{'ts'};
 
     $search{'baja'} = $FORM{'baja'};
-    $search{'dia'} = $FORM{'dia'};
     $search{'autoinc'} = $FORM{'autoinc'};
-    $search{'diapub'} = $FORM{'diapub'};
-    $search{'diaexp'} = $FORM{'diaexp'};
+
+    $search{'dia'}          = &glib_cgi_04::param('dia');
+    $search{'diahasta'}     = &glib_cgi_04::param('diahasta');
+    $search{'diapub'}       = &glib_cgi_04::param('diapub');
+    $search{'diapubhasta'}  = &glib_cgi_04::param('diapubhasta');
+    $search{'diaexp'}       = &glib_cgi_04::param('diaexp');
+    $search{'diaexphasta'}  = &glib_cgi_04::param('diaexphasta');
+
+    $search{'dia'}          = '' if ($search{'dia'}         !~ /^\d{2}\/\d{2}\/\d{4}/);
+    $search{'diahasta'}     = '' if ($search{'diahasta'}    !~ /^\d{2}\/\d{2}\/\d{4}/);
+    $search{'diaexp'}       = '' if ($search{'diaexp'}      !~ /^\d{2}\/\d{2}\/\d{4}/);
+    $search{'diapub'}       = '' if ($search{'diapub'}      !~ /^\d{2}\/\d{2}\/\d{4}/);
+    $search{'diapubhasta'}  = '' if ($search{'diapubhasta'} !~ /^\d{2}\/\d{2}\/\d{4}/);
+    $search{'diaexphasta'}  = '' if ($search{'diaexphasta'} !~ /^\d{2}\/\d{2}\/\d{4}/);
 
     $search{'nom_tipart'} = &glib_cgi_04::param('nom_tipart');
     $search{'nom_seccion'} = &glib_cgi_04::param('nom_seccion');
@@ -766,17 +773,16 @@ sub guarda_busqueda {
         next if($search{$key} eq '');
         $search_real{$key} = $search{$key};
     };
-    my $texto = '';
-    #~ binmode(STDOUT, ":utf8");
+
+    my $strjson = '';
     if($JSON::VERSION =~ /^1\./) {
         my $json = new JSON;
-        $texto = $json->objToJson(\%search_real);
+        $strjson = $json->objToJson(\%search_real);
     } else {
-        $texto = &JSON::to_json(\%search_real);
+        $strjson = &JSON::to_json(\%search_real);
     }
-    #~ utf8::encode($texto);
     my $file = &lib_search::get_file_mis_busquedas($prontus_varglb::USERS_ID);
-    &glib_fildir_02::write_file($file, $texto);
+    &glib_fildir_02::write_file($file, $strjson);
 };
 #--------------------------------------------------------------------#
 sub normaliza_fecha_plus {
@@ -875,8 +881,8 @@ sub get_artic_parsed {
     $nom_seccion = &lib_prontus::escape_html($nom_seccion);
 
     # Art. inexistente
-    if (! -f $path_artic) {
-        print STDERR "[$ts] No existe $path_artic\n";
+    if (! -f $path_artic && ! $alta && $prontus_varglb::CREAR_VISTAS_SIN_ALTA ne 'NO') {
+        print STDERR "[$ts] nopub No existe $path_artic. alta: [$alta], crear_vistas_sin_alta: [$prontus_varglb::CREAR_VISTAS_SIN_ALTA] \n";
         $loop_art_tpl =~ s/%%_ts%%/$ts/g;
         $loop_art_tpl =~ s/%%_artic_sin_file%%/_artic_sin_file/g;
         $loop_art_tpl =~ s/%%_vobo_class_name%%/vobo_disabled/g;
@@ -946,6 +952,17 @@ sub get_artic_parsed {
     # CVI - 29/03/2011 - Para habilitar las friendly urls
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
       $marca_file = &lib_prontus::parse_filef('%%_FILEURL%%', $titulo, $ts, $prontus_varglb::PRONTUS_ID, $marca_file, $nom_seccion_orig, $nom_tema, $nom_subtema);
+    }
+
+    # agregamos el public_server_name si está configurada a SI la varglb USAR_PUBLIC_SERVER_NAME_VER_ARTIC.
+    my $public_server_name = '';
+    if ($prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC eq 'SI') {
+        if ($prontus_varglb::PUBLIC_SERVER_NAME !~/^http/i ) {
+            $public_server_name = 'http://'.$prontus_varglb::PUBLIC_SERVER_NAME;
+        } else {
+            $public_server_name = $prontus_varglb::PUBLIC_SERVER_NAME;
+        }
+        $marca_file = $public_server_name . $marca_file;
     }
     $loop_art_tpl =~ s/%%_file%%/$marca_file/g;
     $loop_art_tpl =~ s/%%_autoinc%%/$art_autoinc/g;

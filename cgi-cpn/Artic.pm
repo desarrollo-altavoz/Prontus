@@ -35,12 +35,9 @@ our $XML_BASE =
 "<?xml version='1.0' encoding='UTF-8'?>
 <artic_data>
 <_private>
-<_txt_titular>
-</_txt_titular>
-<_slug>
-</_slug>
-<_custom_slug>
-</_custom_slug>
+<_txt_titular></_txt_titular>
+<_slug></_slug>
+<_custom_slug></_custom_slug>
 <_art_autoinc></_art_autoinc>
 <_users_id></_users_id>
 <_fid></_fid>
@@ -140,6 +137,9 @@ sub new {
     # Se llena en el metodo que genera la vista generar_vista_art()
     $artic->{post_proceso_lista} = '';
 
+    # Indica si el articulo se guardó, aunque no haya completado los demas procesos
+    $artic->{saved} = 0;
+
     return $artic;
 };
 
@@ -147,6 +147,7 @@ sub new {
 sub set_preview_artic {
     # Permite establecer que el ts para todos los efectos es 'preview'
     my $this = shift;
+    $this->{original_ts} = $this->{ts};
     $this->{ts} = 'preview';
     $this->{'campos'}->{'_alta'} = 1;
     # Re-asigna el path xml
@@ -210,10 +211,14 @@ sub _set_dirs {
                           . "/$this->{prontus_id}"
                           . "/site$prontus_varglb::DIR_EXMEDIA/$this->{fechac}";
 
+    $this->{dst_base_asoc} = $this->{document_root}
+                          . "/$this->{prontus_id}"
+                          . "/site$prontus_varglb::DIR_EXASOCFILE/$this->{fechac}";
+
     $this->{dst_xml}        = "$this->{dst_base}/xml";
     $this->{dst_pags}       = "$this->{dst_base}/pags";
     $this->{dst_pagspar}    = "$this->{dst_base}/pagspar";
-    $this->{dst_asocfile}   = "$this->{dst_base}/asocfile/$this->{ts}";
+    $this->{dst_asocfile}   = "$this->{dst_base_asoc}/asocfile/$this->{ts}";
     $this->{dst_foto}       = "$this->{dst_base}/imag";
     $this->{dst_swf}        = "$this->{dst_base}/swf";
     $this->{dst_multimedia} = "$this->{dst_base_mm}/mmedia";
@@ -232,7 +237,6 @@ sub _set_dirs {
 
 
     if (! $this->_check_artic_dirs() && !$this->{no_check_dirs}) {
-        $Artic::ERR = "No se pueden crear directorios del artículo, dst_base[$this->{dst_base}]";
         cluck $Artic::ERR . "[$!]\n";
         return 0;
     };
@@ -249,16 +253,26 @@ sub DESTROY { # se llama automaticamente al destruirse el objeto
 # ---------------------------------------------------------------
 sub _check_artic_dirs {
     my ($this) = shift;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_xml[$this->{dst_xml}]";
     &glib_fildir_02::check_dir($this->{dst_xml})        || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_pags[$this->{dst_pags}]";
     &glib_fildir_02::check_dir($this->{dst_pags})       || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_pagspar[$this->{dst_pagspar}]";
     &glib_fildir_02::check_dir($this->{dst_pagspar})    || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_asocfile[$this->{dst_asocfile}]";
     &glib_fildir_02::check_dir($this->{dst_asocfile})   || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_foto[$this->{dst_foto}]";
     &glib_fildir_02::check_dir($this->{dst_foto})       || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_swf[$this->{dst_swf}]";
     &glib_fildir_02::check_dir($this->{dst_swf})        || return 0;
+    $Artic::ERR = "No se pueden crear directorios del artículo, dst_multimedia[$this->{dst_multimedia}]";
     &glib_fildir_02::check_dir($this->{dst_multimedia}) || return 0;
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI' && $prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        $Artic::ERR = "No se pueden crear directorios del artículo, dst_links_url[$this->{dst_links_url}]";
         &glib_fildir_02::check_dir($this->{dst_links_url}) || return 0;
     }
+    # no hubo error
+    $Artic::ERR = '';
     return 1;
 };
 
@@ -383,9 +397,9 @@ sub generar_xml_artic {
         my $parse_as_cdata = 0;
         $parse_as_cdata = 1 if ($nom_campo =~ /^(_?txt_|vtxt_)/i);
         $parse_as_cdata = 1 if ($nom_campo !~ /^_/); # aplica cdata cualquier campo no reservado
-        if ($nom_campo =~ /^vtxt_/i) {
-            $val_campo =~ s/https?:\/\/$this->{cpan_server_name}//isg;
-            $val_campo =~ s/https?:\/\/$this->{public_server_name}//isg;
+        if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI' && $nom_campo =~ /^vtxt_/i) {
+            $val_campo =~ s/https?:\/\/$this->{cpan_server_name}\//\//isg;
+            $val_campo =~ s/https?:\/\/$this->{public_server_name}\//\//isg;
         };
         $this->{xml_data} = &lib_prontus::replace_in_xml($this->{xml_data},
                                                                  $nom_campo,
@@ -611,7 +625,6 @@ sub _get_newnom_arch {
     my ($val_campo) = shift;
     my ($arch_existente) = shift;
     my ($nom_foto_orig) = shift;
-
     my $nom_arch;
 
     # Valida extensiones permitidas por prontus (seguridad)
@@ -646,7 +659,7 @@ sub _check_ext_foto {
 
     my $ext;
     $ext = $1 if ($path_foto =~ /\.(\w+)$/);
-    if ($ext =~ /^(jpe?g|jpeg?|gif|png)$/i)  {
+    if ($ext =~ /^(jpe?g|jpeg?|gif|png|svg)$/i)  {
         return 1;
     } else {
         return 0;
@@ -763,15 +776,24 @@ sub _get_nom_foto {
     my $nom_foto_orig = shift;
 
     if ($nom_foto_orig) {
+        # procesa el nombre sin la extension
+        my $ext = '';
+        if ($nom_foto_orig =~ /(.*)(\.\w+)$/) {
+            $nom_foto_orig = $1;
+            $ext = $2;
+        }
+
         $nom_foto_orig =~ s/\_/ /sig;
         $nom_foto_orig =~ s/^\s+//;
+        $nom_foto_orig =~ s/-/ /sig;
 
         $nom_foto_orig = &lib_prontus::ajusta_nchars($nom_foto_orig, 50);
         $nom_foto_orig =~ s/ /\_/sig;
         $nom_foto_orig =~ s/\.\.\.//si;
         $nom_foto_orig =~ s/\s*$//;
 
-        $nom_foto_orig = "_".$nom_foto_orig;
+        $nom_foto_orig = "_"."$nom_foto_orig$ext";
+        $nom_foto_orig = lc $nom_foto_orig;
     };
 
     my $regexp = "--regexp='".$this->{ts}.'\_*[a-zA-Z0-9\_\-]\{0,\}\.[a-zA-Z]\{1,\}$'."'";
@@ -865,6 +887,7 @@ sub _guarda_fotosbatch {
             }
         }
         $nom_arch = $this->_get_newnom_arch('foto', '', $path_foto_batch, '', $nom_foto_real);
+
         next if ($nom_arch eq '');
         &glib_fildir_02::check_dir($dst_dir);
         &File::Copy::move($path_foto_batch, "$dst_dir/$nom_arch");
@@ -1028,10 +1051,19 @@ sub _guarda_fotosfijas {
 
         # Obtiene dimensiones actuales de la foto
         my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$document_root$val_campo");
+        my $img_type = &lib_prontus::get_img_type($val_campo);
 
         # Obtiene dimensiones maximas permitidas para la foto
         my ($maxw) = $this->{campos}->{'_maxw' . $nom_campo};
         my ($maxh) = $this->{campos}->{'_maxh' . $nom_campo};
+
+        # Al hacer esto la imagen no se agrega como nueva al xml. Se reutiliza la misma.
+        # Como algunas imágenes no se pueden manipular en prontus, se mantiene el archivo original,
+        # solo se asigna al controlador de fotofija.
+        if (!&lib_prontus::can_edit_img($img_type)) {
+            $foto_dimx = $maxw;
+            $foto_dimy = $maxh;
+        }
 
         # Solo procede si viene ancho o alto
         if (($maxw =~ /^\d+$/) || ($maxh =~ /^\d+$/)) {
@@ -1357,8 +1389,9 @@ sub _genera_fotofija {
     my $document_root = $this->{document_root};
     my $ts = $this->{ts};
     my $prontus_id = $this->{prontus_id};
+    my $img_type = &lib_prontus::get_img_type($nom_foto);
 
-    $cuadrar = '' unless($cuadrar eq 'si');
+    $cuadrar = '' unless ($cuadrar eq 'si' || &lib_prontus::can_edit_img($img_type));
 
     my $full_path_foto = $this->{dst_foto} . "/$nom_foto";
     my $path_foto = &lib_prontus::remove_front_string($full_path_foto, $this->{document_root});
@@ -1367,7 +1400,17 @@ sub _genera_fotofija {
     return "La foto no existe $nom_foto: $full_path_foto" unless(-f "$full_path_foto");
 
     # Obtiene dimensiones actuales de la foto
-    my ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$full_path_foto");
+    my ($msg, $foto_dimx, $foto_dimy);
+
+    # Si el tipo de imagen se puede editar, continua normal.
+    if (&lib_prontus::can_edit_img($img_type)) {
+        # Obtiene dimensiones actuales de la foto
+        ($msg, $foto_dimx, $foto_dimy) = &lib_prontus::dev_tam_img("$full_path_foto");
+        return ($msg, '', '', '', '') if ($msg);
+    } else {
+        ($msg, $foto_dimx, $foto_dimy) = ('', $maxw, $maxh);
+    }
+
     return $msg if($msg);
 
     # Solo procede si viene ancho o alto
@@ -1524,7 +1567,17 @@ sub genera_friendly_v4 {
 # genera todo lo que necesita la friendly v4 para funcionar
 # guarda el titular formateado en la BD
 # genera el archivo con el include en el filesystem
+
+    # si no esta activada friendly 4 no se hace nada
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '4') {
+        return 1;
+    }
+
     my ($this, $base) = @_;
+
+    if ($this->{ts} eq 'preview') {
+        return 1;
+    }
 
     my $num_elem = keys(%{$this->{xml_content}});
     if (!$num_elem) {
@@ -1810,16 +1863,14 @@ sub borra_artic {
 
     # Regenera relacionados
     if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
-        &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO, $prontus_varglb::DIR_ARTIC, $prontus_varglb::DIR_PAG, $prontus_varglb::DIR_TEMP, $prontus_varglb::DIR_TAXONOMIA, $prontus_varglb::DIR_CONTENIDO, $prontus_varglb::NUM_RELAC_DEFAULT, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS);
+        &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO, $prontus_varglb::DIR_ARTIC, $prontus_varglb::DIR_PAG, $prontus_varglb::DIR_TEMP, $prontus_varglb::DIR_TAXONOMIA, $prontus_varglb::NUM_RELAC_DEFAULT, $prontus_varglb::CONTROLAR_ALTA_ARTICULOS);
         for(my $i = 1; $i <= $prontus_varglb::TAXONOMIA_NIVELES; $i++) {
             if (defined $hashtemp{$i}) {
                 my $taxonomia = $hashtemp{$i};
                 my ($secc, $tem, $stem) = split /\//, $taxonomia;
-                &lib_tax::generar_relacionados($secc, $tem, $stem, $base);
+                &lib_tax::generar_relacionados($secc, $tem, $stem, $base, '');
                 # Ahora parsea art relacionados para MVs
                 foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
-
-                    print STDERR "generar_relacionados [$secc, $tem, $stem]\n";
                     &lib_tax::generar_relacionados($secc, $tem, $stem, $base, $mv);
                 };
             };
@@ -1829,7 +1880,7 @@ sub borra_artic {
     # regenera taxports
     my $fid;
     if ($buffer_artic =~ /<_fid>(.+?)<\/_fid>/is) {
-      $fid = $1;
+        $fid = $1;
     };
 
     if ($tags_data) {
@@ -2058,8 +2109,7 @@ sub _ajusta_campos_art4bd {
 
     $campos{'_users_id'} = '' if ($campos{'_users_id'} eq '');
     $campos{'_soloportadas'} = '' if ($campos{'_soloportadas'} eq '');
-
-
+    $campos{'_txt_bajada'}   = '' if (!defined($campos{'_txt_bajada'}));
 
     $campos{'_seccion1'} = '0' if ($campos{'_seccion1'} eq '');
     $campos{'_tema1'} = '0' if ($campos{'_tema1'} eq '');
@@ -2082,35 +2132,29 @@ sub _ajusta_campos_art4bd {
 
     # Ajusta bajada
     my $bajada = $campos{'_txt_bajada'};
-    if ($bajada eq '') {
-        $bajada = $this->{campos}->{'vtxt_cuerpo'};
+    if ($bajada eq '' && $campos{'vtxt_cuerpo'} ne '') {
+        $bajada = $campos{'vtxt_cuerpo'};
         $bajada = &lib_prontus::get_minitext_value($bajada);
-    };
-    $bajada =~ s/\s+$//s;
-    $bajada =~ s/^\s+//s;
-    $bajada =~ s/ +/ /sg;
-    $bajada =~ s/ +$//sg;
-    # Ajusta en caso de bajada muy larga, de manera de evitar truncado brusco en la BD
+    }
 
-    # convierte a latin1 para poder contar bien los chars
-    # utf8::decode($bajada);
-
-    my $largo_bajada = length($bajada);
-    # print STDERR "bajada original[$bajada] largo[$largo_bajada]\n";
-
-    if ((length $bajada) < 200) {
-        if ( ($bajada !~ /\.$/) && ($bajada ne '') ) {
-            $bajada .= '.'; # queda de 200
+    if ($bajada ne '') {
+        $bajada =~ s/\s+$//s;
+        $bajada =~ s/^\s+//s;
+        $bajada =~ s/ +/ /sg;
+        $bajada =~ s/ +$//sg;
+        # Ajusta en caso de bajada muy larga, de manera de evitar truncado brusco en la BD
+        if ((length $bajada) < 200) {
+            if ( ($bajada !~ /\.$/) && ($bajada ne '') ) {
+                $bajada .= '.'; # queda de 200
+            };
+        } else {
+            # $bajada = substr($bajada, 0, 197) . '...';
+            $bajada = &lib_prontus::ajusta_nchars($bajada, 200, 1); # ajusta por palabras en modo conteo de bytes
         };
-    } else {
-        # $bajada = substr($bajada, 0, 197) . '...';
-        $bajada = &lib_prontus::ajusta_nchars($bajada, 200, 1); # ajusta por palabras en modo conteo de bytes
-    };
-    # restaura a utf8
-    # utf8::encode($bajada);
-    # print STDERR "bajada ajustada[$bajada]\n";
 
-    $campos{'_txt_bajada'} = $bajada;
+        # print STDERR "bajada ajustada[$bajada]\n";
+        $campos{'_txt_bajada'} = $bajada;
+    }
 
     # Ajusta titular
     my $titu = $campos{'_txt_titular'};
@@ -2124,8 +2168,6 @@ sub _ajusta_campos_art4bd {
     utf8::encode($titu);
     $campos{'_txt_titular'} = $titu;
 
-
-
     $campos{'_fechap_horap'} = "$campos{'_fechap'}$campos{'_horap'}";
     $campos{'_fechae_horae'} = "$campos{'_fechae'}$campos{'_horae'}";
 
@@ -2135,15 +2177,23 @@ sub _ajusta_campos_art4bd {
 sub generar_vista_art {
 # Genera vista html del articulo y graba el archivo.
 # Toma como entrada los datos del XML, no los que vengan en el hash $this->{campos}.
-    my ($this) = shift;
-    my ($mv) = shift;
-    my ($stamp_demo) = shift;
-    my ($prontus_key) = shift;
-    my ($plt) = shift;
-    my ($is_paralela) = shift;
+    my $this = shift;
+    my $mv = shift;
+    my $stamp_demo = shift;
+    my $prontus_key = shift;
+    my $plt = shift;
+    my $is_paralela = shift;
+    my $only_pproc = shift;
 
     # Carga campos
     my %campos_xml = $this->get_xml_content();
+
+    # si el articulo no esta publicado, no se generan vistas
+    if (!defined($only_pproc) && !$this->check_publish_art()) {
+        # retorna 1 porque no es un error
+        return 1;
+    }
+
     my $titular_crudo = $campos_xml{'_txt_titular'}; # lo rescata para usos varios
     my ($nom_seccion1, $nom_tema1, $nom_subtema1, $fid);
     $nom_seccion1 = $campos_xml{'_nom_seccion1'};
@@ -2200,7 +2250,7 @@ sub generar_vista_art {
                 $totloop = $totloop . $looptemp;
             }
             #~ print STDERR "totloop[$totloop]\n";
-            $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
+            $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is;
         }
 
         my %claves_adicionales; # que no estan en el xml del artic
@@ -2242,9 +2292,7 @@ sub generar_vista_art {
         # Stamp demo
         $buffer =~ s/<title>(.*?)<\/title>/<title>$stamp_demo$1<\/title>/is;
 
-        # tag Generator
-        $buffer = &lib_prontus::add_generator_tag($buffer);
-
+        # procesa PF
         $buffer = &lib_prontus::parser_custom_function($buffer);
 
         $buffer =~ s/%%_vista%%/$mv/g;
@@ -2378,6 +2426,7 @@ sub parse_artic_data {
     # Parsea campos
     foreach my $nom_campo (keys %campos_xml) {
         my $val_campo = $campos_xml{$nom_campo};
+        next if ($nom_campo eq '_ts');
         next if ($val_campo eq '');
         next if ($nom_campo =~ /^(_seccion|_tema|_subtema)/ && $val_campo eq '0'); # evitar que s/t/st se guarde con 0.
         next if ($nom_campo =~ /^_fecha(p|e)$/);
@@ -2410,7 +2459,14 @@ sub parse_artic_data {
     $buffer = &lib_prontus::replace_in_artic($utc_pub, '_utcp', $buffer);
 
     # Reemplaza TS, FECHAC, FECHACLONG, FECHACSHRT
-    $buffer = &lib_prontus::replace_tsdata($buffer, $this->{ts});
+    if ($this->{ts} eq 'preview') {
+        $buffer =~ s/%%_TS%%/preview/isg;
+        $buffer =~ s/%%_TS_REAL%%/$this->{original_ts}/isg;
+        $buffer = &lib_prontus::replace_tsdata($buffer, $this->{original_ts});
+    } else {
+        $buffer =~ s/%%_TS_REAL%%/$this->{ts}/isg;
+        $buffer = &lib_prontus::replace_tsdata($buffer, $this->{ts});
+    }
 
     # Marca _FILE y _FILEURL
     my $marca_file = $fullpath_vista;
@@ -2624,7 +2680,7 @@ sub _parsing_fotos {
     if ($val_campo =~ /$este_prontus/i) { # val_campo es del tipo: /prontus_dev/site/artic/20060410/imag/FOTO_0120060410165548.jpg
         my $ts = $this->{ts};
         # parseo ademas las dimensiones de la foto en el articulo
-        if ($val_campo =~ /(foto_\d+)$ts(\_*?)?\.\w+$/i) {
+        if ($val_campo =~ /(foto_\d+)$ts(.+?)?\.\w+$/i) {
             my $nom_foto_original = lc $1;
             $foto_dimx = $campos{"_w$nom_foto_original"};
             $foto_dimy = $campos{"_h$nom_foto_original"};
@@ -2633,10 +2689,6 @@ sub _parsing_fotos {
         $buffer =~ s/%%_H$nom_campo%%/$foto_dimy/ig;
     }
     elsif ($val_campo =~ /https?:\/\//i) { # url externa
-#        foreach my $k (keys %campos) {
-#            next if ($k !~ /fotofija/i);
-#            warn "k[$k] val[$campos{$k}]";
-#        };
         # parseo dimensiones
         $foto_dimx = $campos{"_w$nom_campo"}; # _wfotofija_art200
         # warn "foto externa nom_campo[$nom_campo] nom_campo_w[_w$nom_campo] foto_dimx[$foto_dimx]";
@@ -2665,9 +2717,11 @@ sub _parsing_vtxt {
     my %hash_subtits;
 
 
-    # Saca el server name.
-    $val_campo =~ s/https?:\/\/$this->{cpan_server_name}//isg;
-    $val_campo =~ s/https?:\/\/$this->{public_server_name}//isg;
+    if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI') {
+        # Saca el server name.
+        $val_campo =~ s/https?:\/\/$this->{cpan_server_name}\//\//isg;
+        $val_campo =~ s/https?:\/\/$this->{public_server_name}\//\//isg;
+    }
 
     $val_campo =~ s/^[ \s]+//isg;
     $val_campo =~ s/^(&nbsp;)+//isg;
@@ -2754,12 +2808,11 @@ sub _parsing_vtxt {
         my $attrs = $2;
 
         $safe_counter++;
-        if($safe_counter > 10) {
-            print STDERR "[vtxt] Salida de seguridad <prontus:insert>\n";
+        if($safe_counter > 100) {
+            print STDERR "[vtxt] Salida de seguridad <prontus_insert> $this->{ts}\n";
             $vtxt_aux_consubtit =~ s/<prontus:insert(.*?)>.*?<\/prontus:insert>//isg;
             last;
         }
-#~ <prontus:insert type="js" code="var%20myvar%20%3D%20'Hello'%3B%0D%0Aalert(myvar)%3B">Código Javascript</prontus:insert>
 #~ <prontus:insert type="js" code="var%20myvar%20%3D%20'Hello'%3B%0D%0Aalert(myvar)%3B">Código Javascript</prontus:insert>
 
         my $newnode = '';
@@ -2811,7 +2864,6 @@ sub _parsing_vtxt {
     $buffer = &lib_prontus::replace_in_artic($vtxt_aux_consubtit, $nom_campo, $buffer, $noescape);
 
     return $buffer;
-    # return ($vtxt_aux_consubtit, $curr_nrotit, %hash_subtits);
 };
 # --------------------------------------------------------------------
 sub _get_data4subtit {
@@ -2848,6 +2900,234 @@ sub setear_autoinc {
 };
 
 
+# ---------------------------------------------------------------
+# verifica si el articulo es visible:
+# si es una preview, es visible. De otro modo,
+# alta = 1
+# fecha de publicacion es anterior a la fecha actual
+# fecha de expiracion es posterior a la fecha actual
+# si esta marcado "solo despublicar de portadas" el articulo es visible
+sub check_publish_art {
+    my $this = shift;
+
+    # si la variable de config CREAR_VISTAS_SIN_ALTA es distinto de NO (puede ser vacío o 'SI') asumimos el comportamiento global de regenerar las vistas siempre.
+    if ($prontus_varglb::CREAR_VISTAS_SIN_ALTA ne 'NO') {
+        return 1;
+    }
+
+    if ($this->{is_preview} == 1)  {
+        return 1;
+    }
+
+    # $prontus_varglb::CREAR_VISTAS_SIN_ALTA == NO, chequeamos caso por caso.
+    $this->get_xml_content();
+    if ($this->{'xml_content'}{'_alta'} ne '1') {
+        return 0;
+    }
+    if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
+        if ($this->{'xml_content'}{'_soloportadas'}) {
+            return 1;
+        } else {
+            my $ts_now = &glib_hrfec_02::get_dtime_pack4();
+            my $fechahorap = $this->{'xml_content'}{'_fechap'} . $this->{'xml_content'}{'_horap'} . '00';
+            $fechahorap =~ s/://g;
+            my $fechahorae = $this->{'xml_content'}{'_fechae'} . $this->{'xml_content'}{'_horae'} . '00';
+            $fechahorae =~ s/://g;
+            if ($ts_now <= $fechahorae && $ts_now >= $fechahorap) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+# ---------------------------------------------------------------
+# Invocada al eliminar vistas de artículos para el cron fechas.
+# Elimina todos los archivos de vista.
+# Elimina archivos de friendly URL.
+# No elimina XML ni archivos asociados.
+sub borra_pags_artic {
+    my ($this, $base) = @_;
+
+    # si el articulo esta publicado, no se eliminan las paginas
+    if ($this->check_publish_art()) {
+        return '';
+    }
+
+    my $ts        = $this->{ts};
+    my $dir_fecha = $this->{fechac};
+
+    my $dirpag      = $this->{dst_pags};
+    my $dirpagpar   = $this->{dst_pagspar};
+
+    my $pathnice = &lib_prontus::get_path_nice();
+    $pathnice = "$pathnice -n19 " if ($pathnice);
+
+    # Cargar datos del xml. Necesarios para poder armar friendly url.
+    my %campos_xml = $this->get_xml_content();
+
+    # Borra paginas generadas
+    my @files2delete = glob("$dirpag/$ts" . '.*');
+    foreach my $file2delete (@files2delete) {
+        unlink $file2delete;
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+            &lib_prontus::purge_cache($file2delete);
+        }
+    }
+
+    if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+        # Arma friendly url para hacer el purge
+        my $marca_file = $this->get_fullpath_artic('', $campos_xml{'_plt'});
+        $marca_file = &lib_prontus::remove_front_string($marca_file, $this->{document_root});
+
+        my %artic_data = ();
+        $artic_data{'fid'} = $campos_xml{'_fid'};
+        $artic_data{'custom_slug'} = $campos_xml{'_custom_slug'};
+        $artic_data{'slug'} = $campos_xml{'_slug'};
+        $artic_data{'nom_seccion'} = $campos_xml{'_nom_seccion1'};
+        $artic_data{'nom_tema'} = $campos_xml{'_nom_tema1'};
+        $artic_data{'nom_subtema'} = $campos_xml{'_nom_subtema1'};
+
+        my $fileurl = &lib_prontus::parse_filef('%%_FILEURL%%', $campos_xml{'_txt_titular'}, $this->{ts}, $this->{prontus_id}, $marca_file, \%artic_data);
+        &lib_prontus::purge_cache($fileurl);
+    }
+
+    # Borrar paginas paralelas
+    @files2delete = glob("$dirpagpar/$ts*" . '.*');
+    foreach my $file2delete (@files2delete) {
+        unlink $file2delete;
+        if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+            &lib_prontus::purge_cache($file2delete);
+        }
+    }
+
+    # Borra paginas de multivistas
+    my $mv;
+    foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+        my $dir_art_mv = $dirpag;
+        $dir_art_mv =~ s/(\d{8})\/pags/$1\/pags-$mv/;
+        my @files2delete_mv = glob("$dir_art_mv/$ts" . '.*');
+        foreach my $file2delete (@files2delete_mv) {
+            unlink $file2delete;
+            if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+                &lib_prontus::purge_cache($file2delete);
+            }
+        }
+
+        # Paginas paralelas
+        $dir_art_mv = $dirpagpar;
+        $dir_art_mv =~ s/(\d{8})\/pagspar/$1\/pagspar-$mv/;
+        @files2delete_mv = glob("$dir_art_mv/$ts*" . '.*');
+        foreach my $file2delete (@files2delete_mv) {
+            unlink $file2delete;
+            if (!exists $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$campos_xml{'_fid'}}) {
+                &lib_prontus::purge_cache($file2delete);
+            }
+        }
+    }
+
+    # borramos archivos de friendly v4
+    if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4') {
+        my $titularV4 = &lib_prontus::ajusta_titular_f4($this->{'xml_content'}{'_txt_titular'});
+        my $filepath = '/' . substr($titularV4, 0, 2) . '/' . substr($titularV4, 2, 2) . "/$titularV4.html";
+        unlink $this->{dst_links_url} . $filepath;
+
+        # se eliminan los archivos de las multivistas
+        foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
+            unlink $this->{dst_links_url} . "-$mv" . $filepath;
+        }
+        # se borra el articulo de la tabla
+        my $sql_delurl = "delete from URL where URL_ART_ID='$ts'";
+        $base->do($sql_delurl);
+    }
+
+    my $path_artic_xml = $this->{dst_xml} . "/$ts.xml";
+
+    # Lee articulo xml para luego poder determinar cuales son sus asocfiles
+    # y sus tags
+    my $buffer_artic = &glib_fildir_03::read_file($path_artic_xml);
+
+    # Borra relacionados manual
+    &lib_tax::borrar_relacionados_manualtax($dirpag, $ts);
+
+    # Obtiene taxonomia antes de eliminar
+    my %hashtemp;
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        for (my $i = 1 ; $i <= $prontus_varglb::TAXONOMIA_NIVELES ; $i++) {
+            my ($secc, $tem, $stem) = &lib_tax::get_taxonomia($ts, $base, $i);
+            $hashtemp{$i} = "$secc/$tem/$stem" if ($secc > 0);    # se evita para generar relacionados sin taxonomia.
+        }
+    }
+
+    # Regenera relacionados
+    if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
+        &lib_tax::set_vars($prontus_varglb::DIR_CONTENIDO, $prontus_varglb::DIR_ARTIC, $prontus_varglb::DIR_PAG, $prontus_varglb::DIR_TEMP, $prontus_varglb::DIR_TAXONOMIA, $prontus_varglb::DIR_CONTENIDO, $prontus_varglb::NUM_RELAC_DEFAULT);
+        for (my $i = 1 ; $i <= $prontus_varglb::TAXONOMIA_NIVELES ; $i++) {
+            if (defined $hashtemp{$i}) {
+                my $taxonomia = $hashtemp{$i};
+                my ($secc, $tem, $stem) = split /\//, $taxonomia;
+                &lib_tax::generar_relacionados($secc, $tem, $stem, $base);
+                # Ahora parsea art relacionados para MVs
+                foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
+
+                    print STDERR "generar_relacionados [$secc, $tem, $stem]\n";
+                    &lib_tax::generar_relacionados($secc, $tem, $stem, $base, $mv);
+                }
+            }
+        }
+    }
+
+    # regenera tagports
+    my $fid;
+    if ($buffer_artic =~ /<_fid>(.+?)<\/_fid>/is) {
+        $fid = $1;
+    }
+
+    # TODO: agrupar los datos de tags entre todos los artículos procesados para regenerar una sola vez.
+    my $tags_data;
+    if ($buffer_artic =~ /<_tags>(.+?)<\/_tags>/is) {
+        $tags_data = $1;
+    }
+
+    if ($tags_data) {
+        # Regenerar portadas tagonomicas.
+        my $param_especif_tagonomicas = $tags_data;
+        $param_especif_tagonomicas =~ s/,/\//sg;
+        my $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_tags_ports.cgi $prontus_varglb::PRONTUS_ID $param_especif_tagonomicas $fid >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    }
+
+    $base->disconnect;
+
+    # Borra cache listas de articulo
+    &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
+
+    # regenera taxports
+    my $cmd;
+
+    for (my $i = 1 ; $i <= $prontus_varglb::TAXONOMIA_NIVELES ; $i++) {
+
+        my $taxonomia = $hashtemp{$i};
+        my ($secc, $tem, $stem) = split /\//, $taxonomia;
+
+        $secc = '0' if ($secc < 0);    # para evitar el -1, ver dps por que get_taxonomia devuelve -1
+        my $param_especif = $fid . '/' . $secc . '/' . $tem . '/' . $stem;
+
+        $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_cron_taxport.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+
+        # Regenera las salidas List
+        $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_cron_list.cgi $prontus_varglb::PRONTUS_ID $param_especif >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    }
+
+    return '';
+}
 # ---------------------------------------------------------------
 return 1;
 

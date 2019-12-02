@@ -11,3 +11,6 @@
 .fila_loading {display: none;}
 .edi_ficha .texto-td {font-size:14px; font-weight: normal;}
 .edic_msg {float:right; font-size:13px; font-weight:bold; margin-right:15px;}
+.list-unstyled {list-style: none;}
+.list-inline {}
+.list-inline li {float: left;padding: 5px;}

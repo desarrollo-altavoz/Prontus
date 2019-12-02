@@ -13,7 +13,7 @@
               <td class="texto-td">%%ED_NOM%% <i>(aaaa_mm_dd_nro)</i></td>
           </tr>
           <tr>
-            <td>Fecha publicaci&oacute;n</td>
+            <td width="200">Fecha publicaci&oacute;n</td>
             <td class="texto-td">
                 <!--ED_FECCORTA-->
                 <input type="text" name="ED_FECCORTA" size="15" maxlength="10">
@@ -24,6 +24,31 @@
             <td>Vigente</td>
             <td><INPUT TYPE="checkbox" NAME="ED_VIGENTE" VALUE="SI" %%ED_VIGENTE%%></td>
           </tr>
+          <!--BASE_EDIC-->
+          <tr>
+            <td>Copiar artículos desde la siguiente edición</td>
+            <td>
+              <select name="Cmb_EDIC" id="edicBase" class="form-control" onchange="EdiAdmin.showPorts();">
+                  <option value="">- Ninguna -</option>
+                  <!--port_all_edics-->
+                  <option value="%%_nombre_edic%%">%%_fecha_edic%%</option>
+                  <!--/port_all_edics-->
+              </select>
+            </td>
+          </tr>
+          <tr class="edicBasePorts" style="display: none;">
+            <td colspan="2">Seleccione las portadas a copiar</td>
+          </tr>
+          <tr class="edicBasePorts" style="display: none;">
+            <td colspan="2">
+              <ul class="list-unstyled list-inline">
+                  <!--not_base_port_list-->
+                  <li><input type="checkbox" name="selPorts-%%_portname%%" id="%%_portname%%" value="%%_portname%%"> <label for="%%_portname%%">%%_portname%%</label></li>
+                  <!--/not_base_port_list-->
+              </ul>
+            </td>
+          </tr>
+          <!--/BASE_EDIC-->
         </table>
         <table>
           <tr>

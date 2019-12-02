@@ -1046,7 +1046,7 @@ sub get_contents_data {
   $titular =~ s/[^\s]+$//s;
   $titular .= '...';
   # Elimina tags, \n y | dentro del titular.
-  $titular =~ s/[\|\n\r\<\>]/ /sg;
+  $titular =~ s/[\|\n\r\<\>]+/ /sg;
   # Obtiene texto significativo.
   $texto = $buffer;
   # Elimina tags que no contienen links ni informacion relevante.
@@ -1058,19 +1058,19 @@ sub get_contents_data {
   # Elimina tags del texto;
   # $texto =~ s/<[^>]+>/ /isg;
   # Elimina los espacios excesivos.
-  $texto =~ s/\s+/ /g;
+  $texto =~ s/[\|\s]+/ /g;
   # Toma primeras letras del texto para formar la descripcion.
   $descripcion = substr($texto,0,$CFG{'RESUMEN'});
   # Trunca a una palabra entera antes.
   $descripcion =~ s/[^\s]+$//s;
-  $descripcion =~ s/[\|\n\r\<\>]/ /sg; # Elimina | y \n.
+  $descripcion =~ s/[\|\n\r\<\>]+/ /sg; # Elimina | y \n.
   # Reemplaza tildes por letras normales.
   $texto = &lib_search::notildes($texto); # 1.25
   # 1.25 $texto = &lib_search::notildesUtf8($texto); # 1.24
   # Pasa todo el texto a minusculas. # 1.26 Esto antes estaba antes de notildesUtf8.
   $texto = lc $texto;
   # Reemplaza cualquier cosa no caracter por un espacio.
-  $texto =~ s/[^0-9a-z]/ /sg;
+  $texto =~ s/[^0-9a-z]+/ /sg;
   # Limita el texto a los primeros n caracteres.
   $texto = substr($texto,0,$CFG{'MAXCARS'});
   utf8::encode($descripcion); # 1.25
@@ -1122,7 +1122,7 @@ sub get_contents_raw {
   # print "fechap=$fechap\n"; # debug
   # Elimina tags, \n y | dentro del titular.
   $titular =~ s/<[^>]+>/ /isg;
-  $titular =~ s/[\|\n]/ /sg;
+  $titular =~ s/[\|\n]+/ /sg;
   # Obtiene texto significativo. <!--TEXTarticulo-->
   if ($buffer =~ /<!--TEXTarticulo-->(.+?)<!--\/TEXTarticulo-->/is) { # 1.10
     $texto = $1;
@@ -1141,26 +1141,26 @@ sub get_contents_raw {
   $texto =~ s/<[^>]+>/ /isg;
   # Elimina los espacios excesivos.
   $texto =~ s/&nbsp;/ /g;
-  $texto =~ s/\s+/ /g;
+  $texto =~ s/[\|\s]+/ /g;
   # Toma primeras letras del texto para formar la descripcion.
   $descripcion = substr($texto,0,$CFG{'RESUMEN'});
   # Trunca a una palabra entera antes.
   $descripcion =~ s/[\&\w;#\x{c3a1}\x{c3a9}\x{c3ad}\x{c3b3}\x{c3ba}\x{c381}\x{c389}\x{c38d}\x{c393}\x{c39a}\x{c3b1}\x{c391}\x{c3bc}\x{c39c}]+$//s;
-  $descripcion =~ s/[\|\n]/ /sg; # Elimina | y \n.
+  $descripcion =~ s/[\|\n]+/ /sg; # Elimina | y \n.
   # Concatena el titular al texto para construir el indice.
   $texto = "$titular $texto";
   # Elimina los retornos de carro y los tabuladores.
   $texto =~ s/[\r\n\t]/ /g;
   # Elimina los espacios excesivos (otra vez).
   $texto =~ s/&nbsp;/ /g;
-  $texto =~ s/\s+/ /g;
+  $texto =~ s/[\|\s]+/ /g;
   # Reemplaza tildes por letras normales.
   # 1.24 $texto = &lib_search::notildes($texto);
   $texto = &lib_search::notildes($texto); # 1.24 # 1.25
   # Pasa todo el texto a minusculas. # 1.25 Esto antes estaba antes de notildesUtf8.
   $texto = lc $texto;
   # Reemplaza cualquier cosa no caracter por un espacio.
-  $texto =~ s/[^0-9a-z]/ /sg;
+  $texto =~ s/[^0-9a-z]+/ /sg;
   # Limita el texto a los primeros n caracteres.
   $texto = substr($texto,0,$CFG{'MAXCARS'});
   utf8::encode($titular); # 1.25
@@ -1259,9 +1259,9 @@ sub get_contents {
     $meta3 = $1;
   };
   # 1.23.4 Estripea retornos de carro.
-  $meta1 =~ s/[\n\r]/ /sg;
-  $meta2 =~ s/[\n\r]/ /sg;
-  $meta3 =~ s/[\n\r]/ /sg;
+  $meta1 =~ s/[\|\n\r]+/ /sg;
+  $meta2 =~ s/[\|\n\r]+/ /sg;
+  $meta3 =~ s/[\|\n\r]+/ /sg;
   # METADATAk
   for($k=0;$k<20;$k++) {
     my $mdata = $metadata_var[$k];
@@ -1332,12 +1332,11 @@ sub get_contents {
   $texto =~ s/&nbsp;/ /g;
   $texto =~ s/\s+/ /g;
   # Reemplaza tildes por letras normales.
-  # 1.24 $texto = &lib_search::notildes($texto);
   $texto = &lib_search::notildes($texto); # 1.24 # 1.25
   # Pasa todo el texto a minusculas. # 1.25 Esto antes estaba antes de notildesUtf8.
   $texto = lc $texto;
   # Reemplaza cualquier cosa no caracter por un espacio.
-  $texto =~ s/[^0-9a-z]/ /sg;
+  $texto =~ s/[^0-9a-z]+/ /sg;
   # Limita el texto a los primeros n caracteres.
   $texto = substr($texto,0,$CFG{'MAXCARS'});
   utf8::encode($titular); # 1.25
@@ -1518,7 +1517,7 @@ sub getHTML {
   my ($buffer) = '';
   my ($titular,$descripcion,$fechap,$texto,$robots) = ('','','','','');
   my ($ua) = new LWP::UserAgent;
-  $ua->agent('Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; .NET CLR 3.0.04506; InfoPath.2)'); # El browser de los ineptos.
+  $ua->agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
   $ua->max_size(100000); # Pone este limite para no eternizar la cosa.
   my ($request) = new HTTP::Request('GET', $url);
   my ($response) = $ua->request($request);

@@ -49,7 +49,7 @@ BEGIN {
     unshift(@INC,$pathLibsProntus);
     $pathLibsProntus =~ s/\/xcoding$//;
     unshift(@INC,$pathLibsProntus); # Para dejar disponibles las librerias de prontus
-};
+}
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 # ---------------------------------------------------------------
@@ -96,18 +96,24 @@ main: {
     $path_conf = &lib_prontus::ajusta_pathconf($path_conf);
     &lib_prontus::load_config($path_conf);  # Prontus 6.0
 
+    if ($FORM{'video'} =~ /(\/site\/\w+\/\d+\/mmedia\/multimedia_video\d+\d{14}\.\w+)$/i) {
+        $FORM{'video'} = "/$prontus_varglb::PRONTUS_ID$1";
+    } else {
+        &glib_html_02::print_json_result(0, "Error: Archivo de video no valido", 'exit=1,ctype=1');
+    }
+
     if (!$MODO_CLI) {
     # User check
         ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
         if ($prontus_varglb::USERS_ID eq '') {
             &glib_html_02::print_json_result(0, $prontus_varglb::USERS_PERFIL, 'exit=1,ctype=1');
-        };
+        }
     }
 
     my ($status, $msg) = &xcode_status();
 
     &glib_html_02::print_json_result($status, $msg, 'exit=1,ctype=1');
-};
+}
 
 # -------------------------------------------------------------------#
 # Verifica el estado de la transcodificacion.
@@ -119,14 +125,14 @@ sub xcode_status {
         $origen = $prontus_varglb::DIR_SERVER . $origen;
     } else {
         $origen = $prontus_varglb::DIR_SERVER .'/'. $origen;
-    };
+    }
 
     # Verifica si el transcoding esta en ejecucion.
     my $res = qx/ps auxww |grep 'prontus_videodoxcode.cgi $origen'|grep -v grep/;
 
     if ($res ne '') {
         return (1, 'busy');
-    };
+    }
 
     # Forma el nombre de la pelicula destino sustituyendo la extension.
     $destino = $origen;
@@ -135,38 +141,38 @@ sub xcode_status {
     # Ve si el destino esta en el XML
     my $esta_en_xml = 0;
     my $ts;
-    print STDERR  "destino[$destino]\n";
+    # print STDERR  "destino[$destino]\n";
     if ($destino =~ /(.+)\/(.*?)\/(\d{8})\/mmedia\/(multimedia_video.+?(\d{6}))\.(\w+)$/) {
         my $path = $1. $prontus_varglb::DIR_ARTIC . '/'. $3 .'/xml/'. $3 . $5 . '.xml';
         my $filename = $4;
         my $extension = $6;
-        $ts = $2 . $4;
-        print STDERR "[$path][$filename][$extension]\n";
+        $ts = $3 . $5;
+        # print STDERR "[$path][$filename][$extension]\n";
         my $buffer = &glib_fildir_02::read_file($path);
         if ($buffer =~ /$filename\.mp4/s) {
             $esta_en_xml = 1;
-        };
-    };
+        }
+    }
 
-    print STDERR  "esta_en_xml[$esta_en_xml]\n";
+    # revisamos si se generó un archivo de error.
+    my $file = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/xcoding/xcoding_status_$ts.txt";
+    # print STDERR "[file]$file\n";
+    my $buffer = &glib_fildir_02::read_file($file);
+    unlink $file;
 
+    # print STDERR  "esta_en_xml[$esta_en_xml]\n";
     if ((-s $destino > 0) && ($esta_en_xml)) {
-        my $file = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/xcoding_status_$ts.txt";
-        if (-f $file) {
-            my $buffer = &glib_fildir_02::read_file($file);
-            if ($buffer ne '') {
-                print STDERR "error[$buffer]\n";
-                unlink $file;
-                return (0, $buffer);
-            };
-            unlink $file;
-        };
-
+        if ($buffer ne '') {
+            print STDERR "error[$buffer]\n";
+            return (0, $buffer);
+        }
         return (1, 'ready');
     } elsif ((not -s $destino) && ($esta_en_xml)){
-        &glib_html_02::print_json_result(0, "Error: no se pudo transcodificar el video", 'exit=1,ctype=1');
-    }else {
-        # Si no esta el archivo en disco ni en el xml, se gatillará de nuevo la transcodificación.
+        my $msg = "Error: no se pudo transcodificar el video " . $buffer;
+        &glib_html_02::print_json_result(0, $msg);
+    } else {
+        # Si no esta el archivo en disco ni en el xml, se gatillará de nuevo la transcodificación, a menos que haya error.
+        return (0, $buffer) if $buffer ne '';
         return (1, 'none');
-    };
-};
+    }
+}

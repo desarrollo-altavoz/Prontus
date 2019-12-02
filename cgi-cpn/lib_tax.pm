@@ -41,14 +41,14 @@ use DBI;
 use POSIX qw(strftime ceil);
 
 # Limite maximo permitido.
-my $MAX_LIMIT = 50;
-my $RELDIR_ARTIC;
+our $MAX_LIMIT = 50;
+our $RELDIR_ARTIC;
 
-my $RELDIR_ARTIC_RELAC;
-my $NUM_RELAC_DEFAULT;
+our $RELDIR_ARTIC_RELAC;
+our $NUM_RELAC_DEFAULT;
 
-my $RELDIR_DST_ARTIC_RELAC;
-my $CONTROLAR_ALTA_ARTICULOS;
+our $RELDIR_DST_ARTIC_RELAC;
+our $CONTROLAR_ALTA_ARTICULOS;
 our %CFG_FIL_TAXPORT;
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -125,8 +125,18 @@ sub get_tot_artics {
 sub generar_relacionados {
     my ($id_secc1, $id_tema1, $id_subtema1, $base, $mv) = @_;
 
+    if ($id_secc1 eq '0') {
+        $id_secc1 = '';
+    }
+    if ($id_tema1 eq '0') {
+        $id_tema1 = '';
+    }
+    if ($id_subtema1 eq '0') {
+        $id_subtema1 = '';
+    }
+
     # Procesa Plantillas que hayan en el dir.
-    my ($plantilla, $pagina, $loop, $lista, $k);
+    my ($plantilla, $pagina, $loop, $lista);
     my ($ruta_dir) = $prontus_varglb::DIR_SERVER . $RELDIR_ARTIC_RELAC;
 
     $ruta_dir =~ s/\/taxonomia\/pags/\/taxonomia\/pags-$mv/ if ($mv);
@@ -136,7 +146,7 @@ sub generar_relacionados {
 
     @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
 
-    foreach $k (@lisdir) {
+    foreach my $k (@lisdir) {
         if (-f "$ruta_dir/$k") {
             # print STDERR "DIR[$ruta_dir/$k]\n";
             $plantilla = "$ruta_dir/$k";
@@ -144,15 +154,15 @@ sub generar_relacionados {
 
             if ($pagina =~ /%%_NUM_RELAC=(\d+)%%/is) {
                 $limit = $1;
-            };
+            }
 
             # %%_TAX_LEVEL=seccion-tema-subtema%%
             my $taxlevel;
             if ($pagina =~ /%%_TAX_LEVEL=(seccion|seccion-tema|seccion-tema-subtema)%%/i) {
                 $taxlevel = $1;
-                } else {
+            } else {
                 $taxlevel = 'seccion-tema-subtema'; # lo por defecto
-            };
+            }
 
             $pagina =~ s/%%_TAX_LEVEL=[\w\-]+%%//ig; # borra marca
             $pagina =~ s/%%_NUM_RELAC=.*?%%//ig; # borra marca
@@ -168,11 +178,12 @@ sub generar_relacionados {
                 . $prontus_varglb::DIR_UNICAEDIC
                 . "/xml/$exclude_port";
 
+                # TODO: Entender y arreglar esto!
                 if ($exclude_port !~ /\.xml$/) {
-                    } elsif (!-f $exclude_port) {
-                        $exclude_port = '';
-                    };
-                };
+                } elsif (!-f $exclude_port) {
+                    $exclude_port = '';
+                }
+            }
 
             $pagina =~ s/%%_EXCLUDE_PORT=.*?%%//ig; # borra marca
 
@@ -184,7 +195,7 @@ sub generar_relacionados {
                 $exclude_port_area =~ s/,+$//g;
 
                 #print STDERR "exclude_port_area[$exclude_port_area]\n";
-            };
+            }
 
             $pagina =~ s/%%_EXCLUDE_PORT_AREA=.*?%%//ig; # borra marca
 
@@ -195,24 +206,24 @@ sub generar_relacionados {
                 $fids =~ s/,+$//g;
 
                 #print STDERR "fids[$fids]\n";
-            };
+            }
 
             $pagina =~ s/%%_FIDS=.*?%%//ig; # borra marca
 
             if ($pagina =~ /%%LOOP%%(.*?)%%\/LOOP%%/is) {
                 $loop = $1;
-            };
+            }
 
             $limit++;
 
             if ($limit > $MAX_LIMIT) {
                 $limit = $MAX_LIMIT;
-            };
+            }
 
             my $nom_tabla_exclude;
             if ($exclude_port) {
                 $nom_tabla_exclude = &lib_prontus::set_exclude_port_table($exclude_port, $exclude_port_area, $base);
-            };
+            }
 
             # Generar lista.
             my $hay_mas = 0;
@@ -221,9 +232,9 @@ sub generar_relacionados {
             $pagina =~ s/%%_NUM_RELAC%%/$limit/isg;
             # print STDERR "lista[$lista]\n";
             &parse_and_write($id_secc1, $id_tema1, $id_subtema1, $lista, $pagina, $loop, $k, $hay_mas, $mv);
-        };
-    };
-};
+        }
+    }
+}
 
 # ---------------------------------------------------------------
 sub make_lista {
@@ -346,7 +357,6 @@ sub generar_fila {
 
     my $p = \%campos_xml;
     my $x = \%claves_adicionales;
-
     return ($fila, $p, $x);
 };
 
@@ -948,5 +958,21 @@ sub load_taxport_fil {
         }
     }
 };
+# ---------------------------------------------------------------
+sub check_taxport_running {
+    my($res) = qx/ps axww | grep 'prontus_cron_taxport.cgi' | grep -v grep | grep -v 'sh -c' | grep -v tail | wc -l/;
+
+    $res =~ s/\D//gs;
+    $res += 0; # para forzar el casteo a numero
+    return $res;
+}
+# ---------------------------------------------------------------
+sub check_worker_running {
+    my($res) = qx/ps axww | grep 'prontus_cron_taxport_worker.cgi' | grep -v grep | grep -v 'sh -c' | grep -v tail | wc -l/;
+
+    $res =~ s/\D//gs;
+    $res += 0; # para forzar el casteo a numero
+    return $res;
+}
 
 return 1;

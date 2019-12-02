@@ -17,15 +17,16 @@
 # ---------------------------------------------------------------
 # LLAMADAS A ARCHIVOS EXTERNOS.
 # ------------------------------
-# Genera el link para que se invoque a /cgi-cpn/prontus_edit_file.exe para editar el archivo clickeado.
+# Muestra las opciones de configuración de Prontus.
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-# Desde el web sin parametros o pasando por parametro el dir., relativo a la raiz del publicador, que se quiere examinar.
+# Desde el web, pasando por parametro el path al archivo de
+# configuración del Prontus a modificar.
 # ---------------------------------------------------------------
 # PLANTILLAS HTML UTILIZADAS.
 # ----------------------------
-# <dir_publicador>/cpan/core/prontus_edit/prontus_edit_arbol.html
+# <prontus_dir>/cpan/core/prontus_admin_main.html
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # TABLAS UTILIZADAS.
@@ -37,7 +38,7 @@
 # ---------------------------
 # 01_00  - 03/04/2002 - Primera Version.
 # 1.1 - 03/05/2002 - Soporte para editar xml y xsl
-# 1.2 - 06/05/2002 - Siu el usr. no es admin, tira un &nbsp;, para que no se repita el msg. de error junto con el de prontus_edit_file.exe
+# 1.2 - 06/05/2002 - Si el usr. no es admin, tira un &nbsp;, para que no se repita el msg. de error junto con el de prontus_edit_file.exe
 # ---------------------------------------------------------------
 # Revision Prontus 8.0 - ych - 23/05/2002
 # ---------------------------------------------------------------
@@ -84,9 +85,6 @@ main: {
   $FORM{'path_conf'} = &glib_cgi_04::param('_path_conf');
 
   $FORM{'tab'} = &glib_cgi_04::param('tab');
-
-  # Deduce path conf del referer, en caso de no ser suministrado.
-  $FORM{'path_conf'} = &get_path_conf() if ($FORM{'path_conf'} eq '');
 
   # Ajusta path_conf para completar path y/o cambiar \ por /
   $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
@@ -297,7 +295,7 @@ sub parseaCrontab {
   };
   if (!$lines) {
     $pagina =~ s/<!--loop_crons-->.*?<!--\/loop_crons-->//sig;
-    $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->/\1/sig;
+    $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->/$1/sig;
   } else {
     $pagina =~ s/<!--loop_crons-->.*?<!--\/loop_crons-->/$loop_total/sig;
     $pagina =~ s/<!--no_crons-->(.*?)<!--\/no_crons-->//sig;
@@ -681,7 +679,7 @@ sub parseaVars {
     my $strcombo = '';
     foreach my $port_file (sort @ports_listado) {
         next if ($port_file =~ /^\./);
-        if ($port_file =~ /^(\w+)\.(\w+)$/ && $port_file ne '.' && $port_file ne '..') {
+        if ($port_file =~ /^\w+\.\w+$/) {
             if($ports_utilizadas{$port_file} != 1) {
                 $strcombo = $strcombo . '<option value="' . $port_file . '">' . $port_file . '</option>';
             };
@@ -936,7 +934,7 @@ sub parseaVars {
     my $txport_orden = $prontus_varglb::TAXPORT_ORDEN;
     my $direccion = '';
 
-    if ($txport_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
+    if ($txport_orden =~ /ART_FECHAPHORAP (DESC|ASC)/i || $txport_orden =~ /ART_FECHAP (DESC|ASC), ART_HORAP (DESC|ASC)/i) {
         $direccion = $1;
         $pagina =~ s/%%TAXPORT_ORDEN_TIT%%//ig;
         $pagina =~ s/%%TAXPORT_ORDEN_CRE%%//ig;
@@ -1103,19 +1101,35 @@ sub parseaVars {
         $pagina =~ s/%%CONTROLAR_ALTA_ARTICULOS_NO%%/ checked="checked"/ig;
     };
 
+    if ($prontus_varglb::CREAR_VISTAS_SIN_ALTA eq 'NO') {
+        $pagina =~ s/%%CREAR_VISTAS_SIN_ALTA_SI%%//ig;
+        $pagina =~ s/%%CREAR_VISTAS_SIN_ALTA_NO%%/ checked="checked"/ig;
+    } else {
+        $pagina =~ s/%%CREAR_VISTAS_SIN_ALTA_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%CREAR_VISTAS_SIN_ALTA_NO%%//ig;
+    };
+
     if ($prontus_varglb::ACTUALIZACIONES eq 'SI') {
         $pagina =~ s/%%ACTUALIZACIONES_SI%%/ checked="checked"/ig;
         $pagina =~ s/%%ACTUALIZACIONES_NO%%//ig;
     } else {
         $pagina =~ s/%%ACTUALIZACIONES_SI%%//ig;
         $pagina =~ s/%%ACTUALIZACIONES_NO%%/ checked="checked"/ig;
-    };
+    }
+
+    if ($prontus_varglb::VTXT_RELPATH_LINK eq 'SI') {
+        $pagina =~ s/%%VTXT_RELPATH_LINK_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%VTXT_RELPATH_LINK_NO%%//ig;
+    } else {
+        $pagina =~ s/%%VTXT_RELPATH_LINK_SI%%//ig;
+        $pagina =~ s/%%VTXT_RELPATH_LINK_NO%%/ checked="checked"/ig;
+    }
 
     if ($prontus_varglb::ACTUALIZACION_MASIVA eq 'SI') {
         $pagina =~ s/%%ACTUALIZACION_MASIVA%%/ checked="checked"/ig;
     } else {
         $pagina =~ s/%%ACTUALIZACION_MASIVA%%//ig;
-    };
+    }
 
     if ($prontus_varglb::COMENTARIOS eq 'SI') {
         $pagina =~ s/%%COMENTARIOS_SI%%/ checked="checked"/ig;
@@ -1173,8 +1187,8 @@ sub parseaVars {
         $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%/ selected="selected"/ig;
         $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%//ig;
     } else {
-        $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%/ selected="selected"/ig;
-        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%//ig;
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v1%%//ig;
+        $pagina =~ s/%%CLOUDFLARE_API_URL_v4%%/ selected="selected"/ig;
     }
 
     $pagina =~ s/%%CLOUDFLARE_GLOBAL_PURGE%%/$prontus_varglb::CLOUDFLARE_GLOBAL_PURGE/ig;
@@ -1189,8 +1203,15 @@ sub parseaVars {
         $pagina =~ s/%%FRIENDLY_URLS_NO%%/ checked="checked"/ig;
     };
 
-
     $pagina =~ s/%%FRIENDLY_V4_INCLUDE_VIEW_NAME%%/$prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME/ig;
+
+    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO%%//ig;
+    } else {
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_SI%%//ig;
+        $pagina =~ s/%%FRIENDLY_V4_INCLUDE_PRONTUS_ID_NO%%/ checked="checked"/ig;
+    }
 
     if ($prontus_varglb::FRIENDLY_URL_IMAGES eq 'SI') {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%/ checked="checked"/ig;
@@ -1198,7 +1219,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_SI%%//ig;
         $pagina =~ s/%%FRIENDLY_URL_IMAGES_NO%%/ checked="checked"/ig;
-    };
+    }
 
     if ($prontus_varglb::MULTITAG eq 'SI') {
         $pagina =~ s/%%MULTITAG_SI%%/ checked="checked"/ig;
@@ -1206,7 +1227,7 @@ sub parseaVars {
     } else {
         $pagina =~ s/%%MULTITAG_SI%%//ig;
         $pagina =~ s/%%MULTITAG_NO%%/ checked="checked"/ig;
-    };
+    }
 
     # variables para configurar recaptcha google
     $pagina =~ s/%%RECAPTCHA_API_URL%%/$prontus_varglb::RECAPTCHA_API_URL/ig;
@@ -1225,7 +1246,7 @@ sub parseaVars {
         $pagina =~ s/%%BLOQUEO_EDICION_V0%%//ig;
         $pagina =~ s/%%BLOQUEO_EDICION_V1%%//ig;
         $pagina =~ s/%%BLOQUEO_EDICION_V2%%/ checked="checked"/ig;
-    };
+    }
 
     my $friendlyVer = '%%FRIENDLY_URLS_V'.$prontus_varglb::FRIENDLY_URLS_VERSION.'%%';
     $pagina =~ s/$friendlyVer/ checked="checked"/ig;
@@ -1256,6 +1277,7 @@ sub parseaVars {
 
     $pagina =~ s/%%SERVER_SMTP%%/$prontus_varglb::SERVER_SMTP/ig;
     $pagina =~ s/%%PUBLIC_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+    $pagina =~ s/%%CPAN_SERVER_NAME%%/$prontus_varglb::CPAN_SERVER_NAME/ig;
 
     my $permitidos_vista = $prontus_varglb::UPLOADS_PERMITIDOS;
     $permitidos_vista =~ s/(,)/, /ig;
@@ -1305,6 +1327,14 @@ sub parseaVars {
         $pagina =~ s/%%FORM_CSV_CHARSET_2%%//ig;
     };
 
+    if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_SI%%//ig;
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_NO%%/ checked="checked"/ig;
+    } else {
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%FORM_INCLUIR_ADJUNTO_NO%%//ig;
+    };
+
 
     my $post_proceso = $prontus_varglb::POST_PROCESO{'ART-BORRAR'};
     $post_proceso =~ s/^\((.*?)\)$//ig;
@@ -1314,6 +1344,15 @@ sub parseaVars {
     $pagina =~ s/%%SCRIPT_QUOTA%%/$prontus_varglb::SCRIPT_QUOTA/ig;
 
     $pagina =~ s/%%FOTO_MAX_PIXEL%%/$prontus_varglb::FOTO_MAX_PIXEL/ig;
+
+    if ($prontus_varglb::REDUCIR_CALIDAD_JPEGS eq 'SI') {
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%/ checked="checked"/ig;
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%//ig;
+    } else {
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_SI%%//ig;
+        $pagina =~ s/%%REDUCIR_CALIDAD_JPEGS_NO%%/ checked="checked"/ig;
+    }
+    $pagina =~ s/%%NIVEL_OPTIMIZACION_JPG%%/$prontus_varglb::NIVEL_OPTIMIZACION_JPG/ig;
 
     $buffer = '';
     $pagina =~ /<!--loop_multivista-->(.*?)<!--\/loop_multivista-->/s;

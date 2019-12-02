@@ -103,6 +103,8 @@ main: {
     my $idFoto = $nomfile . $relpath;
     $idFoto =~ s/[^a-zA-Z0-9]//g;
 
+    my $img_type = &lib_prontus::get_img_type($relpath);
+
     my ($msg_size, $wfoto, $hfoto) = ('', 0, 0);
     if ($dst_path =~ /[^\/]+\.zip$/i) {
         $rel_dst_path = "/$prontus_varglb::PRONTUS_ID/cpan/core/imag/boto/noimg2.png";
@@ -113,16 +115,19 @@ main: {
             print '{"status": "0"}';
             exit;
         }
-        # Redimencionar imagen si es que supera los limites configurados.
-        if ($prontus_varglb::FOTO_MAX_PIXEL ne '') { # si está vacio no se hace nada.
-            my ($wmax, $hmax) = split("x", $prontus_varglb::FOTO_MAX_PIXEL);
-            if ($wfoto > $wmax || $hfoto > $hmax) {
-                my ($wnew, $hnew) = &lib_thumb::calcular_proporcion_img($wfoto, $hfoto, $wmax, $hmax);
-                my ($binfoto, $wfoto, $hfoto) = &lib_thumb::make_resize($wnew, $hnew, $dst_path);
-                $dst_path =~ s/\.gif$/\.png/i if($dst_path =~ /\.gif$/i);
-                &glib_fildir_02::write_file($dst_path, $binfoto) if ($binfoto);
+
+        if (&lib_prontus::can_edit_img($img_type)) {
+            # Redimencionar imagen si es que supera los limites configurados.
+            if ($prontus_varglb::FOTO_MAX_PIXEL ne '') { # si está vacio no se hace nada.
+                my ($wmax, $hmax) = split("x", $prontus_varglb::FOTO_MAX_PIXEL);
+                if ($wfoto > $wmax || $hfoto > $hmax) {
+                    my ($wnew, $hnew) = &lib_thumb::calcular_proporcion_img($wfoto, $hfoto, $wmax, $hmax);
+                    my ($binfoto, $wfoto, $hfoto) = &lib_thumb::make_resize($wnew, $hnew, $dst_path);
+                    $dst_path =~ s/\.gif$/\.png/i if($dst_path =~ /\.gif$/i);
+                    &glib_fildir_02::write_file($dst_path, $binfoto) if ($binfoto);
+                };
             };
-        };
+        }
     }
 
     my %salida = ( 'status' => 1,

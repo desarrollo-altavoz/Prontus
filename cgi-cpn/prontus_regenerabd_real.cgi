@@ -141,6 +141,10 @@ main:{
         $ret = 1;
     };
 
+    if (-f "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_sql_innodb.cfg") {
+        $lib_setbd::ENGINE = 'InnoDB';
+    }
+
     if ($ret) {
         if ($DIRFECHA_INI eq '' ) {
             if ($prontus_varglb::MOTOR_BD eq 'PRONTUS') {

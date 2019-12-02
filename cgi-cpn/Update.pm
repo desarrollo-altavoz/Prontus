@@ -313,8 +313,10 @@ sub descarga_upd_descriptor {
     unlink $this->{dir_updates} . '/' . $this->{nom_file_vdescriptor};
 
     my $url = $this->{update_server} . '/release/prontus.' . $this->{rama_instalada} . '/last.' . $this->{rama_instalada} . '.txt';
+    my $public_name = $prontus_varglb::PUBLIC_SERVER_NAME;
+    $public_name =~ s/https?:?\/*//;
+    $url .= "?$prontus_varglb::PRONTUS_ID&$public_name";
     my ($last_version_available, $msg_err) = &lib_prontus::get_url($url, 10); # contiene: 11.0.2.beta - 27/10/2010
-
     my $download_ok = 1;
 
     if ($msg_err) {

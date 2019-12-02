@@ -89,7 +89,7 @@ var Acciones = {
             alert('Por favor, antes de guardar, espere hasta que la carga termine');
             return;
         }
-        // La carga de la portada no se realizó como la gente
+        // La carga de la portada no se realizó correctamente
         if($('#_load_ok').size() < 1) {
             alert('La portada no cargó correctamente. Por favor, refresque el listado antes de guardar');
             return;
@@ -157,13 +157,7 @@ var Acciones = {
 
     // -------------------------------------------------------------------------
     showPort: function() {
-
-        var edic = $('#cmb_edic').val();
-        var port = $('#cmb_port').val();
-        if(edic === '') {
-            edic = 'base';
-        }
-        var url = '/' + Admin.prontus_id + '/site/edic/' + edic + '/port/' + port;
+        var url = document.getElementById('link-port').href;
         window.open(url);
     },
 

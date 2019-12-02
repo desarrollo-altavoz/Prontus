@@ -14,6 +14,10 @@
 # PROPOSITO.
 # -----------
 # Funciones para generar thumbnails
+# El output de JPEGs usa la varglb NIVEL_OPTIMIZACION_JPG. El valor
+# de esa variable (por defecto 85) está determinado por el usuario
+# si la varglb REDUCIR_CALIDAD_JPEGS está seteada a SI,
+# y está seteado a 100 de otro modo.
 
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
@@ -21,6 +25,7 @@
 # 1.0 - 01/2005 - YCH integra script de ALD
 # 1.1 generacion de gif no funciona, asi que los gif los deja como jpg.
 # 1.2 ahora los gif se generan como png
+# 1.3 Agrega nivel de optimización a JPGs determinado en el CPAN.
 
 # -------------------------------BEGIN LIBRERIA------------------
 # ---------------------------------------------------------------
@@ -32,8 +37,7 @@ package lib_thumb;
 use strict;
 require lib_prontus;
 use glib_fildir_02;
-
-my $JPEG_COMPRESSION = 85;
+require prontus_varglb;
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -191,7 +195,7 @@ sub make_thumbnail {
     my $bin_buffer;
 
     if ($tipo eq 'jpg') {
-        $bin_buffer = $thumb->jpeg($JPEG_COMPRESSION);
+        $bin_buffer = $thumb->jpeg($prontus_varglb::NIVEL_OPTIMIZACION_JPG);
     }else{
         $bin_buffer = $thumb->png();
     };
@@ -280,7 +284,7 @@ sub make_resize {
     my $bin_buffer;
 
     if ($tipo eq 'jpg') {
-        $bin_buffer = $thumb->jpeg($JPEG_COMPRESSION);
+        $bin_buffer = $thumb->jpeg($prontus_varglb::NIVEL_OPTIMIZACION_JPG);
     }else{
         $bin_buffer = $thumb->png();
     };
@@ -365,7 +369,7 @@ sub make_crop {
     # No graba, sino que retorna el buffer binario de la foto para ser guardada por quien invoco a la funcion.
     my $bin_buffer;
     if ($tipo eq 'jpg') {
-        $bin_buffer = $dstImage->jpeg($JPEG_COMPRESSION);
+        $bin_buffer = $dstImage->jpeg($prontus_varglb::NIVEL_OPTIMIZACION_JPG);
     } else {
         $bin_buffer = $dstImage->png();
     };
@@ -425,7 +429,7 @@ sub make_flip {
     # No graba, sino que retorna el buffer binario de la foto para ser guardada por quien invoco a la funcion.
     my $bin_buffer;
     if ($tipo eq 'jpg') {
-        $bin_buffer = $srcImage->jpeg($JPEG_COMPRESSION);
+        $bin_buffer = $srcImage->jpeg($prontus_varglb::NIVEL_OPTIMIZACION_JPG);
     } else {
         $bin_buffer = $srcImage->png();
     };
@@ -501,7 +505,7 @@ sub make_rotate {
     # No graba, sino que retorna el buffer binario de la foto para ser guardada por quien invoco a la funcion.
     my $bin_buffer;
     if ($tipo eq 'jpg') {
-        $bin_buffer = $dstImage->jpeg($JPEG_COMPRESSION);
+        $bin_buffer = $dstImage->jpeg($prontus_varglb::NIVEL_OPTIMIZACION_JPG);
     } else {
         $bin_buffer = $dstImage->png();
     };
@@ -525,6 +529,46 @@ sub get_imag_extension {
     };
     return $tipo;
 };
+
+# devuelve las propiedades de una imagen como lista (ancho, alto, ratio, tipo)
+sub get_propiedades {
+    my $lafoto = shift; # full path
+    my $no_hay_gd;
+    eval "require GD;";    $no_hay_gd = $@;
+    if ($no_hay_gd) { # si no hay gd, no redimensiona
+        return ('','','');
+    }
+    require GD;
+
+    my ($ancho, $alto, $tipo, $ratio); # Ancho, alto y tipo (gif o jpg) de la foto.
+    my $imagen; # Objeto GD que contiene la imagen original.
+
+    # Determina si se trata de un GIF, un JPG u otro.
+    $tipo = &get_imag_extension($lafoto);
+    if (!$tipo) {
+        print STDERR "Error: El tipo de archivo no es valido. Debe ser .jpg  .gif o .png\n";
+        return ('','','');
+    }
+
+        # Lee la imagen de origen
+    open IN, $lafoto || return ('','','');
+    if ($tipo eq 'jpg') {
+        ref ($imagen = GD::Image->newFromJpeg(*IN)) || return ('','','');
+    }elsif ($tipo eq 'png') {
+        ref ($imagen = GD::Image->newFromPng(*IN)) || return ('','','');
+    }elsif ($tipo eq 'gif') {
+        ref ($imagen = GD::Image->newFromGif(*IN)) || return ('','','');
+    }else {
+        close IN;
+        return ('','','');
+    }
+    close IN;
+
+    ($ancho, $alto) = $imagen->getBounds();
+    $ratio = $ancho / $alto;
+    return ($ancho, $alto, $ratio, $tipo);
+}
+
 
 # ---------------------------------------------------------------
 sub calcular_proporcion_img {

@@ -5614,7 +5614,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_admin_main.cgi
 
 - Base de Datos:
-    [change]
+    [cambio]
         - Por defecto al crear las tablas, quedan con charset UTF8, engine MYISAM y collate utf8_general_ci
     [files]
         /cgi-cpn/lib_setdb.cgi
@@ -9465,7 +9465,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
         Un ejemplo completo de uso:
         %%MACRO(_galeria_prontus.html, 1:fotofija_galeria@@_low:65x65|2:fotofija_galeria@@_mid:400x300|3:fotofija_galeria@@_high:1280x720)%%
-        Este incluye 2 tamaños, baja, media y alta resolución.
+        Este incluye 3 tamaños, baja, media y alta resolución.
 
         Se deben pasar como mínimo 2 tamaños de fotos para que funcione el sistema, en caso contrario se
         utilizará la configuración por defecto:
@@ -9820,7 +9820,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /wizard_prontus/prontus_dir/cpan/core/js-local/Player.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Transcoding.class.js
         /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
-        /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.
+        /wizard_prontus/prontus_dir/cpan/core/editor_imag/js-local/EditorImag.class.js
 
 - Transcodificación
     [bugfixes]
@@ -9828,15 +9828,750 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Mejora mensajes de diagnostico
         - Corrige error al procesar videos de articulo, se estaban procesando siempre en modo batch
     [files]
-        /var/www/prontus_release/cgi-cpn/prontus_art_sbmit.cgi
-        /var/www/prontus_release/cgi-cpn/xcoding/prontus_procesar_videos.pl
-        /var/www/prontus_release/cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
-        /var/www/prontus_release/cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /cgi-cpn/xcoding/prontus_procesar_videos.pl
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+
 ====================================================================================================
-11.2.98.2 - 26/12/2017 - MTC
-====================================================================================================        
-- PRONTUS FORM
+11.2.99 - 08/03/2018 - JOR/EAG/MTC
+====================================================================================================
+- Taxports y Tagsports
     [mejoras]
-        - Se agrega plantilla opcional para autorespuesta.
+        - Se parsean marcas individuales de paginación que se pueden usar en cualquier parte de la plantilla.
+            %%_prevpag%% = Número pagina anterior
+            %%_nextpag%% = Número pagina siguiente
+            %%_prevlink%% = Link a pagina anterior
+            %%_nextlink%% = Link a pagina siguiente
+            * Si no existe anterior o siguiente, el valor es vacio.
+            * También son utilizables en condicionales IF y NIF.
     [files]
-        - /var/www/prontus_release/web/cgi-bin/prontus_form.cgi 
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_tags_ports.cgi
+
+- Friendly URL 4.2
+    [mejoras]
+        - Se implementa nueva version de friendly url para articulos que no incluye el prontus_id, este
+        se debe definir en la configuracion del servidor.
+        La función es contolada por la variable de configuracion: FRIENDLY_V4_INCLUDE_PRONTUS_ID.
+        Por defecto el valor es 'SI', todas las urls llevan el prontus id, al cambiarlo a NO, solo llevarán
+        la taxonomía y el titular.
+          Esta opción no es compatible con otras configuraciones de friendly urls de Prontus.
+        Para nginx se debe agregar la siguiente configuración:
+            # Friendly 4.2
+            rewrite     "^\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$"          /<prontus_id>/site/friendly/links/$1/$2/$1$2$3.html;
+
+        Esta version es compatible con la 4.1, sin necesidad de reconfigurar el servidor web cuando se hagan cambios de configuración en prontus,
+        pero no es compatible con multivistas configuradas por cookie.
+            # Friendly 4.2
+            set $prontus "<prontus_id>";
+
+            # location matchea:
+            # /prontus_id/seccion/tema/subtema/titular
+            # /prontus_id/seccion/tema/titular
+            # /prontus_id/seccion/titular
+            # /$1/site/friendly/links/$3/$4/$3$4$5.html
+            # /seccion/tema/subtema/titular
+            # /seccion/tema/titular
+            # /$prontus/site/friendly/links/$3/$4/$3$4$5.html
+            #
+            # con vista en la url
+            # /prontus_id/vista/seccion/tema/subtema/titular
+            # /prontus_id/vista/seccion/tema/titular
+            # /prontus_id/vista/seccion/titular
+            # /prontus_id/vista/titular
+            # /$1/site/friendly/links-$2/$3/$4/$3$4$5.html
+            # /vista/seccion/tema/subtema/titular
+            # /vista/seccion/tema/titular
+            # /vista/seccion/titular
+            # /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html
+            location ~ "^\/([\w\-]+)\/([\w\-]+)\/?.*?\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
+                try_files /$prontus/site/friendly/links-$1/$3/$4/$3$4$5.html /$prontus/site/friendly/links/$3/$4/$3$4$5.html /$1/site/friendly/links-$2/$3/$4/$3$4$5.html /$1/site/friendly/links/$3/$4/$3$4$5.html =404;
+                # configuracion de php si es necesaria, no lleva try
+                include     global/php2.conf;
+            }
+
+            # location matchea:
+            # /prontus_id/titular
+            # /$1/site/friendly/links/$2/$3/$2$3$4.html
+            # /seccion/titular
+            # /$prontus/site/friendly/links/$2/$3/$2$3$4.html
+            #
+            # con vista en la url
+            # /vista/titular
+            # /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html
+            location ~ "^\/([\w\-]+)\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" {
+                try_files /$prontus/site/friendly/links-$1/$2/$3/$2$3$4.html /$prontus/site/friendly/links/$2/$3/$2$3$4.html /$1/site/friendly/links/$2/$3/$2$3$4.html =404;
+                # configuracion de php si es necesaria, no lleva try
+                include     global/php2.conf;
+            }
+
+            # matchea solo titular
+            rewrite "^\/([\w\-]{2})([\w\-]{2})([\w\-]+?)\/?$" /$prontus/site/friendly/links/$1/$2/$1$2$3.html;
+
+    [cambios]
+        - Retroactivamente la version 4.5 de friendly url se redefine a 4.1
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Artículos
+    [cambios]
+        - Ahora se permite hasta 100 "prontus insert" en el cuerpo de un artículo.
+    [files]
+        /cgi-cpn/Artic.pm
+
+- Prontus
+    [bugfixes]
+        - Corrige la generacion de friendly url para no fallar en caso de configuración incompleta.
+        - Corrige el buscador para que cargue una configuración de friendly url por defecto.
+        - Corrige deteccion de slug desactivado en el fid se veia con estilo grafico incorrecto
+        - Corrige el uso del timestamp al instanciar player de video en el fid
+    [mejoras]
+        - Agrega variable CPAN_SERVER_NAME, que identifica el dominio en el que funciona el administrador
+          de prontus, por ejemplo: prontus.misitio.cl.
+          En caso de no estar configurada tiene el valor de PUBLIC_SERVER_NAME
+        - Agrega variable VTXT_RELPATH_LINK para permitir habilitar o deshabilitar la conversión
+          de URLs relativas (/noticias/site/.....) a URLs absolutas (http://dominio.cl/noticias/site...)
+          ingresadas en el campo VTXT.
+          Por defecto quedará habilitada la opción de URLs relativas
+        - La ruta de archivos asociados es configurable. Se debe crear el archivo:
+        /<prontusid>/cpan/data/customcfg/asocfile.cfg
+        con el contenido:
+        EXTERNAL_ASOCFILE = '1'
+        ASOCFILE_PATH = 'docs'
+
+        ASOCFILE_PATH define el nombre de la carpeta donde se guardarn los archivos adjuntos, por ejemplo
+        /<prontus_id>/site/docs/<fecha_dia>/asocfile/<ts>/<nombre_archivo.ext>
+    [cambios]
+        - El correo de recuperación de contraseña genera los links con CPAN_SERVER_NAME
+    [files]
+        /cgi-bin/prontus_search.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_recordarpass.cgi
+        /cgi-cpn/galeria/prontus_galeria_procesar.cgi
+        /cgi-cpn/prontus_art_copy.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_cron_fechas.cgi
+        /cgi-cpn/prontus_dropbox_backup.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Player.class.js
+
+- Multitag
+    [bugfixes]
+        - Corrige parseo de plantillas, ahora no se distingue mayusculas y minusculas en las marcas prontus.
+        - Se eliminan todas las marcas no parseadas
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+
+- Administración de configuración
+    [bugfixes]
+        - Se corrige un error que no cargaba/mostraba adecuadamente la configuración del orden de
+        categorías (TAXPORT_ORDEN), cuando esta estaba configurada como "Publicación".
+    [files]
+        /cgi-cpn/prontus_admin_main.cgi
+
+ - General
+    [mejoras]
+        - Limpieza de código y correcciones menores
+        - Agrega actualización de Prontus al log de operación
+        - Se previene la posibilidad de perder la extension de las imagenes al tener nombres muy largos.
+    [bugfixes]
+        - Correciones generales al código
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/multitag/prontus_multitag_admin.cgi
+        /cgi-cpn/multitag/prontus_multitag_load_data.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_sso_get_list.cgi
+        /cgi-cpn/prontus_usr_sbmit.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_megalupa_borrar.cgi
+        /cgi-cpn/prontus_art_megalupa_cargar.cgi
+        /cgi-cpn/prontus_check_session.cgi
+        /cgi-cpn/prontus_editor_imag.cgi
+        /cgi-cpn/prontus_help_main.cgi
+        /cgi-cpn/prontus_sso_get_list.cgi
+        /cgi-cpn/prontus_ping_inuse.cgi
+        /cgi-cpn/prontus_update.cgi
+        /cgi-cpn/prontus_update_real.cgi
+
+- Seguridad de Claves
+    [mejoras]
+        Aumenta la seguridad de las claves, se puede configurar el largo minimo, máximo y si se deben
+        almacenar las claves antiguas para prevenir su reutilizacion
+        Para configurar esto se debe crear el archivo
+        /cgi-cpn/prontus_auth_custom.pm
+        con las siguientes variables de configuración, todas son opcionales:
+
+        $prontus_auth::PWS_MAX_LENGTH = 32; #largo máximo de psw en caracteres
+        $prontus_auth::PWS_MIN_LENGTH = 6;  #largo mínimo de psw en caracteres
+        $prontus_auth::PWS_TO_REMEMBER = 3; #passwords antiguas a recordar
+        $prontus_auth::PWS_COMPARE_PREVIOUS = 1; #prevenir la reutilización de claves
+        $prontus_auth::EXTERNAL_PROCESS = 'miproceso.sh' # ejecutar un proceso externo al guardar una nueva clave
+            los parametros que se pasan son <prontus_id> <usuario> <hash_nueva_password>
+            por ejemplo: "miproceso.sh <prontus_id> <usuario> <hash_nueva_password>"
+
+        Se incluye el archivo /cgi-cpn/prontus_auth_custom-sample.pm para crear una configuración base.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_auth.pm
+        /cgi-cpn/prontus_auth_custom-sample.pm
+        /cgi-cpn/prontus_changepass.cgi
+        /cgi-cpn/prontus_login.cgi
+        /cgi-cpn/prontus_olvidopass.cgi
+        /cgi-cpn/prontus_recordarpass.cgi
+        /cgi-cpn/prontus_usr_chgpass_sbmit.cgi
+        /cgi-cpn/prontus_usr_ficha.cgi
+        /cgi-cpn/prontus_usr_sbmit.cgi
+        /cgi-cpn/prontus_usr_admin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/UsrAdmin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_usr_admin.html
+
+ - Portadas
+    [mejoras]
+        Agrega NIFLOOP a parseo de portadas, se parsea en caso de que un loop de portada esté vacío
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+
+====================================================================================================
+11.2.99.1 - 19/03/2018 - EAG
+====================================================================================================
+- General
+    [bugfixes]
+        - Corrige problema en ejecución de generación de taxports
+        - Corrige maximo de articulos en listas, no se respetaba el valor de LIST_MAXARTICS.
+    [files]
+        /cgi-cpn/prontus_cron_list.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+====================================================================================================
+11.2.99.2 - 20/03/2018 - EAG
+====================================================================================================
+- General
+    [bugfixes]
+        - Corrige problema en almacenamiento de claves antiguas
+        - Corrige validación de ingreso de nueva clave al realizar cambio
+        - Corrige descripción de variable FRIENDLY_V4_INCLUDE_PRONTUS_ID
+    [files]
+        /cgi-cpn/prontus_auth.pm
+        /cgi-cpn/prontus_usr_chgpass_sbmit.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Prontus Form
+    [bugfixes]
+        - Agrega captura de error al decodificar json's invalidos al reconstruir csv de datos recibidos,
+        de esta forma la generacion del csv no falla.
+    [files]
+        /cgi-cpn/prontus_form_download_real.cgi
+
+====================================================================================================
+11.2.99.3 - 27/03/2018 - EAG
+====================================================================================================
+- Buscador
+    [bugfixes]
+        - Corrige problema al armar url de resultados de busqueda, si era friendly v4 no estaba incluyendo el prontus id
+    [files]
+        /cgi-bin/prontus_search.cgi
+
+====================================================================================================
+11.2.100 - 18/07/2018 - AVP/EAG
+====================================================================================================
+- Fid
+    [mejoras]
+        - Agrega estilos especiales para mejorar la usabilidad del editor vtxt, en visualizacion de tablas
+          y para el ancho de las imagenes en sitios responsivos
+        - Mejora compatibilidad de fid al usar estilos desde servidores externos
+        - Implementa opcion para examinar y cargar fotos en caso de que no haya flash disponible.
+    [files]
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+        /cgi-cpn/prontus_art_ficha.cgi
+        /wizard_prontus/prontus_dir/cpan/core/vtxt/css/vtxt_extras.css
+        /wizard_prontus/prontus_dir/cpan/core/fid/macros_reservadas/_fotos_extra.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+
+- Multitag
+    [mejoras]
+        - La cantidad de items por página ahora se configura usando la misma variable que para portadas tagonómicas: TAGPORT_ARTXPAG.
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+
+- General
+    [bugfixes]
+        - Corrige problema de regeneración incorrecta de artículos relacionados al borrar artículos.
+        - Agrega primera keys faltantes a tablas de multitag, solo afecta a creacion de nuevas tablas.
+        - Usa el valor de PUBLIC_SERVER_NAME para ver archivos y portadas desde los listados si está habilitada USAR_PUBLIC_SERVER_NAME_VER_ARTIC
+        - Evita la generacion de symlinks para friendly 4 si se está haciendo preview de un artículo
+        - Hace mas estricta la carga de configuracion para no dejar variables vacías sin su valor por defecto
+    [mejoras]
+        - Fuerza la regeneración de cache de prontus_art_listpub.html si detecta que la plantilla de la portada correspondiente fue modificada luego de la creación del cache.
+        - Agrega información para saber que articulo tiene demasiados includes
+        - Mueve la opción de config USAR_PUBLIC_SERVER_NAME_VER_ARTIC junto a PUBLIC_SERVER_NAME.
+        - Implementa nivel de optimización configurable para JPEGs. Altera la calidad de imagen al hacer
+          upload y al redimensionar, si está habilitada la opción. Agrega opciones relevantes en la
+          configuración de Prontus.
+        - Implementa purge_everything según API v4 de Cloudflare.
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/lib_setbd.pm
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-bin/prontus_art_upfoto.cgi
+        /cgi-bin/prontus_art_upfoto_dd.cgi
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cloudflare_purge.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_cloudflare.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_listpub.html
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Taxports, Tagports y Listados
+    [mejoras]
+        - Implementa múltiples loops en taxports y tagports
+    [files]
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_cron_list.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_tags_ports.cgi
+        /cgi-cpn/prontus_regenera_tagport.cgi
+
+- Portadas Taxonómicas
+    [mejoras]
+        - Cambia forma de actualizar de paginas únicas, ahora se procesan usando cola que
+        valida cuandos procesos simultáneos estan corriendo antes de lanzar más
+    [files]
+        /cgi-cpn/lib_tax.pm
+        /cgi-cpn/prontus_cron_taxport.cgi
+        /cgi-cpn/prontus_regenera_taxport.cgi
+
+- Prontus Form
+    [mejoras]
+        - Sustituye el único archivo adjunto en emails al admin por enlaces para descargar cada archivo desde el servidor.
+        - Muestra el timestamp del form en la URL de la página de éxito o error luego de enviar el formulario
+        - Ahora usa CPAN_SERVER_NAME para generar los enlaces de descarga de archivos recibidos en el csv de datos
+    [bugfixes]
+        - Despliega los archivos correctamente en el listado de datos almacenados del form.
+        - Corrige duplicación de items en encabezado del archivo CSV a descargar.
+        - Agrega un valor aleatorio a la página de respuesta para asegurar que cada usuario recibe una página única.
+        - Quita codificacion de form y subject de correos ya que genera errores en envios de correos en servidores debian 9+. El cambio no tiene efectos en debian mas antiguo.
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/prontus_form_list.cgi
+        /cgi-cpn/prontus_form_download_real.cgi
+        /cgi-cpn/lib_mail.pm
+
+- Wizard Prontus
+    [mejoras]
+        - Se aumenta a 64 caracteres el largo maximo de las claves para BD
+    [files]
+        /cgi-cpn/wizard_paso1.cgi
+        /wizard_prontus/core/js/Wizard.class.js
+        /wizard_prontus/core/paso1.html
+
+- Friendly URL
+    [mejoras]
+        - Agrega marca %%_FILEURL_CANON%%, siempre parsea la url a la vista principal, en el caso de usar multivistas con la vista en la url.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+====================================================================================================
+11.2.100.1 - 19/07/2018 - AVP/EAG
+====================================================================================================
+- Multivistas
+    [bugfixes]
+        - Corrige generación de taxports para generar migas de pan con nombres de taxonomia correctos para cada multivista.
+    [files]
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+
+- Artículos
+    [bugfixes]
+        - No se parseaban los datos de ancho y alto de las fotos, corrige la regexp asociada
+    [files]
+        /cgi-cpn/Artic.pm
+
+====================================================================================================
+11.2.101 - 08/08/2018 - AVP/EAG
+====================================================================================================
+
+- Buscador
+    [mejoras]
+        - Hace más estricta la carga de configuración en el buscador para evitar errores de funcionamiento
+    [files]
+        /cgi-bin/prontus_search.cgi
+
+- Prontus Form
+    [bugfixes]
+        - Correcciones para la generacion del csv por problemas de codificación
+    [mejoras]
+        - Agrega configuración para permitir adjuntar archivos a los emails enviados a las cuentas de administración desde Prontus Form.
+    [files]
+        /cgi-cpn/prontus_form_download_real.cgi
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/lib_mail.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+
+- Transcodificación
+    [bugfixes]
+        - Corrige path para determinar si un video ya esta en el xml del artículo
+    [mejoras]
+        - Escribe y lee los archivos de status a cpan/procs/xcoding, no a cpan/procs
+        - Cambia lógica de lectura de archivos de status.
+    [files]
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/xcoding/prontus_videodoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodehls.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodeparallel.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+
+====================================================================================================
+11.2.101.1 - 10/08/2018 - AVP/EAG
+====================================================================================================
+- Prontus Form
+    [bugfixes]
+        - Elimina lectura superflua del archivo de configuración -var.cfg. Se lee directamente de
+            $prontus_varglb.
+    [mejora]
+        - Guarda datos recibidos antes de enviar correos, para evitar no guardar datos en caso de errores al enviar correos.
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Articulos
+    [bugfixes]
+        - Corrige doble captura de log
+    [files]
+        /cgi-cpn/prontus_art_regen_real.cgi
+
+
+====================================================================================================
+11.2.102 - 15/11/2018 - AVP/EAG
+====================================================================================================
+- Fid
+    [mejora]
+        - Agrega procesamiento de _loop_artic en el fid
+        - Registra cambio de alta de artículos en log de operación
+    [bugfixes]
+        - En firefox no aparecía método para subir fotos si el sitio usa https y había flash disponible pero no activado.
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/prontus_art_sbmit.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+
+- Envio de Mails
+    [mejora]
+        - Desactiva TLS para mail multipart
+    [files]
+        /cgi-cpn/lib_mail.pm
+
+- Prontus Form
+    [bugfixes]
+        - Corrige mensaje de error en STDERR al recibir un error de google captcha
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Logging
+    [bugfixes]
+        Elimina despliegue de passwords erróneas del log de errores de login. Sólo se guarda el username.
+    [files]
+        /cgi-cpn/prontus_login.cgi
+
+- Administración de Ediciones
+    [mejora]
+        - Se listaban hasta 10000 ediciones en el listado de las más recientes y ninguna en el de ediciones
+        anteriores, ahora se listan 15 en las más recientes y el resto en anteriores
+        - Cambia el titulo de la pagina a últimas ediciones, en vez de administrador
+    [files]
+        /cgi-cpn/prontus_edi_admin.cgi
+        /cgi-cpn/prontus_edi_otras.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_admin.html
+
+- General
+    [bugfixes]
+        - Detección de quota no funcionaba si document root estaba en directorio raíz, por ej /web
+    [files]
+        /cgi-cpn/lib_quota.pm
+
+- Transcodificación
+    [mejora]
+        - Corrige comando para generar HLS para compatibilidad con ffmpeg 3.x+
+    [files]
+        /cgi-cpn/xcoding/lib_xcoding.pm
+
+====================================================================================================
+11.2.103 - 16/01/2019 - AVP/EAG/JOR
+====================================================================================================
+- Fid
+    [mejora]
+        - Agrega rel="stylesheet" para identificar archivos css en la plantilla de artículo
+        - Parsea TS original del artículo en la vista previa
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/Artic.pm
+
+- Otros
+    [bugfixes]
+        - Corrige el encoding de la cgi cgi-bin/prontus_form.cgi
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Multiedición
+    [mejora]
+        - Agrega opción para crear una edición usando como base una más antigua. Además se permite seleccionar que portadas se van a copiar.
+        - Agrega opción para no generar vistas de archivos sin alta. Al guardar un artículo sin alta
+        con la opción CREAR_VISTAS_SIN_ALTA configurada a NO no se generan las vistas normal, multivista,
+        paralelas, etc., y se borran esas vistas si existen.
+    [files]
+        /cgi-cpn/prontus_edi_ficha.cgi
+        /cgi-cpn/prontus_edi_guardar.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_admin_main.cgi
+        /cgi-cpn/prontus_art_listnopub.cgi
+        /cgi-cpn/prontus_art_listpub.cgi
+        /cgi-cpn/prontus_art_regen_real.cgi
+        /cgi-cpn/prontus_cfg_save.cgi
+        /wizard_prontus/prontus_dir/cpan/core/macros/admin_cfg_var.html
+        /wizard_prontus/prontus_dir/cpan/core/prontus_edi_ficha.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/EdiAdmin.class.js
+        /wizard_prontus/prontus_dir/cpan/core/css/edi.css
+
+- Seguridad
+    [mejora]
+        - Modifica el manejo de cookies de sesión y datos de sesión para mejorar la seguridad
+    [files]
+        /cgi-cpn/Session.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_login.cgi
+
+====================================================================================================
+11.2.103.1 - 17/01/2019 - EAG
+====================================================================================================
+- Login
+    [bugfixes]
+        - Corrige liberacion de concurrencias al resetear clave de admin
+        - Corrige rejuvenecimiento de sesion
+    [files]
+        /cgi-bin/prontus_login.cgi
+        /cgi-cpn/prontus_check_session.cgi
+        /cgi-cpn/Session.pm
+
+====================================================================================================
+11.2.104 - 22/01/2019 - JOR/EAG
+====================================================================================================
+- Artículos
+    [mejora]
+        - Agrega soporte de imágenes SVG
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/galeria/prontus_galeria_procesar.cgi
+        /cgi-cpn/galeria/prontus_galeria_upfoto_dd.cgi
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/lib_thumb.pm
+        /cgi-cpn/prontus_art_ficha.cgi
+        /cgi-cpn/prontus_editor_imag.cgi
+        /cgi-cpn/prontus_varglb.pm
+        /wizard_prontus/prontus_dir/cpan/core/fid/include_fotofija.html
+        /wizard_prontus/prontus_dir/cpan/core/fid/macro_banco_imagenes.html
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Fid.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/GaleriaProntus.class.js
+
+- Logout
+    [bugfixes]
+        - Corrige seteo de cookies de cierre de sesión y liberación de concurrencias
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+- Prontus Form
+    [bugfixes]
+        - Corrige encoding de archivos adjuntos
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+====================================================================================================
+11.2.104.1 - 28/02/2019 - JOR/EAG
+====================================================================================================
+- Fid
+    [bugfixes]
+        - Banco de imágenes funcionaba mal al "ver más" imágenes
+    [files]
+        /cgi-cpn/prontus_art_banco.cgi
+
+- Buscador
+    [bugfixes]
+        - Textos con el caracter "|" provocaba errores en la búsqueda y resultados.
+    [files]
+        /cgi-cpn/prontus_indexer.cgi
+
+- General
+    [bugfixes]
+        - Ajusta estilos de despliegue de combobox para corregir problemas en Firefox
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/css/estilos.css
+
+====================================================================================================
+11.2.104.2 - 01/03/2019 - EAG
+====================================================================================================
+- General
+    [bugfixes]
+        - No se estaba inicializando el user name del usuario logeado, esto afectaba al log de operación,
+        todas las acciones quedaban como system script excepto el login
+    [files]
+        /cgi-cpn/lib_prontus.pm
+
+====================================================================================================
+11.2.105 - 27/03/2019 - EAG
+====================================================================================================
+- General
+    [mejora]
+        - Agrega propiedad "saved" al articulo para saber que se guardó aunque
+        fallen los procesos siguientes y poder logear la accion y realizar otras tareas
+        - Puede utilizar tablas en innodb, crear archivo /cgi-cpn/prontus_sql_innodb.cfg
+        - Mejora informacion sobre que directorios no se pueden crear
+    [bugfixes]
+        - Corrige guardado de mis busquedas en administración
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/lib_setbd.pm
+        /cgi-cpn/prontus_cfg_save.cgi
+        /cgi-cpn/prontus_regenerabd_real.cgi
+        /cgi-cpn/prontus_set_bd.cgi
+        /cgi-cpn/wizard_deploy.cgi
+        /cgi-cpn/prontus_art_listnopub.cgi
+
+- Prontus Form
+    [mejora]
+        - Prontus form detecta si esta detras de proxy para el bloqueo por ip
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Posting
+    [mejora]
+        - Implementa envio de mail, logeo y soporte recaptcha
+        - Mejora el uso de la plantilla para errores
+        - Agrega soporte recaptcha
+    [bugfixes]
+        - Corrige strict refs en art posting, impedía funcionamiento al cargar archivos adjuntos
+    [files]
+        /cgi-bin/prontus_art_posting.cgi
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_artic.pm
+
+====================================================================================================
+11.2.105.1 - 25/04/2019 - EAG
+====================================================================================================
+- Administración de configuración
+    [bugfixes]
+        - Corrige compatibilidad por deprecación de asincronia en ajax
+    [files]
+        /wizard_prontus/prontus_dir/cpan/core/js-local/CfgXcoding.class.js
+
+====================================================================================================
+11.2.106 - 21/08/2019 - EAG
+====================================================================================================
+- Prontus Form
+    [mejora]
+        - Prontus form usa "reply-to" en vez "from" para correo del usuario que hace la consulta, el
+    "from" para los correos es el mismo usado para los correos enviados a usuarios.
+        - Los correos llegan siempre desde el correo ingresado enn el campo from_form o form_remitente
+         si se define, esto evita que los correos sean identificados como "suplantación de identidad"
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/lib_form.pm
+
+- Publicacion por email
+    [bugfixes]
+        - Corrige mensaje de error de conexión a casilla
+    [files]
+        /cgi-cpn/prontus_art_fromemail.cgi
+
+- Administrador de artículos
+    [mejora]
+        - Portadas se abren usando PUBLIC_SERVER_NAME si esta configurado USAR_PUBLIC_SERVER_NAME_VER_ARTIC en SI.
+    [bugfixes]
+        - Mensaje de error de configuración de portadas era erróneo y poco claro para corregir.
+    [files]
+        /cgi-cpn/prontus_art_newadmin.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Acciones.class.js
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Listartic.class.js
+        /wizard_prontus/prontus_dir/cpan/core/prontus_art_newadmin.html
+
+- Transcodificación
+    [bugfixes]
+        - Transcodificación fallaba si video original tenía resolución impar
+        - Error en validación de parametros permitía ejecutar comandos
+    [files]
+        /cgi-cpn/xcoding/lib_xcoding.pm
+        /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
+        /cgi-cpn/xcoding/prontus_videocut.cgi
+        /cgi-cpn/xcoding/prontus_videoxcode.cgi
+        /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+
+====================================================================================================
+11.2.107 - XX/10/2019 - EAG/MTC
+====================================================================================================
+- General
+    [mejora]
+        - Agrega códigos de embed para html5
+    [cambios]
+        - Quita meta generator "Prontus CMS"
+    [bugfixes]
+        - Bajada se estaba guardando mal en base de datos si venía vacía
+        - Corrige error en información de Prontus que ocultaba menu para deslogear
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_head_info.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Embed.class.js
+
+- Transcodificación
+    [bugfixes]
+        - Validación de video para sacar screenshot estaba incorrecta
+    [files]
+        /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
+
+- Ficha de Artículo
+    [bugfixes]
+        - Corrige de codificación de la cgi
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
+
+- Multitag
+    [mejora]
+        - Implementa bindings para consultas SQL de multitag
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+        /cgi-cpn/glib_dbi_02.pm
+
+- Prontus Form
+    [mejoras]
+        - Implementa el uso de una plantilla opcional para autorespuesta al usuario
+    [files]
+        - /cgi-bin/prontus_form.cgi
+

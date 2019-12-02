@@ -99,7 +99,7 @@
 #
 # Servidor SMTP
 # -------------
-# El Formulario Prontus utiliza el servidor SMTP de prontus_nn-var.cfg
+# El Formulario Prontus utiliza el servidor SMTP definido en la configuración global
 #
 # Archivos temporales
 # -------------------
@@ -282,15 +282,18 @@ main: {
 # Envia mails y guarda datos si es pertinente.
 sub data_management {
     my($body,$data,$backupdir,$backupdata,$backupheaders);
-    my ($to,$from,$subj,$filedata,$fecha,$hora,$ip);
-    # my (@datos) = &glib_cgi_04::param();
+    my ($to,$from,$subj,$filename,$filedata,$file_final_path,$fecha,$hora,$ip);
     my ($result);
     my (%files);
     my ($random) = time . $$; # Mejor usamos el numero de proceso y listo. time . rand(1000000);
     # Detecta informacion de fecha, hora e IP.
     $fecha = &glib_hrfec_02::fecha_human();
     $hora = &glib_hrfec_02::hora_human();
-    $ip = $ENV{'REMOTE_ADDR'};
+    if ( defined($ENV{'HTTP_X_FORWARDED_FOR'})) {
+        $ip = $ENV{'HTTP_X_FORWARDED_FOR'};
+    } else {
+        $ip = $ENV{'REMOTE_ADDR'};
+    }
 
     $backupdir = "$ROOTDIR/$PRONTUS_ID/$DATA_DIR/$TS";
     &glib_fildir_02::check_dir($backupdir);
@@ -301,14 +304,12 @@ sub data_management {
     }
     my $filejson = "$backupdir/$TSENVIO.json";
     &glib_fildir_02::check_dir($backupdir);
-    &glib_fildir_02::write_file($filejson, '{}');
 
     my $data_json;
     $data_json->{'_fecha'} = $fecha;
     $data_json->{'_hora'} = $hora;
     $data_json->{'_ip'} = $ip;
 
-    my $filename = '';
     my $order_data;
     my $counter = 1;
     # Forma cuerpo para el administrador.
@@ -325,21 +326,29 @@ sub data_management {
         $filename = &glib_cgi_04::real_paths($key);
         if (defined($filename) && $filename ne '') { # Es un archivo.
             $filename =~ s/.+[\/\\]([^\/\\]+)/$1/; # 1.3 Extrae path por si lo trae.
-            utf8::decode($filename);
-            my $nomfile = '';
-            my $ext = '';
-            if ($filename =~ /(.+?)(\.\w+|)$/) {
-                $nomfile = lc $1;
-                $ext = lc $2; # ext con punto si viene
-            };
-            $nomfile =~ tr/\xe1\xe9\xed\xf3\xfa\xc1\xc9\xcd\xd3\xda\xd1\xf1\x20\xfc\xdc/aeiouaeiounn_uu/;
-            $nomfile =~ s/\W/_/sg;
 
-            $filename = $nomfile.$ext;
+            my $ext = '';
+            $filename =~ /(.*)(\.\w+)$/;
+            $filename = $1;
+            $ext = lc $2; # ext con punto
+
+            $filename = &lib_prontus::notildes($filename);
+            #convierte todos los caracteres que no son de palabras en espacios
+            $filename =~ s/[^a-zA-Z0-9_\-\.]/ /sig;
+            $filename =~ s/ {2,}/ /sig; # elimina espacios repetidos
+            $filename =~ s/^\s+//sig; # elimina espacios iniciales
+            $filename =~ s/\s+$//sig; # elimina espacios finales
+            $filename =~ s/^-+//sg;   # elimina todos los guiones al principio
+            $filename =~ s/-+$//sg;   # elimina todos los guiones al final
+            $filename =~ s/ /\_/sig; # convierte espacios a _
+
+            $filename = $filename . $ext;
+
             $filedata = &glib_cgi_04::param($key);
             $files{$key}{'_name'} = 'file_' . $random.'--'.$filename;
             $files{$key}{'_temp'} = $filedata;
-            $body .= sprintf('%-15s',$key) . " = $filename\n";
+            $body .= sprintf('%-15s',$key) . " = $prontus_varglb::CPAN_SERVER_NAME/$prontus_varglb::PRONTUS_ID/$DATA_DIR/$TS/$files{$key}{'_name'}\n";
+            $file_final_path = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/$DATA_DIR/$TS/$files{$key}{'_name'}";
             $backupdata .= "\"file_$random--$filename\"$SEPARADOR"; # Pega el random para que el nombre sea unico.
         } else {
             $order_data->{$counter} = $key;
@@ -360,103 +369,12 @@ sub data_management {
         &glib_fildir_02::write_file("$backupdir/order.json", &JSON::to_json($order_data));
     }
 
-    # 1.8 - firma configurable CVI
-    my $msg_signature = "\r\nRecibido el $fecha a las $hora desde el IP $ip\n";
-    $msg_signature .= "\nAtentamente,\nProntus CMS\r\n\r\n";
-    if($PRONTUS_VARS{'form_signature'.$VISTAVAR}) {
-        $msg_signature = "\r\n" . $PRONTUS_VARS{'form_signature'.$VISTAVAR};
-    }
-    $body .= $msg_signature;
-
-    # Envia mail a el o los administradores.
-    my $auxmail = &glib_cgi_04::param('email');
-    if(defined($PRONTUS_VARS{'chk_form_force_from'}) && $PRONTUS_VARS{'chk_form_force_from'} ne '') {
-        $from = $PRONTUS_VARS{'form_from'};
-    #Se agrega campo para correo remitente fijo
-    } elsif (defined($PRONTUS_VARS{'form_remitente'}) && $PRONTUS_VARS{'form_remitente'} ne '') {
-        $from = $PRONTUS_VARS{'form_remitente'};
-    } elsif (defined($auxmail) && $auxmail ne '') {
-        $from = &glib_cgi_04::param('email');
-    } else {
-        $from = $PRONTUS_VARS{'form_from'};
-    };
-    $subj = $PRONTUS_VARS{'form_subject'.$VISTAVAR};
-    # 1.1
-    $subj = &procesaIFs($subj,1);
-    foreach my $key (@DATOS) {
-        # Elimina espacios para que no molesten.
-        $data = &glib_str_02::trim(&glib_cgi_04::param($key));
-        # 1.1 Reemplaza datos en subject.
-        utf8::decode($data);
-        $data =~ s/[^\w\-áéíóúüñÁÉÍÓÚÜÑ\, ]//g; # Elimina todo caracter extrano.
-        utf8::encode($data);
-        $subj =~ s/\%$key\%/$data/sg;
-    };
-    $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
-    foreach my $email (@ADMIN_MAILS) {
-        $to = $email;
-        $result .= ' 1 ' . &lib_form::envia_mail($to,$from,$subj,$body,$filename,$filedata);
-
-    };
-    # Forma cuerpo para el remitente (autorrespuesta).
-    if ($PRONTUS_VARS{'form_from'} ne '') {
-        $result .= ' 2 ';
-        $from = $PRONTUS_VARS{'form_from'};
-        if (&glib_cgi_04::param('email') ne '') {
-            $result .= ' 3 ';
-            $to = &glib_cgi_04::param('email');
-            $subj = $PRONTUS_VARS{'form_subject_auto'.$VISTAVAR};
-            $body = $PRONTUS_VARS{'form_msg_auto'.$VISTAVAR};
-
-            my $email_plantilla = &glib_cgi_04::param('_pag_email_remitente');
-            if (defined($email_plantilla) && $email_plantilla ne '') {
-                $email_plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
-                $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
-            }
-            if ($body eq '') {
-                &lib_form::aborta("No existe cuerpo de mensaje para el remitente.");
-            };
-
-            # 1.2 Procesa IFs y NIFs.
-            $subj = &procesaIFs($subj,1);
-            $body = &procesaIFs($body,1);
-            foreach my $key (@DATOS) {
-                # Elimina espacios para que no molesten.
-                $data = &glib_str_02::trim(&glib_cgi_04::param($key));
-                # 1.1 Reemplaza datos en subject y body.
-                $body =~ s/\%$key\%/$data/sg;
-                $data =~ s/[^\w\- ]//g; # Elimina todo caracter extrano en el subject.
-                $subj =~ s/\%$key\%/$data/sg;
-            };
-
-            $subj =~ s/\%_ts%/$TS/sig;
-            $body =~ s/\%_ts%/$TS/sig;
-
-            $subj =~ s/\%_tsenvio%/$TSENVIO/sig;
-            $body =~ s/\%_tsenvio%/$TSENVIO/sig;
-
-            $subj =~ s/\%_public_server_name%/$prontus_varglb::PUBLIC_SERVER_NAME/sig;
-            $body =~ s/\%_public_server_name%/$prontus_varglb::PUBLIC_SERVER_NAME/sig;
-
-            $subj =~ s/\%_prontus_id%/$PRONTUS_ID/sig;
-            $body =~ s/\%_prontus_id%/$PRONTUS_ID/sig;
-
-            $body =~ s/%_PF_(\w+\(.*?\))%/%%_PF_$1%%/isg;
-            $subj =~ s/%_PF_(\w+\(.*?\))%/%%_PF_$1%%/isg;
-
-            $body = &lib_prontus::parser_custom_function($body);
-            $subj = &lib_prontus::parser_custom_function($subj);
-
-            $body =~ s/%\w+%//sg; # Elimina tags no parseados.
-            $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
-            $result .= ' 5 ' . &lib_form::envia_mail($to,$from,$subj,$body,'','');
-        };
-    };
     # Sólo se incluyen los archivos en el JSON, si hay respaldo
     my $files_json;
 
     # Genera el backup, si es pertinente.
-    if (defined($PRONTUS_VARS{'chk_form_backup_datos'})) {
+    # Solamente guarda archivos adjuntos si está activa esta opción!
+    if ($PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
         if (-e "$backupdir/backup.csv") { # Si existe ya el archivo, no inserta la linea de encabezados.
             &glib_fildir_02::append_file("$backupdir/backup.csv","$backupdata\r\n");
         } else {
@@ -490,10 +408,99 @@ sub data_management {
         } else {
             &glib_fildir_02::write_file($filejson, &JSON::to_json($resp));
         }
+    }
 
+    # 1.8 - firma configurable CVI
+    my $msg_signature = "\r\nRecibido el $fecha a las $hora desde el IP $ip\n";
+    $msg_signature .= "\nAtentamente,\nProntus CMS\r\n\r\n";
+    if($PRONTUS_VARS{'form_signature'.$VISTAVAR}) {
+        $msg_signature = "\r\n" . $PRONTUS_VARS{'form_signature'.$VISTAVAR};
+    }
+    $body .= $msg_signature;
+
+    # Envia mail a el o los administradores.
+    if ($PRONTUS_VARS{'form_remitente'} ne '') {
+        $from = $PRONTUS_VARS{'form_remitente'};
     } else {
-        unlink($filejson);
+        $from = $PRONTUS_VARS{'form_from'};
+    }
+
+    $subj = $PRONTUS_VARS{'form_subject'.$VISTAVAR};
+    # 1.1
+    $subj = &procesaIFs($subj,1);
+    foreach my $key (@DATOS) {
+        # Elimina espacios para que no molesten.
+        $data = &glib_str_02::trim(&glib_cgi_04::param($key));
+        # 1.1 Reemplaza datos en subject.
+        utf8::decode($data);
+        $data =~ s/[^\w\-áéíóúüñÁÉÍÓÚÜÑ\, ]//g; # Elimina todo caracter extrano.
+        utf8::encode($data);
+        $subj =~ s/\%$key\%/$data/sg;
     };
+    $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
+    my $replyto = &glib_cgi_04::param('email');
+    foreach my $email (@ADMIN_MAILS) {
+        $to = $email;
+        if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
+            $result .= ' 1 ' . &lib_form::envia_mail2($to,$from,$replyto,$subj,$body,'','');
+        } else {
+            $result .= ' 1 ' . &lib_form::envia_mail2($to,$from,$replyto,$subj,$body,$filename,$file_final_path);
+        }
+    };
+    # Forma cuerpo para el remitente (autorrespuesta).
+    if ($PRONTUS_VARS{'form_from'} ne '') {
+        $result .= ' 2 ';
+        $from = $PRONTUS_VARS{'form_from'};
+        if (&glib_cgi_04::param('email') ne '') {
+            $result .= ' 3 ';
+            $to = &glib_cgi_04::param('email');
+            $subj = $PRONTUS_VARS{'form_subject_auto'.$VISTAVAR};
+            $body = $PRONTUS_VARS{'form_msg_auto'.$VISTAVAR};
+
+            my $email_plantilla = &glib_cgi_04::param('_pag_email_remitente');
+            if (defined($email_plantilla) && $email_plantilla ne '') {
+                $email_plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
+                $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
+            }
+            if ($body eq '') {
+                &lib_form::aborta("No existe cuerpo de mensaje para el remitente.");
+            }
+
+            # 1.2 Procesa IFs y NIFs.
+            $subj = &procesaIFs($subj,1);
+            $body = &procesaIFs($body,1);
+            foreach my $key (@DATOS) {
+                # Elimina espacios para que no molesten.
+                $data = &glib_str_02::trim(&glib_cgi_04::param($key));
+                # 1.1 Reemplaza datos en subject y body.
+                $body =~ s/\%$key\%/$data/sg;
+                $data =~ s/[^\w\- ]//g; # Elimina todo caracter extrano en el subject.
+                $subj =~ s/\%$key\%/$data/sg;
+            };
+
+            $subj =~ s/\%_ts%/$TS/sig;
+            $body =~ s/\%_ts%/$TS/sig;
+
+            $subj =~ s/\%_tsenvio%/$TSENVIO/sig;
+            $body =~ s/\%_tsenvio%/$TSENVIO/sig;
+
+            $subj =~ s/\%_public_server_name%/$prontus_varglb::PUBLIC_SERVER_NAME/sig;
+            $body =~ s/\%_public_server_name%/$prontus_varglb::PUBLIC_SERVER_NAME/sig;
+
+            $subj =~ s/\%_prontus_id%/$PRONTUS_ID/sig;
+            $body =~ s/\%_prontus_id%/$PRONTUS_ID/sig;
+
+            $body =~ s/%_PF_(\w+\(.*?\))%/%%_PF_$1%%/isg;
+            $subj =~ s/%_PF_(\w+\(.*?\))%/%%_PF_$1%%/isg;
+
+            $body = &lib_prontus::parser_custom_function($body);
+            $subj = &lib_prontus::parser_custom_function($subj);
+
+            $body =~ s/%\w+%//sg; # Elimina tags no parseados.
+            $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
+            $result .= ' 5 ' . &lib_form::envia_mail2($to, $from, $from, $subj, $body, '', '');
+        }
+    }
     return $result; # $result es solo para debug.
 }; # dataManagement
 
@@ -521,12 +528,11 @@ sub valida_data {
 
     # 1.5 Determina la vista que se usara.
     $VISTADIR = &glib_cgi_04::param('_form_vista');
-    if (defined $VISTADIR && $VISTADIR ne '') {
-        $VISTADIR =~ s/[^a-z]//sg;
+    $VISTADIR = '' if (!defined($VISTADIR));
+    $VISTADIR =~ s/[^a-z]//sg;
+    if ($VISTADIR ne '') {
         $VISTAVAR = '_' . $VISTADIR; # Variable queda lista para ser inserta en los ids de variables.
         $VISTADIR = '-' . $VISTADIR; # Variable queda lista para ser inserta en los paths.
-    } else {
-        $VISTADIR='';
     }
     # Determina cuales seran los emails de destino (administrador).
     $form_admin = &glib_cgi_04::param('_admin');
@@ -599,22 +605,13 @@ sub valida_data {
     &inicializaMensajes(\$TMP_ERROR);
 
     # Lee el servidor SMTP definido para Prontus.
-    # SERVER_SMTP= 'localhost'
-    $buffer = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/cpan/$PRONTUS_ID-var.cfg");
-    my $server_smtp = '';
-    if ($buffer =~ /SERVER_SMTP\s*=\s*\'(.+?)\'/s) {
-        $server_smtp = $1;
-    };
-    if ($server_smtp eq '') {
+    $lib_form::SERVER_SMTP = $prontus_varglb::SERVER_SMTP;
+    if ($lib_form::SERVER_SMTP eq '') {
         &salida($MSGS{'out_of_service'},$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
-    };
-    $lib_form::SERVER_SMTP = $server_smtp;
+    }
 
     # Se aprovecha de leer las vistas
-    while ($buffer =~ m/\s*MULTIVISTA\s*=\s*("|')(.+?)("|')/g) {
-        my $clave = $2;
-        $lib_form::MULTIVISTAS{$clave} = 1;
-    };
+    %lib_form::MULTIVISTAS = %prontus_varglb::MULTIVISTAS;
 
     # Se valida el campo: _form_vista
     my $FORM_VISTA = &glib_cgi_04::param('_form_vista');
@@ -637,7 +634,7 @@ sub valida_data {
             my $msg_err_captcha = &lib_captcha2::valida_captcha($captcha_input, $captcha_code, $captcha_type, $captcha_img);
             if ($msg_err_captcha ne '') {
                 &salida($MSGS{'wrong_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
-            };
+            }
         } else {
             # Se valida re-captcha para continuar
             $RECAPTCHA_RESPONSE = &glib_cgi_04::param('g-recaptcha-response');
@@ -659,32 +656,38 @@ sub valida_data {
                 }
 
                 if (defined $hashtemp->{'success'}) {
+                    my $message = '';
                     if(!$hashtemp->{'success'}){
-                        print STDERR "Error al validar recapcha google: [$hashtemp->{'error-codes'}]\n";
+                        if (ref($hashtemp->{'error-codes'}) eq 'ARRAY') {
+                            $message = join(', ', @{$hashtemp->{'error-codes'}});
+                        } else {
+                            print STDERR "error-codes no era array ni scalar: ".ref($hashtemp->{'error-codes'}).".\n";
+                        }
+                        print STDERR "Error al validar recaptcha google: [$message]\n";
                         &salida($MSGS{'wrong_google_captcha'}, $PRONTUS_VARS{'form_msg_error'.$VISTAVAR}, $TMP_ERROR,1);
                         exit;
-                    };
-                };
-            };
+                    }
+                }
+            }
         }
-    };
+    }
 
     # Chequea campos requeridos.
     if($PRONTUS_VARS{'chk_form_multivista_strict'}) {
-        print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
+        #print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
 
-        print STDERR "Vistas: \n";
-        foreach my $v (keys %lib_form::MULTIVISTAS) {
-            print STDERR "[$v]\n";
-        }
+        #print STDERR "Vistas: \n";
+        #foreach my $v (keys %lib_form::MULTIVISTAS) {
+        #    print STDERR "[$v]\n";
+        #}
 
         foreach $key (keys %PRONTUS_VARS) {
             next unless($key =~ /chk_form_required_(\w+)/);
 
             $nombre = $1;
-            print STDERR "check encontrado: [$key]\n";
-            print STDERR "vistavar: [$VISTAVAR]\n";
-            print STDERR "nombre: [$nombre]\n";
+         #   print STDERR "check encontrado: [$key]\n";
+         #   print STDERR "vistavar: [$VISTAVAR]\n";
+         #   print STDERR "nombre: [$nombre]\n";
 
             # Estamos en una vista, por lo tanto se valida sólo si el nombre termina en esa vista
             if($VISTAVAR) {
@@ -699,8 +702,8 @@ sub valida_data {
             # Si no viene la vista no puede terminar en ninguna de las vistas
             } elsif($nombre =~ /_([^_]+?)$/) {
                 my $posiblevista = $1;
-                print STDERR "posiblevista: $posiblevista\n";
-                print STDERR "validando: $prontus_varglb::MULTIVISTAS{$posiblevista}\n";
+         #      print STDERR "posiblevista: $posiblevista\n";
+         #      print STDERR "validando: $prontus_varglb::MULTIVISTAS{$posiblevista}\n";
 
                 if(! $lib_form::MULTIVISTAS{$posiblevista}) {
                     $MSGS{$nombre} = &glib_html_02::text2html($nombre) unless($MSGS{$nombre});
@@ -821,11 +824,14 @@ sub salida {
     my ($msg,$string_error,$plantilla,$hay_error) = @_;
 
     # Define directorio de las respuestas y la identificacion de esta.
-    $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/exito";
+    # Solicitaron tener las respuestas en un dir separado para cada form, con el titular "slugificado".
+    my $titular = $PRONTUS_VARS{'_txt_titular'};
+    $titular = &lib_prontus::ajusta_titular_f4($titular);
+    $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/$titular/exito";
     if ($hay_error) {
         # CVI - 02/06/2014 - Para el error_log
         print STDERR "[prontus_form] Error: $msg\n";
-        $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/error";
+        $ANSWERS_DIR = "/$PRONTUS_ID/$CACHE_DIR/$titular/error";
     }
 
     # Verifica que existe el directorios de cache y los crea si no es asi.
@@ -835,7 +841,7 @@ sub salida {
         };
     };
 
-    $ANSWERID = $PRONTUS_ID . $TS . time . $$; # rand(1000000000);
+    $ANSWERID = $PRONTUS_ID . $TS . time . $$ . rand(1000000000);
 
     # 1.2 Procesa IFs y NIFs.
     $plantilla = &procesaIFs($plantilla,2);
@@ -863,7 +869,7 @@ sub salida {
     $plantilla =~ s/%\w+%//sg;
 
 
-    # Salida estatica y existe plantilla exito estatica
+    # Salida estatica y existe plantilla exito estatica, exito
     if ($SALIDA_ESTATICA && $NOM_PLT_EXITO && !$hay_error) {
         # Escribe el archivo de respuesta.
         my $archivo = "$ROOTDIR/$ANSWERS_DIR/$NOM_PLT_EXITO";
@@ -875,7 +881,7 @@ sub salida {
         exit;
     }
 
-    # Salida estatica y existe plantilla exito estatica
+    # Salida estatica y existe plantilla exito estatica, error.
     if ($SALIDA_ESTATICA && $NOM_PLT_ERROR && $hay_error) {
         # Escribe el archivo de respuesta.
         my $archivo = "$ROOTDIR/$ANSWERS_DIR/$NOM_PLT_ERROR";

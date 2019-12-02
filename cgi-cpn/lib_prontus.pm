@@ -84,14 +84,13 @@ require Artic;
 use lib_cookies;
 use Session;
 use Digest::MD5 qw(md5_hex);
+use POSIX qw(strftime ceil);
 use prontus_auth;
 
 our $CRLF = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # usar asi: $buffer =~ s/$CRLF/<p>/sg;
 our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
 
-
 our $DEBUG_FECHAS = 0;
-
 our $DISABLE_PURGE_CACHE = 0;
 
 # ---------------------------------------------------------------
@@ -711,84 +710,55 @@ sub ed_vigente {
 sub check_user {
     # Chequea que el username pasado por parametro exista en el hash de USERS y retorna el USERS_ID y el USERS_PERFIL.
     # Si no se logra autenticar, retorna el id vacio y en el perfil retorna el mesnaje de error.
-    my ($username, $crypted_pass);
-    my ($key, $value, %cookies);
-    my ($id, $perfil);
 
     my $redir = $_[0]; # redireccion en caso de que no se detecte una sesion activa.
-
-    %cookies = &lib_cookies::get_cookies();
-    $username = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
-    $crypted_pass = $cookies{'KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID}; # CLAVE PRONTUS ENCRIPTADA
-    $prontus_varglb::USERS_USR = $username;
 
     my $sess_obj = Session->new(
                     'prontus_id'        => $prontus_varglb::PRONTUS_SSO_MANAGER_ID,
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
-    if ($sess_obj->{id_session} eq '') {
+    if ($sess_obj->{id_session} eq '' || $sess_obj->{username} eq '' || $sess_obj->{psw_hash} eq '') {
         if ($redir) {
             # redirecciona al login.
-            #~ print "Location: ../$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html\n\n";
             print "Content-Type: text/html\n\n";
             print "<script type='text/javascript'>window.location.href='/$prontus_varglb::PRONTUS_ID/cpan/core/prontus_index.html';</script>";
             exit;
         } else {
+            print STDERR "No se detect&oacute; una sesi&oacute;n activa\n";
             return ('', 'No se detect&oacute; una sesi&oacute;n activa');
         };
     };
 
+    # solo aca se inicializa esta variable
+    $prontus_varglb::USERS_USR = $sess_obj->{username};
+
     if (&lib_prontus::open_dbm_files() ne 'ok') {
-        return ('', 'No fue posible cargar archivos de privilegios de usuario');
         print STDERR "No fue posible cargar archivos de privilegios de usuario.\n";
+        return ('', 'No fue posible cargar archivos de privilegios de usuario');
     };
 
-    # Devuelve el password encriptado que corresponda. Si es nuevo, lo devuelve completo, ya que en la cookie
-    # se almacena solo el hash.
-    $crypted_pass = &prontus_auth::check_if_new_hash($username, $crypted_pass);
+    my $login_result = &prontus_auth::check_valid_hash_psw($sess_obj->{username}, $sess_obj->{psw_hash});
 
-    # Si esta este archivo, solo deja pasar con user admin y la pass contenida en el.
-    # Los demas usuarios son bloqueados.
-    my ($flag_sysadmin) = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/users/prontus_flag_sysadmin.txt";
-    if (-f $flag_sysadmin) { # sysadmin
-        my $pass_sysadmin = &glib_fildir_02::read_file($flag_sysadmin);
-        my $crypted_sys_pass;
-
-        if(length($crypted_pass) == 32) {
-            $crypted_sys_pass = md5_hex($pass_sysadmin);
-        } elsif (length $crypted_pass == 60) {
-            $crypted_sys_pass = &prontus_auth::encrypt_password_bcrypt($pass_sysadmin);
-        } else {
-            $crypted_sys_pass = crypt($pass_sysadmin, 'Av');
-        }
-
-        if (($username eq 'admin') && ($crypted_pass eq $crypted_sys_pass)) {
-            return (1, 'A');
-        } else {
-            return ('', $prontus_varglb::MSG_BLOQUEOSYSADMIN); # sysadmin es para mostrar mensaje mas amigable
-        }
-    } else { # users normales
-        foreach $key (keys %prontus_varglb::USERS) {
-            # print "key[$key] y value[$value]<br>";
-            $value = $prontus_varglb::USERS{$key};
-            my ($users_nom, $users_usr, $users_psw, $users_perfil, $users_email, $users_exp_days, $users_fec_exp) = split /\|/, $value;
-
-            if (($users_usr eq $username) && ($crypted_pass eq $users_psw)) {
-                ($id, $perfil) = ($key, $users_perfil);
-
-                # print STDERR "users_exp_days[$users_exp_days] users_fec_exp[$users_fec_exp]\n";
-
-                if (&prontus_auth::if_passwd_expired($users_fec_exp) && $users_fec_exp ne '' && $users_fec_exp > 0 && $key != 1) {
-                    return ('', 'Su contrase&ntilde;a ha expirado. Inicie sesi&oacute;n nuevamente y c&aacute;mbiela.');
-                }
-
-                last;
-            }
-        }
-        $perfil = 'Usuario o Contrase&ntilde;a no v&aacute;lida.' if (!$id);
-        return ($id, $perfil);
+    # caso mas comun, usuario logeado correctamente
+    if ($login_result == 1) {
+        return ($prontus_auth::USERS_USR_ID, $prontus_auth::USERS_PERFIL);
     }
-
+    # contraseña expirada
+    if ($login_result == 3) {
+        return ('', 'Su contrase&ntilde;a ha expirado. Inicie sesi&oacute;n nuevamente y c&aacute;mbiela.');
+    }
+    # contraseña invalida
+    if ($login_result == 0) {
+        return ('', 'Usuario o Contrase&ntilde;a no v&aacute;lida.')
+    }
+    # login de admin con flag_sysadmin.txt correcto
+    if ($login_result == 2) {
+        return ($prontus_auth::USERS_USR_ID, $prontus_auth::USERS_PERFIL);
+    }
+    # login de admin con flag_sysadmin.txt incorrecto
+    if ($login_result == -1) {
+        return ('', $prontus_varglb::MSG_BLOQUEOSYSADMIN); # sysadmin es para mostrar mensaje mas amigable
+    }
 };
 
 # ---------------------------------------------------------------
@@ -915,7 +885,7 @@ sub load_artic_pubs {
                 my ($dirfecha,$art,$area,$prio,$pub,$ext_art,$vb) = '';
                 ($dirfecha,$art,$area,$prio,$vb,$pub) = ($1,$2,$3,$4,$6,$9);
 
-                $hash_artics{$art}{$edic}{$port} = 1;
+                $hash_artics{$art}{$edic}{$port} = $area;
             };
 
         };
@@ -1071,7 +1041,6 @@ sub load_config {
   my ($multied, $reldir_base, $dir_log); # Prontus 6.0
   my ($rtext); # rc15
 
-
   my $nomcfg;
   if ($path_conf =~ /(.*)\.cfg$/) {
     $nomcfg = $1;
@@ -1123,8 +1092,8 @@ sub load_config {
   };
 
     $prontus_varglb::PRONTUS_ID = '';
-    if ($buffer =~ m/\s*PRONTUS\_ID\s*=\s*("|')(.*?)("|')/) { # Prontus 6.0
-        $prontus_varglb::PRONTUS_ID = $2;
+    if ($buffer =~ m/\s*PRONTUS\_ID\s*=\s*["']([^'"]+?)["']/) { # Prontus 6.0
+        $prontus_varglb::PRONTUS_ID = $1;
     };
 
   $prontus_varglb::TIPO_PRONTUS = 'PRONTUS-04'; # AL FINAL SON TODOS PRONTUS 4 !!
@@ -1138,80 +1107,85 @@ sub load_config {
     };
   };
 
-  my $prontus_log = 'SI'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*PRONTUS_LOG\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $prontus_log = $2;
-  };
+    my $prontus_log = 'SI'; # valor por defecto. # 7.0
+    if ($buffer =~ m/\s*PRONTUS_LOG\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $prontus_log = $1;
+    }
 
-  my $friendly_urls = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_urls = $2;
-  };
+    $prontus_varglb::FRIENDLY_URLS = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $prontus_varglb::FRIENDLY_URLS = $1;
+    }
 
-  my $friendly_urls_version = '1'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*("|')(\d)("|')/) { # Es un digito, valor 1 a 4
-    $friendly_urls_version = $2;
-  };
+    $prontus_varglb::FRIENDLY_URLS_VERSION = '1'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS_VERSION\s*=\s*["'](\d)["']/) { # Es un digito, valor 1 a 4
+        $prontus_varglb::FRIENDLY_URLS_VERSION = $1;
+    }
 
-  my $friendly_urls_largo_titular = '75'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_urls_largo_titular = $2;
-  };
-  $friendly_urls_largo_titular = '75' if (!$friendly_urls_largo_titular);
+    $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = '75'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URLS_LARGO_TITULAR\s*=\s*["'](\d+)["']/) {
+        $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $1;
+    }
 
-  my $friendly_url_images = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*FRIENDLY_URL_IMAGES\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $friendly_url_images = $2;
-  };
+    $prontus_varglb::FRIENDLY_URL_IMAGES = 'NO'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_URL_IMAGES\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $prontus_varglb::FRIENDLY_URL_IMAGES = $1;
+    }
 
     $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = 'NO'; # valor por defecto.
-    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $2;
-    };
-    while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
-        my $clave = $2;
+    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_VIEW_NAME\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME = $1;
+    }
+
+    $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = 'SI'; # valor por defecto.
+    if ($buffer =~ m/\s*FRIENDLY_V4_INCLUDE_PRONTUS_ID\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID = $1;
+    }
+
+    while ($buffer =~ m/\s*FRIENDLY_V4_EXCLUDE_FID\s*=\s*["']([^'"]+?)["']/g) {
+        my $clave = $1;
         $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$clave} = 1;
-    };
+    }
 
     $prontus_varglb::MULTITAG = 'NO'; # valor por defecto.
-    if ($buffer =~ m/\s*MULTITAG\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $prontus_varglb::MULTITAG = $2;
-    };
+    if ($buffer =~ m/\s*MULTITAG\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $prontus_varglb::MULTITAG = $1;
+    }
 
     $prontus_varglb::RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify'; # valor por defecto.
-    if ($buffer =~ m/\s*RECAPTCHA_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $prontus_varglb::RECAPTCHA_API_URL = $2;
-    };
+    if ($buffer =~ m/\s*RECAPTCHA_API_URL\s*=\s*["']([^'"]+?)["']/) {
+        $prontus_varglb::RECAPTCHA_API_URL = $1;
+    }
 
     $prontus_varglb::RECAPTCHA_SECRET_CODE = ''; # valor por defecto.
-    if ($buffer =~ m/\s*RECAPTCHA_SECRET_CODE\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $prontus_varglb::RECAPTCHA_SECRET_CODE = $2;
+    if ($buffer =~ m/\s*RECAPTCHA_SECRET_CODE\s*=\s*["']([^'"]+?)["']/) {
+        $prontus_varglb::RECAPTCHA_SECRET_CODE = $1;
     };
 
   my $comentarios = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*COMENTARIOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $comentarios = $2;
+  if ($buffer =~ m/\s*COMENTARIOS\s*=\s*["'](SI|NO)["']/) {
+    $comentarios = $1;
   };
   $prontus_varglb::COMENTARIOS = $comentarios;
 
   # Dropbox.
   my $dropbox = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*DROPBOX\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $dropbox = $2;
+  if ($buffer =~ m/\s*DROPBOX\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $dropbox = $1;
   };
   $prontus_varglb::DROPBOX = $dropbox;
 
   my $dropbox_access_token = ''; # valor por defecto.
-  if ($buffer =~ m/\s*DROPBOX_ACCESS_TOKEN\s*=\s*("|')(.*?)("|')/) {
-    $dropbox_access_token = $2;
+  if ($buffer =~ m/\s*DROPBOX_ACCESS_TOKEN\s*=\s*["']([^'"]+?)["']/) {
+    $dropbox_access_token = $1;
   };
   $prontus_varglb::DROPBOX_ACCESS_TOKEN = $dropbox_access_token;
 
   my $dropbox_filext_exclude = ''; # valor por defecto.
   %prontus_varglb::DROPBOX_FILEXT_EXCLUDE_LIST = ();
 
-  if ($buffer =~ m/\s*DROPBOX_FILEXT_EXCLUDE\s*=\s*("|')(.*?)("|')/) {
-    $dropbox_filext_exclude = $2;
+  if ($buffer =~ m/\s*DROPBOX_FILEXT_EXCLUDE\s*=\s*["']([^'"]+?)["']/) {
+    $dropbox_filext_exclude = $1;
     my @filext_exclude_list = split(/,/, $dropbox_filext_exclude);
     foreach my $ext (@filext_exclude_list) {
       $ext =~ s/\n//sg;
@@ -1224,164 +1198,164 @@ sub load_config {
 
   %prontus_varglb::DROPBOX_CUSTOM_DIR = ();
   my $dropbox_custom_dir;
-  while ($buffer =~ m/\s*DROPBOX_CUSTOM_DIR\s*=\s*("|')(.*?)\1/g) {
-     $dropbox_custom_dir = $2;
+  while ($buffer =~ m/\s*DROPBOX_CUSTOM_DIR\s*=\s*["']([^'"]+?)["']/g) {
+     $dropbox_custom_dir = $1;
      next if (!$dropbox_custom_dir);
      $prontus_varglb::DROPBOX_CUSTOM_DIR{$dropbox_custom_dir} = 1;
   };
 
   # CloudFlare.
   my $cloudflare = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $cloudflare = $2;
+  if ($buffer =~ m/\s*CLOUDFLARE\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $cloudflare = $1;
   };
   $prontus_varglb::CLOUDFLARE = $cloudflare;
 
   my $cloudflare_api_key = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_API_KEY\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $cloudflare_api_key = $2;
+  if ($buffer =~ m/\s*CLOUDFLARE_API_KEY\s*=\s*["']([^'"]+?)["']/) {
+    $cloudflare_api_key = $1;
   };
   $prontus_varglb::CLOUDFLARE_API_KEY = $cloudflare_api_key;
 
   my $cloudflare_email = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_EMAIL\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $cloudflare_email = $2;
+  if ($buffer =~ m/\s*CLOUDFLARE_EMAIL\s*=\s*["']([^'"]+?)["']/) {
+    $cloudflare_email = $1;
   };
   $prontus_varglb::CLOUDFLARE_EMAIL = $cloudflare_email;
 
   my $cloudflare_zone = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*("|')(.*?)("|')/s) { # SI | NO
-    $cloudflare_zone = $2;
+  if ($buffer =~ m/\s*CLOUDFLARE_ZONE\s*=\s*["']([^'"]+?)["']/s) {
+    $cloudflare_zone = $1;
   };
   $prontus_varglb::CLOUDFLARE_ZONE = $cloudflare_zone;
 
   my $cloudflare_api_url = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_API_URL\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $cloudflare_api_url = $2;
+  if ($buffer =~ m/\s*CLOUDFLARE_API_URL\s*=\s*["']([^'"]+?)["']/) {
+    $cloudflare_api_url = $1;
   };
   $prontus_varglb::CLOUDFLARE_API_URL = $cloudflare_api_url;
 
   my $cloudflare_global_purge = ''; # valor por defecto.
-  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*("|')(.*?)$1/s) {
-    $cloudflare_global_purge = $2;
+  if ($buffer =~ m/\s*CLOUDFLARE_GLOBAL_PURGE\s*=\s*["']([^'"]+?)["']/s) {
+    $cloudflare_global_purge = $1;
   };
   $prontus_varglb::CLOUDFLARE_GLOBAL_PURGE = $cloudflare_global_purge;
 
   # Cache
   $prontus_varglb::CACHE_PURGE_TAXPORT = 'SI';
-  if ($buffer =~ m/\s*CACHE_PURGE_TAXPORT\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $prontus_varglb::CACHE_PURGE_TAXPORT = $2;
+  if ($buffer =~ m/\s*CACHE_PURGE_TAXPORT\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_TAXPORT = $1;
   };
 
   $prontus_varglb::CACHE_PURGE_TAGPORT = 'SI';
-  if ($buffer =~ m/\s*CACHE_PURGE_TAGPORT\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $prontus_varglb::CACHE_PURGE_TAGPORT = $2;
+  if ($buffer =~ m/\s*CACHE_PURGE_TAGPORT\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_TAGPORT = $1;
   };
 
   $prontus_varglb::CACHE_PURGE_TAXPORT_MV = 'SI';
-  if ($buffer =~ m/\s*CACHE_PURGE_TAXPORT_MV\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $prontus_varglb::CACHE_PURGE_TAXPORT_MV = $2;
+  if ($buffer =~ m/\s*CACHE_PURGE_TAXPORT_MV\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_TAXPORT_MV = $1;
   };
 
   $prontus_varglb::CACHE_PURGE_TAGPORT_MV = 'SI';
-  if ($buffer =~ m/\s*CACHE_PURGE_TAGPORT_MV\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $prontus_varglb::CACHE_PURGE_TAGPORT_MV = $2;
+  if ($buffer =~ m/\s*CACHE_PURGE_TAGPORT_MV\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_TAGPORT_MV = $1;
   };
 
   $prontus_varglb::CACHE_PURGE_MAPA = 'SI';
-  if ($buffer =~ m/\s*CACHE_PURGE_MAPA\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $prontus_varglb::CACHE_PURGE_MAPA = $2;
+  if ($buffer =~ m/\s*CACHE_PURGE_MAPA\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_MAPA = $1;
   };
 
   $prontus_varglb::CACHE_PURGE_ART_RELAC = 'SI';
-  if ($buffer =~ m/\s*CACHE_PURGE_ART_RELAC\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $prontus_varglb::CACHE_PURGE_ART_RELAC = $2;
+  if ($buffer =~ m/\s*CACHE_PURGE_ART_RELAC\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $prontus_varglb::CACHE_PURGE_ART_RELAC = $1;
   };
 
-  while ($buffer =~ m/\s*CACHE_PURGE_EXCLUDE_FID\s*=\s*("|')(.+?)("|')/g) {
-     my $clave = $2;
+  while ($buffer =~ m/\s*CACHE_PURGE_EXCLUDE_FID\s*=\s*["'](.+?)["']/g) {
+     my $clave = $1;
      $prontus_varglb::CACHE_PURGE_EXCLUDE_FID{$clave} = 1;
   };
 
   # Transcodificacion - XCODING
   $prontus_varglb::N_THREADS = 0; # valor por defecto.
-  if ($buffer =~ m/\s*N_THREADS\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::N_THREADS = $2;
+  if ($buffer =~ m/\s*N_THREADS\s*=\s*["'](\d+)["']/s) {
+    $prontus_varglb::N_THREADS = $1;
   };
 
   $prontus_varglb::XCODING_PPROC = ''; # valor por defecto.
-  if ($buffer =~ m/\s*XCODING_PPROC\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::XCODING_PPROC = $2;
+  if ($buffer =~ m/\s*XCODING_PPROC\s*=\s*["']([^'"]+?)["']/s) {
+    $prontus_varglb::XCODING_PPROC = $1;
   };
 
   $prontus_varglb::GEN_HLS = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*GEN_HLS\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::GEN_HLS = $2;
+  if ($buffer =~ m/\s*GEN_HLS\s*=\s*["'](SI|NO)["']/s) {
+    $prontus_varglb::GEN_HLS = $1;
   };
 
   $prontus_varglb::PRECISION_HLS = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*PRECISION_HLS\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::PRECISION_HLS = $2;
+  if ($buffer =~ m/\s*PRECISION_HLS\s*=\s*["'](SI|NO)["']/s) {
+    $prontus_varglb::PRECISION_HLS = $1;
   };
 
   $prontus_varglb::LIMIT_BITRATE = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*LIMIT_BITRATE\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::LIMIT_BITRATE = $2;
+  if ($buffer =~ m/\s*LIMIT_BITRATE\s*=\s*["'](SI|NO)["']/s) {
+    $prontus_varglb::LIMIT_BITRATE = $1;
   };
 
   $prontus_varglb::MODO_PARALELO = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*MODO_PARALELO\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::MODO_PARALELO = $2;
+  if ($buffer =~ m/\s*MODO_PARALELO\s*=\s*["'](SI|NO)["']/s) {
+    $prontus_varglb::MODO_PARALELO = $1;
   };
 
   $prontus_varglb::MAX_VIDEO_BITRATE = '1200'; # valor por defecto.
-  if ($buffer =~ m/\s*MAX_VIDEO_BITRATE\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::MAX_VIDEO_BITRATE = $2;
+  if ($buffer =~ m/\s*MAX_VIDEO_BITRATE\s*=\s*["'](\d+)["']/s) {
+    $prontus_varglb::MAX_VIDEO_BITRATE = $1;
   };
 
   $prontus_varglb::MAX_AUDIO_BITRATE = '128'; # valor por defecto.
-  if ($buffer =~ m/\s*MAX_AUDIO_BITRATE\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::MAX_AUDIO_BITRATE = $2;
+  if ($buffer =~ m/\s*MAX_AUDIO_BITRATE\s*=\s*["'](\d+)["']/s) {
+    $prontus_varglb::MAX_AUDIO_BITRATE = $1;
   };
 
   $prontus_varglb::RUTA_TEMPORAL_XCODING = ''; # valor por defecto.
-  if ($buffer =~ m/\s*RUTA_TEMPORAL_XCODING\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::RUTA_TEMPORAL_XCODING = $2;
+  if ($buffer =~ m/\s*RUTA_TEMPORAL_XCODING\s*=\s*["']([^'"]+?)["']/s) {
+    $prontus_varglb::RUTA_TEMPORAL_XCODING = $1;
     if ($prontus_varglb::RUTA_TEMPORAL_XCODING ne '' && substr($prontus_varglb::RUTA_TEMPORAL_XCODING, -1) ne '/') {
         $prontus_varglb::RUTA_TEMPORAL_XCODING .= '/';
     }
   };
 
   $prontus_varglb::XCODE_MAX_PIXEL = '854'; # valor por defecto.
-  if ($buffer =~ m/\s*XCODE_MAX_PIXEL\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::XCODE_MAX_PIXEL = $2;
+  if ($buffer =~ m/\s*XCODE_MAX_PIXEL\s*=\s*["'](\d+)["']/s) {
+    $prontus_varglb::XCODE_MAX_PIXEL = $1;
   };
 
   $prontus_varglb::XCODE_MAX_PARALELO = '3'; # valor por defecto.
-  if ($buffer =~ m/\s*XCODE_MAX_PARALELO\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::XCODE_MAX_PARALELO = $2;
+  if ($buffer =~ m/\s*XCODE_MAX_PARALELO\s*=\s*["'](\d+)["']/s) {
+    $prontus_varglb::XCODE_MAX_PARALELO = $1;
   };
 
     # configuracion de transcodificacion externa
     $prontus_varglb::USAR_XCODER_EXTERNO = 'NO'; # valor por defecto.
-    if ($buffer =~ m/\s*USAR_XCODER_EXTERNO\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::USAR_XCODER_EXTERNO = $2;
+    if ($buffer =~ m/\s*USAR_XCODER_EXTERNO\s*=\s*["'](SI|NO)["']/s) {
+        $prontus_varglb::USAR_XCODER_EXTERNO = $1;
     };
     $prontus_varglb::XCODER_HOST = ''; # valor por defecto.
-    if ($buffer =~ m/\s*XCODER_HOST\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::XCODER_HOST = $2;
+    if ($buffer =~ m/\s*XCODER_HOST\s*=\s*["']([^'"]+?)["']/s) {
+        $prontus_varglb::XCODER_HOST = $1;
     };
     $prontus_varglb::XCODER_PORT = ''; # valor por defecto.
-    if ($buffer =~ m/\s*XCODER_PORT\s*=\s*("|')(.*?)$1/s) {
-        $prontus_varglb::XCODER_PORT = $2;
+    if ($buffer =~ m/\s*XCODER_PORT\s*=\s*["']([^'"]+?)["']/s) {
+        $prontus_varglb::XCODER_PORT = $1;
     };
   # /XCODING
 
   # extensiones permitidas para uploads
   my $uploads_permitidos = $prontus_varglb::UPLOADS_PERMITIDOS_ORIG;
   my $uploads_permitidos_custom = '';
-  if ($buffer =~ m/\s*UPLOADS_PERMITIDOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $uploads_permitidos_custom = $2;
+  if ($buffer =~ m/\s*UPLOADS_PERMITIDOS\s*=\s*["']([^'"]+?)["']/) {
+    $uploads_permitidos_custom = $1;
   };
   if ($uploads_permitidos_custom =~ /^\w+(,\w+)*$/) {
     $prontus_varglb::UPLOADS_PERMITIDOS = $uploads_permitidos_custom;
@@ -1391,15 +1365,15 @@ sub load_config {
 
 
   my $uploads_extras = ''; # valor por defecto.
-  if ($buffer =~ m/\s*UPLOADS_EXTRAS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $uploads_extras = $2;
+  if ($buffer =~ m/\s*UPLOADS_EXTRAS\s*=\s*["']([^'"]+?)["']/) {
+    $uploads_extras = $1;
     if ($uploads_extras =~ /^\w+(,\w+)*$/) {
       $prontus_varglb::UPLOADS_PERMITIDOS .= '|' . $uploads_extras;
     };
   };
 
-  while ($buffer =~ m/\s*MULTIVISTA\s*=\s*("|')(.+?)("|')/g) {
-     my $clave = $2;
+  while ($buffer =~ m/\s*MULTIVISTA\s*=\s*["'](.+?)['"]/g) {
+     my $clave = $1;
      $prontus_varglb::MULTIVISTAS{$clave} = 1;
   };
 
@@ -1441,30 +1415,37 @@ sub load_config {
     exit;
   };
 
-  while ($buffer =~ m/\s*BASE\_PORTS\s*=\s*("|')(.*?)("|')/g) {
-     my $valor = $2;
+  while ($buffer =~ m/\s*BASE\_PORTS\s*=\s*["']([^'"]+?)["']/g) {
+     my $valor = $1;
      push @prontus_varglb::BASE_PORTS, $valor;
   };
 
   # ports dd habilitadas.
-  while ($buffer =~ m/\s*PORT\_DRAGANDROP\s*=\s*("|')(.*?)("|')/g) {
-     my $valor = $2;
+  while ($buffer =~ m/\s*PORT\_DRAGANDROP\s*=\s*["']([^'"]+?)["']/g) {
+     my $valor = $1;
      $prontus_varglb::PORT_DRAGANDROP{$valor} = 1;
   };
 
 
-  my $server_name;
-  if ($buffer =~ m/\s*PUBLIC\_SERVER\_NAME\s*=\s*("|')(.*?)("|')/) {
-     $server_name = $2;
-  };
-  if (!$server_name) {
-    $server_name = $ENV{'HTTP_HOST'};
-  };
-  $prontus_varglb::PUBLIC_SERVER_NAME = $server_name;
-  if (!$prontus_varglb::IP_SERVER) {
-    $prontus_varglb::IP_SERVER = $prontus_varglb::PUBLIC_SERVER_NAME
-  };
+    $prontus_varglb::PUBLIC_SERVER_NAME = '';
+    if ($buffer =~ m/\s*PUBLIC_SERVER_NAME\s*=\s*["']([^'"]+?)["']/) {
+        $prontus_varglb::PUBLIC_SERVER_NAME = $1;
+    }
+    if ($prontus_varglb::PUBLIC_SERVER_NAME eq '') {
+        $prontus_varglb::PUBLIC_SERVER_NAME = $ENV{'HTTP_HOST'};
+    }
 
+    if (!$prontus_varglb::IP_SERVER) {
+        $prontus_varglb::IP_SERVER = $prontus_varglb::PUBLIC_SERVER_NAME
+    }
+
+    $prontus_varglb::CPAN_SERVER_NAME = '';
+    if ($buffer =~ m/\s*CPAN_SERVER_NAME\s*=\s*["']([^'"]+?)["']/) {
+        $prontus_varglb::CPAN_SERVER_NAME = $1;
+    }
+    if ($prontus_varglb::CPAN_SERVER_NAME eq '') {
+        $prontus_varglb::CPAN_SERVER_NAME = $prontus_varglb::PUBLIC_SERVER_NAME;
+    }
 
   # Chequeo de prontus key.
   my ($novalid_key) = 1;
@@ -1561,85 +1542,81 @@ sub load_config {
   };
 
 
-  if ($buffer =~ m/\s*CONTROL\_FECHA\s*=\s*("|')(.*?)("|')/) { # 1.22 valores posibles : SI | NO
-    $cfecha = $2;
+  if ($buffer =~ m/\s*CONTROL\_FECHA\s*=\s*["'](SI|NO)["']/) { # 1.22 valores posibles : SI | NO
+    $cfecha = $1;
   };
 
   $multied = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*MULTI\_EDICION\s*=\s*("|')(.*?)("|')/) { # 1.22 valores posibles : SI | NO
-    $multied = $2;
+  if ($buffer =~ m/\s*MULTI\_EDICION\s*=\s*["'](SI|NO)["']/) { # 1.22 valores posibles : SI | NO
+    $multied = $1;
   };
 
-
   my $peditor = 'SI'; # valor por defecto. # 7.0
-  # if ($buffer =~ m/\s*PRONTUS_EDITOR\s*=\s*("|')(.*?)("|')/) { # SI | NO
-  #  $peditor = $2;
-  # };
 
   my $admin_port = 'NO'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*ADMIN_PORT\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $admin_port = $2;
+  if ($buffer =~ m/\s*ADMIN_PORT\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $admin_port = $1;
   };
 
   my $verifinst = 'NO'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*VERIFICAR_INSTALACION\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $verifinst = $2;
+  if ($buffer =~ m/\s*VERIFICAR_INSTALACION\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $verifinst = $1;
   };
 
   my $actmasiva = 'NO'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*ACTUALIZACION_MASIVA\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $actmasiva = $2;
+  if ($buffer =~ m/\s*ACTUALIZACION_MASIVA\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $actmasiva = $1;
   };
 
   my $admin_basedatos = 'NO'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*ADMIN_BASEDATOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $admin_basedatos = $2;
+  if ($buffer =~ m/\s*ADMIN_BASEDATOS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $admin_basedatos = $1;
   };
 
   my $admin_buscador = 'NO'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*ADMIN_BUSCADOR\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $admin_buscador = $2;
+  if ($buffer =~ m/\s*ADMIN_BUSCADOR\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $admin_buscador = $1;
   };
 
   my $admin_tax = 'SI'; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*ADMIN_TAX\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $admin_tax = $2;
+  if ($buffer =~ m/\s*ADMIN_TAX\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $admin_tax = $1;
   };
 
     my $p_edit_art_ajenos = 'SI'; # valor por defecto. # 7.0
-    if ($buffer =~ m/\s*REDACTOR_EDITAR_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-            $p_edit_art_ajenos = $2;
+    if ($buffer =~ m/\s*REDACTOR_EDITAR_ARTICULOS_AJENOS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $p_edit_art_ajenos = $1;
     };
 
     my $p_ver_art_ajenos = 'SI'; # valor por defecto. # 8.0
-    if ($buffer =~ m/\s*REDACTOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $p_ver_art_ajenos = $2;
+    if ($buffer =~ m/\s*REDACTOR_VER_ARTICULOS_AJENOS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $p_ver_art_ajenos = $1;
     };
 
     my $e_edit_art_ajenos = 'SI'; # valor por defecto. # 7.0
-    if ($buffer =~ m/\s*EDITOR_EDITAR_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $e_edit_art_ajenos = $2;
+    if ($buffer =~ m/\s*EDITOR_EDITAR_ARTICULOS_AJENOS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $e_edit_art_ajenos = $1;
     };
 
     my $e_ver_art_ajenos = 'SI'; # valor por defecto. # 8.0
-    if ($buffer =~ m/\s*EDITOR_VER_ARTICULOS_AJENOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $e_ver_art_ajenos = $2;
+    if ($buffer =~ m/\s*EDITOR_VER_ARTICULOS_AJENOS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $e_ver_art_ajenos = $1;
     };
 
     my $e_adm_ediciones = 'SI'; # valor por defecto. # 8.0
-    if ($buffer =~ m/\s*EDITOR_ADMINISTRAR_EDICIONES\s*=\s*("|')(.*?)("|')/) { # SI | NO
-        $e_adm_ediciones = $2;
+    if ($buffer =~ m/\s*EDITOR_ADMINISTRAR_EDICIONES\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $e_adm_ediciones = $1;
     };
 
     # activar single sign-on
     $prontus_varglb::PRONTUS_SSO = 'NO';
-    if ($buffer =~ m/\s*PRONTUS_SSO\s*=\s*["|'](.*?)["|']/) { # SI | NO
+    if ($buffer =~ m/\s*PRONTUS_SSO\s*=\s*["'](SI|NO)["']/) { # SI | NO
         $prontus_varglb::PRONTUS_SSO = $1;
     };
 
     # es el prontus que administra todos los usuarios
     $prontus_varglb::PRONTUS_SSO_MASTER = 'NO';
-    if ($buffer =~ m/\s*PRONTUS_SSO_MASTER\s*=\s*["|'](.*?)["|']/) { # SI | NO
+    if ($buffer =~ m/\s*PRONTUS_SSO_MASTER\s*=\s*["'](SI|NO)["']/) { # SI | NO
         $prontus_varglb::PRONTUS_SSO_MASTER = $1;
     };
     # id del prontus con los usuarios
@@ -1649,13 +1626,13 @@ sub load_config {
     };
 
   my $port_ini_selected = ''; # valor por defecto. # 7.0
-  if ($buffer =~ m/\s*PORT_INI_SELECTED\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $port_ini_selected = $2;
+  if ($buffer =~ m/\s*PORT_INI_SELECTED\s*=\s*["']([^'"]+?)["']/) {
+    $port_ini_selected = $1;
   };
 
   my $port_home = '';
-  if ($buffer =~ m/\s*PORT_HOME\s*=\s*("|')(.*?)("|')/) { # SI | NO
-    $port_home = $2;
+  if ($buffer =~ m/\s*PORT_HOME\s*=\s*["']([^'"]+?)["']/) {
+    $port_home = $1;
   };
 
 
@@ -1664,28 +1641,28 @@ sub load_config {
 
   # Maximo de art. no pub. a desplegar en la lista de articulos
   my $max_nro_artic = '50'; # valor por defecto.
-  if ($buffer =~ m/\s*MAX_NRO_ARTIC\s*=\s*("|')(\d+)("|')/) { # p. ej. 200
-    $max_nro_artic = $2;
+  if ($buffer =~ m/\s*MAX_NRO_ARTIC\s*=\s*["'](\d+)["']/) { # p. ej. 200
+    $max_nro_artic = $1;
   };
 
   # Parametros de conexion a la BD MySQL
   my ($motor_bd, $server_bd,$nom_bd,$user_bd,$pwd_bd) = '-undefined-';
 
-  if ($buffer =~ m/\s*MOTOR_BD\s*=\s*("|')(.*?)("|')/) { # MYSQL | PRONTUS
-    $motor_bd = uc $2;
+  if ($buffer =~ m/\s*MOTOR_BD\s*=\s*["']([^'"]+?)["']/) { # MYSQL | PRONTUS
+    $motor_bd = uc $1;
 
     if ($motor_bd eq 'MYSQL') {
-      if ($buffer =~ m/\s*SERVER_BD\s*=\s*("|')(.*?)("|')/) {
-        $server_bd = $2;
+      if ($buffer =~ m/\s*SERVER_BD\s*=\s*["']([^'"]+?)["']/) {
+        $server_bd = $1;
       };
-      if ($buffer =~ m/\s*NOM_BD\s*=\s*("|')(.*?)("|')/) {
-        $nom_bd = $2;
+      if ($buffer =~ m/\s*NOM_BD\s*=\s*["']([^'"]+?)["']/) {
+        $nom_bd = $1;
       };
-      if ($buffer =~ m/\s*USER_BD\s*=\s*("|')(.*?)("|')/) {
-        $user_bd = $2;
+      if ($buffer =~ m/\s*USER_BD\s*=\s*["']([^'"]+?)["']/) {
+        $user_bd = $1;
       };
-      if ($buffer =~ m/\s*PWD_BD\s*=\s*("|')(.*?)("|')/) {
-        $pwd_bd = $2;
+      if ($buffer =~ m/\s*PWD_BD\s*=\s*["']([^'"]+?)["']/) {
+        $pwd_bd = $1;
       };
       if ((! $server_bd) || (! $nom_bd) || (! $user_bd) || (! $pwd_bd)) {
         print STDERR "Error en CFG: Faltan parametros de conexion a la base de datos MySQL. Los parámetros son: SERVER_BD, NOM_BD, USER_BD y PWD_BD\n";
@@ -1712,70 +1689,76 @@ sub load_config {
   };
 
   my $taxport_maxartics = '500'; # valor por defecto.
-  if ($buffer =~ m/\s*TAXPORT_MAXARTICS\s*=\s*("|')([0-9]+?)("|')/) {
-    $taxport_maxartics = $2;
+  if ($buffer =~ m/\s*TAXPORT_MAXARTICS\s*=\s*["']([0-9]+?)["']/) {
+    $taxport_maxartics = $1;
   };
   $prontus_varglb::TAXPORT_MAXARTICS = $taxport_maxartics;
   $prontus_varglb::TAXPORT_MAXARTICS = $prontus_varglb::TAXPORT_MAXARTICS_SECURITY if ($prontus_varglb::TAXPORT_MAXARTICS > $prontus_varglb::TAXPORT_MAXARTICS_SECURITY);
 
   $prontus_varglb::TAXPORT_MAX_WORKERS = 4;
-  if ($buffer =~ m/\s*TAXPORT_MAX_WORKERS\s*=\s*("|')([0-9]+?)("|')/) {
-    $prontus_varglb::TAXPORT_MAX_WORKERS = $2;
+  if ($buffer =~ m/\s*TAXPORT_MAX_WORKERS\s*=\s*["']([0-9]+?)["']/) {
+    $prontus_varglb::TAXPORT_MAX_WORKERS = $1;
   };
 
   my $taxport_tipo_pag = '0'; # valor por defecto.
-  if ($buffer =~ m/\s*TAXPORT_TIPO_PAGINACION\s*=\s*("|')(0|1)("|')/) {
-    $taxport_tipo_pag = $2;
+  if ($buffer =~ m/\s*TAXPORT_TIPO_PAGINACION\s*=\s*["'](0|1)["']/) {
+    $taxport_tipo_pag = $1;
   };
   $prontus_varglb::TAXPORT_TIPO_PAGINACION = $taxport_tipo_pag;
 
 
   my $taxport_PAGCORTA_MAXPAGS = '5'; # valor por defecto.
-  if ($buffer =~ m/\s*TAXPORT_PAGCORTA_MAXPAGS\s*=\s*("|')([0-9]+?)("|')/) {
-    $taxport_PAGCORTA_MAXPAGS = $2;
+  if ($buffer =~ m/\s*TAXPORT_PAGCORTA_MAXPAGS\s*=\s*["'](\d+)["']/) {
+    $taxport_PAGCORTA_MAXPAGS = $1;
   };
   $prontus_varglb::TAXPORT_PAGCORTA_MAXPAGS = $taxport_PAGCORTA_MAXPAGS;
 
 
   my ($tax_niv, $control_alta);
-  if ($buffer =~ m/\s*TAXONOMIA_NIVELES\s*=\s*("|')([0-3])("|')/) {
-   $tax_niv = $2;
+  if ($buffer =~ m/\s*TAXONOMIA_NIVELES\s*=\s*["']([0-3])["']/) {
+   $tax_niv = $1;
   };
-  if ($buffer =~ m/\s*CONTROLAR_ALTA_ARTICULOS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-   $control_alta = $2;
+  if ($buffer =~ m/\s*CONTROLAR_ALTA_ARTICULOS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+   $control_alta = $1;
+  };
+
+  my $regenerar_sin_alta = 'SI'; # seteado a sí por defecto por retrocompatibilidad.
+  if ($buffer =~ m/\s*CREAR_VISTAS_SIN_ALTA\s*=\s*["'](SI|NO)["']/) { # SI | NO
+   $regenerar_sin_alta = $1;
   };
 
   my $artic_actualiza_ports = 'NO';
-  if ($buffer =~ m/\s*ARTIC_ACTUALIZA_PORTS\s*=\s*("|')(.*?)("|')/) { # SI | NO
-   $artic_actualiza_ports = $2;
+  if ($buffer =~ m/\s*ARTIC_ACTUALIZA_PORTS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+   $artic_actualiza_ports = $1;
   };
 
   $prontus_varglb::TAXONOMIA_NIVELES = $tax_niv;
   $prontus_varglb::CONTROLAR_ALTA_ARTICULOS = $control_alta;
   $prontus_varglb::ARTIC_ACTUALIZA_PORTS = $artic_actualiza_ports;
+  $prontus_varglb::CREAR_VISTAS_SIN_ALTA = $regenerar_sin_alta;
 
   # tagonomicas
 
   # tagonomicas.TAGPORT_MAXARTICS
   my $tagport_maxartics = '500'; # valor por defecto.
-  if ($buffer =~ m/\s*TAGPORT_MAXARTICS\s*=\s*("|')([0-9]+?)("|')/) {
-    $tagport_maxartics = $2;
+  if ($buffer =~ m/\s*TAGPORT_MAXARTICS\s*=\s*["'](\d+)["']/) {
+    $tagport_maxartics = $1;
   };
   $prontus_varglb::TAGPORT_MAXARTICS = $tagport_maxartics;
   $prontus_varglb::TAGPORT_MAXARTICS = 1000 if ($prontus_varglb::TAGPORT_MAXARTICS > 1000);
 
   # tagonomicas.TAGPORT_MAXARTICS
   my $tags_max_last_fid = '15'; # valor por defecto.
-  if ($buffer =~ m/\s*MAX_LAST_TAGS_4FID\s*=\s*("|')([0-9]+?)("|')/) {
-    $tags_max_last_fid = $2;
+  if ($buffer =~ m/\s*MAX_LAST_TAGS_4FID\s*=\s*["'](\d+)["']/) {
+    $tags_max_last_fid = $1;
   };
   $prontus_varglb::MAX_LAST_TAGS_4FID = $tags_max_last_fid;
   $prontus_varglb::MAX_LAST_TAGS_4FID = 500 if ($prontus_varglb::MAX_LAST_TAGS_4FID > 500);
 
   # tagonomicas.TAGPORT_ARTXPAG
   my $tagport_artxpag = 20; # valor default
-  if ($buffer =~ m/\s*TAGPORT_ARTXPAG\s*=\s*("|')([0-9]+?)("|')/) {
-    $tagport_artxpag = $2;
+  if ($buffer =~ m/\s*TAGPORT_ARTXPAG\s*=\s*["'](\d+)["']/) {
+    $tagport_artxpag = $1;
   };
   $prontus_varglb::TAGPORT_ARTXPAG = $tagport_artxpag;
 
@@ -1816,22 +1799,22 @@ sub load_config {
   # ---------
   # list.LIST_PROCESO_INTERNO
   my $proc_int = 'SI'; # valor por defecto.
-  if ($buffer =~ m/\s*LIST_PROCESO_INTERNO\s*=\s*("|')(.*?)("|')/) { # 1.22 valores posibles : SI | NO
-    $proc_int = $2;
+  if ($buffer =~ m/\s*LIST_PROCESO_INTERNO\s*=\s*["'](SI|NO)["']/) { # 1.22 valores posibles : SI | NO
+    $proc_int = $1;
   };
   $prontus_varglb::LIST_PROCESO_INTERNO = $proc_int;
 
   # list.LIST_PORT_PPROC
   my $port_pproc = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*LIST_PORT_PPROC\s*=\s*("|')(.*?)("|')/) { # 1.22 valores posibles : SI | NO
-    $port_pproc = $2;
+  if ($buffer =~ m/\s*LIST_PORT_PPROC\s*=\s*["'](SI|NO)["']/) { # 1.22 valores posibles : SI | NO
+    $port_pproc = $1;
   };
   $prontus_varglb::LIST_PORT_PPROC = $port_pproc;
 
   # list.LIST_MAXARTICS
   $prontus_varglb::LIST_MAXARTICS = '20'; # valor por defecto.
-  if ($buffer =~ m/\s*LIST_MAXARTICS\s*=\s*("|')([0-9]+?)("|')/) {
-    $prontus_varglb::LIST_MAXARTICS = $2;
+  if ($buffer =~ m/\s*LIST_MAXARTICS\s*=\s*["'](\d+)["']/) {
+    $prontus_varglb::LIST_MAXARTICS = $1;
   };
   $prontus_varglb::LIST_MAXARTICS = 1000 if ($prontus_varglb::LIST_MAXARTICS > 1000);
 
@@ -1904,8 +1887,8 @@ sub load_config {
 
   my $dir_ffmpeg = '';
   # si el dir se define por cfg, usa ese en lugar del por defecto
-  if ($buffer =~ m/\s*DIR_FFMPEG\s*=\s*("|')(.*?)("|')/) {
-   $dir_ffmpeg = $2;
+  if ($buffer =~ m/\s*DIR_FFMPEG\s*=\s*["']([^'"]+?)["']/) {
+   $dir_ffmpeg = $1;
    if (!$dir_ffmpeg) {
     $dir_ffmpeg = $default_dir_ffmpeg;
    };
@@ -1927,16 +1910,16 @@ sub load_config {
 
   # customizacion de paste mode en vtxt
   my $vtxt_paste_newlines_as_p = 'NO';
-  if ($buffer =~ m/\s*VTXT_PASTE_NEWLINES_AS_P\s*=\s*("|')(.*?)("|')/) {
-   $vtxt_paste_newlines_as_p = $2;
+  if ($buffer =~ m/\s*VTXT_PASTE_NEWLINES_AS_P\s*=\s*["'](SI|NO)["']/) {
+   $vtxt_paste_newlines_as_p = $1;
   };
   $prontus_varglb::VTXT_PASTE_NEWLINES_AS_P = $vtxt_paste_newlines_as_p;
 
 
   # Configuracion de DTD a usar en VTXT
   my $vtxt_dtd = 'STRICT'; # TRANSITIONAL | STRICT
-  if ($buffer =~ m/\s*VTXT_DTD\s*=\s*("|')(.*?)("|')/) {
-    $vtxt_dtd = $2;
+  if ($buffer =~ m/\s*VTXT_DTD\s*=\s*["']([^'"]+?)["']/) {
+    $vtxt_dtd = $1;
     if ($vtxt_dtd !~ /^(STRICT|TRANSITIONAL)$/) {
       print STDERR "Error en CFG: seteo de variable VTXT_DTD\n";
       print "Content-Type: text/html\n\n";
@@ -1948,49 +1931,53 @@ sub load_config {
 
   # Indica si se debe realizar escapeo o no
   my $vtxt_encode = 'SI'; # Valor por defecto, funciona como siempre
-  if ($buffer =~ m/\s*VTXT_ENCODE_CHARS\s*=\s*("|')(SI|NO)("|')/) { # SI | NO
-    $vtxt_encode = $2;
+  if ($buffer =~ m/\s*VTXT_ENCODE_CHARS\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $vtxt_encode = $1;
   }
   $prontus_varglb::VTXT_ENCODE_CHARS = $vtxt_encode;
 
   # Indica si se debe usar media_use_script en TinyMCE
   my $vtxt_media_script = 'SI'; # Valor por defecto, funciona como siempre
-  if ($buffer =~ m/\s*VTXT_MEDIA_SCRIPT\s*=\s*("|')(SI|NO)("|')/) { # SI | NO
-    $vtxt_media_script = $2;
+  if ($buffer =~ m/\s*VTXT_MEDIA_SCRIPT\s*=\s*["'](SI|NO)["']/) { # SI | NO
+    $vtxt_media_script = $1;
   }
   $prontus_varglb::VTXT_MEDIA_SCRIPT = $vtxt_media_script;
 
 
   # actualizaciones automaticas
   my $actualizaciones = 'SI';
-  if ($buffer =~ m/\s*ACTUALIZACIONES\s*=\s*("|')(.*?)("|')/) { # SI | NO
-   $actualizaciones = $2;
+  if ($buffer =~ m/\s*ACTUALIZACIONES\s*=\s*["'](SI|NO)["']/) { # SI | NO
+   $actualizaciones = $1;
   };
   $prontus_varglb::ACTUALIZACIONES = $actualizaciones;
 
+    $prontus_varglb::VTXT_RELPATH_LINK = 'SI';
+    if ($buffer =~ m/\s*VTXT_RELPATH_LINK\s*=\s*["'](SI|NO)["']/) { # SI | NO
+        $prontus_varglb::VTXT_RELPATH_LINK = $1;
+    }
 
   # Para saber si el FID se abre en pop o no
   my $abrir_fids_en_pop = 'NO';
-  if ($buffer =~ m/\s*ABRIR_FIDS_EN_POP\s*=\s*("|')(.*?)("|')/) { # SI | NO
-   $abrir_fids_en_pop = $2;
+  if ($buffer =~ m/\s*ABRIR_FIDS_EN_POP\s*=\s*["'](SI|NO)["']/) { # SI | NO
+   $abrir_fids_en_pop = $1;
   };
   $prontus_varglb::ABRIR_FIDS_EN_POP = $abrir_fids_en_pop;
 
   # Para usar nombre del servidor al ver un articulo desde el FID.
   my $usar_public_server_name_ver_artic = 'NO';
-  if ($buffer =~ m/\s*USAR_PUBLIC_SERVER_NAME_VER_ARTIC\s*=\s*("|')(.*?)("|')/) { # SI | NO
-   $usar_public_server_name_ver_artic = $2;
+  if ($buffer =~ m/\s*USAR_PUBLIC_SERVER_NAME_VER_ARTIC\s*=\s*["'](SI|NO)["']/) { # SI | NO
+   $usar_public_server_name_ver_artic = $1;
   };
   $prontus_varglb::USAR_PUBLIC_SERVER_NAME_VER_ARTIC = $usar_public_server_name_ver_artic;
 
   $prontus_varglb::NUM_RELAC_DEFAULT = 5; # valor default
-  if ($buffer =~ m/\s*NUM_RELAC_DEFAULT\s*=\s*("|')(\d+?)("|')/) {
-   $prontus_varglb::NUM_RELAC_DEFAULT = $2;
+  if ($buffer =~ m/\s*NUM_RELAC_DEFAULT\s*=\s*["'](\d+)["']/) {
+   $prontus_varglb::NUM_RELAC_DEFAULT = $1;
   };
 
   my $taxport_artxpag = 20; # valor default
-  if ($buffer =~ m/\s*TAXPORT_ARTXPAG\s*=\s*("|')(\d+?)("|')/) {
-    $taxport_artxpag = $2;
+  if ($buffer =~ m/\s*TAXPORT_ARTXPAG\s*=\s*["'](\d+)["']/) {
+    $taxport_artxpag = $1;
   };
   $prontus_varglb::TAXPORT_ARTXPAG = $taxport_artxpag;
 
@@ -2031,38 +2018,38 @@ sub load_config {
 
   # EDICION BASE SELECCIONADA POR DEFECTO
   my $edicbase_ini_selected = 'NO'; # valor por defecto, se selecciona la ultima edic
-  if ($buffer =~ m/\s*EDICBASE_INI_SELECTED\s*=\s*("|')(.*?)("|')/) { # 1.22 valores posibles : SI | NO
-    $edicbase_ini_selected = $2;
+  if ($buffer =~ m/\s*EDICBASE_INI_SELECTED\s*=\s*["'](SI|NO)["']/) { # 1.22 valores posibles : SI | NO
+    $edicbase_ini_selected = $1;
   };
   $prontus_varglb::EDICBASE_INI_SELECTED = $edicbase_ini_selected;
 
 
   # smtp
   my $server_smtp = ''; # valor por defecto
-  if ($buffer =~ m/\s*SERVER_SMTP\s*=\s*("|')(.*?)("|')/) {
-    $server_smtp = $2;
+  if ($buffer =~ m/\s*SERVER_SMTP\s*=\s*["']([^'"]+?)["']/) {
+    $server_smtp = $1;
   };
   $prontus_varglb::SERVER_SMTP = $server_smtp;
 
 
   # Nubetags
   my $nubetags_factor_olvido = 0.9; # valor por defecto
-  if ($buffer =~ m/\s*NUBETAGS_FACTOR_OLVIDO\s*=\s*("|')(.*?)("|')/) {
-    $nubetags_factor_olvido = $2;
+  if ($buffer =~ m/\s*NUBETAGS_FACTOR_OLVIDO\s*=\s*["']([^'"]+?)["']/) {
+    $nubetags_factor_olvido = $1;
   };
   $nubetags_factor_olvido =~ s/\,/\./;
   if ($nubetags_factor_olvido !~ /^[0-9]+(\.[0-9]+)?$/) {
-      print STDERR "Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un número entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'\n";
+      print STDERR "Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un n&uacute;mero entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'\n";
       print "Content-Type: text/html\n\n";
-      print "<P>Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un número entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'";
+      print "<P>Error en CFG: seteo de variable NUBETAGS_FACTOR_OLVIDO contiene un valor no v&aacute;lido.<br>Debe contener un n&uacute;mero entero o decimal, por ejemplo: '0.95'<br>Por omisi&oacute;n es: '0.9'";
       exit;
   };
   $prontus_varglb::NUBETAGS_FACTOR_OLVIDO = $nubetags_factor_olvido;
 
   # max tags
   my $nubetags_max_tags = 30; # valor por defecto
-  if ($buffer =~ m/\s*NUBETAGS_MAX_TAGS\s*=\s*("|')(.*?)("|')/) {
-    $nubetags_max_tags = $2;
+  if ($buffer =~ m/\s*NUBETAGS_MAX_TAGS\s*=\s*["']([^'"]+?)["']/) {
+    $nubetags_max_tags = $1;
   };
   if ($nubetags_max_tags !~ /^[0-9]+$/) {
       print STDERR "Error en CFG: seteo de variable NUBETAGS_MAX_TAGS contiene un valor no v&aacute;lido.<br>Debe contener un número entero, por ejemplo: '10'<br>Por omisi&oacute;n es: '30'\n";
@@ -2074,24 +2061,24 @@ sub load_config {
 
   # Para indicar si se usará https
   my $protocolo_https = 'NO'; # Valor por defecto = NO
-  if ($buffer =~ m/\s*SERVER_PROTOCOLO_HTTPS\s*=\s*("|')(SI|NO)("|')/) {
-    $protocolo_https = $2;
+  if ($buffer =~ m/\s*SERVER_PROTOCOLO_HTTPS\s*=\s*["'](SI|NO)["']/) {
+    $protocolo_https = $1;
   };
   $prontus_varglb::SERVER_PROTOCOLO_HTTPS = $protocolo_https;
 
   # Varnish purge
   %prontus_varglb::VARNISH_SERVER_NAME = ();
   my $varnish_server_name;
-  while ($buffer =~ m/\s*VARNISH\_SERVER\_NAME\s*=\s*("|')(.*?)\1/g) {
-     $varnish_server_name = $2;
+  while ($buffer =~ m/\s*VARNISH\_SERVER\_NAME\s*=\s*["'](SI|NO)["']/g) {
+     $varnish_server_name = $1;
      next if (!$varnish_server_name);
      $prontus_varglb::VARNISH_SERVER_NAME{$varnish_server_name} = 1;
   };
 
   # Varnish global purge
   my $varnish_global_purge;
-  if ($buffer =~ m/\s*VARNISH_GLOBAL_PURGE\s*=\s*("|')(.*?)$1/s) {
-     $varnish_global_purge = $2;
+  if ($buffer =~ m/\s*VARNISH_GLOBAL_PURGE\s*=\s*["'](SI|NO)["']/s) {
+     $varnish_global_purge = $1;
   };
   $prontus_varglb::VARNISH_GLOBAL_PURGE = $varnish_global_purge;
 
@@ -2108,13 +2095,13 @@ sub load_config {
   if (keys(%prontus_varglb::CLUSTERING_SERVER) > 0) {
       # clustering_debug_level
       my $clustering_debug_level = 1; # valor por defecto
-      if ($buffer =~ m/\s*CLUSTERING_DEBUG_LEVEL\s*=\s*("|')(.*?)("|')/) {
-        $clustering_debug_level = $2;
+      if ($buffer =~ m/\s*CLUSTERING_DEBUG_LEVEL\s*=\s*["'](\d+)["']/) {
+        $clustering_debug_level = $1;
       };
       if ($clustering_debug_level !~ /^[0-2]$/) {
          my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_DEBUG_LEVEL contiene un valor no v&aacute;lido."
                   . "<br>Valores posibles: '0', '1' o '2'."
-                  . "<br>'0':Sólo errores | '1': Errores e información básica | '2': Todo lo anterior y además debug específico de FTP"
+                  . "<br>'0':S&oacute;lo errores | '1': Errores e informaci&oacute;n b&aacute;sica | '2': Todo lo anterior y adem&aacute;s debug espec&iacute;fico de FTP"
                   . "<br>Por omisi&oacute;n es: '1'";
           &glib_html_02::print_pag_result('Error', $msg, 0, 'exit=1,ctype=1');
       };
@@ -2122,12 +2109,12 @@ sub load_config {
 
       # clustering_timeout_connect_segs
       my $clustering_timeout_connect_segs = 15; # valor por defecto
-      if ($buffer =~ m/\s*CLUSTERING_TIMEOUT_CONNECT_SEGS\s*=\s*("|')(.*?)("|')/) {
-        $clustering_timeout_connect_segs = $2;
+      if ($buffer =~ m/\s*CLUSTERING_TIMEOUT_CONNECT_SEGS\s*=\s*["'](\d+)["']/) {
+        $clustering_timeout_connect_segs = $1;
       };
       if ($clustering_timeout_connect_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_TIMEOUT_CONNECT_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '10'"
+                  . "<br>Debe contener un n&uacute;mero entero de segundos, por ejemplo: '10'"
                   . "<br>Por omisi&oacute;n es: '15'";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
@@ -2135,12 +2122,12 @@ sub load_config {
 
       # clustering_log_duration_segs # segs tras los cuales se resetea el log, default=86400 --> 24hrs
       my $clustering_log_duration_segs = 86400; # valor por defecto
-      if ($buffer =~ m/\s*CLUSTERING_LOG_DURATION_SEGS\s*=\s*("|')(.*?)("|')/) {
-        $clustering_log_duration_segs = $2;
+      if ($buffer =~ m/\s*CLUSTERING_LOG_DURATION_SEGS\s*=\s*["'](\d+)["']/) {
+        $clustering_log_duration_segs = $1;
       };
       if ($clustering_log_duration_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_LOG_DURATION_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '3600'"
+                  . "<br>Debe contener un n&uacute;mero entero de segundos, por ejemplo: '3600'"
                   . "<br>Por omisi&oacute;n es: '86400' (24 horas)";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
@@ -2148,12 +2135,12 @@ sub load_config {
 
       # clustering_file_update_segs # MINIMA ANTIGUEDAD DEL ARCHIVO REQUERIDA PARA TRANSMITIRLO
       my $clustering_file_update_segs = 15; # valor por defecto
-      if ($buffer =~ m/\s*CLUSTERING_FILE_UPDATE_SEGS\s*=\s*("|')(.*?)("|')/) {
-        $clustering_file_update_segs = $2;
+      if ($buffer =~ m/\s*CLUSTERING_FILE_UPDATE_SEGS\s*=\s*["'](\d+)["']/) {
+        $clustering_file_update_segs = $1;
       };
       if ($clustering_file_update_segs !~ /^[0-9]+$/) {
           my $msg = "<P>Error en CFG: seteo de variable CLUSTERING_FILE_UPDATE_SEGS contiene un valor no v&aacute;lido."
-                  . "<br>Debe contener un número entero de segundos, por ejemplo: '10'"
+                  . "<br>Debe contener un n&uacute;mero entero de segundos, por ejemplo: '10'"
                   . "<br>Por omisi&oacute;n es: '15'";
           &glib_html_02::print_pag_result('Error', $msg, 1, 'exit=1,ctype=1');
       };
@@ -2164,8 +2151,8 @@ sub load_config {
 
   # Configuracion de la codificacion del archivo de respaldo del prontus form
   my $form_csv_charset = 'utf-8'; # TRANSITIONAL | STRICT
-  if ($buffer =~ m/\s*FORM_CSV_CHARSET\s*=\s*("|')(.*?)("|')/) {
-    $form_csv_charset = $2;
+  if ($buffer =~ m/\s*FORM_CSV_CHARSET\s*=\s*["']([^'"]+?)["']/) {
+    $form_csv_charset = $1;
     if ($form_csv_charset !~ /^(utf-8|iso-8859-1)$/i) {
       print STDERR "Error en CFG: seteo de variable FORM_CSV_CHARSET\n";
       print "Content-Type: text/html\n\n";
@@ -2175,53 +2162,77 @@ sub load_config {
   };
   $prontus_varglb::FORM_CSV_CHARSET = $form_csv_charset;
 
+
+  # Para indicar si incluir adjunto en el mail para admin
+  my $incluir_adjunto = 'SI'; # Valor por defecto = SI
+  if ($buffer =~ m/\s*FORM_INCLUIR_ADJUNTO\s*=\s*["'](SI|NO)["']/) {
+    $incluir_adjunto = $1;
+  };
+  $prontus_varglb::FORM_INCLUIR_ADJUNTO = $incluir_adjunto;
+
   my $pp;
   my $pp_tipo;
-  while ($buffer =~ m/\s*POST\_PROCESO\s*=\s*("|')(.*?)(\(.*?)("|')/g) {
+  while ($buffer =~ m/\s*POST_PROCESO\s*=\s*("|')(.*?)(\(.*?)("|')/g) {
      $pp = $3;
      $pp_tipo = $2; # ART-BORRAR | ART-GUARDAR | ART-EDITAR | PORT_GUARDAR | etc
      $prontus_varglb::POST_PROCESO{$pp_tipo} = $pp;
   };
 
   # El valor por defecto es vacio
-  if ($buffer =~ m/\s*SCRIPT_QUOTA\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::SCRIPT_QUOTA = $2;
+  if ($buffer =~ m/\s*SCRIPT_QUOTA\s*=\s*["']([^'"]+?)["']/) {
+    $prontus_varglb::SCRIPT_QUOTA = $1;
   };
 
   # El valor por defecto es vacio
-  if ($buffer =~ m/\s*FOTO_MAX_PIXEL\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::FOTO_MAX_PIXEL = $2;
+  if ($buffer =~ m/\s*FOTO_MAX_PIXEL\s*=\s*["']([^'"]+?)["']/) {
+    $prontus_varglb::FOTO_MAX_PIXEL = $1;
   };
+
+    # El valor por defecto es NO
+    $prontus_varglb::REDUCIR_CALIDAD_JPEGS = 'NO';
+    if ($buffer =~ m/\s*REDUCIR_CALIDAD_JPEGS\s*=\s*["'](SI|NO)["']/s) {
+        $prontus_varglb::REDUCIR_CALIDAD_JPEGS = $1;
+    }
+
+    # El valor por defecto es 85. Sólo acepto valores en dígitos enteros entre 0 y 100.
+    # 0 es "usar el default": https://libgd.github.io/manuals/2.2.5/files/gd_jpeg-c.html
+    $prontus_varglb::NIVEL_OPTIMIZACION_JPG = '85';
+    if ($buffer =~ m/\s*NIVEL_OPTIMIZACION_JPG\s*=\s*["'](\d{1,3})["']/) {
+        my $tmp_optimizacion = $1;
+        if ($tmp_optimizacion <= 100) {
+            $prontus_varglb::NIVEL_OPTIMIZACION_JPG = $tmp_optimizacion;
+        }
+    }
 
   if ($buffer =~ m/\s*FFMPEG_PARAMS\s*=\s*'(.*?)'/) {
     $prontus_varglb::FFMPEG_PARAMS = $1;
   };
 
-    $prontus_varglb::MAX_XCODING = '500';
-    if ($buffer =~ m/\s*MAX_XCODING\s*=\s*("|')(\d+)("|')/) {
-        $prontus_varglb::MAX_XCODING = $2;
-    };
-
-  # El valor por defecto es 0
-  if ($buffer =~ m/\s*BLOQUEO_EDICION\s*=\s*("|')(.*?)("|')/) {
-    $prontus_varglb::BLOQUEO_EDICION = $2;
+  $prontus_varglb::MAX_XCODING = '500';
+  if ($buffer =~ m/\s*MAX_XCODING\s*=\s*["'](\d+)["']/) {
+      $prontus_varglb::MAX_XCODING = $1;
   };
+
+    # El valor por defecto es 0
+    if ($buffer =~ m/\s*BLOQUEO_EDICION\s*=\s*["'](\d+)["']/) {
+        $prontus_varglb::BLOQUEO_EDICION = $1;
+    }
 
   # opciones avanzadas de transcodificacion
   $prontus_varglb::ADVANCED_XCODING = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*ADVANCED_XCODING\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::ADVANCED_XCODING = $2;
+  if ($buffer =~ m/\s*ADVANCED_XCODING\s*=\s*["'](SI|NO)["']/s) {
+    $prontus_varglb::ADVANCED_XCODING = $1;
   };
 
   $prontus_varglb::USAR_LIB_FDK = 'NO'; # valor por defecto.
-  if ($buffer =~ m/\s*USAR_LIB_FDK\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::USAR_LIB_FDK = $2;
+  if ($buffer =~ m/\s*USAR_LIB_FDK\s*=\s*["'](SI|NO)["']/s) {
+    $prontus_varglb::USAR_LIB_FDK = $1;
   };
 
   # Update.
   $prontus_varglb::UPDATE_SERVER = 'http://www.prontus.cl';
-  if ($buffer =~ m/\s*UPDATE_SERVER\s*=\s*("|')(.*?)$1/s) {
-    $prontus_varglb::UPDATE_SERVER = $2;
+  if ($buffer =~ m/\s*UPDATE_SERVER\s*=\s*["'](.*?)["']/s) {
+    $prontus_varglb::UPDATE_SERVER = $1;
   };
 
   # Prontus 6.0
@@ -2249,11 +2260,6 @@ sub load_config {
   $prontus_varglb::MULTI_EDICION = $multied;
   $prontus_varglb::DIR_LOG = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/log";
   $prontus_varglb::PRONTUS_LOG = $prontus_log;
-
-  $prontus_varglb::FRIENDLY_URLS = $friendly_urls;
-  $prontus_varglb::FRIENDLY_URL_IMAGES = $friendly_url_images;
-  $prontus_varglb::FRIENDLY_URLS_VERSION = $friendly_urls_version;
-  $prontus_varglb::FRIENDLY_URLS_LARGO_TITULAR = $friendly_urls_largo_titular;
 
   $prontus_varglb::MAX_NRO_ARTIC = $max_nro_artic;
 
@@ -2298,15 +2304,29 @@ sub load_config {
 
     &check_dirs();
 
-    #~ Para configurar la externalizacion de la multimedia
+    # Para configurar la externalizacion de la multimedia
     my $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/mmedia.cfg");
-    if ($customcfg =~ m/\s*EXTERNAL_MMEDIA\s*=\s*("|')1("|')/) {
+    if ($customcfg =~ m/\s*EXTERNAL_MMEDIA\s*=\s*["']1["']/) {
       $prontus_varglb::EXTERNAL_MMEDIA = 1;
       $prontus_varglb::DIR_EXMEDIA = '/mm';
     } else {
       $prontus_varglb::EXTERNAL_MMEDIA = 0;
       $prontus_varglb::DIR_EXMEDIA = '/artic';
-    };
+    }
+
+    # Para configurar la externalizacion de la multimedia
+    $customcfg = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/customcfg/asocfile.cfg");
+    if ($customcfg =~ m/\s*EXTERNAL_ASOCFILE\s*=\s*["']1["']/s) {
+        $prontus_varglb::EXTERNAL_ASOCFILE = 1;
+        if ($customcfg =~ m/\s*ASOCFILE_PATH\s*=\s*["'](\w+)["']/s) {
+            $prontus_varglb::DIR_EXASOCFILE = "/$1";
+        } else {
+            $prontus_varglb::DIR_EXASOCFILE = "/docs";
+        }
+    } else {
+        $prontus_varglb::EXTERNAL_ASOCFILE = 0;
+        $prontus_varglb::DIR_EXASOCFILE = '/artic';
+    }
 }
 
 # -------------------------------------------------------------------------#
@@ -2463,9 +2483,25 @@ sub write_log {
 };
 # -------------------------------------------------------------------------#
 
+#
+sub parse_plantilla_portada {
+    my ($path_tpl, $dir_server, $prontus_id, $mv, $public_server_name,
+    $prontus_key, $nom_edic, $sin_regen_xml,
+    $controlar_alta_articulos, $users_perfil) = @_;
+    # $path_tpl: full path de la plantilla de portada, incluyendo extension
+
+    # Carga plantilla y realiza parseos normales
+    my $buffer = &generic_parse_port($path_tpl, $dir_server, $prontus_id, $public_server_name, $nom_edic,
+    0, 0, 0, $users_perfil, $mv);
+    # print STDERR "buffer[$buffer]\n";
+
+    # En los preview, poner links a los demas previews
+    $buffer =~ s/%%_vista%%/$mv/g;
+    $buffer =~ s/%%.+?%%//g;
+    return $buffer;
+}
 
 # Genera la portada de acuerdo al template escogido.
-
 sub make_portada {
     my($dest_file, $path_tpl, $dir_server, $prontus_id, $mv, $public_server_name,
     $prontus_key, $stamp_demo, $nom_edic, $sin_regen_xml, $stamp_demo_rss,
@@ -2513,9 +2549,6 @@ sub make_portada {
         my $buffer = &generic_parse_port($path_tpl_clon, $dir_server, $prontus_id, $public_server_name, $nom_edic,
         $control_fecha, $ts_preview, $controlar_alta_articulos, $users_perfil, $mv);
         # print STDERR "buffer[$buffer]\n";
-        # Parseos especificos
-        # $buffer =~ s/<\/head>/\n<!--prontus_key=$prontus_key-->\n<\/head>/is;  # 1.16
-        $buffer = &lib_prontus::add_generator_tag($buffer);
 
         # Escribe portada html
         $dest_file_clon =~ s/\/port\//\/port-$mv\// if ($mv);
@@ -2605,7 +2638,9 @@ sub write_rss_port {
   my ($destrss, $nom_edic, $buffer) = @_;
   $destrss =~ s/\/port(\-\w+)?\/(\w+)\.\w+?$/\/rss$1\/$2\.xml/; # Deduce del path completo de la portada, el del rss.
 
-  $destrss =~ s/$nom_edic/base/ig; # si es una edicion normal, igual se escribe en el dir de la edic base, ya que los rss deben estar en una ubicacion fija
+   # si es una edicion normal, igual se escribe en el dir de la edic base
+   # ya que los rss deben estar en una ubicacion fija
+  $destrss =~ s/$nom_edic/base/ig;
 
   my $destdir_rss = $destrss;
   $destdir_rss =~ s/\/[\w\.]+$//;
@@ -2703,16 +2738,20 @@ sub generic_parse_port {
   #~ my $repet_areas = '1';
   my %areas;
   my %area_cont;
+    my %area_check;
+
   # while ($buffer =~ /%%LOOP(\d+)%%(.*?)%%\/LOOP%%/isg) {
   while ($buffer =~ /%%LOOP(\d+)(\([^)]+?\))?%%(.*?)%%\/LOOP%%/isg) {
     my ($are,$tmp) = ($1,$3);
     my $pure_are = $are;
     if (!exists $area_cont{$pure_are}) {
         $area_cont{$pure_are} = 1;
+        $area_check{$pure_are} = 1;
     };
     if (exists $areas{$are}) {
       $are .= '_' . $area_cont{$pure_are};
       $area_cont{$pure_are}++;
+      $area_check{$are} = 1;
     };
     # Parsea el area usando $2 como template parcial.
     $areas{$are} = &parser_area($pure_are,$tmp, $dir_server, $prontus_id,
@@ -2728,6 +2767,13 @@ sub generic_parse_port {
     $buffer =~ s/%%LOOP$key(\([^)]+?\))?%%(.*?)%%\/LOOP%%/$aux/is;
   };
 
+    # Parseo de nifloop.
+    foreach my $key (keys %area_check) {
+        if ($areas{$key}) { # el area no esta vacia.
+            $key =~ s/_\d+$//;
+            $buffer =~ s/%%NIFLOOP$key%%(.*?)%%\/NIFLOOP%%//is;
+        }
+    }
 
   # Borra todos los tags IFV que quedaron en la pagina.
   $buffer =~ s/%%IFVC?\(\d+\, *\d+\)%%//isg;
@@ -3142,7 +3188,7 @@ sub procesa_loop_artic {
           $totloop = $totloop . $looptemp;
       }
       #~ print STDERR "totloop[$totloop]\n";
-      $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is
+      $buffer =~ s/%%_loop_artic\(\Q$inicio\E,\Q$fin\E\)%%\Q$loop\E%%\/_loop_artic%%/$totloop/is;
   }
   return $buffer;
 }; #procesa_loop_artic
@@ -3220,18 +3266,16 @@ sub fechas_ok {
         $horae = $1 . $2 . '00';
     } else {
         print STDERR "horae undef[$horae]\n" if ($DEBUG_FECHAS);
-    };
-
+    }
 
     # ts_now
     my $ts_now;
     if ($ts_preview ne '') {
         $ts_now = $ts_preview;
-    }
-    else {
+    } else {
         $ts_now = &glib_hrfec_02::get_dtime_pack4(); # TS de AHORA.
         # $ts_now = '20110112000000'; # TS 0 de la mañana
-    };
+    }
 
     # ts_p
     my $ts_p = "$fechap$horap";
@@ -3243,7 +3287,7 @@ sub fechas_ok {
 
     if ( ($ts_p > $ts_now) || ($ts_e < $ts_now) ) {
         return 0; # no publicar articulo # 1.22
-    };
+    }
     return 1;
 };
 
@@ -3255,7 +3299,6 @@ sub replace_mtime {
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,
         $mtime, $ctime,  $blksize,  $blocks)= stat $path_artic;
     my $ts_lastmodif = &glib_hrfec_02::time2ts($mtime);
-    # warn("mtime[$mtime]ts_lastmodif[$ts_lastmodif]\n");
 
     if ($ts_lastmodif =~ /^(\d{8})(\d{6})$/) {
         my $fecham = $1;
@@ -3270,9 +3313,8 @@ sub replace_mtime {
 
         if ($horam =~ /(\d{2})(\d{2})(\d{2})$/) {
             $horam = $1 . ':' . $2 . ':' . $3;
-        };
+        }
         $buf =~ s/%%_horam%%/$horam/ig;
-        # warn("horam[$horam]");
     } else {
 
         $buf =~ s/%%_FECHAMLONG%%//ig;
@@ -3281,8 +3323,7 @@ sub replace_mtime {
         $buf =~ s/%%_horam%%//ig;
     };
     return $buf;
-};
-
+}
 
 # ---------------------------------------------------------------
 sub replace_tsdata {
@@ -4181,9 +4222,7 @@ sub replace_in_artic {
         my $nom_urlenctext = $nom_minitext . '.urlencode';
         my $urlenctext = &urlencode_text($valor_campo);
         $buffer =~ s/%%$nom_urlenctext%%/$urlenctext/isg;
-
-
-    };
+    }
 
     return $buffer;
 };
@@ -4472,7 +4511,7 @@ my (@entries, $entry);
   };
 };
 # ---------------------------------------------------------------
-sub check_dirs_edic() {
+sub check_dirs_edic {
 # Chequea existencia de dirs. de trabajo de la edicion seleccionada.
 
   my ($dir_dest_edic) = $_[0];
@@ -4606,6 +4645,27 @@ sub generar_popupdirs_from_dir {
 
 };
 
+sub get_img_type {
+    my $nomfoto = $_[0];
+    my $ext;
+
+    $nomfoto =~ /.*\.(.*?)$/i;
+    $ext = $1;
+
+    return $ext;
+};
+
+sub can_edit_img {
+    my $img_type = $_[0];
+
+    # Si no existe en el hash, se puede manipular.
+    if (!defined $prontus_varglb::IMG_TYPE_NOEDIT{$img_type}) {
+        return 1;
+    }
+
+    return 0;
+};
+
 # ---------------------------------------------------------------
 sub dev_tam_img {
   my ($file) = $_[0];
@@ -4613,19 +4673,17 @@ sub dev_tam_img {
 
   if (! -e $file) {
     return ('Archivo no existe', 0, 0);
-  }
-  else {
+  } else {
     if ($file =~ /.*\.(jpg|jpe|jpeg)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_jpg($file);
-      # print STDERR "FILE[$file] ancho[$ancho] alto[$alto] MSG[$msg]\n";
-    }
-    elsif ($file =~ /.*\.(gif)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_gif($file);
-    }
-    elsif ($file =~ /.*\.(png)$/i) {
-      ($msg, $ancho, $alto) = &ancho_alto_png($file);
-    }
-    else {
+        ($msg, $ancho, $alto) = &ancho_alto_jpg($file);
+        # print STDERR "FILE[$file] ancho[$ancho] alto[$alto] MSG[$msg]\n";
+    } elsif ($file =~ /.*\.(gif)$/i) {
+        ($msg, $ancho, $alto) = &ancho_alto_gif($file);
+    } elsif ($file =~ /.*\.(png)$/i) {
+        ($msg, $ancho, $alto) = &ancho_alto_png($file);
+    } elsif ($file =~ /.*\.(svg)$/) {
+        ($msg, $ancho, $alto) = &ancho_alto_svg($file);
+    } else {
       return ('Archivo no tiene extensión JPG/JPE/JPEG/PNG/GIF/BMP', 0, 0);
     };
 
@@ -4634,6 +4692,35 @@ sub dev_tam_img {
 
   return ('Archivo no existe', 0, 0);
 }; # dev_tam_img.
+# ---------------------------------------------------------------
+sub ancho_alto_svg {
+    my ($file) = $_[0];
+    my $svg = &glib_fildir_02::read_file($file);
+    my ($w, $h, $msg) = '';
+
+    if ($svg =~ /<svg([^>]*)/) {
+        my $svg_props = $1;
+
+        if ($svg_props =~ /width=["|'](\d+)["|']/) {
+            $w = $1;
+        }
+
+        if ($svg_props =~ /height=["|'](\d+)["|']/) {
+            $h = $1;
+        }
+
+        if (!$w || !$h) {
+            if ($svg_props =~ /viewBox="(\d+) (\d+) (\d+) (\d+)"/) {
+                $w = $3;
+                $h = $4;
+            }
+        }
+    }
+
+    $msg = 'error leyendo dims svg.' if (!$w || !$h);
+
+    return ($msg, $w, $h);
+};
 # ---------------------------------------------------------------
 sub ancho_alto_png {
   # Adaptacion de http://www.la-grange.net/2000/05/04-png.html
@@ -4980,11 +5067,11 @@ sub parse_filef {
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
         my $fileurl = '';
         my $fileurl_proto = '';
-        if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1') {
+        if ($prontus_varglb::FRIENDLY_URLS_VERSION ne '1' && $prontus_varglb::FRIENDLY_URLS_VERSION ne '') {
             my $tax = '';
             if ($nom_seccion1 ne '') {
                 $nom_seccion1 = &despulgar_texto_friendly($nom_seccion1);
-                $tax .= "$nom_seccion1";
+                $tax = "/$nom_seccion1";
             }
 
             if ($nom_tema1 ne '') {
@@ -4995,10 +5082,6 @@ sub parse_filef {
             if ($nom_subtema1 ne '') {
                 $nom_subtema1 = &despulgar_texto_friendly($nom_subtema1);
                 $tax .= "/$nom_subtema1";
-            }
-
-            if ($tax ne '') {
-                $tax = '/' . $tax;
             }
 
             if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '2') {
@@ -5033,11 +5116,16 @@ sub parse_filef {
                              $vista = '/'.$1;
                         }
                     }
+
+                    my $prontus_proto = '';
+                    if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+                        $prontus_proto = "/$prontus_id";
+                    }
                     if ($tax =~ /\/$titular$/) {
-                        $fileurl = "/$prontus_id$vista$tax";
+                        $fileurl = "$prontus_proto$vista$tax";
                         $fileurl_proto = $tax;
                     } else {
-                        $fileurl = "/$prontus_id$vista$tax/$titular";
+                        $fileurl = "$prontus_proto$vista$tax/$titular";
                         $fileurl_proto = "$tax/$titular";
                     }
                 } else {
@@ -5052,15 +5140,24 @@ sub parse_filef {
 
         $buffer =~ s/%%_FILEURL%%/$fileurl/isg; # Links friendly
         if ($fileurl_proto ne '' && $prontus_varglb::FRIENDLY_V4_INCLUDE_VIEW_NAME eq 'SI') {
-            $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links normal, no friendly
+            if ($prontus_varglb::FRIENDLY_V4_INCLUDE_PRONTUS_ID eq 'SI') {
+                $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$prontus_id\/$1$fileurl_proto/isg; # Links friendly con vista
+                $buffer =~ s/%%_FILEURL_CANON%%/\/$prontus_id$fileurl_proto/isg;    # link de url canonica, vista principal
+            } else {
+                $buffer =~ s/%%_FILEURL\((\w+)\)%%/\/$1$fileurl_proto/isg; # Links friendly con vista sin prontus
+                $buffer =~ s/%%_FILEURL_CANON%%/$fileurl_proto/isg;    # link de url canonica, vista principal
+            }
         } else {
             $buffer =~ s/%%_FILEURL\(\w+\)%%/$fileurl/isg; # Links friendly
+            $buffer =~ s/%%_FILEURL_CANON%%/$fileurl/isg;  # link de url canonica, esta es igual
         }
     } else {
+        # Links normal, no friendly
         my $file = "/$prontus_id/site/artic/$fecha/pags/$ts.$ext";
-        $buffer =~ s/%%_FILEURL%%/$file/isg; # Links normal, no friendly
-        $buffer =~ s/%%_FILEURL\(\w+\)%%/$file/isg; # Links normal, no friendly
-    };
+        $buffer =~ s/%%_FILEURL%%/$file/isg;
+        $buffer =~ s/%%_FILEURL\(\w+\)%%/$file/isg;
+        $buffer =~ s/%%_FILEURL_CANON%%/$file/isg;
+    }
 
     return $buffer;
 };
@@ -5323,6 +5420,106 @@ sub generar_popup_multivistas {
 };
 
 # ---------------------------------------------------------------
+sub make_mapa_tags {
+    my $mv = $_[0];
+    my $bd = $_[1];
+    my $dir_plt = 'pags';
+    my @postprocesos;
+
+    $dir_plt .= "-$mv" if ($mv);
+
+    my $ruta_dir = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_TEMP/extra/tags/$dir_plt";
+    my @lisdir = &glib_fildir_02::lee_dir($ruta_dir) if (-d $ruta_dir);
+    my $loop_tags;
+
+    @lisdir = grep !/^\./, @lisdir; # Elimina directorios . y ..
+
+    foreach my $plt_file (@lisdir) {
+        next if (! -f "$ruta_dir/$plt_file");
+
+        my $mapa_plt = &glib_fildir_02::read_file("$ruta_dir/$plt_file");
+
+        $mapa_plt = &ajusta_crlf($mapa_plt);
+
+        if ($mapa_plt =~ /%%loop_tags%%(.*?)%%\/loop_tags%%/s) {
+            $loop_tags = $1;
+        }
+
+        my %config = &get_config_mapa_tags($mapa_plt);
+        my $output = &get_arbol_mapa_tags($loop_tags, $bd, $mv, \%config);
+
+        $mapa_plt =~ s/%%loop_tags%%.*?%%\/loop_tags%%/$output/is;
+
+        $mapa_plt = &parser_custom_function($mapa_plt);
+
+        $mapa_plt =~ s/%%_SERVER_NAME%%/$prontus_varglb::PUBLIC_SERVER_NAME/ig;
+        $mapa_plt =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
+
+        my ($_plt_nom, $_plt_ext) = &split_nom_y_extension($plt_file);
+        $mapa_plt =~ s/%%_plt_nom%%/$_plt_nom/ig;
+        $mapa_plt =~ s/%%_plt_ext%%/$_plt_ext/ig;
+        $mapa_plt =~ s/%%_vista%%/$mv/ig;
+
+        # rescata el post_proceso
+        if ($mv eq '') {
+            while ($mapa_plt =~ /<!--POST_PROCESO=(.+?)-->/isg) {
+                push(@postprocesos, $1);
+            }
+        }
+        $mapa_plt =~ s/<!--POST_PROCESO=.+?-->//isg;
+
+        # Borra marcas no sustituidas
+        $mapa_plt =~ s/%%.+?%%//g;
+
+        &glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/tags/$dir_plt");
+        my $dst_mapa = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CONTENIDO/extra/tags/$dir_plt/$plt_file";
+        &glib_fildir_02::write_file($dst_mapa, $mapa_plt);
+        &lib_prontus::purge_cache($dst_mapa) if ($prontus_varglb::CACHE_PURGE_MAPA eq 'SI');
+    }
+
+    # ejecutamos los postprocesos asociados
+    my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
+
+    foreach my $pproc (@postprocesos) {
+        my $cmd = "$rutaScript/$pproc $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
+
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][mapa_tags][PPROC][$cmd]\n";
+        system $cmd;
+    }
+};
+
+sub get_config_mapa_tags {
+    my $plt = $_[0];
+    my %config = (
+        'order' => 'TAGS_ID',
+        'solo_con_artics' => 0
+    );
+
+    while ($plt =~ /<!--\s*CONFIG\s*(\w+)\s*=\s*(.*?)\s*-->/sg) {
+        my $name = $1;
+        my $value = $2;
+
+        if ($name eq 'ORDERBY') {
+            if ($value eq 'name') {
+                $config{'order'} = 'TAGS_TAG';
+            }
+
+            if ($value eq 'id') {
+                $config{'order'} = 'TAGS_ID';
+            }
+        }
+
+        if ($name eq 'SOLO_CON_ARTICS') {
+            if ($value =~ /^\d+$/) {
+                $config{'solo_con_artics'} = $value;
+            }
+        }
+    }
+
+    return %config;
+};
+
+# ---------------------------------------------------------------
 sub make_mapa {
 # genera mapa del sitio en base a taxonomia
     my ($mv) = $_[0]; # nombre de la vista
@@ -5391,6 +5588,71 @@ sub make_mapa {
     }
 
 };
+
+sub get_arbol_mapa_tags {
+    my $loop =$_[0];
+    my $bd = $_[1];
+    my $mv = $_[2];
+    my $config_ref = $_[3];
+    my %config = %{$config_ref};
+    my $sql = "SELECT TAGS_ID, TAGS_TAG, TAGS_NOM4VISTAS, TAGS_MOSTRAR, TAGS_COUNT FROM TAGS";
+    # my $sql_total = "SELECT COUNT(*) as total, SUM(TAGS_COUNT) as suma FROM TAGS";
+
+    if ($config{'solo_con_artics'} ) {
+        $sql .= " WHERE TAGS_COUNT > 0";
+        # $sql_total .= " WHERE TAGS_COUNT > 0";
+    }
+
+    $sql .= " ORDER BY $config{'order'}";
+
+    # my ($tags_total, $tags_sum);
+    # my $salida_total = &glib_dbi_02::ejecutar_sql_bind($bd, $sql_total, \($tags_total, $tags_sum));
+
+    # $salida_total->fetch;
+    # $salida_total->finish;
+
+    my ($tags_id, $tags_tag, $tags_nom4vistas, $tags_mostrar, $tags_count);
+    my $salida = &glib_dbi_02::ejecutar_sql($bd, $sql);
+    my $mapa_tags;
+    my $output;
+
+    $salida->bind_columns(undef, \($tags_id, $tags_tag, $tags_nom4vistas, $tags_mostrar, $tags_count));
+
+    while ($salida->fetch) {
+        $mapa_tags = $loop;
+
+        $tags_tag = &lib_prontus::get_nomtax_envista($mv, $tags_nom4vistas) if ($mv);
+        $tags_tag = &lib_prontus::escape_html($tags_tag);
+
+        # my $percent = 0;
+
+        # if ($tags_sum > 0) {
+        #     $percent = ceil(($tags_count * 100) / $tags_sum);
+        # }
+
+        $mapa_tags =~ s/%%_id%%/$tags_id/ig;
+        $mapa_tags =~ s/%%_nom%%/$tags_tag/ig;
+        # $mapa_tags =~ s/%%_total_arts%%/$tags_count/ig;
+        $mapa_tags =~ s/%%_mostrar%%/$tags_mostrar/ig;
+        # $mapa_tags =~ s/%%_percent%%/$percent/ig;
+
+        my %claves = (
+            '_mostrar'      => $tags_mostrar,
+            # '_total_arts'   => $tags_count
+            # '_percent'      => $percent
+        );
+
+        $mapa_tags = &lib_prontus::parser_condicional('IF', $mapa_tags, \%claves);
+        $mapa_tags = &lib_prontus::parser_condicional('NIF', $mapa_tags, \%claves);
+
+        $output .= $mapa_tags;
+    }
+
+    $salida->finish;
+
+    return $output;
+};
+
 # ---------------------------------------------------------------
 sub get_arbol_mapa {
   my ($loop_mapa_s)   = $_[0];
@@ -5496,7 +5758,7 @@ sub get_arbol_mapa {
         $mapa_st_total = $mapa_st_total . $mapa_st;
       };
       if($mapa_t =~ /%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/s) {
-        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st_total/s
+        $mapa_t =~ s/%%(LOOP_SUBTEMA)%%(.*?)%%\/\1%%/$mapa_st_total/s;
       } else {
         $mapa_t = $mapa_t . $mapa_st_total;
       };
@@ -5510,7 +5772,7 @@ sub get_arbol_mapa {
       $salida_st->finish;
     };
     if($nested_s) {
-      $mapa_s =~ s/%%(LOOP_TEMA)%%(.*?)%%\/\1%%/$mapa_total_t/s
+      $mapa_s =~ s/%%(LOOP_TEMA)%%(.*?)%%\/\1%%/$mapa_total_t/s;
     } else {
       $mapa_s = $mapa_s . $mapa_total_t;
     };
@@ -6458,15 +6720,6 @@ sub get_formatos_multimedia {
 }
 
 # ---------------------------------------------------------------
-sub add_generator_tag {
-    my $buffer = shift;
-    if ($buffer !~ /<meta name *= *["']Generator["']/i) {
-        my $gen_content = "Prontus CMS";
-        $buffer =~ s/<\/head>/\n<meta name="Generator" content="$gen_content" \/>\n<\/head>/is;
-    };
-    return $buffer;
-};
-
 sub dropbox_backup {
     my $recurso = $_[0];
     my $dir_dropbox = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/dropbox";
@@ -6539,37 +6792,29 @@ sub cerrar_sesion {
                     'document_root'     => $prontus_varglb::DIR_SERVER)
                     || die("Error inicializando objeto Session: $Session::ERR\n");
 
-    # Ver user logueado
-    my %cookies = &lib_cookies::get_cookies();
-    my $user_anterior = $cookies{'USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID};
-
-    # Setear cookie en blanco para dar por terminada la sesion.
-    &lib_cookies::set_simple_cookie('USERS_USR_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, ''); # pa q no pueda navegar
-    &lib_cookies::set_simple_cookie('KEY_' . $prontus_varglb::PRONTUS_SSO_MANAGER_ID, '');
-
     # libera recursos para info de concurrencia
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'port',
-                                          $user_anterior,
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_concurrency( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art',
-                                          $user_anterior,
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art',
-                                          $user_anterior,
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     &lib_multiediting::free_lock( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'port',
-                                          $user_anterior,
+                                          $sess_obj->{username},
                                           $sess_obj->{id_session});
 
     # Garbage de archivos mas antiguos de X dias

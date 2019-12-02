@@ -78,8 +78,8 @@
 # Prontus 6.0 - 29/10/2001 - Revision/modificaciones para Prontus 6.0
 
 # 7.0 - 20/12/2001 - Extensiones p7 :
-#   . "- Agrega marca a la portada para que inserte los menús de páginas con subtí­tulos.<br>"
-#     . "- Perfilación de periodistas en lista de artículos para permitir artÃículos personales<br>"
+#   . "- Agrega marca a la portada para que inserte los menÃºs de pÃ¡ginas con subtÃ­Â­tulos.<br>"
+#     . "- PerfilaciÃ³n de periodistas en lista de artÃ­culos para permitir artÃƒÃ­culos personales<br>"
 #     . "- Capacidad para borrar fotos, asocfile y realmedia<br>"
 #     . "- Linkeo de URLs https<br>"
 # Prontus 8.0 - 01/08/2002 - YCH. Ver Extensiones y correcciones en /release_prontus80.txt
@@ -160,7 +160,7 @@ main: {
     &lib_prontus::load_config($FORM{'_path_conf'});  # Prontus 6.0
     $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
-    # Se lee el titular que habí­a antes, para no perderlo
+    # Se lee el titular que habÃ­Â­a antes, para no perderlo
     $FORM{'_txt_titular'} = &lib_prontus::get_codetext_value(&glib_cgi_04::param('_txt_titular'));
 
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
@@ -461,9 +461,9 @@ main: {
 
     # se parsea el numero de version de friendly urls en uso
     if ($prontus_varglb::FRIENDLY_URLS eq 'SI') {
-        $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig
+        $pagina =~ s/%%_friendly_urls_ver%%/$prontus_varglb::FRIENDLY_URLS_VERSION/ig;
     } else {
-        $pagina =~ s/%%_friendly_urls_ver%%/0/ig
+        $pagina =~ s/%%_friendly_urls_ver%%/0/ig;
     }
 
     if ($prontus_varglb::FRIENDLY_URLS_VERSION eq '4' && !exists $prontus_varglb::FRIENDLY_V4_EXCLUDE_FID{$FORM{'_fid'}}) {
@@ -930,7 +930,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
   $ts =~ s/\.[\w\-]*$//; # saca extension
 
 
-
   # se lee plantilla para banco de imagenes
   my $tplBancoImg = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/fid/macro_banco_imagenes.html";
   my $tplBancoImg2 = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . "/fid/macro_banco_imagenes_noimg.html";
@@ -1090,11 +1089,6 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $size_total += $bytes_foto;
         my $kbytes_foto = &lib_prontus::bytes2kb($bytes_foto, 0);
 
-        # my ($reemp) = "<img src=\"$prontus_varglb::DIR_CORE/imag/cpan/reemp_of.gif\" style=\"border:0\;width:16\;heigth:16\;\" alt=\"Reemplazar por nueva imagen\" />";
-        #~ $relpath_foto = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_IMAG . "/$nom_foto";
-
-        # JOR - 02/03/2011 - Agrega parametro al azar para evitar cache del browser.
-        # $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/$nom_foto" . "?" . rand(1000);
         # CVI - 10/03/2011 - Se cambia sistema para evitar cache del browser, aplicando el random al nombre de la foto
         $relpath_foto = $relbase_path . $prontus_varglb::DIR_IMAG . "/" . $nom_foto;
 
@@ -1114,6 +1108,16 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $bufferBancoImg2 =~ s/%%relpath_foto%%/$relpath_foto/ig;
         $bufferBancoImg2 =~ s/%%wfoto%%/$wfoto/ig;
         $bufferBancoImg2 =~ s/%%hfoto%%/$hfoto/ig;
+
+        my $img_type = &lib_prontus::get_img_type($relpath_foto);
+
+        $bufferBancoImg =~ s/%%img_type%%/$img_type/ig;
+
+        if (!&lib_prontus::can_edit_img($img_type)) {
+            $bufferBancoImg =~ s/%%openFotoEditor%%/openFotoEditorDisabled/ig;
+        } else {
+            $bufferBancoImg =~ s/%%openFotoEditor%%/openFotoEditor/ig;
+        }
 
         # Para los iconos de acciones sobre la imagen
         my $reldir_icons = "$prontus_varglb::DIR_CORE/imag/boto";
@@ -1226,8 +1230,8 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
         $valor_campo =~ s/[\n\r]+//sg;
         next if ($valor_campo eq '');
         $nom = $valor_campo;
-        my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
-        my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$ts/$nom";
+        my $relpath_af = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXASOCFILE/$FORM{'_dir_fecha'}$prontus_varglb::DIR_ASOCFILE/$ts/$nom";
+        my $bytes = -s "$prontus_varglb::DIR_SERVER$relpath_af";
         $size_total += $bytes;
         my $kbytes = &lib_prontus::bytes2kb($bytes, 0);
         $valor_campo = '<a href="' . $relpath_af . '" target="_blank">' . $nom . '</a>' . " ($kbytes)" . '&nbsp;&nbsp;<label for="_BORR_' . $nom_campo . '">Borrar</label> <input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" id="_BORR_' . $nom_campo . '" />'; # 7.0
@@ -1239,9 +1243,9 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
     # Rescatar htmlfiles
     elsif ($nom_campo =~ /^HTMLFILE_\w+/i) {
         $nom = $valor_campo;
-        my $relpath_af = $relbase_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
 
-        my $bytes = -s $base_path . $prontus_varglb::DIR_ASOCFILE . "/$nom";
+        my $relpath_af = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_EXASOCFILE/$FORM{'_dir_fecha'}$prontus_varglb::DIR_ASOCFILE/$nom";
+        my $bytes = -s "$prontus_varglb::DIR_SERVER$relpath_af";
         $size_total += $bytes;
 
         $valor_campo = '<a href="' . $relpath_af . '" target="_blank">Ver HTMLFILE actual</a>&nbsp;&nbsp;Borrar<input type="checkbox" value="S" name="_BORR_' . $nom_campo . '" />'; # 7.0
@@ -1269,7 +1273,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
         $maxbytes = $1;
         if ($bytes_swf > $maxbytes) {
-          $valor_campo .=   '<br/><span color="#CC0000">¡Advertencia! Peso de archivo swf excede límite permitido</span>';
+          $valor_campo .=   '<br/><span color="#CC0000">Â¡Advertencia! Peso de archivo swf excede lÃ­mite permitido</span>';
         };
       };
       # ----------
@@ -1509,12 +1513,12 @@ sub procesar_select {
       my $tag_original = $tag;
 
       # remueve actual seleccionado en caso de haberlo.
-      # CVI - 17/01/2014 - Se robustece la expresión regular
+      # CVI - 17/01/2014 - Se robustece la expresiÃ³n regular
       #~ $tag =~ s/(.*)selected(.*)/$1$2/is;
       $tag =~ s/(.*)selected(="selected")?(.*)/$1$3/is;
 
       # Posiciona en el option correspondiente
-      # CVI - 17/01/2014 - Se robustece la expresión regular
+      # CVI - 17/01/2014 - Se robustece la expresiÃ³n regular
       #~ $tag =~ s/(.*)value *= *["']$valor_campo["'] *>(.*)/$1value="$valor_campo" selected="selected">$2/is;
       #~ $pag =~ s/$tag_original/$tag/is;
       $tag =~ s/ value *= *["']$valor_campo["']([^>]*>)/ value="$valor_campo" selected="selected"$1/is;
@@ -1536,7 +1540,7 @@ sub add_vtxt {
 
   $include4vtxt = &glib_fildir_02::read_file($include4vtxt);
 
-  #~ Lee la plantilla del artículo para distintas tareas
+  #~ Lee la plantilla del artÃ­culo para distintas tareas
   my $path_tpl = $prontus_varglb::DIR_SERVER .
              $prontus_varglb::DIR_TEMP .
              $prontus_varglb::DIR_ARTIC .
@@ -1547,14 +1551,18 @@ sub add_vtxt {
   $buffer =~ s/$crlf/\x0a/sg;
   $buffer =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg; # a pedido del publico
 
-  #~ Carga los css desde la plantilla del artículo
-  my $include_css = $prontus_varglb::DIR_CORE . "/vtxt/editor/plugins/insert/css/content.css";
+  #~ Carga los css desde la plantilla del artÃ­culo
+  my $include_css = "$prontus_varglb::DIR_CORE/vtxt/editor/plugins/insert/css/content.css";
   my $path_css_artic = &get_css_artic($path_tpl, $buffer);
   if($path_css_artic) {
     $path_css_artic = "$include_css,$path_css_artic";
   } else {
     $path_css_artic = "$include_css";
   }
+
+  # estilos para mejorar usabilidad de editor vtxt
+  $path_css_artic = "$path_css_artic,$prontus_varglb::DIR_CORE/vtxt/css/vtxt_extras.css";
+
   $include4vtxt =~ s/%%_PATH_CSS_ARTIC%%/$path_css_artic/isg;
 
   my $data_include_type = &get_include_artic($path_tpl, $buffer);
@@ -1664,6 +1672,7 @@ sub get_custom_estilos {
   foreach $k (@css) {
     $k =~ s/\,//g;
     next if (!$k); # 100.2
+    next if ($k =~ /^http/);
     # print STDERR "k[$prontus_varglb::DIR_SERVER$k]\n";
     my $buf = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$k");
 
@@ -1710,9 +1719,10 @@ sub get_css_artic {
   while ($buffer =~ /(<link [^>]*?href="([^>]+?)"[^>]*?>)/isg) {
     $ellink = $1;
     $elcss = $2;
-    next unless($ellink =~ /type="text\/css"/i);
+    next unless($ellink =~ /type="text\/css"/i || $ellink =~ /rel="stylesheet"/i);
     # print STDERR "css[$elcss]\n";
     $elcss = &relative2abs($path_tpl, $elcss);
+    $elcss =~ s/,/%2C/g; # para tomar en cuenta googlefonts
     $paths .= "$elcss,";
   };
   $paths =~ s/\,$//;
@@ -1740,11 +1750,10 @@ sub relative2abs {
   my ($link2convert) = $_[1];
 
   return $link2convert if ($link2convert =~ /^\//);
+  return $link2convert if ($link2convert =~ /^http/);
 
   # Elimina el nombre del archivo para dejar solo el dir hasta el /
-  # $ubic_artic =~ s/\/[^\/\\]+$/\//;
   $ubic_artic =~ s/\/\w+.*$/\//;
-
 
   my $abs_ubic = $ubic_artic;
   while ($link2convert =~ /(\.\.\/)(\w.*)/g) {
@@ -1796,11 +1805,12 @@ sub carga_buffer_fid {
     $buffer = &add_macros_fid($buffer, '');
     $buffer =~ s/%25%25/%%/sg;
 
+    # procesamos marca loop_artic
+    $buffer = &lib_prontus::procesa_loop_artic($buffer, '##');
 
     $buffer = &lib_prontus::set_coreplt_ppal($buffer);
 
     return $buffer;
-
 };
 
 

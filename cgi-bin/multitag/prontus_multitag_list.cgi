@@ -60,6 +60,7 @@ BEGIN {
     unshift(@INC,$pathLibs);
 };
 
+use strict;
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
@@ -82,6 +83,7 @@ my $PLT_DEFAULT;
 my $RELDIR_ARTIC;
 my $ITEM_X_PAG = 12;
 my $CACHE = 1;
+my $PLT = '';
 
 main: {
     &glib_cgi_04::new();
@@ -104,20 +106,24 @@ main: {
 
     if (!ref($BD)) {
         print STDERR "Error conectar BD: $msg_err_bd\n";
-        &glib_html_02::print_json_result(0, "Error conectar BD: $msg_err_bd", 'exit=1,ctype=1');
+        &msg_error("Ha ocurrido un error");
         exit;
     };
+
+    # usa la misma configuracion de las portadas tagonomicas
+    $ITEM_X_PAG = $prontus_varglb::TAGPORT_ARTXPAG;
 
     $PLT_DIR = $prontus_varglb::DIR_SERVER. $prontus_varglb::DIR_TEMP."/extra/multitag";
     $CACHE_DIR = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_MULTITAG;
     $PLT_DEFAULT = "$PLT_DIR/default.html";
     $RELDIR_ARTIC = "$prontus_varglb::DIR_CONTENIDO$prontus_varglb::DIR_ARTIC/%%DIRFECHA%%$prontus_varglb::DIR_PAG";
 
-    my $PLT = "$PLT_DIR/$FORM{'plantilla'}.html";
+    $PLT = "$PLT_DIR/$FORM{'plantilla'}.html";
     $PLT = $PLT_DEFAULT if (!-f $PLT);
 
     if (!-f $PLT) {
-        &msg_error("No se pudo localizar la plantilla.");
+        print STDERR "No se pudo localizar la plantilla[$PLT]\n";
+        &msg_error("No se pudo localizar la plantilla");
     }
     if(!-e $CACHE_DIR){
         #si no existe el directorio se crea.
@@ -155,19 +161,18 @@ main: {
     }
 
     $pagina = &buscar_articulos($pagina);
+    $pagina =~ s/%%_prontus_id%%/$FORM{'prontus_id'}/isg;
+    $pagina =~ s/%%_s%%/$FORM{'s'}/isg;
+    $pagina =~ s/%%_t%%/$FORM{'t'}/isg;
+    $pagina =~ s/%%_st%%/$FORM{'st'}/isg;
 
-    $pagina =~ s/%%_prontus_id%%/$FORM{'prontus_id'}/sg;
-    $pagina =~ s/%%_s%%/$FORM{'s'}/sg;
-    $pagina =~ s/%%_t%%/$FORM{'t'}/sg;
-    $pagina =~ s/%%_st%%/$FORM{'st'}/sg;
+    $pagina =~ s/%%_nom_s%%/$nom_s/isg;
+    $pagina =~ s/%%_nom_t%%/$nom_t/isg;
+    $pagina =~ s/%%_nom_st%%/$nom_st/isg;
 
-    $pagina =~ s/%%_nom_s%%/$nom_s/sg;
-    $pagina =~ s/%%_nom_t%%/$nom_t/sg;
-    $pagina =~ s/%%_nom_st%%/$nom_st/sg;
-
-    $pagina =~ s/%%_friendly_s%%/$friendly_s/sg;
-    $pagina =~ s/%%_friendly_t%%/$friendly_t/sg;
-    $pagina =~ s/%%_friendly_st%%/$friendly_st/sg;
+    $pagina =~ s/%%_friendly_s%%/$friendly_s/isg;
+    $pagina =~ s/%%_friendly_t%%/$friendly_t/isg;
+    $pagina =~ s/%%_friendly_st%%/$friendly_st/isg;
 
     my %campos = (
         '_s'                => $FORM{'s'},
@@ -184,6 +189,9 @@ main: {
     $pagina = &lib_prontus::procesa_condicional($pagina, \%campos);
     $pagina = &parse_include($pagina);
 
+    # elimina marcas no parseadas
+    $pagina =~ s/%%.*?%%//sg;
+
     &guarda_cache($pagina);
 
     print "Content-Type: text/html\n\n";
@@ -195,7 +203,6 @@ main: {
 #
 sub buscar_articulos {
     my $pagina = $_[0];
-    my ($sql, $salida);
     my $loop;
     my $output;
     my $art_id;
@@ -205,15 +212,15 @@ sub buscar_articulos {
         $loop = $1;
     }
 
-    $sql = &get_query();
-    my $total = &get_total($sql);
-    my ($filtro, $total_pags) = &get_filtro($total);
+    my ($sql, @params) = &get_query();
+    my $total = &get_total($sql, @params);
+    my ($filtro, $total_pags) = &get_filtro_paginacion($total);
 
     $sql = "$sql $filtro";
 
-    #~ print STDERR "sql[$sql] $total filtro[$filtro] total_pags[$total_pags]\n";
+    # print STDERR "sql[$sql] $total filtro[$filtro] total_pags[$total_pags]\n";
 
-    $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($art_id));
+    my $salida = &glib_dbi_02::ejecutar_sql_bind_param($BD, $sql, \@params, \($art_id));
 
     while ($salida->fetch) {
         my ($fila_content, $auxref, $auxref2) = &lib_tax::generar_fila($RELDIR_ARTIC, $art_id, "html", $loop, $loopcounter, $total);
@@ -223,12 +230,12 @@ sub buscar_articulos {
 
     $salida->finish;
 
-    $pagina =~ s/%%loop%%.*?%%\/loop%%/$output/sg;
+    $pagina =~ s/%%loop%%.*?%%\/loop%%/$output/isg;
 
     if (!$output) {
-        $pagina =~ s/<!--resultados-->.*?<!--\/resultados-->//sg;
+        $pagina =~ s/<!--resultados-->.*?<!--\/resultados-->//isg;
     } else {
-        $pagina =~ s/<!--sin_resultados-->.*?<!--\/sin_resultados-->//sg;
+        $pagina =~ s/<!--sin_resultados-->.*?<!--\/sin_resultados-->//isg;
     }
 
     $pagina = &parsea_paginacion($pagina, $total_pags);
@@ -249,82 +256,119 @@ sub parsea_paginacion {
             my $link = "/cgi-bin/multitag/prontus_multitag_list.cgi" . &get_query_string() . "&p=$x";
             my $link_friendly = &get_link_friendly() . "/p/$x";
 
-            $tmp =~ s/%%link%%/$link/sg;
-            $tmp =~ s/%%link_friendly%%/$link_friendly/sg;
-            $tmp =~ s/%%pag%%/$x/sg;
+            $tmp =~ s/%%link%%/$link/isg;
+            $tmp =~ s/%%link_friendly%%/$link_friendly/isg;
+            $tmp =~ s/%%pag%%/$x/isg;
 
             if ($FORM{'p'} == $x) {
-                $tmp =~ s/%%current%%/actual/sg;
+                $tmp =~ s/%%current%%/actual/isg;
             } else {
-                $tmp =~ s/%%current%%//sg;
+                $tmp =~ s/%%current%%//isg;
             }
 
             $output .= $tmp;
         }
 
-        $pagina =~ s/%%paginacion%%.*?%%\/paginacion%%/$output/sg;
+        $pagina =~ s/%%paginacion%%.*?%%\/paginacion%%/$output/isg;
     }
 
     return $pagina;
 };
 
 sub get_total {
-    my $sql = $_[0];
+    my $sql = shift;
+    my @params = @_;
 
     $sql =~ s/SELECT .*? FROM/SELECT COUNT\(*\) FROM/sg;
 
     my $tot;
-    my $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($tot));
+    my $salida = &glib_dbi_02::ejecutar_sql_bind_param($BD, $sql, \@params, \($tot));
     $salida->fetch;
     $salida->finish;
 
     return $tot;
 };
 
-sub get_filtro {
+sub get_filtro_paginacion {
     my $total = $_[0];
     my $sql;
     my $num_pags = POSIX::ceil($total / $ITEM_X_PAG);
 
-    if ($FORM{'p'} ne '') {
-        $FORM{'p'} = $num_pags if ($num_pags && $FORM{'p'} > $num_pags);
+    $FORM{'p'} = $num_pags if ($num_pags && $FORM{'p'} > $num_pags);
 
-        my $p = $FORM{'p'} - 1;
-        my $limit = $p * $ITEM_X_PAG;
+    my $p = (int $FORM{'p'}) - 1;
+    my $limit = $p * $ITEM_X_PAG;
 
-        $sql = " LIMIT $limit, $ITEM_X_PAG";
-    }
-    #~ print STDERR "num_pags[$num_pags]\n";
+    $sql = " LIMIT $limit, $ITEM_X_PAG";
+
+    # print STDERR "[$total / $ITEM_X_PAG] num_pags[$num_pags]\n";
     return ($sql, $num_pags);
 };
 
 sub get_query {
     my $sql;
+    my @params;
+    my $dthhmm_system = substr(&glib_hrfec_02::get_dtime_pack4(), 0, 12);
+
+    my $filtro_publicacion = " AND ART_FECHAPHORAP <= ?";
+    if ($prontus_varglb::CONTROL_FECHA eq 'SI') {
+        $filtro_publicacion .= " AND ( ART_FECHAEHORAE >= ? OR ART_SOLOPORTADAS = '1' )";
+    }
 
     # Solo seccion.
     if ($FORM{'s'} ne '' && $FORM{'t'} eq '' && $FORM{'st'} eq '') {
-        $sql = "SELECT MULTITAG_ART_S_ART_ID FROM MULTITAG_ART_S LEFT JOIN ART ON (ART_ID=MULTITAG_ART_S_ART_ID) WHERE ART_ALTA = '1' AND MULTITAG_ART_S_FRIENDLY = '$FORM{'s'}' ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        $sql = "SELECT MULTITAG_ART_S_ART_ID FROM MULTITAG_ART_S LEFT JOIN ART ON (ART_ID=MULTITAG_ART_S_ART_ID) LEFT JOIN MULTITAG_S ON (MULTITAG_ART_S_ID=MULTITAG_S_ID)";
+        $sql .= " WHERE ART_ALTA = '1' AND MULTITAG_S_FRIENDLY = ? $filtro_publicacion ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        push(@params, $FORM{'s'});
     # Solo tema.
     } elsif ($FORM{'s'} eq '' && $FORM{'t'} ne '' && $FORM{'st'} eq '') {
-        $sql = "SELECT MULTITAG_ART_T_ART_ID FROM MULTITAG_ART_T LEFT JOIN ART ON (ART_ID=MULTITAG_ART_T_ART_ID) WHERE ART_ALTA = '1' AND MULTITAG_ART_T_FRIENDLY = '$FORM{'t'}' ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        $sql = "SELECT MULTITAG_ART_T_ART_ID FROM MULTITAG_ART_T LEFT JOIN ART ON (ART_ID=MULTITAG_ART_T_ART_ID) LEFT JOIN MULTITAG_T ON (MULTITAG_ART_T_ID=MULTITAG_T_ID)";
+        $sql .= " WHERE ART_ALTA = '1' AND MULTITAG_T_FRIENDLY = ? $filtro_publicacion ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        push(@params, $FORM{'t'});
     # Solo subtema.
     } elsif ($FORM{'s'} eq '' && $FORM{'t'} eq '' && $FORM{'st'} ne '') {
-        $sql = "SELECT MULTITAG_ART_ST_ART_ID FROM MULTITAG_ART_ST LEFT JOIN ART ON (ART_ID=MULTITAG_ART_ST_ART_ID) WHERE ART_ALTA = '1' AND MULTITAG_ART_ST_FRIENDLY = '$FORM{'st'}' ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        $sql = "SELECT MULTITAG_ART_ST_ART_ID FROM MULTITAG_ART_ST LEFT JOIN ART ON (ART_ID=MULTITAG_ART_ST_ART_ID) LEFT JOIN MULTITAG_ST ON (MULTITAG_ART_ST_ID=MULTITAG_ST_ID)";
+        $sql .= " WHERE ART_ALTA = '1' AND MULTITAG_ST_FRIENDLY = ? $filtro_publicacion ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        push(@params, $FORM{'st'});
     # seccion y tema.
     } elsif ($FORM{'s'} ne '' && $FORM{'t'} ne '' && $FORM{'st'} eq '') {
-        $sql = "SELECT MULTITAG_ART_S_ART_ID FROM MULTITAG_ART_S LEFT JOIN MULTITAG_ART_T ON (MULTITAG_ART_S_ART_ID = MULTITAG_ART_T_ART_ID) LEFT JOIN ART ON (ART_ID=MULTITAG_ART_S_ART_ID) WHERE ART_ALTA = '1' AND MULTITAG_ART_S_FRIENDLY = '$FORM{'s'}' AND MULTITAG_ART_T_FRIENDLY = '$FORM{'t'}' ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        $sql = "SELECT MULTITAG_ART_S_ART_ID FROM MULTITAG_ART_S LEFT JOIN MULTITAG_ART_T ON (MULTITAG_ART_S_ART_ID = MULTITAG_ART_T_ART_ID)";
+        $sql .= " LEFT JOIN ART ON (ART_ID=MULTITAG_ART_S_ART_ID) LEFT JOIN MULTITAG_S ON (MULTITAG_ART_S_ID=MULTITAG_S_ID)  LEFT JOIN MULTITAG_T ON (MULTITAG_ART_T_ID=MULTITAG_T_ID)";
+        $sql .= " WHERE ART_ALTA = '1' AND MULTITAG_S_FRIENDLY = ? AND MULTITAG_T_FRIENDLY = ? $filtro_publicacion ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        push(@params, $FORM{'s'});
+        push(@params, $FORM{'t'});
     # seccion y subtema.
     } elsif ($FORM{'s'} ne '' && $FORM{'t'} eq '' && $FORM{'st'} ne '') {
-        $sql = "SELECT MULTITAG_ART_S_ART_ID FROM MULTITAG_ART_S LEFT JOIN MULTITAG_ART_ST ON (MULTITAG_ART_S_ART_ID = MULTITAG_ART_ST_ART_ID) LEFT JOIN ART ON (ART_ID=MULTITAG_ART_S_ART_ID) WHERE ART_ALTA = '1' AND MULTITAG_ART_S_FRIENDLY = '$FORM{'s'}' AND MULTITAG_ART_ST_FRIENDLY = '$FORM{'st'}' ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        $sql = "SELECT MULTITAG_ART_S_ART_ID FROM MULTITAG_ART_S LEFT JOIN MULTITAG_ART_ST ON (MULTITAG_ART_S_ART_ID = MULTITAG_ART_ST_ART_ID)";
+        $sql .= " LEFT JOIN ART ON (ART_ID=MULTITAG_ART_S_ART_ID) LEFT JOIN MULTITAG_S ON (MULTITAG_ART_S_ID=MULTITAG_S_ID) LEFT JOIN MULTITAG_ST ON (MULTITAG_ART_ST_ID=MULTITAG_ST_ID)";
+        $sql .= " WHERE ART_ALTA = '1' AND MULTITAG_S_FRIENDLY = ? AND MULTITAG_ST_FRIENDLY = ? $filtro_publicacion ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        push(@params, $FORM{'s'});
+        push(@params, $FORM{'st'});
     # tema y subtema.
     } elsif ($FORM{'s'} eq '' && $FORM{'t'} ne '' && $FORM{'st'} ne '') {
-        $sql = "SELECT MULTITAG_ART_T_ART_ID FROM MULTITAG_ART_T LEFT JOIN MULTITAG_ART_ST ON (MULTITAG_ART_T_ART_ID = MULTITAG_ART_ST_ART_ID) LEFT JOIN ART ON (ART_ID=MULTITAG_ART_T_ART_ID) WHERE ART_ALTA = '1' AND MULTITAG_ART_T_FRIENDLY = '$FORM{'t'}' AND MULTITAG_ART_ST_FRIENDLY = '$FORM{'st'}' ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        $sql = "SELECT MULTITAG_ART_T_ART_ID FROM MULTITAG_ART_T LEFT JOIN MULTITAG_ART_ST ON (MULTITAG_ART_T_ART_ID = MULTITAG_ART_ST_ART_ID)";
+        $sql .= " LEFT JOIN ART ON (ART_ID=MULTITAG_ART_T_ART_ID) LEFT JOIN MULTITAG_T ON (MULTITAG_ART_T_ID=MULTITAG_T_ID) LEFT JOIN MULTITAG_ST ON (MULTITAG_ART_ST_ID=MULTITAG_ST_ID)";
+        $sql .= " WHERE ART_ALTA = '1' AND MULTITAG_T_FRIENDLY = ? AND MULTITAG_ST_FRIENDLY = ? $filtro_publicacion ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        push(@params, $FORM{'t'});
+        push(@params, $FORM{'st'});
     # seccion, tema y subtema.
     } elsif ($FORM{'s'} ne '' && $FORM{'t'} ne '' && $FORM{'st'} ne '') {
-        $sql = "SELECT MULTITAG_ART_S_ART_ID FROM MULTITAG_ART_S LEFT JOIN MULTITAG_ART_T ON (MULTITAG_ART_S_ART_ID = MULTITAG_ART_T_ART_ID) LEFT JOIN MULTITAG_ART_ST ON (MULTITAG_ART_T_ART_ID = MULTITAG_ART_ST_ART_ID) LEFT JOIN ART ON (ART_ID=MULTITAG_ART_S_ART_ID) WHERE ART_ALTA = '1' AND MULTITAG_ART_S_FRIENDLY = '$FORM{'s'}' AND MULTITAG_ART_T_FRIENDLY = '$FORM{'t'}' AND MULTITAG_ART_ST_FRIENDLY = '$FORM{'st'}' ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        $sql = "SELECT MULTITAG_ART_S_ART_ID FROM MULTITAG_ART_S LEFT JOIN MULTITAG_ART_T ON (MULTITAG_ART_S_ART_ID = MULTITAG_ART_T_ART_ID)";
+        $sql .= " LEFT JOIN MULTITAG_ART_ST ON (MULTITAG_ART_T_ART_ID = MULTITAG_ART_ST_ART_ID) LEFT JOIN ART ON (ART_ID=MULTITAG_ART_S_ART_ID)";
+        $sql .= " LEFT JOIN MULTITAG_S ON (MULTITAG_ART_S_ID=MULTITAG_S_ID) LEFT JOIN MULTITAG_T ON (MULTITAG_ART_T_ID=MULTITAG_T_ID)";
+        $sql .= " LEFT JOIN MULTITAG_ST ON (MULTITAG_ART_ST_ID=MULTITAG_ST_ID) WHERE ART_ALTA = '1' AND MULTITAG_S_FRIENDLY = ?";
+        $sql .= "  AND MULTITAG_T_FRIENDLY = ? AND MULTITAG_ST_FRIENDLY = ? $filtro_publicacion ORDER BY ART_FECHAP desc, ART_HORAP desc";
+        push(@params, $FORM{'s'});
+        push(@params, $FORM{'t'});
+        push(@params, $FORM{'st'});
     }
-    return $sql;
-};
+
+    # parametro del filtro de publicacion, es el ultimo del query aunque se arma primero
+    push(@params, $dthhmm_system);
+    push(@params, $dthhmm_system) if ($prontus_varglb::CONTROL_FECHA eq 'SI');
+
+    return ($sql, @params);
+}
 
 sub set_valid_params {
     $FORM{'prontus_id'} = &glib_cgi_04::param('prontus_id');
@@ -334,9 +378,10 @@ sub set_valid_params {
     $FORM{'st'} = &glib_cgi_04::param('st');
     $FORM{'p'} = &glib_cgi_04::param('p');
 
-    $FORM{'p'} = 1 if ($FORM{'p'} !~ /^\d+?$/);
+    $FORM{'p'} = 1 if ($FORM{'p'} !~ /^\d+$/);
     $FORM{'p'} = 1 if (!$FORM{'p'});
 
+    # deja solo letras y guiones
     $FORM{'s'} =~ s/[^\w\-]+//sg;
     $FORM{'t'} =~ s/[^\w\-]+//sg;
     $FORM{'st'} =~ s/[^\w\-]+//sg;
@@ -384,8 +429,9 @@ sub get_info_s {
 
     return '' if (!$FORM{'s'});
 
-    $sql = "SELECT MULTITAG_S_NOMBRE,MULTITAG_S_ID,MULTITAG_S_FRIENDLY FROM MULTITAG_S WHERE MULTITAG_S_FRIENDLY = '$FORM{'s'}'";
-    $salida = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($nom, $id, $friendly));
+    my @params = ($FORM{'s'});
+    $sql = "SELECT MULTITAG_S_NOMBRE,MULTITAG_S_ID,MULTITAG_S_FRIENDLY FROM MULTITAG_S WHERE MULTITAG_S_FRIENDLY = ? ";
+    $salida = &glib_dbi_02::ejecutar_sql_bind_param($BD, $sql, \@params, \($nom, $id, $friendly));
     $salida->fetch;
     $salida->finish;
 
@@ -397,8 +443,9 @@ sub get_info_t {
 
     return '' if (!$FORM{'t'});
 
-    $sql = "SELECT MULTITAG_T_NOMBRE,MULTITAG_T_ID,MULTITAG_T_FRIENDLY FROM MULTITAG_T WHERE MULTITAG_T_FRIENDLY = '$FORM{'t'}'";
-    $salida =  &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($nom, $id, $friendly));
+    my @params = ($FORM{'t'});
+    $sql = "SELECT MULTITAG_T_NOMBRE,MULTITAG_T_ID,MULTITAG_T_FRIENDLY FROM MULTITAG_T WHERE MULTITAG_T_FRIENDLY = ? ";
+    $salida =  &glib_dbi_02::ejecutar_sql_bind_param($BD, $sql, \@params, \($nom, $id, $friendly));
     $salida->fetch;
     $salida->finish;
 
@@ -410,8 +457,9 @@ sub get_info_st {
 
     return '' if (!$FORM{'st'});
 
-    $sql = "SELECT MULTITAG_ST_NOMBRE,MULTITAG_ST_ID,MULTITAG_ST_FRIENDLY FROM MULTITAG_ST WHERE MULTITAG_ST_FRIENDLY = '$FORM{'st'}'";
-    $salida =  &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($nom, $id, $friendly));
+    my @params = ($FORM{'st'});
+    $sql = "SELECT MULTITAG_ST_NOMBRE,MULTITAG_ST_ID,MULTITAG_ST_FRIENDLY FROM MULTITAG_ST WHERE MULTITAG_ST_FRIENDLY = ? ";
+    $salida =  &glib_dbi_02::ejecutar_sql_bind_param($BD, $sql, \@params, \($nom, $id, $friendly));
     $salida->fetch;
     $salida->finish;
 
@@ -472,8 +520,6 @@ sub parse_include {
         $include =~ s/\//\\\//g;
         $include =~ s/\(/\\\(/g;
         $include =~ s/\)/\\\)/g;
-
-        #~ print STDERR "$include\n";
 
         if (-f $file) {
             $buffer = &glib_fildir_02::read_file($file);

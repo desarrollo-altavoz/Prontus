@@ -90,11 +90,15 @@ main: {
     $hash_defaultvars{'var'}{'ACTUALIZACIONES'} = 'ACTUALIZACIONES;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'SERVER_SMTP'} = 'SERVER_SMTP;(\w+);localhost;U';
     $hash_defaultvars{'var'}{'PUBLIC_SERVER_NAME'} = 'PUBLIC_SERVER_NAME;(\w+);;U';
+    $hash_defaultvars{'var'}{'CPAN_SERVER_NAME'} = 'CPAN_SERVER_NAME;(\w+);;U';
+    $hash_defaultvars{'var'}{'VTXT_RELPATH_LINK'} = 'VTXT_RELPATH_LINK;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'CONTROL_FECHA'} = 'CONTROL_FECHA;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'CONTROLAR_ALTA_ARTICULOS'} = 'CONTROLAR_ALTA_ARTICULOS;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'CREAR_VISTAS_SIN_ALTA'} = 'CREAR_VISTAS_SIN_ALTA;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS'} = 'FRIENDLY_URLS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URL_IMAGES'} = 'FRIENDLY_URL_IMAGES;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_INCLUDE_VIEW_NAME'} = 'FRIENDLY_V4_INCLUDE_VIEW_NAME;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'FRIENDLY_V4_INCLUDE_PRONTUS_ID'} = 'FRIENDLY_V4_INCLUDE_PRONTUS_ID;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'FRIENDLY_V4_EXCLUDE_FID'} = 'FRIENDLY_V4_EXCLUDE_FID;(\w+);;M';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_VERSION'} = 'FRIENDLY_URLS_VERSION;(1|2|3|4);1;U';
     $hash_defaultvars{'var'}{'FRIENDLY_URLS_LARGO_TITULAR'} = 'FRIENDLY_URLS_LARGO_TITULAR;^(\d+)$;1;U';
@@ -108,6 +112,7 @@ main: {
     $hash_defaultvars{'var'}{'VTXT_ENCODE_CHARS'} = 'VTXT_ENCODE_CHARS;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'VTXT_MEDIA_SCRIPT'} = 'VTXT_MEDIA_SCRIPT;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'FORM_CSV_CHARSET'} = 'FORM_CSV_CHARSET;(utf-8|iso-8859-1);utf-8;U';
+    $hash_defaultvars{'var'}{'FORM_INCLUIR_ADJUNTO'} = 'FORM_INCLUIR_ADJUNTO;(SI|NO);SI;U';
     $hash_defaultvars{'var'}{'SERVER_PROTOCOLO_HTTPS'} = 'SERVER_PROTOCOLO_HTTPS;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'VARNISH_SERVER_NAME'} = 'VARNISH_SERVER_NAME;(\w+);;M';
     $hash_defaultvars{'var'}{'VARNISH_GLOBAL_PURGE'} = 'VARNISH_GLOBAL_PURGE;(.*?);;U';
@@ -120,6 +125,8 @@ main: {
     $hash_defaultvars{'var'}{'USAR_PUBLIC_SERVER_NAME_VER_ARTIC'} = 'USAR_PUBLIC_SERVER_NAME_VER_ARTIC;(SI|NO);NO;U';
     $hash_defaultvars{'var'}{'SCRIPT_QUOTA'} = 'SCRIPT_QUOTA;(\w+);;U';
     $hash_defaultvars{'var'}{'FOTO_MAX_PIXEL'} = 'FOTO_MAX_PIXEL;(.*?);;U';
+    $hash_defaultvars{'var'}{'REDUCIR_CALIDAD_JPEGS'} = 'REDUCIR_CALIDAD_JPEGS;(SI|NO);NO;U';
+    $hash_defaultvars{'var'}{'NIVEL_OPTIMIZACION_JPG'} = 'NIVEL_OPTIMIZACION_JPG;(\d{1,3});85;U';
     $hash_defaultvars{'var'}{'FFMPEG_PARAMS'} = 'FFMPEG_PARAMS;(.*?);;U';
     $hash_defaultvars{'var'}{'BLOQUEO_EDICION'} = 'BLOQUEO_EDICION;(\d+);;U';
     $hash_defaultvars{'var'}{'MAX_XCODING'} = 'MAX_XCODING;(\d+);100;U';
@@ -340,7 +347,6 @@ main: {
                 if ($input_value !~ /$re/) {
                     &glib_html_02::print_json_result(0, 'La variable ' . $var_valida . ' tiene caracteres inválidos.', 'exit=1,ctype=1');
                 } else {
-                    #~ &validarUsr($var_valida, $input_value, \%hash_vars) if ($FORM{'_cfg'} eq 'usr');
                     &validarUsr($var_valida, $input_value) if ($FORM{'_cfg'} eq 'usr');
                     &validarPort($var_valida, $input_value) if ($FORM{'_cfg'} eq 'port');
                     &validarTax($var_valida, $input_value) if ($FORM{'_cfg'} eq 'tax');
@@ -638,6 +644,10 @@ sub validarVar {
         };
     };
 
+    if (-f "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_sql_innodb.cfg") {
+        $lib_setbd::ENGINE = 'InnoDB';
+    }
+
     # si se usara friendly 4, intentamos crear la tabla en db
     if (&glib_cgi_04::param('FRIENDLY_URLS') eq 'SI' && $var eq 'FRIENDLY_URLS_VERSION' && $item eq '4') {
         my ($msg_ret, $hay_err);
@@ -918,7 +928,6 @@ sub validarPort {
 sub validarUsr {
     my $var = $_[0];
     my $item = $_[1];
-    #~ my %hash_vars = %{ $_[2] };
 
     if ($var eq 'PRONTUS_SSO_MASTER_ID' && $item ne '') {
         if (!&lib_prontus::valida_prontus($item)) {

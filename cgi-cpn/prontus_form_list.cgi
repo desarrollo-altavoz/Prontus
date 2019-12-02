@@ -63,6 +63,7 @@ use glib_html_02;
 use glib_cgi_04;
 use lib_prontus;
 use lib_form;
+use File::Basename;
 
 use JSON;
 
@@ -172,7 +173,7 @@ main: {
             }
             my %jsonhash = %$jsonhashref;
             my @CSV_ROW;
-            # Se recorren seg˙n el orden
+            # Se recorren segùn el orden
             foreach my $name (@orderreal) {
                 push (@CSV_ROW, $jsonhash{$name});
                 delete $jsonhash{$name};
@@ -244,7 +245,7 @@ main: {
     } else {
 
         # Si ningun archivo existe, se arroja error
-        &glib_html_02::print_pag_result("Listado de Datos", 'El archivo de datos est· vacÌo o no existe', 1, '');
+        &glib_html_02::print_pag_result("Listado de Datos", 'El archivo de datos estù vacùo o no existe', 1, '');
         exit;
     }
 
@@ -304,18 +305,27 @@ sub procesarFila {
             $tempStr = $plt;
             $tempStr =~ s/%%item_value%%/$item/ig;
             $totalStr = $totalStr . $tempStr;
-        };
-        my $bfile = &isFile($item);
-        if($bfile) {
-            push @files, $item;
-        };
-    };
+        }
+        if (ref $item eq ref {}) {
+            foreach my $fname (values %$item) {
+                $fname = basename($fname);
+                #print STDERR "basename fname: $fname\n";
+                if (&isFile($fname)) {
+                    push @files, $fname;
+                }
+            }
+        } else {
+            if (&isFile($item)) {
+                push @files, $item;
+            }
+        }
+    }
     my $strFiles;
     foreach my $f (@files) {
         my $name = $f;
         $name =~ s/file_\d+\-\-//;
         $strFiles = $strFiles . '&raquo; <a href="'.$DIRFORM.'/'.$f.'">'.$name.'</a><br/>';
-    };
+    }
     $tempStr = $plt;
     $tempStr =~ s/%%item_value%%/$strFiles/ig;
     $totalStr = $totalStr . $tempStr;
@@ -334,13 +344,13 @@ sub strToArray {
 }
 
 # --------------------------------------------------------------------------------------------------
+# recibe una string, devuelve true si corresponde a un archivo.
 sub isFile {
-
     my $item = $_[0];
     if($item =~ /file_\d+\-\-[^\/\\]+?\.\w+/) {
         if(-f $ROOT.$DIRFORM.'/'.$item) {
             return 1;
-        };
-    };
+        }
+    }
     return 0;
 }

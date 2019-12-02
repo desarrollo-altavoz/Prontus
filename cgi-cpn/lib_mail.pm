@@ -27,7 +27,7 @@
 
 package lib_mail;
 
-
+use Encode qw/encode decode/;
 use LWP::UserAgent;
 use HTTP::Response;
 
@@ -188,9 +188,7 @@ sub mail_text {   # FROM MAILCENTER
         $Mail::Sender::NO_X_MAILER = 1; # Evita molestos copyrights.
 
         #TODO Revisar esto con urgencia, no deberia ser asi, pero funciona
-        use Encode qw/encode decode/;
         $subject = encode('MIME-Header', decode("utf8", $subject));
-        $from = encode('MIME-Header', decode("utf8", $from));
 
         ref ($sender = new Mail::Sender({
                 from => $from,
@@ -258,9 +256,7 @@ sub mail_multipart {   # FROM MAILCENTER
         $Mail::Sender::NO_X_MAILER = 1; # Evita molestos copyrights.
 
         #TODO Revisar esto con urgencia, no deberia ser asi, pero funciona
-        use Encode qw/encode decode/;
         $subject = encode('MIME-Header', decode("utf8", $subject));
-        $from = encode('MIME-Header', decode("utf8", $from));
 
         ref ($sender = new Mail::Sender({
                 from => $from,
@@ -268,7 +264,8 @@ sub mail_multipart {   # FROM MAILCENTER
                 to => $to,
                 subject => $subject,
                 reply => $replyto,
-                debug => \*STDERR
+                tls_allowed => 0 # deshabilita encriptacion SSL
+                #~ debug => \*STDERR
         })) or return &err_mail("Error al enviar mail via Mail::Sender [$!] [$Mail::Sender::Error] [From=$from][To=$to][SMTP=$smtp]");
 
         if ($encode_html) {

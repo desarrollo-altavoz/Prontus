@@ -45,9 +45,6 @@ main: {
     $FORM{'active'}     = &glib_cgi_04::param('active');
     $FORM{'ts'}         = &glib_cgi_04::param('ts');
 
-    # Deduce path conf del referer, en caso de no ser suministrado.
-    $FORM{'path_conf'} = &get_path_conf() if ($FORM{'path_conf'} eq '');
-
     # Ajusta path_conf para completar path y/o cambiar \ por /
     $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
 
@@ -58,6 +55,14 @@ main: {
     # $FORM{'tab'} = &glib_cgi_04::param('tab');
 
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user(1);
+
+    my $img_type = &lib_prontus::get_img_type($FORM{'relfoto'});
+
+    if (!&lib_prontus::can_edit_img($img_type)) {
+        print "Content-Type: text/html\n\n";
+        &glib_html_02::print_pag_result("Error", "No es posible editar este tipo de imagen.");
+        exit;    
+    }
 
     print "Content-Type: text/html\n\n";
     # Generar pagina final (loopeando una fila modelo)

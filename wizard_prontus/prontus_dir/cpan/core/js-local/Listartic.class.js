@@ -1,4 +1,3 @@
-
 var Listartic = {
 
     TOTAL_PORTS_values: [],
@@ -45,6 +44,9 @@ var Listartic = {
     msgChangePortConfirm: 'La portada ha sido modificada. ¿Está seguro que desea refrescar el listado de artículos publicados?',
     modPort: false,
 
+    use_public_server_name : false,
+    public_server_name: '',
+
     init: function () {
 
         Listartic.prontus_id = Admin.prontus_id;
@@ -60,6 +62,11 @@ var Listartic = {
             $('.rotulo .flecha span').removeClass('closed').addClass('opened');
             $(Listartic.idUlPub + ':hidden').slideDown(Listartic.animationSlideSpeed);
         });
+
+        if (document.getElementById('use_public_server_name').value == 'si') {
+            Listartic.use_public_server_name = true;
+        }
+        Listartic.public_server_name = document.getElementById('public_server_name').value;
 
         // Instala los Handlers
         Buscador.instalaHandlers();         // Para los handlers del buscador
@@ -623,6 +630,9 @@ var Listartic = {
             edic = 'base';
         }
         var theLink = '/' + Admin.prontus_id + '/site/edic/' + edic + '/port/' + port;
+        if (Listartic.use_public_server_name) {
+            theLink = Listartic.public_server_name + theLink;
+        }
         $('#link-port').attr('href', theLink);
     },
 
