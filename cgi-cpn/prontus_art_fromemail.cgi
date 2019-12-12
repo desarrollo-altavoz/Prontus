@@ -240,9 +240,9 @@ sub crear_objeto_artic {
 sub conectar_pop {
   my ($popserver, $user, $pass) = @_;
   my $pop3 = Net::POP3->new($popserver);
-  return "No es posible conectar con el servidor pop especificado para la casilla de publicacion[$popserver], user[$user], pass[$pass]\n" unless $pop3;
+  return "No es posible conectar con el servidor pop especificado para la casilla de publicacion[$popserver], user[$user]\n" unless $pop3;
   my $num_messages = $pop3->login($user, $pass);
-  return "Falla login al servidor pop especificado para la casilla de publicacion server[$popserver], user[$user], pass[$pass]\n" unless defined($num_messages);
+  return "Falla login al servidor pop especificado para la casilla de publicacion server[$popserver], user[$user]\n" unless defined($num_messages);
   # my ($num, $size) = $pop3->popstat();
   # print STDERR "num_messages[$num_messages]\n";
   return ('',$pop3);
