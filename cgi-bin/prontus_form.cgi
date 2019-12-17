@@ -380,17 +380,15 @@ sub data_management {
         } else {
             &glib_fildir_02::append_file("$backupdir/backup.csv","$backupheaders\r\n$backupdata\r\n");
         };
-        #if (keys %files) {
-            # Mueve todos los archivos adjuntos.
-            foreach my $file (keys %files) {
-                my $name = $files{$file}{'_name'};
-                my $temp = $files{$file}{'_temp'};
-                File::Copy::move($temp,"$backupdir/$name");
-                my $newfile = "$backupdir/$name";
-                $newfile =~ s/^$prontus_varglb::DIR_SERVER//;
-                $files_json->{$file} = $newfile;
-            };
-        #};
+        # Mueve todos los archivos adjuntos.
+        foreach my $file (keys %files) {
+            my $name = $files{$file}{'_name'};
+            my $temp = $files{$file}{'_temp'};
+            File::Copy::move($temp,"$backupdir/$name");
+            my $newfile = "$backupdir/$name";
+            $newfile =~ s/^$prontus_varglb::DIR_SERVER//;
+            $files_json->{$file} = $newfile;
+        };
     };
     # Se escribe la respuesta json
     if($data_json) {
@@ -399,7 +397,7 @@ sub data_management {
             $resp->{$llave} = $data_json->{$llave};
         };
         if (keys %{$files_json}) {
-            $resp->{'_files'} = $files_json;;
+            $resp->{'_files'} = $files_json;
         }
 
         if($JSON::VERSION =~ /^1\./) {
@@ -457,13 +455,30 @@ sub data_management {
             $subj = $PRONTUS_VARS{'form_subject_auto'.$VISTAVAR};
             $body = $PRONTUS_VARS{'form_msg_auto'.$VISTAVAR};
 
+            my $encode_html = 0;
             my $email_plantilla = &glib_cgi_04::param('_pag_email_remitente');
-            if (defined($email_plantilla) && $email_plantilla ne '') {
+            if (defined($PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR})) {
+                $email_plantilla = $PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR};
+                if (substr($email_plantilla, 0, 1) eq '/') {
+                    $body = &glib_fildir_02::read_file("$ROOTDIR$email_plantilla");
+                } elsif (index($email_plantilla, '.')) {
+                    $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla");
+                } else {
+                    $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
+                }
+                $encode_html = 1;
+            } elsif (defined($email_plantilla) && $email_plantilla ne '') {
                 $email_plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
                 $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
+                $encode_html = 1;
             }
             if ($body eq '') {
                 &lib_form::aborta("No existe cuerpo de mensaje para el remitente.");
+            }
+
+            if ($encode_html) {
+                $body =~ s/\r\n/\n/sg;
+                $body =~ s/\r/\n/sg;
             }
 
             # 1.2 Procesa IFs y NIFs.
@@ -498,7 +513,7 @@ sub data_management {
 
             $body =~ s/%\w+%//sg; # Elimina tags no parseados.
             $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
-            $result .= ' 5 ' . &lib_form::envia_mail2($to, $from, $from, $subj, $body, '', '');
+            $result .= ' 5 ' . &lib_form::envia_mail2($to, $from, $from, $subj, $body, '', '', $encode_html);
         }
     }
     return $result; # $result es solo para debug.
