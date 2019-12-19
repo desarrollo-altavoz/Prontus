@@ -10573,5 +10573,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [mejoras]
         - Implementa el uso de una plantilla opcional para autorespuesta al usuario
     [files]
-        - /cgi-bin/prontus_form.cgi
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/lib_form.pm
 

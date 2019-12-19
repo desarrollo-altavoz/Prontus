@@ -460,8 +460,8 @@ sub data_management {
             if (defined($PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR})) {
                 $email_plantilla = $PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR};
                 if (substr($email_plantilla, 0, 1) eq '/') {
-                    $body = &glib_fildir_02::read_file("$ROOTDIR$email_plantilla");
-                } elsif (index($email_plantilla, '.')) {
+                    $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID$email_plantilla");
+                } elsif (index($email_plantilla, '.') > -1) {
                     $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla");
                 } else {
                     $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
