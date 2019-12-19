@@ -457,7 +457,11 @@ sub data_management {
 
             my $encode_html = 0;
             my $email_plantilla = &glib_cgi_04::param('_pag_email_remitente');
-            if (defined($PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR})) {
+            if (defined($email_plantilla) && $email_plantilla ne '') {
+                $email_plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
+                $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
+                $encode_html = 1;
+            } elsif (defined($PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR})) {
                 $email_plantilla = $PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR};
                 if (substr($email_plantilla, 0, 1) eq '/') {
                     $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID$email_plantilla");
@@ -467,11 +471,8 @@ sub data_management {
                     $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
                 }
                 $encode_html = 1;
-            } elsif (defined($email_plantilla) && $email_plantilla ne '') {
-                $email_plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
-                $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
-                $encode_html = 1;
             }
+
             if ($body eq '') {
                 &lib_form::aborta("No existe cuerpo de mensaje para el remitente.");
             }

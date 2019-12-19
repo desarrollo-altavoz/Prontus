@@ -10572,6 +10572,15 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 - Prontus Form
     [mejoras]
         - Implementa el uso de una plantilla opcional para autorespuesta al usuario
+            Las plantillas se pueden especificar de 3 formas:
+            * En el fid colocando la ruta a la plantilla con extensión relativa al directorio de la instancia prontus
+             en el campo "form_msg_auto_html" se asume que está ubicada en /prontus_id/ruta/a/la/plantilla.ext
+            * En el fid colocando el nombre de la plantilla sin extension en el campo "form_msg_auto_html"
+            se asume que está ubicada en /prontus_id/plantillas/extra/form/pags
+            * En el fid colocando el nombre de la plantilla con extension en el campo "form_msg_auto_html"
+            se asume que está ubicada en /prontus_id/plantillas/extra/form/pags
+            * En la plantilla del artículo se puede sobrescribir el valor usando el campo "_pag_email_remitente", sin incluir extensión
+
     [files]
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/lib_form.pm
