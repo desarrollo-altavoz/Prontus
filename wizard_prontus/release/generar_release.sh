@@ -170,8 +170,7 @@ cp "$BASEDIR/wizard_prontus/release/change_log.txt"  "$BASEDIRTEMP/wizard_prontu
 #~ Generando el TGZ para el update de Prontus
 echo "Generando archivo tgz en: $RELEASEPATH/files.$release.tgz"
 cd $BASEDIRTEMP
-tar czf "$RELEASEPATH/files.$release.tgz" . \
-        --exclude=*.orig
+tar czf "$RELEASEPATH/files.$release.tgz" --exclude=*.orig .
 rm -rf "$BASEDIRTEMP"
 
 #~ Generando md5 del TGZ
