@@ -85,10 +85,12 @@
 # Las plantillas a utilizar se especifican en el formulario mediante los datos:
 # _pag_exito = Plantilla de exito del sistema (solo el nombre del archivo, sin extension).
 # _pag_error = Plantilla de error del sistema (solo el nombre del archivo, sin extension).
+# _pag_email_remitente = Plantilla html opcional de autorespuesta para el remitente
+# (solo el nombre del archivo, sin extension).
 #
 # Si estos datos no son incluidos, el Formulario Prontus empleara las plantillas:
 #
-# /<prontus_id>/plantillas/extra/form/pags/exito.<ext> - Plantilla de exito por defecto.
+# /<prontus_id>/plantillas/extra/form/pags/exito.<ext> - Plantilla de exito y autorespuesta por defecto.
 # /<prontus_id>/plantillas/extra/form/pags/error.<ext> - Plantilla de error por defecto.
 #
 # La extension debe ser la misma usada en el formulario, ya que se deduce de este.
@@ -156,7 +158,7 @@ use lib_stdlog;
 # DECLARACIONES GLOBALES.
 
 use strict;
-
+use warnings;
 use File::Copy;
 # use POSIX; # (manejo de fechas).
 
@@ -321,8 +323,8 @@ sub data_management {
         $backupheaders .= '"' . $key . '"' . $SEPARADOR;
         # Determino si el dato es un archivo o no.
         # Si son varios, se adjuntara el ultimo.
-        if (&glib_cgi_04::real_paths($key) ne '') { # Es un archivo.
-            $filename = &glib_cgi_04::real_paths($key);
+        $filename = &glib_cgi_04::real_paths($key);
+        if (defined($filename) && $filename ne '') { # Es un archivo.
             $filename =~ s/.+[\/\\]([^\/\\]+)/$1/; # 1.3 Extrae path por si lo trae.
 
             my $ext = '';
@@ -378,17 +380,15 @@ sub data_management {
         } else {
             &glib_fildir_02::append_file("$backupdir/backup.csv","$backupheaders\r\n$backupdata\r\n");
         };
-        #if (keys %files) {
-            # Mueve todos los archivos adjuntos.
-            foreach my $file (keys %files) {
-                my $name = $files{$file}{'_name'};
-                my $temp = $files{$file}{'_temp'};
-                File::Copy::move($temp,"$backupdir/$name");
-                my $newfile = "$backupdir/$name";
-                $newfile =~ s/^$prontus_varglb::DIR_SERVER//;
-                $files_json->{$file} = $newfile;
-            };
-        #};
+        # Mueve todos los archivos adjuntos.
+        foreach my $file (keys %files) {
+            my $name = $files{$file}{'_name'};
+            my $temp = $files{$file}{'_temp'};
+            File::Copy::move($temp,"$backupdir/$name");
+            my $newfile = "$backupdir/$name";
+            $newfile =~ s/^$prontus_varglb::DIR_SERVER//;
+            $files_json->{$file} = $newfile;
+        };
     };
     # Se escribe la respuesta json
     if($data_json) {
@@ -397,7 +397,7 @@ sub data_management {
             $resp->{$llave} = $data_json->{$llave};
         };
         if (keys %{$files_json}) {
-            $resp->{'_files'} = $files_json;;
+            $resp->{'_files'} = $files_json;
         }
 
         if($JSON::VERSION =~ /^1\./) {
@@ -454,6 +454,34 @@ sub data_management {
             $to = &glib_cgi_04::param('email');
             $subj = $PRONTUS_VARS{'form_subject_auto'.$VISTAVAR};
             $body = $PRONTUS_VARS{'form_msg_auto'.$VISTAVAR};
+
+            my $encode_html = 0;
+            my $email_plantilla = &glib_cgi_04::param('_pag_email_remitente');
+            if (defined($email_plantilla) && $email_plantilla ne '') {
+                $email_plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
+                $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
+                $encode_html = 1;
+            } elsif (defined($PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR})) {
+                $email_plantilla = $PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR};
+                if (substr($email_plantilla, 0, 1) eq '/') {
+                    $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID$email_plantilla");
+                } elsif (index($email_plantilla, '.') > -1) {
+                    $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla");
+                } else {
+                    $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
+                }
+                $encode_html = 1;
+            }
+
+            if ($body eq '') {
+                &lib_form::aborta("No existe cuerpo de mensaje para el remitente.");
+            }
+
+            if ($encode_html) {
+                $body =~ s/\r\n/\n/sg;
+                $body =~ s/\r/\n/sg;
+            }
+
             # 1.2 Procesa IFs y NIFs.
             $subj = &procesaIFs($subj,1);
             $body = &procesaIFs($body,1);
@@ -486,7 +514,7 @@ sub data_management {
 
             $body =~ s/%\w+%//sg; # Elimina tags no parseados.
             $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
-            $result .= ' 5 ' . &lib_form::envia_mail2($to, $from, $from, $subj, $body, '', '');
+            $result .= ' 5 ' . &lib_form::envia_mail2($to, $from, $from, $subj, $body, '', '', $encode_html);
         }
     }
     return $result; # $result es solo para debug.
@@ -509,21 +537,22 @@ sub ordenar_campos {
 # ------------------------------------------------------------------------- #
 # Valida las variables Prontus y las del formulario.
 sub valida_data {
-    my($email,$file,$key,$nombre,$dato,$form_admin,$plantilla); # 1.1
+    my($email,$file,$key,$nombre,$buffer,$dato,$form_admin,$plantilla); # 1.1
     my(@mails); # 1.6
 
     @DATOS = &glib_cgi_04::param();
 
     # 1.5 Determina la vista que se usara.
     $VISTADIR = &glib_cgi_04::param('_form_vista');
+    $VISTADIR = '' if (!defined($VISTADIR));
     $VISTADIR =~ s/[^a-z]//sg;
     if ($VISTADIR ne '') {
         $VISTAVAR = '_' . $VISTADIR; # Variable queda lista para ser inserta en los ids de variables.
         $VISTADIR = '-' . $VISTADIR; # Variable queda lista para ser inserta en los paths.
-    };
+    }
     # Determina cuales seran los emails de destino (administrador).
     $form_admin = &glib_cgi_04::param('_admin');
-    if ($form_admin eq '') {
+    if (! defined($form_admin) || $form_admin eq '') {
         $form_admin = $PRONTUS_VARS{'form_admin'};
     } elsif ($form_admin =~ /^\d+$/) { # 1.6 Escoge el mail correlativo.
         @mails = split(/,/,$PRONTUS_VARS{'form_admin'});
@@ -556,8 +585,9 @@ sub valida_data {
     };
 
     # 1.1 Establece cuales son y verifica que existen las plantillas basicas.
-    if (&glib_cgi_04::param('_pag_exito') ne '') {
-        $plantilla = &glib_cgi_04::param('_pag_exito');
+    my $_pag_exito = &glib_cgi_04::param('_pag_exito');
+    if (defined($_pag_exito) && $_pag_exito ne '' ) {
+        $plantilla = $_pag_exito;
         $plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
         $TMP_EXITO = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$plantilla\.$EXT");
         $NOM_PLT_EXITO = "$plantilla\.$EXT";
@@ -567,8 +597,10 @@ sub valida_data {
     if ( $TMP_EXITO eq '') {
         &lib_form::aborta("No existe plantilla de exito.");
     };
-    if (&glib_cgi_04::param('_pag_error') ne '') {
-        $plantilla = &glib_cgi_04::param('_pag_error');
+
+    my $_pag_error = &glib_cgi_04::param('_pag_error');
+    if (defined($_pag_error) && $_pag_error ne '') {
+        $plantilla = $_pag_error;
         $plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
         # Lee la plantilla del directorio de la vista.
         $TMP_ERROR = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$plantilla\.$EXT");
@@ -581,7 +613,8 @@ sub valida_data {
         &lib_form::aborta("No existe plantilla de error.");
     };
 
-    if (&glib_cgi_04::param('_pag_estatico') ne '') { # si
+    my $_pag_estatico = &glib_cgi_04::param('_pag_estatico');
+    if (defined($_pag_estatico) && $_pag_estatico ne '' ) { # si
         $SALIDA_ESTATICA = 1;
     }
 
@@ -591,22 +624,21 @@ sub valida_data {
     $lib_form::SERVER_SMTP = $prontus_varglb::SERVER_SMTP;
     if ($lib_form::SERVER_SMTP eq '') {
         &salida($MSGS{'out_of_service'},$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
-    };
+    }
 
     # Se aprovecha de leer las vistas
     %lib_form::MULTIVISTAS = %prontus_varglb::MULTIVISTAS;
 
     # Se valida el campo: _form_vista
     my $FORM_VISTA = &glib_cgi_04::param('_form_vista');
-    if($FORM_VISTA ne '' && $lib_form::MULTIVISTAS{$FORM_VISTA} != 1) {
+    if(defined($FORM_VISTA) && $FORM_VISTA ne '' && $lib_form::MULTIVISTAS{$FORM_VISTA} != 1) {
         $MSGS{$FORM_VISTA} = &glib_html_02::text2html($FORM_VISTA) unless($MSGS{$FORM_VISTA});
         &salida($MSGS{'wrong_vista'} . ' ' . $MSGS{$FORM_VISTA}, $PRONTUS_VARS{'form_msg_error'}, $TMP_ERROR,1);
     };
 
     # 1.9
     # Chequea Captcha si es que es requerido
-    if($PRONTUS_VARS{'chk_form_captcha_enable'} ne '') {
-
+    if(defined($PRONTUS_VARS{'chk_form_captcha_enable'})) {
         if (!&glib_cgi_04::param('g-recaptcha-response')) {
             # Usando la nueva lib_captcha se manejan ambos formatos
             my $captcha_input = &glib_cgi_04::param('_CAPTCHA_FORM');
@@ -661,9 +693,9 @@ sub valida_data {
         #print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
 
         #print STDERR "Vistas: \n";
-        foreach my $v (keys %lib_form::MULTIVISTAS) {
+        #foreach my $v (keys %lib_form::MULTIVISTAS) {
         #    print STDERR "[$v]\n";
-        }
+        #}
 
         foreach $key (keys %PRONTUS_VARS) {
             next unless($key =~ /chk_form_required_(\w+)/);
@@ -740,8 +772,8 @@ sub valida_data {
         };
 
         # Aprovecha de validar las extensiones de los archivos que se esten intentando subir. # 1.10
-        if (&glib_cgi_04::real_paths($nombre) ne '') { # Es un archivo.
-            my $upload_filename = &glib_cgi_04::real_paths($nombre);
+        my $upload_filename = &glib_cgi_04::real_paths($nombre);
+        if (defined($upload_filename) && $upload_filename ne '') { # Es un archivo.
             if ($upload_filename !~ /(\.pdf|\.doc|\.docx|\.rtf|\.xls|\.xlsx|\.csv|\.zip|\.rar|\.jpg|\.jpeg|\.gif|\.png|\.bmp|\.txt|\.ppt|\.pptx|\.swf)$/i) {
                 &salida('El tipo de archivo que est&aacute; intentando subir no es v&aacute;lido',$PRONTUS_VARS{'form_msg_error'.$VISTAVAR},$TMP_ERROR,1);
             };

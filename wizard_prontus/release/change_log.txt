@@ -1,4 +1,17 @@
 ====================================================================================================
+11.2.107 - 23/12/2019 - EAG/MTC
+====================================================================================================
+- bugfixes: (general) Bajada se estaba guardando mal en base de datos si venía vacía
+- bugfixes: (general) Corrige error en información de Prontus que ocultaba menu para deslogear
+- bugfixes: (transcodificación) Validación de video para sacar screenshot estaba incorrecta
+- bugfixes: (ficha de artículo) Corrige de codificación de la cgi
+- improvement: (general) Agrega códigos de embed para html5
+- improvement: (multitag) Implementa bindings para consultas SQL de multitag
+- improvement: (prontus form)Implementa el uso de una plantilla opcional para autorespuesta al usuario
+    Utiliza las mismas marcas que para el mensaje normal de autorespuesta
+- changes: (general) Quita meta generator "Prontus CMS"
+
+====================================================================================================
 11.2.106 - 21/08/2019 - EAG
 ====================================================================================================
 - bugfixes: (xcoding) Transcodificación fallaba si video original tenía resolución impar

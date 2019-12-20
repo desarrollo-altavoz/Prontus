@@ -78,8 +78,8 @@
 # Prontus 6.0 - 29/10/2001 - Revision/modificaciones para Prontus 6.0
 
 # 7.0 - 20/12/2001 - Extensiones p7 :
-#   . "- Agrega marca a la portada para que inserte los menús de páginas con subtí­tulos.<br>"
-#     . "- Perfilación de periodistas en lista de artículos para permitir artÃículos personales<br>"
+#   . "- Agrega marca a la portada para que inserte los menÃºs de pÃ¡ginas con subtÃ­Â­tulos.<br>"
+#     . "- PerfilaciÃ³n de periodistas en lista de artÃ­culos para permitir artÃƒÃ­culos personales<br>"
 #     . "- Capacidad para borrar fotos, asocfile y realmedia<br>"
 #     . "- Linkeo de URLs https<br>"
 # Prontus 8.0 - 01/08/2002 - YCH. Ver Extensiones y correcciones en /release_prontus80.txt
@@ -160,7 +160,7 @@ main: {
     &lib_prontus::load_config($FORM{'_path_conf'});  # Prontus 6.0
     $FORM{'_path_conf'} =~ s/^$prontus_varglb::DIR_SERVER//;
 
-    # Se lee el titular que habí­a antes, para no perderlo
+    # Se lee el titular que habÃ­Â­a antes, para no perderlo
     $FORM{'_txt_titular'} = &lib_prontus::get_codetext_value(&glib_cgi_04::param('_txt_titular'));
 
     # Control de usuarios obligatorio chequeando la cookie contra el dbm.
@@ -1273,7 +1273,7 @@ my ($nom_seccion1, $nom_tema1, $nom_subtema1);
       if ($pag =~ /%%$nom_campo\_MAXBYTES\s*=\s*(\d+?)\s*%%/) {
         $maxbytes = $1;
         if ($bytes_swf > $maxbytes) {
-          $valor_campo .=   '<br/><span color="#CC0000">¡Advertencia! Peso de archivo swf excede límite permitido</span>';
+          $valor_campo .=   '<br/><span color="#CC0000">Â¡Advertencia! Peso de archivo swf excede lÃ­mite permitido</span>';
         };
       };
       # ----------
@@ -1513,12 +1513,12 @@ sub procesar_select {
       my $tag_original = $tag;
 
       # remueve actual seleccionado en caso de haberlo.
-      # CVI - 17/01/2014 - Se robustece la expresión regular
+      # CVI - 17/01/2014 - Se robustece la expresiÃ³n regular
       #~ $tag =~ s/(.*)selected(.*)/$1$2/is;
       $tag =~ s/(.*)selected(="selected")?(.*)/$1$3/is;
 
       # Posiciona en el option correspondiente
-      # CVI - 17/01/2014 - Se robustece la expresión regular
+      # CVI - 17/01/2014 - Se robustece la expresiÃ³n regular
       #~ $tag =~ s/(.*)value *= *["']$valor_campo["'] *>(.*)/$1value="$valor_campo" selected="selected">$2/is;
       #~ $pag =~ s/$tag_original/$tag/is;
       $tag =~ s/ value *= *["']$valor_campo["']([^>]*>)/ value="$valor_campo" selected="selected"$1/is;
@@ -1540,7 +1540,7 @@ sub add_vtxt {
 
   $include4vtxt = &glib_fildir_02::read_file($include4vtxt);
 
-  #~ Lee la plantilla del artículo para distintas tareas
+  #~ Lee la plantilla del artÃ­culo para distintas tareas
   my $path_tpl = $prontus_varglb::DIR_SERVER .
              $prontus_varglb::DIR_TEMP .
              $prontus_varglb::DIR_ARTIC .
@@ -1551,7 +1551,7 @@ sub add_vtxt {
   $buffer =~ s/$crlf/\x0a/sg;
   $buffer =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/isg; # a pedido del publico
 
-  #~ Carga los css desde la plantilla del artículo
+  #~ Carga los css desde la plantilla del artÃ­culo
   my $include_css = "$prontus_varglb::DIR_CORE/vtxt/editor/plugins/insert/css/content.css";
   my $path_css_artic = &get_css_artic($path_tpl, $buffer);
   if($path_css_artic) {

@@ -5614,7 +5614,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_admin_main.cgi
 
 - Base de Datos:
-    [change]
+    [cambio]
         - Por defecto al crear las tablas, quedan con charset UTF8, engine MYISAM y collate utf8_general_ci
     [files]
         /cgi-cpn/lib_setdb.cgi
@@ -9397,7 +9397,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         imágenes activada, se copiaban los htmls manteniendo el TS del artículo original y no se estaba
         actualizando el slug del articulo copiado.
         - Se corrige mensaje incorrecto al validar hora de apertura de comentarios.
-        - Se estaba deduciendo mal la ruta de los postprocesos, ahora se arma con los
+        - Se estaba deduciendo malla ruta de los postprocesos, ahora se arma con los
          datos conocidos por prontus, DIR_SERVER y DIR_CGI_CPAN
         - Corrige validación de nombres de plantillas de portada en el administrador,
         evita que se pueda configurar Prontus de forma incorrecta y deje de funcionar.
@@ -10448,7 +10448,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 ====================================================================================================
 - General
     [mejora]
-        - Agrega propiedad "saved" al articulo para saber que se guardo aunque
+        - Agrega propiedad "saved" al articulo para saber que se guardó aunque
         fallen los procesos siguientes y poder logear la accion y realizar otras tareas
         - Puede utilizar tablas en innodb, crear archivo /cgi-cpn/prontus_sql_innodb.cfg
         - Mejora informacion sobre que directorios no se pueden crear
@@ -10532,3 +10532,56 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/prontus_videocut.cgi
         /cgi-cpn/xcoding/prontus_videoxcode.cgi
         /cgi-cpn/xcoding/prontus_videoxcodestatus.cgi
+
+====================================================================================================
+11.2.107 - 23/12/2019 - EAG/MTC
+====================================================================================================
+- General
+    [mejora]
+        - Agrega códigos de embed para html5
+    [cambios]
+        - Quita meta generator "Prontus CMS"
+    [bugfixes]
+        - Bajada se estaba guardando mal en base de datos si venía vacía
+        - Corrige error en información de Prontus que ocultaba menu para deslogear
+    [files]
+        /cgi-cpn/Artic.pm
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/prontus_head_info.cgi
+        /wizard_prontus/prontus_dir/cpan/core/js-local/Embed.class.js
+
+- Transcodificación
+    [bugfixes]
+        - Validación de video para sacar screenshot estaba incorrecta
+    [files]
+        /cgi-cpn/xcoding/prontus_videogetsnapshot.cgi
+
+- Ficha de Artículo
+    [bugfixes]
+        - Corrige de codificación de la cgi
+    [files]
+        /cgi-cpn/prontus_art_ficha.cgi
+
+- Multitag
+    [mejora]
+        - Implementa bindings para consultas SQL de multitag
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+        /cgi-cpn/glib_dbi_02.pm
+
+- Prontus Form
+    [mejoras]
+        - Implementa el uso de una plantilla opcional para autorespuesta al usuario
+        Utiliza las mismas marcas que para el mensaje normal de autorespuesta
+            Las plantillas se pueden especificar de 3 formas:
+            * En el fid colocando la ruta a la plantilla con extensión relativa al directorio de la instancia prontus
+             en el campo "form_msg_auto_html" se asume que está ubicada en /prontus_id/ruta/a/la/plantilla.ext
+            * En el fid colocando el nombre de la plantilla sin extension en el campo "form_msg_auto_html"
+            se asume que está ubicada en /prontus_id/plantillas/extra/form/pags
+            * En el fid colocando el nombre de la plantilla con extension en el campo "form_msg_auto_html"
+            se asume que está ubicada en /prontus_id/plantillas/extra/form/pags
+            * En la plantilla del artículo se puede sobrescribir el valor usando el campo "_pag_email_remitente", sin incluir extensión
+
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/lib_form.pm

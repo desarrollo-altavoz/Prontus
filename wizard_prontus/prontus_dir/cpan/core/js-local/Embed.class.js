@@ -19,8 +19,8 @@ var Embed = {
     //genera el codigo para embeber el video
     embedVideo: function() {
         var videoUrl =$('#linkVideo').children().attr('href');
-        var width = 440;
-        var heigth = 350;
+        var width = 640;
+        var heigth = 360;
         var code = '';
         var pathPlayer = $('#_xcode_player_path').val();
         if(typeof pathPlayer === 'undefined' || pathPlayer === null || pathPlayer === '') {
@@ -28,7 +28,7 @@ var Embed = {
             var result = patt.exec(videoUrl);
             pathPlayer = '/'+result[1]+'/flash/players/playerVideo.swf';
         }
-        code += '<textarea rows="10" cols="80" style="font-size:12px;" id="embedable-code" class="fieldform">';
+        code += '<textarea rows="10" cols="80" style="font-size:12px;" class="embedable-code fieldform">';
         code += '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="'+width+'" height="'+heigth+'" id="videoembed">';
         code += '<param name="movie" value="'+pathPlayer+'">';
         code += '<param name="quality" value="high">';
@@ -39,8 +39,14 @@ var Embed = {
         code += '<embed src="'+pathPlayer+'" width="'+width+'" height="'+heigth+'" name="videoembed" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" wmode="opaque" allowfullscreen="true" allowscriptaccess="sameDomain" flashvars="VURL='+videoUrl+'">';
         code += '</object>';
         code += '</textarea>';
+        // html5 tag
+        code += '<textarea rows="10" cols="80" style="font-size:12px;" class="embedable-code fieldform">';
+        code += '<video width="640" height="360" controls>';
+        code += '<source src="' + videoUrl + '" type="video/mp4">';
+        code += '</video>';
+        code += '</textarea>';
         $('#embed-code').append(code);
-        $('#embedable-code').select();
+        $('.embedable-code').select();
     },
     // -------------------------------------------------------------------------
     //muestra/oculta el codigo para embeber el video
@@ -63,7 +69,7 @@ var Embed = {
         var code = '';
         var patt = new RegExp('/(.+?)/site/.+');
         var result = patt.exec(audioUrl);
-        code += '<textarea rows="13" cols="50" class="fieldform" id="embedable-code">';
+        code += '<textarea rows="13" cols="50" class="fieldform embedable-code">';
         code += '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="'+width+'" height="'+heigth+'" id="audioembed">';
         code += '<param name="movie" value="/'+result[1]+'/flash/players/playerAudio.swf">';
         code += '<param name="quality" value="high">';
@@ -74,7 +80,12 @@ var Embed = {
         code += '<embed src="/'+result[1]+'/flash/players/playerAudio.swf" width="'+width+'" height="'+heigth+'" name="audioembed" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" wmode="opaque" allowfullscreen="true" allowscriptaccess="sameDomain" flashvars="VURL='+audioUrl+'">';
         code += '</object>';
         code += '</textarea>';
+        // html5 tag
+        code += '<textarea rows="10" cols="80" style="font-size:12px;" class="embedable-code fieldform">';
+        code += '<audio src="' + audioUrl + '" controls>';
+        code += '</audio>';
+        code += '</textarea>';
         $('#embed-code').append(code);
-        $('#embedable-code').select();
+        $('.embedable-code').select();
     }
 };
