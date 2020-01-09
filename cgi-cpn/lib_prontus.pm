@@ -6817,7 +6817,7 @@ sub cerrar_sesion {
                                           $sess_obj->{username},
                                           $sess_obj->{id_session});
 
-    # Garbage de archivos mas antiguos de X dias
+    # Garbage de archivos mas antiguos
     &lib_multiediting::garbage_collector( $prontus_varglb::DIR_SERVER,
                                           $prontus_varglb::PRONTUS_ID,
                                           'art');

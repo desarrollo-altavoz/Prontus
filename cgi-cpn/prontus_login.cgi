@@ -182,8 +182,12 @@ main: {
                                                   'port',
                                                   $sess_obj->{username},
                                                   $sess_obj->{id_session});
+
+                    # Garbage de archivos mas antiguos
+                    &lib_multiediting::garbage_collector($prontus_varglb::DIR_SERVER, $prontus, 'art');
+                    &lib_multiediting::garbage_collector($prontus_varglb::DIR_SERVER, $prontus, 'port');
                 }
-            };
+            }
             $sess_obj->end_session();
 
             my $buffer_changepass = &get_changepass(); # hacer location a cgi
@@ -229,9 +233,14 @@ main: {
                                                   'port',
                                                   $sess_obj->{username},
                                                   $sess_obj->{id_session});
-                }
 
-            };
+
+                    # Garbage de archivos mas antiguos
+                    &lib_multiediting::garbage_collector($prontus_varglb::DIR_SERVER, $prontus, 'art');
+                    &lib_multiediting::garbage_collector($prontus_varglb::DIR_SERVER, $prontus, 'port');
+                }
+            }
+
             # nueva sesion
             $sess_obj->set_new_session($prontus_auth::USERS_USR, &prontus_auth::get_hash_for_cookie($prontus_auth::USERS_PSW));
 

@@ -132,12 +132,33 @@ sub garbage_collector {
 # Elimina los locks mas antiguos de X dias
     my ($document_root, $prontus_id, $tipo_recurso) = @_;
 
-    my $dir = "$document_root/$prontus_id$lib_multiediting::RELDIR_CONCURRENCY/$tipo_recurso/lock";
-    if (-d $dir) {
-        my $cmd = "find $dir -mtime +$lib_multiediting::MAX_DAY_GARBAGE  -name '*.lck' -exec rm \{\} \\;";
-        my $res = `$cmd`;
+    my @dirs = ("$document_root/$prontus_id$lib_multiediting::RELDIR_CONCURRENCY/$tipo_recurso",
+                "$document_root/$prontus_id$lib_multiediting::RELDIR_CONCURRENCY/$tipo_recurso/lock");
+
+    my $time = time;
+
+    foreach my $dir (@dirs) {
+        if (-d $dir) {
+            my (@entries, @stats);
+            # Lee el contenido del directorio.
+            if (opendir(DIR, $dir)) {
+                @entries = readdir(DIR);
+                closedir DIR;
+            }
+
+            # Borra cualquier archivo con mas de 24 horas de antiguedad.
+            foreach my $entry (@entries) {
+                if (-f "$dir/$entry") {
+                    @stats = stat "$dir/$entry";
+
+                    if ($stats[10] < ($time - 24 *3600)) { # N horas.
+                        unlink "$dir/$entry";
+                    }
+                }
+            }
+        }
     }
-};
+}
 
 # ---------------------------------------------------------------
 sub free_concurrency {
