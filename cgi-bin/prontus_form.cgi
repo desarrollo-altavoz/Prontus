@@ -175,7 +175,6 @@ use lib_validator;
 use lib_mail;
 use lib_maxrunning;
 use lib_prontus;
-use strict;
 use LWP::UserAgent;
 use JSON;
 
