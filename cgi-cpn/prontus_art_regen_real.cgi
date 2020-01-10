@@ -251,7 +251,7 @@ sub procesa_files {
             my $sub1 = $campos_xml{'_subtema1'};
 
             # Eliminar vistas de artículos sin alta si la varglb CREAR_VISTAS_SIN_ALTA está configurada a NO.
-my $glob_path = '';
+            my $glob_path = '';
             if (!$campos_xml{'_alta'} && $prontus_varglb::CREAR_VISTAS_SIN_ALTA eq 'NO') {
                 # borrar si existe.
                 my $fullpath = $artic_obj->get_fullpath_artic('', $campos_xml{'_plt'});

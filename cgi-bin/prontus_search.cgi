@@ -460,252 +460,257 @@ sub parsea_plantilla1 {
 # 1.10 Parsea y retorna la segunda parte de la pagina de resultados.
 # Si en la plantilla no hay separador parsea y muestra la pagina completa.
 sub parsea_plantilla2 {
-  my(@resultados) = @_;
-  my($scriptname) = $ENV{'SCRIPT_NAME'}; # 1.13
-  my($searchloop,$searchloop_tmp,$aux,$resultad);
-  # $fechap|$ts.$extension|$titular|meta1|meta2|meta3|$descripcion|$seccion|$tema|$subtema
-  my($numresult,$numrepet,$fechap,$file,$tit,$meta1,$meta2,$meta3,$res,$sec,$tem,$sub,$ts,$ext,$rel,$dir,$lnk,$fec,$msg,$msgsn,$pags,$num,$i,$key,$resultado); # 1.7
-  my @metadata = (); # 1.27.2
-  my ($prontus_id); # 1.27
-  my $search_resxpag = $FORM{'search_resxpag'};
-  my $search_pag = $FORM{'search_pag'};
-  my $min = ($search_pag - 1) * $search_resxpag + 1; # Numero del primer resultado mostrado.
-  my $max = $search_pag * $search_resxpag;
-  my $paginastotales = int( 1 + ($RESULTADOSTOTALES - 1) / $search_resxpag);
-  my $yeswords;
+    my(@resultados) = @_;
+    my($scriptname) = $ENV{'SCRIPT_NAME'}; # 1.13
+    my($searchloop,$searchloop_tmp,$aux,$resultad);
+    # $fechap|$ts.$extension|$titular|meta1|meta2|meta3|$descripcion|$seccion|$tema|$subtema
+    my($numresult,$numrepet,$fechap,$file,$tit,$meta1,$meta2,$meta3,$res,$sec,$tem,$sub,$ts,$ext,$rel,$dir,$lnk,$fec,$msg,$msgsn,$pags,$num,$i,$key,$resultado); # 1.7
+    my @metadata = (); # 1.27.2
+    my ($prontus_id); # 1.27
+    my $search_resxpag = $FORM{'search_resxpag'};
+    my $search_pag = $FORM{'search_pag'};
+    my $min = ($search_pag - 1) * $search_resxpag + 1; # Numero del primer resultado mostrado.
+    my $max = $search_pag * $search_resxpag;
+    my $paginastotales = int( 1 + ($RESULTADOSTOTALES - 1) / $search_resxpag);
+    my $yeswords;
 
-  if ( $paginastotales > $FORM{'search_maxpags'}) { $paginastotales = $FORM{'search_maxpags'}; };
-  if ($max > $RESULTADOSTOTALES) { $max = $RESULTADOSTOTALES; };
+    if ( $paginastotales > $FORM{'search_maxpags'}) { $paginastotales = $FORM{'search_maxpags'}; };
+    if ($max > $RESULTADOSTOTALES) { $max = $RESULTADOSTOTALES; };
 
-  my $moldelink = $scriptname . '?search_prontus=' . $FORM{'search_prontus'}
-            . '&amp;search_idx=' . $FORM{'search_idx'}
-            . '&amp;search_tmp=' . $FORM{'search_tmp'}
-            . '&amp;search_form=' . $FORM{'search_form'}
-            . '&amp;search_pag=%%pagina%%'
-            . '&amp;search_resxpag=' . $FORM{'search_resxpag'}
-            . '&amp;search_maxpags=' . $FORM{'search_maxpags'}
-            . '&amp;search_orden=' . $FORM{'search_orden'}
-            . '&amp;search_meta1=' . &lib_search::escapehtml($FORM{'search_meta1'})
-            . '&amp;search_meta2=' . &lib_search::escapehtml($FORM{'search_meta2'})
-            . '&amp;search_meta3=' . &lib_search::escapehtml($FORM{'search_meta3'})
-            . '&amp;search_seccion=' . &lib_search::escapehtml($FORM{'search_seccion'})
-            . '&amp;search_tema=' . &lib_search::escapehtml($FORM{'search_tema'})
-            . '&amp;search_subtema=' . &lib_search::escapehtml($FORM{'search_subtema'})
-            . '&amp;search_fechaini=' . &lib_search::escapehtml($FORM{'search_fechaini'})
-            . '&amp;search_fechafin=' . &lib_search::escapehtml($FORM{'search_fechafin'})
-            . '&amp;search_texto=' . &lib_search::escapehtml($FORM{'search_texto'})
-            . '&amp;search_modo=' . $FORM{'search_modo'}
-            . '&amp;search_comodines=' . $FORM{'search_comodines'}
-            . '&amp;vista=' . &lib_search::escapehtml($FORM{'vista'});
+    my $moldelink = $scriptname . '?search_prontus=' . $FORM{'search_prontus'}
+        . '&amp;search_idx=' . $FORM{'search_idx'}
+        . '&amp;search_tmp=' . $FORM{'search_tmp'}
+        . '&amp;search_form=' . $FORM{'search_form'}
+        . '&amp;search_pag=%%pagina%%'
+        . '&amp;search_resxpag=' . $FORM{'search_resxpag'}
+        . '&amp;search_maxpags=' . $FORM{'search_maxpags'}
+        . '&amp;search_orden=' . $FORM{'search_orden'}
+        . '&amp;search_meta1=' . &lib_search::escapehtml($FORM{'search_meta1'})
+        . '&amp;search_meta2=' . &lib_search::escapehtml($FORM{'search_meta2'})
+        . '&amp;search_meta3=' . &lib_search::escapehtml($FORM{'search_meta3'})
+        . '&amp;search_seccion=' . &lib_search::escapehtml($FORM{'search_seccion'})
+        . '&amp;search_tema=' . &lib_search::escapehtml($FORM{'search_tema'})
+        . '&amp;search_subtema=' . &lib_search::escapehtml($FORM{'search_subtema'})
+        . '&amp;search_fechaini=' . &lib_search::escapehtml($FORM{'search_fechaini'})
+        . '&amp;search_fechafin=' . &lib_search::escapehtml($FORM{'search_fechafin'})
+        . '&amp;search_texto=' . &lib_search::escapehtml($FORM{'search_texto'})
+        . '&amp;search_modo=' . $FORM{'search_modo'}
+        . '&amp;search_comodines=' . $FORM{'search_comodines'}
+        . '&amp;vista=' . &lib_search::escapehtml($FORM{'vista'});
 
-  if ($TURBOMODE == 1) {
-    $yeswords = $#YESWORDS + 1;
-  }else{
-    $yeswords = $MAXWORDS;
-  };
-
-  my ($ini, $fin, $nextlink, $prevlink);
-  my $pagcorta_maxpags = $CFG{'SEARCH_PAGCORTA_MAXPAGS'};
-  if($CFG{'SEARCH_TIPO_PAGINACION'} eq '1') {
-
-    # Se procesan las paginas hacia abajo
-    $ini = ($search_pag - $pagcorta_maxpags);
-    if($ini le 1) {
-      $ini = 1;
+    if ($TURBOMODE == 1) {
+        $yeswords = $#YESWORDS + 1;
     } else {
-      $ini = $ini + 1;
-      my $link = $moldelink;
-      $link =~ s/%%pagina%%/1/;
-      $prevlink =  '<a href="' . $link . '">1</a>  ... ';
-    };
+        $yeswords = $MAXWORDS;
+    }
 
-    # Se procesan las páginas hacia arriba
-    $fin = ($search_pag + $pagcorta_maxpags);
-    if($fin >= $paginastotales) {
-      $fin = $paginastotales;
+    my ($ini, $fin, $nextlink, $prevlink);
+    my $pagcorta_maxpags = $CFG{'SEARCH_PAGCORTA_MAXPAGS'};
+    if($CFG{'SEARCH_TIPO_PAGINACION'} eq '1') {
+
+        # Se procesan las paginas hacia abajo
+        $ini = ($search_pag - $pagcorta_maxpags);
+        if($ini le 1) {
+            $ini = 1;
+        } else {
+            $ini = $ini + 1;
+            my $link = $moldelink;
+            $link =~ s/%%pagina%%/1/;
+            $prevlink =  '<a href="' . $link . '">1</a>  ... ';
+        }
+
+        # Se procesan las páginas hacia arriba
+        $fin = ($search_pag + $pagcorta_maxpags);
+        if($fin >= $paginastotales) {
+            $fin = $paginastotales;
+        } else {
+            $fin = $fin - 1;
+            my $link = $moldelink;
+            $link =~ s/%%pagina%%/$paginastotales/;
+            $nextlink =  ' ... <a href="' . $link . '">' . $paginastotales . '</a>';
+        }
+
     } else {
-      $fin = $fin - 1;
-      my $link = $moldelink;
-      $link =~ s/%%pagina%%/$paginastotales/;
-      $nextlink =  ' ... <a href="' . $link . '">' . $paginastotales . '</a>';
-    };
+        $ini = 1;
+        $fin = $paginastotales;
+    }
 
-  } else {
-    $ini = 1;
-    $fin = $paginastotales;
-  }
+    for(my $i = $ini; $i <= $fin; $i++) {
+        if ($i != $search_pag) {
+        # 1.13 $pags .= '| <a href="/cgi-bin/prontus_search.cgi?search_prontus=' . $FORM{'search_prontus'}
+            my $link = $moldelink;
+            $link =~ s/%%pagina%%/$i/;
+            $pags .=  '<a href="' . $link . '">' . $i . '</a> '; # 1.7 1.26
 
-  for(my $i = $ini; $i <= $fin; $i++) {
-    if ($i != $search_pag) {
-      # 1.13 $pags .= '| <a href="/cgi-bin/prontus_search.cgi?search_prontus=' . $FORM{'search_prontus'}
-      my $link = $moldelink;
-      $link =~ s/%%pagina%%/$i/;
-      $pags .=  '<a href="' . $link . '">' . $i . '</a> '; # 1.7 1.26
+        } else {
+            $pags .= "<span class='pag_actual'>$i</span> ";
+        }
+    }
+    $pags = $prevlink . $pags . $nextlink;
 
-    }else{
-      $pags .= "<span class='pag_actual'>$i</span> ";
-    };
-  };
-  $pags = $prevlink . $pags . $nextlink;
+    my $plantilla = $PLANTILLA;
+    # Se parsean algunas marcas
+    $plantilla = &parsea_marcas_prontus($plantilla);
 
-  my $plantilla = $PLANTILLA;
+    if ($plantilla =~ /<!--separador-->/si) {
+        $plantilla = $'; # '
+    }
+    # Elimina el formulario si es que el mode era 0.
+    if ($FORM{'search_form'} eq 'no') {
+        $plantilla =~ s/<!--formulario-->(.+?)<!--\/formulario-->//sig;
+    }
+    if ($plantilla =~ /<!--resloop-->(.+?)<!--\/resloop-->/si) {
+        $searchloop_tmp = $1;
+    }
+    # print "searchloop_tmp = [$searchloop_tmp]"; # debug
+    $num = $min;
+    # Ajusta valores para no pasar el 100%).
+    $yeswords++;
+    $MAXPALABRAS++;
+    foreach $resultado (@resultados) {
+        $aux = $searchloop_tmp;
+        ($numresult,$numrepet,$fechap,$file,$tit,$meta1,$meta2,$meta3,$res,$sec,$tem,$sub,@metadata) = split(/\|/,$resultado); # 1.7
+        my ($ts, $fechac) = ('', '');
+        # 1.12 Rescata la extension.
+        if ($file =~ /\.([^\.]+)$/) {
+            $ext = lc $1;
+        }
+        $rel = int(100 * ($numresult/$yeswords + $numrepet/($yeswords * $MAXPALABRAS))); # Calcula el ranking de este resultado
+        $fec = $fechap;
+        $lnk = $file;
+        if ($lnk =~ /\/([\w\-]+)\/site\/artic\/(\d{8})\/pags\/(\d{14})\.\w+$/) {
+            $prontus_id = $1;
+            $fechac = $2;
+            $ts =  $3;
 
-  # Se parsean algunas marcas
-  $plantilla = &parsea_marcas_prontus($plantilla);
+            if ($CFG{'USEFRIENDLYURLS'} == 1) {
+                $aux = &lib_prontus::parse_filef($aux, $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
+                $lnk = &lib_prontus::parse_filef('%%_FILEURL%%', $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
+            }
+        }
+        # Elimina contenido condicional.
+        if ($fec eq '') {
+            $aux =~ s/%%if\(fec\)%%.+?%%\/if%%//isg;
+        }
+        if ($sec eq '') {
+            $aux =~ s/%%if\(sec\)%%.+?%%\/if%%//isg;
+        }
+        if ($tem eq '') {
+            $aux =~ s/%%if\(tem\)%%.+?%%\/if%%//isg;
+        }
+        if ($sub eq '') {
+            $aux =~ s/%%if\(sub\)%%.+?%%\/if%%//isg;
+        }
+        # 1.19 Agrega procesamiento de ifs para los campos meta.
+        if ($meta1 eq '') {
+            $aux =~ s/%%if\(meta1\)%%.+?%%\/if%%//isg;
+        }
+        if ($meta2 eq '') {
+            $aux =~ s/%%if\(meta2\)%%.+?%%\/if%%//isg;
+        }
+        if ($meta3 eq '') {
+            $aux =~ s/%%if\(meta3\)%%.+?%%\/if%%//isg;
+        }
+        for ($i=1;$i<=20;$i++) { # 1.27.2
+            if ($metadata[$i-1] eq '') {
+                $aux =~ s/%%if\(metadata$i\)%%.+?%%\/if%%//isg;
+            }
+        }
+        # procesamiento de nifs
+        if ($fec ne '') {
+            $aux =~ s/%%nif\(fec\)%%.+?%%\/nif%%//isg;
+        }
+        if ($sec ne '') {
+            $aux =~ s/%%nif\(sec\)%%.+?%%\/nif%%//isg;
+        }
+        if ($tem ne '') {
+            $aux =~ s/%%nif\(tem\)%%.+?%%\/nif%%//isg;
+        }
+        if ($sub ne '') {
+            $aux =~ s/%%nif\(sub\)%%.+?%%\/nif%%//isg;
+        }
+        # 1.19 Agrega procesamiento de nifs para los campos meta.
+        if ($meta1 ne '') {
+            $aux =~ s/%%nif\(meta1\)%%.+?%%\/nif%%//isg;
+        }
+        if ($meta2 ne '') {
+            $aux =~ s/%%nif\(meta2\)%%.+?%%\/nif%%//isg;
+        }
+        if ($meta3 ne '') {
+            $aux =~ s/%%nif\(meta3\)%%.+?%%\/nif%%//isg;
+        }
+        for ($i=1;$i<=20;$i++) {
+            if ($metadata[$i-1] ne '') {
+                $aux =~ s/%%nif\(metadata$i\)%%.+?%%\/nif%%//isg;
+            }
+        }
+        $aux =~ s/%%ext%%/$ext/isg; # 1.12
+        $aux =~ s/%%num%%/$num/isg;
+        $aux =~ s/%%rel%%/$rel/isg;
+        $aux =~ s/%%lnk%%/$lnk/isg;
+        $aux =~ s/%%tit%%/$tit/isg;
+        $fec = &lib_search::iso2fechacorta($fec);
+        $aux =~ s/%%fec%%/$fec/isg;
+        $aux =~ s/%%res%%/$res/isg;
+        $aux =~ s/%%meta1%%/$meta1/isg; # 1.7
+        $aux =~ s/%%meta2%%/$meta2/isg; # 1.7
+        $aux =~ s/%%meta3%%/$meta3/isg; # 1.7
+        $aux =~ s/%%sec%%/$sec/isg;
+        $aux =~ s/%%tem%%/$tem/isg;
+        $aux =~ s/%%sub%%/$sub/isg;
+        $aux =~ s/%%fechac%%/$fechac/ig;
+        $aux =~ s/%%ts%%/$ts/ig;
 
-  if ($plantilla =~ /<!--separador-->/si) {
-    $plantilla = $'; # '
-  };
-  # Elimina el formulario si es que el mode era 0.
-  if ($FORM{'search_form'} eq 'no') {
-    $plantilla =~ s/<!--formulario-->(.+?)<!--\/formulario-->//sig;
-  };
-  if ($plantilla =~ /<!--resloop-->(.+?)<!--\/resloop-->/si) {
-    $searchloop_tmp = $1;
-  };
-  # print "searchloop_tmp = [$searchloop_tmp]"; # debug
-  $num = $min;
-  # Ajusta valores para no pasar el 100%).
-  $yeswords++;
-  $MAXPALABRAS++;
-  foreach $resultado (@resultados) {
-    $aux = $searchloop_tmp;
-    ($numresult,$numrepet,$fechap,$file,$tit,$meta1,$meta2,$meta3,$res,$sec,$tem,$sub,@metadata) = split(/\|/,$resultado); # 1.7
-    # 1.12 Rescata la extension.
-    if ($file =~ /\.([^\.]+)$/) {
-      $ext = lc $1;
-    };
-    $rel = int(100 * ($numresult/$yeswords + $numrepet/($yeswords * $MAXPALABRAS))); # Calcula el ranking de este resultado
-    $fec = $fechap;
-    $lnk = $file;
-    if ($lnk =~ /\/([\w\-]+)\/site\/artic\/\d{8}\/pags\/(\d{14})\.\w+$/) { # 1.27 1.27.2
-      $prontus_id = $1;
-      $ts =  $2;
-      if ($CFG{'USEFRIENDLYURLS'} == 1) {
-        $aux = &lib_prontus::parse_filef($aux, $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
-        $lnk = &lib_prontus::parse_filef('%%_FILEURL%%', $tit, $ts, $prontus_id, $file, $sec, $tem, $sub);
-      };
-    };
-    # Elimina contenido condicional.
-    if ($fec eq '') {
-      $aux =~ s/%%if\(fec\)%%.+?%%\/if%%//isg;
-    };
-    if ($sec eq '') {
-      $aux =~ s/%%if\(sec\)%%.+?%%\/if%%//isg;
-    };
-    if ($tem eq '') {
-      $aux =~ s/%%if\(tem\)%%.+?%%\/if%%//isg;
-    };
-    if ($sub eq '') {
-      $aux =~ s/%%if\(sub\)%%.+?%%\/if%%//isg;
-    };
-    # 1.19 Agrega procesamiento de ifs para los campos meta.
-    if ($meta1 eq '') {
-      $aux =~ s/%%if\(meta1\)%%.+?%%\/if%%//isg;
-    };
-    if ($meta2 eq '') {
-      $aux =~ s/%%if\(meta2\)%%.+?%%\/if%%//isg;
-    };
-    if ($meta3 eq '') {
-      $aux =~ s/%%if\(meta3\)%%.+?%%\/if%%//isg;
-    };
-    for ($i=1;$i<=20;$i++) { # 1.27.2
-      if ($metadata[$i-1] eq '') {
-        $aux =~ s/%%if\(metadata$i\)%%.+?%%\/if%%//isg;
-      };
-    };
-    # procesaminto de nifs
-    if ($fec ne '') {
-      $aux =~ s/%%nif\(fec\)%%.+?%%\/nif%%//isg;
-    };
-    if ($sec ne '') {
-      $aux =~ s/%%nif\(sec\)%%.+?%%\/nif%%//isg;
-    };
-    if ($tem ne '') {
-      $aux =~ s/%%nif\(tem\)%%.+?%%\/nif%%//isg;
-    };
-    if ($sub ne '') {
-      $aux =~ s/%%nif\(sub\)%%.+?%%\/nif%%//isg;
-    };
-    # 1.19 Agrega procesamiento de nifs para los campos meta.
-    if ($meta1 ne '') {
-      $aux =~ s/%%nif\(meta1\)%%.+?%%\/nif%%//isg;
-    };
-    if ($meta2 ne '') {
-      $aux =~ s/%%nif\(meta2\)%%.+?%%\/nif%%//isg;
-    };
-    if ($meta3 ne '') {
-      $aux =~ s/%%nif\(meta3\)%%.+?%%\/nif%%//isg;
-    };
-    for ($i=1;$i<=20;$i++) {
-      if ($metadata[$i-1] ne '') {
-        $aux =~ s/%%nif\(metadata$i\)%%.+?%%\/nif%%//isg;
-      };
-    };
-    $aux =~ s/%%ext%%/$ext/isg; # 1.12
-    $aux =~ s/%%num%%/$num/isg;
-    $aux =~ s/%%rel%%/$rel/isg;
-    $aux =~ s/%%lnk%%/$lnk/isg;
-    $aux =~ s/%%tit%%/$tit/isg;
-    $fec = &lib_search::iso2fechacorta($fec);
-    $aux =~ s/%%fec%%/$fec/isg;
-    $aux =~ s/%%res%%/$res/isg;
-    $aux =~ s/%%meta1%%/$meta1/isg; # 1.7
-    $aux =~ s/%%meta2%%/$meta2/isg; # 1.7
-    $aux =~ s/%%meta3%%/$meta3/isg; # 1.7
-    $aux =~ s/%%sec%%/$sec/isg;
-    $aux =~ s/%%tem%%/$tem/isg;
-    $aux =~ s/%%sub%%/$sub/isg;
-    for ($i=1;$i<=20;$i++) { # 1.27.2
-      $aux =~ s/%%metadata$i%%/$metadata[$i-1]/isg;
-    };
-    $num++;
-    $searchloop .= $aux;
-  };
-  # En forma automatica, crea y parsea variables checked y las variables del formulario.
-  foreach $key (keys %FORM) {
-    $aux = $FORM{$key};
-    if ($aux =~ /^[\w]+$/) { # 1.8
-      $plantilla =~ s/%%chk_$key\_$aux%%/checked=\"checked\"/isg; # 1.25
-      $plantilla =~ s/%%sel_$key\_$aux%%/selected=\"selected\"/isg; # 1.25
-    };
-    $aux =~ s/(['"\<\>])//g;
-    $plantilla =~ s/%%$key%%/$aux/isg;
-  };
-  if ($FORM{'search_orden'} eq 'cro') { # 1.3
-    $msg = $MSGS{'order_cron'}; # 1.18 'cronol&oacute;gico.';
-  }else{
-    $msg = $MSGS{'order_rel'}; # 1.18 'de importancia.';
-  };
-  if ($RESULTADOSTOTALES > 0) {
-    $msgsn = $MSGS{'results'} . ' ' . $msg; # 1.18 "Resultados en orden $msg";
-    $msg = $MSGS{'results'} ." $min ". $MSGS{'to'} ." $max " . $MSGS{'of'} . ' '
-         . &lib_search::formatInteger($RESULTADOSTOTALES) . ' ' . $msg; # 1.25
-  }else{
-    if ($FORM{'search_texto'} ne '') {
-      $msg = $MSGS{'no_results'}; # 'No se encontraron resultados.';
-    }else{
-      $msg = '';
-    };
-    $msgsn = $msg;
-    $plantilla =~ s/<!--pags-->(.+?)<!--\/pags-->//is;
-  };
-  # 21/10/2013 - CVI - Se agrega marca %%search_total%%
-  $plantilla =~ s/%%search_total%%/$RESULTADOSTOTALES/is;
+        for ($i=1;$i<=20;$i++) { # 1.27.2
+            $aux =~ s/%%metadata$i%%/$metadata[$i-1]/isg;
+        }
+        $num++;
+        $searchloop .= $aux;
+    }
+    # En forma automatica, crea y parsea variables checked y las variables del formulario.
+    foreach $key (keys %FORM) {
+        $aux = $FORM{$key};
+        if ($aux =~ /^[\w]+$/) { # 1.8
+            $plantilla =~ s/%%chk_$key\_$aux%%/checked=\"checked\"/isg; # 1.25
+            $plantilla =~ s/%%sel_$key\_$aux%%/selected=\"selected\"/isg; # 1.25
+        }
+        $aux =~ s/(['"\<\>])//g;
+        $plantilla =~ s/%%$key%%/$aux/isg;
+    }
+    if ($FORM{'search_orden'} eq 'cro') { # 1.3
+        $msg = $MSGS{'order_cron'}; # 1.18 'cronol&oacute;gico.';
+    } else {
+        $msg = $MSGS{'order_rel'}; # 1.18 'de importancia.';
+    }
+    if ($RESULTADOSTOTALES > 0) {
+        $msgsn = $MSGS{'results'} . ' ' . $msg; # 1.18 "Resultados en orden $msg";
+        $msg = $MSGS{'results'} ." $min ". $MSGS{'to'} ." $max " . $MSGS{'of'} . ' '
+            . &lib_search::formatInteger($RESULTADOSTOTALES) . ' ' . $msg; # 1.25
+    } else {
+        if ($FORM{'search_texto'} ne '') {
+            $msg = $MSGS{'no_results'}; # 'No se encontraron resultados.';
+        } else {
+            $msg = '';
+        }
+        $msgsn = $msg;
+        $plantilla =~ s/<!--pags-->(.+?)<!--\/pags-->//is;
+    }
+    # 21/10/2013 - CVI - Se agrega marca %%search_total%%
+    $plantilla =~ s/%%search_total%%/$RESULTADOSTOTALES/is;
 
-  if ($paginastotales < 2) { $plantilla =~ s/<!--pags-->(.+?)<!--\/pags-->//is; };
-  if ($MSG ne '') { $msg = $MSG; };
-  $plantilla =~ s/%%msg%%/$msg/is;
-  $plantilla =~ s/%%msgsn%%/$msgsn/is; # 1.7
-  $plantilla =~ s/%%pags%%/$pags/is;
-  $plantilla =~ s/<!--resloop-->(.+?)<!--\/resloop-->/$searchloop/is;
-  # 1.21 Parsea nombre de la CGI.
-  $plantilla =~ s/%%scriptname%%/$scriptname/sg; # 1.21
-  # Elimina tags sin parsear.
-  $plantilla =~ s/%%[^%]+%%//sg;
-  return $plantilla;
-  # print "debug: fin plantilla<br>\n";
-}; # parsea_plantilla2
+    if ($paginastotales < 2) { $plantilla =~ s/<!--pags-->(.+?)<!--\/pags-->//is; };
+    if ($MSG ne '') { $msg = $MSG; };
+    $plantilla =~ s/%%msg%%/$msg/is;
+    $plantilla =~ s/%%msgsn%%/$msgsn/is; # 1.7
+    $plantilla =~ s/%%pags%%/$pags/is;
+    $plantilla =~ s/<!--resloop-->(.+?)<!--\/resloop-->/$searchloop/is;
+    # 1.21 Parsea nombre de la CGI.
+    $plantilla =~ s/%%scriptname%%/$scriptname/sg; # 1.21
+    # Elimina tags sin parsear.
+    $plantilla =~ s/%%[^%]+%%//sg;
+    return $plantilla;
+    # print "debug: fin plantilla<br>\n";
+} # parsea_plantilla2
 
 # -------------------------------------------------------------------------#
 sub parsea_marcas_prontus {
