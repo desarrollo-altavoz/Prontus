@@ -20,12 +20,12 @@
 # ---------------------------------------------------------------
 # PROPOSITO.
 # -----------
-# Ejecuta la transcodificación para todos los videos de un prontus
-# de la misma forma que se hace desde un FID
+# Ajustas los slugs de los articulos para que no existan colisiones
+# despues de activar friendly 4
 # ---------------------------------------------------------------
 # LLAMADAS A SCRIPTS.
 # ------------------------
-# Usa las cgis de transcodificacion de prontus
+# no tiene
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
