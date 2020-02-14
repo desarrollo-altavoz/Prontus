@@ -10612,3 +10612,8 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/prontus_art_ficha.cgi
 
+- Publicacion por email
+    [mejora]
+        - Nuebo script para publicar por email
+    [files]
+        /cgi-cpn/prontus_cron_art_fromemail.cgi
