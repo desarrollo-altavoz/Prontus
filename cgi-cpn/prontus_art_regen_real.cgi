@@ -73,8 +73,10 @@ my ($FECHAINI_MENORQUE) = 0;
 # $ARGV[2] -> Fids separados por coma. Ejemplo: fid_general,fid_link
 #    En caso se quererlos todos, se puede usar: @all
 # $ARGV[3] -> Multivistas separadas por coma. Ejemplo: movil,en
-#    Para la vista principal se usa: @default
-#    En caso se quererlos todos, se puede usar: @all o bien dejar vacio
+#    Para la vista principal se usa: @normal
+#    En caso se quererlos todos, se puede usar: @all
+# $ARGV[4] -> taxonomía a regenerar, e.g. 1_2_3. 
+#    Para regenerar todos, usar 0_0_0 o dejar vacío.
 # ------------------------------------------------------------------------------
 
 
