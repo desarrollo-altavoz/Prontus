@@ -297,7 +297,7 @@
                     var editar = 'on';
 
                     // Si es SVG no se puede cuadrar ni editar.
-                    if (currImgSrc.substring(currImgSrc.length - 3) == 'svg') {
+                    if (currImgSrc.substring(currImgSrc.length - 3) == 'svg' || currImgSrc.substring(currImgSrc.length - 4) == 'webp') {
                         cuadrar = 'off';
                         editar = 'off';
                     }
@@ -387,7 +387,7 @@
                 var cuadrar = 'on';
                 var editar = 'on';
 
-                if (imgSrc.substring(imgSrc.length - 3) == 'svg') {
+                if (currImgSrc.substring(currImgSrc.length - 3) == 'svg' || currImgSrc.substring(currImgSrc.length - 4) == 'webp') {
                     cuadrar = 'off';
                     editar = 'off';
                 }
