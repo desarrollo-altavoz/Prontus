@@ -86,7 +86,16 @@ use Session;
 use Digest::MD5 qw(md5_hex);
 use POSIX qw(strftime ceil);
 use prontus_auth;
-use Image::ExifTool;
+
+our $EXIFTOOL_AVAILABLE = 0;
+
+eval "use Image::ExifTool;";
+
+if ($@) {
+    $EXIFTOOL_AVAILABLE = 0;
+} else {
+    $EXIFTOOL_AVAILABLE = 1;
+}
 
 our $CRLF = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # usar asi: $buffer =~ s/$CRLF/<p>/sg;
 our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
@@ -4699,6 +4708,11 @@ sub dev_tam_img {
 # ---------------------------------------------------------------
 sub ancho_alto_webp {
     my $file = $_[0];
+
+    if ($EXIFTOOL_AVAILABLE == 0) {
+        return ("Módulo Image::ExifTool no disponible.", 0, 0);
+    }
+
     my $img_info = Image::ExifTool::ImageInfo($file);
     my ($width, $height, $msg);
 
