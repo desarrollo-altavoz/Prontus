@@ -16,16 +16,12 @@
 
 print "Content-Type: text/html\n\n";
 
-
 print '<br> <b>$0</b> = ' . $0 . " <br><hr>\n";
 use FindBin '$Bin';
 print "<br> <b>The script is located in $Bin<br><hr>\n";
 
-  foreach $key (keys(%ENV)) {
-             print "<br> <b>$key</b> = $ENV{$key} <br><hr>\n";
-         };
-
+foreach my $key (keys(%ENV)) {
+    print "<br> <b>$key</b> = $ENV{$key} <br><hr>\n";
+}
 print "<br> <b>TIME</b> = ".time." <br><hr>\n";
 print "<br> <b>LOCALTIME</b> = ".localtime." <br><hr>\n";
-
-
