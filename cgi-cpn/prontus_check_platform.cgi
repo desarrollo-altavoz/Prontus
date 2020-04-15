@@ -39,7 +39,8 @@ my $MODULES = [
     {name => 'URI::Escape', version => '3.20'},
     {name => 'PHP::Session', version => '0.26'},
     {name => 'Digest::SHA', version => '5.60'},
-    {name => 'Crypt::Eksblowfish::Bcrypt', version => '0.009'}
+    {name => 'Crypt::Eksblowfish::Bcrypt', version => '0.009'},
+    {name => 'Image::ExifTool', version => '9'},
 ];
 
 # ---------------------------------------

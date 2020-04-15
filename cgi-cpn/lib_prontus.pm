@@ -87,6 +87,16 @@ use Digest::MD5 qw(md5_hex);
 use POSIX qw(strftime ceil);
 use prontus_auth;
 
+our $EXIFTOOL_AVAILABLE = 0;
+
+eval "use Image::ExifTool;";
+
+if ($@) {
+    $EXIFTOOL_AVAILABLE = 0;
+} else {
+    $EXIFTOOL_AVAILABLE = 1;
+}
+
 our $CRLF = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # usar asi: $buffer =~ s/$CRLF/<p>/sg;
 our $IF_OPERATORS = qr/>=|<=|!=|==|=|>|<| le | ge | ne | eq | gt | lt |~/;
 
@@ -4683,8 +4693,10 @@ sub dev_tam_img {
         ($msg, $ancho, $alto) = &ancho_alto_png($file);
     } elsif ($file =~ /.*\.(svg)$/) {
         ($msg, $ancho, $alto) = &ancho_alto_svg($file);
+    } elsif ($file =~ /.*\.(webp)$/i) {
+        ($msg, $ancho, $alto) = &ancho_alto_webp($file);
     } else {
-      return ('Archivo no tiene extensión JPG/JPE/JPEG/PNG/GIF/BMP', 0, 0);
+      return ('Archivo no tiene extensión JPG/JPE/JPEG/PNG/GIF/BMP/WEBP', 0, 0);
     };
 
     return ($msg, $ancho, $alto);
@@ -4692,6 +4704,28 @@ sub dev_tam_img {
 
   return ('Archivo no existe', 0, 0);
 }; # dev_tam_img.
+
+# ---------------------------------------------------------------
+sub ancho_alto_webp {
+    my $file = $_[0];
+
+    if ($EXIFTOOL_AVAILABLE == 0) {
+        return ("Módulo Image::ExifTool no disponible.", 0, 0);
+    }
+
+    my $img_info = Image::ExifTool::ImageInfo($file);
+    my ($width, $height, $msg);
+
+    if ($img_info) {
+        $width = $img_info->{'ImageWidth'};
+        $height = $img_info->{'ImageHeight'};
+    } else {
+        $msg = "Error leyendo información de la imagen.";
+    }
+
+    return ($msg, $width, $height);
+}
+
 # ---------------------------------------------------------------
 sub ancho_alto_svg {
     my ($file) = $_[0];
