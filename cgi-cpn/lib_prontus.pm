@@ -1062,7 +1062,7 @@ sub load_config {
   if ($errcfg) {
     print STDERR "No se pudo localizar el Archivo de Configuración PRONTUS $errcfg\n";
     print "Content-Type: text/html\n\n";
-    print "<P>No se pudo localizar el Archivo de Configuraci&oacute;n PRONTUS $errcfg";
+    print "<P>No se pudo localizar el Archivo de Configuraci&oacute;n PRONTUS";
     exit;
   };
 

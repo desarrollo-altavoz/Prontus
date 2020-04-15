@@ -168,10 +168,9 @@ main: {
     $ANSWERS_DIR = "/$FORM{'_NP'}/$CACHE_DIR";
 
     #~ print STDERR "ANSWERS_DIR[$ANSWERS_DIR]\n";
-    if (! (-d "$prontus_varglb::DIR_SERVER$ANSWERS_DIR") ) {
-        if (&glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$ANSWERS_DIR") == 0) {
-            &msg_error("No se puede crear directorio de respuestas [$ANSWERS_DIR].");
-        }
+    if (&glib_fildir_02::check_dir("$prontus_varglb::DIR_SERVER$ANSWERS_DIR") == 0) {
+        print STDERR "No se puede crear directorio de respuestas [$ANSWERS_DIR].\n";
+        &msg_error("No se puede crear directorio de respuestas.");
     }
 
     # Limpia el directorio de archivos temporales.
@@ -336,7 +335,7 @@ sub validar_content_length {
     }
 
     if ($ENV{'CONTENT_LENGTH'} > (1048576 * $posting_limit_mb)) {
-        &make_resp_and_exit("Datos enviados exceden límite permitido de $posting_limit_mb MB", 1);
+        &make_resp_and_exit("Datos enviados exceden límite permitido de $posting_limit_mb MiB", 1);
     }
 }
 
@@ -455,8 +454,7 @@ sub param {
         }
     } else {
         my @campos = &glib_cgi_04::param();
-        my $k;
-        foreach $k (keys %CONFIG_POSTING) {
+        foreach my $k (keys %CONFIG_POSTING) {
             push @campos, $k if (!exists $glib_cgi_04::FORM{$k});
         }
         return @campos;
@@ -482,7 +480,6 @@ sub load_default_posting_params {
   $CONFIG_POSTING{'_seccion1'} = '' if (!&param('_seccion1'));
   $CONFIG_POSTING{'_tema1'} = '' if (!&param('_tema1'));
   $CONFIG_POSTING{'_subtema1'} = '' if (!&param('_subtema1'));
-
 
   $CONFIG_POSTING{'_regen_list'} = 'N' if (!&param('_regen_list'));
   $CONFIG_POSTING{'_regen_taxport'} = 'N' if (!&param('_regen_taxport'));
@@ -616,7 +613,7 @@ sub write_log_and_mail {
         $hora = &glib_hrfec_02::get_date_time('', '', '', '', 1, '', time);
 
         if ($error) {
-            $error =~ s/[\n\r]+//;
+            $error =~ s/[\n\r]+/ /;
         }
 
         $linea = "$fecha;$hora;$USER_IP;$ts;$alta;".$lib_artic::ARTIC_OBJ->{xml_content}->{_txt_titular} .";$error\n";

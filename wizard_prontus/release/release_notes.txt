@@ -10604,7 +10604,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
 
 
 ====================================================================================================
-11.2.109 - XX/XX/2020 - EAG
+11.2.109 - XX/XX/2020 - EAG/JOR
 ====================================================================================================
 - FID
     [mejora]
@@ -10617,3 +10617,11 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Nuebo script para publicar por email
     [files]
         /cgi-cpn/prontus_cron_art_fromemail.cgi
+
+- Prontus en general
+    [bugfixes]
+        - Cambia mensajes de error para evitar XSS
+    [files]
+        /cgi-bin/multitag/prontus_multitag_list.cgi
+        /cgi-bin/prontus_art_posting.cgi
+        /cgi-cpn/lib_prontus.pm
