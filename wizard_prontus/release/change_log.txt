@@ -1,4 +1,12 @@
 ====================================================================================================
+11.2.109 - 15/04/2020 - EAG/JOR
+====================================================================================================
+- improvement: (fid) Servidor asigna fecha/hora de publicacion en articulos nuevos para evitar problemas de desincronización de hora
+- improvement: (general) Nuevo script para publicar por email
+- improvement: (general) Soporte para imágenes WebP, se necesita el modulo Image::ExifTool, en debian instalar el paquete libimage-exiftool-perl
+- bugfixes: (general) Cambia mensajes de error para evitar XSS
+
+====================================================================================================
 11.2.108 - 09/01/2020 - EAG
 ====================================================================================================
 - improvement: (buscador) Agrega parseo de %%fechac%% y %%ts%%

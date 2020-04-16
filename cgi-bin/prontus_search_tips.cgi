@@ -8,7 +8,6 @@
 # licensed under LGPL license.
 # http://www.prontus.cl/license.html
 # --------------------------------------------------------------
-
 BEGIN {
     use FindBin '$Bin';
     $pathLibs = $Bin;
@@ -17,7 +16,7 @@ BEGIN {
 
     $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
-};
+}
 
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -35,23 +34,23 @@ use glib_fildir_02;
 my (%FORM, %TIPS, %CFG);
 
 main: {
-	&glib_cgi_04::new();
+    &glib_cgi_04::new();
 
-	print "Content-Type: application/json\n\n";
+    print "Content-Type: application/json\n\n";
 
     # Soporta un maximo de n copias corriendo.
     if (&lib_maxrunning::maxExcedido(5)) {
         print "[]";
         exit;
-    };
+    }
 
-  	$FORM{"search_prontus"} = &glib_cgi_04::param("search_prontus");
-  	$FORM{"search_texto"} = lc &glib_cgi_04::param("search_texto");
+    $FORM{"search_prontus"} = &glib_cgi_04::param("search_prontus");
+    $FORM{"search_texto"} = lc &glib_cgi_04::param("search_texto");
 
-  	$FORM{"search_texto"} = &lib_search::notildesUtf8($FORM{"search_texto"});
-  	$FORM{"search_texto"} = lc $FORM{"search_texto"};
-    $FORM{"search_texto"} =~ s/[^0-9a-z ]//g;
-  	$FORM{"search_texto"} =~ s/ +/ /g; # quitar doble espacios.
+    $FORM{"search_texto"} = &lib_search::notildesUtf8($FORM{"search_texto"});
+    $FORM{"search_texto"} = lc $FORM{"search_texto"};
+    $FORM{"search_texto"} =~ s/[^0-9a-z ]//g; # elimina todos los caracteres no palabra
+    $FORM{"search_texto"} =~ s/ +/ /g; # quitar doble espacios.
 
     if(! &lib_prontus::valida_prontus($FORM{"search_prontus"})) {
       print STDERR "Directorio Prontus no válido [".$FORM{"search_prontus"}."]\n";
@@ -76,9 +75,9 @@ main: {
     if ($bloquear_ip) {
         print "[]";
         exit;
-    };
+    }
 
-  	my $dir_search_tips_cache = "$path_to_prontus/cpan/data/cache/search_tips";
+    my $dir_search_tips_cache = "$path_to_prontus/cpan/data/cache/search_tips";
     my $dir_search = "$path_to_prontus/cpan/data/search/$FORM{'search_prontus'}";
     my @words_idx_files = glob("$dir_search/*/words.idx");
 
@@ -93,50 +92,48 @@ main: {
 
     # Elimina archivos antiguos.
     &garbage_collector($dir_search_tips_cache);
-
     # print "search_texto_first[$search_texto_first] search_texto_last[$search_texto_last]\n";
     # print "search_texto[$search_texto]\n";
 
-	if ((length $search_texto) < $CFG{'SEARCHTIPS_MINLEN'}) {
-		print "[\"$FORM{'search_texto'}\"]";
-		exit;
-	};
+    if ((length $search_texto) < $CFG{'SEARCHTIPS_MINLEN'}) {
+        print "[\"$FORM{'search_texto'}\"]";
+        exit;
+    }
 
-	my $cache = &buscar_cache($dir_search_tips_cache, $search_texto);
-	if ($cache) {
+    my $cache = &buscar_cache($dir_search_tips_cache, $search_texto);
+    if ($cache) {
         $cache =~ s/([\[|,]")/\1$search_result_prefix /ig if ($search_result_prefix);
 
-		print $cache;        
-		exit;
-	};
+        print $cache;
+        exit;
+    }
 
-	foreach my $words_idx_file (@words_idx_files) {
-		&search($words_idx_file, $search_texto);
-	};
+    foreach my $words_idx_file (@words_idx_files) {
+        &search($words_idx_file, $search_texto);
+    }
 
     my $num_tips = keys %TIPS;
 
-	if ($num_tips) {
-		my $to_cache = "[\"$search_texto\",";
-		foreach my $tip (sort keys(%TIPS)) {
+    if ($num_tips) {
+        my $to_cache = "[\"$search_texto\",";
+        foreach my $tip (sort keys(%TIPS)) {
             next if ($tip eq $search_texto);
-			$to_cache .= "\"$tip\",";
-		};
+            $to_cache .= "\"$tip\",";
+        }
 
-		$to_cache = substr($to_cache, 0, (length $to_cache) - 1);
-		$to_cache .= "]";
+        $to_cache = substr($to_cache, 0, (length $to_cache) - 1);
+        $to_cache .= "]";
 
-		&guardar_cache($search_texto, $to_cache, $dir_search_tips_cache) if($num_tips > 1);
+        &guardar_cache($search_texto, $to_cache, $dir_search_tips_cache) if($num_tips > 1);
         $to_cache =~ s/([\[|,]")/\1$search_result_prefix /ig if ($search_result_prefix);
 
-		print $to_cache;
-		exit;
-	};
+        print $to_cache;
+        exit;
+    }
 
-	print "[\"$FORM{'search_texto'}\"]";
-	exit;
-};
-
+    print "[\"$FORM{'search_texto'}\"]";
+    exit;
+}
 
 
 sub search {
@@ -145,52 +142,51 @@ sub search {
   open ARCHIVO, "<$archivo";
 
   while (<ARCHIVO>) {
-  	my $linea = $_;
-  	chomp($linea);
-  	my ($word, $idx) = split(/=/, $linea);
+    my $linea = $_;
+    chomp($linea);
+    my ($word, $idx) = split(/=/, $linea);
 
-  	next if (length $word < $key_len);
+    next if (length $word < $key_len);
 
-  	if ($word =~ /^$key/) {
-  		$TIPS{$word} = $idx if (!$TIPS{$word});
-  	};
+    if ($word =~ /^$key/) {
+        $TIPS{$word} = $idx if (!$TIPS{$word});
+    }
 
-  	return if ((keys %TIPS) >= $CFG{'SEARCHTIPS_MAXRESULT'});
-  };
-
-};
+    return if ((keys %TIPS) >= $CFG{'SEARCHTIPS_MAXRESULT'});
+  }
+}
 
 sub guardar_cache {
-	my $key = $_[0];
-	my $buffer = $_[1];
-	my $dir_search_tips_cache = $_[2];
-	my $first_letter = substr($key, 0, 1);
-	my $file = "$dir_search_tips_cache/$first_letter/$key\.txt";
+    my $key = $_[0];
+    my $buffer = $_[1];
+    my $dir_search_tips_cache = $_[2];
+    my $first_letter = substr($key, 0, 1);
+    my $file = "$dir_search_tips_cache/$first_letter/$key\.txt";
 
-	&glib_fildir_02::check_dir("$dir_search_tips_cache/$first_letter");
-	&glib_fildir_02::write_file($file, $buffer);
-};
+    &glib_fildir_02::check_dir("$dir_search_tips_cache/$first_letter");
+    &glib_fildir_02::write_file($file, $buffer);
+}
 
 sub buscar_cache {
-	my $dir_search_tips_cache = $_[0];
-	my $key = $_[1];
-	my $first_letter = substr($key, 0, 1);
+    my $dir_search_tips_cache = $_[0];
+    my $key = $_[1];
+    my $first_letter = substr($key, 0, 1);
 
-	&glib_fildir_02::check_dir("$dir_search_tips_cache/$first_letter");
+    &glib_fildir_02::check_dir("$dir_search_tips_cache/$first_letter");
 
-	my $file = "$dir_search_tips_cache/$first_letter/$key.txt";
-	if (-f $file) {
-		my $mtime = (stat($file))[9];
-		if ((time - $mtime) > $CFG{'SEARCHTIPS_DURACION_CACHE'}) {
-			unlink $file;
-		} else {
-			my $buffer = &glib_fildir_02::read_file($file);
-			return $buffer;
-		};
-	};
+    my $file = "$dir_search_tips_cache/$first_letter/$key.txt";
+    if (-f $file) {
+        my $mtime = (stat($file))[9];
+        if ((time - $mtime) > $CFG{'SEARCHTIPS_DURACION_CACHE'}) {
+            unlink $file;
+        } else {
+            my $buffer = &glib_fildir_02::read_file($file);
+            return $buffer;
+        }
+    }
 
-	return;
-};
+    return;
+}
 
 sub garbage_collector {
     my $dir_search_tips_cache = $_[0];
@@ -201,7 +197,7 @@ sub garbage_collector {
             my $mtime = (stat($archivo))[9];
             if ((time - $mtime) > $CFG{'SEARCHTIPS_DURACION_CACHE'}) {
                 unlink $archivo;
-            };
-        };
-    };
-};
+            }
+        }
+    }
+}

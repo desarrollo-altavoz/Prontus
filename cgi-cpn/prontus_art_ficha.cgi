@@ -262,6 +262,12 @@ main: {
         $pagina = &incluye_nomseccs($pagina);
         $pagina = &incluye_fotosfijas($pagina);
 
+        my $ts_default = &glib_hrfec_02::get_dtime_pack4();
+        my $fecha_default = substr($ts_default, 0, 8);
+        my $hora_default = substr($ts_default, 8, 2).':'. substr($ts_default, 10, 2);
+        $pagina =~ s/%%_fechap%%/$fecha_default/isg;
+        $pagina =~ s/%%_horap%%/$hora_default/isg;
+
         $pagina =~ s/%%_REL_PATH_PRONTUS%%/$prontus_varglb::RELDIR_BASE\/$prontus_varglb::PRONTUS_ID/ig;
         $pagina =~ s/%%_PRONTUS_ID%%/$prontus_varglb::PRONTUS_ID/ig;
         $pagina =~ s/%%LOOP_FOTOS%%.*?%%\/LOOP_FOTOS%%//isg;

@@ -202,7 +202,7 @@ var Fid = {
                 uploader:       cgiuploadify,
                 fileSizeLimit:  0,
                 fileTypeDesc:   'Image Files',
-                fileTypeExts:   '*.jpg;*.jpeg;*.gif;*.png;*.svg',
+                fileTypeExts:   '*.jpg;*.jpeg;*.gif;*.png;*.svg;*.webp',
                 uploadLimit:    100,
                 formData: {
                     "prontus_id":   mainFidJs.PRONTUS_ID,
@@ -281,8 +281,8 @@ var Fid = {
         var fail = false;
         $.each(data.files, function (index, file) {
             var ext = (file.name).split('.').pop().toLowerCase();
-            if ($.inArray(ext, ['gif','png','jpg','jpeg','svg']) == -1) {
-                alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, svg, jpg o jpeg.");
+            if ($.inArray(ext, ['gif','png','jpg','jpeg','svg', 'webp']) == -1) {
+                alert("El archivo [" + file.name + "] es inválido.\nLos archivos permitidos son imágenes gif, png, svg, webp, jpg o jpeg.");
                 fail = true;
                 return false; /* break. */
             }

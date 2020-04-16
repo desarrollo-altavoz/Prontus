@@ -58,7 +58,7 @@ BEGIN {
     $pathLibs =~ s/\/[^\/]+$//;
     $pathLibs =~ s/\/[^\/]+$/\/$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
-};
+}
 
 use strict;
 use lib_stdlog;
@@ -91,9 +91,19 @@ main: {
 
     # Soporta un maximo de n copias corriendo.
     if (&lib_maxrunning::maxExcedido(200)) {
+        print "Status: 404 Not Found\n";
         print "Content-Type: text/html\n\n";
+        print " ";
         exit;
-    };
+    }
+
+    if (defined($ENV{'REQUEST_URI'}) && $ENV{'REQUEST_URI'} =~ /^\/cgi\-/) {
+        print STDERR "Invocacion directa de cgi\n";
+        print "Status: 404 Not Found\n";
+        print "Content-Type: text/html\n\n";
+        print " ";
+        exit;
+    }
 
     my $relpath_conf = &lib_prontus::get_relpathconf_by_prontus_id($FORM{'prontus_id'});
     my $path_conf = &lib_prontus::ajusta_pathconf($relpath_conf);
@@ -105,10 +115,8 @@ main: {
     ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
 
     if (!ref($BD)) {
-        print STDERR "Error conectar BD: $msg_err_bd\n";
-        &msg_error("Ha ocurrido un error");
-        exit;
-    };
+        &msg_error("Error conectar BD: $msg_err_bd");
+    }
 
     # usa la misma configuracion de las portadas tagonomicas
     $ITEM_X_PAG = $prontus_varglb::TAGPORT_ARTXPAG;
@@ -122,8 +130,7 @@ main: {
     $PLT = $PLT_DEFAULT if (!-f $PLT);
 
     if (!-f $PLT) {
-        print STDERR "No se pudo localizar la plantilla[$PLT]\n";
-        &msg_error("No se pudo localizar la plantilla");
+        &msg_error("No se pudo localizar la plantilla [$PLT]");
     }
     if(!-e $CACHE_DIR){
         #si no existe el directorio se crea.
@@ -136,16 +143,16 @@ main: {
     my $pagina = &glib_fildir_02::read_file($PLT);
 
     if ($FORM{'s'} && !$nom_s) {
-        &msg_error("La seccion no existe.");
-    };
+        &msg_error("La seccion no existe [$FORM{'s'}].");
+    }
 
     if ($FORM{'t'} && !$nom_t) {
-        &msg_error("El tema no existe.");
-    };
+        &msg_error("El tema no existe [$FORM{'t'}].");
+    }
 
     if ($FORM{'st'} && !$nom_st) {
-        &msg_error("El subtema no existe.");
-    };
+        &msg_error("El subtema no existe [$FORM{'st'}].");
+    }
 
     $FORM{'id_s'} = $id_s;
     $FORM{'id_t'} = $id_t;
@@ -154,7 +161,7 @@ main: {
     my $pagina_cache = &get_cache();
 
     if ($pagina_cache) {
-        #~ print STDERR "from cache!\n";
+        # print STDERR "from cache!\n";
         print "Content-Type: text/html\n\n";
         print $pagina_cache;
         exit;
@@ -196,7 +203,7 @@ main: {
 
     print "Content-Type: text/html\n\n";
     print $pagina;
-};
+}
 
 # Buscar articulos en las tablas segun corresponda.
 # Un articulo puede estar en todas las tablas.
@@ -241,7 +248,7 @@ sub buscar_articulos {
     $pagina = &parsea_paginacion($pagina, $total_pags);
 
     return $pagina;
-};
+}
 
 sub parsea_paginacion {
     my $pagina = $_[0];
@@ -273,7 +280,7 @@ sub parsea_paginacion {
     }
 
     return $pagina;
-};
+}
 
 sub get_total {
     my $sql = shift;
@@ -287,7 +294,7 @@ sub get_total {
     $salida->finish;
 
     return $tot;
-};
+}
 
 sub get_filtro_paginacion {
     my $total = $_[0];
@@ -303,7 +310,7 @@ sub get_filtro_paginacion {
 
     # print STDERR "[$total / $ITEM_X_PAG] num_pags[$num_pags]\n";
     return ($sql, $num_pags);
-};
+}
 
 sub get_query {
     my $sql;
@@ -394,7 +401,7 @@ sub set_valid_params {
         &msg_error("No se especificó una seccion, tema o subtema.");
     }
 
-};
+}
 
 sub get_query_string {
     my $querystr = "?prontus_id=$FORM{'prontus_id'}";
@@ -404,7 +411,7 @@ sub get_query_string {
     $querystr .= "&st=$FORM{'st'}" if ($FORM{'st'});
 
     return $querystr;
-};
+}
 
 sub get_link_friendly {
     my $link = '/'.$FORM{'prontus_id'};
@@ -414,15 +421,16 @@ sub get_link_friendly {
     $link .= "/subtema/$FORM{'st'}" if ($FORM{'st'});
 
     return $link;
-};
+}
 
 sub msg_error {
     my $msg = $_[0];
-
+    print STDERR "$msg\n";
+    print "Status: 404 Not Found\n";
     print "Content-Type: text/html\n\n";
-    print "<strong>ERROR</strong>: $msg\n\n";
+    print " ";
     exit;
-};
+}
 
 sub get_info_s {
     my ($sql, $salida, $nom, $id, $friendly);
@@ -436,7 +444,7 @@ sub get_info_s {
     $salida->finish;
 
     return ($nom, $id, $friendly);
-};
+}
 
 sub get_info_t {
     my ($sql, $salida, $nom, $id, $friendly);
@@ -450,7 +458,7 @@ sub get_info_t {
     $salida->finish;
 
     return ($nom, $id, $friendly);
-};
+}
 
 sub get_info_st {
     my ($sql, $salida, $nom, $id, $friendly);
@@ -464,7 +472,7 @@ sub get_info_st {
     $salida->finish;
 
     return ($nom, $id, $friendly);
-};
+}
 
 sub get_cache {
     my $filter = "$FORM{'id_s'}_$FORM{'id_t'}_$FORM{'id_st'}_$FORM{'p'}";
@@ -492,7 +500,7 @@ sub get_cache {
     }
 
     return '';
-};
+}
 
 sub guarda_cache {
     my $pagina = $_[0];
@@ -507,7 +515,7 @@ sub guarda_cache {
 
     my $output_file = "$CACHE_DIR/$filter\_$nombre_plt";
     &glib_fildir_02::write_file($output_file, $pagina);
-};
+}
 
 sub parse_include {
     my $pagina = $_[0];
@@ -528,4 +536,4 @@ sub parse_include {
         $pagina =~ s/$include/$buffer/sig;
     }
     return $pagina;
-};
+}

@@ -659,7 +659,7 @@ sub _check_ext_foto {
 
     my $ext;
     $ext = $1 if ($path_foto =~ /\.(\w+)$/);
-    if ($ext =~ /^(jpe?g|jpeg?|gif|png|svg)$/i)  {
+    if ($ext =~ /^(jpe?g|jpeg?|gif|png|svg|webp)$/i)  {
         return 1;
     } else {
         return 0;
