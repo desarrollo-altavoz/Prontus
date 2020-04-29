@@ -1,4 +1,11 @@
 ====================================================================================================
+11.2.109.1 - 29/04/2020 - EAG
+====================================================================================================
+- bugfixes: (general) Elimina caracteres no validos de prontus_id en parse_globals
+- bugfixes: (general) Valida definicion de form_remitente para evitar aviso de indefinido
+- bugfixes: (general) Se producía un error al recortar fotos asociadas a tamaños de fotofija
+
+====================================================================================================
 11.2.109 - 15/04/2020 - EAG/JOR
 ====================================================================================================
 - improvement: (fid) Servidor asigna fecha/hora de publicacion en articulos nuevos para evitar problemas de desincronización de hora

@@ -416,7 +416,7 @@ sub data_management {
     $body .= $msg_signature;
 
     # Envia mail a el o los administradores.
-    if ($PRONTUS_VARS{'form_remitente'} ne '') {
+    if (defined($PRONTUS_VARS{'form_remitente'}) && $PRONTUS_VARS{'form_remitente'} ne '') {
         $from = $PRONTUS_VARS{'form_remitente'};
     } else {
         $from = $PRONTUS_VARS{'form_from'};

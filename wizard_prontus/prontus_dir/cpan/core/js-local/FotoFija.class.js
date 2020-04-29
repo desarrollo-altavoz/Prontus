@@ -387,7 +387,7 @@
                 var cuadrar = 'on';
                 var editar = 'on';
 
-                if (currImgSrc.substring(currImgSrc.length - 3) == 'svg' || currImgSrc.substring(currImgSrc.length - 4) == 'webp') {
+                if (imgSrc.substring(imgSrc.length - 3) == 'svg' || imgSrc.substring(imgSrc.length - 4) == 'webp') {
                     cuadrar = 'off';
                     editar = 'off';
                 }
