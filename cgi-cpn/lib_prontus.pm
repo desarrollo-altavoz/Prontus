@@ -2863,6 +2863,8 @@ sub parse_globals {
     my $public_server_name = shift;
     my $prontus_id = shift;
 
+    $prontus_id =~ s/[^\w\_\-]+//g;
+
     $buffer =~ s/%%_NOM_EDIC%%/$nom_edic/ig;
     $buffer =~ s/%%_SERVER_NAME%%/$public_server_name/ig;
     $buffer =~ s/%%_PRONTUS_ID%%/$prontus_id/ig;
@@ -4657,13 +4659,14 @@ sub generar_popupdirs_from_dir {
 
 sub get_img_type {
     my $nomfoto = $_[0];
-    my $ext;
+    my $ext = '';
 
-    $nomfoto =~ /.*\.(.*?)$/i;
-    $ext = $1;
+    if ($nomfoto =~ /\.(\w+)$/i) {
+        $ext = lc($1);
+    }
 
     return $ext;
-};
+}
 
 sub can_edit_img {
     my $img_type = $_[0];
