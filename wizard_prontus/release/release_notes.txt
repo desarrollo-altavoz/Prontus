@@ -10645,3 +10645,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/lib_prontus.pm
         /wizard_prontus/prontus_dir/cpan/core/js-local/FotoFija.class.js
+
+====================================================================================================
+11.2.109.2 - 12/05/2020 - EAG
+====================================================================================================
+- Prontus en general
+    [bugfixes]
+        - Escapea caracteres para evitar errores en prontus_form
+    [files]
+        /cgi-bin/prontus_form.cgi

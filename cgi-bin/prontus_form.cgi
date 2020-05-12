@@ -432,7 +432,7 @@ sub data_management {
         utf8::decode($data);
         $data =~ s/[^\w\-áéíóúüñÁÉÍÓÚÜÑ\, ]//g; # Elimina todo caracter extrano.
         utf8::encode($data);
-        $subj =~ s/\%$key\%/$data/sg;
+        $subj =~ s/\%\Q$key\E\%/$data/sg;
     };
     $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
     my $replyto = &glib_cgi_04::param('email');
@@ -488,9 +488,9 @@ sub data_management {
                 # Elimina espacios para que no molesten.
                 $data = &glib_str_02::trim(&glib_cgi_04::param($key));
                 # 1.1 Reemplaza datos en subject y body.
-                $body =~ s/\%$key\%/$data/sg;
+                $body =~ s/\%\Q$key\E\%/$data/sg;
                 $data =~ s/[^\w\- ]//g; # Elimina todo caracter extrano en el subject.
-                $subj =~ s/\%$key\%/$data/sg;
+                $subj =~ s/\%\Q$key\E\%/$data/sg;
             };
 
             $subj =~ s/\%_ts%/$TS/sig;
@@ -864,8 +864,8 @@ sub salida {
     # Parsea los datos dentro de la plantilla y dentro del mensaje de exito.
     foreach my $key (@DATOS) {
         my $valor = &glib_html_02::text2html(&glib_str_02::trim(&glib_cgi_04::param($key)));
-        $plantilla =~ s/%%$key%%/$valor/sieg;
-        $string_error =~ s/%$key%/$valor/sieg;
+        $plantilla =~ s/%%\Q$key\E%%/$valor/sieg;
+        $string_error =~ s/%\Q$key\E%/$valor/sieg;
     };
     # Inserta mensaje de error.
     $string_error =~ s/%err%/$msg/si;
