@@ -51,6 +51,35 @@ var Opciones = {
             buttonImageOnly: true,
             showOn: 'both'
         });
+
+        $( "#datefrom" ).datepicker({
+            dateFormat: 'dd-mm-yy',
+        });
+
+        $( "#dateto" ).datepicker({
+            dateFormat: 'dd-mm-yy',
+        });
+
+        $('#operador-art').change(function (e) {
+            e.preventDefault();
+            //Reset de Variables
+            $('#fecharegen').val('');
+            $('#datefrom').val('');
+            $('#dateto').val('');
+            $('#fecharegen').prop('type','text');
+
+            //Verificación tipo de fecha.
+            var value = $(this).val();
+            if (value == "rango"){
+                $('#fecharegen').hide();
+                $('.fechac .ui-datepicker-trigger').hide();
+                $('.daterange').show();
+            } else{
+                $('.fechac .ui-datepicker-trigger').show();
+                $('#fecharegen').show();
+                $('.daterange').hide();
+            }
+        });
     },
 
     // -------------------------------------------------------------------------
@@ -143,16 +172,38 @@ var Opciones = {
 
             // Fecha.
             var fecha = $('#fecharegen').val();
-            if (fecha != '') {
+            var operador = $('#operador-art').val();
+            if (fecha != '' || operador == 'rango') {
 
-                var arr = fecha.split('-');
-                if(arr.length !== 3) {
-                    alert("El formato de la fecha no es válido, intente dd-mm-yyyy  ");
-                    return;
+                //Validacion Rango de fecha.
+                if(operador == 'rango'){
+                    var datefrom = $('#datefrom').val();
+                    var dateto = $('#dateto').val();
+                    if (datefrom == '' || dateto == ''){
+                        alert('El rango de fechas no es válido. Debe ingresar un fecha de inicio y un fecha fin.');
+                        return false;
+                    }
+                    var fechaFrom = datefrom.split('-');
+                    var fechaTo = dateto.split('-');
+                    if (!Opciones.validateDateFormat(datefrom) || !Opciones.validateDateFormat(dateto)) {
+                        alert('El formato de la fecha inicio o fecha fin no es válido, intenta dd-mm-yyyy.');
+                        return false;
+                    }
+                    fecha = '' + fechaFrom[2] + fechaFrom[1] + fechaFrom[0]+'/'+fechaTo[2] + fechaTo[1] + fechaTo[0];
                 }
-                fecha = '' + arr[2] + arr[1] + arr[0];
+
+                //Validacion General (<,>,fecha especifica)
+                if(operador == 'mayor' || operador == 'menor' || operador == 'fecha'){
+                    var arr = fecha.split('-');
+                    if (!Opciones.validateDateFormat(fecha)) {
+                        alert('El formato de la fecha no es válido, intente dd-mm-yyyy.');
+                        return false;
+                    }
+                    fecha = '' + arr[2] + arr[1] + arr[0];
+                }
+
                 href += '&fecha=' + fecha;
-                href += '&op=' + $('#operador-art').val();
+                href += '&op=' + operador;
             } else {
                 href += '&fecha=@all&op=';
             }
@@ -185,6 +236,14 @@ var Opciones = {
                 obj.height = '360';
                 $.fn.colorbox(obj);
             }
+        }
+    },
+    validateDateFormat: function(date) {
+        var re = new RegExp("^[0-9]{2}[-|\/]{1}[0-9]{2}[-|\/]{1}[0-9]{4}$");
+        if (re.test(date)) {
+            return true;
+        } else {
+            return false;
         }
     },
     // -------------------------------------------------------------------------

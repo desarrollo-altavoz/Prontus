@@ -25,8 +25,10 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-};
+}
 
+
+use strict;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
@@ -40,30 +42,29 @@ use lib_tax;
 use glib_hrfec_02;
 use lib_logproc;
 
-use strict;
-
 # ---------------------------------------------------------------
 # MAIN.
 # ---------------------------------------------------------------
 
 my ($TOT_REGS, $LOG_FILE, $PATH_CONF, $TOT_REGS_CON_ERR);
-my ($MODO_WEB) = 0;
-my (%TAXONOMIAS_TO_REGEN);
-my ($DIRFECHA_INI); # DIR FECHA A PARTIR DEL CUAL EL SCRIPT DEBE PROCESAR
+my $MODO_WEB = 0;
+my %TAXONOMIAS_TO_REGEN;
+my $DIRFECHA_INI; # DIR FECHA A PARTIR DEL CUAL EL SCRIPT DEBE PROCESAR
+my $DIRFECHA_FIN;
 
-my ($FID_TYPES_STR);
-my ($MULTIVISTAS_STR);
-my ($TAXONOMIA_STR);
+my $FID_TYPES_STR;
+my $MULTIVISTAS_STR;
+my $TAXONOMIA_STR;
 
-my (%FILTAX);
+my %FILTAX;
 
-my (%FID_TYPES);
-my (%MULTIVISTAS_REGEN);
+my %FID_TYPES;
+my %MULTIVISTAS_REGEN;
 
-my ($MULTIVISTAS_DEFAULT) = 0;
-my ($FECHAINI_MAYORQUE) = 0;
-my ($FECHAINI_MENORQUE) = 0;
-
+my $MULTIVISTAS_DEFAULT = 0;
+my $FECHAINI_MAYORQUE = 0;
+my $FECHAINI_MENORQUE = 0;
+my $SIGNO;
 # ------------------------------------------------------------------------------
 # Los nuevos parametros de entrada son:
 # $ARGV[0] -> Path absoluto al CFG, desde la raiz de la máquina
@@ -75,7 +76,7 @@ my ($FECHAINI_MENORQUE) = 0;
 # $ARGV[3] -> Multivistas separadas por coma. Ejemplo: movil,en
 #    Para la vista principal se usa: @normal
 #    En caso se quererlos todos, se puede usar: @all
-# $ARGV[4] -> taxonomía a regenerar, e.g. 1_2_3. 
+# $ARGV[4] -> taxonomía a regenerar, e.g. 1_2_3.
 #    Para regenerar todos, usar 0_0_0 o dejar vacío.
 # ------------------------------------------------------------------------------
 
@@ -105,7 +106,7 @@ if ($ARGV[0]) {
     $MODO_WEB = 1;
     print "Content-Type: text/html\n\n";
     $| = 1;
-};
+}
 
 # Deshabilitar el purge al regenerar artículos.
 $lib_prontus::DISABLE_PURGE_CACHE = 1;
@@ -163,13 +164,12 @@ sub reparsea_artic {
 # Recorre todos los articulos via file system y repobla la BD.
 
     # Conectar a BD
-    my $msg_err_bd;
-    my $base;
-    ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
+    my ($base, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
+
     if (! ref($base)) {
         &lib_logproc::finishLoading("Error: $msg_err_bd\nProceso abortado.");
         &lib_logproc::handle_error("Error: $msg_err_bd\nProceso abortado.");
-    };
+    }
 
     my ($ruta_dir) = $prontus_varglb::DIR_SERVER
                    . $prontus_varglb::DIR_CONTENIDO
@@ -189,21 +189,26 @@ sub reparsea_artic {
     my $dircounter = 0;
     foreach $dirfecha (@lisdir) {
         if ($DIRFECHA_INI ne '') {
-            if ($FECHAINI_MAYORQUE == 1) {
+            if ($SIGNO eq '>') {
                 next if ($dirfecha < $DIRFECHA_INI);
-            } elsif ($FECHAINI_MENORQUE == 1) {
+            } elsif($SIGNO eq '<') {
                 next if ($dirfecha > $DIRFECHA_INI);
+            } elsif(($SIGNO eq '=')){
+                next if ($dirfecha != $DIRFECHA_INI);
+            } elsif ($SIGNO eq '~' && $DIRFECHA_FIN ne ''){
+                next if (($dirfecha < $DIRFECHA_INI) || (($dirfecha > $DIRFECHA_FIN)));
             }
         }
-        #~ print STDERR "$ruta_dir/$dirfecha/xml\n";
+        # print STDERR "$dirfecha\n";
+
         if (-d "$ruta_dir/$dirfecha/xml") {
             $dircounter++;
             &messageLoading('Directorios Procesados: <b>' . $dircounter . '</b>');
             &lib_logproc::add_to_log_count("Procesando DIR [$dirfecha/xml]");
             # print STDERR "Procesando DIR [$dirfecha/xml]\n";
             &procesa_files("$ruta_dir/$dirfecha/xml", $dirfecha, $base);
-        };
-    };
+        }
+    }
 
     # regenera taxonomia (artics relacionados)
     if ($prontus_varglb::TAXONOMIA_NIVELES =~ /^[1-3]$/) {
@@ -211,11 +216,11 @@ sub reparsea_artic {
         &lib_logproc::add_to_log_count("Regenerando art&iacute;culos relacionados...");
         &regen_taxonomia(\%TAXONOMIAS_TO_REGEN, $base);
         &lib_logproc::add_to_log_count("Art&iacute;culos relacionados...OK");
-    };
+    }
 
     $base->disconnect;
     &lib_logproc::finishLoading('');
-};
+}
 
 # ---------------------------------------------------------------
 sub procesa_files {
@@ -229,6 +234,7 @@ sub procesa_files {
     my @lisfile = &glib_fildir_02::lee_dir($ruta_dir_xml);
     @lisfile = grep !/^\./, @lisfile; # Elimina directorios . y ..
     my $count_files_in_dir = 0;
+
     foreach my $k_xml (@lisfile) {
         $count_files_in_dir++;
         # Valida q el XML exista con largo <> 0 y que ademas su nombre corresponda a un timestamp valido.
@@ -272,7 +278,6 @@ sub procesa_files {
             }
 
             if($FID_TYPES_STR eq '' || $FID_TYPES{$campos_xml{'_fid'}}) {
-
                 # si no hay filtro o la sección se matchea con el filtro, lo deja pasar.
                 if ($TAXONOMIA_STR eq '' || exists $FILTAX{$sec1}) {
                     # si hay tema y el tema no matchea con el tema del filtro, pasar al siguiente.
@@ -299,6 +304,7 @@ sub procesa_files {
                     my $secc4tax = $campos_xml{'_seccion1'};
                     my $tem4tax = $campos_xml{'_tema1'};
                     my $stem4tax = $campos_xml{'_subtema1'};
+
                     $secc4tax = '0' if ($secc4tax eq '');
                     $tem4tax = '0' if ($tem4tax eq '');
                     $stem4tax = '0' if ($stem4tax eq '');
@@ -330,7 +336,7 @@ sub procesa_files {
 
     };# foreach
     &lib_logproc::add_to_log("\t\t\t\t$count_files_in_dir archivos procesados en el DIR") if ($count_files_in_dir);
-};
+}
 
 # --------------------------------------------------------------------
 sub regen_taxonomia {
@@ -352,63 +358,50 @@ sub regen_taxonomia {
         $secc = '' if($secc eq '0');
         $tem = '' if($tem eq '0');
         $stem = '' if($stem eq '0');
+
         &lib_tax::generar_relacionados($secc, $tem, $stem, $base, '');
 
         # Ahora parsea art relacionados para MVs
         my $mv;
         foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
             &lib_tax::generar_relacionados($secc, $tem, $stem, $base, $mv);
-        };
-    };
-};
+        }
+    }
+}
 
 # ---------------------------------------------------------------
 sub registra_artic_error {
     my $msg = $_[0];
     $TOT_REGS_CON_ERR++;
     &lib_logproc::add_to_log($msg);
-};
+}
 
 # ---------------------------------------------------------------
 sub messageLoading {
-
-    my ($msg) = ($_[0]);
+    my $msg = $_[0];
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_art_regen.js";
+
     if($msg) {
       $msg = '{"status":0, "inprogress":"'.$msg.'"}';
       &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
     }
-};
+}
 
 # ---------------------------------------------------------------
 sub valida_y_ajusta_fechaini {
-
     $DIRFECHA_INI =~ s/"//sig;
+    ($DIRFECHA_INI, $DIRFECHA_FIN) = split "/", $DIRFECHA_INI;
 
-    if ($DIRFECHA_INI =~ /^([<>]?)(\d{8})$/) { # 20120412 - jor - agrega "" a er
+    if ($DIRFECHA_INI =~ /^([<~=>]?)(\d{8})$/) {
         $DIRFECHA_INI = $2;
-        my $signo = $1;
-        if($signo eq '>' || $signo eq '') {
-            $FECHAINI_MAYORQUE = 1;
-
-        } elsif($signo eq '<') {
-            $FECHAINI_MENORQUE = 1;
-
-        } else {
-            $DIRFECHA_INI = '';
-
-        }
-
+        $SIGNO = $1;
     } else {
         $DIRFECHA_INI = '';
     }
-    print STDERR "FECHAINI_MAYORQUE[$FECHAINI_MAYORQUE]\n";
-    print STDERR "FECHAINI_MENORQUE[$FECHAINI_MENORQUE]\n";
 }
 
 # ---------------------------------------------------------------
 sub valida_y_ajusta_multivistas {
-
     $MULTIVISTAS_STR =~ s/\s//g;
 
     if($MULTIVISTAS_STR eq '' || $MULTIVISTAS_STR eq '@all') {
@@ -430,7 +423,6 @@ sub valida_y_ajusta_multivistas {
 
 # ---------------------------------------------------------------
 sub valida_y_ajusta_fids {
-
     $FID_TYPES_STR =~ s/\s//g;
 
     # print STDERR "chequeando fids: FID_TYPES[$FID_TYPES]\n";
@@ -463,11 +455,11 @@ sub valida_y_ajusta_taxonomia {
     if ($TAXONOMIA_STR eq '0_0_0' || $TAXONOMIA_STR eq '') {
         $TAXONOMIA_STR = '';
         return;
-    };
+    }
 
     if ($TAXONOMIA_STR !~ /(\d+)_(\d+)_(\d+)/) {
         return;
-    };
+    }
 
     my ($s, $t, $st) = split(/_/, $TAXONOMIA_STR);
 
@@ -477,8 +469,6 @@ sub valida_y_ajusta_taxonomia {
         $FILTAX{$s}{$t} = 1;
     } elsif ($s) {
         $FILTAX{$s} = 1;
-    };
+    }
+}
 
-};
-
-# -------------------------------END SCRIPT----------------------

@@ -22,22 +22,20 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-};
+}
 
+use strict;
+use lib_prontus;
 # Captura STDERR
 use lib_stdlog;
 &lib_stdlog::set_stdlog($0, 51200);
 
 use prontus_varglb; &prontus_varglb::init();
-use lib_prontus;
 use lib_logproc;
 
 use glib_html_02;
 use glib_fildir_02;
 use glib_cgi_04;
-
-use strict;
-
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -89,13 +87,21 @@ sub main {
     # Agregar parametros adicionales.
     if ($FORM{'fecha'} ne '@all') {
         my $op;
-        if ($FORM{'op'} eq 'menor') {
+
+        if ($FORM{'op'} eq "menor" ){
             $op = '<';
-        } else {
+        } elsif ($FORM{'op'} eq "mayor") {
             $op = '>';
-        };
+        } elsif ($FORM{'op'} eq "fecha") {
+            $op = '=';
+        } elsif ($FORM{'op'} eq "rango") {
+            $op = '~';
+        } else {
+            $op = '';
+        }
+
         $FORM{'fecha'} = $op . $FORM{'fecha'};
-    };
+    }
 
     $FORM{'_seccion1'} = &glib_cgi_04::param('_seccion1');
     $FORM{'_tema1'} = &glib_cgi_04::param('_tema1');
@@ -109,12 +115,5 @@ sub main {
 
     $params .= " \"$FORM{'fecha'}\" \"$FORM{'fids'}\" \"$FORM{'mvs'}\" \"$FORM{'_seccion1'}_$FORM{'_tema1'}_$FORM{'_subtema1'}\"";
 
-    &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER,
-                                           'prontus_art_regen_real',
-                                           $result_page,
-                                           $params);
-};
-
-
-
-# ---------------------END SCRIPT-----------------------
+    &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER, 'prontus_art_regen_real', $result_page, $params);
+}

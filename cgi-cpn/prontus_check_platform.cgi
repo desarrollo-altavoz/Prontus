@@ -63,17 +63,20 @@ main: {
     my $os = uc $^O; # solo esta en algunas plataformas
     print "Sistema Operativo: $os\n";
 
-    if ($] < 5.008) {
+    my $perlv = $];
+    if ($perlv < 5.008) {
         print "Perl version incorrecta, se requiere Perl 5.8 o superior\n";
         print "</pre>" if ($AMBIENTE_WEB);
         exit;
     };
 
     # Perl
-    my $perlv = $];
-    $perlv =~ s/\.0+/\./;
-    $perlv =~ s/0+([1-9]+)$/\.$1/;
-    print "Perl version: $perlv OK\n";
+    $perlv =~ /(\d+).(\d{3})(\d{3})/;
+    my ($version, $subversion, $revision) =  ($1, $2, $3);
+    $version =~ s/^0+//;
+    $subversion =~ s/^0+//;
+    $revision =~ s/^0+//;
+    print "Perl version: $version.$subversion.$revision OK\n";
 
     my %missing = ();
 

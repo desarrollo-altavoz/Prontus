@@ -50,9 +50,23 @@
                                     <select name="operador-art" id="operador-art">
                                         <option value="mayor">Mayor o igual que</option>
                                         <option value="menor">Menor o igual que</option>
+                                        <option value="fecha">Fecha Especifica</option>
+                                        <option value="rango">Rango Especifico</option>
                                     </select>
                                 </td>
-                                <td align="left"><input type="text" name="fecharegen" id="fecharegen" value="" class="fieldform" /></td>
+                                <td align="left">
+                                    <input type="text" name="fecharegen" id="fecharegen" value="" class="fieldform" />
+                                </td>
+                            </tr>
+                            </table>
+                            <table class="tableform daterange" style="display:none;">
+                            <tr>
+                                <td><label for="datefrom">Desde</label></td>
+                                <td><label for="dateto">Hasta</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="datefrom" id="datefrom" value="" class="fieldform"></td>
+                                <td><input type="text" name="dateto" id="dateto" value="" class="fieldform"></td>
                             </tr>
                             </table>
                         </div>

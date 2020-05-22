@@ -147,11 +147,11 @@ main: {
   $ruta =~ s/\/site\/artic\/\d{8}\/pags\/.*$//si;   # 2.2.
   $RUTA_PRONTUS = $ruta; # path del prontus, desde la raiz del web server, ie /prontus_noticias
   if($RUTA_PRONTUS =~ /^\/(.+?)$/) {
-    $PRONTUS_ID = $1;  
+    $PRONTUS_ID = $1;
   }
   # Se valida el nombre del prontus, por si las moscas
   if(! &lib_prontus::valida_prontus($PRONTUS_ID)) {
-    &aborta('El Prontus indicado, no es v&aacute;lido.');  
+    &aborta('El Prontus indicado, no es v&aacute;lido.');
   }
 
   # Dir de Plantillas usadas por la aplicacion.
@@ -296,7 +296,7 @@ sub parse_prontus {
           $val_campo =~ s/(src) *= *("|')(\w+?)\//\1=\2\/\3\//ig;
         };
       };
-      print STDERR "marca: $nom_campo\n";
+      # print STDERR "marca: $nom_campo\n";
       # print stderr "antes replace en artic el vtxt\n";
       $buffer_tpl = &lib_prontus::replace_in_artic($val_campo, $nom_campo, $buffer_tpl);
 
@@ -413,22 +413,6 @@ sub get_xml_data {
   return $cont;
 
 };
-#~ # ---------------------------------------------------------------
-#~ sub mail_html {
-#~ # Version adaptada segun normas mailcenter.
-  #~ my ($from,$to,$subject,$html_send) = @_;
-  #~ my ($sender);
-#~
-  #~ $sender = new Mail::Sender { from => $from, smtp => $SMTP, headers => "MIME-Version: 1.0\r\nContent-type: text/html; charset=iso-8859-1\r\nContent-Transfer-Encoding: 7bit" };
-  #~ $sender->Open({
-    #~ from => $from,
-    #~ to => $to,
-    #~ subject => $subject
-               #~ }) or die $Mail::Sender::Error,"\n";
-  #~ $sender->Send($html_send);
-  #~ $sender->Close();
-#~ }; # mail_html
-
 # ---------------------------------------------------------------
 sub leeAllFile {
 # Lee un archivo completo.
