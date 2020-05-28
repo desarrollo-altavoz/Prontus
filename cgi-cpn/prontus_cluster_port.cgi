@@ -201,10 +201,4 @@ main:{
     # Tiempo de ejecucion
     my $endTime=new Benchmark;
     print STDERR "\nTotal time: " . timestr(timediff($endTime, $iniTime), 'all') . "\n";
-
-};
-
-
-
-
-# -------------------------END SCRIPT----------------------------
+}
