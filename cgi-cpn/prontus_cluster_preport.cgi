@@ -28,6 +28,8 @@ use lib_stdlog;
 
 use glib_cgi_04;
 use glib_hrfec_02;
+use lib_prontus;
+use prontus_varglb; &prontus_varglb::init();
 
 main:{
     &glib_cgi_04::new();
@@ -36,14 +38,22 @@ main:{
     $FORM{'port'} = &glib_cgi_04::param('_port');
     $FORM{'prontus_id'} = &glib_cgi_04::param('_prontus_id');
 
+    if (&lib_prontus::valida_prontus($FORM{'prontus_id'})) {
+        print STDERR "Prontus no valido";
+        exit;
+    }
+
+    $FORM{'edic'} =~ s/[^\/0-9]+//g;
+    $FORM{'port'} =~ s/[^\w\.]+//g;
+
     # Clustering
-    my $fullpath_port = "$ENV{DOCUMENT_ROOT}/$FORM{'prontus_id'}/site/edic/$FORM{'edic'}/port/$FORM{'port'}";
+    my $fullpath_port = "$prontus_varglb::DIR_SERVER/$FORM{'prontus_id'}/site/edic/$FORM{'edic'}/port/$FORM{'port'}";
     use FindBin '$Bin';
     my $rutaScript = $Bin;
-    
+
     my $cmd = "/prontus_cluster_port.cgi $fullpath_port &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
-    
+
     print "Location: ../$FORM{'prontus_id'}/cpan/core/prontus_cluster_preport_confirm.html\n\n";
 };
