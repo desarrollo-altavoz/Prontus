@@ -317,8 +317,4 @@ sub actualizar_prontus {
     &lib_loading::update_loading(100, 100);
 
     return '';
-
-};
-
-
-# -------------------------END SCRIPT----------------------
+}

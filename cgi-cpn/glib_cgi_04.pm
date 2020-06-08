@@ -439,18 +439,6 @@ sub get_file_name_old {
   return 0;
 }; # get_file_name_old
 
-# ------------------------------------------------------------------------#
-#~ sub append_file {
-  #~ my($archivo,$buffer) = ($_[0],$_[1]);
-  #~ return if ($buffer eq '');
-  #~ open (ARCHIVO,">>$archivo")
-    #~ || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";
-  #~ binmode ARCHIVO;
-  #~ print ARCHIVO $buffer; # Escribe buffer completo
-  #~ close ARCHIVO;
-#~ }; # append_file
-
-
 #--------------------------------------------------------------------#
 return 1;
 #-------------------------------END LIBRERIA---------------------

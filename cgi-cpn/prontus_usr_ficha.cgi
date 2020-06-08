@@ -109,14 +109,12 @@ main: {
         exit;
     };
 
-
     # Si se trata de editar
     if ($FORM{'USERS_ID'} ne '') {
         $value = $prontus_varglb::USERS{$FORM{'USERS_ID'}};
         ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP) = split /\|/, $value;
     };
 
-    #~ $lst_artdisp = &get_lst_tipoart();
     $dir_tpl_seccs = $prontus_varglb::DIR_SERVER .
                    $prontus_varglb::DIR_TEMP .
                    $prontus_varglb::DIR_EDIC .
@@ -137,7 +135,7 @@ main: {
                                                     '%%_path_conf%%', $FORM{'_path_conf'},'','',
                                                     $plantilla);
 
-    #~ Se procesan los checks de Tipo de Artículo
+    # Se procesan los checks de Tipo de Artículo
     if($FORM{'USERS_ID'} eq '1') {
         $pagina =~ s/%%loop_artics%%(.*?)%%\/loop_artics%%//is;
 
@@ -152,7 +150,7 @@ main: {
         exit;
     }
 
-    #~ Se procesan los checks de Portada
+    # Se procesan los checks de Portada
     if($FORM{'USERS_ID'} eq '1') {
         $pagina =~ s/%%loop_ports%%(.*?)%%\/loop_ports%%//is;
 
@@ -167,7 +165,6 @@ main: {
         exit;
     }
 
-    # &lib_prontus::close_dbm_files();
     if ($FORM{'USERS_ID'} ne '') {
         # deshabilitar ingreso o modif. de campo usr.
         $pagina =~ s/<!--USR-->.*?<!--\/USR-->/<SPAN CLASS="P-LABELTABLA">$USERS_USR<\/SPAN><input type="hidden" name="USR" value="$USERS_USR">/sg;
@@ -315,4 +312,3 @@ sub procesar_nombre {
     };
     return $nombre;
 }
-# -------------------------------END SCRIPT----------------------

@@ -74,11 +74,12 @@ sub check_paso1 {
 
 # ---------------------------------------------------------------
 sub get_prontus_id {
-
     my $buffer_prontus = shift;
-    if($buffer_prontus =~ /PRONTUS_ID=(.+?)\n/) {
+
+    if ($buffer_prontus =~ /PRONTUS_ID=(.+?)\n/) {
         my $prontus_id = $1;
-        if(&lib_prontus::valida_prontus($prontus_id)) {
+
+        if ($prontus_id =~ /^[\w\_\-]+$/) {
             return $prontus_id;
         }
     }

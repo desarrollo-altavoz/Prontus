@@ -18,46 +18,46 @@ package lib_loading;
 #~      error: Para indicar que hubo error
 #~      msg: Acá se puede poner algún mensaje
 
-$STARTED = 0;
-$FILE_LOADING;
-$REL_DIR;
-$FULL_DIR;
+our $STARTED = 0;
+our $FILE_LOADING;
+our $REL_DIR;
+our $FULL_DIR;
 
 use glib_fildir_02;
 
 # ------------------------------------------------------------------------------
 sub init {
-    
+
     my $file = $_[0];
-    
+
     return 0 unless($file);
-    
+
     $FILE_LOADING = $file;
-    
+
     $REL_DIR = "$prontus_varglb::DIR_CPAN/procs/loading";
     $FULL_DIR = "$prontus_varglb::DIR_SERVER$REL_DIR";
     &glib_fildir_02::check_dir($FULL_DIR);
-        
+
     $STARTED = 1;
-    
+
     return 1;
 }
 
 # ------------------------------------------------------------------------------
 sub update_loading {
-    
+
     my $total = $_[0];
     my $actual = $_[1];
     my $msg = $_[2];
-    
+
     return if(! $lib_loading::STARTED);
-    $msg = '' unless($msg);    
+    $msg = '' unless($msg);
     $msg = &fix_message($msg);
-    
+
     #~ print STDERR "Escribiendo archivo json: $lib_loading::FULL_DIR/$lib_loading::FILE_LOADING\n";
     my $respuesta = '{"loading":"1", "total":"'.$total.'", "actual":"'.$actual.'", "msg":"'.$msg.'", "status":"0"}';
     &glib_fildir_02::write_file("$lib_loading::FULL_DIR/$lib_loading::FILE_LOADING", $respuesta);
-    
+
 };
 
 # ------------------------------------------------------------------------------
@@ -66,12 +66,12 @@ sub finish_loading {
 
     my $status = $_[0];
     my $msg = $_[1];
-    
+
     return if(! $lib_loading::STARTED);
     $status = '0' if($status eq '');
     # $msg = '' unless($msg);
     $msg = &fix_message($msg);
-    
+
     #~ print STDERR "Escribiendo archivo json: $lib_loading::FULL_DIR/$lib_loading::FILE_LOADING\n";
     my $respuesta = '{"loading":"0", "total":"100", "actual":"100", "msg":"'.$msg.'", "status":"'.$status.'"}';
     &glib_fildir_02::write_file("$lib_loading::FULL_DIR/$lib_loading::FILE_LOADING", $respuesta);
@@ -79,20 +79,20 @@ sub finish_loading {
 
 # ------------------------------------------------------------------------------
 sub fix_message {
-    
+
     my $msg = $_[0];
-    
+
     # Para corregir codificaciones
     if ($msg ne '') {
         $msg =~ s/\s+/ /sg;
-        
+
         my $tmp_msg = $msg;
         my $es_utf8 = utf8::decode($tmp_msg);
         if(! $es_utf8) {
             print STDERR "Convirtiendo a utf8 el mensaje";
             utf8::encode($msg);
         };
-    };     
+    };
     return $msg;
 }
 

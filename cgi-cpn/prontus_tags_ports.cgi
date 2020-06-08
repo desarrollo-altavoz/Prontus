@@ -1063,5 +1063,3 @@ sub genera_filtros_tagports {
 
     return $filtros;
 }
-
-# -------------------------END SCRIPT----------------------

@@ -302,9 +302,6 @@ if ( ($CFG{'SEARCH_MAXEXEC'} < 0) || ($CFG{'SEARCH_MAXEXEC'} !~ /^\d+$/) ) {
   $CFG{'SEARCH_MAXEXEC'} = 5;
 };
 
-# 1.27.2 if ($CFG{'RESPERPAG'} =~ /^\d+/) { $FORM{'search_resxpag'} = $CFG{'RESPERPAG'}; }; # 1.22
-# 1.27.2 if ($CFG{'MAXPAGS'} =~ /^\d+/) { $FORM{'search_maxpags'} = $CFG{'MAXPAGS'}; }; # 1.22
-
 # 1.27.2 Si no se especifican el la CFG, usa valores por defecto.
 if ($CFG{'RESPERPAG'} !~ /^\d+$/) { $CFG{'RESPERPAG'} = $RESXPAG; };
 if ($CFG{'MAXPAGS'} !~ /^\d+$/) { $CFG{'MAXPAGS'} = $MAXPAGS; };

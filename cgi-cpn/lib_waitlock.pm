@@ -146,7 +146,6 @@ sub lock_detect {
       # print "green\n";
     };
     open (OUT, ">$lock_file") || die $!;
-    # open (OUT, ">$lock_file");
     print OUT 'xxx';
     close OUT;
     return $ret;

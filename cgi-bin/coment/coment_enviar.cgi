@@ -66,7 +66,7 @@
 
 
 BEGIN {
-    
+
     use FindBin '$Bin';
     $pathLibs = $Bin;
     unshift(@INC, $pathLibs);
@@ -75,7 +75,7 @@ BEGIN {
     unshift(@INC, $pathLibs);
     require 'dir_cgi.pm';
 
-    $pathLibs =~ s/(\/)[^\/]+$/\1$DIR_CGI_CPAN/;
+    $pathLibs =~ s/(\/)[^\/]+$/$1$DIR_CGI_CPAN/;
     unshift(@INC,$pathLibs);
 
     $pathLibs = $pathLibs . '/coment';

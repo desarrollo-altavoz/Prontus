@@ -22,7 +22,7 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-};
+}
 
 # Captura STDERR
 use lib_stdlog;
@@ -39,19 +39,10 @@ use glib_cgi_04;
 use File::Copy;
 use strict;
 
-
-
-
-# ---------------------------------------------------------------
-# MAIN.
-# -------------
-
-my (%FORM);
-
 main: {
-
     &glib_cgi_04::new(); # Rescata parametros del formulario.
 
+    my %FORM;
     # Carga variables de configuracion.
     $FORM{'_path_conf'} = &glib_cgi_04::param('_path_conf');
     $FORM{'_path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'_path_conf'});
@@ -100,9 +91,4 @@ main: {
     &lib_prontus::write_log('Actualizacion de Prontus', 'Usuario inicia actualizacion', '');
     my $result_page = "..$prontus_varglb::DIR_CPAN/core/prontus_loading_prontus_update.html";
     &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER, 'prontus_update_real', $result_page, $params);
-
-    exit;
-
-}; # main.
-
-# ---------------------END SCRIPT-----------------------
+}

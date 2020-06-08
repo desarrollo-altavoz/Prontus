@@ -8,43 +8,34 @@
 # licensed under LGPL license.
 # http://www.prontus.cl/license.html
 # ---------------------------------------------------------------
-
 # -------------------------------COMENTARIO GLOBAL---------------
 # ---------------------------------------------------------------
 # SCRIPT.
 # -----------
 #
-
 # ---------------------------------------------------------------
 # UBICACION.
 # -----------
 # /cgi-cpn/.
-
 # ---------------------------------------------------------------
 # PROPOSITO.
 # -----------
-
 # ---------------------------------------------------------------
 # INVOCACIONES ACEPTADAS.
 # ------------------------
-
 # ---------------------------------------------------------------
 # INVOCACIONES REALIZADAS.
 # ------------------------
-
 # ---------------------------------------------------------------
 # ARCHIVOS DE ENTRADA.
 # ------------------------
-
 # ---------------------------------------------------------------
 # ARCHIVOS DE SALIDA.
 # ------------------------
-
 # ---------------------------------------------------------------
 # Tablas.
 # ------------------------
 # No utiliza.
-
 # ---------------------------------------------------------------
 # HISTORIAL DE VERSIONES.
 # ---------------------------
@@ -106,14 +97,14 @@ main: {
     exit;
   };
 
-	my $origen = $prontus_varglb::DIR_SERVER .
+    my $origen = $prontus_varglb::DIR_SERVER .
                      $prontus_varglb::DIR_TEMP .
                      $prontus_varglb::DIR_EDIC .
                      $prontus_varglb::DIR_NROEDIC .
                      $prontus_varglb::DIR_SPARE .
                      "/$FORM{'Cmb_TPORT'}";
 
-	my $destino =  $prontus_varglb::DIR_SERVER .
+    my $destino =  $prontus_varglb::DIR_SERVER .
                    $prontus_varglb::DIR_TEMP .
                    $prontus_varglb::DIR_EDIC .
                    $prontus_varglb::DIR_NROEDIC .

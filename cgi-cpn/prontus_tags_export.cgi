@@ -46,18 +46,16 @@ use strict;
 # MAIN.
 # -------------
 
-my (%FORM);
+my %FORM;
 
 main: {
+    &glib_cgi_04::new(); # Rescata parametros del formulario.
 
-  &glib_cgi_04::new(); # Rescata parametros del formulario.
+    $FORM{'path_conf'} = &glib_cgi_04::param('path_conf');
+    # Ajusta path_conf para completar path y/o cambiar \ por /
+    $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
 
-  $FORM{'path_conf'} = &glib_cgi_04::param('path_conf');
-  # Ajusta path_conf para completar path y/o cambiar \ por /
-  $FORM{'path_conf'} = &lib_prontus::ajusta_pathconf($FORM{'path_conf'});
-
-  &lib_prontus::load_config($FORM{'path_conf'});
-
+    &lib_prontus::load_config($FORM{'path_conf'});
 
     # Control de usuarios obligatorio
     ($prontus_varglb::USERS_ID, $prontus_varglb::USERS_PERFIL) = &lib_prontus::check_user();
@@ -94,9 +92,4 @@ main: {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("ERROR","Solicitud de ejecución no válida.");
   };
-
-  exit;
-
 }; # main.
-
-# ---------------------END SCRIPT-----------------------

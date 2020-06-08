@@ -178,7 +178,6 @@ main: {
     }
     $pagina =~ s/%%_class_open_fid%%/$open_fid_in_pop/ig;
 
-
     # Ya que no hubo error, se limpian las marcas
     $pagina =~ s/%%.*?%%//igs;
     $pagina =~ s/<!--error-->.*?<!--\/error-->//igs;

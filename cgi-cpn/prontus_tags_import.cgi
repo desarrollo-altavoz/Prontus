@@ -105,12 +105,5 @@ main: {
   else {
     print "Content-Type: text/html\n\n";
     &glib_html_02::print_pag_result("ERROR","Solicitud de ejecución no válida.");
-
-  };
-
-  exit;
-
-}; # main.
-
-
-# ---------------------END SCRIPT-----------------------
+  }
+}

@@ -94,5 +94,4 @@ main: {
     system($cmd);
 
     &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');
-};
-
+}

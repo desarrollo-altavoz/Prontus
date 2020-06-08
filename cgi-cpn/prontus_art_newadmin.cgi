@@ -150,12 +150,7 @@ main: {
     }
     $buffer =~ s/%%_class_open_fid%%/$open_fid_in_pop/ig;
 
-#    $vars2replace{'_prontus_version'} = $prontus_varglb::VERSION_PRONTUS;
-#    $vars2replace{'_prontus_user_name'} = $prontus_varglb::USERS_USR;
-#    $vars2replace{'_prontus_user_perfil'} = &get_perfil_glosa($prontus_varglb::USERS_PERFIL);
-
     $buffer = &lib_prontus::replace_hash_fields($buffer, \%vars2replace, 1);
-
     $buffer = &set_ctrl_fecha($buffer);
     $buffer = &set_multi_vista($buffer);
     $buffer = &set_rayo($buffer); # a partir de 11.2.19 el rayo va incorporado al guardar portada

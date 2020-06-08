@@ -285,6 +285,4 @@ sub finishLoading {
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_tax_export.js";
     my $msg = '{"status":1, "msg":"'.$msg.'"}';
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
-};
-
-# -------------------------END SCRIPT----------------------
+}

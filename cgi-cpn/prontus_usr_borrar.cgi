@@ -139,11 +139,8 @@ main: {
     };
 
     &lib_prontus::close_dbm_files();
-
     &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');
-
-
-};
+}
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.

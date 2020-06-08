@@ -103,9 +103,6 @@ main: {
 
     my $res = &do_snapshots();
 
-    # Falta convertir JS para que recepcione json.
-    # &glib_html_02::print_json_result($status, $msg, 'exit=1,ctype=1');
-
     # Para facilitar el uso mediante AJAX.
     print "Content-type: text/plain\n\n";
     print $res;
