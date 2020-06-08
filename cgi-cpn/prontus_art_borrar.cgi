@@ -209,12 +209,13 @@ sub exec_postproceso_artborrar {
 
         # para que sea un script valido debe ubicarse en el mismo dir. de cgi del prontus o a lo mas un nivel hacia arriba.
         if ( ($post_proceso =~ /^\w/) || ($post_proceso =~ /^\.\.(\/|\\)\w/) ) {
+            $post_proceso =~ s/[#;&<>|~]+//g;
             my $cmd = "$rutaScript/$post_proceso $ts $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME";
             print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
             system $cmd;
-        };
-    };
-};
+        }
+    }
+}
 
 # ---------------------------------------------------------------
 sub call_dropbox_backup {
@@ -225,6 +226,5 @@ sub call_dropbox_backup {
 
     if ($prontus_varglb::DROPBOX eq 'SI') {
         &lib_prontus::dropbox_backup("art;$ts;$seccion1;$tema1;$subtema1");
-    };
-};
-# -------------------------------END SCRIPT----------------------
+    }
+}

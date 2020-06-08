@@ -306,9 +306,11 @@ sub read_file_ref {
 
 # Retorna : El texto leido | '' en caso que el archivo no exista.
 
-  my($archivo) = $_[0];
-  my($size) = (-s $archivo);
-  my($buffer) = '';
+  my $archivo = $_[0];
+  $archivo =~ s/\.\.\///g;
+
+  my $size = (-s $archivo);
+  my $buffer = '';
 
   if ((-s $archivo) and (! -d $archivo)) {
     open (ARCHIVO,"<$archivo")
@@ -322,7 +324,6 @@ sub read_file_ref {
   };
 
   return \$buffer;
-
 };
 
 #-------------------------------------------------------------------------#
@@ -331,7 +332,6 @@ sub get_time {
   my $dt = &glib_hrfec_02::get_dtime_pack4();
   $dt =~ /(\d{2})(\d{2})(\d{2})$/;
   return "\nHora $label [$1:$2:$3]";
-
 };
 
 # ---------------------------------------------------------------

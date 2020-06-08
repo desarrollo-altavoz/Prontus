@@ -80,8 +80,6 @@ main: {
       exit;
     };
 
-    # print STDERR "FILE[$FORM{'FILE1'}][$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/tax_import.xml]\n";
-
     &File::Copy::copy($FORM{'FILE1'}, "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/tax_import.xml");
 
     if ((! -f "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/tax_import.xml") or (! -s "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/tax_import.xml")) {
@@ -107,10 +105,4 @@ main: {
     &glib_html_02::print_pag_result("ERROR","Solicitud de ejecución no válida.");
 
   };
-
-  exit;
-
-}; # main.
-
-
-# ---------------------END SCRIPT-----------------------
+}

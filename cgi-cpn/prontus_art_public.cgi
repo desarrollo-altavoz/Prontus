@@ -306,7 +306,6 @@ sub exec_postproceso {
   # Una vez escrito la portada, ubica el nombre del script de post-proceso (con extension y con path absoluto completo) y lo ejecuta.
   # Script de postproceso es optativo y puede ir en cualquier parte de la portada
 
-
     # LEE PORT
     $buffer = &glib_fildir_02::read_file("$DST_TSEC/$FORM{'_port'}");
     if ($buffer !~ /\n/) { # 8.0
@@ -330,13 +329,12 @@ sub exec_postproceso {
     foreach my $pp (@postProcesos) {
         # para que sea un script valido debe ubicarse en el mismo dir. de cgi del prontus o a lo mas un nivel hacia arriba.
         if ( ($pp =~ /^\w/) or ($pp =~ /^\.\.(\/|\\)\w/) ) {
-
+            $pp =~ s/[#;&<>|~]+//g;
             my $cmd = "$rutaScript/$pp $DST_SEC/$FORM{'_port'} $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
             print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
             system $cmd;
         };
     };
-
 
     if ($prontus_varglb::LIST_PORT_PPROC eq 'SI') {
         my $pathnice = &lib_prontus::get_path_nice();
@@ -345,13 +343,10 @@ sub exec_postproceso {
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
         system $cmd;
     };
-
 };
 
 # --------------------------------------------------------------------
 sub set_dirs {
-
-
     $DDIR = $prontus_varglb::DIR_CONTENIDO . $prontus_varglb::DIR_ARTIC . '/%%DIR_FECHA%%';
     # Directorio de Secciones existentes
     $DST_SEC = $prontus_varglb::DIR_SERVER .

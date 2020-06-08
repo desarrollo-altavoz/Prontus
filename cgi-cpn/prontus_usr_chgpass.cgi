@@ -52,16 +52,15 @@ main: {
     if ($prontus_varglb::USERS_PERFIL eq 'A') {
         &glib_html_02::print_pag_result('Error','La funcionalidad requerida está disponible sólo para usuario editor y redactor.', 1, 'exit=1,ctype=1');
     };
-    
+
     if (&lib_prontus::open_dbm_files() ne 'ok') {
         print "Content-Type: text/html\n\n";
         &glib_html_02::print_pag_result("Error","No fue posible abrir archivos dbm.");
         exit;
     };
-  
-    
+
     $plantilla = $prontus_varglb::DIR_SERVER . $prontus_varglb::DIR_CORE . '/prontus_usr_chgpass.html';
-    
+
     $pagina = &glib_html_02::rellenar_plantilla(
         3,
         '%%_PRONTUS_ID%%', $prontus_varglb::PRONTUS_ID, '', '',
@@ -69,13 +68,11 @@ main: {
         '%%_path_conf%%', $FORM{'_path_conf'},'','',
         $plantilla
     );
-             
+
     # Mostrar pagina al browser.
     print "Cache-Control: no-cache\n";
     print "Cache-Control: max-age=0\n";
     print "Cache-Control: no-store\n";
     print "Content-Type: text/html\n\n";
     print $pagina;
-  
-};
-
+}

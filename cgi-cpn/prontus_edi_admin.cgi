@@ -66,23 +66,14 @@ use strict;
 # MAIN.
 # -------------
 
-my (%FORM);
-
-
-
-my ($RELDIR_EDICIONES);
-
-my ($RELDIR_CONT_EDIC);
-
-my ($RELDIR_CONT_MENU);
-
-my ($RELDIR_CONT_SECC);
-
-my ($RELDIR_CONT_HPAGE);
-
+my %FORM;
+my $RELDIR_EDICIONES;
+my $RELDIR_CONT_EDIC;
+my $RELDIR_CONT_MENU;
+my $RELDIR_CONT_SECC;
+my $RELDIR_CONT_HPAGE;
 
 main: {
-
     my ($nro_filas, @entries, $entry, $dir_homepages, $nom_campos, $i, $homepage, $plantilla, $filas, $pagina, $text_html, $nom_campo);
     my ($users_id);
     &glib_cgi_04::new();
@@ -146,8 +137,7 @@ main: {
 
     print "Content-type: text/html\n\n";
     print $pagina;
-
-};
+}
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -245,7 +235,3 @@ sub generar_fila {
 
 
 };
-
-
-
-# -------------------------------END SCRIPT----------------------

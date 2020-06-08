@@ -233,7 +233,6 @@ sub fix_moov {
 sub process {
 #    Convert a Quicktime/MP4 file for streaming by moving the metadata to
 #    the front of the file. This method writes a new file.
-
     my ($infilename, $outfilename) = @_;
 
     # Open the inputfile in binary mode
@@ -311,7 +310,6 @@ sub process {
     # Read and fix moov. Also write in to the output file
     seek($datastream, $moov_pos, 0);
     &fix_moov($moov_size, $datastream, $outfile, $offset);
-
 
     # Write the rest
     my $written = 0;

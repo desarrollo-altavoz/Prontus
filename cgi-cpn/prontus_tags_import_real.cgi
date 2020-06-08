@@ -213,7 +213,7 @@ main:{
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         &lib_prontus::make_mapa_tags($mv, $BD);
     }
-    
+
     $BD->disconnect;
 
     &finishLoading('');
@@ -412,5 +412,3 @@ sub finishLoading {
     my $msg = '{"status":1, "msg":"'.$msg.'"}';
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
 };
-
-# -------------------------END SCRIPT----------------------

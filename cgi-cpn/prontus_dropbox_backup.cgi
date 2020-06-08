@@ -227,6 +227,11 @@ sub valida_params {
         exit;
     };
 
+    if (!&lib_prontus::valida_prontus($FORM{'prontus_id'})) {
+        print STDERR "Directorio Prontus no es v&aacute;lido\n";
+        exit;
+    }
+
 }; # valida_params
 
 # ----------------------------------------------------------------------------- #

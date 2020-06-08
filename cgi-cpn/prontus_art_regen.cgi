@@ -86,7 +86,7 @@ sub main {
 
     # Agregar parametros adicionales.
     if ($FORM{'fecha'} ne '@all') {
-        my $op;
+        my $op = '';
 
         if ($FORM{'op'} eq "menor" ){
             $op = '<';
@@ -96,8 +96,6 @@ sub main {
             $op = '=';
         } elsif ($FORM{'op'} eq "rango") {
             $op = '~';
-        } else {
-            $op = '';
         }
 
         $FORM{'fecha'} = $op . $FORM{'fecha'};
@@ -115,5 +113,5 @@ sub main {
 
     $params .= " \"$FORM{'fecha'}\" \"$FORM{'fids'}\" \"$FORM{'mvs'}\" \"$FORM{'_seccion1'}_$FORM{'_tema1'}_$FORM{'_subtema1'}\"";
 
-    &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER, 'prontus_art_regen_real', $result_page, $params);
+    &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER, 'prontus_art_regen_real', $result_page, $params, 0);
 }

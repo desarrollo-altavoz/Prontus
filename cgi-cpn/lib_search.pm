@@ -238,19 +238,18 @@ sub friendlyUrl {
 # -------------------------------------------------------------------------#
 # Lee un archivo por completo. Si el archivo no existe retorna ''.
 sub lee_archivo {
-  my($archivo) = $_[0];
-  my($buffer) = '';
-
-  if (-e $archivo) {
-    open (ARCHIVO,"<$archivo");
-    binmode ARCHIVO;
-    read ARCHIVO,$buffer,-s $archivo;
-    close ARCHIVO;
-  };
-  # 1.2 Elimina los \r.
-  $buffer =~ s/\r//isg;
-  return $buffer;
-
+    my $archivo = $_[0];
+    my $buffer = '';
+    $archivo =~ s/\.\.\///g;
+    if (-e $archivo) {
+        open (ARCHIVO,"<$archivo");
+        binmode ARCHIVO;
+        read ARCHIVO,$buffer,-s $archivo;
+        close ARCHIVO;
+    };
+    # 1.2 Elimina los \r.
+    $buffer =~ s/\r//isg;
+    return $buffer;
 }; # lee_archivo
 
 # ------------------------------------------------------------------------#
@@ -260,6 +259,7 @@ sub lee_archivo {
 sub escribe_archivo {
   my($archivo,$buffer) = ($_[0],$_[1]);
   my($dir);
+  $archivo =~ s/\.\.\///g;
 
   if ($archivo =~ /^(.+?)\/[^\/]+$/) {
     $dir = $1;

@@ -79,7 +79,8 @@ sub main {
     &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
     my $result_page = "../..$prontus_varglb::DIR_CPAN/core/prontus_loading_dam_regen.html";
 
-    my $params = "\"$FORM{'path_conf'}\"";
+    my $params = $FORM{'path_conf'};
+    $params =~ s/[#;&"']//g;
     &lib_prontus::call_system_and_location($prontus_varglb::DIR_SERVER,
                                            'prontus_dam_regen_real',
                                            $result_page,

@@ -75,7 +75,6 @@ use prontus_auth;
 # -------------
 
 my (%FORM, $TIPO_PRONTUS, $AREA_MENU, $AREA_CONT, $PRONTUS_KEY);
-#~ my ($USERS_NOM, $USERS_USR, $USERS_PSW, $USERS_PERFIL, $USERS_ID, $USERS_EMAIL, $USERS_EXP_DAYS, $USERS_FEC_EXP);
 my $MAX_RETRIES_LOGIN = 10;
 
 main: {

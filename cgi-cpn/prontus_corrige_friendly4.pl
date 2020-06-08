@@ -290,6 +290,7 @@ sub read_file {
   my($archivo) = $_[0];
   my($size) = (-s $archivo);
   my($buffer) = '';
+  $archivo =~ s/\.\.\///g;
 
   if (-e $archivo) {
     open (ARCHIVO,"<$archivo")
@@ -311,6 +312,7 @@ sub write_file {
 # 1) Texto a escribir.
 
   my($archivo,$buffer) = ($_[0],$_[1]);
+  $archivo =~ s/\.\.\///g;
 
   open (ARCHIVO,">$archivo")
     || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";

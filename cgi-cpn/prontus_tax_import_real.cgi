@@ -91,8 +91,6 @@ use lib_logproc;
 
 use strict;
 
-
-
 my ($LOG_FILE, $PATH_CONF);
 
 # sqlite no requiere esto.
@@ -100,7 +98,6 @@ my $NOM_BD_PRONTUS = '';
 my $USER_BD = '';
 my $PWD_BD = '';
 my $SERVER_BD = ''; # asumiendo que los scripts estan instalados en el server Mysql
-
 
 # ---------------------------------------------------------------
 # MAIN.
@@ -175,7 +172,7 @@ main:{
         &finishLoading("El archivo ingresado no es un XML bien formado, no es posible cargarlo");
         &lib_logproc::handle_error("El archivo ingresado no es un XML bien formado, no es posible cargarlo");
     };
-    
+
     &lib_logproc::add_to_log_count("Borrando datos actuales de la base de datos.\n");
     my ($sql) = "delete from SECC";
     $BD->do($sql) || (&finishLoading("No fue posible borrar Secciones actuales") && &lib_logproc::handle_error("No fue posible borrar Secciones actuales") );
@@ -444,20 +441,20 @@ sub actualiza_xml_vista {
       my $nom = &lib_prontus::unescape_xml($DATA_VISTAS{"$mv\tseccion\t$id_s"});
       $items_seccion{$mv} .= "<ITEM>\n<ID>$id_s</ID>\n<NOM>$nom</NOM>\n</ITEM>\n";
     };
-  	# temas
+    # temas
     $sql = "select TEMAS_ID from TEMAS WHERE TEMAS_IDSECC = $id_s ";
     my $id_t;
     my $salida_t = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id_t));
-  	while ($salida_t->fetch) {
+    while ($salida_t->fetch) {
       foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
         my $nom = &lib_prontus::unescape_xml($DATA_VISTAS{"$mv\ttema\t$id_t"});
         $items_tema{$mv} .= "<ITEM>\n<ID>$id_t</ID>\n<NOM>$nom</NOM>\n</ITEM>\n";
       };
-    	# subtemas
+        # subtemas
       $sql = "select SUBTEMAS_ID from SUBTEMAS WHERE SUBTEMAS_IDTEMAS = $id_t ";
       my $id_st;
       my $salida_st = &glib_dbi_02::ejecutar_sql_bind($BD, $sql, \($id_st));
-    	while ($salida_st->fetch) {
+        while ($salida_st->fetch) {
         foreach $mv (keys %prontus_varglb::MULTIVISTAS) {
           my $nom = &lib_prontus::unescape_xml($DATA_VISTAS{"$mv\tsubtema\t$id_st"});
           $items_subtema{$mv} .= "<ITEM>\n<ID>$id_st</ID>\n<NOM>$nom</NOM>\n</ITEM>\n";

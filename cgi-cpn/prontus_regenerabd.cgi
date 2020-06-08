@@ -49,7 +49,6 @@ use strict;
 my (%FORM);
 
 main: {
-
     &glib_cgi_04::new(); # Rescata parametros del formulario.
 
     $FORM{'path_conf'} = &glib_cgi_04::param('_path_conf');
@@ -82,6 +81,4 @@ main: {
                                             $result_page,
                                             $params);
 
-    exit;
-
-}; # main.
+}

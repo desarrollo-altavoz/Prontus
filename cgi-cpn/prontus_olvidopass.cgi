@@ -81,16 +81,15 @@ main: {
         print "Content-Type: text/html\n\n";
         &glib_html_02::print_pag_result("Error","No fue posible abrir archivos de usuarios.");
         exit;
-    };
+    }
 
     if ($FORM{'token'} ne '' && $FORM{'usr'} ne '') {
         &validacion_token();
         &show_recordarpass_reset();
     } else {
         &show_recordarpass();
-    };
-
-};
+    }
+}
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
@@ -107,7 +106,7 @@ sub show_recordarpass {
 
   print "Content-Type: text/html\n\n";
   print $buf;
-};
+}
 
 sub show_recordarpass_reset {
     my $buf = &glib_fildir_02::read_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CORE/prontus_olvidopass.html");
@@ -122,7 +121,7 @@ sub show_recordarpass_reset {
 
     print "Content-Type: text/html\n\n";
     print $buf;
-};
+}
 
 sub validacion_token {
     my $dirprocuser = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/procs/recordarpass/$FORM{'usr'}.txt";

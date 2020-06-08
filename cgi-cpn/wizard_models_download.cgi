@@ -106,6 +106,4 @@ main:{
     $resp->{'msg'} = '';
     print "Content-Type: application/json\n\n";
     &glib_html_02::print_json_result_hash($resp, 'exit=1,ctype=0');
-};
-
-
+}

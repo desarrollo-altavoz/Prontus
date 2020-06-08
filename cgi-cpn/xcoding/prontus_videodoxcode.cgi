@@ -165,7 +165,6 @@ main: {
         # inicializamos el user agent
         &initUA();
         # armamos los datos de la peticion
-        #~ my $host = $prontus_varglb::LOCAL_HOST;
         my $host = $prontus_varglb::PUBLIC_SERVER_NAME;
         my $xcoder_host = 'http://' . $prontus_varglb::XCODER_HOST;
         if ($prontus_varglb::XCODER_PORT ne '') {

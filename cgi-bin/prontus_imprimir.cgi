@@ -398,7 +398,7 @@ sub get_xml_data {
   my $url = $FORM{'_FILE'};
   $url =~ s/(\/\d{8})\/pags\//\1\/xml\//;
   $url =~ s/\.\w+$/\.xml/;
-  $url =~ /(\d{14}\.xml)/;
+  $url =~ s/(\.\.\/)//g;
   my $cont = &leeAllFile("$ROOTDIR$url", '');
 
   # Elimina marcas externas.

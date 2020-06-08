@@ -336,9 +336,13 @@ sub get_cmd_ffmpeg {
 sub generar_HLS {
     my $origen = $_[0];
 
-    $origen =~ /(\/.*\/\d{8}\/mmedia\/multimedia_video\d+\d{14}\S*)\.mp4$/;
+    my $path_hls;
+    if ($origen =~ /(\/[\w\.\-\/]*\/\d{8}\/mmedia\/multimedia_video\d+\d{14}\S*)\.mp4$/) {
+        $path_hls = $1;
+    } else {
+        return;
+    }
 
-    my $path_hls = $1;
     # si existe borramos el directorio y su contenido
     if (-d $path_hls) {
         &glib_fildir_02::borra_dir($path_hls);

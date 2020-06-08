@@ -291,7 +291,7 @@ sub get_objtipos {
 # ---------------------------------------------------------------
 sub basic_escape_html {
   my $toencode = $_[0];
-  $toencode=~s/&([^#][^0-9]+)/&amp;\1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
+  $toencode=~s/&([^#][^0-9]+)/&amp;$1/g;             # Antes que nada, traduce los ampersands. # 1.19 correccion a e.r.
   $toencode=~s/>/&gt;/g;              # >
   $toencode=~s/"/&quot;/g;            # " # 8.0
   $toencode=~s/'/&#39;/g;
@@ -478,9 +478,6 @@ sub generar_comentarios {
            $hash_data{'COMENT_NICK'}
            ));
 
-
-
-
   my $tot_opin = &get_tot_opin_by_artic($bd, "SELECT COUNT(COMENT_ID) FROM COMENT WHERE COMENT_OBJID = \"$objid\" and COMENT_STATUS = \"1\"");
   my $nomdir_dst;
   if ($hash_tipos{$objtipo}{'ID_STYLE'} eq 'TIMESTAMP') {
@@ -521,7 +518,6 @@ sub generar_comentarios {
     # print STDERR "nro_filas:$nro_filas\n";
   };
 
-
   # escribir lo que haya quedado
   if ($nro_filas) {
     $nro_pag++; # avanza pag
@@ -542,9 +538,7 @@ sub generar_comentarios {
   };
 
   &glib_fildir_02::write_file("$dir_dst/total.txt", $tot_opin); # 1.1
-
 };
-
 
 
 # ---------------------------------------------------------------
@@ -557,7 +551,7 @@ sub write_pag {
   $pagina =~ s/<!--LOOP-->(.*?)<!--\/LOOP-->/$filas/isg;
   my $pagina_usuario;
   if ($tot_opin > $filasxpag) {
-    $nrosdepag =~ s/<a href="[^"]+?\/$nro_pag\.$ext_plt'\)">(\d+)<\/a>/\1/; # deslinkea pagina actual
+    $nrosdepag =~ s/<a href="[^"]+?\/$nro_pag\.$ext_plt'\)">(\d+)<\/a>/$1/; # deslinkea pagina actual
     $pagina =~ s/%%_HTML_NROS_PAG%%/$nrosdepag/ig;
     $pagina =~ s/%%\/?_paginacion%%//isg;
   }
@@ -588,8 +582,6 @@ sub write_pag {
   else {
     return 0;
   };
-
-
 };
 
 # ---------------------------------------------------------------

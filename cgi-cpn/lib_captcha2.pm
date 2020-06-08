@@ -270,6 +270,7 @@ sub garbage_collector {
     my $path = $_[0];
     use FindBin '$Bin';
     $Bin =~ s/\/cgi\-\w+$/\/$DIR_CGI_CPAN/;
+    $path =~ s/[#;&<>|~]+//g;
     my $cmd = "/usr/bin/perl $Bin/prontus_garbage_collector.pl $path $TIME_OLD_FILES $MAX_FILES >/dev/null 2>&1 &";
     system($cmd);
 };

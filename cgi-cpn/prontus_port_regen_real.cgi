@@ -319,7 +319,7 @@ sub exec_postproceso {
     foreach my $pp (@postProcesos) {
         # para que sea un script valido debe ubicarse en el mismo dir. de cgi del prontus o a lo mas un nivel hacia arriba.
         if ( ($pp =~ /^\w/) or ($pp =~ /^\.\.(\/|\\)\w/) ) {
-
+            $pp =~ s/[#;&<>|~]+//g;
             my $cmd = "$rutaScript/$pp $port_site $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
             print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
             system $cmd;

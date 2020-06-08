@@ -81,6 +81,7 @@ main: {
     $ROOT      = $ENV{'DOCUMENT_ROOT'};
     $PRONTUS   = $FORM{'_prontus_id'}; # Nombre del publicador Prontus donde se aloja el formulario.
     $TS        = $FORM{'_ts'};      # Nombre del publicador Prontus donde se aloja el formulario.
+    $TS =~ s/[^0-9]+//g;
 
     if ($PRONTUS eq '') { # Muestra pagina en blanco.
         &lib_form::aborta("Directorio Prontus no especificado.");
@@ -173,7 +174,7 @@ main: {
             }
             my %jsonhash = %$jsonhashref;
             my @CSV_ROW;
-            # Se recorren segùn el orden
+            # Se recorren segun el orden
             foreach my $name (@orderreal) {
                 push (@CSV_ROW, $jsonhash{$name});
                 delete $jsonhash{$name};

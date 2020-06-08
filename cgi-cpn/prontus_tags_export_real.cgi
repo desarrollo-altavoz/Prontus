@@ -79,9 +79,9 @@ my $SERVER_BD = ''; # asumiendo que los scripts estan instalados en el server My
 # -------------
 
 my ($BD, $LOCK_FILE);
-my ($TOT_REGS, $OK_REGS) = '0';
-my (%FORM);
-my ($MODO_WEB) = 0;
+my ($TOT_REGS, $OK_REGS) = (0, 0);
+my %FORM;
+my $MODO_WEB = 0;
 main:{
 
   # &libprontus::setUtf8();
@@ -132,8 +132,6 @@ main:{
       &lib_logproc::handle_error("ERROR: $msg_err_bd");
   };
 
-
-
   # Se realiza el proceso y se escribe al Log
   &lib_logproc::flush_log();
   &lib_logproc::writeRule();
@@ -142,10 +140,7 @@ main:{
   &lib_logproc::add_to_log_count("PROCESO DE EXPORTACION FINALIZADO");
   &lib_logproc::writeRule();
 
-  $TOT_REGS = '0' if ($TOT_REGS eq '');
-  # &add_to_log("ready4save"); # debug
   &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/prontus_tags_export.xml", $registros);
-  # &add_to_log("saved"); # debug
   sleep 1;
   &lib_logproc::add_to_log("Nro. de registros exportados: $TOT_REGS\nPara bajar el archivo haga click <a href=\"$prontus_varglb::DIR_CPAN/procs/prontus_tags_export.xml\">aqu&iacute;</a>");
   &lib_logproc::add_to_log_finish("Operaci&oacute;n finalizada.");
@@ -215,11 +210,7 @@ sub get_nom_envistas {
 
 # ------------------------------------------------------------------------------
 sub finishLoading {
-
     my $msg = $_[0];
     my $result_file = "$prontus_varglb::DIR_CPAN/procs/result_tags_export.js";
-    my $msg = '{"status":1, "msg":"'.$msg.'"}';
-    &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", $msg);
+    &glib_fildir_02::write_file("$prontus_varglb::DIR_SERVER$result_file", '{"status":1, "msg":"'.$msg.'"}');
 };
-
-# -------------------------END SCRIPT----------------------

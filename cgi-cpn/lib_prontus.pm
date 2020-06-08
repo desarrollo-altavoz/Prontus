@@ -2807,8 +2807,7 @@ sub generic_parse_port {
   $buffer =~ s/<!--POST_PROCESO=.+?-->//ig;
 
   return $buffer;
-
-};
+}
 
 # -------------------------------------------------------------------------
 sub generar_rows_xml_port {
@@ -4605,6 +4604,7 @@ sub generar_popupdirs_from_dir {
 
   my(@entries, $lista, $nom_arch, $seleccionado, $nro_elem, $entry);
 
+  $path_dir =~ s/\.\.\///g;
 
   # Abre directorio.
   opendir(DIR, $path_dir) || die "Can't opendir" . $path_dir . $!;
@@ -5522,6 +5522,7 @@ sub make_mapa_tags {
     my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
 
     foreach my $pproc (@postprocesos) {
+        $pproc =~ s/[#;&<>|~]+//g;
         my $cmd = "$rutaScript/$pproc $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
 
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][mapa_tags][PPROC][$cmd]\n";
@@ -5623,6 +5624,7 @@ sub make_mapa {
     # ejecutamos los postprocesos asociados
     my $rutaScript = "$prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN";
     foreach my $pproc(@postprocesos) {
+        $pproc =~ s/[#;&<>|~]+//g;
         my $cmd = "$rutaScript/$pproc $prontus_varglb::PRONTUS_ID $prontus_varglb::PUBLIC_SERVER_NAME >/dev/null 2>&1 &";
         print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][PPROC]$cmd\n";
         system $cmd;
@@ -5645,12 +5647,6 @@ sub get_arbol_mapa_tags {
     }
 
     $sql .= " ORDER BY $config{'order'}";
-
-    # my ($tags_total, $tags_sum);
-    # my $salida_total = &glib_dbi_02::ejecutar_sql_bind($bd, $sql_total, \($tags_total, $tags_sum));
-
-    # $salida_total->fetch;
-    # $salida_total->finish;
 
     my ($tags_id, $tags_tag, $tags_nom4vistas, $tags_mostrar, $tags_count);
     my $salida = &glib_dbi_02::ejecutar_sql($bd, $sql);
@@ -6144,7 +6140,8 @@ sub valid_xml_import {
 
 #------------------------------------------------------------------------#
 sub call_system_and_location {
-  my ($dir_server, $nom_script_detachado, $location, $params) = @_;
+  my ($dir_server, $nom_script_detachado, $location, $params, $escape) = @_;
+  $escape = 1 if (!defined($escape));
   # ruta_script:
   #   En unix queda algo asi como /sites/misitio.cl/web/cgi-cpn/
   #   En win queda algo asi como c:\sites\misitio.cl\web\cgi-cpn\
@@ -6160,7 +6157,6 @@ sub call_system_and_location {
   print STDERR "DETECTANDO...\n";
   # SI WIN--> generar link para q el user ejecute manualmente la cgi
   if ($dir_server =~ /^\w:/) {
-    print STDERR "win!\n";
     my $script = "$nom_script_detachado.cgi";
     my @parametros = split(/ /, $params);
     my $path_conf = $parametros[1];
@@ -6172,12 +6168,12 @@ sub call_system_and_location {
   }
   # SI UNIX
   else {
-
     my $pathnice = &lib_prontus::get_path_nice();
     $pathnice = "$pathnice -n19 " if($pathnice);
 
-    print STDERR "unix!\n";
     my $script = $ruta_script . "$nom_script_detachado.cgi "; # EN UNIX ES .cgi
+    # limpiar parametros
+    $params =~ s/[#;&<>|~]+//g if ($escape);
     my $cmd = "$pathnice $script $params &";
     print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
     system $cmd;
@@ -6571,8 +6567,9 @@ sub read_file4include {
 
 # Retorna : El texto leido | '' en caso que el archivo no exista.
 
-    my ($archivo) = shift;
-    my ($dir_server) = shift;
+    my $archivo = shift;
+    my $dir_server = shift;
+    $archivo =~ s/\.\.\///g;
 
     my ($buffer) = '';
 
@@ -6944,20 +6941,17 @@ sub call_purge_proc {
     return if ($lib_prontus::DISABLE_PURGE_CACHE);
 
     if ($only_cloudflare) {
-      $file_pend = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/purgepend/$^T_$$\_cf.txt";
+        $file_pend = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/purgepend/$^T_$$\_cf.txt";
     } else {
-      $file_pend = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/purgepend/$^T_$$.txt";
-    };
+        $file_pend = "$prontus_varglb::DIR_SERVER/$prontus_varglb::PRONTUS_ID/cpan/data/purgepend/$^T_$$.txt";
+    }
 
     if (-f $file_pend) {
-        #my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID $file_pend >/dev/null 2>&1 &";
         my $cmd = "/usr/bin/perl $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_purge_cache.cgi $prontus_varglb::PRONTUS_ID >/dev/null 2>&1 &";
         print STDERR "purge[$cmd]\n";
         system $cmd;
-    };
-
-};
-
+    }
+}
 
 END {
     &call_purge_proc();

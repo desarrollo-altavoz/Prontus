@@ -301,7 +301,6 @@ var Opciones = {
     // -------------------------------------------------------------------------
     accionCheckPlatform: function() {
         var obj = Opciones.optsDefault;
-        //obj.href = Opciones.urlCheckPlat + '?prontus_id=' + Admin.prontus_id;
         obj.width = '900px';
         obj.height = '580px';
         obj.href = Opciones.urlCheckPlat;
@@ -309,7 +308,6 @@ var Opciones = {
             Admin.mostrarBarraColorbox();
         };
         $.fn.colorbox(obj);
-
     },
 
     // -------------------------------------------------------------------------

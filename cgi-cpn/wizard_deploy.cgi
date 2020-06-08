@@ -335,9 +335,7 @@ sub deploy {
     return ('', 'Error al importar Categorías del Modelo') if ($? != 0);
 
     return ('', '');
-
-};
-
+}
 
 # ---------------------------------------------------------------
 sub cambia_referencias {
