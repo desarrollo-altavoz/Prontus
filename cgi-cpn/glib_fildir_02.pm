@@ -31,6 +31,7 @@
 
 package glib_fildir_02;
 
+use strict;
 use File::Copy; # este paquete viene con Perl
 
 #---------------------------------------------------------------
@@ -212,8 +213,10 @@ sub read_file_bytes {
 
 # Retorna : El texto leido | '' en caso que el archivo no exista.
 
-  my($archivo,$numbytes) = ($_[0],$_[1]);
-  my($buffer);
+  my ($archivo,$numbytes) = ($_[0],$_[1]);
+  my $buffer;
+
+  $archivo =~ s/\.\.\///g;
 
   if (-f $archivo) {
     open (ARCHIVO,"<$archivo")
@@ -235,21 +238,20 @@ sub read_file {
 # 0) Path real del archivo.
 
 # Retorna : El texto leido | '' en caso que el archivo no exista.
+    my $archivo = shift;
+    my $buffer = '';
+    $archivo =~ s/\.\.\///g;
 
-  my($archivo) = shift;
-  my $buffer = '';
+    if (-f $archivo) {
+        open (ARCHIVO,"<$archivo")
+        || die "Fail Open file $archivo \n $!\n";
+        binmode ARCHIVO;
+        read ARCHIVO, $buffer, -s $archivo;
+        close ARCHIVO;
+    }
 
-  if (-f $archivo) {
-    open (ARCHIVO,"<$archivo")
-      || die "Fail Open file $archivo \n $!\n";
-    binmode ARCHIVO;
-    read ARCHIVO, $buffer, -s $archivo;
-    close ARCHIVO;
-  };
-
-  return $buffer;
-
-};
+    return $buffer;
+}
 #-------------------------------------------------------------------------#
 sub read_file_ref {
 # Lee un archivo por completo y devuelve la ref a el.
@@ -259,9 +261,11 @@ sub read_file_ref {
 
 # Retorna : El texto leido | '' en caso que el archivo no exista.
 
-  my($archivo) = $_[0];
-  my($size) = (-s $archivo);
-  my($buffer) = '';
+  my $archivo = $_[0];
+  $archivo =~ s/\.\.\///g;
+
+  my $size = (-s $archivo);
+  my $buffer = '';
 
   if ((-s $archivo) and (! -d $archivo)) {
     open (ARCHIVO,"<$archivo")
@@ -284,15 +288,15 @@ sub write_file {
 # 0) Path real del archivo.
 # 1) Texto a escribir.
 
-  my($archivo,$buffer) = ($_[0],$_[1]);
+    my($archivo,$buffer) = ($_[0],$_[1]);
 
-  open (ARCHIVO,">$archivo")
-    || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";
-  binmode ARCHIVO;
-  print ARCHIVO $buffer; #Escribe buffer completo
-  close ARCHIVO;
-
-};
+    $archivo =~ s/\.\.\///g;
+    open (ARCHIVO,">$archivo")
+        || die "Content-Type: text/plain\n\n Fail Open file $archivo \n $!\n";
+    binmode ARCHIVO;
+    print ARCHIVO $buffer; #Escribe buffer completo
+    close ARCHIVO;
+}
 
 # -------------------------------------------------------------------- #
 sub append_file {
@@ -302,6 +306,7 @@ sub append_file {
 # 1) Texto a escribir.
 
     my($file,$data) = ($_[0],$_[1]);
+    $file =~ s/\.\.\///g;
     open(DATA,">>$file");
     print DATA $data;
     close DATA;
@@ -317,10 +322,9 @@ sub check_dir {
 # Retorna : 0 si hubo error, y 1 si no lo hubo.
 
   my($dir) = $_[0];
-  my($dir2);
-  my($dir3);
+  $dir =~ s/\.\.\///g;
 
-  # print STDERR "<P>for check:[$dir]\n"; # debug
+  my ($dir2, $dir3);
 
   return 0 if (($dir eq '') || ($dir eq '/'));
 
@@ -363,9 +367,10 @@ sub borra_dir {
 # Param. de entrada :
 # 0) Path real del directorio.
 
-  my($dir) = $_[0];
-  my(@entries);
+  my $dir = $_[0];
+  $dir =~ s/\.\.\///g;
 
+  my @entries;
   if (-e $dir) {
     # Abre directorio.
     opendir(DIR, $dir) || die "Can't opendir" . $dir . $!;
@@ -373,7 +378,7 @@ sub borra_dir {
     closedir DIR;
 
     # print "<P>Borrara dir: [$dir]\n"; # debug
-    foreach $entry (@entries) {
+    foreach my $entry (@entries) {
       if (($entry ne '.') and ($entry ne '..')) {
         if (-d "$dir/$entry") {
           &borra_dir("$dir/$entry");
@@ -398,7 +403,9 @@ sub lee_dir {
 
 # Retorna : Arreglo ordenado de entradas en bruto del directorio.
 
-  my($eldir) = $_[0];
+  my $eldir = $_[0];
+  $eldir =~ s/\.\.\///g;
+
   # Abre directorio.
   opendir(DIR, $eldir) || die "Can't opendir" . $eldir . $!;
   my @entries = readdir(DIR);
@@ -414,6 +421,7 @@ use Fcntl;
 sub sys_read_file {
 
     my( $file_name, %args ) = @_ ;
+    $file_name =~ s/\.\.\///g;
     return '' if (!-f $file_name);
     my $buf ;
     my $buf_ref = $args{'buf_ref'} || \$buf ;
@@ -463,10 +471,11 @@ sub sys_write_file {
 
     my $file_name = shift ;
     my $buf = shift;
+    $file_name =~ s/\.\.\///g;
     # print "escrib[$file_name]\n";
     local( *FH ) ;
     sysopen( FH, $file_name, O_RDWR | O_CREAT | O_TRUNC | O_BINARY | O_NONBLOCK ) ||
-        die "Can't open $file_name: $! \nmode[$mode]" ;
+        die "Can't open $file_name: $!" ;
 
     my $size = length( $buf ) ;
 

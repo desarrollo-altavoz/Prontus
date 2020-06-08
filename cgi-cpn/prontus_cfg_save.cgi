@@ -901,7 +901,7 @@ sub validarPort {
             # Crear link simbólico hacia la portada.
             my $path_home_index = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/site/edic/base/home/index.html';
             my $cmd = "ln -s $dir_portada_site$item $path_home_index";
-            unlink $path_home_index if (-f $path_home_index && -l $path_home_index);
+            unlink $path_home_index if (-f $path_home_index || -l $path_home_index);
             system $cmd;
 
             my $mv_dir_portada_site = $dir_portada_site;
@@ -911,14 +911,14 @@ sub validarPort {
                 my $path_home_index = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/site/edic/base/home/index_'.$mv.'.html';
                 my $path_home_port = "$mv_dir_portada_site-$mv/$item";
                 my $cmd = "ln -s $path_home_port $path_home_index";
-                unlink $path_home_index if (-f $path_home_index && -l $path_home_index);
+                unlink $path_home_index if (-f $path_home_index || -l $path_home_index);
                 system $cmd;
 
                 # Crear link simbólico hacia la portada por cada multivista - Este es el  link que vale
                 $path_home_index = $prontus_varglb::DIR_SERVER . '/' . $prontus_varglb::PRONTUS_ID . '/site/edic/base/home/index-'.$mv.'.html';
                 $path_home_port = "$mv_dir_portada_site-$mv/$item";
                 $cmd = "ln -s $path_home_port $path_home_index";
-                unlink $path_home_index if (-f $path_home_index && -l $path_home_index);
+                unlink $path_home_index if (-f $path_home_index || -l $path_home_index);
                 system $cmd;
             };
         };

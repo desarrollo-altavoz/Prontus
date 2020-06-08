@@ -78,6 +78,10 @@ main: {
 
     my $params = "\"$FORM{'path_conf'}\"";
 
+    $FORM{'check_pp'} =~ s/[^a-zA-z0-9_]//g;
+    $FORM{'operador'} =~ s/[^a-zA-z0-9_]//g;
+    $FORM{'cmb_edic'} =~ s/[^a-zA-z0-9_]//g;
+
     # Agregar parametros adicionales.
     if($FORM{'cmb_edic'} eq '') {
         $FORM{'operador'} = '';

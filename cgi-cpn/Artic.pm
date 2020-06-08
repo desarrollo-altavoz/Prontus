@@ -299,6 +299,7 @@ sub exec_post_proceso_art {
         # Para que sea un script valido debe ubicarse en el mismo dir. de cgi del prontus o a
         # lo mas un nivel hacia arriba.
         if ( ($pp =~ /^\w/) || ($pp =~ /^\.\.(\/|\\)\w/) ) {
+            $pp =~ s/[#;&<>|~]+//g;
             my $cmd = "$rutaScript/$pp $pathArticulo $this->{public_server_name} $newOrEdit >/dev/null 2>&1 &";
             print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "][PPROC]$cmd\n";
             system $cmd;
@@ -1900,9 +1901,7 @@ sub borra_artic {
     my $cmd;
 
     for(my $i = 1; $i <= $prontus_varglb::TAXONOMIA_NIVELES; $i++) {
-
-        my $taxonomia = $hashtemp{$i};
-        my ($secc, $tem, $stem) = split /\//, $taxonomia;
+        my ($secc, $tem, $stem) = split /\//, $hashtemp{$i};
 
         $secc = '0' if ($secc < 0); # para evitar el -1, ver dps por que get_taxonomia devuelve -1
         my $param_especif = $fid . '/' . $secc . '/' . $tem . '/' . $stem;
@@ -3109,9 +3108,7 @@ sub borra_pags_artic {
     my $cmd;
 
     for (my $i = 1 ; $i <= $prontus_varglb::TAXONOMIA_NIVELES ; $i++) {
-
-        my $taxonomia = $hashtemp{$i};
-        my ($secc, $tem, $stem) = split /\//, $taxonomia;
+        my ($secc, $tem, $stem) = split /\//, $hashtemp{$i};
 
         $secc = '0' if ($secc < 0);    # para evitar el -1, ver dps por que get_taxonomia devuelve -1
         my $param_especif = $fid . '/' . $secc . '/' . $tem . '/' . $stem;

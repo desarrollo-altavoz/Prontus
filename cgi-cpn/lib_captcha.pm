@@ -125,14 +125,11 @@ sub garbage_collector {
         return 0;
     };
 
-    # Intenta leer el contenido del directorio.
-    my $num_files;
-    if (opendir(DIR, $dir)) {
-        closedir DIR;
-    } else {
+    # valida directorio
+    if (!-d $dir) {
         $ERRCODE = 3;
         return 0;
-    };
+    }
 
     # se lanza el garbage collector en segundo plano
     use FindBin '$Bin';

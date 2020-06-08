@@ -181,9 +181,9 @@ sub rellenar_plantilla {
   my ($nro_marcas, $marca, $valor_marca, $er_elim1, $er_elim2, $plantilla);
   my ($pagina, $size_arch, $i);
 
-
   $nro_marcas = $_[0];
   $plantilla  = $_[$#_];
+  $plantilla =~ s/\.\.\///g;
 
   # Abrir y cargar archivo corresp. a la plantilla
   open (ARCHIVO,$plantilla) || die "$!\n";
@@ -233,6 +233,7 @@ sub get_datos_desde_html {
 
   $nro_valores = $_[0];
   $arch_html = $_[$#_];
+  $arch_html =~ s/\.\.\///g;
 
   # Abrir y cargar archivo en la variable $str_arch.
   open (ARCHIVO,$arch_html) || die "$!\n";
@@ -446,6 +447,7 @@ sub lee_tit_file {
 
   my($file) = $_[0];
   my($text, $buffer, $numbytes);
+  $file =~ s/\.\.\///g;
 
   # Lee archivo.
   open (ARCHIVO,"<$file")

@@ -1457,6 +1457,7 @@ sub validacfg {
     if ($key =~ /^FILEFILTER/) {
       # FILEFILTER1 pdf /cgi-cpn/pdftotext.sh
       ($ext,$filtro) = split(/\s+/,$CFG{$key});
+      $filtro =~ s/\.\.\///g;
       if ( ($ext =~ /^\w+$/) && (-f "$ROOTDIR$filtro") ) {
         # Inscribe el filtro en el hash de filtros.
         $FILEFILTER{$ext} = "$ROOTDIR$filtro";

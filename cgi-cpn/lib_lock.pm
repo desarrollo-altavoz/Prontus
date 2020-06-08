@@ -56,9 +56,10 @@ sub lock_file {
 # Si falla dado q ya esta tomado el archivo, retorna undef.
 # No es necesario q el archivo exista, sin embargo su dir de ubicacion debe ser valido.
 # Si despues del bloqueo el script se cae entre medio, el lock se libera automaticamente la prox. vez que se le bloquee.
-  my ($file2lock) = $_[0];
+  my $file2lock = $_[0];
   my $no_hay_lfsimple;
   eval "require LockFile::Simple;";    $no_hay_lfsimple = $@;
+  $file2lock =~ s/\.\.\///g;
 
   if ($no_hay_lfsimple) {
     print STDERR "BLOQUEO MANUAL\n";
@@ -82,7 +83,7 @@ sub lock_file {
 
     require LockFile::Simple;
     my ($lockmgr) = LockFile::Simple->make(-format => '%f.lck',
-  	-max => 20, -delay => 1, -nfs => 1, -autoclean => 1, -stale => 1, hold => 28800); # 1.1 - 8 horas como max dura el bloqueo (es en segs)
+    -max => 20, -delay => 1, -nfs => 1, -autoclean => 1, -stale => 1, hold => 28800); # 1.1 - 8 horas como max dura el bloqueo (es en segs)
     my ($lock_obj) = $lockmgr->trylock($file2lock);
     return $lock_obj;
 

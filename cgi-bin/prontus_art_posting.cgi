@@ -405,8 +405,9 @@ sub make_resp_and_exit {
         $plt = &param('_msg_plantilla');
     }
     my $path_plt = "$prontus_varglb::DIR_SERVER/$FORM{'_NP'}/plantillas/extra/posting/pags/" . $plt;
+    $path_plt =~ s/\.\.\///g;
 
-    my $buffer;
+    my $buffer = '';
 
     #~ print STDERR "path_plt[$path_plt]\n";
     if (-f $path_plt) {
@@ -511,6 +512,19 @@ sub call_procs {
     my $seccion3 = &param('_seccion3');
     my $tema3 = &param('_tema3');
     my $subtema3 = &param('_subtema3');
+
+    # valores numericos
+    $seccion1 =~ s/[^0-9]+//g if (defined($seccion1));
+    $tema1 =~ s/[^0-9]+//g if (defined($tema1));
+    $subtema1 =~ s/[^0-9]+//g if (defined($subtema1));
+
+    $seccion2 =~ s/[^0-9]+//g if (defined($seccion2));
+    $tema2 =~ s/[^0-9]+//g if (defined($tema2));
+    $subtema2 =~ s/[^0-9]+//g if (defined($subtema2));
+
+    $seccion3 =~ s/[^0-9]+//g if (defined($seccion3));
+    $tema3 =~ s/[^0-9]+//g if (defined($tema3));
+    $subtema3 =~ s/[^0-9]+//g if (defined($subtema3));
 
     if ($seccion1) {
         my $param_especif_taxport = '/' . $seccion1. '/' . $tema1. '/' . $subtema1;

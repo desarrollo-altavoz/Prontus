@@ -66,6 +66,7 @@ main: {
     $FORM{'files'} = &glib_cgi_04::param('_galeria_fileInputDD');
     $FORM{'prontus_id'} = &glib_cgi_04::param('prontus_id');
     $FORM{'TS'} = &glib_cgi_04::param('ts');
+    $FORM{'TS'} =~ s/[^0-9]+//g;
 
     &valida_invocacion();
 

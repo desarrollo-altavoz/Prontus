@@ -71,8 +71,13 @@ main: {
     print "Cache-Control: no-cache, must-revalidate\r\n";
     print "Content-type: application/json\r\n\r\n";
 
-    if($PRONTUS eq '' || ! -d "$ROOT/$PRONTUS") {
-        &send_error("Directorio Prontus no es v&aacute;lido [$PRONTUS]");
+    if (!&lib_prontus::valida_prontus($PRONTUS)) {
+        &send_error("Directorio Prontus no es v&aacute;lido");
+        exit;
+    }
+
+    if(! -d "$ROOT/$PRONTUS") {
+        &send_error("Directorio Prontus no es v&aacute;lido");
         exit;
     }
 
