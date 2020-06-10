@@ -837,12 +837,18 @@ sub load_artic_pubs {
         my $ref_hash_artics;
         if($JSON::VERSION =~ /^1\./) {
             my $json = new JSON;
-            $ref_hash_artics = $json->jsonToObj($json_artics);
+            eval { $ref_hash_artics = $json->jsonToObj($json_artics); };
         } else {
-            $ref_hash_artics = &JSON::from_json($json_artics);
+            eval { $ref_hash_artics = &JSON::from_json($json_artics); };
         }
-        return %$ref_hash_artics;
-    };
+        if ($@) {
+            print STDERR "Error al decodificar json: $@, file[$path_json] json:[$json_artics]\n";
+            # si falla, el json es invalido y se borra para que se re-genere
+            unlink($path_json);
+        } else {
+            return %$ref_hash_artics;
+        }
+    }
 
     # Solo si la edicion es base, se guardan sólo las portadas base
     my %ports_base;
