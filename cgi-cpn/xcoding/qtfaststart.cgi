@@ -265,7 +265,7 @@ sub process {
         } elsif (@{$atom}[0] eq "free" && $pos < $mdat_pos) {
             # This free atom is before the mdat!
             $free_size += $size;
-            warn("Removing free atom at $pos ($size bytes)");
+            warn("Free atom at $pos ($size bytes)");
         }
     }
 
@@ -273,12 +273,8 @@ sub process {
     my $offset = $moov_size - $free_size;
 
     if( $moov_pos < $mdat_pos) {
-        # moov appears to be in the proper place, don't shift by moov size
-        $offset -= $moov_size;
-        unless($free_size) {
-            # No free atoms and moov is correct, we are done!
-            die("This file appears to already be setup for streaming!")
-        }
+        # No free atoms and moov is correct, we are done!
+        die("This file appears to already be setup for streaming!")
     }
 
     # Open the output file to write on it
