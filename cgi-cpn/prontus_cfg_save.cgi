@@ -291,7 +291,7 @@ main: {
 
     my %hash_vars = %{ $hash_defaultvars{$FORM{'_cfg'}} };
 
-    foreach my $var_valida (keys %hash_vars) {
+    foreach my $var_valida (sort keys %hash_vars) {
         my @var_info = split(/;/, $hash_vars{$var_valida});
         my $input_value = &glib_cgi_04::param($var_valida);
         if ($input_value && $input_value ne '') {
@@ -301,7 +301,7 @@ main: {
             my $re = qr/$var_info[1]/;
             if ($var_info[3] eq 'M') { # Los valores del input vienen separados por |, son multiples.
                 # Validar cada valor.
-                my @input_value_array = split(/\|/, $input_value);
+                my @input_value_array = sort split(/\|/, $input_value);
                 if ((scalar @input_value_array) gt 0) {
                     foreach my $item (@input_value_array) {
                         if ($item !~ /$re/) {

@@ -10703,3 +10703,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_port_regen.cgi
         /cgi-cpn/prontus_port_regen_real.cgi
         /cgi-cpn/xcoding/lib_xcoding.pm
+
+====================================================================================================
+11.2.112 - XX/07/2020 - EAG
+====================================================================================================
+- Prontus en general
+    [mejora]
+        - Ordena variables al guardar configuración
+    [files]
+        /cgi-cpn/prontus_cfg_save.cgi
+
