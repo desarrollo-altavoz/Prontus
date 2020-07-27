@@ -1,4 +1,11 @@
 ====================================================================================================
+11.2.112 - 27/07/2020 - EAG
+====================================================================================================
+- improvement: (general) Ordena variables al guardar configuración
+- improvement: (xcoding) No elimina free atoms de videos mp4 para mejorar compatibilidad
+- improvement: (guardado de artículos) Actualizacion de portadas en la que está publicado el artículo se hace en segundo plano
+
+====================================================================================================
 11.2.111 - 08/06/2020 - EAG
 ====================================================================================================
 - improvement: (general) Mejoras generales en seguridad de procesos
