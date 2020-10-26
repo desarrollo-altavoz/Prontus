@@ -149,7 +149,7 @@ sub validar_datos {
 # Valida datos provenientes del formulario paso1.
 # Retorna msg de error si lo hay o nada si todo ok.
 
-  if (! &lib_prontus::valida_prontus($FORM{'PRONTUS_ID'})) {
+  if (! &lib_prontus::valida_prontus($FORM{'PRONTUS_ID'}, 'saltar_check_existencia')) {
     return 'Nombre de publicador no válido.';
   };
 

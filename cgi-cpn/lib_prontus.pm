@@ -1031,12 +1031,13 @@ sub check_prontus_key { # 8.0
 # -------------------------------------------------------------------------#
 sub valida_prontus {
     my $prontus_id = shift;
+    my $chequear_archivos = shift || 0;
     if ($prontus_id !~ /^[\w\_\-]+$/) {
         print STDERR "Error valida_prontus: Prontus ID no valida REGEX\n";
         return 0
     }
     # chequeamos que exista el prontus
-    if (!-f "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id-bd.cfg") {
+    if ($chequear_archivos ne 'saltar_check_existencia' && !-f "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id-bd.cfg") {
         print STDERR "Error valida_prontus: No hay conf de BD para este Prontus ID\n";
         return 0;
     }

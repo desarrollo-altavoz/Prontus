@@ -10726,3 +10726,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/lib_artic.pm
         /cgi-cpn/prontus_port_update_by_art.pl
+
+====================================================================================================
+11.2.113 - 26/10/2020 - AVP
+====================================================================================================
+- Prontus en general
+    [bugfixes]
+        - Corrige la validación de Prontus en el caso especial del wizard_prontus, donde aún no existe
+        el sitio.
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/wizard_paso1.cgi
