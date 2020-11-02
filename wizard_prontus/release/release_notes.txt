@@ -10734,5 +10734,17 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [bugfixes]
         - Corrige la validación de Prontus en el caso especial del wizard_prontus, donde aún no existe
         el sitio.
+    [files]
         /cgi-cpn/lib_prontus.pm
         /cgi-cpn/wizard_paso1.cgi
+
+====================================================================================================
+11.2.113.1 - 26/10/2020 - AVP
+====================================================================================================
+- Prontus
+    [bugfixes]
+        - Prontus form no adjuntaba archivo por correo si no era el último campo recibido
+        - Quita tildes para evitar error al exceder largo del campo en BD.
+    [files]
+        /cgi-bin/prontus_form.cgi
+        /cgi-cpn/Artic.pm

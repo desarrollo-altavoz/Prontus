@@ -322,8 +322,9 @@ sub data_management {
         $backupheaders .= '"' . $key . '"' . $SEPARADOR;
         # Determino si el dato es un archivo o no.
         # Si son varios, se adjuntara el ultimo.
-        $filename = &glib_cgi_04::real_paths($key);
-        if (defined($filename) && $filename ne '') { # Es un archivo.
+        my $aux = &glib_cgi_04::real_paths($key);
+        if (defined($aux) && $aux ne '') { # Es un archivo.
+            $filename = $aux;
             $filename =~ s/.+[\/\\]([^\/\\]+)/$1/; # 1.3 Extrae path por si lo trae.
 
             my $ext = '';
