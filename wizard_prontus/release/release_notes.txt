@@ -10748,3 +10748,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-bin/prontus_form.cgi
         /cgi-cpn/Artic.pm
+====================================================================================================
+11.2.113.2 - 05/11/2020 - AVP
+====================================================================================================
+- Prontus
+    [changes]
+        - Se fuerza el campo _admin de un prontus_form a valores numéricos.
+        - Se deshabilita la funcionalidad de autorrespuesta de prontus_form.
+    [files]
+        /cgi-bin/prontus_form.cgi
