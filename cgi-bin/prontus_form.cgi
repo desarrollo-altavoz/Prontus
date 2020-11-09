@@ -311,8 +311,17 @@ sub data_management {
     my $order_data;
     my $counter = 1;
     # Forma cuerpo para el administrador.
-    # Lee formulario para determinar el orden de los datos.
+    # Lee formulario para determinar el orden de los datos y descartar datos inyectados.
     $BUFFER_ART = &glib_fildir_02::read_file($ROOTDIR.&glib_cgi_04::param('_FILE'));
+
+    # descartamos datos que no vengan incluidos en el HTML original del formulario.
+    # Implementado por pedido de BUPA 2020-11-09 - avaroli@altavoz.net
+    my @tmp = ();
+    foreach my $key (@DATOS) {
+            push (@tmp, $key) if &campo_existe_html($key);
+    }
+    @DATOS = @tmp;
+
     $body = "Los datos recibidos son los siguientes:\n\n";
     $backupheaders .= "\"Fecha\"$SEPARADOR\"Hora\"$SEPARADOR\"IP\"$SEPARADOR";
     $backupdata .= "\"$fecha\"$SEPARADOR\"$hora\"$SEPARADOR\"$ip\"$SEPARADOR";
@@ -520,6 +529,12 @@ sub data_management {
     # }
     return $result; # $result es solo para debug.
 }; # dataManagement
+
+# Devuelve TRUE para aquellas variables del array DATOS que se encuentran en el BUFFER_ART.
+sub campo_existe_html {
+    my $campo = shift;
+    return index($BUFFER_ART, "\"$campo\"") >= 0;
+}
 
 # ------------------------------------------------------------------------- #
 # ordena los campos segun los encuentra en el html

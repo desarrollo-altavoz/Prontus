@@ -10755,5 +10755,6 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [changes]
         - Se fuerza el campo _admin de un prontus_form a valores numéricos.
         - Se deshabilita la funcionalidad de autorrespuesta de prontus_form.
+        - Se descartan campos que no estén incluídos en el HTML original.
     [files]
         /cgi-bin/prontus_form.cgi
