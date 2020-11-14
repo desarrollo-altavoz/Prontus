@@ -1,4 +1,25 @@
 ====================================================================================================
+11.2.114 - 13/11/2020 - AVP/EAG
+====================================================================================================
+- changes: (prontus form) Se fuerza el campo _admin de un prontus_form a valores numéricos
+- changes: (prontus form) Se deshabilita la funcionalidad de autorrespuesta de prontus_form
+- changes: (prontus form) Se descartan campos que no estén incluídos en el HTML original
+- bugfixes: (prontus form) Prontus form no adjuntaba archivo por correo si no era el último campo recibido
+- bugfixes: (artic) Quita tildes de titular al guardar en BD para evitar error al exceder largo del campo
+
+====================================================================================================
+11.2.113 - 26/10/2020 - AVP
+====================================================================================================
+- bugfixes: (wizard_prontus) corrección a función de validación por caso especial dentro del wizard.
+
+====================================================================================================
+11.2.112 - 27/07/2020 - EAG
+====================================================================================================
+- improvement: (general) Ordena variables al guardar configuración
+- improvement: (xcoding) No elimina free atoms de videos mp4 para mejorar compatibilidad
+- improvement: (guardado de artículos) Actualizacion de portadas en la que está publicado el artículo se hace en segundo plano
+
+====================================================================================================
 11.2.111 - 08/06/2020 - EAG
 ====================================================================================================
 - improvement: (general) Mejoras generales en seguridad de procesos

@@ -837,12 +837,18 @@ sub load_artic_pubs {
         my $ref_hash_artics;
         if($JSON::VERSION =~ /^1\./) {
             my $json = new JSON;
-            $ref_hash_artics = $json->jsonToObj($json_artics);
+            eval { $ref_hash_artics = $json->jsonToObj($json_artics); };
         } else {
-            $ref_hash_artics = &JSON::from_json($json_artics);
+            eval { $ref_hash_artics = &JSON::from_json($json_artics); };
         }
-        return %$ref_hash_artics;
-    };
+        if ($@) {
+            print STDERR "Error al decodificar json: $@, file[$path_json] json:[$json_artics]\n";
+            # si falla, el json es invalido y se borra para que se re-genere
+            unlink($path_json);
+        } else {
+            return %$ref_hash_artics;
+        }
+    }
 
     # Solo si la edicion es base, se guardan sólo las portadas base
     my %ports_base;
@@ -1025,12 +1031,13 @@ sub check_prontus_key { # 8.0
 # -------------------------------------------------------------------------#
 sub valida_prontus {
     my $prontus_id = shift;
+    my $chequear_archivos = shift || 0;
     if ($prontus_id !~ /^[\w\_\-]+$/) {
         print STDERR "Error valida_prontus: Prontus ID no valida REGEX\n";
         return 0
     }
     # chequeamos que exista el prontus
-    if (!-f "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id-bd.cfg") {
+    if ($chequear_archivos ne 'saltar_check_existencia' && !-f "$prontus_varglb::DIR_SERVER/$prontus_id/cpan/$prontus_id-bd.cfg") {
         print STDERR "Error valida_prontus: No hay conf de BD para este Prontus ID\n";
         return 0;
     }

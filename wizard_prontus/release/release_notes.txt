@@ -10705,7 +10705,7 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/xcoding/lib_xcoding.pm
 
 ====================================================================================================
-11.2.112 - XX/07/2020 - EAG
+11.2.112 - 27/07/2020 - EAG
 ====================================================================================================
 - Prontus en general
     [mejora]
@@ -10719,3 +10719,40 @@ Esto quedó actualizado en el check platform y detallado más abajo.
     [files]
         /cgi-cpn/xcoding/prontus_qtfaststart_check.cgi
         /cgi-cpn/xcoding/qtfaststart.cgi
+
+- Guardado de artículos
+    [mejora]
+        - Actualizacion de portadas en la que está publicado el artículo se hace en segundo plano
+    [files]
+        /cgi-cpn/lib_artic.pm
+        /cgi-cpn/prontus_port_update_by_art.pl
+
+====================================================================================================
+11.2.113 - 26/10/2020 - AVP
+====================================================================================================
+- Prontus en general
+    [bugfixes]
+        - Corrige la validación de Prontus en el caso especial del wizard_prontus, donde aún no existe
+        el sitio.
+    [files]
+        /cgi-cpn/lib_prontus.pm
+        /cgi-cpn/wizard_paso1.cgi
+
+====================================================================================================
+11.2.114 - 13/11/2020 - AVP/EAG
+====================================================================================================
+- Prontus Form
+    [changes]
+        - Se fuerza el campo _admin de un prontus_form a valores numéricos
+        - Se deshabilita la funcionalidad de autorrespuesta de prontus_form
+        - Se descartan campos que no estén incluídos en el HTML original
+    [bugfixes]
+        - Prontus form no adjuntaba archivo por correo si no era el último campo recibido
+    [files]
+        /cgi-bin/prontus_form.cgi
+
+- Artículo
+    [bugfixes]
+        - Quita tildes de titular al guardar en BD para evitar error al exceder largo del campo
+    [files]
+        /cgi-cpn/Artic.pm

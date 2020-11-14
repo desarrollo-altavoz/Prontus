@@ -2159,6 +2159,7 @@ sub _ajusta_campos_art4bd {
     my $titu = $campos{'_txt_titular'};
     # convierte a latin1 para poder contar bien los chars
     utf8::decode($titu);
+    $titu = &lib_prontus::notildes($titu);
     # Ajusta en caso de tiulares muy largos, de manera de evitar truncado brusco en la BD
     if ((length $titu) > 255) {
         $titu = substr($titu, 0, 252) . '...';

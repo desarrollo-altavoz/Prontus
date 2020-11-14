@@ -47,7 +47,7 @@ sub check_paso1 {
         my $buffer_prontus = $1;
         # Validar id
         $prontus_id = &get_prontus_id($buffer_prontus);
-        if (! &lib_prontus::valida_prontus($prontus_id)) {
+        if (! &lib_prontus::valida_prontus($prontus_id, "saltar_check_existencia")) {
             return 'Información de paso previo está corrupta. Para poder continuar debe volver al paso anterior.';
         };
     } else {

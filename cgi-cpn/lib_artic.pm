@@ -338,43 +338,42 @@ sub do_save {
 
 };
 # ---------------------------------------------------------------
-sub regen_ports {
 # Sea nuevo o modificar, y si hay control de alta, se reconstruyen las portadas de la
 # edicion base, vigente y ultima que tengan ese articulo publicado.
 # Las portadas que no tengan el articulo publicado no se tocan.
-
+sub regen_ports {
     my $artic = shift;
-    # Recibe el path completo de la vista pero lo machetea para dejar solo el nombre del
-    # archivo mas su extension.
-    no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-    $artic =~ s/.+(\d{14})\.\w+$/\1/;
+
     if ($prontus_varglb::ARTIC_ACTUALIZA_PORTS eq 'SI') {
-        &lib_prontus::actualizar_portadas_byartic($artic, 'ALTA_CONTROL');
-    };
-};
+        # cargamos la ruta de nice
+        my $pathnice = &lib_prontus::get_path_nice();
+        $pathnice = "$pathnice -n19 " if ($pathnice);
+        $artic =~ s/[#;&<>|~]+//g;
+        my $cmd = "$pathnice $prontus_varglb::DIR_SERVER/$prontus_varglb::DIR_CGI_CPAN/prontus_port_update_by_art.pl $artic >/dev/null 2>&1 &";
+        print STDERR "[" . &glib_hrfec_02::get_dtime_pack4() . "]$cmd\n";
+        system $cmd;
+    }
+}
 # ---------------------------------------------------------------
 sub publica_art_in_port {
 # funcion para publicacion directa de 1 artic en alguna port.
   my ($full_path_port, $edic, $nom_port, $prontus_id, $ts_new_artic, $fid_artic, $area) = @_;
 
 #  print STDERR "full_path_port[$full_path_port]\n";
-  # print STDERR "nom_port[$nom_port]\n";
+# print STDERR "nom_port[$nom_port]\n";
 #  print STDERR "prontus_id[$prontus_id]\n";
 #  print STDERR "nom_artic[$nom_artic]\n";
 #  print STDERR "area[$area]\n";
 
   my ($pathdir_pags, $pathdir_seccs, @entries, $entry, $text_seccion,  $id);
 
-
   %lib_prontus::AREA = ();
   %lib_prontus::PRIO = ();
   %lib_prontus::DIR_FECHA = ();
   %lib_prontus::VB = ();
 
-
   my $full_path_xmlport = $full_path_port;
-  no warnings 'syntax'; # para evitar el msg "\1 better written as $1"
-  $full_path_xmlport =~ s/\/port\/(\w+)(\.\w+)?$/\/xml\/\1\.xml/;
+  $full_path_xmlport =~ s/\/port\/(\w+)(\.\w+)?$/\/xml\/$1\.xml/;
 
   # Rescatar la info de c/artic de la portada
   # print STDERR "full_path_xmlport[$full_path_xmlport]\n";

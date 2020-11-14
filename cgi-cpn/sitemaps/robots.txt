@@ -1,0 +1,3 @@
+User-agent: *
+Sitemap: https://www.puranoticia.cl/noticias/sitemap.xml
+Sitemap: https://www.puranoticia.cl/noticias/sitemap_news.xml
