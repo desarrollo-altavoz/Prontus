@@ -10739,22 +10739,20 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/wizard_paso1.cgi
 
 ====================================================================================================
-11.2.113.1 - 26/10/2020 - AVP
+11.2.114 - 13/11/2020 - AVP/EAG
 ====================================================================================================
-- Prontus
+- Prontus Form
+    [changes]
+        - Se fuerza el campo _admin de un prontus_form a valores numéricos
+        - Se deshabilita la funcionalidad de autorrespuesta de prontus_form
+        - Se descartan campos que no estén incluídos en el HTML original
     [bugfixes]
         - Prontus form no adjuntaba archivo por correo si no era el último campo recibido
-        - Quita tildes para evitar error al exceder largo del campo en BD.
     [files]
         /cgi-bin/prontus_form.cgi
+
+- Artículo
+    [bugfixes]
+        - Quita tildes de titular al guardar en BD para evitar error al exceder largo del campo
+    [files]
         /cgi-cpn/Artic.pm
-====================================================================================================
-11.2.113.2 - 05/11/2020 - AVP
-====================================================================================================
-- Prontus
-    [changes]
-        - Se fuerza el campo _admin de un prontus_form a valores numéricos.
-        - Se deshabilita la funcionalidad de autorrespuesta de prontus_form.
-        - Se descartan campos que no estén incluídos en el HTML original.
-    [files]
-        /cgi-bin/prontus_form.cgi
