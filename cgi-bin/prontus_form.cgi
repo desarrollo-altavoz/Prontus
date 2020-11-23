@@ -280,7 +280,7 @@ main: {
 # Envia mails y guarda datos si es pertinente.
 sub data_management {
     my($body,$data,$backupdir,$backupdata,$backupheaders);
-    my ($to,$from,$subj,$filename,$filedata,$file_final_path,$fecha,$hora,$ip);
+    my ($to,$from,$subj,$filename,$filedata,$fecha,$hora,$ip);
     my ($result);
     my (%files);
     my ($random) = time . $$; # Mejor usamos el numero de proceso y listo. time . rand(1000000);
@@ -308,6 +308,7 @@ sub data_management {
     $data_json->{'_hora'} = $hora;
     $data_json->{'_ip'} = $ip;
 
+    my $file_final_path = '';
     my $order_data;
     my $counter = 1;
     # Forma cuerpo para el administrador.
@@ -315,10 +316,10 @@ sub data_management {
     $BUFFER_ART = &glib_fildir_02::read_file($ROOTDIR.&glib_cgi_04::param('_FILE'));
 
     # descartamos datos que no vengan incluidos en el HTML original del formulario.
-    # Implementado por pedido de BUPA 2020-11-09 - avaroli@altavoz.net
+    # Implementado 2020-11-09 - avaroli@altavoz.net
     my @tmp = ();
     foreach my $key (@DATOS) {
-            push (@tmp, $key) if &campo_existe_html($key);
+        push (@tmp, $key) if &campo_existe_html($key);
     }
     @DATOS = @tmp;
 
@@ -332,6 +333,8 @@ sub data_management {
         # Si son varios, se adjuntara el ultimo.
         my $aux = &glib_cgi_04::real_paths($key);
         if (defined($aux) && $aux ne '') { # Es un archivo.
+            # si no se marcó guardar adjuntos no se agrega la información al correo de un archivo inexistente
+            next if (!defined($PRONTUS_VARS{'chk_form_backup_datos'}) || $PRONTUS_VARS{'chk_form_backup_datos'} eq '');
             $filename = $aux;
             $filename =~ s/.+[\/\\]([^\/\\]+)/$1/; # 1.3 Extrae path por si lo trae.
 
@@ -382,7 +385,7 @@ sub data_management {
 
     # Genera el backup, si es pertinente.
     # Solamente guarda archivos adjuntos si está activa esta opción!
-    if ($PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
+    if (defined($PRONTUS_VARS{'chk_form_backup_datos'}) && $PRONTUS_VARS{'chk_form_backup_datos'} ne '') {
         if (-e "$backupdir/backup.csv") { # Si existe ya el archivo, no inserta la linea de encabezados.
             &glib_fildir_02::append_file("$backupdir/backup.csv","$backupdata\r\n");
         } else {
@@ -447,86 +450,13 @@ sub data_management {
     my $replyto = &glib_cgi_04::param('email');
     foreach my $email (@ADMIN_MAILS) {
         $to = $email;
-        if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO') {
+        # si el adjunto no existe, no se envia por correo para evitar error
+        if ($prontus_varglb::FORM_INCLUIR_ADJUNTO eq 'NO' || ($file_final_path ne '' && !-s $file_final_path)) {
             $result .= ' 1 ' . &lib_form::envia_mail2($to,$from,$replyto,$subj,$body,'','');
         } else {
             $result .= ' 1 ' . &lib_form::envia_mail2($to,$from,$replyto,$subj,$body,$filename,$file_final_path);
         }
     }
-
-    # Por indicación de ALD se deshabilita la autorrespuesta. Ref: pedido de BUPA. 2020-11-05 avaroli@altavoz.net
-    # Forma cuerpo para el remitente (autorrespuesta).
-    # if ($PRONTUS_VARS{'form_from'} ne '') {
-    #     $result .= ' 2 ';
-    #     $from = $PRONTUS_VARS{'form_from'};
-    #     if (&glib_cgi_04::param('email') ne '') {
-    #         $result .= ' 3 ';
-    #         $to = &glib_cgi_04::param('email');
-    #         $subj = $PRONTUS_VARS{'form_subject_auto'.$VISTAVAR};
-    #         $body = $PRONTUS_VARS{'form_msg_auto'.$VISTAVAR};
-
-    #         my $encode_html = 0;
-    #         my $email_plantilla = &glib_cgi_04::param('_pag_email_remitente');
-    #         if (defined($email_plantilla) && $email_plantilla ne '') {
-    #             $email_plantilla =~ s/[^\w\-]//g; # Solo caracteres alfanumericos y - y _.
-    #             $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
-    #             $encode_html = 1;
-    #         } elsif (defined($PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR})) {
-    #             $email_plantilla = $PRONTUS_VARS{'form_msg_auto_html'.$VISTAVAR};
-    #             if (substr($email_plantilla, 0, 1) eq '/') {
-    #                 $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID$email_plantilla");
-    #             } elsif (index($email_plantilla, '.') > -1) {
-    #                 $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla");
-    #             } else {
-    #                 $body = &glib_fildir_02::read_file("$ROOTDIR/$PRONTUS_ID/$TMP_DIR/pags$VISTADIR/$email_plantilla\.$EXT");
-    #             }
-    #             $encode_html = 1;
-    #         }
-
-    #         if ($body eq '') {
-    #             &lib_form::aborta("No existe cuerpo de mensaje para el remitente.");
-    #         }
-
-    #         if ($encode_html) {
-    #             $body =~ s/\r\n/\n/sg;
-    #             $body =~ s/\r/\n/sg;
-    #         }
-
-    #         # 1.2 Procesa IFs y NIFs.
-    #         $subj = &procesaIFs($subj,1);
-    #         $body = &procesaIFs($body,1);
-    #         foreach my $key (@DATOS) {
-    #             # Elimina espacios para que no molesten.
-    #             $data = &glib_str_02::trim(&glib_cgi_04::param($key));
-    #             # 1.1 Reemplaza datos en subject y body.
-    #             $body =~ s/\%\Q$key\E\%/$data/sg;
-    #             $data =~ s/[^\w\- ]//g; # Elimina todo caracter extrano en el subject.
-    #             $subj =~ s/\%\Q$key\E\%/$data/sg;
-    #         };
-
-    #         $subj =~ s/\%_ts%/$TS/sig;
-    #         $body =~ s/\%_ts%/$TS/sig;
-
-    #         $subj =~ s/\%_tsenvio%/$TSENVIO/sig;
-    #         $body =~ s/\%_tsenvio%/$TSENVIO/sig;
-
-    #         $subj =~ s/\%_public_server_name%/$prontus_varglb::PUBLIC_SERVER_NAME/sig;
-    #         $body =~ s/\%_public_server_name%/$prontus_varglb::PUBLIC_SERVER_NAME/sig;
-
-    #         $subj =~ s/\%_prontus_id%/$PRONTUS_ID/sig;
-    #         $body =~ s/\%_prontus_id%/$PRONTUS_ID/sig;
-
-    #         $body =~ s/%_PF_(\w+\(.*?\))%/%%_PF_$1%%/isg;
-    #         $subj =~ s/%_PF_(\w+\(.*?\))%/%%_PF_$1%%/isg;
-
-    #         $body = &lib_prontus::parser_custom_function($body);
-    #         $subj = &lib_prontus::parser_custom_function($subj);
-
-    #         $body =~ s/%\w+%//sg; # Elimina tags no parseados.
-    #         $subj =~ s/%\w+%//sg; # 1.2.1 Elimina tags no parseados.
-    #         $result .= ' 5 ' . &lib_form::envia_mail2($to, $from, $from, $subj, $body, '', '', $encode_html);
-    #     }
-    # }
     return $result; # $result es solo para debug.
 }; # dataManagement
 
@@ -553,8 +483,7 @@ sub ordenar_campos {
 # ------------------------------------------------------------------------- #
 # Valida las variables Prontus y las del formulario.
 sub valida_data {
-    my($email,$file,$key,$nombre,$buffer,$dato,$form_admin,$plantilla); # 1.1
-    my(@mails); # 1.6
+    my($email,$file,$key,$nombre,$buffer,$dato,$plantilla); # 1.1
 
     @DATOS = &glib_cgi_04::param();
 
@@ -567,23 +496,22 @@ sub valida_data {
         $VISTADIR = '-' . $VISTADIR; # Variable queda lista para ser inserta en los paths.
     }
     # Determina cuales seran los emails de destino (administrador).
-    $form_admin = &glib_cgi_04::param('_admin');
-    $form_admin =~ s/\s+//g;  # Elimina espacios.
-    # Si en el form hay un dato _admin, y es numérico, se busca ese número en la lista definida en el FID. 
-    # Si ese número no existe en la lista, se usa toda la lista.
+    # por defecto se envía a todos
+    my $form_admin = $PRONTUS_VARS{'form_admin'};
+    # revisa si form indica que se debe enviar a solo 1 correo de la posible lista anterior
+    my $_admin = &glib_cgi_04::param('_admin') || 0;
+    $_admin =~ s/[^\d]+//g;  # Elimina cualquier caracter no numerico
+    # Si en el form hay un dato _admin, y es numérico, se busca ese número en la lista definida en el FID.
     # Si no existe el dato, se usa el o los emails definidos en el FID.
-    if ($form_admin =~ /^\d+$/ && $form_admin > 0) {
-        @mails = split(/,/,$PRONTUS_VARS{'form_admin'});
-        $form_admin = $mails[$form_admin - 1];
-        if (! $form_admin) { # si el número no estaba en la lista, se envía a todos.
-            $form_admin = $PRONTUS_VARS{'form_admin'};
-        }
-    } else {
-        if (! defined($form_admin) || $form_admin eq '') {
-            $form_admin = $PRONTUS_VARS{'form_admin'};
+    if ($_admin ne '' && $_admin > 0) {
+        my @mails = split(/,/,$PRONTUS_VARS{'form_admin'});
+        # existe este correo en la lista
+        if (exists($mails[$_admin - 1])) {
+            $form_admin = $mails[$_admin - 1];
         }
     }
-    if ($form_admin eq '') {
+
+    if (!defined($form_admin) || $form_admin eq '') {
         &lib_form::aborta("Error: no existe E-mail de destino.");
     }
 
@@ -715,11 +643,6 @@ sub valida_data {
     # Chequea campos requeridos.
     if($PRONTUS_VARS{'chk_form_multivista_strict'}) {
         #print STDERR "chk_form_multivista_strict encontrado: [$PRONTUS_VARS{'chk_form_multivista_strict'}]\n";
-
-        #print STDERR "Vistas: \n";
-        #foreach my $v (keys %lib_form::MULTIVISTAS) {
-        #    print STDERR "[$v]\n";
-        #}
 
         foreach $key (keys %PRONTUS_VARS) {
             next unless($key =~ /chk_form_required_(\w+)/);
@@ -853,7 +776,7 @@ sub get_prontus_vars {
     my $xml = &glib_fildir_02::read_file($path_final_xml);
     while ($xml =~ /<([^>]+)>[\s\n\r]+<\!\[CDATA\[(.+?)\]\]>[\s\n\r]+<\/\1>/gis) {
         $PRONTUS_VARS{$1} = &glib_str_02::trim($2); # Elimina espacios para que no molesten.
-    };
+    }
 }; # get_prontus_vars
 
 # ------------------------------------------------------------------------- #
