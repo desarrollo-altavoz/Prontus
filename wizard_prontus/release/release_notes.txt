@@ -10758,11 +10758,13 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/Artic.pm
 
 ====================================================================================================
-11.2.114.1 - 19/11/2020 - AVP/EAG
+11.2.114.1 - 07/12/2020 - AVP/EAG
 ====================================================================================================
 - Prontus Form
     [bugfixes]
         - El envío de correo fallaba en algunas condiciones
+    [changes]
+        - Quita restricción para descartar campos dinamicos
     [files]
         /cgi-bin/prontus_form.cgi
 

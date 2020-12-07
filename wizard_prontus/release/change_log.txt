@@ -1,4 +1,11 @@
 ====================================================================================================
+11.2.114.1 - 07/12/2020 - AVP/EAG
+====================================================================================================
+- changes: (prontus form) Quita restricción para descartar campos dinamicos
+- changes: (fid) Agrega botón para usar blockquote a las opciones del editor vtxt
+- bugfixes: (prontus form) El envío de correo fallaba en algunas condiciones
+
+====================================================================================================
 11.2.114 - 13/11/2020 - AVP/EAG
 ====================================================================================================
 - changes: (prontus form) Se fuerza el campo _admin de un prontus_form a valores numéricos

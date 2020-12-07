@@ -315,16 +315,6 @@ sub data_management {
     # Lee formulario para determinar el orden de los datos y descartar datos inyectados.
     $BUFFER_ART = &glib_fildir_02::read_file($ROOTDIR.&glib_cgi_04::param('_FILE'));
 
-    # descartamos datos que no vengan incluidos en el HTML original del formulario.
-    # Implementado 2020-11-09 - avaroli@altavoz.net
-    # Comentado 2020-11-26. Debe implementarse una solución más resistente por ej. con una
-    # definicion de campos en un FID.
-    # my @tmp = ();
-    # foreach my $key (@DATOS) {
-    #     push (@tmp, $key) if &campo_existe_html($key);
-    # }
-    # @DATOS = @tmp;
-
     $body = "Los datos recibidos son los siguientes:\n\n";
     $backupheaders .= "\"Fecha\"$SEPARADOR\"Hora\"$SEPARADOR\"IP\"$SEPARADOR";
     $backupdata .= "\"$fecha\"$SEPARADOR\"$hora\"$SEPARADOR\"$ip\"$SEPARADOR";
