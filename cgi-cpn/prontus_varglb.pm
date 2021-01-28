@@ -53,7 +53,7 @@ sub init { # Prontus 6.0
   &set_info_version_prontus();
 
 
-  $MSG_BLOQUEOSYSADMIN = 'Este Administrador de Contenidos se encuentra actualmente en mantenciï¿½n, para mayor informaciï¿½n comunï¿½quese con el Webmaster.';
+  $MSG_BLOQUEOSYSADMIN = 'Este Administrador de Contenidos se encuentra actualmente en mantención, para mayor información comuníquese con el Webmaster.';
 
   $MAX_NRO_ARTIC = '';
   $RTEXT_ENABLED = '';
@@ -241,7 +241,7 @@ sub init { # Prontus 6.0
 
   %POST_PROCESO = ();
 
-  # Portadas publicables en la ediciï¿½n base.
+  # Portadas publicables en la edición base.
   @BASE_PORTS = ();
 
 
@@ -347,7 +347,7 @@ sub get_dir_server {
         if ($ENV{'SERVER_NAME'} ne '') { # ambiente web
             print "Content-Type: text/html\n\n";
         };
-        print 'Error, no se ha podido detectar DOCUMENT ROOT o ï¿½ste no es vï¿½lido';
+        print 'Error, no se ha podido detectar DOCUMENT ROOT o éste no es válido';
         exit;
     };
 
