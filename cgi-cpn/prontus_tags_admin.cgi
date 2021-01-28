@@ -180,8 +180,6 @@ main:{
     my ($lista, $nro_filas) = &make_lista($sql, $loop);
     $pagina =~ s/<!--item_loop-->.*<!--\/item_loop-->/$lista/s;
 
-    $BD->disconnect;
-
     $pagina =~ s/%%_path_conf%%/$FORM{'_path_conf'}/ig;
     $pagina =~ s/%%input_search%%/$FORM{'search'}/ig;
     $pagina =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/isg;
@@ -228,18 +226,6 @@ main:{
 
 # ---------------------------------------------------------------
 # SUB-RUTINAS.
-# ---------------------------------------------------------------
-# rotulos tax
-#sub load_data_multivistas {
-#    my $tipo = shift;
-#    foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
-#        # r:\prontus_development\web\prontus_toolbox\cpan\data\tax_multivista\pda\seccion.xml
-#        my $path_xml_vista = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_DBM/tax_multivista/$mv/$tipo.xml";
-#        $XML_VISTAS{$mv} = &glib_fildir_02::read_file($path_xml_vista);
-#
-#    };
-#};
-
 # ---------------------------------------------------------------
 # rotulos tax
 sub parse_multivistas {

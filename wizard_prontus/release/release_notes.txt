@@ -10773,3 +10773,19 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         - Agrega botón para usar blockquote a las opciones del editor vtxt
     [files]
         /wizard_prontus/prontus_dir/cpan/core/vtxt/include_common.html
+
+====================================================================================================
+11.2.114.2 - 28/01/2021 - EAG
+====================================================================================================
+- Prontus en general
+    [bugfixes]
+        - Corrige desconexiones de bd que provocaban errores posteriores
+    [files]
+        /cgi-cpn/coment/coment_borrar.cgi
+        /cgi-cpn/multitag/prontus_multitag_admin.cgi
+        /cgi-cpn/prontus_cron_taxport_worker.cgi
+        /cgi-cpn/prontus_regenerabd_real.cgi
+        /cgi-cpn/prontus_tags_admin.cgi
+        /cgi-cpn/prontus_tags_borrar.cgi
+        /cgi-cpn/prontus_tags_guardar.cgi
+        /cgi-cpn/prontus_tax_import_real.cgi

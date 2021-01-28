@@ -147,7 +147,7 @@ main: {
     foreach my $mv (keys %prontus_varglb::MULTIVISTAS) {
         &lib_prontus::make_mapa_tags($mv, $BD);
     }
-        
+
     $BD->disconnect;
 
     # Se libera el caché de los tags del fid

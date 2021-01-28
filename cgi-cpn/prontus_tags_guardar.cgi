@@ -201,17 +201,11 @@ main: {
     # Se libera el caché de los tags del fid
     &lib_tags::clear_cache($prontus_varglb::PRONTUS_ID);
 
-    # utf8::encode($resp->{'theName'});
-
-    # binmode(STDOUT, ":utf8");
-
     # Se usa este metodo porque la glib_html_02 no puede imprimir Hashs, sólo strings.
     print "Content-Type: text/html\n\n";
-    # my $json = new JSON;
-    # $json->to_json($resp);
+
     print &JSON::to_json($resp);
     exit;
-
 }; # main.
 
 # ---------------------------------------------------------------

@@ -167,8 +167,6 @@ main:{
     my ($lista, $nro_filas) = &make_lista($sql, $loop);
     $pagina =~ s/<!--item_loop-->.*<!--\/item_loop-->/$lista/s;
 
-    $BD->disconnect;
-
     $pagina =~ s/%%_path_conf%%/$FORM{'_path_conf'}/ig;
     $pagina =~ s/%%input_search%%/$FORM{'search'}/ig;
     $pagina =~ s/%%_prontus_id%%/$prontus_varglb::PRONTUS_ID/isg;

@@ -130,12 +130,10 @@ main:{
         $| = 1;
     };
 
-
     if (! -d $prontus_varglb::DIR_SERVER) {
         print STDERR "ERROR: DIR_SERVER no válido[$prontus_varglb::DIR_SERVER]\n";
         exit;
     };
-
 
     &lib_prontus::load_config($PATH_CONF);
     $lib_logproc::LOG_FILE = "$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/procs/prontus_tax_import_log.html";
@@ -157,9 +155,6 @@ main:{
         &finishLoading("ERROR: $msg_err_bd");
         &lib_logproc::handle_error("ERROR: $msg_err_bd");
     };
-
-
-
 
     &lib_logproc::flush_log();
     &lib_logproc::writeRule();
@@ -214,8 +209,6 @@ main:{
 
     # Elimina el bloqueo y termina ejecucion.
     &lib_lock::unlock_file($lock_obj, $LOCK_FILE);
-
-
 }; # main
 
 # ---------------------------------------------------------------

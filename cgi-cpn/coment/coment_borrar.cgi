@@ -64,7 +64,7 @@ BEGIN {
     use FindBin '$Bin';
     $pathLibsProntus = $Bin;
     unshift(@INC,$pathLibsProntus);
-    
+
     $pathLibsProntus =~ s/\/coment$//;
     unshift(@INC,$pathLibsProntus);
 };
@@ -116,13 +116,12 @@ main: {
     my ($BD, $msg_err_bd);
     ($BD, $msg_err_bd) = &lib_prontus::conectar_prontus_bd();
     &glib_html_02::print_json_result(0, $msg_err_bd, 'exit=1,ctype=1') if ($msg_err_bd ne '');
-    
 
-    if  (!$FORM{'COMENT_ID'}) {
+
+    if (!$FORM{'COMENT_ID'}) {
         $BD->disconnect;
         &glib_html_02::print_json_result(0, 'Registro no existe.', 'exit=1,ctype=1');
     } else {
-
         # Obtiene datos faltantes.
         my $sql = "select COMENT_OBJTIPO, COMENT_OBJID from COMENT where COMENT_ID = \"$FORM{'COMENT_ID'}\"";
         my ($objtipo, $objid);
@@ -132,18 +131,12 @@ main: {
         # Elimina reg.
         $sql = " DELETE FROM COMENT WHERE COMENT_ID = \"$FORM{'COMENT_ID'}\"";
         $BD->do($sql) || &glib_html_02::print_json_result(0, 'DB Error: '.$BD->errstr, 'exit=1,ctype=1');
-        
+
         # genera coments pag actualizada.
         &lib_coment::generar_comentarios($BD, $coment_varglb::DIR_SERVER, $objtipo, $objid, $prontus_varglb::PRONTUS_ID);
-        
+
+        $BD->disconnect;
         # comentario eliminado.
         &glib_html_02::print_json_result(1, '', 'exit=1,ctype=1');
-
-    };
+    }
 }; # main.
-
-# ---------------------------------------------------------------
-# SUB-RUTINAS.
-# ---------------------------------------------------------------
-# No registra.
-# ----------------------------END SCRIPT---------------------

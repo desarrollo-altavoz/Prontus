@@ -262,8 +262,6 @@ main:{
 
     # Borra cache de lista de articulos
     &glib_fildir_02::borra_dir("$prontus_varglb::DIR_SERVER$prontus_varglb::DIR_CPAN/data/cache");
-
-
 }; # main
 
 # ---------------------------------------------------------------

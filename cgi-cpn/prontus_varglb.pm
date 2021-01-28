@@ -46,14 +46,14 @@ sub init { # Prontus 6.0
   # $DIR_CGI_PUBLIC = 'cgi-bin'; # 1.13
   do 'dir_cgi.pm';
 
-  $VERSION_PRONTUS = '11.2.114.1 - 07/12/2020';
+  $VERSION_PRONTUS = '11.2.114.2 - 28/01/2021';
   $RAMA_INSTALADA = '';
   $NRO_REVISION_INSTALADA = '';
   $BETA_REVISION_INSTALADA = '';
   &set_info_version_prontus();
 
 
-  $MSG_BLOQUEOSYSADMIN = 'Este Administrador de Contenidos se encuentra actualmente en mantención, para mayor información comuníquese con el Webmaster.';
+  $MSG_BLOQUEOSYSADMIN = 'Este Administrador de Contenidos se encuentra actualmente en mantenciï¿½n, para mayor informaciï¿½n comunï¿½quese con el Webmaster.';
 
   $MAX_NRO_ARTIC = '';
   $RTEXT_ENABLED = '';
@@ -241,7 +241,7 @@ sub init { # Prontus 6.0
 
   %POST_PROCESO = ();
 
-  # Portadas publicables en la edición base.
+  # Portadas publicables en la ediciï¿½n base.
   @BASE_PORTS = ();
 
 
@@ -347,7 +347,7 @@ sub get_dir_server {
         if ($ENV{'SERVER_NAME'} ne '') { # ambiente web
             print "Content-Type: text/html\n\n";
         };
-        print 'Error, no se ha podido detectar DOCUMENT ROOT o éste no es válido';
+        print 'Error, no se ha podido detectar DOCUMENT ROOT o ï¿½ste no es vï¿½lido';
         exit;
     };
 

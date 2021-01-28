@@ -248,8 +248,6 @@ sub generar_taxports_thislevel {
 
     &write_pag($tax_fixedurl, $fid, $secc_nom, $tot_artics, $nro_pagina, $secc_id, $temas_id, $subtemas_id, \%filas);
 
-    $BD->disconnect;
-
     unlink "$DIR_SEMAF/$id_level" if ($semaf);
 }
 
