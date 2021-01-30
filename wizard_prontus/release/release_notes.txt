@@ -10789,3 +10789,12 @@ Esto quedó actualizado en el check platform y detallado más abajo.
         /cgi-cpn/prontus_tags_borrar.cgi
         /cgi-cpn/prontus_tags_guardar.cgi
         /cgi-cpn/prontus_tax_import_real.cgi
+
+====================================================================================================
+11.2.114.3 - XX/02/2021 - EAG
+====================================================================================================
+- Imprimir artículo
+    [changes]
+        - Quita mensajes de error explicativos de prontus imprimir
+    [files]
+        /cgi-bin/prontus_imprimir.cgi
